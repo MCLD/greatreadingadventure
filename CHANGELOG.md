@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Added
 
+- Ability to mark vendor items as not damaged and not missing in case of accidental box checking
+
 ### Changed
 
 - Moved TempData storage to session from separate cookie

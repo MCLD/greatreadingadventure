@@ -42,6 +42,7 @@ namespace GRA.Domain.Service
         private readonly IPathResolver _pathResolver;
         private readonly PrizeWinnerService _prizeWinnerService;
         private readonly IStringLocalizer<Resources.Shared> _sharedLocalizer;
+        private readonly SiteLookupService _siteLookupService;
         private readonly SiteService _siteService;
         private readonly IUserRepository _userRepository;
         private readonly IVendorCodePackingSlipRepository _vendorCodePackingSlipRepository;
@@ -63,6 +64,7 @@ namespace GRA.Domain.Service
             LanguageService languageService,
             MailService mailService,
             PrizeWinnerService prizeWinnerService,
+            SiteLookupService siteLookupService,
             SiteService siteService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
@@ -80,6 +82,8 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(prizeWinnerService));
             _sharedLocalizer = sharedLocalizer
                 ?? throw new ArgumentNullException(nameof(sharedLocalizer));
+            _siteLookupService = siteLookupService
+                ?? throw new ArgumentNullException(nameof(SiteLookupService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
@@ -491,33 +495,15 @@ namespace GRA.Domain.Service
                         && code.IsDamaged != true
                         && code.IsMissing != true)
                     {
-                        await AwardPrizeAsync(code);
+                        bool? result = await AwardPrizeSendMailAsync(code, vendorCodeType, emailDetails);
 
-                        if (vendorCodeType.ReadyForPickupEmailTemplateId.HasValue
-                            && code.UserId.HasValue)
+                        if (result == true)
                         {
-                            bool? result = null;
-                            try
-                            {
-                                result = await SendPickupEmailAsync(
-                                    vendorCodeType.ReadyForPickupEmailTemplateId.Value,
-                                    code.UserId.Value,
-                                    emailDetails,
-                                    code);
-                            }
-                            catch (GraException)
-                            {
-                                result = false;
-                            }
-
-                            if (result == true)
-                            {
-                                emailsSent++;
-                            }
-                            else
-                            {
-                                emailErrors++;
-                            }
+                            emailsSent++;
+                        }
+                        else if (result == false)
+                        {
+                            emailErrors++;
                         }
                     }
 
@@ -734,9 +720,26 @@ namespace GRA.Domain.Service
             return await _vendorCodeTypeRepository.SiteHasCodesAsync(GetCurrentSiteId());
         }
 
+        public async Task<bool?> UnmarkDamagedMissingAsync(int currentUserId, string vendorCode)
+        {
+            var code = await _vendorCodeRepository.GetByCode(vendorCode);
+            code.IsDamaged = false;
+            code.IsMissing = false;
+            await _vendorCodeRepository.UpdateSaveAsync(currentUserId, code);
+            var type = await _vendorCodeTypeRepository.GetByIdAsync(code.VendorCodeTypeId);
+
+            var site = await _siteLookupService.GetByIdAsync(GetCurrentSiteId());
+            var emailDetails = new Model.Utility.DirectEmailDetails(site.Name)
+            {
+                SendingUserId = GetActiveUserId()
+            };
+
+            return await AwardPrizeSendMailAsync(code, type, emailDetails);
+        }
+
         public async Task<JobStatus> UpdateEmailAwardStatusFromExcelAsync(int jobId,
-            CancellationToken token,
-            IProgress<JobStatus> progress = null)
+                    CancellationToken token,
+                    IProgress<JobStatus> progress = null)
         {
             var requestingUser = GetClaimId(ClaimType.UserId);
 
@@ -1003,7 +1006,7 @@ namespace GRA.Domain.Service
         }
 
         public async Task UpdateEmailNotReportedAsync(int currentUserId,
-            IEnumerable<VendorCodeEmailAward> emailAwards)
+                    IEnumerable<VendorCodeEmailAward> emailAwards)
         {
             VerifyManagementPermission();
 
@@ -1021,8 +1024,8 @@ namespace GRA.Domain.Service
         }
 
         public async Task UpdateEmailReportedAsync(int currentUserId,
-            DateTime when,
-            int vendorCodeId)
+                    DateTime when,
+                    int vendorCodeId)
         {
             VerifyManagementPermission();
 
@@ -1032,8 +1035,8 @@ namespace GRA.Domain.Service
         }
 
         public async Task<JobStatus> UpdateStatusFromExcelAsync(int jobId,
-            CancellationToken token,
-            IProgress<JobStatus> progress = null)
+                    CancellationToken token,
+                    IProgress<JobStatus> progress = null)
         {
             var requestingUser = GetClaimId(ClaimType.UserId);
 
@@ -1709,6 +1712,40 @@ namespace GRA.Domain.Service
             }
         }
 
+        /// <summary>
+        /// Award the prize and send the email if there's one to be sent
+        /// </summary>
+        /// <param name="vendorCode">The vendor code</param>
+        /// <param name="vendorCodeType">The vendor code type</param>
+        /// <param name="emailDetails">An emailDetails if there's a need to send emails</param>
+        /// <returns></returns>
+        private async Task<bool?> AwardPrizeSendMailAsync(VendorCode vendorCode,
+            VendorCodeType vendorCodeType,
+            Model.Utility.DirectEmailDetails emailDetails)
+        {
+            bool? result = null;
+            await AwardPrizeAsync(vendorCode);
+
+            if (vendorCodeType.ReadyForPickupEmailTemplateId.HasValue
+                && vendorCode.UserId.HasValue)
+            {
+                try
+                {
+                    result = await SendPickupEmailAsync(
+                        vendorCodeType.ReadyForPickupEmailTemplateId.Value,
+                        vendorCode.UserId.Value,
+                        emailDetails,
+                        vendorCode);
+                }
+                catch (GraException)
+                {
+                    result = false;
+                }
+            }
+
+            return result;
+        }
+
         private async Task<VendorCodePackingSlip> GetPs(long packingSlip)
         {
             VendorCodePackingSlip ps;
@@ -1824,7 +1861,11 @@ namespace GRA.Domain.Service
                     }
                     else
                     {
-                        if (vendorCode.ArrivalDate.HasValue && vendorCode.IsDamaged != true
+                        user.VendorIsMissing = vendorCode.IsMissing == true;
+                        user.VendorIsDamaged = vendorCode.IsDamaged == true;
+
+                        if (vendorCode.ArrivalDate.HasValue
+                            && vendorCode.IsDamaged != true
                             && vendorCode.IsMissing != true)
                         {
                             user.VendorCodeMessage

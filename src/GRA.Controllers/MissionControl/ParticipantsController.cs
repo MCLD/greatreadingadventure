@@ -24,20 +24,19 @@ namespace GRA.Controllers.MissionControl
     public class ParticipantsController : Base.MCController
     {
         private const string ActivityMessage = "ActivityMessage";
-        private const string SecretCodeMessage = "SecretCodeMessage";
-        private const string VendorCodeMessage = "VendorCodeMessage";
         private const string DrawingPrizeKey = "d";
+        private const string SecretCodeMessage = "SecretCodeMessage";
         private const string TriggerPrizeKey = "t";
-
-        private readonly ILogger<ParticipantsController> _logger;
-        private readonly AutoMapper.IMapper _mapper;
+        private const string VendorCodeMessage = "VendorCodeMessage";
         private readonly ActivityService _activityService;
         private readonly AuthenticationService _authenticationService;
         private readonly AvatarService _avatarService;
         private readonly DrawingService _drawingService;
         private readonly EmailManagementService _emailManagementService;
         private readonly JobService _jobService;
+        private readonly ILogger<ParticipantsController> _logger;
         private readonly MailService _mailService;
+        private readonly AutoMapper.IMapper _mapper;
         private readonly PointTranslationService _pointTranslationService;
         private readonly PrizeWinnerService _prizeWinnerService;
         private readonly QuestionnaireService _questionnaireService;
@@ -47,8 +46,6 @@ namespace GRA.Controllers.MissionControl
         private readonly TriggerService _triggerService;
         private readonly UserService _userService;
         private readonly VendorCodeService _vendorCodeService;
-
-        public static string Name { get { return "Participants"; } }
 
         public ParticipantsController(ILogger<ParticipantsController> logger,
             ServiceFacade.Controller context,
@@ -103,119 +100,10 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Participants";
         }
 
+        public static string Name
+        { get { return "Participants"; } }
+
         #region Index
-        public async Task<IActionResult> Index(string search, string sort, string order,
-            int? systemId, int? branchId, int? programId, int page = 1)
-        {
-            var filter = new UserFilter(page);
-
-            if (!string.IsNullOrWhiteSpace(search))
-            {
-                filter.Search = search.Trim();
-            }
-            if (branchId.HasValue)
-            {
-                filter.BranchIds = new List<int> { branchId.Value };
-            }
-            else if (systemId.HasValue)
-            {
-                filter.SystemIds = new List<int> { systemId.Value };
-            }
-            if (programId.HasValue)
-            {
-                filter.ProgramIds = new List<int?> { programId.Value };
-            }
-
-            bool isDescending = string.Equals(order, "Descending", StringComparison.OrdinalIgnoreCase);
-            if (!string.IsNullOrWhiteSpace(sort) && Enum.IsDefined(typeof(SortUsersBy), sort))
-            {
-                filter.SortBy = (SortUsersBy)Enum.Parse(typeof(SortUsersBy), sort);
-                filter.OrderDescending = isDescending;
-            }
-
-            var participantsList = await _userService.GetPaginatedUserListAsync(filter);
-
-            var paginateModel = new PaginateViewModel
-            {
-                ItemCount = participantsList.Count,
-                CurrentPage = page,
-                ItemsPerPage = filter.Take.Value
-            };
-            if (paginateModel.PastMaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
-            }
-            var systemList = (await _siteService.GetSystemList())
-                .OrderByDescending(_ => _.Id == GetId(ClaimType.SystemId)).ThenBy(_ => _.Name);
-
-            var viewModel = new ParticipantsListViewModel
-            {
-                Users = participantsList.Data,
-                PaginateModel = paginateModel,
-                Search = search,
-                Sort = sort,
-                IsDescending = isDescending,
-                SystemId = systemId,
-                BranchId = branchId,
-                ProgramId = programId,
-                CanRemoveParticipant = UserHasPermission(Permission.DeleteParticipants),
-                CanViewDetails = UserHasPermission(Permission.ViewParticipantDetails),
-                SortUsers = Enum.GetValues(typeof(SortUsersBy)),
-                SystemList = systemList,
-                ProgramList = await _siteService.GetProgramList()
-            };
-
-            if (branchId.HasValue)
-            {
-                var branch = await _siteService.GetBranchByIdAsync(branchId.Value);
-                viewModel.BranchName = branch.Name;
-                viewModel.SystemName = systemList
-                    .SingleOrDefault(_ => _.Id == branch.SystemId)?.Name;
-                viewModel.BranchList = (await _siteService.GetBranches(branch.SystemId))
-                    .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
-                    .ThenBy(_ => _.Name);
-                viewModel.ActiveNav = "Branch";
-            }
-            else if (systemId.HasValue)
-            {
-                viewModel.SystemName = systemList
-                    .SingleOrDefault(_ => _.Id == systemId.Value)?.Name;
-                viewModel.BranchList = (await _siteService.GetBranches(systemId.Value))
-                    .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
-                    .ThenBy(_ => _.Name);
-                viewModel.ActiveNav = "System";
-            }
-            else
-            {
-                viewModel.BranchList = (await _siteService.GetBranches(GetId(ClaimType.SystemId)))
-                        .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
-                        .ThenBy(_ => _.Name);
-                viewModel.ActiveNav = "All";
-            }
-            if (programId.HasValue)
-            {
-                viewModel.ProgramName =
-                    (await _siteService.GetProgramByIdAsync(programId.Value)).Name;
-            }
-
-            var siteStage = GetSiteStage();
-            if (siteStage == SiteStage.RegistrationOpen || siteStage == SiteStage.ProgramOpen)
-            {
-                viewModel.CanSignUpParticipants = true;
-            }
-
-            if (UserHasPermission(Permission.ViewGroupList)
-                && await IsSiteSettingSetAsync(SiteSettingKey.Users.MaximumHouseholdSizeBeforeGroup))
-            {
-                viewModel.ShowGroupsButton = true;
-            }
-
-            return View(viewModel);
-        }
 
         public async Task<IActionResult> Add()
         {
@@ -488,9 +376,124 @@ namespace GRA.Controllers.MissionControl
             }
             return RedirectToAction("Index");
         }
-        #endregion
+
+        public async Task<IActionResult> Index(string search, string sort, string order,
+                                    int? systemId, int? branchId, int? programId, int page = 1)
+        {
+            var filter = new UserFilter(page);
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                filter.Search = search.Trim();
+            }
+            if (branchId.HasValue)
+            {
+                filter.BranchIds = new List<int> { branchId.Value };
+            }
+            else if (systemId.HasValue)
+            {
+                filter.SystemIds = new List<int> { systemId.Value };
+            }
+            if (programId.HasValue)
+            {
+                filter.ProgramIds = new List<int?> { programId.Value };
+            }
+
+            bool isDescending = string.Equals(order, "Descending", StringComparison.OrdinalIgnoreCase);
+            if (!string.IsNullOrWhiteSpace(sort) && Enum.IsDefined(typeof(SortUsersBy), sort))
+            {
+                filter.SortBy = (SortUsersBy)Enum.Parse(typeof(SortUsersBy), sort);
+                filter.OrderDescending = isDescending;
+            }
+
+            var participantsList = await _userService.GetPaginatedUserListAsync(filter);
+
+            var paginateModel = new PaginateViewModel
+            {
+                ItemCount = participantsList.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+            if (paginateModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+            var systemList = (await _siteService.GetSystemList())
+                .OrderByDescending(_ => _.Id == GetId(ClaimType.SystemId)).ThenBy(_ => _.Name);
+
+            var viewModel = new ParticipantsListViewModel
+            {
+                Users = participantsList.Data,
+                PaginateModel = paginateModel,
+                Search = search,
+                Sort = sort,
+                IsDescending = isDescending,
+                SystemId = systemId,
+                BranchId = branchId,
+                ProgramId = programId,
+                CanRemoveParticipant = UserHasPermission(Permission.DeleteParticipants),
+                CanViewDetails = UserHasPermission(Permission.ViewParticipantDetails),
+                SortUsers = Enum.GetValues(typeof(SortUsersBy)),
+                SystemList = systemList,
+                ProgramList = await _siteService.GetProgramList()
+            };
+
+            if (branchId.HasValue)
+            {
+                var branch = await _siteService.GetBranchByIdAsync(branchId.Value);
+                viewModel.BranchName = branch.Name;
+                viewModel.SystemName = systemList
+                    .SingleOrDefault(_ => _.Id == branch.SystemId)?.Name;
+                viewModel.BranchList = (await _siteService.GetBranches(branch.SystemId))
+                    .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
+                    .ThenBy(_ => _.Name);
+                viewModel.ActiveNav = "Branch";
+            }
+            else if (systemId.HasValue)
+            {
+                viewModel.SystemName = systemList
+                    .SingleOrDefault(_ => _.Id == systemId.Value)?.Name;
+                viewModel.BranchList = (await _siteService.GetBranches(systemId.Value))
+                    .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
+                    .ThenBy(_ => _.Name);
+                viewModel.ActiveNav = "System";
+            }
+            else
+            {
+                viewModel.BranchList = (await _siteService.GetBranches(GetId(ClaimType.SystemId)))
+                        .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
+                        .ThenBy(_ => _.Name);
+                viewModel.ActiveNav = "All";
+            }
+            if (programId.HasValue)
+            {
+                viewModel.ProgramName =
+                    (await _siteService.GetProgramByIdAsync(programId.Value)).Name;
+            }
+
+            var siteStage = GetSiteStage();
+            if (siteStage == SiteStage.RegistrationOpen || siteStage == SiteStage.ProgramOpen)
+            {
+                viewModel.CanSignUpParticipants = true;
+            }
+
+            if (UserHasPermission(Permission.ViewGroupList)
+                && await IsSiteSettingSetAsync(SiteSettingKey.Users.MaximumHouseholdSizeBeforeGroup))
+            {
+                viewModel.ShowGroupsButton = true;
+            }
+
+            return View(viewModel);
+        }
+
+        #endregion Index
 
         #region Detail
+
         [Authorize(Policy = Policy.ViewParticipantDetails)]
         public async Task<IActionResult> Detail(int id)
         {
@@ -716,9 +719,60 @@ namespace GRA.Controllers.MissionControl
 
             return View(model);
         }
-        #endregion
+
+        [Authorize(Policy = Policy.EditParticipants)]
+        [HttpPost]
+        public async Task<IActionResult> MarkVendorItemAsReceived(int id, string vendorCode)
+        {
+            var result = await _vendorCodeService
+                .UnmarkDamagedMissingAsync(GetActiveUserId(), vendorCode);
+
+            switch (result)
+            {
+                case true:
+                    AlertSuccess = "Code unmarked as damaged/missing, email sent.";
+                    break;
+
+                case false:
+                    AlertWarning = "Code unmarked as damaged/missing, email failed to send.";
+                    break;
+
+                default:
+                    AlertInfo = "Code unmarked as damaged/missing, email not sent.";
+                    break;
+            }
+
+            return RedirectToAction(nameof(Detail), new { id });
+        }
+
+        #endregion Detail
 
         #region Log Activity
+
+        [Authorize(Policy = Policy.ManageVendorCodes)]
+        [HttpPost]
+        public async Task<IActionResult> AwardVendorCode(LogActivityViewModel model)
+        {
+            if (!model.VendorCodeTypeId.HasValue)
+            {
+                TempData[VendorCodeMessage] = "Please select a code to award.";
+            }
+            else
+            {
+                try
+                {
+                    await _activityService.MCAwardVendorCodeAsync(model.Id, model.VendorCodeTypeId.Value);
+                    ShowAlertSuccess("Vendor Code awarded!");
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger("Unable to award vendor code: ", gex.Message);
+                }
+            }
+
+            return RedirectToAction("LogActivity", new { id = model.Id });
+        }
+
         [Authorize(Policy = Policy.LogActivityForAny)]
         public async Task<IActionResult> LogActivity(int id)
         {
@@ -832,293 +886,9 @@ namespace GRA.Controllers.MissionControl
             return View(model);
         }
 
-        [Authorize(Policy = Policy.ManageVendorCodes)]
-        [HttpPost]
-        public async Task<IActionResult> AwardVendorCode(LogActivityViewModel model)
-        {
-            if (!model.VendorCodeTypeId.HasValue)
-            {
-                TempData[VendorCodeMessage] = "Please select a code to award.";
-            }
-            else
-            {
-                try
-                {
-                    await _activityService.MCAwardVendorCodeAsync(model.Id, model.VendorCodeTypeId.Value);
-                    ShowAlertSuccess("Vendor Code awarded!");
-                }
-                catch (GraException gex)
-                {
-                    ShowAlertDanger("Unable to award vendor code: ", gex.Message);
-                }
-            }
-
-            return RedirectToAction("LogActivity", new { id = model.Id });
-        }
-        #endregion
+        #endregion Log Activity
 
         #region Household
-        [Authorize(Policy = Policy.ViewParticipantDetails)]
-        public async Task<IActionResult> Household(int id)
-        {
-            try
-            {
-                var user = await _userService.GetDetailsByPermission(id);
-                var showVendorCodes = await _vendorCodeService.SiteHasCodesAsync();
-                SetPageTitle(user);
-
-                var head = user.HouseholdHeadUserId.HasValue
-                    ? await _userService.GetDetailsByPermission(user.HouseholdHeadUserId.Value)
-                    : user;
-
-                if (showVendorCodes)
-                {
-                    await _vendorCodeService.PopulateVendorCodeStatusAsync(head);
-                }
-
-                head.HasPendingQuestionnaire = (await _questionnaireService
-                    .GetRequiredQuestionnaire(head.Id, head.Age)).HasValue;
-                bool ReadAllMail = UserHasPermission(Permission.ReadAllMail);
-                bool ViewUserPrizes = UserHasPermission(Permission.ViewUserPrizes);
-                if (ReadAllMail)
-                {
-                    await _mailService.SendUserBroadcastsAsync(head.Id, true);
-                    head.HasNewMail = await _mailService.UserHasUnreadAsync(head.Id);
-                }
-                if (ViewUserPrizes)
-                {
-                    head.HasUnclaimedPrize = (await _prizeWinnerService
-                        .GetUserWinCount(head.Id, false)) > 0;
-                }
-
-                var household = await _userService.GetHouseholdAsync(head.Id, true, showVendorCodes,
-                    ReadAllMail, ViewUserPrizes);
-
-                var systemId = GetId(ClaimType.SystemId);
-                var branchList = (await _siteService.GetBranches(systemId))
-                    .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId));
-                var systemList = (await _siteService.GetSystemList())
-                    .OrderByDescending(_ => _.Id == systemId);
-
-                var viewModel = new HouseholdListViewModel
-                {
-                    Users = household,
-                    Id = id,
-                    HouseholdCount = household.Count(),
-                    HeadOfHouseholdId = user.HouseholdHeadUserId,
-                    HasAccount = !string.IsNullOrWhiteSpace(user.Username),
-                    CanRedeemBulkVendorCodes = UserHasPermission(Permission.RedeemBulkVendorCodes),
-                    CanEditDetails = UserHasPermission(Permission.EditParticipants),
-                    CanImportNewMembers = UserHasPermission(Permission.ImportHouseholdMembers),
-                    CanLogActivity = UserHasPermission(Permission.LogActivityForAny),
-                    CanReadMail = ReadAllMail,
-                    CanViewPrizes = ViewUserPrizes,
-                    Head = head,
-                    SystemId = systemId,
-                    BranchList = branchList,
-                    SystemList = systemList,
-                    DisableSecretCode = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
-                    ShowVendorCodes = showVendorCodes,
-                    PointTranslation = await _pointTranslationService
-                        .GetByProgramIdAsync(user.ProgramId, true),
-                    EmailSubscriptionEnabled = await IsSiteSettingSetAsync(
-                        SiteSettingKey.Users.AskEmailSubPermission)
-                };
-
-                if (ViewUserPrizes)
-                {
-                    viewModel.PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false);
-
-                    var prizeList = await _prizeWinnerService
-                        .GetHouseholdUnredeemedPrizesAsync(head.Id);
-                    var prizeSelectList = new List<SelectListItem>();
-                    foreach (var prize in prizeList)
-                    {
-                        var prizeName = $"{prize.Name} ({prize.Count})";
-                        string prizeId;
-                        if (prize.DrawingId.HasValue)
-                        {
-                            prizeId = $"{DrawingPrizeKey}{prize.DrawingId}";
-                        }
-                        else
-                        {
-                            prizeId = $"{TriggerPrizeKey}{prize.TriggerId}";
-                        }
-                        prizeSelectList.Add(new SelectListItem(prizeName, prizeId));
-                    }
-
-                    viewModel.HouseholdPrizeList = prizeSelectList;
-                }
-                if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
-                {
-                    viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
-                }
-                if (UserHasPermission(Permission.EditParticipants))
-                {
-                    viewModel.HasEvelatedRole = user.IsAdmin;
-                }
-
-                if (TempData.ContainsKey(ActivityMessage))
-                {
-                    viewModel.ActivityMessage = (string)TempData[ActivityMessage];
-                }
-                if (TempData.ContainsKey(SecretCodeMessage))
-                {
-                    viewModel.SecretCodeMessage = (string)TempData[SecretCodeMessage];
-                }
-
-                var groupInfo
-                    = await _userService.GetGroupFromHouseholdHeadAsync(head.Id);
-
-                if (groupInfo != null)
-                {
-                    viewModel.GroupName = groupInfo.Name;
-                    viewModel.GroupType = groupInfo.GroupTypeName;
-                    viewModel.IsGroup = true;
-                }
-                else
-                {
-                    var (useGroups, maximumHousehold) =
-                        await GetSiteSettingIntAsync(SiteSettingKey.Users.MaximumHouseholdSizeBeforeGroup);
-                    viewModel.UseGroups = useGroups;
-                    if (useGroups && household.Count() + 1 >= maximumHousehold)
-                    {
-                        viewModel.UpgradeToGroup = true;
-                    }
-                }
-
-                if (string.IsNullOrWhiteSpace(viewModel.Head.EmailAwardInstructions))
-                {
-                    viewModel.Head.EmailAwardInstructions = viewModel.Users
-                        .Where(_ => !string.IsNullOrWhiteSpace(_.EmailAwardInstructions))
-                        .Select(_ => _.EmailAwardInstructions)
-                        .FirstOrDefault();
-                }
-
-                return View(viewModel);
-            }
-            catch (GraException gex)
-            {
-                ShowAlertWarning("Unable to view participant's family/group: ", gex);
-                return RedirectToAction("Index");
-            }
-        }
-
-        [Authorize(Policy = Policy.LogActivityForAny)]
-        [HttpPost]
-        public async Task<IActionResult> HouseholdApplyActivity(HouseholdListViewModel model)
-        {
-            var user = await _userService.GetDetailsByPermission(model.Id);
-            model.PointTranslation = await _pointTranslationService
-                .GetByProgramIdAsync(user.ProgramId, true);
-            if (model.ActivityAmount < 1 && !model.PointTranslation.IsSingleEvent)
-            {
-                TempData[ActivityMessage] = "You must enter an amonunt!";
-            }
-            else if (!string.IsNullOrWhiteSpace(model.UserSelection))
-            {
-                var userSelection = model.UserSelection
-                    .Split(',')
-                    .Where(_ => !string.IsNullOrWhiteSpace(_))
-                    .Select(int.Parse)
-                    .Distinct()
-                    .ToList();
-                try
-                {
-                    var activityAmount = 1;
-                    if (!model.PointTranslation.IsSingleEvent)
-                    {
-                        activityAmount = model.ActivityAmount;
-                    }
-                    await _activityService.LogHouseholdActivityAsync(userSelection, activityAmount);
-                    ShowAlertSuccess("Activity applied!");
-                }
-                catch (GraException gex)
-                {
-                    TempData[ActivityMessage] = gex.Message;
-                }
-            }
-            else
-            {
-                TempData[ActivityMessage] = "No family/group members selected.";
-            }
-
-            return RedirectToAction("Household", new { id = model.Id });
-        }
-
-        [Authorize(Policy = Policy.LogActivityForAny)]
-        [HttpPost]
-        public async Task<IActionResult> HouseholdApplySecretCode(HouseholdListViewModel model)
-        {
-            if (string.IsNullOrWhiteSpace(model.SecretCode))
-            {
-                TempData[SecretCodeMessage] = Annotations.Required.SecretCode;
-            }
-            else if (!string.IsNullOrWhiteSpace(model.UserSelection))
-            {
-                var userSelection = model.UserSelection
-                    .Split(',')
-                    .Where(_ => !string.IsNullOrWhiteSpace(_))
-                    .Select(int.Parse)
-                    .Distinct()
-                    .ToList();
-                try
-                {
-                    var codeApplied = await _activityService
-                        .LogHouseholdSecretCodeAsync(userSelection, model.SecretCode);
-                    if (codeApplied)
-                    {
-                        ShowAlertSuccess("Secret Code applied!");
-                    }
-                    else
-                    {
-                        TempData[SecretCodeMessage] = "All selected members have already entered that Secret Code.";
-                    }
-                }
-                catch (GraException gex)
-                {
-                    TempData[SecretCodeMessage] = gex.Message;
-                }
-            }
-            else
-            {
-                TempData[SecretCodeMessage] = "No family/group members selected.";
-            }
-
-            return RedirectToAction("Household", new { id = model.Id });
-        }
-
-        [Authorize(Policy = Policy.EditParticipants)]
-        [HttpPost]
-        public async Task<IActionResult> HouseholdPromote(int id, int promoteId)
-        {
-            try
-            {
-                await _userService.PromoteToHeadOfHouseholdAsync(promoteId);
-                ShowAlertSuccess("Participant promoted to head of household.");
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger("Could not promote to family/group manager: ", gex.Message);
-            }
-            return RedirectToAction("Household", new { id });
-        }
-
-        [Authorize(Policy = Policy.EditParticipants)]
-        [HttpPost]
-        public async Task<IActionResult> HouseholdRemove(int id, int removeId)
-        {
-            try
-            {
-                await _userService.RemoveFromHouseholdAsync(removeId);
-                ShowAlertSuccess("Participant removed from family/group.");
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger("Could not remove from family/group: ", gex.Message);
-            }
-            return RedirectToAction("Household", new { id });
-        }
 
         [Authorize(Policy = Policy.EditParticipants)]
         public async Task<IActionResult> AddHouseholdMember(int id)
@@ -1375,57 +1145,150 @@ namespace GRA.Controllers.MissionControl
             return View("HouseholdAdd", model);
         }
 
-        [Authorize(Policy = Policy.EditParticipants)]
-        public async Task<IActionResult> RegisterHouseholdMember(int id)
+        [Authorize(Policy = Policy.ViewParticipantDetails)]
+        public async Task<IActionResult> Household(int id)
         {
             try
             {
                 var user = await _userService.GetDetailsByPermission(id);
-                if (!string.IsNullOrWhiteSpace(user.Username))
-                {
-                    return RedirectToAction("Household", new { id });
-                }
-                SetPageTitle(user, "Register Family Member");
+                var showVendorCodes = await _vendorCodeService.SiteHasCodesAsync();
+                SetPageTitle(user);
 
-                var viewModel = new HouseholdRegisterViewModel
+                var head = user.HouseholdHeadUserId.HasValue
+                    ? await _userService.GetDetailsByPermission(user.HouseholdHeadUserId.Value)
+                    : user;
+
+                if (showVendorCodes)
                 {
-                    Id = id
+                    await _vendorCodeService.PopulateVendorCodeStatusAsync(head);
+                }
+
+                head.HasPendingQuestionnaire = (await _questionnaireService
+                    .GetRequiredQuestionnaire(head.Id, head.Age)).HasValue;
+                bool ReadAllMail = UserHasPermission(Permission.ReadAllMail);
+                bool ViewUserPrizes = UserHasPermission(Permission.ViewUserPrizes);
+                if (ReadAllMail)
+                {
+                    await _mailService.SendUserBroadcastsAsync(head.Id, true);
+                    head.HasNewMail = await _mailService.UserHasUnreadAsync(head.Id);
+                }
+                if (ViewUserPrizes)
+                {
+                    head.HasUnclaimedPrize = (await _prizeWinnerService
+                        .GetUserWinCount(head.Id, false)) > 0;
+                }
+
+                var household = await _userService.GetHouseholdAsync(head.Id, true, showVendorCodes,
+                    ReadAllMail, ViewUserPrizes);
+
+                var systemId = GetId(ClaimType.SystemId);
+                var branchList = (await _siteService.GetBranches(systemId))
+                    .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId));
+                var systemList = (await _siteService.GetSystemList())
+                    .OrderByDescending(_ => _.Id == systemId);
+
+                var viewModel = new HouseholdListViewModel
+                {
+                    Users = household,
+                    Id = id,
+                    HouseholdCount = household.Count(),
+                    HeadOfHouseholdId = user.HouseholdHeadUserId,
+                    HasAccount = !string.IsNullOrWhiteSpace(user.Username),
+                    CanRedeemBulkVendorCodes = UserHasPermission(Permission.RedeemBulkVendorCodes),
+                    CanEditDetails = UserHasPermission(Permission.EditParticipants),
+                    CanImportNewMembers = UserHasPermission(Permission.ImportHouseholdMembers),
+                    CanLogActivity = UserHasPermission(Permission.LogActivityForAny),
+                    CanReadMail = ReadAllMail,
+                    CanViewPrizes = ViewUserPrizes,
+                    Head = head,
+                    SystemId = systemId,
+                    BranchList = branchList,
+                    SystemList = systemList,
+                    DisableSecretCode = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
+                    ShowVendorCodes = showVendorCodes,
+                    PointTranslation = await _pointTranslationService
+                        .GetByProgramIdAsync(user.ProgramId, true),
+                    EmailSubscriptionEnabled = await IsSiteSettingSetAsync(
+                        SiteSettingKey.Users.AskEmailSubPermission)
                 };
 
-                return View("HouseholdRegister", viewModel);
+                if (ViewUserPrizes)
+                {
+                    viewModel.PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false);
+
+                    var prizeList = await _prizeWinnerService
+                        .GetHouseholdUnredeemedPrizesAsync(head.Id);
+                    var prizeSelectList = new List<SelectListItem>();
+                    foreach (var prize in prizeList)
+                    {
+                        var prizeName = $"{prize.Name} ({prize.Count})";
+                        string prizeId;
+                        if (prize.DrawingId.HasValue)
+                        {
+                            prizeId = $"{DrawingPrizeKey}{prize.DrawingId}";
+                        }
+                        else
+                        {
+                            prizeId = $"{TriggerPrizeKey}{prize.TriggerId}";
+                        }
+                        prizeSelectList.Add(new SelectListItem(prizeName, prizeId));
+                    }
+
+                    viewModel.HouseholdPrizeList = prizeSelectList;
+                }
+                if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
+                {
+                    viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
+                }
+                if (UserHasPermission(Permission.EditParticipants))
+                {
+                    viewModel.HasEvelatedRole = user.IsAdmin;
+                }
+
+                if (TempData.ContainsKey(ActivityMessage))
+                {
+                    viewModel.ActivityMessage = (string)TempData[ActivityMessage];
+                }
+                if (TempData.ContainsKey(SecretCodeMessage))
+                {
+                    viewModel.SecretCodeMessage = (string)TempData[SecretCodeMessage];
+                }
+
+                var groupInfo
+                    = await _userService.GetGroupFromHouseholdHeadAsync(head.Id);
+
+                if (groupInfo != null)
+                {
+                    viewModel.GroupName = groupInfo.Name;
+                    viewModel.GroupType = groupInfo.GroupTypeName;
+                    viewModel.IsGroup = true;
+                }
+                else
+                {
+                    var (useGroups, maximumHousehold) =
+                        await GetSiteSettingIntAsync(SiteSettingKey.Users.MaximumHouseholdSizeBeforeGroup);
+                    viewModel.UseGroups = useGroups;
+                    if (useGroups && household.Count() + 1 >= maximumHousehold)
+                    {
+                        viewModel.UpgradeToGroup = true;
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(viewModel.Head.EmailAwardInstructions))
+                {
+                    viewModel.Head.EmailAwardInstructions = viewModel.Users
+                        .Where(_ => !string.IsNullOrWhiteSpace(_.EmailAwardInstructions))
+                        .Select(_ => _.EmailAwardInstructions)
+                        .FirstOrDefault();
+                }
+
+                return View(viewModel);
             }
             catch (GraException gex)
             {
-                ShowAlertWarning("Unable to view participant's registration: ", gex);
+                ShowAlertWarning("Unable to view participant's family/group: ", gex);
                 return RedirectToAction("Index");
             }
-        }
-
-        [Authorize(Policy = Policy.EditParticipants)]
-        [HttpPost]
-        public async Task<IActionResult> RegisterHouseholdMember(HouseholdRegisterViewModel model)
-        {
-            var user = await _userService.GetDetailsByPermission(model.Id);
-            if (!string.IsNullOrWhiteSpace(user.Username))
-            {
-                return RedirectToAction("Household", new { id = model.Id });
-            }
-            if (ModelState.IsValid)
-            {
-                user.Username = model.Username;
-                try
-                {
-                    await _userService.RegisterHouseholdMemberAsync(user, model.Password);
-                    AlertSuccess = "Family/group member registered!";
-                    return RedirectToAction("Household", new { id = model.Id });
-                }
-                catch (GraException gex)
-                {
-                    ShowAlertDanger("Unable to register family/group member: ", gex);
-                }
-            }
-            SetPageTitle(user, "Register Family/Group Member");
-            return View("HouseholdRegister", model);
         }
 
         [Authorize(Policy = Policy.EditParticipants)]
@@ -1444,6 +1307,90 @@ namespace GRA.Controllers.MissionControl
             }
 
             return RedirectToAction("Household", new { id = Id });
+        }
+
+        [Authorize(Policy = Policy.LogActivityForAny)]
+        [HttpPost]
+        public async Task<IActionResult> HouseholdApplyActivity(HouseholdListViewModel model)
+        {
+            var user = await _userService.GetDetailsByPermission(model.Id);
+            model.PointTranslation = await _pointTranslationService
+                .GetByProgramIdAsync(user.ProgramId, true);
+            if (model.ActivityAmount < 1 && !model.PointTranslation.IsSingleEvent)
+            {
+                TempData[ActivityMessage] = "You must enter an amonunt!";
+            }
+            else if (!string.IsNullOrWhiteSpace(model.UserSelection))
+            {
+                var userSelection = model.UserSelection
+                    .Split(',')
+                    .Where(_ => !string.IsNullOrWhiteSpace(_))
+                    .Select(int.Parse)
+                    .Distinct()
+                    .ToList();
+                try
+                {
+                    var activityAmount = 1;
+                    if (!model.PointTranslation.IsSingleEvent)
+                    {
+                        activityAmount = model.ActivityAmount;
+                    }
+                    await _activityService.LogHouseholdActivityAsync(userSelection, activityAmount);
+                    ShowAlertSuccess("Activity applied!");
+                }
+                catch (GraException gex)
+                {
+                    TempData[ActivityMessage] = gex.Message;
+                }
+            }
+            else
+            {
+                TempData[ActivityMessage] = "No family/group members selected.";
+            }
+
+            return RedirectToAction("Household", new { id = model.Id });
+        }
+
+        [Authorize(Policy = Policy.LogActivityForAny)]
+        [HttpPost]
+        public async Task<IActionResult> HouseholdApplySecretCode(HouseholdListViewModel model)
+        {
+            if (string.IsNullOrWhiteSpace(model.SecretCode))
+            {
+                TempData[SecretCodeMessage] = Annotations.Required.SecretCode;
+            }
+            else if (!string.IsNullOrWhiteSpace(model.UserSelection))
+            {
+                var userSelection = model.UserSelection
+                    .Split(',')
+                    .Where(_ => !string.IsNullOrWhiteSpace(_))
+                    .Select(int.Parse)
+                    .Distinct()
+                    .ToList();
+                try
+                {
+                    var codeApplied = await _activityService
+                        .LogHouseholdSecretCodeAsync(userSelection, model.SecretCode);
+                    if (codeApplied)
+                    {
+                        ShowAlertSuccess("Secret Code applied!");
+                    }
+                    else
+                    {
+                        TempData[SecretCodeMessage] = "All selected members have already entered that Secret Code.";
+                    }
+                }
+                catch (GraException gex)
+                {
+                    TempData[SecretCodeMessage] = gex.Message;
+                }
+            }
+            else
+            {
+                TempData[SecretCodeMessage] = "No family/group members selected.";
+            }
+
+            return RedirectToAction("Household", new { id = model.Id });
         }
 
         [Authorize(Policy = Policy.EditParticipants)]
@@ -1847,9 +1794,133 @@ namespace GRA.Controllers.MissionControl
 
             return View(model);
         }
-        #endregion
+
+        [Authorize(Policy = Policy.EditParticipants)]
+        [HttpPost]
+        public async Task<IActionResult> HouseholdPromote(int id, int promoteId)
+        {
+            try
+            {
+                await _userService.PromoteToHeadOfHouseholdAsync(promoteId);
+                ShowAlertSuccess("Participant promoted to head of household.");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Could not promote to family/group manager: ", gex.Message);
+            }
+            return RedirectToAction("Household", new { id });
+        }
+
+        [Authorize(Policy = Policy.EditParticipants)]
+        [HttpPost]
+        public async Task<IActionResult> HouseholdRemove(int id, int removeId)
+        {
+            try
+            {
+                await _userService.RemoveFromHouseholdAsync(removeId);
+                ShowAlertSuccess("Participant removed from family/group.");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Could not remove from family/group: ", gex.Message);
+            }
+            return RedirectToAction("Household", new { id });
+        }
+
+        [Authorize(Policy = Policy.EditParticipants)]
+        public async Task<IActionResult> RegisterHouseholdMember(int id)
+        {
+            try
+            {
+                var user = await _userService.GetDetailsByPermission(id);
+                if (!string.IsNullOrWhiteSpace(user.Username))
+                {
+                    return RedirectToAction("Household", new { id });
+                }
+                SetPageTitle(user, "Register Family Member");
+
+                var viewModel = new HouseholdRegisterViewModel
+                {
+                    Id = id
+                };
+
+                return View("HouseholdRegister", viewModel);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to view participant's registration: ", gex);
+                return RedirectToAction("Index");
+            }
+        }
+
+        [Authorize(Policy = Policy.EditParticipants)]
+        [HttpPost]
+        public async Task<IActionResult> RegisterHouseholdMember(HouseholdRegisterViewModel model)
+        {
+            var user = await _userService.GetDetailsByPermission(model.Id);
+            if (!string.IsNullOrWhiteSpace(user.Username))
+            {
+                return RedirectToAction("Household", new { id = model.Id });
+            }
+            if (ModelState.IsValid)
+            {
+                user.Username = model.Username;
+                try
+                {
+                    await _userService.RegisterHouseholdMemberAsync(user, model.Password);
+                    AlertSuccess = "Family/group member registered!";
+                    return RedirectToAction("Household", new { id = model.Id });
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger("Unable to register family/group member: ", gex);
+                }
+            }
+            SetPageTitle(user, "Register Family/Group Member");
+            return View("HouseholdRegister", model);
+        }
+
+        #endregion Household
 
         #region Books
+
+        [Authorize(Policy = Policy.LogActivityForAny)]
+        [HttpPost]
+        public async Task<IActionResult> AddBook(BookListViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var result = await _activityService.AddBookAsync(model.Id, model.Book, true);
+                    if (result.Status == ServiceResultStatus.Warning
+                            && !string.IsNullOrWhiteSpace(result.Message))
+                    {
+                        ShowAlertWarning(result.Message);
+                    }
+                    else if (result.Status == ServiceResultStatus.Success)
+                    {
+                        ShowAlertSuccess($"Added book '{model.Book.Title}'");
+                    }
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertWarning("Unable to add book for participant: ", gex);
+                }
+            }
+            else
+            {
+                ShowAlertDanger("Unable to add book for participant: Missing required fields");
+            }
+
+            int? page = null;
+            if (model.PaginateModel.CurrentPage != 1)
+            {
+                page = model.PaginateModel.CurrentPage;
+            }
+            return RedirectToAction("Books", new { id = model.Id, page });
+        }
+
         [Authorize(Policy = Policy.ViewParticipantDetails)]
         public async Task<IActionResult> Books(int id, string sort, string order, int page = 1)
         {
@@ -1932,43 +2003,6 @@ namespace GRA.Controllers.MissionControl
 
         [Authorize(Policy = Policy.LogActivityForAny)]
         [HttpPost]
-        public async Task<IActionResult> AddBook(BookListViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    var result = await _activityService.AddBookAsync(model.Id, model.Book, true);
-                    if (result.Status == ServiceResultStatus.Warning
-                            && !string.IsNullOrWhiteSpace(result.Message))
-                    {
-                        ShowAlertWarning(result.Message);
-                    }
-                    else if (result.Status == ServiceResultStatus.Success)
-                    {
-                        ShowAlertSuccess($"Added book '{model.Book.Title}'");
-                    }
-                }
-                catch (GraException gex)
-                {
-                    ShowAlertWarning("Unable to add book for participant: ", gex);
-                }
-            }
-            else
-            {
-                ShowAlertDanger("Unable to add book for participant: Missing required fields");
-            }
-
-            int? page = null;
-            if (model.PaginateModel.CurrentPage != 1)
-            {
-                page = model.PaginateModel.CurrentPage;
-            }
-            return RedirectToAction("Books", new { id = model.Id, page });
-        }
-
-        [Authorize(Policy = Policy.LogActivityForAny)]
-        [HttpPost]
         public async Task<IActionResult> EditBook(BookListViewModel model)
         {
             if (ModelState.IsValid)
@@ -2017,9 +2051,28 @@ namespace GRA.Controllers.MissionControl
             }
             return RedirectToAction("Books", new { id = model.Id, page });
         }
-        #endregion
+
+        #endregion Books
 
         #region History
+
+        [Authorize(Policy = Policy.LogActivityForAny)]
+        public async Task<IActionResult> DeleteHistory(string ids, int userId)
+        {
+            try
+            {
+                foreach (int numericId in ids.Split(',').Select(int.Parse))
+                {
+                    await _activityService.RemoveActivityAsync(userId, numericId);
+                }
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Cannot delete history item: ", gex);
+            }
+            return RedirectToAction("History", new { id = userId });
+        }
+
         [Authorize(Policy = Policy.ViewParticipantDetails)]
         public async Task<IActionResult> History(int id, int page = 1)
         {
@@ -2186,25 +2239,10 @@ namespace GRA.Controllers.MissionControl
             }
         }
 
-        [Authorize(Policy = Policy.LogActivityForAny)]
-        public async Task<IActionResult> DeleteHistory(string ids, int userId)
-        {
-            try
-            {
-                foreach (int numericId in ids.Split(',').Select(int.Parse))
-                {
-                    await _activityService.RemoveActivityAsync(userId, numericId);
-                }
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger("Cannot delete history item: ", gex);
-            }
-            return RedirectToAction("History", new { id = userId });
-        }
-        #endregion
+        #endregion History
 
         #region Prizes
+
         [Authorize(Policy = Policy.ViewUserPrizes)]
         public async Task<IActionResult> Prizes(int id, int page = 1)
         {
@@ -2299,9 +2337,11 @@ namespace GRA.Controllers.MissionControl
             }
             return RedirectToAction("Prizes", new { id = userId, page });
         }
-        #endregion
+
+        #endregion Prizes
 
         #region Email Subscription Log
+
         public async Task<IActionResult> EmailSubscriptionLog(int id)
         {
             try
@@ -2346,9 +2386,20 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction("Index");
             }
         }
-        #endregion
+
+        #endregion Email Subscription Log
 
         #region Mail
+
+        [Authorize(Policy = Policy.DeleteAnyMail)]
+        [HttpPost]
+        public async Task<IActionResult> DeleteMail(int id, int userId)
+        {
+            await _mailService.RemoveAsync(id);
+            AlertSuccess = "Mail deleted";
+            return RedirectToAction("Mail", new { id = userId });
+        }
+
         [Authorize(Policy = Policy.ReadAllMail)]
         public async Task<IActionResult> Mail(int id, int page = 1)
         {
@@ -2450,15 +2501,6 @@ namespace GRA.Controllers.MissionControl
             }
         }
 
-        [Authorize(Policy = Policy.DeleteAnyMail)]
-        [HttpPost]
-        public async Task<IActionResult> DeleteMail(int id, int userId)
-        {
-            await _mailService.RemoveAsync(id);
-            AlertSuccess = "Mail deleted";
-            return RedirectToAction("Mail", new { id = userId });
-        }
-
         [Authorize(Policy = Policy.MailParticipants)]
         public async Task<IActionResult> MailSend(int id)
         {
@@ -2503,9 +2545,11 @@ namespace GRA.Controllers.MissionControl
                 return View();
             }
         }
-        #endregion
+
+        #endregion Mail
 
         #region PasswordReset
+
         [Authorize(Policy = Policy.EditParticipants)]
         public async Task<IActionResult> PasswordReset(int id)
         {
@@ -2573,9 +2617,11 @@ namespace GRA.Controllers.MissionControl
             SetPageTitle(user);
             return View(model);
         }
-        #endregion
+
+        #endregion PasswordReset
 
         #region Roles
+
         [Authorize(Policy = Policy.ManageRoles)]
         public async Task<IActionResult> Roles(int id)
         {
@@ -2640,22 +2686,16 @@ namespace GRA.Controllers.MissionControl
             }
             return RedirectToAction(nameof(Roles), new { id = model.Id });
         }
-        #endregion
+
+        #endregion Roles
 
         #region Handle code/dontation selection
+
         [HttpPost]
         [Authorize(Policy = Policy.EditParticipants)]
         public async Task<IActionResult> DonateCode(ParticipantsDetailViewModel viewModel)
         {
             await _vendorCodeService.ResolveCodeStatusAsync(viewModel.User.Id, true, false);
-            return RedirectToAction(viewModel.Action, new { id = viewModel.User.Id });
-        }
-
-        [HttpPost]
-        [Authorize(Policy = Policy.EditParticipants)]
-        public async Task<IActionResult> RedeemCode(ParticipantsDetailViewModel viewModel)
-        {
-            await _vendorCodeService.ResolveCodeStatusAsync(viewModel.User.Id, false, false);
             return RedirectToAction(viewModel.Action, new { id = viewModel.User.Id });
         }
 
@@ -2674,21 +2714,6 @@ namespace GRA.Controllers.MissionControl
                 emailAwardModel.Email);
 
             return RedirectToAction(emailAwardModel.Action, new { id = emailAwardModel.UserId });
-        }
-
-        [HttpPost]
-        [Authorize(Policy = Policy.UnDonateVendorCode)]
-        public async Task<IActionResult> UndonateCode(ParticipantsDetailViewModel viewModel)
-        {
-            try
-            {
-                await _vendorCodeService.ResolveCodeStatusAsync(viewModel.User.Id, null, null);
-            }
-            catch (GraException gex)
-            {
-                AlertWarning = gex.Message;
-            }
-            return RedirectToAction(viewModel.Action, new { id = viewModel.User.Id });
         }
 
         [HttpPost]
@@ -2748,49 +2773,31 @@ namespace GRA.Controllers.MissionControl
 
             return RedirectToAction(nameof(Household), ParticipantsController.Name, new { id });
         }
-        #endregion Handle code/dontation selection
 
-        private void SetPageTitle(User user, string title = "Participant", string username = null)
-        {
-            var name = user.FullName;
-            if (!string.IsNullOrWhiteSpace(username))
-            {
-                name += $" ({username})";
-            }
-            else if (!string.IsNullOrEmpty(user.Username))
-            {
-                name += $" ({user.Username})";
-            }
-            PageTitleHtml = WebUtility.HtmlEncode($"{title} - {name}");
-        }
-
+        [HttpPost]
         [Authorize(Policy = Policy.EditParticipants)]
-        public async Task<IActionResult> UpgradeToGroup(int id)
+        public async Task<IActionResult> RedeemCode(ParticipantsDetailViewModel viewModel)
         {
-            var (useGroups, maximumHousehold) =
-                await GetSiteSettingIntAsync(SiteSettingKey.Users.MaximumHouseholdSizeBeforeGroup);
-
-            if (!useGroups)
-            {
-                return RedirectToAction("Household", new { id });
-            }
-
-            var groupTypes = await _userService.GetGroupTypeListAsync();
-
-            if (!groupTypes.Any())
-            {
-                _logger.LogError($"MC attempt to add family member, need to make a group, no group types configured.");
-                AlertDanger = "In order to add more members to this family it must be converted to a group, however there are no group types configured.";
-                return View("Household", id);
-            }
-
-            return View("UpgradeToGroup", new GroupUpgradeViewModel
-            {
-                Id = id,
-                MaximumHouseholdAllowed = maximumHousehold,
-                GroupTypes = new SelectList(groupTypes.ToList(), "Id", "Name")
-            });
+            await _vendorCodeService.ResolveCodeStatusAsync(viewModel.User.Id, false, false);
+            return RedirectToAction(viewModel.Action, new { id = viewModel.User.Id });
         }
+
+        [HttpPost]
+        [Authorize(Policy = Policy.UnDonateVendorCode)]
+        public async Task<IActionResult> UndonateCode(ParticipantsDetailViewModel viewModel)
+        {
+            try
+            {
+                await _vendorCodeService.ResolveCodeStatusAsync(viewModel.User.Id, null, null);
+            }
+            catch (GraException gex)
+            {
+                AlertWarning = gex.Message;
+            }
+            return RedirectToAction(viewModel.Action, new { id = viewModel.User.Id });
+        }
+
+        #endregion Handle code/dontation selection
 
         [HttpPost]
         [Authorize(Policy = Policy.EditParticipants)]
@@ -2816,49 +2823,6 @@ namespace GRA.Controllers.MissionControl
 
             AlertSuccess = "Group successfully created, now you may add additional members.";
             return RedirectToAction("Household", new { id = viewModel.Id });
-        }
-
-        [HttpGet]
-        [Authorize(Policy = Policy.EditParticipants)]
-        public async Task<IActionResult> UpdateGroup(int id)
-        {
-            var groupInfo = await _userService.GetGroupFromHouseholdHeadAsync(id);
-            if (groupInfo == null)
-            {
-                AlertDanger = "Could not find group to update.";
-                return RedirectToAction("Household", new { id });
-            }
-
-            var groupTypes = await _userService.GetGroupTypeListAsync();
-
-            return View("UpdateGroup", new UpdateGroupViewModel
-            {
-                HouseholdHeadUserId = id,
-                GroupInfo = groupInfo,
-                GroupTypes = new SelectList(groupTypes.ToList(), "Id", "Name")
-            });
-        }
-
-        [HttpPost]
-        [Authorize(Policy = Policy.EditParticipants)]
-        public async Task<IActionResult> UpdateGroup(UpdateGroupViewModel viewModel)
-        {
-            var groupInfo
-                = await _userService.GetGroupFromHouseholdHeadAsync(viewModel.HouseholdHeadUserId);
-
-            if (groupInfo == null)
-            {
-                AlertDanger = "Could not find group to update.";
-                return RedirectToAction("Household", new { id = viewModel.HouseholdHeadUserId });
-            }
-
-            groupInfo.UserId = viewModel.HouseholdHeadUserId;
-            groupInfo.Name = viewModel.GroupInfo.Name;
-            groupInfo.GroupTypeId = viewModel.GroupInfo.GroupTypeId;
-
-            await _userService.UpdateGroup(GetActiveUserId(), groupInfo);
-
-            return RedirectToAction("Household", new { id = viewModel.HouseholdHeadUserId });
         }
 
         public async Task<IActionResult> Groups(string search, int? type, int page = 1)
@@ -2916,6 +2880,49 @@ namespace GRA.Controllers.MissionControl
             return View(viewModel);
         }
 
+        [HttpGet]
+        [Authorize(Policy = Policy.EditParticipants)]
+        public async Task<IActionResult> UpdateGroup(int id)
+        {
+            var groupInfo = await _userService.GetGroupFromHouseholdHeadAsync(id);
+            if (groupInfo == null)
+            {
+                AlertDanger = "Could not find group to update.";
+                return RedirectToAction("Household", new { id });
+            }
+
+            var groupTypes = await _userService.GetGroupTypeListAsync();
+
+            return View("UpdateGroup", new UpdateGroupViewModel
+            {
+                HouseholdHeadUserId = id,
+                GroupInfo = groupInfo,
+                GroupTypes = new SelectList(groupTypes.ToList(), "Id", "Name")
+            });
+        }
+
+        [HttpPost]
+        [Authorize(Policy = Policy.EditParticipants)]
+        public async Task<IActionResult> UpdateGroup(UpdateGroupViewModel viewModel)
+        {
+            var groupInfo
+                = await _userService.GetGroupFromHouseholdHeadAsync(viewModel.HouseholdHeadUserId);
+
+            if (groupInfo == null)
+            {
+                AlertDanger = "Could not find group to update.";
+                return RedirectToAction("Household", new { id = viewModel.HouseholdHeadUserId });
+            }
+
+            groupInfo.UserId = viewModel.HouseholdHeadUserId;
+            groupInfo.Name = viewModel.GroupInfo.Name;
+            groupInfo.GroupTypeId = viewModel.GroupInfo.GroupTypeId;
+
+            await _userService.UpdateGroup(GetActiveUserId(), groupInfo);
+
+            return RedirectToAction("Household", new { id = viewModel.HouseholdHeadUserId });
+        }
+
         [HttpPost]
         [Authorize(Policy = Policy.ViewUserPrizes)]
         public async Task<IActionResult> UpdatePrizes(int id, string returnUrl)
@@ -2936,6 +2943,48 @@ namespace GRA.Controllers.MissionControl
             }
 
             return View("UpdatePrizes", returnUrl);
+        }
+
+        [Authorize(Policy = Policy.EditParticipants)]
+        public async Task<IActionResult> UpgradeToGroup(int id)
+        {
+            var (useGroups, maximumHousehold) =
+                await GetSiteSettingIntAsync(SiteSettingKey.Users.MaximumHouseholdSizeBeforeGroup);
+
+            if (!useGroups)
+            {
+                return RedirectToAction("Household", new { id });
+            }
+
+            var groupTypes = await _userService.GetGroupTypeListAsync();
+
+            if (!groupTypes.Any())
+            {
+                _logger.LogError($"MC attempt to add family member, need to make a group, no group types configured.");
+                AlertDanger = "In order to add more members to this family it must be converted to a group, however there are no group types configured.";
+                return View("Household", id);
+            }
+
+            return View("UpgradeToGroup", new GroupUpgradeViewModel
+            {
+                Id = id,
+                MaximumHouseholdAllowed = maximumHousehold,
+                GroupTypes = new SelectList(groupTypes.ToList(), "Id", "Name")
+            });
+        }
+
+        private void SetPageTitle(User user, string title = "Participant", string username = null)
+        {
+            var name = user.FullName;
+            if (!string.IsNullOrWhiteSpace(username))
+            {
+                name += $" ({username})";
+            }
+            else if (!string.IsNullOrEmpty(user.Username))
+            {
+                name += $" ({user.Username})";
+            }
+            PageTitleHtml = WebUtility.HtmlEncode($"{title} - {name}");
         }
     }
 }
