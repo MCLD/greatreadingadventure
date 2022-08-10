@@ -51,7 +51,8 @@ namespace GRA.Domain.Service
                 }
 
                 if (headerIdRecord.NextStartDate.HasValue
-                    && headerIdRecord.NextStartDate.Value != default)
+                    && headerIdRecord.NextStartDate.Value != default
+                    && headerIdRecord.NextStartDate.Value.Ticks > _dateTimeProvider.Now.Ticks)
                 {
                     expiration = Math.Min(expiration,
                         headerIdRecord.NextStartDate.Value.Ticks);
@@ -59,7 +60,7 @@ namespace GRA.Domain.Service
 
                 await _cache.SaveToCacheAsync(CacheKey.SocialHeader,
                     headerIdRecord.Id,
-                    TimeSpan.FromTicks(expiration));
+                    (new DateTime(expiration) - _dateTimeProvider.Now).Duration());
 
                 headerId = headerIdRecord.Id;
             }
@@ -96,7 +97,7 @@ namespace GRA.Domain.Service
 
                 await _cache.SaveToCacheAsync(cacheKey,
                     JsonSerializer.Serialize(social),
-                    TimeSpan.FromTicks(expiration));
+                    (new DateTime(expiration) - _dateTimeProvider.Now).Duration());
             }
 
             return social;
