@@ -16,6 +16,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Fixed
 
+- Expiration of social card cache
+
 ### Updated
 
 ### Removed
