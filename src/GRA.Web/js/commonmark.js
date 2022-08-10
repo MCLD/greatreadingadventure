@@ -1,4 +1,4 @@
-/* commonmark 0.29 https://github.com/commonmark/commonmark.js @license BSD3 */
+/* commonmark 0.30.0 https://github.com/commonmark/commonmark.js @license BSD3 */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
     typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -7219,7 +7219,6 @@
             return "\uFFFD";
         }
         if (codePoint in decode_json_1.default) {
-            // @ts-ignore
             codePoint = decode_json_1.default[codePoint];
         }
         var output = "";
@@ -7247,6 +7246,7 @@
         return (mod && mod.__esModule) ? mod : { "default": mod };
     };
     Object.defineProperty(exports, "__esModule", { value: true });
+    exports.decodeHTML = exports.decodeHTMLStrict = exports.decodeXML = void 0;
     var entities_json_1 = __importDefault(require$$1);
     var legacy_json_1 = __importDefault(require$$1$1);
     var xml_json_1 = __importDefault(require$$0$1);
@@ -7281,14 +7281,13 @@
             return replace(str);
         }
         //TODO consider creating a merged map
-        return function (str) {
-            return String(str).replace(re, replacer);
-        };
+        return function (str) { return String(str).replace(re, replacer); };
     })();
     function getReplacer(map) {
         return function replace(str) {
             if (str.charAt(1) === "#") {
-                if (str.charAt(2) === "X" || str.charAt(2) === "x") {
+                var secondChar = str.charAt(2);
+                if (secondChar === "X" || secondChar === "x") {
                     return decode_codepoint_1.default(parseInt(str.substr(3), 16));
                 }
                 return decode_codepoint_1.default(parseInt(str.substr(2), 10));
@@ -7299,15 +7298,16 @@
     });
 
     unwrapExports(decode$2);
-    var decode_1 = decode$2.decodeXML;
+    var decode_1 = decode$2.decodeHTML;
     var decode_2 = decode$2.decodeHTMLStrict;
-    var decode_3 = decode$2.decodeHTML;
+    var decode_3 = decode$2.decodeXML;
 
     var encode$1 = createCommonjsModule(function (module, exports) {
     var __importDefault = (commonjsGlobal && commonjsGlobal.__importDefault) || function (mod) {
         return (mod && mod.__esModule) ? mod : { "default": mod };
     };
     Object.defineProperty(exports, "__esModule", { value: true });
+    exports.escape = exports.encodeHTML = exports.encodeXML = void 0;
     var xml_json_1 = __importDefault(require$$0$1);
     var inverseXML = getInverseObj(xml_json_1.default);
     var xmlReplacer = getInverseReplacer(inverseXML);
@@ -7327,38 +7327,44 @@
     function getInverseReplacer(inverse) {
         var single = [];
         var multiple = [];
-        Object.keys(inverse).forEach(function (k) {
-            return k.length === 1
-                ? // Add value to single array
-                    single.push("\\" + k)
-                : // Add value to multiple array
-                    multiple.push(k);
-        });
-        //TODO add ranges
+        for (var _i = 0, _a = Object.keys(inverse); _i < _a.length; _i++) {
+            var k = _a[_i];
+            if (k.length === 1) {
+                // Add value to single array
+                single.push("\\" + k);
+            }
+            else {
+                // Add value to multiple array
+                multiple.push(k);
+            }
+        }
+        // Add ranges to single characters.
+        single.sort();
+        for (var start = 0; start < single.length - 1; start++) {
+            // Find the end of a run of characters
+            var end = start;
+            while (end < single.length - 1 &&
+                single[end].charCodeAt(1) + 1 === single[end + 1].charCodeAt(1)) {
+                end += 1;
+            }
+            var count = 1 + end - start;
+            // We want to replace at least three characters
+            if (count < 3)
+                continue;
+            single.splice(start, count, single[start] + "-" + single[end]);
+        }
         multiple.unshift("[" + single.join("") + "]");
         return new RegExp(multiple.join("|"), "g");
     }
-    var reNonASCII = /[^\0-\x7F]/g;
-    var reAstralSymbols = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
+    var reNonASCII = /(?:[\x80-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])/g;
     function singleCharReplacer(c) {
-        return "&#x" + c
-            .charCodeAt(0)
-            .toString(16)
-            .toUpperCase() + ";";
-    }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
-    function astralReplacer(c, _) {
-        // http://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
-        var high = c.charCodeAt(0);
-        var low = c.charCodeAt(1);
-        var codePoint = (high - 0xd800) * 0x400 + low - 0xdc00 + 0x10000;
-        return "&#x" + codePoint.toString(16).toUpperCase() + ";";
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return "&#x" + c.codePointAt(0).toString(16).toUpperCase() + ";";
     }
     function getInverse(inverse, re) {
         return function (data) {
             return data
                 .replace(re, function (name) { return inverse[name]; })
-                .replace(reAstralSymbols, astralReplacer)
                 .replace(reNonASCII, singleCharReplacer);
         };
     }
@@ -7366,69 +7372,86 @@
     function escape(data) {
         return data
             .replace(reXmlChars, singleCharReplacer)
-            .replace(reAstralSymbols, astralReplacer)
             .replace(reNonASCII, singleCharReplacer);
     }
     exports.escape = escape;
     });
 
     unwrapExports(encode$1);
-    var encode_1$1 = encode$1.encodeXML;
+    var encode_1$1 = encode$1.escape;
     var encode_2 = encode$1.encodeHTML;
-    var encode_3 = encode$1.escape;
+    var encode_3 = encode$1.encodeXML;
 
     var lib = createCommonjsModule(function (module, exports) {
     Object.defineProperty(exports, "__esModule", { value: true });
+    exports.encode = exports.decodeStrict = exports.decode = void 0;
 
 
+    /**
+     * Decodes a string with entities.
+     *
+     * @param data String to decode.
+     * @param level Optional level to decode at. 0 = XML, 1 = HTML. Default is 0.
+     */
     function decode(data, level) {
         return (!level || level <= 0 ? decode$2.decodeXML : decode$2.decodeHTML)(data);
     }
     exports.decode = decode;
+    /**
+     * Decodes a string with entities. Does not allow missing trailing semicolons for entities.
+     *
+     * @param data String to decode.
+     * @param level Optional level to decode at. 0 = XML, 1 = HTML. Default is 0.
+     */
     function decodeStrict(data, level) {
         return (!level || level <= 0 ? decode$2.decodeXML : decode$2.decodeHTMLStrict)(data);
     }
     exports.decodeStrict = decodeStrict;
+    /**
+     * Encodes a string with entities.
+     *
+     * @param data String to encode.
+     * @param level Optional level to encode at. 0 = XML, 1 = HTML. Default is 0.
+     */
     function encode(data, level) {
         return (!level || level <= 0 ? encode$1.encodeXML : encode$1.encodeHTML)(data);
     }
     exports.encode = encode;
     var encode_2 = encode$1;
-    exports.encodeXML = encode_2.encodeXML;
-    exports.encodeHTML = encode_2.encodeHTML;
-    exports.escape = encode_2.escape;
+    Object.defineProperty(exports, "encodeXML", { enumerable: true, get: function () { return encode_2.encodeXML; } });
+    Object.defineProperty(exports, "encodeHTML", { enumerable: true, get: function () { return encode_2.encodeHTML; } });
+    Object.defineProperty(exports, "escape", { enumerable: true, get: function () { return encode_2.escape; } });
     // Legacy aliases
-    exports.encodeHTML4 = encode_2.encodeHTML;
-    exports.encodeHTML5 = encode_2.encodeHTML;
+    Object.defineProperty(exports, "encodeHTML4", { enumerable: true, get: function () { return encode_2.encodeHTML; } });
+    Object.defineProperty(exports, "encodeHTML5", { enumerable: true, get: function () { return encode_2.encodeHTML; } });
     var decode_2 = decode$2;
-    exports.decodeXML = decode_2.decodeXML;
-    exports.decodeHTML = decode_2.decodeHTML;
-    exports.decodeHTMLStrict = decode_2.decodeHTMLStrict;
+    Object.defineProperty(exports, "decodeXML", { enumerable: true, get: function () { return decode_2.decodeXML; } });
+    Object.defineProperty(exports, "decodeHTML", { enumerable: true, get: function () { return decode_2.decodeHTML; } });
+    Object.defineProperty(exports, "decodeHTMLStrict", { enumerable: true, get: function () { return decode_2.decodeHTMLStrict; } });
     // Legacy aliases
-    exports.decodeHTML4 = decode_2.decodeHTML;
-    exports.decodeHTML5 = decode_2.decodeHTML;
-    exports.decodeHTML4Strict = decode_2.decodeHTMLStrict;
-    exports.decodeHTML5Strict = decode_2.decodeHTMLStrict;
-    exports.decodeXMLStrict = decode_2.decodeXML;
+    Object.defineProperty(exports, "decodeHTML4", { enumerable: true, get: function () { return decode_2.decodeHTML; } });
+    Object.defineProperty(exports, "decodeHTML5", { enumerable: true, get: function () { return decode_2.decodeHTML; } });
+    Object.defineProperty(exports, "decodeHTML4Strict", { enumerable: true, get: function () { return decode_2.decodeHTMLStrict; } });
+    Object.defineProperty(exports, "decodeHTML5Strict", { enumerable: true, get: function () { return decode_2.decodeHTMLStrict; } });
+    Object.defineProperty(exports, "decodeXMLStrict", { enumerable: true, get: function () { return decode_2.decodeXML; } });
     });
 
     unwrapExports(lib);
-    var lib_1 = lib.decode;
+    var lib_1 = lib.encode;
     var lib_2 = lib.decodeStrict;
-    var lib_3 = lib.encode;
+    var lib_3 = lib.decode;
     var lib_4 = lib.encodeXML;
     var lib_5 = lib.encodeHTML;
-    var lib_6 = lib.escape;
-    var lib_7 = lib.encodeHTML4;
-    var lib_8 = lib.encodeHTML5;
-    var lib_9 = lib.decodeXML;
-    var lib_10 = lib.decodeHTML;
-    var lib_11 = lib.decodeHTMLStrict;
-    var lib_12 = lib.decodeHTML4;
-    var lib_13 = lib.decodeHTML5;
-    var lib_14 = lib.decodeHTML4Strict;
-    var lib_15 = lib.decodeHTML5Strict;
-    var lib_16 = lib.decodeXMLStrict;
+    var lib_6 = lib.encodeHTML4;
+    var lib_7 = lib.encodeHTML5;
+    var lib_8 = lib.decodeXML;
+    var lib_9 = lib.decodeHTML;
+    var lib_10 = lib.decodeHTMLStrict;
+    var lib_11 = lib.decodeHTML4;
+    var lib_12 = lib.decodeHTML5;
+    var lib_13 = lib.decodeHTML4Strict;
+    var lib_14 = lib.decodeHTML5Strict;
+    var lib_15 = lib.decodeXMLStrict;
 
     var C_BACKSLASH = 92;
 
@@ -7485,7 +7508,7 @@
         if (s.charCodeAt(0) === C_BACKSLASH) {
             return s.charAt(1);
         } else {
-            return lib_10(s);
+            return lib_9(s);
         }
     };
 
@@ -7673,7 +7696,7 @@
     var reHtmlTag$1 = reHtmlTag;
 
     var rePunctuation = new RegExp(
-        /[!"#$%&'()*+,\-./:;<=>?@\[\]\\^_`{|}~\xA1\xA7\xAB\xB6\xB7\xBB\xBF\u037E\u0387\u055A-\u055F\u0589\u058A\u05BE\u05C0\u05C3\u05C6\u05F3\u05F4\u0609\u060A\u060C\u060D\u061B\u061E\u061F\u066A-\u066D\u06D4\u0700-\u070D\u07F7-\u07F9\u0830-\u083E\u085E\u0964\u0965\u0970\u0AF0\u0DF4\u0E4F\u0E5A\u0E5B\u0F04-\u0F12\u0F14\u0F3A-\u0F3D\u0F85\u0FD0-\u0FD4\u0FD9\u0FDA\u104A-\u104F\u10FB\u1360-\u1368\u1400\u166D\u166E\u169B\u169C\u16EB-\u16ED\u1735\u1736\u17D4-\u17D6\u17D8-\u17DA\u1800-\u180A\u1944\u1945\u1A1E\u1A1F\u1AA0-\u1AA6\u1AA8-\u1AAD\u1B5A-\u1B60\u1BFC-\u1BFF\u1C3B-\u1C3F\u1C7E\u1C7F\u1CC0-\u1CC7\u1CD3\u2010-\u2027\u2030-\u2043\u2045-\u2051\u2053-\u205E\u207D\u207E\u208D\u208E\u2308-\u230B\u2329\u232A\u2768-\u2775\u27C5\u27C6\u27E6-\u27EF\u2983-\u2998\u29D8-\u29DB\u29FC\u29FD\u2CF9-\u2CFC\u2CFE\u2CFF\u2D70\u2E00-\u2E2E\u2E30-\u2E42\u3001-\u3003\u3008-\u3011\u3014-\u301F\u3030\u303D\u30A0\u30FB\uA4FE\uA4FF\uA60D-\uA60F\uA673\uA67E\uA6F2-\uA6F7\uA874-\uA877\uA8CE\uA8CF\uA8F8-\uA8FA\uA8FC\uA92E\uA92F\uA95F\uA9C1-\uA9CD\uA9DE\uA9DF\uAA5C-\uAA5F\uAADE\uAADF\uAAF0\uAAF1\uABEB\uFD3E\uFD3F\uFE10-\uFE19\uFE30-\uFE52\uFE54-\uFE61\uFE63\uFE68\uFE6A\uFE6B\uFF01-\uFF03\uFF05-\uFF0A\uFF0C-\uFF0F\uFF1A\uFF1B\uFF1F\uFF20\uFF3B-\uFF3D\uFF3F\uFF5B\uFF5D\uFF5F-\uFF65]|\uD800[\uDD00-\uDD02\uDF9F\uDFD0]|\uD801\uDD6F|\uD802[\uDC57\uDD1F\uDD3F\uDE50-\uDE58\uDE7F\uDEF0-\uDEF6\uDF39-\uDF3F\uDF99-\uDF9C]|\uD804[\uDC47-\uDC4D\uDCBB\uDCBC\uDCBE-\uDCC1\uDD40-\uDD43\uDD74\uDD75\uDDC5-\uDDC9\uDDCD\uDDDB\uDDDD-\uDDDF\uDE38-\uDE3D\uDEA9]|\uD805[\uDCC6\uDDC1-\uDDD7\uDE41-\uDE43\uDF3C-\uDF3E]|\uD809[\uDC70-\uDC74]|\uD81A[\uDE6E\uDE6F\uDEF5\uDF37-\uDF3B\uDF44]|\uD82F\uDC9F|\uD836[\uDE87-\uDE8B]/
+        /^[!"#$%&'()*+,\-./:;<=>?@\[\]\\^_`{|}~\xA1\xA7\xAB\xB6\xB7\xBB\xBF\u037E\u0387\u055A-\u055F\u0589\u058A\u05BE\u05C0\u05C3\u05C6\u05F3\u05F4\u0609\u060A\u060C\u060D\u061B\u061E\u061F\u066A-\u066D\u06D4\u0700-\u070D\u07F7-\u07F9\u0830-\u083E\u085E\u0964\u0965\u0970\u0AF0\u0DF4\u0E4F\u0E5A\u0E5B\u0F04-\u0F12\u0F14\u0F3A-\u0F3D\u0F85\u0FD0-\u0FD4\u0FD9\u0FDA\u104A-\u104F\u10FB\u1360-\u1368\u1400\u166D\u166E\u169B\u169C\u16EB-\u16ED\u1735\u1736\u17D4-\u17D6\u17D8-\u17DA\u1800-\u180A\u1944\u1945\u1A1E\u1A1F\u1AA0-\u1AA6\u1AA8-\u1AAD\u1B5A-\u1B60\u1BFC-\u1BFF\u1C3B-\u1C3F\u1C7E\u1C7F\u1CC0-\u1CC7\u1CD3\u2010-\u2027\u2030-\u2043\u2045-\u2051\u2053-\u205E\u207D\u207E\u208D\u208E\u2308-\u230B\u2329\u232A\u2768-\u2775\u27C5\u27C6\u27E6-\u27EF\u2983-\u2998\u29D8-\u29DB\u29FC\u29FD\u2CF9-\u2CFC\u2CFE\u2CFF\u2D70\u2E00-\u2E2E\u2E30-\u2E42\u3001-\u3003\u3008-\u3011\u3014-\u301F\u3030\u303D\u30A0\u30FB\uA4FE\uA4FF\uA60D-\uA60F\uA673\uA67E\uA6F2-\uA6F7\uA874-\uA877\uA8CE\uA8CF\uA8F8-\uA8FA\uA8FC\uA92E\uA92F\uA95F\uA9C1-\uA9CD\uA9DE\uA9DF\uAA5C-\uAA5F\uAADE\uAADF\uAAF0\uAAF1\uABEB\uFD3E\uFD3F\uFE10-\uFE19\uFE30-\uFE52\uFE54-\uFE61\uFE63\uFE68\uFE6A\uFE6B\uFF01-\uFF03\uFF05-\uFF0A\uFF0C-\uFF0F\uFF1A\uFF1B\uFF1F\uFF20\uFF3B-\uFF3D\uFF3F\uFF5B\uFF5D\uFF5F-\uFF65]|\uD800[\uDD00-\uDD02\uDF9F\uDFD0]|\uD801\uDD6F|\uD802[\uDC57\uDD1F\uDD3F\uDE50-\uDE58\uDE7F\uDEF0-\uDEF6\uDF39-\uDF3F\uDF99-\uDF9C]|\uD804[\uDC47-\uDC4D\uDCBB\uDCBC\uDCBE-\uDCC1\uDD40-\uDD43\uDD74\uDD75\uDDC5-\uDDC9\uDDCD\uDDDB\uDDDD-\uDDDF\uDE38-\uDE3D\uDEA9]|\uD805[\uDCC6\uDDC1-\uDDD7\uDE41-\uDE43\uDF3C-\uDF3E]|\uD809[\uDC70-\uDC74]|\uD81A[\uDE6E\uDE6F\uDEF5\uDF37-\uDF3B\uDF44]|\uD82F\uDC9F|\uD836[\uDE87-\uDE8B]/
     );
 
     var reLinkTitle = new RegExp(
@@ -7720,7 +7743,7 @@
 
     var reSpaceAtEndOfLine = /^ *(?:\n|$)/;
 
-    var reLinkLabel = /^\[(?:[^\\\[\]]|\\.){0,1000}\]/;
+    var reLinkLabel = /^\[(?:[^\\\[\]]|\\.){0,1000}\]/s;
 
     // Matches a string of non-special characters.
     var reMain = /^[^\n`\[\]\\!<&*_'"]+/m;
@@ -8012,14 +8035,12 @@
         var use_delims;
         var tmp, next;
         var opener_found;
-        var openers_bottom = [[], [], []];
+        var openers_bottom = [];
+        var openers_bottom_index;
         var odd_match = false;
 
-        for (var i = 0; i < 3; i++) {
-            openers_bottom[i][C_UNDERSCORE] = stack_bottom;
-            openers_bottom[i][C_ASTERISK] = stack_bottom;
-            openers_bottom[i][C_SINGLEQUOTE] = stack_bottom;
-            openers_bottom[i][C_DOUBLEQUOTE] = stack_bottom;
+        for (var i = 0; i < 8; i++) {
+            openers_bottom[i] = stack_bottom;
         }
         // find first closer above stack_bottom:
         closer = this.delimiters;
@@ -8035,10 +8056,25 @@
                 // found emphasis closer. now look back for first matching opener:
                 opener = closer.previous;
                 opener_found = false;
+                switch (closercc) {
+                   case C_SINGLEQUOTE:
+                     openers_bottom_index = 0;
+                     break;
+                   case C_DOUBLEQUOTE:
+                     openers_bottom_index = 1;
+                     break;
+                   case C_UNDERSCORE:
+                     openers_bottom_index = 2;
+                     break;
+                   case C_ASTERISK:
+                     openers_bottom_index = 3 + (closer.can_open ? 3 : 0)
+                                              + (closer.origdelims % 3);
+                     break;
+                }
                 while (
                     opener !== null &&
                     opener !== stack_bottom &&
-                    opener !== openers_bottom[closer.origdelims % 3][closercc]
+                    opener !== openers_bottom[openers_bottom_index]
                 ) {
                     odd_match =
                         (closer.can_open || opener.can_close) &&
@@ -8119,7 +8155,7 @@
                 }
                 if (!opener_found) {
                     // Set lower bound for future searches for openers:
-                    openers_bottom[old_closer.origdelims % 3][closercc] =
+                    openers_bottom[openers_bottom_index] =
                         old_closer.previous;
                     if (!old_closer.can_open) {
                         // We can remove a closer that can't be an opener,
@@ -8393,7 +8429,7 @@
     var parseEntity = function(block) {
         var m;
         if ((m = this.match(reEntityHere))) {
-            block.appendChild(text(lib_10(m)));
+            block.appendChild(text(lib_9(m)));
             return true;
         } else {
             return false;
@@ -8678,7 +8714,7 @@
         /\]\]>/
     ];
 
-    var reThematicBreak = /^(?:(?:\*[ \t]*){3,}|(?:_[ \t]*){3,}|(?:-[ \t]*){3,})[ \t]*$/;
+    var reThematicBreak = /^(?:\*[ \t]*){3,}$|^(?:_[ \t]*){3,}$|^(?:-[ \t]*){3,}$/;
 
     var reMaybeSpecial = /^[#`~*+_=<>0-9-]/;
 
@@ -8794,7 +8830,7 @@
             data.bulletChar = match[0][0];
         } else if (
             (match = rest.match(reOrderedListMarker)) &&
-            (container.type !== "paragraph" || match[1] === "1")
+            (container.type !== "paragraph" || match[1] == 1)
         ) {
             data.type = "ordered";
             data.start = parseInt(match[1]);
@@ -9193,7 +9229,10 @@
                 for (blockType = 1; blockType <= 7; blockType++) {
                     if (
                         reHtmlBlockOpen[blockType].test(s) &&
-                        (blockType < 7 || container.type !== "paragraph")
+                        (blockType < 7 || (container.type !== "paragraph" &&
+                         !(!parser.allClosed && !parser.blank &&
+                           parser.tip.type === "paragraph") // maybe lazy
+                        ))
                     ) {
                         parser.closeUnmatchedBlocks();
                         // We don't adjust parser.offset;
@@ -9755,6 +9794,9 @@
         options.softbreak = options.softbreak || "\n";
         // set to "<br />" to make them hard breaks
         // set to " " if you want to ignore line wrapping in source
+        this.esc = options.esc || escapeXml;
+        // escape html with a custom function
+        // else use escapeXml
 
         this.disableTags = 0;
         this.lastOut = "\n";
@@ -10024,6 +10066,10 @@
 
         this.indentLevel = 0;
         this.indent = "  ";
+        
+        this.esc = options.esc || escapeXml;
+        // escape html with a custom function
+        // else use escapeXml
 
         this.options = options;
     }
