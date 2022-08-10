@@ -57,12 +57,12 @@ The GRA is configured to accept invoice updates. The format for reporting order 
 an Excel `.xls` file. There can be as many columns as needed in the spreadsheet, the software looks
 for the following:
 
-- "Coupon" (required) - used to map to a participant (this is referred to as "code" above,
+- "Free Book Code" (required) - used to map to a participant (this is referred to as "code" above,
   e.g. `X123X-456YY-ZZ789`)
 - "Branch Id" (optional) - the branch ID in the GRA software that the shipment is associated with
-- "Order Date" (optional) - the date that the outside item was placed in an "ordered" status
+- "Creation Date" (optional) - the date that the outside item was placed in an "ordered" status
 - "Ship Date" (optional) - the date that the outside item was placed in a "shipped" status
-- "Details" (optional) - details about the item that was selected
+- "Title" (optional) - details about the item that was selected
 - "Pickpack Number" (optional) - a packing slip number for the shipment of the item
 - "UPS Tracking Number" (optional) - comma-separated tracking numbers with a shipper
 

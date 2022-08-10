@@ -23,8 +23,6 @@ namespace GRA.Domain.Model
 
         public bool CanEmailAwardVendorCode { get; set; }
 
-        public bool IsDonationLocked { get; set; }
-
         [MaxLength(64)]
         public string CardNumber { get; set; }
 
@@ -42,7 +40,6 @@ namespace GRA.Domain.Model
         public string Email { get; set; }
 
         public bool? EmailAwarded { get; set; }
-
         public string EmailAwardInstructions { get; set; }
 
         [DisplayName(DisplayNames.FirstName)]
@@ -61,19 +58,13 @@ namespace GRA.Domain.Model
         }
 
         public bool HasNewMail { get; set; }
-
         public bool HasPendingQuestionnaire { get; set; }
-
         public bool HasUnclaimedPrize { get; set; }
-
         public int? HouseholdHeadUserId { get; set; }
-
         public bool IsActive { get; set; }
-
         public bool IsAdmin { get; set; }
-
         public bool IsDeleted { get; set; }
-
+        public bool IsDonationLocked { get; set; }
         public bool IsEmailSubscribed { get; set; }
 
         [DisplayName(DisplayNames.IsFirstTime)]
@@ -147,6 +138,8 @@ namespace GRA.Domain.Model
         public string VendorCodeMessage { get; set; }
         public long VendorCodePackingSlip { get; set; }
         public string VendorCodeUrl { get; set; }
+        public bool VendorIsDamaged { get; set; }
+        public bool VendorIsMissing { get; set; }
         public VendorOrderStatus? VendorOrderStatus { get; set; }
     }
 }

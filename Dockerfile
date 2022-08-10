@@ -1,5 +1,5 @@
 # Get build image
-FROM mcr.microsoft.com/dotnet/sdk:6.0@sha256:b48b7c00643738c5988aba448369c7f8840a55eaf6a9df925d8b93c9a1c0291a AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0@sha256:eb947797a0488185203bf2d6cdab701da00493594124d96f883fdd63f85980ca AS build
 
 WORKDIR /app
 
@@ -27,13 +27,13 @@ RUN dotnet publish -c Release -o "/app/publish/"
 RUN cp /app/release-publish.bash "/app/publish/"
 
 # Get runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:6.0@sha256:d8b274c1ac356a3bbea84204d20e99046ce5eae20cfa7fbcf703e5aa034cb36b AS publish
+FROM mcr.microsoft.com/dotnet/aspnet:6.0@sha256:bbb3b49148f269fcd9ee5435360575440bcadbe6b86c182ae9478c80c5bc08a5 AS publish
 
 WORKDIR /app
 
 # Install curl for health monitoring
 RUN apt-get update \
-	&& apt-get install --no-install-recommends -y curl=7.74.0-1.3+deb11u1 \
+	&& apt-get install --no-install-recommends -y curl=7.74.0-1.3+deb11u2 \
 	&& rm -rf /var/lib/apt/lists/*
 
 # Bring in metadata via --build-arg to publish

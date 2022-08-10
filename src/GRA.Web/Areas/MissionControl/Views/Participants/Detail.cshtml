@@ -108,7 +108,8 @@
             <div id="schoolFields" class="@(Model.ShowSchool ? "": "hide")">
                 @if (Model.CanEditDetails)
                 {
-                    @await Html.PartialAsync("_SchoolSelectionPartial", Model);
+                    @await Html.PartialAsync("_SchoolSelectionPartial", Model)
+                    ;
                 }
                 else if (Model.ShowSchool)
                 {
@@ -160,24 +161,24 @@
             @if (!string.IsNullOrWhiteSpace(Model.User.VendorCode) || Model.User.NeedsToAnswerVendorCodeQuestion)
             {
                 <div class="row row-spacing">
-                    <div class="col-xs-12" >
-                        <div style="padding: 1rem; margin-top: 1rem; font-size: 1.5rem; border-radius: 0.5rem; border: 1px solid grey;">
+                    <div class="col-xs-12">
+                        <div class="alert alert-info">
                             <strong>Free Book Code:</strong>
                             @if (Model.User.NeedsToAnswerVendorCodeQuestion)
                             {
                                 <button class="btn btn-info btn-spinner"
-                                        asp-action="RedeemCode"
-                                        asp-is-disabled="@(!Model.CanEditDetails)"
-                                        button-spinner>
+                                asp-action="RedeemCode"
+                                asp-is-disabled="@(!Model.CanEditDetails)"
+                                button-spinner>
                                     <span class="buttonText">Redeem code</span>
                                 </button>
                                 @if (Model.User.CanDonateVendorCode)
                                 {
                                     @:or
                                     <button class="btn btn-success btn-spinner"
-                                            asp-action="DonateCode"
-                                            asp-is-disabled="@(!Model.CanEditDetails)"
-                                            button-spinner>
+                                asp-action="DonateCode"
+                                asp-is-disabled="@(!Model.CanEditDetails)"
+                                button-spinner>
                                         <span class="buttonText">Donate book</span>
                                     </button>
                                 }
@@ -185,8 +186,8 @@
                                 {
                                     @:or
                                     <button id="emailAwardButton"
-                                            class="btn btn-warning"
-                                            asp-is-disabled="@(!Model.CanEditDetails)">
+                                class="btn btn-warning"
+                                asp-is-disabled="@(!Model.CanEditDetails)">
                                         <span class="buttonText">Email e-audiobook</span>
                                     </button>
                                 }
@@ -197,7 +198,7 @@
                                 {
                                     <strong>
                                         <a href="@Model.User.VendorCodeUrl"
-                                           target="_blank">@Model.User.VendorCode</a>
+                               target="_blank">@Model.User.VendorCode</a>
                                     </strong>
                                 }
                                 else
@@ -205,22 +206,22 @@
                                     <strong>@Model.User.VendorCode</strong>
                                 }
                                 if (Model.User.Donated == true
-                                    && User.HasClaim(ClaimType.Permission,
-                                        Permission.UnDonateVendorCode.ToString()))
+                                && User.HasClaim(ClaimType.Permission,
+                                Permission.UnDonateVendorCode.ToString()))
                                 {
                                     if (Model.User.IsDonationLocked)
                                     {
                                         <button class="btn btn-default disabled"
-                                            asp-is-disabled="true">
+                                asp-is-disabled="true">
                                             <span class="buttonText">Donated through vendor</span>
                                         </button>
                                     }
                                     else
                                     {
                                         <button class="btn btn-info btn-spinner"
-                                            asp-action="@nameof(ParticipantsController.UndonateCode)"
-                                            asp-is-disabled="@(!Model.CanEditDetails)"
-                                            button-spinner>
+                                asp-action="@nameof(ParticipantsController.UndonateCode)"
+                                asp-is-disabled="@(!Model.CanEditDetails)"
+                                button-spinner>
                                             <span class="buttonText">Un-donate</span>
                                         </button>
                                     }
@@ -230,6 +231,18 @@
                             {
                                 @:/
                                 @Html.Raw(Model.User.VendorCodeMessage)
+                            }
+                            @if (Model.User.VendorIsDamaged || Model.User.VendorIsMissing)
+                            {
+                                @if (Model.User.VendorIsDamaged)
+                                {
+                                    @:/ Item is damaged
+                                }
+                                @if (Model.User.VendorIsMissing)
+                                {
+                                    @:/ Item is missing
+                                }
+                                @:<button class="btn btn-sm btn-warning" type="button" data-toggle="modal" data-target="#missingDamaged">Update status</button>
                             }
                         </div>
                     </div>
@@ -255,63 +268,97 @@
             <input asp-for="User.AchievedAt" type="hidden" />
 
             <button type="submit"
-                    asp-action="Detail"
-                    id="Submit"
-                    name="Submit"
-                    value="Submit"
-                    class="btn btn-primary btn-spinner"
-                    button-spinner>
+                asp-action="Detail"
+                id="Submit"
+                name="Submit"
+                value="Submit"
+                class="btn btn-primary btn-spinner"
+                button-spinner>
                 <span class="buttonText">Save Changes</span>
             </button>
         }
     </div>
 </form>
 
+@if (Model.User.VendorIsDamaged || Model.User.VendorIsMissing)
+{
+    <div class="modal fade" tabindex="-1" role="dialog" id="missingDamaged">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Update Free Book Code status</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Book code <strong>@Model.User.VendorCode</strong> associated with this participant is marked:
+                        @(Model.User.VendorIsDamaged ? "damaged" : null)
+                        @(Model.User.VendorIsDamaged && Model.User.VendorIsMissing ? " & " : null)
+                        @(Model.User.VendorIsMissing ? "missing" : null)
+                    </p>
+                    Change that status by clicking below which will email the participant that their item is ready.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <form asp-action="@nameof(ParticipantsController.MarkVendorItemAsReceived)"
+                        style="display: inline;">
+                        <input type="hidden" name="id" value="@Model.User.Id">
+                        <input type="hidden" name="vendorCode" value="@Model.User.VendorCode">
+                        <button class="btn btn-warning">Not damaged or missing</button>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <!-- /.modal -->
+}
+
 @if (Model.CanEditDetails && Model.User.NeedsToAnswerVendorCodeQuestion && Model.User.CanEmailAwardVendorCode)
 {
     <div class="row">
         <div class="modal fade"
-             id="emailAwardModal"
-             tabindex="-1"
-             role="dialog"
-             aria-labelledby="emailAwardLabel">
+         id="emailAwardModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="emailAwardLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <form asp-action="@nameof(ParticipantsController.EmailAward)"
-                          method="post"
-                          role="form"
-                          style="display:inline">
+                      method="post"
+                      role="form"
+                      style="display:inline">
                         <input asp-for="EmailAwardModel.UserId"
-                               value="@Model.User.Id"
-                               type="hidden" />
+                           value="@Model.User.Id"
+                           type="hidden" />
                         <input asp-for="EmailAwardModel.Action"
-                               value="@nameof(ParticipantsController.Detail)"
-                               type="hidden" />
+                           value="@nameof(ParticipantsController.Detail)"
+                           type="hidden" />
                         <div class="modal-body">
                             <p>@Html.Raw(Model.User.EmailAwardInstructions)</p>
                             <div class="row row-spacing">
                                 <div class="col-xs-12">
                                     <label asp-for="EmailAwardModel.Email"
-                                           class="control-label"></label>
+                                       class="control-label"></label>
                                     <input asp-for="EmailAwardModel.Email"
-                                           class="form-control"
-                                           value="@Model.User.Email" />
+                                       class="form-control"
+                                       value="@Model.User.Email" />
                                     <span asp-validation-for="EmailAwardModel.Email"
-                                          class="text-danger"></span>
+                                      class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button"
-                                    class="btn btn-default"
-                                    data-dismiss="modal"
-                                    style="margin-right: 1em;">
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
                                 @GRA.Annotations.Interface.Cancel
                             </button>
                             <button type="submit"
-                                    class="btn btn-warning btn-spinner pull-right"
-                                    aria-label="Confirm"
-                                    button-spinner>
+                                class="btn btn-warning btn-spinner pull-right"
+                                aria-label="Confirm"
+                                button-spinner>
                                 @GRA.Annotations.Interface.Confirm
                             </button>
                         </div>
@@ -326,13 +373,13 @@
     <script>
         @if (!Model.CanEditDetails)
         {
-        <text>
-        $("input").prop('readonly', true);
-        $("select").prop('disabled', true);
-        </text>
+            <text>
+                $("input").prop('readonly', true);
+            $("select").prop('disabled', true);
+            </text>
         }
 
-        var programs = JSON.parse('@Html.Raw(Model.ProgramJson)');
+                                                                var programs = JSON.parse('@Html.Raw(Model.ProgramJson)');
         var selectedProgram = $.grep(programs, function(obj) {
             return obj.Id == $("#User_ProgramId").val();
         })[0];
@@ -345,8 +392,7 @@
 
             $.getJSON(url, { systemId: systemId, branchId: branchId }, function(response) {
                 branchList.empty();
-                if (response.length > 1)
-                {
+                if (response.length > 1) {
                     branchList.append(new Option("", "-1"));
                 }
                 $.each(response, function(index, item) {
@@ -360,24 +406,19 @@
             selectedProgram = $.grep(programs, function(obj) {
                 return obj.Id == programId;
             })[0];
-            if (selectedProgram != null)
-            {
-                if (selectedProgram.AskAge)
-                {
+            if (selectedProgram != null) {
+                if (selectedProgram.AskAge) {
                     $("#ageField").removeClass("hide");
                     validateAge();
                 }
-                else
-                {
+                else {
                     $("#ageField").addClass("hide");
                 }
 
-                if (selectedProgram.AskSchool)
-                {
+                if (selectedProgram.AskSchool) {
                     $("#schoolFields").removeClass("hide");
                 }
-                else
-                {
+                else {
                     $("#schoolFields").addClass("hide");
                 }
             }
@@ -391,83 +432,82 @@
             var age = $("#User_Age").val();
             var message = $("#ageMessage");
             if (age != "" && ((age > selectedProgram.AgeMaximum && selectedProgram.AgeMaximum != null)
-                || (age < selectedProgram.AgeMinimum && selectedProgram.AgeMinimum != null)))
-            {
+                || (age < selectedProgram.AgeMinimum && selectedProgram.AgeMinimum != null))) {
                 var program = $.grep(programs, function(obj) {
                     return ((obj.AgeMaximum >= age || obj.AgeMaximum == null)
-                            && (obj.AgeMinimum <= age || obj.AgeMinimum == null));
+                        && (obj.AgeMinimum <= age || obj.AgeMinimum == null));
                 })[0];
-                if (program != null)
-                {
+                if (program != null) {
                     message.removeClass('field-validation-valid field-validation-error text-danger');
                     message.addClass('text-primary');
                     $("#User_Age").removeClass("input-validation-error")
                     message.text("The program " + program.Name + " may be better suited for your age.")
                 }
             }
-            else
-            {
+            else {
                 message.text("");
             }
         }
 
-        @if (Model.CanEditUsername) {
-        <text>
-        $("#User_Username").on("blur", function () {
-            $(this).val($(this).val().trim());
-            var username = $(this).val();
-            if (username != "" && !$(this).hasClass("input-validation-error")) {
-                if (username != "@Html.Raw(Model.Username)") {
-                    var usernameCheckUrl = "@Url.Action("UsernameInUse", "Lookup", new { Area = string.Empty })";
-                    var icon = $("#Username-Icon");
-                    icon.removeClass("hide fa-times fa-check");
-                    icon.addClass("fa-spinner fa-spin");
-                    $.post(usernameCheckUrl, { username: username }, function (response) {
-                        if (response) {
-                            $("#User_Username").removeClass("valid");
-                            $("#User_Username").addClass("input-validation-error");
-                            $("#Username-Validation").removeClass("field-validation-valid");
-                            $("#Username-Validation").addClass("field-validation-error");
-                            $("#Username-Validation").text("@GRA.Annotations.Validate.UsernameTaken");
-                            icon.removeClass("fa-spinner fa-spin");
-                            icon.addClass("fa-times");
+        @if (Model.CanEditUsername)
+        {
+            <text>
+                $("#User_Username").on("blur", function() {
+                    $(this).val($(this).val().trim());
+                    var username = $(this).val();
+                    if (username != "" && !$(this).hasClass("input-validation-error")) {
+                        if (username != "@Html.Raw(Model.Username)") {
+                            var usernameCheckUrl = "@Url.Action("UsernameInUse", "Lookup", new { Area = string.Empty })";
+                            var icon = $("#Username-Icon");
+                            icon.removeClass("hide fa-times fa-check");
+                            icon.addClass("fa-spinner fa-spin");
+                            $.post(usernameCheckUrl, { username: username }, function(response) {
+                                if (response) {
+                                    $("#User_Username").removeClass("valid");
+                                    $("#User_Username").addClass("input-validation-error");
+                                    $("#Username-Validation").removeClass("field-validation-valid");
+                                    $("#Username-Validation").addClass("field-validation-error");
+                                    $("#Username-Validation").text("@GRA.Annotations.Validate.UsernameTaken");
+                                    icon.removeClass("fa-spinner fa-spin");
+                                    icon.addClass("fa-times");
+                                }
+                                else {
+                                    $("#Username-Validation").removeClass("field-validation-valid");
+                                    $("#Username-Validation").text("The chosen username is available.");
+                                    icon.removeClass("fa-spinner fa-spin");
+                                    icon.addClass("fa-check");
+                                }
+                            });
                         }
                         else {
+                            $("#Username-Icon").removeClass("hide fa-times").addClass("fa-check");
                             $("#Username-Validation").removeClass("field-validation-valid");
-                            $("#Username-Validation").text("The chosen username is available.");
-                            icon.removeClass("fa-spinner fa-spin");
-                            icon.addClass("fa-check");
+                            $("#Username-Validation").text("No change to username.");
+
                         }
-                    });
-                }
-                else {
-                    $("#Username-Icon").removeClass("hide fa-times").addClass("fa-check");
-                    $("#Username-Validation").removeClass("field-validation-valid");
-                    $("#Username-Validation").text("No change to username.");
+                    }
+                });
 
-                }
-            }
-        });
-
-        $("#User_Username").on("keypress", function () {
-            $("#Username-Icon").addClass("hide");
-        });
-        </text>
+            $("#User_Username").on("keypress", function() {
+                $("#Username-Icon").addClass("hide");
+            });
+            </text>
         }
 
         @if (Model.User.NeedsToAnswerVendorCodeQuestion && Model.User.CanEmailAwardVendorCode
-            && Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.EditParticipants.ToString()))
+       && Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.EditParticipants.ToString()))
         {
-        <text>
-            $("#emailAwardButton").on("click", function (event) {
-                event.preventDefault();
-                $("#emailAwardModal").modal();
-            });
-        </text>
+            <text>
+                $("#emailAwardButton").on("click", function(event) {
+                    event.preventDefault();
+                    $("#emailAwardModal").modal();
+                });
+            </text>
         }
     </script>
     @if (Model.CanEditDetails)
     {
-        @await Html.PartialAsync("_SchoolSelectionScripts", Model);
+        @await Html.PartialAsync("_SchoolSelectionScripts", Model)
+        ;
     }
 }
