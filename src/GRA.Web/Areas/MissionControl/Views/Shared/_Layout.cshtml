@@ -10,9 +10,9 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml" sizes="any">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="manifest" href="/manifest.webmanifest">
-    <link rel="stylesheet" href="~/css/jquery-ui.min.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/main.min.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/missioncontrol.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="/css/jquery-ui.min.css" />
+    <link rel="stylesheet" href="/css/main.min.css" />
+    <link rel="stylesheet" href="/css/missioncontrol.min.css" />
     @RenderSection("styles", required: false)
     @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.SiteCss))
     {
@@ -293,8 +293,8 @@
             <grasite property="footer"></grasite>
         </footer>
     </div>
-    <script src="~/js/main.min.js" asp-append-version="true"></script>
-    <script src="~/js/jquery-ui.min.js" asp-append-version="true"></script>
+    <script src="/js/main.min.js"></script>
+    <script src="/js/jquery-ui.min.js"></script>
     @RenderSection("scripts", required: false)
     <script>
         $(function () {

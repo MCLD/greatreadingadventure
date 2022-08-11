@@ -28,7 +28,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="bundleconfig.json" />
+    <Content Remove="bundleconfig-disable.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,6 +41,13 @@
     <ContentWithTargetPath Include="assets\**\*" TargetPath="assets\%(RecursiveDir)%(FileName)%(Extension)">
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
     </ContentWithTargetPath>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\js\**" />
+    <Content Remove="wwwroot\js\**" />
+    <EmbeddedResource Remove="wwwroot\js\**" />
+    <None Remove="wwwroot\js\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -63,7 +70,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-    <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
+    <PackageReference Include="LigerShark.WebOptimizer.Core" Version="3.0.368" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="6.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.8" />
     <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="6.0.8" />
@@ -92,7 +99,6 @@
   </Target>
 
   <ItemGroup>
-    <None Include="bundleconfig.json" />
     <None Include="wwwroot\192.png" />
     <None Include="wwwroot\512.png" />
     <None Include="wwwroot\apple-touch-icon.png" />

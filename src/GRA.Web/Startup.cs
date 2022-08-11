@@ -141,6 +141,8 @@ namespace GRA.Web
 
             app.UseResponseCompression();
 
+            app.UseWebOptimizer();
+
             // configure static files with 7 day cache
             app.UseStaticFiles(new StaticFileOptions
             {
@@ -365,6 +367,57 @@ namespace GRA.Web
                         => factory.Create(typeof(Resources.Shared));
                 })
                 .AddRazorRuntimeCompilation();
+
+            services.AddWebOptimizer(_ =>
+            { 
+                _.AddFiles("text/javascript", "/js/*");
+                _.AddFiles("text/css", "/css/*");
+
+                _.AddJavaScriptBundle("/js/main.min.js",
+                    "js/jquery.js",
+                    "js/jquery.validate.js",
+                    "js/jquery.validate.unobtrusive.js",
+                    "js/bootstrap.js",
+                    "js/moment.min.js",
+                    "js/moment-timezone.min.js",
+                    "js/bootstrap-datetimepicker.min.js",
+                    "js/bootstrap-multiselect.js",
+                    "js/bootstrap-select.js",
+                    "Scripts/gra.js").UseContentRoot();
+                _.AddJavaScriptBundle("/js/performerregistration.min.js",
+                    "Scripts/performerregistration.js").UseContentRoot();
+                _.AddJavaScriptBundle("/js/markdown.min.js",
+                    "node_modules/commonmark/dist/commonmark.js",
+                    "Scripts/WMD.js").UseContentRoot();
+                _.AddJavaScriptBundle("/js/slick.min.js",
+                    "js/slick.js").UseContentRoot();
+                _.AddJavaScriptBundle("/js/slick-avatar.min.js",
+                    "Scripts/slick-avatar.js").UseContentRoot();
+                _.AddJavaScriptBundle("/js/jquery-ui.min.js",
+                    "Scripts/jquery-ui-1.12.1.custom/jquery-ui.js").UseContentRoot();
+
+                _.AddCssBundle("/css/main.min.css",
+                    "css/bootstrap.css",
+                    "css/all.css",
+                    "css/v4-shims.css",
+                    "css/bootstrap-datetimepicker.css",
+                    "css/bootstrap-multiselect.css",
+                    "css/bootstrap-select.css",
+                    "Styles/gra.css").UseContentRoot();
+                _.AddCssBundle("/css/missioncontrol.min.css",
+                    "Styles/missioncontrol.css").UseContentRoot();
+                _.AddCssBundle("/css/performerregistration.min.css",
+                    "Styles/performerregistration.css").UseContentRoot();
+                _.AddCssBundle("/css/markdown.min.css",
+                    "Styles/WMD.css").UseContentRoot();
+                _.AddCssBundle("/css/slick.min.css",
+                    "css/slick.css",
+                    "css/slick-theme.css").UseContentRoot();
+                _.AddCssBundle("/css/performerregistration.min.css",
+                    "Styles/performerregistration.css").UseContentRoot();
+                _.AddCssBundle("/css/jquery-ui.min.css",
+                    "Scripts/jquery-ui-1.12.1.custom/jquery-ui.css").UseContentRoot();
+            });
 
             // Add custom view directory
             services.Configure<RazorViewEngineOptions>(options =>

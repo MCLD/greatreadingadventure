@@ -1,7 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.News.PostDetailViewModel
 
 @section styles {
-    <link rel="stylesheet" href="~/css/markdown.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="/css/markdown.min.css" />
 }
 
 <form asp-action="@Model.Action" method="post" role="form">
@@ -74,7 +74,7 @@
 </form>
 
 @section scripts {
-    <script src="~/js/markdown.min.js" asp-append-version="true"></script>
+    <script src="/js/markdown.min.js" ></script>
 
     <script>
         var editor = new Markdown.Editor({ allowUploads: true, privateUpload: true });

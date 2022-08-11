@@ -11,7 +11,7 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml" sizes="any">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="manifest" href="/manifest.webmanifest">
-    <link rel="stylesheet" href="~/css/main.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="/css/main.min.css" />
     @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.SiteCss))
     {
         <link rel="stylesheet" href="@Url.Content(Context.Items[GRA.Controllers.ItemKey.SiteCss].ToString())" />
@@ -69,7 +69,7 @@
             </div>
         </form>
     </div>
-    <script src="~/js/main.min.js" asp-append-version="true"></script>
+    <script src="/js/main.min.js"></script>
     @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.SiteJs))
     {
         <script src="@Url.Content(Context.Items[GRA.Controllers.ItemKey.SiteJs].ToString())"></script>

@@ -1,7 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.Avatar.AvatarViewModel
 
 @section styles {
-    <link rel="stylesheet" href="~/css/slick.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="/css/slick.min.css" />
 }
 <div class="alert alert-danger" id="error-container"></div>
 <div class="panel panel-default">
@@ -223,7 +223,7 @@
 </div>
 
 @section scripts {
-    <script src="~/js/slick-avatar.min.js" asp-append-version="true"></script>
+    <script src="/js/slick-avatar.min.js"></script>
     <script>
         var baseImagePath = "@Url.Content($"~/{Model.ImagePath}")";
         var xsZoom = false;
