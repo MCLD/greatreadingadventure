@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Added
 
 - Ability to mark vendor items as not damaged and not missing in case of accidental box checking
+- Ability to disable the in-software mail capability
 
 ### Changed
 
@@ -17,6 +18,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Fixed
 
 - Expiration of social card cache
+- Site setting categories in Mission Control are now in alphabetical order
 
 ### Updated
 

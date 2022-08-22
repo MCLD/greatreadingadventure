@@ -16,8 +16,6 @@ namespace GRA.Controllers
         private readonly ILogger<MailController> _logger;
         private readonly MailService _mailService;
 
-        public static string Name { get { return "Mail"; } }
-
         public MailController(ILogger<MailController> logger,
             ServiceFacade.Controller context,
             MailService mailService) : base(context)
@@ -27,8 +25,42 @@ namespace GRA.Controllers
             PageTitle = "Mail";
         }
 
+        public static string Name
+        { get { return "Mail"; } }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (!HttpContext.Items.ContainsKey(ItemKey.ShowMail)
+                || HttpContext.Items[ItemKey.ShowMail] as bool? != true)
+            {
+                return StatusCode(404);
+            }
+
+            try
+            {
+                await _mailService.RemoveAsync(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "Problem with user {GetActiveUserId} deleting mail id {id}: {Message}",
+                    GetActiveUserId(),
+                    id,
+                    ex.Message);
+                AlertWarning = _sharedLocalizer[ErrorMessages.MailUnableToDelete];
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
         public async Task<IActionResult> Index(int page = 1)
         {
+            if (!HttpContext.Items.ContainsKey(ItemKey.ShowMail)
+                || HttpContext.Items[ItemKey.ShowMail] as bool? != true)
+            {
+                return StatusCode(404);
+            }
+
             const int take = 15;
             int skip = take * (page - 1);
             var mailList = await _mailService.GetUserInboxPaginatedAsync(skip, take);
@@ -60,6 +92,12 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> Read(int id)
         {
+            if (!HttpContext.Items.ContainsKey(ItemKey.ShowMail)
+                || HttpContext.Items[ItemKey.ShowMail] as bool? != true)
+            {
+                return StatusCode(404);
+            }
+
             try
             {
                 var mail = await _mailService.GetParticipantMailAsync(id);
@@ -81,6 +119,12 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> Reply(int id)
         {
+            if (!HttpContext.Items.ContainsKey(ItemKey.ShowMail)
+                || HttpContext.Items[ItemKey.ShowMail] as bool? != true)
+            {
+                return StatusCode(404);
+            }
+
             try
             {
                 var mail = await _mailService.GetParticipantMailAsync(id);
@@ -103,6 +147,12 @@ namespace GRA.Controllers
         [HttpPost]
         public async Task<IActionResult> Reply(MailCreateViewModel model)
         {
+            if (!HttpContext.Items.ContainsKey(ItemKey.ShowMail)
+                || HttpContext.Items[ItemKey.ShowMail] as bool? != true)
+            {
+                return StatusCode(404);
+            }
+
             if (model.InReplyToId == null)
             {
                 return RedirectToAction(nameof(Index));
@@ -127,12 +177,24 @@ namespace GRA.Controllers
 
         public IActionResult Send()
         {
+            if (!HttpContext.Items.ContainsKey(ItemKey.ShowMail)
+                || HttpContext.Items[ItemKey.ShowMail] as bool? != true)
+            {
+                return StatusCode(404);
+            }
+
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Send(MailCreateViewModel model)
         {
+            if (!HttpContext.Items.ContainsKey(ItemKey.ShowMail)
+                || HttpContext.Items[ItemKey.ShowMail] as bool? != true)
+            {
+                return StatusCode(404);
+            }
+
             if (ModelState.IsValid)
             {
                 var mail = new Mail
@@ -148,25 +210,6 @@ namespace GRA.Controllers
             {
                 return View(model);
             }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Delete(int id)
-        {
-            try
-            {
-                await _mailService.RemoveAsync(id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex,
-                    "Problem with user {GetActiveUserId} deleting mail id {id}: {Message}",
-                    GetActiveUserId(),
-                    id,
-                    ex.Message);
-                AlertWarning = _sharedLocalizer[ErrorMessages.MailUnableToDelete];
-            }
-            return RedirectToAction(nameof(Index));
         }
     }
 }
