@@ -226,6 +226,7 @@ namespace GRA.Controllers.MissionControl
                         Key = i.Key
                     }).ToList()
                 })
+                .OrderBy(_ => _.Name)
                 .ToList();
 
             var viewModel = new SiteSettingsViewModel()

@@ -224,12 +224,20 @@ namespace GRA
                     Category = typeof(SiteSettingKey.VendorCodes).Name,
                     Format = SiteSettingFormat.Boolean
                 },
-                [SiteSettingKey.Avatars.DisableSharing] = 
+                [SiteSettingKey.Avatars.DisableSharing] =
                 new SiteSettingDefinition
                 {
                     Name = "Disable Sharing",
                     Info = "Hide the avatar share button and disable sharing options",
                     Category = typeof(SiteSettingKey.Avatars).Name,
+                    Format = SiteSettingFormat.Boolean
+                },
+                [SiteSettingKey.Mail.Disable] =
+                new SiteSettingDefinition
+                {
+                    Name = "Disable Mail",
+                    Info = "Disable the in-software mail setting so that participants and administrators cannot exchange mail",
+                    Category = typeof(SiteSettingKey.Mail).Name,
                     Format = SiteSettingFormat.Boolean
                 }
             };

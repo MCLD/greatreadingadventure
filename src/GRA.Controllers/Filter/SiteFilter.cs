@@ -151,6 +151,9 @@ namespace GRA.Controllers.Filter
             context.HttpContext.Items[ItemKey.ShowChallenges] = showChallenges;
             context.HttpContext.Items[ItemKey.ShowEvents] = showEvents;
             context.HttpContext.Items[ItemKey.WebScheme] = site.IsHttpsForced ? "https" : "http";
+            context.HttpContext.Items[ItemKey.ShowMail] = site.Settings
+                .FirstOrDefault(_ => _.Key == SiteSettingKey.Mail.Disable)?
+                .Value == null;
 
             // only check if the site.css and site.js have changed periodically by default and
             // cache the last modification time

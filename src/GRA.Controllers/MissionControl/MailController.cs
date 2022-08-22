@@ -30,8 +30,19 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Mail";
         }
 
+        private void AddNoticeIfDisabled()
+        {
+            if (!HttpContext.Items.ContainsKey(ItemKey.ShowMail)
+                || HttpContext.Items[ItemKey.ShowMail] as bool? != true)
+            {
+                ShowAlertDanger("Mail is disabled in site settings, participants will not see it.");
+            }
+        }
+
         public async Task<IActionResult> Index(int page = 1)
         {
+            AddNoticeIfDisabled();
+
             const int take = 15;
             int skip = take * (page - 1);
             var mailList = await _mailService.GetAllUnrepliedPaginatedAsync(skip, take);
@@ -64,6 +75,8 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> ViewAll(int page = 1)
         {
+            AddNoticeIfDisabled();
+
             const int take = 15;
             int skip = take * (page - 1);
             var mailList = await _mailService.GetAllPaginatedAsync(skip, take);
@@ -96,6 +109,8 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> Detail(int id)
         {
+            AddNoticeIfDisabled();
+
             try
             {
                 var mail = await _mailService.GetDetails(id);
@@ -236,6 +251,8 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy.SendBroadcastMail)]
         public async Task<IActionResult> Broadcasts(bool upcoming = true, int page = 1)
         {
+            AddNoticeIfDisabled();
+
             var filter = new BroadcastFilter(page)
             {
                 Upcoming = upcoming
@@ -272,6 +289,8 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy.SendBroadcastMail)]
         public IActionResult BroadcastCreate()
         {
+            AddNoticeIfDisabled();
+
             var viewModel = new BroadcastDetailViewModel
             {
                 Action = "Create"

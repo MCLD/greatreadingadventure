@@ -12,19 +12,20 @@
         public static readonly string NotificationsList = "NotificationsList";
         public static readonly string NotificationsModal = "NotificationsModal";
         public static readonly string RouteId = "RouteId";
+        public static readonly string ShowChallenges = "ShowChallenges";
+        public static readonly string ShowEvents = "ShowEvents";
+        public static readonly string ShowMail = "ShowMail";
         public static readonly string ShowMissionControl = "ShowMissionControl";
+        public static readonly string ShowPackingSlips = "ShowPackingSlips";
         public static readonly string ShowPerformerRegistration = "ShowPerformerRegistration";
         public static readonly string ShowPerformerScheduling = "ShowPerformerScheduling";
+        public static readonly string SignedIn = "SignedIn";
         public static readonly string SiteCss = "SiteCss";
         public static readonly string SiteId = "SiteId";
         public static readonly string SiteJs = "SiteJs";
         public static readonly string SiteName = "SiteName";
         public static readonly string SiteStage = "SiteStage";
         public static readonly string UnreadCount = "UnreadCount";
-        public static readonly string ShowChallenges = "ShowChallenges";
-        public static readonly string ShowEvents = "ShowEvents";
-        public static readonly string ShowPackingSlips = "ShowPackingSlips";
-        public static readonly string SignedIn = "SignedIn";
         public static readonly string WebScheme = "WebScheme";
     }
 }

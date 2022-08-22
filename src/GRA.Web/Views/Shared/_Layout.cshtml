@@ -108,8 +108,8 @@
                     @if (!String.Equals(this.ViewContext.RouteData.Values["controller"].ToString(), "Questionnaire", StringComparison.OrdinalIgnoreCase))
                     {
                         <li ActiveBy routeKey="Controller" value="Home"><a asp-controller="Home" asp-action="Index" title="Home"><span class="fas fa-home"></span><span class="visible-xs-inline"> @SharedLocalizer[GRA.Domain.Model.DisplayNames.Home]</span></a></li>
-                        @if (User.Identity.IsAuthenticated)
-                        {
+                        @if (User.Identity.IsAuthenticated && Context.Items.ContainsKey(ItemKey.ShowMail) && Context.Items[ItemKey.ShowMail] as bool? == true)
+                                {
                             <li ActiveBy routeKey="Controller" value="Mail" title="Mail">
                                 <a asp-controller="Mail" asp-action="Index">
                                     @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.UnreadCount) && (int)Context.Items[GRA.Controllers.ItemKey.UnreadCount] > 0)

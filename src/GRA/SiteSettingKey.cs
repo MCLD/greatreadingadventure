@@ -65,6 +65,16 @@
             }
         }
 
+        public struct Mail : System.IEquatable<Mail>
+        {
+            public static readonly string Disable = "Mail.Enabled";
+
+            public bool Equals(Mail other)
+            {
+                return true;
+            }
+        }
+
         public struct Points : System.IEquatable<Points>
         {
             public static readonly string MaximumPermitted = "Points.MaximumPermitted";
@@ -120,7 +130,7 @@
                 = "Users.MaximumHouseholdSizeBeforeGroup";
 
             public static readonly string RestrictChangingSystemBranch
-                                                                                                                = "Users.RestrictChangingSystemBranch";
+                = "Users.RestrictChangingSystemBranch";
 
             public static readonly string ShowLinkToParticipantsLibrary
                 = "Users.ShowLinkToParticipantsLibrary";
