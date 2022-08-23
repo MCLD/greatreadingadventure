@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Localization.Routing;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -369,7 +368,7 @@ namespace GRA.Web
                 .AddRazorRuntimeCompilation();
 
             services.AddWebOptimizer(_ =>
-            { 
+            {
                 _.AddFiles("text/javascript", "/js/*");
                 _.AddFiles("text/css", "/css/*");
 
@@ -567,8 +566,8 @@ namespace GRA.Web
             services.AddScoped<SpatialService>();
             services.AddScoped<SystemInformationService>();
             services.AddScoped<TriggerService>();
-            services.AddScoped<UserService>();
             services.AddScoped<UserImportService>();
+            services.AddScoped<UserService>();
             services.AddScoped<VendorCodeService>();
 
             services.AddScoped<Domain.Report.ActivityByProgramReport>();
@@ -581,14 +580,15 @@ namespace GRA.Web
             services.AddScoped<Domain.Report.ParticipantCountMinutesByProgram>();
             services.AddScoped<Domain.Report.ParticipantPrizeReport>();
             services.AddScoped<Domain.Report.ParticipantProgressReport>();
-            services.AddScoped<Domain.Report.PrizeRedemptionReport>();
             services.AddScoped<Domain.Report.PrizeRedemptionCountReport>();
+            services.AddScoped<Domain.Report.PrizeRedemptionReport>();
             services.AddScoped<Domain.Report.RegistrationsAchieversBySchoolReport>();
             services.AddScoped<Domain.Report.RegistrationsAchieversReport>();
             services.AddScoped<Domain.Report.RemainingVendorPrizePickupReport>();
             services.AddScoped<Domain.Report.TopScoresReport>();
             services.AddScoped<Domain.Report.VendorCodeByProgramReport>();
             services.AddScoped<Domain.Report.VendorCodeDonationsReport>();
+            services.AddScoped<Domain.Report.VendorCodePendingReport>();
             services.AddScoped<Domain.Report.VendorCodeReport>();
 
             // service resolution

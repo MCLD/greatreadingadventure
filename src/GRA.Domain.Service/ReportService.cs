@@ -259,6 +259,17 @@ namespace GRA.Domain.Service
                         };
                     }
 
+                    if (report == null)
+                    {
+                        _logger.LogCritical("Unable to find report type {ReportType}", reportDetails.ReportType);
+                        return new JobStatus
+                        {
+                            Status = $"Unable to find report type: {reportDetails.ReportType}",
+                            Complete = true,
+                            Error = true
+                        };
+                    }
+
                     try
                     {
                         await report.ExecuteAsync(_request, token, progress);
