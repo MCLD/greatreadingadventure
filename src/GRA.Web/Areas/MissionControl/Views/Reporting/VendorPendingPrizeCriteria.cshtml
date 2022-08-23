@@ -1,0 +1,22 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.ReportCriteriaViewModel
+
+<form asp-controller="Reporting" asp-action="Run" method="post" role="form" class="form-horizontal" style="margin-top: 2rem; margin-bottom: 2rem;">
+    <input asp-for="ReportId" type="hidden" />
+
+    <div class="form-group">
+        <div class="col-xs-12">
+            <label asp-for="VendorCodeTypeId" class="control-label"></label>
+            <select asp-for="VendorCodeTypeId" asp-items="Model.VendorCodeTypeList" class="form-control" data-val="true" data-val-required="Please select a vendor code."></select>
+            <span asp-validation-for="VendorCodeTypeId" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-xs-12">
+            <button type="submit" class="btn btn-primary">
+                <span class="fas fa-file-alt"></span>
+                Run Report!
+            </button>
+        </div>
+    </div>
+</form>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Utility;
 using GRA.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -153,6 +154,48 @@ namespace GRA.Data.Repository
                     (vendorCode, _) => vendorCode)
                 .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
                 .ToListAsync();
+        }
+
+        public async Task<IList<ReportVendorCodePending>> GetPendingPrizesPickupBranch()
+        {
+            var shippedNotArrived = await DbSet
+                .AsNoTracking()
+                .Where(_ => _.ShipDate != null && _.ArrivalDate == null)
+                .GroupBy(_ => _.BranchId)
+                .Select(_ => new { BranchId = _.Key, Count = _.Count() })
+                .ToDictionaryAsync(k => k.BranchId, v => v.Count);
+
+            var orderedNotShipped = await DbSet
+                .AsNoTracking()
+                .Where(_ => _.OrderDate != null && _.ShipDate == null)
+                .GroupBy(_ => _.BranchId)
+                .Select(_ => new { BranchId = _.Key, Count = _.Count() })
+                .ToDictionaryAsync(k => k.BranchId, v => v.Count);
+
+            var branches = await _context.Branches
+                .AsNoTracking()
+                .Include(_ => _.System)
+                .Select(_ => new ReportVendorCodePending
+                {
+                    BranchId = _.Id,
+                    Name = _.Name,
+                    SystemName = _.System.Name,
+                })
+                .OrderBy(_ => _.SystemName)
+                .ThenBy(_ => _.Name)
+                .ToListAsync();
+
+            foreach (var branch in branches)
+            {
+                branch.OrderedNotShipped = orderedNotShipped.ContainsKey(branch.BranchId)
+                    ? orderedNotShipped[branch.BranchId]
+                    : 0;
+                branch.ShippedNotArrived = shippedNotArrived.ContainsKey(branch.BranchId)
+                    ? shippedNotArrived[branch.BranchId]
+                    : 0;
+            }
+
+            return branches;
         }
 
         public async Task<ICollection<VendorCode>> GetRemainingPrizesForBranchAsync(int branchId)
