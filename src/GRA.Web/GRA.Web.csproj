@@ -8,7 +8,7 @@
     <Company>Maricopa County Library District</Company>
     <Copyright>Copyright 2017 Maricopa County Library District</Copyright>
     <Description>The Great Reading Adventure is an open-source tool for managing dynamic library reading programs.</Description>
-    <FileVersion>4.3.7</FileVersion>
+    <FileVersion>4.3.8</FileVersion>
     <OutputType>Exe</OutputType>
     <PackageId>GRA.Web</PackageId>
     <PackageLicenseUrl>https://github.com/mcld/greatreadingadventure/blob/master/LICENSE</PackageLicenseUrl>
@@ -197,6 +197,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Scripts\gra.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\jquery-ui-1.12.1.custom\jquery-ui.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Scripts\jquery-ui-1.12.1.custom\jquery-ui.js">
