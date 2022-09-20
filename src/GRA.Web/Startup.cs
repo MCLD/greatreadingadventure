@@ -386,7 +386,7 @@ namespace GRA.Web
                 _.AddJavaScriptBundle("/js/performerregistration.min.js",
                     "Scripts/performerregistration.js").UseContentRoot();
                 _.AddJavaScriptBundle("/js/markdown.min.js",
-                    "node_modules/commonmark/dist/commonmark.js",
+                    "js/commonmark.js",
                     "Scripts/WMD.js").UseContentRoot();
                 _.AddJavaScriptBundle("/js/slick.min.js",
                     "js/slick.js").UseContentRoot();
