@@ -27,6 +27,17 @@
             </div>
 
             <div class="form-group">
+                <label class="control-label" asp-for="Program.DashboardAlert"></label>
+                <span class="fas fa-info-circle wide-tooltip"
+                      title="Display this text in a banner at the top of the participant dashboard. Only text, no HTML/links."
+                      data-toggle="tooltip"
+                      data-placement="top"></span>
+                <button type="button" class="btn btn-sm btn-default" id="previewAlertButton" data-toggle="modal" data-target="#previewAlertModal" style="margin-bottom: 0.25rem; margin-left: 0.5rem;">Preview alert</button>
+                <select asp-for="Program.DashboardAlertType" asp-items="Html.GetEnumSelectList<GRA.Domain.Model.AlertType>()" class="form-control" style="margin-bottom: 1rem;"></select>
+                <textarea asp-for="Program.DashboardAlert" class="form-control"></textarea>
+            </div>
+
+            <div class="form-group">
                 <label class="control-label">Ask Age</label>
                 <select asp-for="AgeValues" class="form-control">
                     <option value="0">Don't Ask</option>
@@ -93,8 +104,8 @@
                     {
                         <input asp-for="BadgePath" type="hidden" />
                         <img id="badgeImage" class="img-thumbnail badge-lg"
-                             src="~/@Model.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")"
-                             asp-append-version="true" />
+                         src="~/@Model.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")"
+                         asp-append-version="true" />
                     }
                     else
                     {
@@ -187,9 +198,9 @@
         <div class="modal-content">
             <div class="modal-body" style="padding: 30px;">
                 <span class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
-                        data-dismiss="modal"
-                        alt="Close dialog."
-                        role="button">
+                      data-dismiss="modal"
+                      alt="Close dialog."
+                      role="button">
                     <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
                     <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
                 </span>
@@ -199,8 +210,27 @@
     </div>
 </div>
 
+<div class="modal fade" id="previewAlertModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Preview alert</h4>
+            </div>
+            <div class="modal-body">
+                <div class="alert" id="alertPreview"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section scripts {
     <script>
+        var alertPreviewButtonEnabled = true;
+
         $(':file').on('fileselect', function (event, numFiles, label) {
             var input = $(this).parents('.input-group').find(':text'),
                 log = numFiles > 1 ? numFiles = ' files selected' : label;
@@ -227,15 +257,15 @@
             input.trigger('fileselect', [numFiles, label]);
         });
 
-        $("#badgeTab").on('show.bs.tab', function() {
+        $("#badgeTab").on('show.bs.tab', function () {
             $("#UseBadgeMaker").val("true");
         });
 
-        $("#uploadTab").on('show.bs.tab', function() {
+        $("#uploadTab").on('show.bs.tab', function () {
             $("#UseBadgeMaker").val("false");
         });
 
-        $("#openMaker").on("click", function() {
+        $("#openMaker").on("click", function () {
             $("#badgeMaker").attr("src", "@Html.Raw(@Model.BadgeMakerUrl)");
             $("#badgeModal").modal("show");
         });
@@ -247,7 +277,7 @@
             $('#selectedFile').val('');
         });
 
-        $(window).on("message", function(e) {
+        $(window).on("message", function (e) {
             $("#badgeModal").modal("hide");
             var data = e.originalEvent.data;
             $("#badgeImage").attr("src", data);
@@ -257,6 +287,33 @@
             $('.btn-file').addClass('btn-default');
             $('.btn-file').removeClass('btn-success');
             $('#selectedFile').val('');
+        });
+
+        $('#previewAlertModal').on('show.bs.modal', function (e) {
+            $('#alertPreview').removeClass('alert-info');
+            $('#alertPreview').removeClass('alert-success');
+            $('#alertPreview').removeClass('alert-warning');
+            $('#alertPreview').removeClass('alert-danger');
+            let selectedType = $('#Program_DashboardAlertType option:selected').text().toLowerCase();
+            $('#alertPreview').addClass('alert-' + selectedType);
+            $('#alertPreview').text($('#Program_DashboardAlert').val());
+        });
+
+        function fixDashboardPreviewButton() {
+            let length = $('#Program_DashboardAlert').val().length;
+            if (length == 0) {
+                alertPreviewButtonEnabled = false;
+                $('#previewAlertButton').prop('disabled', true);
+            } else if (!alertPreviewButtonEnabled) {
+                alertPreviewButtonEnabled = true;
+                $('#previewAlertButton').prop('disabled', false);
+            }
+        }
+
+        $('#Program_DashboardAlert').on('input', fixDashboardPreviewButton);
+
+        $().ready(function () {
+            fixDashboardPreviewButton();
         });
     </script>
 }

@@ -18,13 +18,11 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ManagePrograms)]
     public class ProgramsController : Base.MCController
     {
-        private readonly ILogger<ProgramsController> _logger;
         private readonly BadgeService _badgeService;
         private readonly DailyLiteracyTipService _dailyLiteracyTipService;
+        private readonly ILogger<ProgramsController> _logger;
         private readonly PointTranslationService _pointTranslationService;
         private readonly SiteService _siteService;
-
-        public static string Name { get { return "Programs"; } }
 
         public ProgramsController(ILogger<ProgramsController> logger,
             ServiceFacade.Controller context,
@@ -44,41 +42,10 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Program management";
         }
 
+        public static string Name
+        { get { return "Programs"; } }
+
         #region Programs
-
-        public async Task<IActionResult> Index(string search, int page = 1)
-        {
-            var filter = new BaseFilter(page)
-            {
-                Search = search
-            };
-
-            var programList = await _siteService.GetPaginatedProgramListAsync(filter);
-
-            var paginateModel = new PaginateViewModel
-            {
-                ItemCount = programList.Count,
-                CurrentPage = page,
-                ItemsPerPage = filter.Take.Value
-            };
-            if (paginateModel.PastMaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
-            }
-
-            var viewModel = new ProgramListViewModel()
-            {
-                Programs = programList.Data,
-                PaginateModel = paginateModel,
-                Search = search
-            };
-
-            return View(viewModel);
-        }
 
         public async Task<IActionResult> Create()
         {
@@ -218,6 +185,42 @@ namespace GRA.Controllers.MissionControl
                 "TranslationName");
             PageTitle = "Create Program";
             return View("Detail", model);
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
+            "CA1031:Do not catch general exception types",
+            Justification = "Return proper JSON regardless of errors")]
+        public async Task<IActionResult> DecreasePosition(int id)
+        {
+            try
+            {
+                await _siteService.DecreaseProgramPositionAsync(id);
+                return Json(true);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error decreasing position for program {id} : {ex}", ex);
+                return Json(false);
+            }
+        }
+
+        public async Task<IActionResult> Delete(ProgramListViewModel model)
+        {
+            try
+            {
+                await _siteService.RemoveProgramAsync(model.Program.Id);
+                ShowAlertSuccess($"Program \"{model.Program.Name}\" removed!");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to remove Program: ", gex);
+            }
+
+            return RedirectToAction(nameof(Index), new
+            {
+                page = model.PaginateModel.CurrentPage,
+                search = model.Search
+            });
         }
 
         public async Task<IActionResult> Edit(int id)
@@ -424,42 +427,6 @@ namespace GRA.Controllers.MissionControl
             return View("Detail", model);
         }
 
-        public async Task<IActionResult> Delete(ProgramListViewModel model)
-        {
-            try
-            {
-                await _siteService.RemoveProgramAsync(model.Program.Id);
-                ShowAlertSuccess($"Program \"{model.Program.Name}\" removed!");
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger("Unable to remove Program: ", gex);
-            }
-
-            return RedirectToAction(nameof(Index), new
-            {
-                page = model.PaginateModel.CurrentPage,
-                search = model.Search
-            });
-        }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
-            "CA1031:Do not catch general exception types",
-            Justification = "Return proper JSON regardless of errors")]
-        public async Task<IActionResult> DecreasePosition(int id)
-        {
-            try
-            {
-                await _siteService.DecreaseProgramPositionAsync(id);
-                return Json(true);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error decreasing position for program {id} : {ex}", ex);
-                return Json(false);
-            }
-        }
-
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
             "CA1031:Do not catch general exception types",
             Justification = "Return proper JSON regardless of errors")]
@@ -477,9 +444,71 @@ namespace GRA.Controllers.MissionControl
             }
         }
 
+        public async Task<IActionResult> Index(string search, int page = 1)
+        {
+            var filter = new BaseFilter(page)
+            {
+                Search = search
+            };
+
+            var programList = await _siteService.GetPaginatedProgramListAsync(filter);
+
+            var paginateModel = new PaginateViewModel
+            {
+                ItemCount = programList.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+            if (paginateModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+
+            var viewModel = new ProgramListViewModel()
+            {
+                Programs = programList.Data,
+                PaginateModel = paginateModel,
+                Search = search
+            };
+
+            return View(viewModel);
+        }
+
         #endregion Programs
 
         #region Point Translations
+
+        public async Task<IActionResult> EditPointTranslation(int id)
+        {
+            var viewModel = new PointTranslationDetailViewModel
+            {
+                PointTranslation = await _pointTranslationService.GetByIdAsync(id),
+                Action = nameof(EditPointTranslation),
+                HasBeenUsed = await _pointTranslationService.HasBeenUsedAsync(id)
+            };
+
+            PageTitle = "Edit Point Translation";
+            return View("PointTranslationDetail", viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditPointTranslation(PointTranslationDetailViewModel model)
+        {
+            if (ModelState.IsValid && model != null)
+            {
+                await _pointTranslationService.UpdateAsync(model.PointTranslation);
+                ShowAlertSuccess($"Saved Point Translation \"{model.PointTranslation.TranslationName}\"!");
+                return RedirectToAction(nameof(EditPointTranslation),
+                    new { id = model.PointTranslation.Id });
+            }
+
+            PageTitle = "Edit Point Translation";
+            return View("PointTranslationDetail", model);
+        }
 
         public async Task<IActionResult> PointTranslations(int page = 1)
         {
@@ -509,34 +538,6 @@ namespace GRA.Controllers.MissionControl
 
             PageTitle = "Point Translation management";
             return View(viewModel);
-        }
-
-        public async Task<IActionResult> EditPointTranslation(int id)
-        {
-            var viewModel = new PointTranslationDetailViewModel
-            {
-                PointTranslation = await _pointTranslationService.GetByIdAsync(id),
-                Action = nameof(EditPointTranslation),
-                HasBeenUsed = await _pointTranslationService.HasBeenUsedAsync(id)
-            };
-
-            PageTitle = "Edit Point Translation";
-            return View("PointTranslationDetail", viewModel);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> EditPointTranslation(PointTranslationDetailViewModel model)
-        {
-            if (ModelState.IsValid && model != null)
-            {
-                await _pointTranslationService.UpdateAsync(model.PointTranslation);
-                ShowAlertSuccess($"Saved Point Translation \"{model.PointTranslation.TranslationName}\"!");
-                return RedirectToAction(nameof(EditPointTranslation),
-                    new { id = model.PointTranslation.Id });
-            }
-
-            PageTitle = "Edit Point Translation";
-            return View("PointTranslationDetail", model);
         }
 
         #endregion Point Translations
