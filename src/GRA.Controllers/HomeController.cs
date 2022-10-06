@@ -261,6 +261,12 @@ namespace GRA.Controllers
                     }
                 }
 
+                if (!string.IsNullOrEmpty(program.DashboardAlert?.Trim()))
+                {
+                    viewModel.DashboardAlert = program.DashboardAlert;
+                    viewModel.DashboardAlertType = program.DashboardAlertType;
+                }
+
                 if (TempData.ContainsKey(TempDataKey.UserJoined))
                 {
                     TempData.Remove(TempDataKey.UserJoined);
@@ -362,7 +368,7 @@ namespace GRA.Controllers
         [HttpPost]
         public async Task<IActionResult> LogActivity(DashboardViewModel viewModel)
         {
-            if(viewModel == null)
+            if (viewModel == null)
             {
                 return RedirectToAction(nameof(Index));
             }

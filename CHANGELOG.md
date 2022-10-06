@@ -11,10 +11,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Ability to mark vendor items as not damaged and not missing in case of accidental box checking
 - Ability to disable the in-software mail capability
 - Report to see a count of pending vendor code items per branch
+- Program-wide alert to dashboard page
 
 ### Changed
 
 - Moved TempData storage to session from separate cookie
+- Updated Remaining Vendor Prize Pick-Up to separate out first/last names and username
 
 ### Fixed
 

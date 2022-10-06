@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
@@ -77,7 +76,9 @@ namespace GRA.Domain.Report
             // header row
             report.HeaderRow = new object[]
             {
-                "Name",
+                "First Name",
+                "Last Name",
+                "Username",
                 "Email",
                 "Phone",
                 "Item name",
@@ -104,28 +105,16 @@ namespace GRA.Domain.Report
 
                 var user = await _userRepository.GetByIdAsync(prize.UserId.Value);
 
-                var name = new StringBuilder(user.FirstName);
-                if (!string.IsNullOrEmpty(user.LastName))
-                {
-                    name.Append(' ').Append(user.LastName);
-                }
-                if (!string.IsNullOrEmpty(user.Username))
-                {
-                    name.Append(" (").Append(user.Username).Append(')');
-                }
-
                 reportData.Add(new object[]
                 {
-                    name.ToString(),
+                    user.FirstName,
+                    user.LastName,
+                    user.Username,
                     user.Email,
                     user.PhoneNumber,
                     prize.Details,
-                    prize.ArrivalDate.HasValue
-                        ? prize.ArrivalDate.Value.ToString("g", CultureInfo.CurrentCulture)
-                        : null,
-                    prize.EmailSentAt.HasValue
-                        ? prize.EmailSentAt.Value.ToString("g", CultureInfo.CurrentCulture)
-                        : null
+                    prize.ArrivalDate?.ToString("g", CultureInfo.CurrentCulture),
+                    prize.EmailSentAt?.ToString("g", CultureInfo.CurrentCulture)
                 });
             }
 
