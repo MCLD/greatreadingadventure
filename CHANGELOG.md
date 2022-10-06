@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Changed
 
 - Moved TempData storage to session from separate cookie
+- Updated Remaining Vendor Prize Pick-Up to separate out first/last names and username
 
 ### Fixed
 
