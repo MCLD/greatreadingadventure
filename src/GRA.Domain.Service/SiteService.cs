@@ -383,9 +383,11 @@ namespace GRA.Domain.Service
             currentProgram.AskAge = program.AskAge;
             currentProgram.AskSchool = program.AskSchool;
             currentProgram.DailyLiteracyTipId = program.DailyLiteracyTipId;
+            currentProgram.DashboardAlert = program.DashboardAlert?.Trim();
+            currentProgram.DashboardAlertType = program.DashboardAlertType;
+            currentProgram.JoinBadgeAltText = program.JoinBadgeAltText?.Trim();
             currentProgram.JoinBadgeId = currentProgram.JoinBadgeId ?? program.JoinBadgeId;
             currentProgram.JoinBadgeName = program.JoinBadgeName;
-            currentProgram.JoinBadgeAltText = program.JoinBadgeAltText?.Trim();
             currentProgram.Name = program.Name;
             currentProgram.PointTranslationId = program.PointTranslationId;
             currentProgram.SchoolRequired = program.SchoolRequired;
