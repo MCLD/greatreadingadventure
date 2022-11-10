@@ -439,6 +439,14 @@ namespace GRA.Domain.Service
                 int totalFilesCopied = 0;
                 var siteId = GetCurrentSiteId();
 
+                var destinationBase = Path.Combine($"site{siteId}", "avatars");
+                var destinationBasePath = _pathResolver.ResolveContentFilePath(destinationBase);
+                if (Directory.Exists(destinationBasePath))
+                {
+                    _logger.LogWarning("Destination directory {Path} already exists, attempting to remove...", destinationBasePath);
+                    Directory.Delete(destinationBasePath, true);
+                }
+
                 foreach (var layer in avatarList)
                 {
                     progress?.Report(new JobStatus
@@ -456,8 +464,7 @@ namespace GRA.Domain.Service
                     var addedLayer = await AddLayerAsync(layer);
 
                     var layerAssetPath = Path.Combine(assetPath, layer.Name);
-                    var destinationRoot = Path.Combine($"site{siteId}",
-                        "avatars", $"layer{addedLayer.Id}");
+                    var destinationRoot = Path.Combine(destinationBase, $"layer{addedLayer.Id}");
                     var destinationPath = _pathResolver.ResolveContentFilePath(destinationRoot);
                     if (!Directory.Exists(destinationPath))
                     {
@@ -637,20 +644,22 @@ namespace GRA.Domain.Service
 
                 var backgroundRoot = Path.Combine($"site{siteId}", "avatarbackgrounds");
                 var backgroundPath = _pathResolver.ResolveContentFilePath(backgroundRoot);
-                if (!Directory.Exists(backgroundPath))
+                if (Directory.Exists(backgroundPath))
                 {
-                    Directory.CreateDirectory(backgroundPath);
+                    Directory.Delete(backgroundPath, true);
                 }
+                Directory.CreateDirectory(backgroundPath);
                 File.Copy(Path.Combine(assetPath, "background.png"),
                     Path.Combine(backgroundPath, "background.png"));
                 totalFilesCopied++;
 
                 var bundleRoot = Path.Combine($"site{siteId}", "avatarbundles");
                 var bundlePath = _pathResolver.ResolveContentFilePath(bundleRoot);
-                if (!Directory.Exists(bundlePath))
+                if (Directory.Exists(bundlePath))
                 {
-                    Directory.CreateDirectory(bundlePath);
+                    Directory.Delete(bundlePath, true);
                 }
+                Directory.CreateDirectory(bundlePath);
                 File.Copy(Path.Combine(assetPath, "bundleicon.png"),
                     Path.Combine(bundlePath, "icon.png"));
                 totalFilesCopied++;

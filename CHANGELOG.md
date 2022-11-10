@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Moved TempData storage to session from separate cookie
 - Updated Remaining Vendor Prize Pick-Up to separate out first/last names and username
+- Import of avatar file will overwrite any files in teh avatar directories
 
 ### Fixed
 
