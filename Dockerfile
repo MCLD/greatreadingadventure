@@ -1,5 +1,5 @@
 # Get build image
-FROM mcr.microsoft.com/dotnet/sdk:6.0@sha256:ce977e0ce71ce4aeecde3917f3abf0dcffcf952e9ca138704b63e1a838b4700c AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0@sha256:807eba67b95246174c63daa7f1d5b5990ce555ecbff73437bbe6c31f28660acb AS build
 
 WORKDIR /app
 
@@ -27,7 +27,7 @@ RUN dotnet publish -c Release -o "/app/publish/"
 RUN cp /app/release-publish.bash "/app/publish/"
 
 # Get runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:6.0@sha256:af97531c4f335ce9a039659b3ce4436a558494257d5520f8e515cc1ad5ad4eee AS publish
+FROM mcr.microsoft.com/dotnet/aspnet:6.0@sha256:e8cde448c7e8e3e4eec8cd05d50e0d7b6b251f76ae3534cd9c0aeff864d2e61b AS publish
 
 WORKDIR /app
 
