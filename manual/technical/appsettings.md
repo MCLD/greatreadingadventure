@@ -10,7 +10,7 @@ Environment settings can be passed in via Docker using the `-e` commandline opti
 
 ```
 TZ=US/Arizona
-ConnectionStrings:SqlServer=Server=dbserver;Database=catalog;user id=user;password=password;MultipleActiveResultSets=true
+ConnectionStrings:SqlServer=Server=dbserver;Database=catalog;user id=user;password=password;MultipleActiveResultSets=true;Encrypt=false
 GraInitialAuthCode=secretAdminCode
 GraDefaultSiteName=Awesome Reading Program
 GraDefaultPageTitle=Awesome Reading Program - Our Library

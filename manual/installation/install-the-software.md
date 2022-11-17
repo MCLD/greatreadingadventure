@@ -28,7 +28,7 @@ Note: if you see this message in the logs: "A connection was successfully establ
 ## Install and run the GRA on a Windows Server
 
 The GRA is an ASP.NET Core application so review the [Host ASP.NET Core on Windows with IIS
-](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/?view=aspnetcore-5.0) instructions from Microsoft and ensure that IIS is installed with the Web Sockets feature enabled and the appropriate ASP.NET Core hosting bundle is installed.
+](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/?view=aspnetcore-6.0) instructions from Microsoft and ensure that IIS is installed with the Web Sockets feature enabled and the appropriate ASP.NET Core hosting bundle is installed.
 
 ### Set up the GRA as the only site on the server
 
@@ -87,4 +87,4 @@ Your system administrator can help you select the correct approach.
 4. Are you sure the `shared` directory has write permissions for the process running IIS? Once the application starts, it will create a "logs" directory there so you will know if the Web server can write to this directory once you see the "logs" directory present. Check that "logs" directory to see if there are any errors written out to the log file.
 5. Do you see something in the logs about "A connection was successfully established with the server, but then an error occurred during the pre-login handshake"? Try adding `Encrypt=false;` to the end of your SQL Server connection string.
 6. If the Web process can write to the `shared` directory, you can edit the `Web.config` file `aspNetCore` tag to set `stdoutLogEnabled="true"` and `stdoutLogFile=".\shared\stdout"`. When you restart IIS it should write a log file starting with "stdout" that you can examine to see if any errors are being written to it.
-7. Microsoft's [Troubleshoot ASP.NET Core on IIS](https://docs.microsoft.com/en-us/aspnet/core/test/troubleshoot-azure-iis?view=aspnetcore-5.0) page will walk you through some typical troubleshooting steps.
+7. Microsoft's [Troubleshoot ASP.NET Core on IIS](https://docs.microsoft.com/en-us/aspnet/core/test/troubleshoot-azure-iis?view=aspnetcore-6.0) page will walk you through some typical troubleshooting steps.

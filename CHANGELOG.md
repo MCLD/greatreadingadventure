@@ -4,31 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
-## Unreleased
-
-### Added
-
-- Ability to mark vendor items as not damaged and not missing in case of accidental box checking
-- Ability to disable the in-software mail capability
-- Report to see a count of pending vendor code items per branch
-- Program-wide alert to dashboard page
-
-### Changed
-
-- Moved TempData storage to session from separate cookie
-- Updated Remaining Vendor Prize Pick-Up to separate out first/last names and username
-- Import of avatar file will overwrite any files in teh avatar directories
-
-### Fixed
-
-- Expiration of social card cache
-- Site setting categories in Mission Control are now in alphabetical order
-
-### Updated
-
-### Removed
-
-## 4.2.2
+## [4.3.17] 2022-11-17
 
 ### Added
 
@@ -44,6 +20,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Ability to configure minimum worker threads and completion port threads
 - Featured challenge group scheduling and display carousel
 - Show reasons on MC participant history page as to why items cannot be deleted
+- Ability to mark vendor items as not damaged and not missing in case of accidental box checking
+- Ability to disable the in-software mail capability
+- Report to see a count of pending vendor code items per branch
+- Program-wide alert to dashboard page
 
 ### Changed
 
@@ -53,6 +33,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Vendor item status display on participants profile
 - Show wrench menu to all who have Mission Control access
 - Upgrade from ASP.NET v5.0 to v6.0
+- Moved TempData storage to session from separate cookie
+- Updated Remaining Vendor Prize Pick-Up to separate out first/last names and username
+- Import of avatar file will overwrite any files in teh avatar directories
 
 ### Fixed
 
@@ -76,6 +59,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Check for null viewmodel on some posts
 - Bug with empty username in UsernameInUseAsync
 - Allow deletion of events even if participants have favorited them
+- Expiration of social card cache
+- Site setting categories in Mission Control are now in alphabetical order
 
 ### Updated
 
@@ -389,6 +374,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Everything! First release of 4.0.
 
+[4.3.17]: https://github.com/mcld/greatreadingadventure/tree/v4.3.17
 [4.2.1]: https://github.com/mcld/greatreadingadventure/tree/v4.2.1
 [4.2.0]: https://github.com/mcld/greatreadingadventure/tree/v4.2.0
 [4.1.1]: https://github.com/mcld/greatreadingadventure/tree/v4.1.1

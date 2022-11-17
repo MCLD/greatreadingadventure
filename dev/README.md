@@ -6,7 +6,7 @@ GRA code should successfully compile using either the free [Visual Studio Code](
 
 Framework history:
 
-- Current work (version 4.3.0 and on) use [.NET 6.0](https://docs.microsoft.com/en-us/dotnet/core/whats-new/dotnet-6)
+- Current work (versions 4.3.x) use [.NET 6.0](https://docs.microsoft.com/en-us/dotnet/core/whats-new/dotnet-6)
 - Versions 4.2 and 4.2.1 use [.NET 5.0](https://docs.microsoft.com/en-us/dotnet/core/whats-new/dotnet-5)
 - Version 4.1.1 used ASP.NET Core v2.2
 - Version 4.1.0 used ASP.NET Core v2.1
