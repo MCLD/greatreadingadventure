@@ -24,7 +24,7 @@
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <UserSecretsId>gra-e773e45a-3078-4b1b-842d-c7a8f7d310a6</UserSecretsId>
-    <Version>4.3.0</Version>
+    <Version>4.3.17</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -79,7 +79,7 @@
     <PackageReference Include="Serilog.Filters.Expressions" Version="2.1.0" />
     <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="6.0.0" />
     <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
-    <PackageReference Include="Serilog.Sinks.Seq" Version="5.2.1" />
+    <PackageReference Include="Serilog.Sinks.Seq" Version="5.2.2" />
     <PackageReference Include="Serilog.Sinks.Slack.Core" Version="0.1.5-beta" />
     <PackageReference Include="System.Text.Encodings.Web" Version="6.0.0">
       <TreatAsUsed>true</TreatAsUsed>

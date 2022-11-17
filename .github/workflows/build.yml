@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Run build.bash
         env:
@@ -21,7 +21,7 @@ jobs:
           GHCR_USER: ${{secrets.GHCR_USER}}
         run: ./build.bash -p
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: Great Reading Adventure
           path: package/GreatReadingAdventure-*.zip

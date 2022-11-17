@@ -2,7 +2,7 @@
 
 ## Development environment
 
-- Windows, macOS: [Visual Studio 2019](https://www.visualstudio.com/vs/)
+- Windows, macOS: [Visual Studio 2022](https://www.visualstudio.com/vs/)
 - Linux, macOS, Windows: [Visual Studio Code](https://code.visualstudio.com/)
   - Ensure you [install the C# extension](https://code.visualstudio.com/docs/runtimes/dotnet)
 
