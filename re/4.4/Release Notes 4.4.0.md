@@ -10,7 +10,7 @@ These release notes accompany **[:books: The Great Reading Adventure version 4.4
 
 ### Upgrading
 
-If you wish to upgrade from a previous release of version 4 see the [upgrading section](http://manual.greatreadingadventure.com/en/v4.3/installation/upgrading/) of the manual. There is no upgrade path from versions 2 or 3 to this release due to significant architectural changes.
+If you wish to upgrade from a previous release of version 4 see the [upgrading section](http://manual.greatreadingadventure.com/en/v4.4.0/installation/upgrading/) of the manual. There is no upgrade path from versions 2 or 3 to this release due to significant architectural changes.
 
 ### Documentation
 
