@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [4.4.0] 2022-11-29
+
+### Changed
+
+- Upgrade from ASP.NET v6.0 to v7.0
+
 ## [4.3.17] 2022-11-17
 
 ### Added
@@ -374,6 +380,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Everything! First release of 4.0.
 
+[4.4.0]: https://github.com/mcld/greatreadingadventure/tree/v4.4.0
 [4.3.17]: https://github.com/mcld/greatreadingadventure/tree/v4.3.17
 [4.2.1]: https://github.com/mcld/greatreadingadventure/tree/v4.2.1
 [4.2.0]: https://github.com/mcld/greatreadingadventure/tree/v4.2.0
