@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## Unreleased
+
+### Fixed
+
+- Display a friendly and accurate error if a social image is too large
+
 ## [4.4.0] 2022-11-29
 
 ### Changed
