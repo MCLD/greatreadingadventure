@@ -75,7 +75,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.0" />
-    <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
+    <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
     <PackageReference Include="Serilog.Filters.Expressions" Version="2.1.0" />
     <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="6.0.0" />
     <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
