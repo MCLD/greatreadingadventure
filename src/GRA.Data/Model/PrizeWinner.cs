@@ -23,5 +23,7 @@ namespace GRA.Data.Model
         public int? RedeemedBySystem { get; set; }
         public int? MailId { get; set; }
         public int? VendorCodeId { get; set; }
+        [MaxLength(255)]
+        public string StaffNotes { get; set; }
     }
 }

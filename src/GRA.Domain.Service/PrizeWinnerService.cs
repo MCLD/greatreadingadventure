@@ -71,7 +71,7 @@ namespace GRA.Domain.Service
             return await _prizeWinnerRepository.AddSaveAsync(currentUserId, prizeWinner);
         }
 
-        public async Task RedeemPrizeAsync(int prizeWinnerId)
+        public async Task RedeemPrizeAsync(int prizeWinnerId, string staffNotes = "")
         {
             int authUserId = GetClaimId(ClaimType.UserId);
 
@@ -93,6 +93,7 @@ namespace GRA.Domain.Service
                     prize.RedeemedBy = authUserId;
                     prize.RedeemedByBranch = authUser.BranchId;
                     prize.RedeemedBySystem = authUser.SystemId;
+                    prize.StaffNotes = staffNotes;
 
                     await _prizeWinnerRepository.UpdateSaveAsync(authUserId, prize);
                 }

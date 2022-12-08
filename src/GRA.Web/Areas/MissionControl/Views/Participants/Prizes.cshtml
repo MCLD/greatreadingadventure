@@ -121,6 +121,7 @@
                                 <td>
                                     @if (prizeWinner.RedeemedAt.HasValue)
                                     {
+                                        <span id="staffNotes" name="staffNotes">@prizeWinner.StaffNotes</span>
                                         <form asp-controller="Participants" asp-action="UndoRedemption" method="post" role="form">
                                             <strong>Reedemed</strong> at @prizeWinner.RedeemedAt.Value.ToString()
 
@@ -141,6 +142,7 @@
                                             <input id="prizeWinnerId" name="prizeWinnerId" value="@prizeWinner.Id" type="hidden" />
                                             <input id="userId" name="userId" value="@prizeWinner.UserId" type="hidden" />
                                             <input id="page" name="page" value="@Model.PaginateModel.CurrentPage" type="hidden" />
+                                            <input id="staffNotes" name="staffNotes" value="@prizeWinner.StaffNotes" class="form-control form-group" placeholder="Redemption notes (optional)" maxlength="255" />
                                             <button type="submit"
                                                     class="btn btn-success btn-xs btn-spinner"
                                                     button-spinner>
