@@ -20,7 +20,7 @@ namespace GRA.Domain.Model
         [Required]
         public string Name { get; set; }
         [MaxLength(1000)]
-        [DisplayName("Redemption Instructions")]
+        [DisplayName("Redemption Instructions for staff")]
         public string RedemptionInstructions { get; set; }
         [DisplayName("# of Winners")]
         [Range(1, int.MaxValue, ErrorMessage = "There must be at least 1 winner")]
