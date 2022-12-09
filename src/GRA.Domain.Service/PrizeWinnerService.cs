@@ -71,92 +71,33 @@ namespace GRA.Domain.Service
             return await _prizeWinnerRepository.AddSaveAsync(currentUserId, prizeWinner);
         }
 
-        public async Task RedeemPrizeAsync(int prizeWinnerId, string staffNotes = "")
-        {
-            int authUserId = GetClaimId(ClaimType.UserId);
-
-            var prize = await _prizeWinnerRepository.GetByIdAsync(prizeWinnerId);
-
-            if (HasPermission(Permission.ViewUserPrizes)
-                || prize.UserId == authUserId
-                || prize.UserId == GetActiveUserId())
-            {
-                if (prize.RedeemedAt.HasValue)
-                {
-                    _logger.LogError($"Double redeem attempt for prize {prizeWinnerId} by user {authUserId}");
-                    throw new GraException($"This prize was already redeemed on {prize.RedeemedAt}");
-                }
-                else
-                {
-                    var authUser = await _userRepository.GetByIdAsync(authUserId);
-                    prize.RedeemedAt = _dateTimeProvider.Now;
-                    prize.RedeemedBy = authUserId;
-                    prize.RedeemedByBranch = authUser.BranchId;
-                    prize.RedeemedBySystem = authUser.SystemId;
-                    prize.StaffNotes = staffNotes;
-
-                    await _prizeWinnerRepository.UpdateSaveAsync(authUserId, prize);
-                }
-            }
-            else
-            {
-                _logger.LogError($"User {authUserId} doesn't have permission to redeem prize {prizeWinnerId}.");
-                throw new GraException("Permission denied.");
-            }
-        }
-
-        public async Task UndoRedemptionAsync(int prizeWinnerId)
+        public async Task<List<PrizeCount>> GetHouseholdUnredeemedPrizesAsync(int headId)
         {
             VerifyManagementPermission();
 
-            int authUserId = GetClaimId(ClaimType.UserId);
-            var prize = await _prizeWinnerRepository.GetByIdAsync(prizeWinnerId);
-
-            if (!prize.RedeemedAt.HasValue)
-            {
-                _logger.LogError($"Prize not redeemed - undo attempt for {prizeWinnerId} by user {authUserId}");
-                throw new GraException("This prize has not been redeemed!");
-            }
-            else
-            {
-                prize.RedeemedAt = null;
-                prize.RedeemedBy = null;
-                await _prizeWinnerRepository.UpdateSaveAsync(authUserId, prize);
-                _logger.LogInformation($"User {authUserId} just undid redemption of prize id {prizeWinnerId} awarded to user {prize.UserId}");
-            }
-        }
-
-        public async Task RemovePrizeAsync(int prizeWinnerId)
-        {
-            VerifyManagementPermission();
-
-            int authUserId = GetClaimId(ClaimType.UserId);
-            var prize = await _prizeWinnerRepository.GetByIdAsync(prizeWinnerId);
-            if (!prize.RedeemedAt.HasValue)
-            {
-                await _prizeWinnerRepository.RemoveSaveAsync(authUserId, prizeWinnerId);
-
-                if (prize.DrawingId.HasValue)
-                {
-                    var winnerCount = await _drawingRepository.GetWinnerCountAsync(
-                        prize.DrawingId.Value);
-                    if (winnerCount == 0)
-                    {
-                        await _drawingRepository.SetArchivedAsync(authUserId, prize.DrawingId.Value,
-                            true);
-                    }
-                }
-            }
-            else
-            {
-                _logger.LogError($"User {authUserId} cannot remove claimed prize {prize.Id}.");
-                throw new GraException("Prizes that have been claimed cannot be removed.");
-            }
+            return await _prizeWinnerRepository.GetHouseholdUnredeemedPrizesAsync(headId);
         }
 
         public async Task<PrizeWinner> GetPrizeForVendorCodeAsync(int vendorCodeId)
         {
             return await _prizeWinnerRepository.GetPrizeForVendorCodeAsync(vendorCodeId);
+        }
+
+        public async Task<PrizeWinner> GetUserDrawingPrizeAsync(int userId, int drawingId)
+        {
+            return await _prizeWinnerRepository.GetUserDrawingPrizeAsync(userId, drawingId);
+        }
+
+        public async Task<PrizeWinner> GetUserTriggerPrizeAsync(int userId, int triggerId)
+        {
+            return await _prizeWinnerRepository.GetUserTriggerPrizeAsync(userId, triggerId);
+        }
+
+        public async Task<int> GetUserWinCount(int userId, bool? redeemed = null)
+        {
+            VerifyManagementPermission();
+            return await _prizeWinnerRepository.CountByWinningUserId(GetCurrentSiteId(), userId,
+                redeemed);
         }
 
         public async Task<ICollection<PrizeWinner>> GetVendorCodePrizes(int userId)
@@ -222,28 +163,87 @@ namespace GRA.Domain.Service
             };
         }
 
-        public async Task<int> GetUserWinCount(int userId, bool? redeemed = null)
+        public async Task RedeemPrizeAsync(int prizeWinnerId, string staffNotes)
+        {
+            int authUserId = GetClaimId(ClaimType.UserId);
+
+            var prize = await _prizeWinnerRepository.GetByIdAsync(prizeWinnerId);
+
+            if (HasPermission(Permission.ViewUserPrizes)
+                || prize.UserId == authUserId
+                || prize.UserId == GetActiveUserId())
+            {
+                if (prize.RedeemedAt.HasValue)
+                {
+                    _logger.LogError($"Double redeem attempt for prize {prizeWinnerId} by user {authUserId}");
+                    throw new GraException($"This prize was already redeemed on {prize.RedeemedAt}");
+                }
+                else
+                {
+                    var authUser = await _userRepository.GetByIdAsync(authUserId);
+                    prize.RedeemedAt = _dateTimeProvider.Now;
+                    prize.RedeemedBy = authUserId;
+                    prize.RedeemedByBranch = authUser.BranchId;
+                    prize.RedeemedBySystem = authUser.SystemId;
+                    prize.StaffNotes = staffNotes;
+
+                    await _prizeWinnerRepository.UpdateSaveAsync(authUserId, prize);
+                }
+            }
+            else
+            {
+                _logger.LogError($"User {authUserId} doesn't have permission to redeem prize {prizeWinnerId}.");
+                throw new GraException("Permission denied.");
+            }
+        }
+
+        public async Task RemovePrizeAsync(int prizeWinnerId)
         {
             VerifyManagementPermission();
-            return await _prizeWinnerRepository.CountByWinningUserId(GetCurrentSiteId(), userId,
-                redeemed);
+
+            int authUserId = GetClaimId(ClaimType.UserId);
+            var prize = await _prizeWinnerRepository.GetByIdAsync(prizeWinnerId);
+            if (!prize.RedeemedAt.HasValue)
+            {
+                await _prizeWinnerRepository.RemoveSaveAsync(authUserId, prizeWinnerId);
+
+                if (prize.DrawingId.HasValue)
+                {
+                    var winnerCount = await _drawingRepository.GetWinnerCountAsync(
+                        prize.DrawingId.Value);
+                    if (winnerCount == 0)
+                    {
+                        await _drawingRepository.SetArchivedAsync(authUserId, prize.DrawingId.Value,
+                            true);
+                    }
+                }
+            }
+            else
+            {
+                _logger.LogError($"User {authUserId} cannot remove claimed prize {prize.Id}.");
+                throw new GraException("Prizes that have been claimed cannot be removed.");
+            }
         }
 
-        public async Task<PrizeWinner> GetUserDrawingPrizeAsync(int userId, int drawingId)
-        {
-            return await _prizeWinnerRepository.GetUserDrawingPrizeAsync(userId, drawingId);
-        }
-
-        public async Task<PrizeWinner> GetUserTriggerPrizeAsync(int userId, int triggerId)
-        {
-            return await _prizeWinnerRepository.GetUserTriggerPrizeAsync(userId, triggerId);
-        }
-
-        public async Task<List<PrizeCount>> GetHouseholdUnredeemedPrizesAsync(int headId)
+        public async Task UndoRedemptionAsync(int prizeWinnerId)
         {
             VerifyManagementPermission();
 
-            return await _prizeWinnerRepository.GetHouseholdUnredeemedPrizesAsync(headId);
+            int authUserId = GetClaimId(ClaimType.UserId);
+            var prize = await _prizeWinnerRepository.GetByIdAsync(prizeWinnerId);
+
+            if (!prize.RedeemedAt.HasValue)
+            {
+                _logger.LogError($"Prize not redeemed - undo attempt for {prizeWinnerId} by user {authUserId}");
+                throw new GraException("This prize has not been redeemed!");
+            }
+            else
+            {
+                prize.RedeemedAt = null;
+                prize.RedeemedBy = null;
+                await _prizeWinnerRepository.UpdateSaveAsync(authUserId, prize);
+                _logger.LogInformation($"User {authUserId} just undid redemption of prize id {prizeWinnerId} awarded to user {prize.UserId}");
+            }
         }
     }
 }
