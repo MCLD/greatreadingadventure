@@ -1756,7 +1756,7 @@ namespace GRA.Controllers.MissionControl
 
                     try
                     {
-                        await _prizeWinnerService.RedeemPrizeAsync(prize.Id);
+                        await _prizeWinnerService.RedeemPrizeAsync(prize.Id, prize.StaffNotes);
                         redeemedCount++;
                     }
                     catch (GraException)
@@ -2310,11 +2310,11 @@ namespace GRA.Controllers.MissionControl
 
         [HttpPost]
         [Authorize(Policy = Policy.ViewUserPrizes)]
-        public async Task<IActionResult> RedeemWinner(int prizeWinnerId, int userId, int page = 1)
+        public async Task<IActionResult> RedeemWinner(int prizeWinnerId, int userId, string staffNotes, int page = 1)
         {
             try
             {
-                await _prizeWinnerService.RedeemPrizeAsync(prizeWinnerId);
+                await _prizeWinnerService.RedeemPrizeAsync(prizeWinnerId, staffNotes);
             }
             catch (GraException gex)
             {
