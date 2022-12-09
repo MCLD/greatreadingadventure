@@ -18,12 +18,11 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.PerformDrawing)]
     public class DrawingController : Base.MCController
     {
-        private readonly DrawingService _drawingService;
         private readonly ILogger<DrawingController> _logger;
+        private readonly DrawingService _drawingService;
         private readonly PrizeWinnerService _prizeWinnerService;
         private readonly SiteService _siteService;
         private readonly UserService _userService;
-
         public DrawingController(ILogger<DrawingController> logger,
             ServiceFacade.Controller context,
             DrawingService drawingService,
@@ -32,13 +31,295 @@ namespace GRA.Controllers.MissionControl
             UserService userService) : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _drawingService = drawingService
+            _drawingService = drawingService 
                 ?? throw new ArgumentNullException(nameof(drawingService));
-            _prizeWinnerService = prizeWinnerService
+            _prizeWinnerService = prizeWinnerService 
                 ?? throw new ArgumentNullException(nameof(prizeWinnerService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = "Drawing";
+        }
+
+        public async Task<IActionResult> Index(string search,
+            int? systemId, int? branchId, bool? mine, int? programId, bool? archived, int page = 1)
+        {
+            var filter = new DrawingFilter(page);
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                filter.Search = search;
+            }
+
+            if (archived == true)
+            {
+                filter.Archived = true;
+                PageTitle = "Archived Drawings";
+            }
+
+            if (mine == true)
+            {
+                filter.UserIds = new List<int> { GetId(ClaimType.UserId) };
+            }
+            else if (branchId.HasValue)
+            {
+                filter.BranchIds = new List<int> { branchId.Value };
+            }
+            else if (systemId.HasValue)
+            {
+                filter.SystemIds = new List<int> { systemId.Value };
+            }
+
+            if (programId.HasValue)
+            {
+                if (programId.Value > 0)
+                {
+                    filter.ProgramIds = new List<int?> { programId.Value };
+                }
+                else
+                {
+                    filter.ProgramIds = new List<int?> { null };
+                }
+            }
+
+            var drawingList = await _drawingService.GetPaginatedDrawingListAsync(filter);
+
+            PaginateViewModel paginateModel = new PaginateViewModel()
+            {
+                ItemCount = drawingList.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+
+            if (paginateModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+
+            var systemList = (await _siteService.GetSystemList())
+                .OrderByDescending(_ => _.Id == GetId(ClaimType.SystemId)).ThenBy(_ => _.Name);
+
+            DrawingListViewModel viewModel = new DrawingListViewModel()
+            {
+                Drawings = drawingList.Data,
+                PaginateModel = paginateModel,
+                Archived = archived,
+                Search = search,
+                SystemId = systemId,
+                BranchId = branchId,
+                ProgramId = programId,
+                Mine = mine,
+                SystemList = systemList,
+                ProgramList = await _siteService.GetProgramList()
+            };
+
+            if (mine == true)
+            {
+                viewModel.BranchList = (await _siteService.GetBranches(GetId(ClaimType.SystemId)))
+                        .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
+                        .ThenBy(_ => _.Name);
+                viewModel.ActiveNav = "Mine";
+            }
+            else if (branchId.HasValue)
+            {
+                var branch = await _siteService.GetBranchByIdAsync(branchId.Value);
+                viewModel.BranchName = branch.Name;
+                viewModel.SystemName = systemList
+                    .Where(_ => _.Id == branch.SystemId).SingleOrDefault().Name;
+                viewModel.BranchList = (await _siteService.GetBranches(branch.SystemId))
+                    .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
+                    .ThenBy(_ => _.Name);
+                viewModel.ActiveNav = "Branch";
+            }
+            else if (systemId.HasValue)
+            {
+                viewModel.SystemName = systemList
+                    .Where(_ => _.Id == systemId.Value).SingleOrDefault().Name;
+                viewModel.BranchList = (await _siteService.GetBranches(systemId.Value))
+                    .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
+                    .ThenBy(_ => _.Name);
+                viewModel.ActiveNav = "System";
+            }
+            else
+            {
+                viewModel.BranchList = (await _siteService.GetBranches(GetId(ClaimType.SystemId)))
+                        .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
+                        .ThenBy(_ => _.Name);
+                viewModel.ActiveNav = "All";
+            }
+            if (programId.HasValue)
+            {
+                if (programId.Value > 0)
+                {
+                    viewModel.ProgramName =
+                        (await _siteService.GetProgramByIdAsync(programId.Value)).Name;
+                }
+                else
+                {
+                    viewModel.ProgramName = "Not Limited";
+                }
+            }
+
+            return View(viewModel);
+        }
+
+        public async Task<IActionResult> Detail(int id, int page = 1)
+        {
+            int take = 15;
+            int skip = take * (page - 1);
+
+            try
+            {
+                var drawing = await _drawingService.GetDetailsAsync(id, skip, take);
+
+                PaginateViewModel paginateModel = new PaginateViewModel()
+                {
+                    ItemCount = drawing.Count,
+                    CurrentPage = page,
+                    ItemsPerPage = take
+                };
+
+                if (paginateModel.PastMaxPage)
+                {
+                    return RedirectToRoute(
+                        new
+                        {
+                            id = id,
+                            page = paginateModel.LastPage ?? 1
+                        });
+                }
+
+                DrawingDetailViewModel viewModel = new DrawingDetailViewModel()
+                {
+                    Drawing = drawing.Data,
+                    CreatedByName = await _userService.GetUsersNameByIdAsync(drawing.Data.CreatedBy),
+                    CanViewParticipants = UserHasPermission(Permission.ViewParticipantDetails),
+                    PaginateModel = paginateModel
+                };
+
+                return View(viewModel);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to view drawing: ", gex);
+                return RedirectToAction("Index");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RedeemWinner(int prizeWinnerId, int drawingId, int page = 1)
+        {
+            try
+            {
+                await _prizeWinnerService.RedeemPrizeAsync(prizeWinnerId);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to redeem prize: ", gex);
+            }
+            return RedirectToAction("Detail", new { id = drawingId, page = page });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UndoRedemption(int prizeWinnerId, int drawingId, int page = 1)
+        {
+            try
+            {
+                await _prizeWinnerService.UndoRedemptionAsync(prizeWinnerId);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to undo redemption: ", gex);
+            }
+            return RedirectToAction("Detail", new { id = drawingId, page = page });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveWinner(int prizeWinnerId, int drawingId, int page = 1)
+        {
+            try
+            {
+                await _prizeWinnerService.RemovePrizeAsync(prizeWinnerId);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to delete winner: ", gex);
+            }
+            return RedirectToAction("Detail", new { id = drawingId, page = page });
+        }
+
+        public async Task<IActionResult> New(int id)
+        {
+            try
+            {
+                var drawing = new Drawing()
+                {
+                    DrawingCriterionId = id,
+                    DrawingCriterion = await _drawingService.GetCriterionDetailsAsync(id),
+                    WinnerCount = 1
+                };
+                drawing.DrawingCriterion.EligibleCount = await _drawingService.GetEligibleCountAsync(id);
+
+                DrawingNewViewModel viewModel = new DrawingNewViewModel()
+                {
+                    Drawing = drawing,
+                    CanSendMail = UserHasPermission(Permission.MailParticipants)
+                };
+
+                return View(viewModel);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to view new drawing: ", gex);
+                return RedirectToAction("Criteria");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> New(DrawingNewViewModel model)
+        {
+            if (string.IsNullOrWhiteSpace(model.Drawing.NotificationSubject)
+                && !string.IsNullOrWhiteSpace(model.Drawing.NotificationMessage))
+            {
+                ModelState.AddModelError("NotificationSubject",
+                    "A subject is required to accompany the message");
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.Drawing.NotificationSubject)
+                && string.IsNullOrWhiteSpace(model.Drawing.NotificationMessage))
+            {
+                ModelState.AddModelError("NotificationMessage",
+                    "A message is required to accompany the subject");
+            }
+
+            if (model.Drawing.WinnerCount > model.Drawing.DrawingCriterion.EligibleCount)
+            {
+                ModelState.AddModelError("WinnerCount", "Cannot have more Winners than Eligible Participants");
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var drawing = await _drawingService.PerformDrawingAsync(model.Drawing);
+                    return RedirectToAction("Detail", new { id = drawing.Id });
+                }
+                catch (GraException gex)
+                {
+                    AlertInfo = gex.Message;
+                    ModelState["DrawingCriterion.EligibleCount"].RawValue =
+                        await _drawingService.GetEligibleCountAsync(model.Drawing.DrawingCriterionId);
+
+                    return View(model);
+                }
+            }
+            else
+            {
+                return View(model);
+            }
         }
 
         public async Task<IActionResult> Criteria(string search,
@@ -304,287 +585,6 @@ namespace GRA.Controllers.MissionControl
                 model.ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name");
                 return View(model);
             }
-        }
-
-        public async Task<IActionResult> Detail(int id, int page = 1)
-        {
-            int take = 15;
-            int skip = take * (page - 1);
-
-            try
-            {
-                var drawing = await _drawingService.GetDetailsAsync(id, skip, take);
-
-                PaginateViewModel paginateModel = new PaginateViewModel()
-                {
-                    ItemCount = drawing.Count,
-                    CurrentPage = page,
-                    ItemsPerPage = take
-                };
-
-                if (paginateModel.PastMaxPage)
-                {
-                    return RedirectToRoute(
-                        new
-                        {
-                            id = id,
-                            page = paginateModel.LastPage ?? 1
-                        });
-                }
-
-                DrawingDetailViewModel viewModel = new DrawingDetailViewModel()
-                {
-                    Drawing = drawing.Data,
-                    CreatedByName = await _userService.GetUsersNameByIdAsync(drawing.Data.CreatedBy),
-                    CanViewParticipants = UserHasPermission(Permission.ViewParticipantDetails),
-                    PaginateModel = paginateModel
-                };
-
-                return View(viewModel);
-            }
-            catch (GraException gex)
-            {
-                ShowAlertWarning("Unable to view drawing: ", gex);
-                return RedirectToAction("Index");
-            }
-        }
-
-        public async Task<IActionResult> Index(string search,
-                                                            int? systemId, int? branchId, bool? mine, int? programId, bool? archived, int page = 1)
-        {
-            var filter = new DrawingFilter(page);
-
-            if (!string.IsNullOrWhiteSpace(search))
-            {
-                filter.Search = search;
-            }
-
-            if (archived == true)
-            {
-                filter.Archived = true;
-                PageTitle = "Archived Drawings";
-            }
-
-            if (mine == true)
-            {
-                filter.UserIds = new List<int> { GetId(ClaimType.UserId) };
-            }
-            else if (branchId.HasValue)
-            {
-                filter.BranchIds = new List<int> { branchId.Value };
-            }
-            else if (systemId.HasValue)
-            {
-                filter.SystemIds = new List<int> { systemId.Value };
-            }
-
-            if (programId.HasValue)
-            {
-                if (programId.Value > 0)
-                {
-                    filter.ProgramIds = new List<int?> { programId.Value };
-                }
-                else
-                {
-                    filter.ProgramIds = new List<int?> { null };
-                }
-            }
-
-            var drawingList = await _drawingService.GetPaginatedDrawingListAsync(filter);
-
-            PaginateViewModel paginateModel = new PaginateViewModel()
-            {
-                ItemCount = drawingList.Count,
-                CurrentPage = page,
-                ItemsPerPage = filter.Take.Value
-            };
-
-            if (paginateModel.PastMaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
-            }
-
-            var systemList = (await _siteService.GetSystemList())
-                .OrderByDescending(_ => _.Id == GetId(ClaimType.SystemId)).ThenBy(_ => _.Name);
-
-            DrawingListViewModel viewModel = new DrawingListViewModel()
-            {
-                Drawings = drawingList.Data,
-                PaginateModel = paginateModel,
-                Archived = archived,
-                Search = search,
-                SystemId = systemId,
-                BranchId = branchId,
-                ProgramId = programId,
-                Mine = mine,
-                SystemList = systemList,
-                ProgramList = await _siteService.GetProgramList()
-            };
-
-            if (mine == true)
-            {
-                viewModel.BranchList = (await _siteService.GetBranches(GetId(ClaimType.SystemId)))
-                        .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
-                        .ThenBy(_ => _.Name);
-                viewModel.ActiveNav = "Mine";
-            }
-            else if (branchId.HasValue)
-            {
-                var branch = await _siteService.GetBranchByIdAsync(branchId.Value);
-                viewModel.BranchName = branch.Name;
-                viewModel.SystemName = systemList
-                    .Where(_ => _.Id == branch.SystemId).SingleOrDefault().Name;
-                viewModel.BranchList = (await _siteService.GetBranches(branch.SystemId))
-                    .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
-                    .ThenBy(_ => _.Name);
-                viewModel.ActiveNav = "Branch";
-            }
-            else if (systemId.HasValue)
-            {
-                viewModel.SystemName = systemList
-                    .Where(_ => _.Id == systemId.Value).SingleOrDefault().Name;
-                viewModel.BranchList = (await _siteService.GetBranches(systemId.Value))
-                    .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
-                    .ThenBy(_ => _.Name);
-                viewModel.ActiveNav = "System";
-            }
-            else
-            {
-                viewModel.BranchList = (await _siteService.GetBranches(GetId(ClaimType.SystemId)))
-                        .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
-                        .ThenBy(_ => _.Name);
-                viewModel.ActiveNav = "All";
-            }
-            if (programId.HasValue)
-            {
-                if (programId.Value > 0)
-                {
-                    viewModel.ProgramName =
-                        (await _siteService.GetProgramByIdAsync(programId.Value)).Name;
-                }
-                else
-                {
-                    viewModel.ProgramName = "Not Limited";
-                }
-            }
-
-            return View(viewModel);
-        }
-        public async Task<IActionResult> New(int id)
-        {
-            try
-            {
-                var drawing = new Drawing()
-                {
-                    DrawingCriterionId = id,
-                    DrawingCriterion = await _drawingService.GetCriterionDetailsAsync(id),
-                    WinnerCount = 1
-                };
-                drawing.DrawingCriterion.EligibleCount = await _drawingService.GetEligibleCountAsync(id);
-
-                DrawingNewViewModel viewModel = new DrawingNewViewModel()
-                {
-                    Drawing = drawing,
-                    CanSendMail = UserHasPermission(Permission.MailParticipants)
-                };
-
-                return View(viewModel);
-            }
-            catch (GraException gex)
-            {
-                ShowAlertWarning("Unable to view new drawing: ", gex);
-                return RedirectToAction("Criteria");
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> New(DrawingNewViewModel model)
-        {
-            if (string.IsNullOrWhiteSpace(model.Drawing.NotificationSubject)
-                && !string.IsNullOrWhiteSpace(model.Drawing.NotificationMessage))
-            {
-                ModelState.AddModelError("NotificationSubject",
-                    "A subject is required to accompany the message");
-            }
-
-            if (!string.IsNullOrWhiteSpace(model.Drawing.NotificationSubject)
-                && string.IsNullOrWhiteSpace(model.Drawing.NotificationMessage))
-            {
-                ModelState.AddModelError("NotificationMessage",
-                    "A message is required to accompany the subject");
-            }
-
-            if (model.Drawing.WinnerCount > model.Drawing.DrawingCriterion.EligibleCount)
-            {
-                ModelState.AddModelError("WinnerCount", "Cannot have more Winners than Eligible Participants");
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    var drawing = await _drawingService.PerformDrawingAsync(model.Drawing);
-                    return RedirectToAction("Detail", new { id = drawing.Id });
-                }
-                catch (GraException gex)
-                {
-                    AlertInfo = gex.Message;
-                    ModelState["DrawingCriterion.EligibleCount"].RawValue =
-                        await _drawingService.GetEligibleCountAsync(model.Drawing.DrawingCriterionId);
-
-                    return View(model);
-                }
-            }
-            else
-            {
-                return View(model);
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> RedeemWinner(int prizeWinnerId, int drawingId, int page = 1)
-        {
-            try
-            {
-                await _prizeWinnerService.RedeemPrizeAsync(prizeWinnerId, null);
-            }
-            catch (GraException gex)
-            {
-                ShowAlertWarning("Unable to redeem prize: ", gex);
-            }
-            return RedirectToAction("Detail", new { id = drawingId, page = page });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> RemoveWinner(int prizeWinnerId, int drawingId, int page = 1)
-        {
-            try
-            {
-                await _prizeWinnerService.RemovePrizeAsync(prizeWinnerId);
-            }
-            catch (GraException gex)
-            {
-                ShowAlertWarning("Unable to delete winner: ", gex);
-            }
-            return RedirectToAction("Detail", new { id = drawingId, page = page });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> UndoRedemption(int prizeWinnerId, int drawingId, int page = 1)
-        {
-            try
-            {
-                await _prizeWinnerService.UndoRedemptionAsync(prizeWinnerId);
-            }
-            catch (GraException gex)
-            {
-                ShowAlertWarning("Unable to undo redemption: ", gex);
-            }
-            return RedirectToAction("Detail", new { id = drawingId, page = page });
         }
     }
 }

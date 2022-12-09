@@ -6,16 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## Unreleased
 
-## Changed
-
-- Rename "Redemption Instructions" label to "Redemptions Instructions for Staff"
-
-## Added
-
-- Notes field on prize redemption for staff
-
-## [4.4.2] 2022-12-09
-
 ### Fixed
 
 - Display a friendly and accurate error if a social image is too large
