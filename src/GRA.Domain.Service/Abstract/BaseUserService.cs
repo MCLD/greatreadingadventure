@@ -57,11 +57,10 @@ namespace GRA.Domain.Service.Abstract
         protected int GetActiveUserId()
         {
             var userContext = GetUserContext();
-            if (userContext == null
-               || !userContext.User.Identity.IsAuthenticated
+            if (userContext?.User.Identity.IsAuthenticated != true
                || userContext.ActiveUserId == null)
             {
-                throw new System.Exception("User is not authenticated.");
+                throw new GraException("User is not authenticated.");
             }
             return (int)userContext.ActiveUserId;
         }
@@ -136,12 +135,14 @@ namespace GRA.Domain.Service.Abstract
             if (_managementPermission == null)
             {
                 _logger.LogError("VerifyManagementPermission called before SetManagementPermission.");
-                throw new System.Exception("An error occurred verifying permissions.");
+                throw new GraException("An error occurred verifying permissions.");
             }
             var permission = (Permission)_managementPermission;
             if (!HasPermission(permission))
             {
-                _logger.LogError($"User id {GetClaimId(ClaimType.UserId)} does not have permission {permission}.");
+                _logger.LogError("User id {UserId} does not have permission {Permission}",
+                    GetClaimId(ClaimType.UserId),
+                    permission);
                 throw new GraException(Annotations.Validate.Permission);
             }
         }
@@ -150,7 +151,9 @@ namespace GRA.Domain.Service.Abstract
         {
             if (!HasPermission(permission))
             {
-                _logger.LogError($"User id {GetClaimId(ClaimType.UserId)} does not have permission {permission}.");
+                _logger.LogError("User id {UserId} does not have permission {Permission}",
+                    GetClaimId(ClaimType.UserId),
+                    permission);
                 throw new GraException(Annotations.Validate.Permission);
             }
         }

@@ -43,6 +43,7 @@ namespace GRA.Web
         private const string ConnectionStringNameSQLite = "SQLite";
         private const string ConnectionStringNameSqlServer = "SqlServer";
         private const string DefaultInitialProgramSetup = ConfigurationMultipleProgramValue;
+        private const string ErrorControllerPath = "/Error";
         private readonly IConfiguration _config;
         private readonly bool _isDevelopment;
 
@@ -86,12 +87,14 @@ namespace GRA.Web
             }
             else
             {
-                app.UseStatusCodePagesWithReExecute(string.Join("/",
-                    "",
-                    Controllers.ErrorController.Name,
-                    nameof(Controllers.ErrorController.Index),
-                    "{0}"));
+                app.UseExceptionHandler(ErrorControllerPath);
             }
+
+            app.UseStatusCodePagesWithReExecute(string.Join("/",
+                "",
+                Controllers.ErrorController.Name,
+                nameof(Controllers.ErrorController.Index),
+                "{0}"));
 
             // override proxy IP address if one is present
             if (!string.IsNullOrEmpty(_config[ConfigurationKey.ReverseProxyAddress]))

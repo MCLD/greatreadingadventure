@@ -17,24 +17,20 @@ namespace GRA.Controllers
     [UnauthenticatedFilter]
     public class JoinController : Base.UserController
     {
-        private const string TempStep1 = "TempStep1";
-        private const string TempStep2 = "TempStep2";
-
         private const string AuthCodeAttempts = "AuthCodeAttempts";
         private const string EnteredAuthCode = "EnteredAuthCode";
-
-        private readonly ILogger<JoinController> _logger;
-        private readonly AutoMapper.IMapper _mapper;
+        private const string TempStep1 = "TempStep1";
+        private const string TempStep2 = "TempStep2";
         private readonly AuthenticationService _authenticationService;
         private readonly AuthorizationCodeService _authorizationCodeService;
+        private readonly ILogger<JoinController> _logger;
         private readonly MailService _mailService;
+        private readonly AutoMapper.IMapper _mapper;
         private readonly PointTranslationService _pointTranslationService;
+        private readonly QuestionnaireService _questionnaireService;
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
-        private readonly QuestionnaireService _questionnaireService;
         private readonly UserService _userService;
-
-        public static string Name { get { return "Join"; } }
 
         public JoinController(ILogger<JoinController> logger,
             ServiceFacade.Controller context,
@@ -64,6 +60,61 @@ namespace GRA.Controllers
                 ?? throw new ArgumentNullException(nameof(questionnaireService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = _sharedLocalizer[Annotations.Title.Join];
+        }
+
+        public static string Name
+        { get { return "Join"; } }
+
+        public IActionResult AuthorizationCode()
+        {
+            if (TempData.ContainsKey(AuthCodeAttempts) && (int)TempData.Peek(AuthCodeAttempts) >= 5)
+            {
+                ShowAlertDanger("Too many failed authorization attempts.");
+                return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AuthorizationCode(AuthorizationCodeViewModel model)
+        {
+            var site = await GetCurrentSiteAsync();
+            if (!TempData.ContainsKey(AuthCodeAttempts) || (int)TempData.Peek(AuthCodeAttempts) < 5)
+            {
+                var sanitized = model.AuthorizationCode.Trim().ToLowerInvariant();
+                if (await _authorizationCodeService.ValidateAuthorizationCode(sanitized))
+                {
+                    TempData.Remove(AuthCodeAttempts);
+                    TempData[EnteredAuthCode] = model.AuthorizationCode;
+                    ShowAlertInfo("Authorization code accepted.");
+
+                    if (site.SinglePageSignUp)
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                    {
+                        return RedirectToAction(nameof(Step1));
+                    }
+                }
+                if (TempData.ContainsKey(AuthCodeAttempts))
+                {
+                    TempData[AuthCodeAttempts] = (int)TempData[AuthCodeAttempts] + 1;
+                }
+                else
+                {
+                    TempData[AuthCodeAttempts] = 1;
+                }
+            }
+
+            if (TempData.ContainsKey(AuthCodeAttempts) && (int)TempData.Peek(AuthCodeAttempts) >= 5)
+            {
+                ShowAlertDanger("Too many failed authorization attempts.");
+                return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
+            }
+            ShowAlertDanger("Invalid authorization code.");
+
+            return View();
         }
 
         public async Task<IActionResult> Index()
@@ -182,66 +233,81 @@ namespace GRA.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(SinglePageViewModel model)
         {
-            var site = await GetCurrentSiteAsync();
-            if (!site.SinglePageSignUp)
-            {
-                return RedirectToAction(nameof(Step1));
-            }
-            if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.PostalCode))
-            {
-                ModelState.AddModelError(nameof(model.PostalCode),
-                    _sharedLocalizer[ErrorMessages.Field,
-                        _sharedLocalizer[DisplayNames.ZipCode]]);
-            }
-
-            var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
-
-            if (!askIfFirstTime)
-            {
-                ModelState.Remove(nameof(model.IsFirstTime));
-            }
-
-            var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
-                SiteSettingKey.Users.AskEmailSubPermission);
-            if (!askEmailSubscription)
-            {
-                ModelState.Remove(nameof(model.EmailSubscriptionRequested));
-            }
-            else
-            {
-                var subscriptionRequested = model.EmailSubscriptionRequested.Equals(
-                        DropDownTrueValue, StringComparison.OrdinalIgnoreCase);
-                if (subscriptionRequested && string.IsNullOrWhiteSpace(model.Email))
-                {
-                    ModelState.AddModelError(nameof(model.Email), " ");
-                    ModelState.AddModelError(nameof(model.EmailSubscriptionRequested),
-                        _sharedLocalizer[Annotations.Required.EmailForSubscription]);
-                }
-            }
-
-            var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
-            SiteSettingKey.Users.DefaultDailyPersonalGoal);
-
+            bool askIfFirstTime;
             bool askAge = false;
             bool askSchool = false;
-            if (model.ProgramId.HasValue)
+            var site = await GetCurrentSiteAsync();
+            bool askEmailSubscription;
+            string askEmailSubscriptionText;
+            bool askActivityGoal;
+            int defaultDailyGoal;
+
+            try
             {
-                var program = await _siteService.GetProgramByIdAsync(model.ProgramId.Value);
-                askAge = program.AskAge;
-                askSchool = program.AskSchool;
-                if (program.AgeRequired && !model.Age.HasValue)
+                if (!site.SinglePageSignUp)
                 {
-                    ModelState.AddModelError(DisplayNames.Age,
-                        _sharedLocalizer[ErrorMessages.Field,
-                            _sharedLocalizer[DisplayNames.Age]]);
+                    return RedirectToAction(nameof(Step1));
                 }
-                if (program.SchoolRequired && !model.SchoolId.HasValue && !model.SchoolNotListed
-                    && !model.IsHomeschooled)
+                if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.PostalCode))
                 {
-                    ModelState.AddModelError(nameof(model.SchoolId),
+                    ModelState.AddModelError(nameof(model.PostalCode),
                         _sharedLocalizer[ErrorMessages.Field,
-                            _sharedLocalizer[DisplayNames.School]]);
+                            _sharedLocalizer[DisplayNames.ZipCode]]);
                 }
+
+                askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
+
+                if (!askIfFirstTime)
+                {
+                    ModelState.Remove(nameof(model.IsFirstTime));
+                }
+
+                (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
+                    SiteSettingKey.Users.AskEmailSubPermission);
+                if (!askEmailSubscription)
+                {
+                    ModelState.Remove(nameof(model.EmailSubscriptionRequested));
+                }
+                else
+                {
+                    var subscriptionRequested = model.EmailSubscriptionRequested.Equals(
+                            DropDownTrueValue, StringComparison.OrdinalIgnoreCase);
+                    if (subscriptionRequested && string.IsNullOrWhiteSpace(model.Email))
+                    {
+                        ModelState.AddModelError(nameof(model.Email), " ");
+                        ModelState.AddModelError(nameof(model.EmailSubscriptionRequested),
+                            _sharedLocalizer[Annotations.Required.EmailForSubscription]);
+                    }
+                }
+
+                (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
+                    SiteSettingKey.Users.DefaultDailyPersonalGoal);
+
+                if (model.ProgramId.HasValue)
+                {
+                    var program = await _siteService.GetProgramByIdAsync(model.ProgramId.Value);
+                    askAge = program.AskAge;
+                    askSchool = program.AskSchool;
+                    if (program.AgeRequired && !model.Age.HasValue)
+                    {
+                        ModelState.AddModelError(DisplayNames.Age,
+                            _sharedLocalizer[ErrorMessages.Field,
+                                _sharedLocalizer[DisplayNames.Age]]);
+                    }
+                    if (program.SchoolRequired && !model.SchoolId.HasValue && !model.SchoolNotListed
+                        && !model.IsHomeschooled)
+                    {
+                        ModelState.AddModelError(nameof(model.SchoolId),
+                            _sharedLocalizer[ErrorMessages.Field,
+                                _sharedLocalizer[DisplayNames.School]]);
+                    }
+                }
+            }
+            catch (NullReferenceException nre)
+            {
+                _logger.LogError("Null reference exception preparing to validate account creation: {ErrorMessage}",
+                    nre.Message);
+                throw new GraException("An error occured creating this account.", nre);
             }
 
             if (ModelState.IsValid)
@@ -280,7 +346,7 @@ namespace GRA.Controllers
                         DropDownTrueValue, StringComparison.OrdinalIgnoreCase);
                 }
 
-                if (askActivityGoal && user.DailyPersonalGoal > 0)
+                if (askActivityGoal && user?.DailyPersonalGoal > 0)
                 {
                     if (user.DailyPersonalGoal > Defaults.MaxDailyActivityGoal)
                     {
@@ -303,7 +369,8 @@ namespace GRA.Controllers
                             .ValidateAuthorizationCode(sanitized);
                         if (!useAuthCode)
                         {
-                            _logger.LogError($"Invalid auth code used on join: {model.AuthorizationCode}");
+                            _logger.LogError("Invalid authorization code used on join: {AuthorizationCode}",
+                                model.AuthorizationCode);
                         }
                     }
                     await _userService.RegisterUserAsync(user, model.Password,
@@ -343,11 +410,11 @@ namespace GRA.Controllers
 
                     return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
                 }
-                catch (GraException gex)
+                catch (Exception ex) when (ex is GraException || ex is NullReferenceException)
                 {
                     ShowAlertDanger(_sharedLocalizer[Annotations.Validate.CouldNotCreate,
-                       _sharedLocalizer[gex.Message]]);
-                    if (gex.GetType() == typeof(GraPasswordValidationException))
+                       _sharedLocalizer[ex.Message]]);
+                    if (ex.GetType() == typeof(GraPasswordValidationException))
                     {
                         ModelState.AddModelError(nameof(model.Password),
                             _sharedLocalizer[Annotations.Validate.PasswordIssue]);
@@ -357,46 +424,55 @@ namespace GRA.Controllers
 
             PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, site.Name];
 
-            if (model.SystemId.HasValue)
+            try
             {
-                var branchList = await _siteService.GetBranches(model.SystemId.Value);
-                if (model.BranchId < 1)
+                if (model.SystemId.HasValue)
                 {
-                    branchList = branchList.Prepend(new Branch() { Id = -1 });
+                    var branchList = await _siteService.GetBranches(model.SystemId.Value);
+                    if (model.BranchId < 1)
+                    {
+                        branchList = branchList.Prepend(new Branch() { Id = -1 });
+                    }
+                    model.BranchList = NameIdSelectList(branchList.ToList());
                 }
-                model.BranchList = NameIdSelectList(branchList.ToList());
-            }
-            var systemList = await _siteService.GetSystemList();
-            var programList = await _siteService.GetProgramList();
-            var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
-            model.SystemList = NameIdSelectList(systemList.ToList());
-            model.ProgramList = NameIdSelectList(programList.ToList());
-            model.SchoolList = NameIdSelectList(await _schoolService.GetSchoolsAsync());
-            model.ProgramJson = JsonConvert.SerializeObject(programViewObject);
-            model.RequirePostalCode = site.RequirePostalCode;
-            model.ShowAge = askAge;
-            model.ShowSchool = askSchool;
+                var systemList = await _siteService.GetSystemList();
+                var programList = await _siteService.GetProgramList();
+                var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
+                model.SystemList = NameIdSelectList(systemList.ToList());
+                model.ProgramList = NameIdSelectList(programList.ToList());
+                model.SchoolList = NameIdSelectList(await _schoolService.GetSchoolsAsync());
+                model.ProgramJson = JsonConvert.SerializeObject(programViewObject);
+                model.RequirePostalCode = site.RequirePostalCode;
+                model.ShowAge = askAge;
+                model.ShowSchool = askSchool;
 
-            if (askIfFirstTime)
+                if (askIfFirstTime)
+                {
+                    model.AskFirstTime = EmptyNoYes();
+                }
+
+                if (askEmailSubscription)
+                {
+                    model.AskEmailSubscription = EmptyNoYes();
+                    model.AskEmailSubscriptionText = askEmailSubscriptionText;
+                }
+
+                if (askActivityGoal)
+                {
+                    var pointTranslation = programList.First().PointTranslation;
+                    model.TranslationDescriptionPastTense =
+                        pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                    model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
+                }
+
+                return View(model);
+            }
+            catch (NullReferenceException nre)
             {
-                model.AskFirstTime = EmptyNoYes();
+                _logger.LogError("Null reference exception returning a join form with issues: {ErrorMessage}",
+                    nre.Message);
+                throw new GraException("An error occured creating this account.", nre);
             }
-
-            if (askEmailSubscription)
-            {
-                model.AskEmailSubscription = EmptyNoYes();
-                model.AskEmailSubscriptionText = askEmailSubscriptionText;
-            }
-
-            if (askActivityGoal)
-            {
-                var pointTranslation = programList.First().PointTranslation;
-                model.TranslationDescriptionPastTense =
-                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
-                model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
-            }
-
-            return View(model);
         }
 
         public async Task<IActionResult> Step1()
@@ -859,58 +935,6 @@ namespace GRA.Controllers
             PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, site.Name];
 
             return View(model);
-        }
-
-        public IActionResult AuthorizationCode()
-        {
-            if (TempData.ContainsKey(AuthCodeAttempts) && (int)TempData.Peek(AuthCodeAttempts) >= 5)
-            {
-                ShowAlertDanger("Too many failed authorization attempts.");
-                return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
-            }
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AuthorizationCode(AuthorizationCodeViewModel model)
-        {
-            var site = await GetCurrentSiteAsync();
-            if (!TempData.ContainsKey(AuthCodeAttempts) || (int)TempData.Peek(AuthCodeAttempts) < 5)
-            {
-                var sanitized = model.AuthorizationCode.Trim().ToLowerInvariant();
-                if (await _authorizationCodeService.ValidateAuthorizationCode(sanitized))
-                {
-                    TempData.Remove(AuthCodeAttempts);
-                    TempData[EnteredAuthCode] = model.AuthorizationCode;
-                    ShowAlertInfo("Authorization code accepted.");
-
-                    if (site.SinglePageSignUp)
-                    {
-                        return RedirectToAction(nameof(Index));
-                    }
-                    else
-                    {
-                        return RedirectToAction(nameof(Step1));
-                    }
-                }
-                if (TempData.ContainsKey(AuthCodeAttempts))
-                {
-                    TempData[AuthCodeAttempts] = (int)TempData[AuthCodeAttempts] + 1;
-                }
-                else
-                {
-                    TempData[AuthCodeAttempts] = 1;
-                }
-            }
-
-            if (TempData.ContainsKey(AuthCodeAttempts) && (int)TempData.Peek(AuthCodeAttempts) >= 5)
-            {
-                ShowAlertDanger("Too many failed authorization attempts.");
-                return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
-            }
-            ShowAlertDanger("Invalid authorization code.");
-
-            return View();
         }
     }
 }

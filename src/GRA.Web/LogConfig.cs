@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Serilog;
+using Serilog.Core;
 using Serilog.Events;
 using Serilog.Filters;
 using Serilog.Sinks.MSSqlServer;
@@ -13,7 +14,8 @@ namespace GRA.Web
     {
         private const string ErrorControllerName = "GRA.Controllers.ErrorController";
 
-        public static LoggerConfiguration Build(IConfiguration config)
+        public static LoggerConfiguration Build(IConfiguration config,
+            LoggingLevelSwitch levelSwitch)
         {
             if (config == null)
             {
@@ -66,8 +68,6 @@ namespace GRA.Web
             if (!string.IsNullOrEmpty(sqlLog))
             {
                 loggerConfig
-                    .WriteTo.Logger(_ => _
-                    .Filter.ByExcluding(Matching.FromSource(ErrorControllerName))
                     .WriteTo.MSSqlServer(sqlLog,
                         new MSSqlServerSinkOptions
                         {
@@ -92,15 +92,23 @@ namespace GRA.Web
                                     SqlDbType.NVarChar,
                                     dataLength: 255)
                             }
-                        }));
+                        });
             }
 
             if (!string.IsNullOrEmpty(config[ConfigurationKey.SeqEndpoint]))
             {
-                loggerConfig.WriteTo.Logger(_ => _
-                    .Filter.ByExcluding(Matching.FromSource(ErrorControllerName))
-                    .WriteTo.Seq(config[ConfigurationKey.SeqEndpoint],
-                        apiKey: config[ConfigurationKey.SeqApiKey]));
+                var apiKey = config[ConfigurationKey.SeqApiKey];
+
+                if (string.IsNullOrEmpty(apiKey))
+                {
+                    loggerConfig.WriteTo.Seq(config[ConfigurationKey.SeqEndpoint]);
+                }
+                else
+                {
+                    loggerConfig.WriteTo.Seq(config[ConfigurationKey.SeqEndpoint],
+                        apiKey: config[ConfigurationKey.SeqApiKey],
+                        controlLevelSwitch: levelSwitch);
+                }
             }
 
             return loggerConfig;
