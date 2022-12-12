@@ -9,63 +9,35 @@ namespace GRA.Controllers
     {
         private readonly ILogger<ErrorController> _logger;
 
-        public static string Name { get { return "Error"; } }
-
         public ErrorController(ILogger<ErrorController> logger,
             ServiceFacade.Controller context) : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
+        public static string Name
+        { get { return "Error"; } }
+
         public IActionResult Index(int id)
         {
-            string path = default;
-            string queryString = default;
+            // 0 means we came from UseExceptionHandler
+            Response.StatusCode = id > 0 ? id : 500;
 
-            var statusFeature = HttpContext.Features.Get<IStatusCodeReExecuteFeature>();
-            if (statusFeature != null)
+            if (Response.StatusCode == 404)
             {
-                path = statusFeature.OriginalPath ?? "";
-                queryString = statusFeature.OriginalQueryString ?? "";
+                return View("404");
             }
 
-            string currentUser = UserClaim(ClaimType.UserId);
+            var errorDetails = HttpContext.Features.Get<IExceptionHandlerFeature>();
 
-            string remoteAddress = HttpContext.Connection?.RemoteIpAddress.ToString();
-
-            Response.StatusCode = id;
-
-            if (!string.IsNullOrEmpty(currentUser))
+            if (errorDetails != null)
             {
-                _logger.LogError(
-                    "HTTP Error {Id}: {Protocol} {Method} {Path}{QueryString} remoteAddress={RemoteAddress} currentUser={CurrentUser}",
-                    id,
-                    Request.Protocol,
-                    Request.Method,
-                    path,
-                    queryString,
-                    remoteAddress,
-                    currentUser);
-            }
-            else
-            {
-                _logger.LogError(
-                    "HTTP Error {Id}: {Protocol} {Method} {Path}{QueryString} remoteAddress={RemoteAddress}",
-                    id,
-                    Request.Protocol,
-                    Request.Method,
-                    path,
-                    queryString,
-                    remoteAddress);
+                _logger.LogError(errorDetails.Error,
+                    "Unhandled exception details: {ErrorMessage}",
+                    errorDetails.Error?.Message ?? "no error message");
             }
 
-            switch (id)
-            {
-                case 404:
-                    return View("404");
-                default:
-                    return View("Error");
-            }
+            return View("Error");
         }
     }
 }

@@ -13,10 +13,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## Added
 
 - Notes field on prize redemption for staff
+- Ability to change logging level from Seq using a logging level switch
 
 ### Fixed
 
 - Display a friendly and accurate error if a social image is too large
+- Properly return appropriate HTTP status codes on page errors
+- Logging when the ErrorController is hit is no longer excluded from most log sources
 
 ## [4.4.0] 2022-11-29
 

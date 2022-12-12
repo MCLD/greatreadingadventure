@@ -55,7 +55,9 @@ namespace GRA.Web
             var webHostEnvironment = scope.ServiceProvider
                 .GetRequiredService<IWebHostEnvironment>();
 
-            Log.Logger = LogConfig.Build(config).CreateLogger();
+            var loggingLevelSwitch = new Serilog.Core.LoggingLevelSwitch();
+            
+            Log.Logger = LogConfig.Build(config, loggingLevelSwitch).CreateLogger();
             Log.Information("GRA v{Version} instance {Instance} environment {Environment} in {WebRootPath} with content root {ContentRoot}",
                 Version.GetVersion(),
                 instance,
