@@ -242,28 +242,53 @@ namespace GRA.Controllers
             bool askActivityGoal;
             int defaultDailyGoal;
 
+            int verificationStatus = 0;
+
+            if (site == null)
+            {
+                _logger.LogError("Attempt to create account failed as site was null");
+                throw new GraException("An error occured creating this account.");
+            }
+
+            verificationStatus = 1;
+
+            if (model == null)
+            {
+                _logger.LogError("Attempt to create account failed as model was null");
+                throw new GraException("An error occured creating this account.");
+            }
+
+            verificationStatus = 2;
+
             try
             {
                 if (!site.SinglePageSignUp)
                 {
                     return RedirectToAction(nameof(Step1));
                 }
+                verificationStatus = 3;
+
                 if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.PostalCode))
                 {
                     ModelState.AddModelError(nameof(model.PostalCode),
                         _sharedLocalizer[ErrorMessages.Field,
-                            _sharedLocalizer[DisplayNames.ZipCode]]);
+                        _sharedLocalizer[DisplayNames.ZipCode]]);
                 }
+                verificationStatus = 4;
 
                 askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
+                verificationStatus = 5;
 
                 if (!askIfFirstTime)
                 {
                     ModelState.Remove(nameof(model.IsFirstTime));
                 }
+                verificationStatus = 6;
 
                 (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
                     SiteSettingKey.Users.AskEmailSubPermission);
+                verificationStatus = 7;
+
                 if (!askEmailSubscription)
                 {
                     ModelState.Remove(nameof(model.EmailSubscriptionRequested));
@@ -272,6 +297,7 @@ namespace GRA.Controllers
                 {
                     var subscriptionRequested = model.EmailSubscriptionRequested.Equals(
                             DropDownTrueValue, StringComparison.OrdinalIgnoreCase);
+                    verificationStatus = 8;
                     if (subscriptionRequested && string.IsNullOrWhiteSpace(model.Email))
                     {
                         ModelState.AddModelError(nameof(model.Email), " ");
@@ -279,13 +305,17 @@ namespace GRA.Controllers
                             _sharedLocalizer[Annotations.Required.EmailForSubscription]);
                     }
                 }
+                verificationStatus = 9;
 
                 (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
                     SiteSettingKey.Users.DefaultDailyPersonalGoal);
+                verificationStatus = 10;
 
                 if (model.ProgramId.HasValue)
                 {
                     var program = await _siteService.GetProgramByIdAsync(model.ProgramId.Value);
+                    verificationStatus = 11;
+
                     askAge = program.AskAge;
                     askSchool = program.AskSchool;
                     if (program.AgeRequired && !model.Age.HasValue)
@@ -301,12 +331,16 @@ namespace GRA.Controllers
                             _sharedLocalizer[ErrorMessages.Field,
                                 _sharedLocalizer[DisplayNames.School]]);
                     }
+                    verificationStatus = 13;
                 }
             }
             catch (NullReferenceException nre)
             {
                 _logger.LogError("Null reference exception preparing to validate account creation: {ErrorMessage}",
                     nre.Message);
+                _logger.LogError("Model: {Model}", model);
+                _logger.LogError("Site: {Site}", site);
+                _logger.LogError("Verificaiton status: {Status}", verificationStatus);
                 throw new GraException("An error occured creating this account.", nre);
             }
 
