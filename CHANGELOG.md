@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Notes field on prize redemption for staff
 - Ability to change logging level from Seq using a logging level switch
+- Docker source container file pinning
 
 ### Fixed
 
