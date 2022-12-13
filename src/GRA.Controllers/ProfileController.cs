@@ -370,8 +370,8 @@ namespace GRA.Controllers
             }
             else
             {
-                var subscriptionRequested = model.EmailSubscriptionRequested.Equals(
-                        DropDownTrueValue, StringComparison.OrdinalIgnoreCase);
+                var subscriptionRequested = DropDownTrueValue.Equals(
+                        model.EmailSubscriptionRequested, StringComparison.OrdinalIgnoreCase);
                 if (subscriptionRequested && string.IsNullOrWhiteSpace(model.User.Email))
                 {
                     ModelState.AddModelError("User.Email", " ");
@@ -444,8 +444,8 @@ namespace GRA.Controllers
 
                     if (askEmailSubscription)
                     {
-                        model.User.IsEmailSubscribed = model.EmailSubscriptionRequested.Equals(
-                            DropDownTrueValue,
+                        model.User.IsEmailSubscribed = DropDownTrueValue.Equals(
+                            model.EmailSubscriptionRequested,
                             StringComparison.OrdinalIgnoreCase);
                     }
                     else

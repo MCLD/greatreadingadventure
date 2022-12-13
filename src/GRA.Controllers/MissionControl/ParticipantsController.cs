@@ -210,8 +210,8 @@ namespace GRA.Controllers.MissionControl
             }
             else
             {
-                var subscriptionRequested = model.EmailSubscriptionRequested.Equals(
-                        DropDownTrueValue, StringComparison.OrdinalIgnoreCase);
+                var subscriptionRequested = DropDownTrueValue.Equals(
+                        model.EmailSubscriptionRequested, StringComparison.OrdinalIgnoreCase);
                 if (subscriptionRequested && string.IsNullOrWhiteSpace(model.Email))
                 {
                     ModelState.AddModelError(nameof(model.Email), " ");
@@ -274,8 +274,8 @@ namespace GRA.Controllers.MissionControl
 
                 if (askEmailSubscription)
                 {
-                    user.IsEmailSubscribed = model.EmailSubscriptionRequested.Equals(
-                        DropDownTrueValue, StringComparison.OrdinalIgnoreCase);
+                    user.IsEmailSubscribed = DropDownTrueValue.Equals(
+                        model.EmailSubscriptionRequested, StringComparison.OrdinalIgnoreCase);
                 }
 
                 if (askActivityGoal && user.DailyPersonalGoal > 0)
@@ -1002,8 +1002,8 @@ namespace GRA.Controllers.MissionControl
             }
             else
             {
-                var subscriptionRequested = model.EmailSubscriptionRequested.Equals(
-                        DropDownTrueValue, StringComparison.OrdinalIgnoreCase);
+                var subscriptionRequested = DropDownTrueValue.Equals(
+                        model.EmailSubscriptionRequested, StringComparison.OrdinalIgnoreCase);
                 if (subscriptionRequested && string.IsNullOrWhiteSpace(model.User.Email))
                 {
                     ModelState.AddModelError("User.Email", " ");
@@ -1073,8 +1073,8 @@ namespace GRA.Controllers.MissionControl
 
                     if (askEmailSubscription)
                     {
-                        model.User.IsEmailSubscribed = model.EmailSubscriptionRequested.Equals(
-                            DropDownTrueValue, StringComparison.OrdinalIgnoreCase);
+                        model.User.IsEmailSubscribed = DropDownTrueValue.Equals(
+                            model.EmailSubscriptionRequested, StringComparison.OrdinalIgnoreCase);
                     }
                     else
                     {
