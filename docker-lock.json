@@ -1,0 +1,16 @@
+{
+	"dockerfiles": {
+		"Dockerfile": [
+			{
+				"name": "mcr.microsoft.com/dotnet/sdk",
+				"tag": "7.0",
+				"digest": "edde970d5b4c5e7d9b2a5d834a85ed7dae63faf49ccaf60cb7821ef18e731658"
+			},
+			{
+				"name": "mcr.microsoft.com/dotnet/aspnet",
+				"tag": "7.0",
+				"digest": "13c4c5b586556a1ba140639a1020dbdc1fbbdebee91f59203458b20c03abc7b2"
+			}
+		]
+	}
+}
