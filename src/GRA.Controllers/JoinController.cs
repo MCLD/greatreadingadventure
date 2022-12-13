@@ -242,106 +242,64 @@ namespace GRA.Controllers
             bool askActivityGoal;
             int defaultDailyGoal;
 
-            int verificationStatus = 0;
-
-            if (site == null)
+            if (!site.SinglePageSignUp)
             {
-                _logger.LogError("Attempt to create account failed as site was null");
-                throw new GraException("An error occured creating this account.");
+                return RedirectToAction(nameof(Step1));
+            }
+            if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.PostalCode))
+            {
+                ModelState.AddModelError(nameof(model.PostalCode),
+                    _sharedLocalizer[ErrorMessages.Field,
+                    _sharedLocalizer[DisplayNames.ZipCode]]);
+            }
+            askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
+
+            if (!askIfFirstTime)
+            {
+                ModelState.Remove(nameof(model.IsFirstTime));
             }
 
-            verificationStatus = 1;
+            (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
+                SiteSettingKey.Users.AskEmailSubPermission);
 
-            if (model == null)
+            if (!askEmailSubscription)
             {
-                _logger.LogError("Attempt to create account failed as model was null");
-                throw new GraException("An error occured creating this account.");
+                ModelState.Remove(nameof(model.EmailSubscriptionRequested));
             }
-
-            verificationStatus = 2;
-
-            try
+            else
             {
-                if (!site.SinglePageSignUp)
+                var subscriptionRequested = DropDownTrueValue.Equals(
+                        model.EmailSubscriptionRequested, StringComparison.OrdinalIgnoreCase);
+                if (subscriptionRequested && string.IsNullOrWhiteSpace(model.Email))
                 {
-                    return RedirectToAction(nameof(Step1));
+                    ModelState.AddModelError(nameof(model.Email), " ");
+                    ModelState.AddModelError(nameof(model.EmailSubscriptionRequested),
+                        _sharedLocalizer[Annotations.Required.EmailForSubscription]);
                 }
-                verificationStatus = 3;
+            }
 
-                if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.PostalCode))
+            (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
+                SiteSettingKey.Users.DefaultDailyPersonalGoal);
+
+            if (model.ProgramId.HasValue)
+            {
+                var program = await _siteService.GetProgramByIdAsync(model.ProgramId.Value);
+
+                askAge = program.AskAge;
+                askSchool = program.AskSchool;
+                if (program.AgeRequired && !model.Age.HasValue)
                 {
-                    ModelState.AddModelError(nameof(model.PostalCode),
+                    ModelState.AddModelError(DisplayNames.Age,
                         _sharedLocalizer[ErrorMessages.Field,
-                        _sharedLocalizer[DisplayNames.ZipCode]]);
+                            _sharedLocalizer[DisplayNames.Age]]);
                 }
-                verificationStatus = 4;
-
-                askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
-                verificationStatus = 5;
-
-                if (!askIfFirstTime)
+                if (program.SchoolRequired && !model.SchoolId.HasValue && !model.SchoolNotListed
+                    && !model.IsHomeschooled)
                 {
-                    ModelState.Remove(nameof(model.IsFirstTime));
+                    ModelState.AddModelError(nameof(model.SchoolId),
+                        _sharedLocalizer[ErrorMessages.Field,
+                            _sharedLocalizer[DisplayNames.School]]);
                 }
-                verificationStatus = 6;
-
-                (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
-                    SiteSettingKey.Users.AskEmailSubPermission);
-                verificationStatus = 7;
-
-                if (!askEmailSubscription)
-                {
-                    ModelState.Remove(nameof(model.EmailSubscriptionRequested));
-                }
-                else
-                {
-                    var subscriptionRequested = model.EmailSubscriptionRequested.Equals(
-                            DropDownTrueValue, StringComparison.OrdinalIgnoreCase);
-                    verificationStatus = 8;
-                    if (subscriptionRequested && string.IsNullOrWhiteSpace(model.Email))
-                    {
-                        ModelState.AddModelError(nameof(model.Email), " ");
-                        ModelState.AddModelError(nameof(model.EmailSubscriptionRequested),
-                            _sharedLocalizer[Annotations.Required.EmailForSubscription]);
-                    }
-                }
-                verificationStatus = 9;
-
-                (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
-                    SiteSettingKey.Users.DefaultDailyPersonalGoal);
-                verificationStatus = 10;
-
-                if (model.ProgramId.HasValue)
-                {
-                    var program = await _siteService.GetProgramByIdAsync(model.ProgramId.Value);
-                    verificationStatus = 11;
-
-                    askAge = program.AskAge;
-                    askSchool = program.AskSchool;
-                    if (program.AgeRequired && !model.Age.HasValue)
-                    {
-                        ModelState.AddModelError(DisplayNames.Age,
-                            _sharedLocalizer[ErrorMessages.Field,
-                                _sharedLocalizer[DisplayNames.Age]]);
-                    }
-                    if (program.SchoolRequired && !model.SchoolId.HasValue && !model.SchoolNotListed
-                        && !model.IsHomeschooled)
-                    {
-                        ModelState.AddModelError(nameof(model.SchoolId),
-                            _sharedLocalizer[ErrorMessages.Field,
-                                _sharedLocalizer[DisplayNames.School]]);
-                    }
-                    verificationStatus = 13;
-                }
-            }
-            catch (NullReferenceException nre)
-            {
-                _logger.LogError("Null reference exception preparing to validate account creation: {ErrorMessage}",
-                    nre.Message);
-                _logger.LogError("Model: {Model}", model);
-                _logger.LogError("Site: {Site}", site);
-                _logger.LogError("Verificaiton status: {Status}", verificationStatus);
-                throw new GraException("An error occured creating this account.", nre);
             }
 
             if (ModelState.IsValid)
@@ -376,8 +334,8 @@ namespace GRA.Controllers
 
                 if (askEmailSubscription)
                 {
-                    user.IsEmailSubscribed = model.EmailSubscriptionRequested.Equals(
-                        DropDownTrueValue, StringComparison.OrdinalIgnoreCase);
+                    user.IsEmailSubscribed = DropDownTrueValue.Equals(
+                        model.EmailSubscriptionRequested, StringComparison.OrdinalIgnoreCase);
                 }
 
                 if (askActivityGoal && user?.DailyPersonalGoal > 0)
@@ -444,11 +402,11 @@ namespace GRA.Controllers
 
                     return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
                 }
-                catch (Exception ex) when (ex is GraException || ex is NullReferenceException)
+                catch (GraException gex)
                 {
                     ShowAlertDanger(_sharedLocalizer[Annotations.Validate.CouldNotCreate,
-                       _sharedLocalizer[ex.Message]]);
-                    if (ex.GetType() == typeof(GraPasswordValidationException))
+                       _sharedLocalizer[gex.Message]]);
+                    if (gex.GetType() == typeof(GraPasswordValidationException))
                     {
                         ModelState.AddModelError(nameof(model.Password),
                             _sharedLocalizer[Annotations.Validate.PasswordIssue]);
@@ -458,55 +416,46 @@ namespace GRA.Controllers
 
             PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, site.Name];
 
-            try
+            if (model.SystemId.HasValue)
             {
-                if (model.SystemId.HasValue)
+                var branchList = await _siteService.GetBranches(model.SystemId.Value);
+                if (model.BranchId < 1)
                 {
-                    var branchList = await _siteService.GetBranches(model.SystemId.Value);
-                    if (model.BranchId < 1)
-                    {
-                        branchList = branchList.Prepend(new Branch() { Id = -1 });
-                    }
-                    model.BranchList = NameIdSelectList(branchList.ToList());
+                    branchList = branchList.Prepend(new Branch() { Id = -1 });
                 }
-                var systemList = await _siteService.GetSystemList();
-                var programList = await _siteService.GetProgramList();
-                var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
-                model.SystemList = NameIdSelectList(systemList.ToList());
-                model.ProgramList = NameIdSelectList(programList.ToList());
-                model.SchoolList = NameIdSelectList(await _schoolService.GetSchoolsAsync());
-                model.ProgramJson = JsonConvert.SerializeObject(programViewObject);
-                model.RequirePostalCode = site.RequirePostalCode;
-                model.ShowAge = askAge;
-                model.ShowSchool = askSchool;
-
-                if (askIfFirstTime)
-                {
-                    model.AskFirstTime = EmptyNoYes();
-                }
-
-                if (askEmailSubscription)
-                {
-                    model.AskEmailSubscription = EmptyNoYes();
-                    model.AskEmailSubscriptionText = askEmailSubscriptionText;
-                }
-
-                if (askActivityGoal)
-                {
-                    var pointTranslation = programList.First().PointTranslation;
-                    model.TranslationDescriptionPastTense =
-                        pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
-                    model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
-                }
-
-                return View(model);
+                model.BranchList = NameIdSelectList(branchList.ToList());
             }
-            catch (NullReferenceException nre)
+            var systemList = await _siteService.GetSystemList();
+            var programList = await _siteService.GetProgramList();
+            var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
+            model.SystemList = NameIdSelectList(systemList.ToList());
+            model.ProgramList = NameIdSelectList(programList.ToList());
+            model.SchoolList = NameIdSelectList(await _schoolService.GetSchoolsAsync());
+            model.ProgramJson = JsonConvert.SerializeObject(programViewObject);
+            model.RequirePostalCode = site.RequirePostalCode;
+            model.ShowAge = askAge;
+            model.ShowSchool = askSchool;
+
+            if (askIfFirstTime)
             {
-                _logger.LogError("Null reference exception returning a join form with issues: {ErrorMessage}",
-                    nre.Message);
-                throw new GraException("An error occured creating this account.", nre);
+                model.AskFirstTime = EmptyNoYes();
             }
+
+            if (askEmailSubscription)
+            {
+                model.AskEmailSubscription = EmptyNoYes();
+                model.AskEmailSubscriptionText = askEmailSubscriptionText;
+            }
+
+            if (askActivityGoal)
+            {
+                var pointTranslation = programList.First().PointTranslation;
+                model.TranslationDescriptionPastTense =
+                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
+            }
+
+            return View(model);
         }
 
         public async Task<IActionResult> Step1()
@@ -815,8 +764,8 @@ namespace GRA.Controllers
             }
             else
             {
-                var subscriptionRequested = model.EmailSubscriptionRequested.Equals(
-                        DropDownTrueValue, StringComparison.OrdinalIgnoreCase);
+                var subscriptionRequested = DropDownTrueValue.Equals(
+                        model.EmailSubscriptionRequested, StringComparison.OrdinalIgnoreCase);
                 if (subscriptionRequested && string.IsNullOrWhiteSpace(model.Email))
                 {
                     ModelState.AddModelError(nameof(model.Email), " ");
@@ -863,8 +812,8 @@ namespace GRA.Controllers
 
                 if (askEmailSubscription)
                 {
-                    user.IsEmailSubscribed = model.EmailSubscriptionRequested.Equals(
-                        DropDownTrueValue, StringComparison.OrdinalIgnoreCase);
+                    user.IsEmailSubscribed = DropDownTrueValue.Equals(
+                        model.EmailSubscriptionRequested, StringComparison.OrdinalIgnoreCase);
                 }
 
                 if (askActivityGoal && user.DailyPersonalGoal > 0)
@@ -890,7 +839,8 @@ namespace GRA.Controllers
                             .ValidateAuthorizationCode(sanitized);
                         if (!useAuthCode)
                         {
-                            _logger.LogError($"Invalid auth code used on join: {step1.AuthorizationCode}");
+                            _logger.LogError("Invalid authorization code used on join: {AuthorizationCode}",
+                                step1.AuthorizationCode);
                         }
                     }
                     await _userService.RegisterUserAsync(user, model.Password,
