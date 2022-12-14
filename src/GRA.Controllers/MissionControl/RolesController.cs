@@ -104,6 +104,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Create(RoleDetailViewModel model)
         {
+            model.Role.Name = model.Role.Name?.Trim();
+
             if (ModelState.IsValid)
             {
                 var permissionList = model.Permissions?.Split(',') ?? Array.Empty<string>();
@@ -112,8 +114,11 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Edit), new { id = role.Id });
             }
 
-            model.UnselectedPermissions = (await _roleService.GetAllPermissionsAsync())
-                .Except(model.SelectedPermissions);
+            var unselected = await _roleService.GetAllPermissionsAsync();
+
+            model.UnselectedPermissions = model.SelectedPermissions != null
+                ? unselected.Except(model.SelectedPermissions)
+                : unselected;
 
             PageTitle = "Create Role";
             return View("Detail", model);
