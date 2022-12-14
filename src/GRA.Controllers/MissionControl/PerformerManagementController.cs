@@ -21,19 +21,22 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ManagePerformers)]
     public class PerformerManagementController : Base.MCController
     {
-        public static string Name { get { return "PerformerManagement"; } }
+        private const int KitsPerPage = 15;
 
         private const int MaxUploadMB = 25;
+
         private const int MBSize = 1024 * 1024;
 
-        private const int KitsPerPage = 15;
         private const int PerformersPerPage = 15;
 
-        private static readonly DateTime DefaultPerformerScheduleStartTime = DateTime.Parse("8:00 AM");
         private static readonly DateTime DefaultPerformerScheduleEndTime = DateTime.Parse("8:00 PM");
 
+        private static readonly DateTime DefaultPerformerScheduleStartTime = DateTime.Parse("8:00 AM");
+
         private readonly ILogger<PerformerManagementController> _logger;
+
         private readonly PerformerSchedulingService _performerSchedulingService;
+
         private readonly SiteService _siteService;
 
         public PerformerManagementController(ILogger<PerformerManagementController> logger,
@@ -47,6 +50,17 @@ namespace GRA.Controllers.MissionControl
                 ?? throw new ArgumentNullException(nameof(performerSchedulingService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             PageTitle = "Performer Management";
+        }
+
+        public static string Name
+        { get { return "PerformerManagement"; } }
+
+        public async Task<JsonResult> GetPerformerStatus()
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            var result = await GetPerformerStatus(schedulingStage);
+            return Json(result);
         }
 
         public async Task<IActionResult> Index()
@@ -131,22 +145,6 @@ namespace GRA.Controllers.MissionControl
             return View(viewModel);
         }
 
-        private class PerformerStatus
-        {
-            public int ProgramCount { get; set; }
-            public int PerformerCount { get; set; }
-            public int KitCount { get; set; }
-            public string SchedulingStage { get; set; }
-        }
-
-        public async Task<JsonResult> GetPerformerStatus()
-        {
-            var settings = await _performerSchedulingService.GetSettingsAsync();
-            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
-            var result = await GetPerformerStatus(schedulingStage);
-            return Json(result);
-        }
-
         private async Task<PerformerStatus> GetPerformerStatus(PsSchedulingStage schedulingStage)
         {
             return new PerformerStatus
@@ -158,122 +156,15 @@ namespace GRA.Controllers.MissionControl
             };
         }
 
+        private class PerformerStatus
+        {
+            public int KitCount { get; set; }
+            public int PerformerCount { get; set; }
+            public int ProgramCount { get; set; }
+            public string SchedulingStage { get; set; }
+        }
+
         #region Performers
-        public async Task<IActionResult> Performers(int page = 1)
-        {
-            var settings = await _performerSchedulingService.GetSettingsAsync();
-            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
-            if (schedulingStage == PsSchedulingStage.Unavailable)
-            {
-                return RedirectToAction(nameof(Settings));
-            }
-
-            var filter = new PerformerSchedulingFilter(page, PerformersPerPage);
-
-            var performerList = await _performerSchedulingService
-                .GetPaginatedPerformerListAsync(filter);
-
-            var paginateModel = new PaginateViewModel()
-            {
-                ItemCount = performerList.Count,
-                CurrentPage = page,
-                ItemsPerPage = filter.Take.Value
-            };
-            if (paginateModel.PastMaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
-            }
-            foreach (var performer in performerList.Data)
-            {
-                performer.ProgramCount = await _performerSchedulingService
-                    .GetPerformerProgramCountAsync(performer.Id);
-
-                if (schedulingStage >= PsSchedulingStage.SchedulingOpen)
-                {
-                    performer.SelectionsCount = await _performerSchedulingService
-                        .GetPerformerSelectionCountAsync(performer.Id);
-                }
-            }
-
-            var viewModel = new PerformerListViewModel
-            {
-                Performers = performerList.Data.ToList(),
-                PaginateModel = paginateModel,
-                PerformerSchedulingEnabled = true,
-                RegistrationClosed = schedulingStage >= PsSchedulingStage.RegistrationClosed,
-                SchedulingStage = schedulingStage,
-                VendorIdPrompt = settings.VendorIdPrompt ?? "Vendor ID"
-            };
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> PerformerDelete(PerformerListViewModel model)
-        {
-            var settings = await _performerSchedulingService.GetSettingsAsync();
-            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
-            if (schedulingStage == PsSchedulingStage.Unavailable)
-            {
-                return RedirectToAction(nameof(Settings));
-            }
-
-            if (schedulingStage < PsSchedulingStage.SchedulingOpen)
-            {
-                try
-                {
-                    await _performerSchedulingService.RemovePerformerAsync(
-                        model.PerformerToDelete.Id);
-                    ShowAlertSuccess($"Performer \"{model.PerformerToDelete.Name}\" removed!.");
-                }
-                catch (GraException gex)
-                {
-                    ShowAlertDanger("Unable to remove performer: ", gex);
-                }
-            }
-            else
-            {
-                ShowAlertDanger("Cannot remove performers after scheduling has opened.");
-            }
-
-            return RedirectToAction(nameof(Performers),
-                new { page = model.PaginateModel.CurrentPage });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> PerformerSelectionDelete
-            (PerformerSelectionsViewModel model)
-        {
-            var settings = await _performerSchedulingService.GetSettingsAsync();
-            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
-            if (schedulingStage < PsSchedulingStage.SchedulingOpen)
-            {
-                return RedirectToAction(nameof(PerformerManagementController.PerformerSelections),
-                    new { id = model.Performer.Id });
-            }
-            try
-            {
-                var branchSelection = await _performerSchedulingService
-                    .GetBranchProgramSelectionByIdAsync(model.BranchSelectionId);
-                await _performerSchedulingService.DeleteBranchSelectionAsync(branchSelection);
-                var branch = await _siteService.GetBranchByIdAsync(branchSelection.BranchId);
-                var program = await _performerSchedulingService
-                    .GetProgramByIdAsync(branchSelection.ProgramId.Value);
-                ShowAlertSuccess($"{branch.Name}'s selection of \"{program.Title}\" is deleted!.");
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger("Unable to delete selection: ", gex);
-                _logger.LogError(gex,
-                    "Error deleting branch selection Id {BranchSelectionId} by user {GetActiveUserId}: {ErrorMessage}",
-                    model.BranchSelectionId, GetActiveUserId(), gex.Message);
-            }
-            return RedirectToAction(nameof(PerformerManagementController.PerformerSelections),
-                new { id = model.Performer.Id });
-        }
 
         public async Task<IActionResult> Performer(int id)
         {
@@ -371,7 +262,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> ProgramDelete(PerformerViewModel model)
+        public async Task<IActionResult> PerformerDelete(PerformerListViewModel model)
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
@@ -380,17 +271,26 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Settings));
             }
 
-            try
+            if (schedulingStage < PsSchedulingStage.SchedulingOpen)
             {
-                await _performerSchedulingService.RemoveProgramAsync(model.ProgramToDelete.Id);
-                ShowAlertSuccess($"Program \"{model.ProgramToDelete.Title}\" removed!");
+                try
+                {
+                    await _performerSchedulingService.RemovePerformerAsync(
+                        model.PerformerToDelete.Id);
+                    ShowAlertSuccess($"Performer \"{model.PerformerToDelete.Name}\" removed!.");
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger("Unable to remove performer: ", gex);
+                }
             }
-            catch (GraException gex)
+            else
             {
-                ShowAlertDanger("Unable to remove program: ", gex);
+                ShowAlertDanger("Cannot remove performers after scheduling has opened.");
             }
 
-            return RedirectToAction(nameof(Performer), new { id = model.Performer.Id });
+            return RedirectToAction(nameof(Performers),
+                new { page = model.PaginateModel.CurrentPage });
         }
 
         public async Task<IActionResult> PerformerDetails(int id)
@@ -481,16 +381,12 @@ namespace GRA.Controllers.MissionControl
 
                 if (model.References != null)
                 {
-                    using (var fileStream = model.References.OpenReadStream())
-                    {
-                        using (var ms = new MemoryStream())
-                        {
-                            fileStream.CopyTo(ms);
-                            await _performerSchedulingService.SetPerformerReferencesAsync(
-                                model.Performer.Id, ms.ToArray(),
-                                Path.GetExtension(model.References.FileName));
-                        }
-                    }
+                    using var fileStream = model.References.OpenReadStream();
+                    using var ms = new MemoryStream();
+                    fileStream.CopyTo(ms);
+                    await _performerSchedulingService.SetPerformerReferencesAsync(
+                        model.Performer.Id, ms.ToArray(),
+                        Path.GetExtension(model.References.FileName));
                 }
 
                 ShowAlertSuccess($"Performer {performer.Name} updated!");
@@ -580,15 +476,11 @@ namespace GRA.Controllers.MissionControl
             {
                 foreach (var image in model.Images)
                 {
-                    using (var fileStream = image.OpenReadStream())
-                    {
-                        using (var ms = new MemoryStream())
-                        {
-                            fileStream.CopyTo(ms);
-                            await _performerSchedulingService.AddPerformerImageAsync(
-                                model.PerformerId, ms.ToArray(), Path.GetExtension(image.FileName));
-                        }
-                    }
+                    using var fileStream = image.OpenReadStream();
+                    using var ms = new MemoryStream();
+                    fileStream.CopyTo(ms);
+                    await _performerSchedulingService.AddPerformerImageAsync(
+                        model.PerformerId, ms.ToArray(), Path.GetExtension(image.FileName));
                 }
                 ShowAlertSuccess("Image(s) added!");
                 return RedirectToAction(nameof(PerformerImages));
@@ -625,6 +517,193 @@ namespace GRA.Controllers.MissionControl
             }
 
             return RedirectToAction(nameof(PerformerImages), new { id = model.PerformerId });
+        }
+
+        public async Task<IActionResult> Performers(int page = 1)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage == PsSchedulingStage.Unavailable)
+            {
+                return RedirectToAction(nameof(Settings));
+            }
+
+            var filter = new PerformerSchedulingFilter(page, PerformersPerPage);
+
+            var performerList = await _performerSchedulingService
+                .GetPaginatedPerformerListAsync(filter);
+
+            var paginateModel = new PaginateViewModel()
+            {
+                ItemCount = performerList.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+            if (paginateModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+            foreach (var performer in performerList.Data)
+            {
+                performer.ProgramCount = await _performerSchedulingService
+                    .GetPerformerProgramCountAsync(performer.Id);
+
+                if (schedulingStage >= PsSchedulingStage.SchedulingOpen)
+                {
+                    performer.SelectionsCount = await _performerSchedulingService
+                        .GetPerformerSelectionCountAsync(performer.Id);
+                }
+            }
+
+            var viewModel = new PerformerListViewModel
+            {
+                Performers = performerList.Data.ToList(),
+                PaginateModel = paginateModel,
+                PerformerSchedulingEnabled = true,
+                RegistrationClosed = schedulingStage >= PsSchedulingStage.RegistrationClosed,
+                SchedulingStage = schedulingStage,
+                VendorIdPrompt = settings.VendorIdPrompt ?? "Vendor ID"
+            };
+            return View(viewModel);
+        }
+
+        public async Task<IActionResult> PerformerSchedule(int id)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage == PsSchedulingStage.Unavailable)
+            {
+                return RedirectToAction(nameof(Settings));
+            }
+
+            var performer = new PsPerformer();
+            try
+            {
+                performer = await _performerSchedulingService.GetPerformerByIdAsync(id,
+                    includeSchedule: true);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to update schedule: ", gex);
+                return RedirectToAction(nameof(Performers));
+            }
+
+            var viewModel = new PerformerScheduleViewModel
+            {
+                Performer = performer,
+                StartDate = settings.ScheduleStartDate.Value,
+                EndDate = settings.ScheduleEndDate.Value,
+                BlackoutDates = await _performerSchedulingService.GetBlackoutDatesAsync(),
+                ScheduleDates = performer.Schedule.ToList()
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PerformerSchedule(PerformerScheduleViewModel model)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage == PsSchedulingStage.Unavailable)
+            {
+                return RedirectToAction(nameof(Settings));
+            }
+
+            var schedule = new List<PsScheduleDate>();
+            try
+            {
+                schedule = JsonConvert.DeserializeObject<List<PsScheduleDate>>(model.JsonSchedule);
+
+                foreach (var date in schedule)
+                {
+                    date.ParsedDate = DateTime.Parse($"{date.Year}-{date.Month}-{date.Date}");
+                    if (Enum.TryParse(date.Availability, out PsScheduleDateStatus status))
+                    {
+                        date.Status = status;
+                    }
+                    else
+                    {
+                        date.Status = PsScheduleDateStatus.Available;
+                    }
+                }
+
+                try
+                {
+                    await _performerSchedulingService.EditPerformerScheduleAsync(model.Performer.Id,
+                        schedule);
+                    ShowAlertSuccess($"Schedule for \"{model.Performer.Name}\" updated!");
+                    return RedirectToAction(nameof(Performer), new { id = model.Performer.Id });
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger("Error updating schedule: ", gex);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "Error submitting schedule for performer {Performer} by user {UserId}: {ErrorMessage}",
+                    model.Performer.Id,
+                    GetId(ClaimType.UserId),
+                    ex.Message);
+                ShowAlertDanger("An error occured while updating the schedule.");
+            }
+
+            var performer = new PsPerformer();
+            try
+            {
+                performer = await _performerSchedulingService.GetPerformerByIdAsync(
+                    model.Performer.Id, includeSchedule: true);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to update schedule: ", gex);
+                return RedirectToAction(nameof(Performers));
+            }
+
+            model.Performer = performer;
+            model.BlackoutDates = await _performerSchedulingService.GetBlackoutDatesAsync();
+            model.StartDate = settings.ScheduleStartDate.Value;
+            model.EndDate = settings.ScheduleEndDate.Value;
+            model.ScheduleDates = performer.Schedule.ToList();
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PerformerSelectionDelete
+            (PerformerSelectionsViewModel model)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage < PsSchedulingStage.SchedulingOpen)
+            {
+                return RedirectToAction(nameof(PerformerManagementController.PerformerSelections),
+                    new { id = model.Performer.Id });
+            }
+            try
+            {
+                var branchSelection = await _performerSchedulingService
+                    .GetBranchProgramSelectionByIdAsync(model.BranchSelectionId);
+                await _performerSchedulingService.DeleteBranchSelectionAsync(branchSelection);
+                var branch = await _siteService.GetBranchByIdAsync(branchSelection.BranchId);
+                var program = await _performerSchedulingService
+                    .GetProgramByIdAsync(branchSelection.ProgramId.Value);
+                ShowAlertSuccess($"{branch.Name}'s selection of \"{program.Title}\" is deleted!.");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to delete selection: ", gex);
+                _logger.LogError(gex,
+                    "Error deleting branch selection Id {BranchSelectionId} by user {GetActiveUserId}: {ErrorMessage}",
+                    model.BranchSelectionId, GetActiveUserId(), gex.Message);
+            }
+            return RedirectToAction(nameof(PerformerManagementController.PerformerSelections),
+                new { id = model.Performer.Id });
         }
 
         public async Task<IActionResult> Program(int id)
@@ -701,6 +780,29 @@ namespace GRA.Controllers.MissionControl
             return View(nameof(ProgramDetails), viewModel);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> ProgramDelete(PerformerViewModel model)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage == PsSchedulingStage.Unavailable)
+            {
+                return RedirectToAction(nameof(Settings));
+            }
+
+            try
+            {
+                await _performerSchedulingService.RemoveProgramAsync(model.ProgramToDelete.Id);
+                ShowAlertSuccess($"Program \"{model.ProgramToDelete.Title}\" removed!");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to remove program: ", gex);
+            }
+
+            return RedirectToAction(nameof(Performer), new { id = model.Performer.Id });
+        }
+
         public async Task<IActionResult> ProgramDetails(int id)
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();
@@ -775,15 +877,11 @@ namespace GRA.Controllers.MissionControl
                         {
                             foreach (var image in model.Images)
                             {
-                                using (var fileStream = image.OpenReadStream())
-                                {
-                                    using (var ms = new MemoryStream())
-                                    {
-                                        fileStream.CopyTo(ms);
-                                        await _performerSchedulingService.AddProgramImageAsync(
-                                            program.Id, ms.ToArray(), Path.GetExtension(image.FileName));
-                                    }
-                                }
+                                using var fileStream = image.OpenReadStream();
+                                using var ms = new MemoryStream();
+                                fileStream.CopyTo(ms);
+                                await _performerSchedulingService.AddProgramImageAsync(
+                                    program.Id, ms.ToArray(), Path.GetExtension(image.FileName));
                             }
                         }
                         ShowAlertSuccess($"Program \"{program.Title}\" added!");
@@ -883,15 +981,11 @@ namespace GRA.Controllers.MissionControl
             {
                 foreach (var image in model.Images)
                 {
-                    using (var fileStream = image.OpenReadStream())
-                    {
-                        using (var ms = new MemoryStream())
-                        {
-                            fileStream.CopyTo(ms);
-                            await _performerSchedulingService.AddProgramImageAsync(
-                                model.ProgramId, ms.ToArray(), Path.GetExtension(image.FileName));
-                        }
-                    }
+                    using var fileStream = image.OpenReadStream();
+                    using var ms = new MemoryStream();
+                    fileStream.CopyTo(ms);
+                    await _performerSchedulingService.AddProgramImageAsync(
+                        model.ProgramId, ms.ToArray(), Path.GetExtension(image.FileName));
                 }
                 ShowAlertSuccess("Image(s) added!");
                 return RedirectToAction(nameof(ProgramImages), new { id = model.ProgramId });
@@ -942,149 +1036,78 @@ namespace GRA.Controllers.MissionControl
             return RedirectToAction(nameof(ProgramImages), new { id = model.ProgramId });
         }
 
-        public async Task<IActionResult> PerformerSchedule(int id)
-        {
-            var settings = await _performerSchedulingService.GetSettingsAsync();
-            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
-            if (schedulingStage == PsSchedulingStage.Unavailable)
-            {
-                return RedirectToAction(nameof(Settings));
-            }
+        #endregion Performers
 
-            var performer = new PsPerformer();
+        #region Performer Selections
+
+        public async Task<JsonResult> CheckProgramTimeAvailability(int selectionId,
+            int programId,
+            DateTime dateTime,
+            bool backToBack)
+        {
             try
             {
-                performer = await _performerSchedulingService.GetPerformerByIdAsync(id,
-                    includeSchedule: true);
+                var result = await _performerSchedulingService
+                    .ValidateScheduleTimeAsync(programId, dateTime, backToBack, selectionId);
+
+                if (!string.IsNullOrWhiteSpace(result))
+                {
+                    return Json(new
+                    {
+                        success = true,
+                        message = result
+                    });
+                }
             }
             catch (GraException gex)
             {
-                ShowAlertDanger("Unable to update schedule: ", gex);
-                return RedirectToAction(nameof(Performers));
+                return Json(new
+                {
+                    success = false,
+                    message = gex.Message
+                });
             }
 
-            var viewModel = new PerformerScheduleViewModel
+            return Json(new
             {
-                Performer = performer,
-                StartDate = settings.ScheduleStartDate.Value,
-                EndDate = settings.ScheduleEndDate.Value,
-                BlackoutDates = await _performerSchedulingService.GetBlackoutDatesAsync(),
-                ScheduleDates = performer.Schedule.ToList()
-            };
-
-            return View(viewModel);
+                success = true
+            });
         }
 
         [HttpPost]
-        public async Task<IActionResult> PerformerSchedule(PerformerScheduleViewModel model)
-        {
-            var settings = await _performerSchedulingService.GetSettingsAsync();
-            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
-            if (schedulingStage == PsSchedulingStage.Unavailable)
-            {
-                return RedirectToAction(nameof(Settings));
-            }
-
-            var schedule = new List<PsScheduleDate>();
-            try
-            {
-                schedule = JsonConvert.DeserializeObject<List<PsScheduleDate>>(model.JsonSchedule);
-
-                foreach (var date in schedule)
-                {
-                    date.ParsedDate = DateTime.Parse($"{date.Year}-{date.Month}-{date.Date}");
-                    if (Enum.TryParse(date.Availability, out PsScheduleDateStatus status))
-                    {
-                        date.Status = status;
-                    }
-                    else
-                    {
-                        date.Status = PsScheduleDateStatus.Available;
-                    }
-                }
-
-                try
-                {
-                    await _performerSchedulingService.EditPerformerScheduleAsync(model.Performer.Id,
-                        schedule);
-                    ShowAlertSuccess($"Schedule for \"{model.Performer.Name}\" updated!");
-                    return RedirectToAction(nameof(Performer), new { id = model.Performer.Id });
-                }
-                catch (GraException gex)
-                {
-                    ShowAlertDanger("Error updating schedule: ", gex);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error submitting schedule for performer {model.Performer.Id} by user {GetId(ClaimType.UserId)}: {ex}", ex);
-                ShowAlertDanger("An error occured while updating the schedule.");
-            }
-
-            var performer = new PsPerformer();
-            try
-            {
-                performer = await _performerSchedulingService.GetPerformerByIdAsync(
-                    model.Performer.Id, includeSchedule: true);
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger("Unable to update schedule: ", gex);
-                return RedirectToAction(nameof(Performers));
-            }
-
-            model.Performer = performer;
-            model.BlackoutDates = await _performerSchedulingService.GetBlackoutDatesAsync();
-            model.StartDate = settings.ScheduleStartDate.Value;
-            model.EndDate = settings.ScheduleEndDate.Value;
-            model.ScheduleDates = performer.Schedule.ToList();
-            return View(model);
-        }
-        #endregion
-
-        #region Performer Selections
-        public async Task<IActionResult> PerformerSelections(int id)
+        public async Task<JsonResult> EditBranchProgramSelection(PsBranchSelection branchSelection)
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage < PsSchedulingStage.SchedulingOpen)
             {
-                return RedirectToAction(nameof(Settings));
+                return Json(new
+                {
+                    success = false,
+                    message = "Program selection has not yet started."
+                });
             }
 
-            var performer = await _performerSchedulingService.GetPerformerByIdAsync(id,
-                includeSchedule: true);
-
-            var branchSelections = await _performerSchedulingService
-                .GetPerformerBranchSelectionsAsync(performer.Id);
-
-            var branchSelectionDates = branchSelections
-                .GroupBy(_ => _.RequestedStartTime.Date)
-                .Select(_ => _.ToList())
-                .ToList();
-
-            var viewModel = new PerformerSelectionsViewModel
+            try
             {
-                Performer = performer,
-                BranchSelectionDates = branchSelectionDates,
-                DefaultPerformerScheduleStartTime = DefaultPerformerScheduleStartTime,
-                DefaultPerformerScheduleEndTime = DefaultPerformerScheduleEndTime
-            };
-
-            var performerIndexList = await _performerSchedulingService.GetPerformerIndexListAsync(
-                true);
-            var index = performerIndexList.IndexOf(id);
-            viewModel.ReturnPage = (index / PerformersPerPage) + 1;
-            if (index != 0)
-            {
-                viewModel.PrevPerformer = performerIndexList[index - 1];
+                await _performerSchedulingService.UpdateBranchProgramSelectionAsync(branchSelection);
             }
-            if (performerIndexList.Count != index + 1)
+            catch (GraException gex)
             {
-                viewModel.NextPerformer = performerIndexList[index + 1];
+                return Json(new
+                {
+                    success = false,
+                    message = gex.Message
+                });
             }
 
-            return View(viewModel);
+            _logger.LogInformation("Selection {BranchSelectionId} edited", branchSelection.Id);
+
+            ShowAlertSuccess("Program selection edited!");
+            return Json(new
+            {
+                success = true
+            });
         }
 
         public async Task<IActionResult> GetPerformerCalendar(int performerId, int branchSelectionId)
@@ -1150,7 +1173,6 @@ namespace GRA.Controllers.MissionControl
             return PartialView("_PerformerCalendarPartial", viewModel);
         }
 
-#pragma warning disable MVC1004
         // disable warning that "date" is named the same as a property on the object
         public async Task<IActionResult> GetPerformerDaySchedule(int performerId, DateTime date)
         {
@@ -1188,76 +1210,49 @@ namespace GRA.Controllers.MissionControl
 
             return PartialView("_DaySchedulePartial", viewModel);
         }
-#pragma warning restore MVC1004
 
-        public async Task<JsonResult> CheckProgramTimeAvailability(int selectionId,
-            int programId,
-            DateTime dateTime,
-            bool backToBack)
-        {
-            try
-            {
-                var result = await _performerSchedulingService
-                    .ValidateScheduleTimeAsync(programId, dateTime, backToBack, selectionId);
-
-                if (!string.IsNullOrWhiteSpace(result))
-                {
-                    return Json(new
-                    {
-                        success = true,
-                        message = result
-                    });
-                }
-            }
-            catch (GraException gex)
-            {
-                return Json(new
-                {
-                    success = false,
-                    message = gex.Message
-                });
-            }
-
-            return Json(new
-            {
-                success = true
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditBranchProgramSelection(PsBranchSelection branchSelection)
+        public async Task<IActionResult> PerformerSelections(int id)
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage < PsSchedulingStage.SchedulingOpen)
             {
-                return Json(new
-                {
-                    success = false,
-                    message = "Program selection has not yet started."
-                });
+                return RedirectToAction(nameof(Settings));
             }
 
-            try
+            var performer = await _performerSchedulingService.GetPerformerByIdAsync(id,
+                includeSchedule: true);
+
+            var branchSelections = await _performerSchedulingService
+                .GetPerformerBranchSelectionsAsync(performer.Id);
+
+            var branchSelectionDates = branchSelections
+                .GroupBy(_ => _.RequestedStartTime.Date)
+                .Select(_ => _.ToList())
+                .ToList();
+
+            var viewModel = new PerformerSelectionsViewModel
             {
-                await _performerSchedulingService.UpdateBranchProgramSelectionAsync(branchSelection);
+                Performer = performer,
+                BranchSelectionDates = branchSelectionDates,
+                DefaultPerformerScheduleStartTime = DefaultPerformerScheduleStartTime,
+                DefaultPerformerScheduleEndTime = DefaultPerformerScheduleEndTime
+            };
+
+            var performerIndexList = await _performerSchedulingService.GetPerformerIndexListAsync(
+                true);
+            var index = performerIndexList.IndexOf(id);
+            viewModel.ReturnPage = (index / PerformersPerPage) + 1;
+            if (index != 0)
+            {
+                viewModel.PrevPerformer = performerIndexList[index - 1];
             }
-            catch (GraException gex)
+            if (performerIndexList.Count != index + 1)
             {
-                return Json(new
-                {
-                    success = false,
-                    message = gex.Message
-                });
+                viewModel.NextPerformer = performerIndexList[index + 1];
             }
 
-            _logger.LogInformation($"Selection {branchSelection.Id} edited");
-
-            ShowAlertSuccess("Program selection edited!");
-            return Json(new
-            {
-                success = true
-            });
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -1286,86 +1281,39 @@ namespace GRA.Controllers.MissionControl
                 secretCode = sanitizedSecretCode
             });
         }
-        #endregion
+
+        #endregion Performer Selections
 
         #region Kits
-        public async Task<IActionResult> Kits(int page = 1)
-        {
-            var settings = await _performerSchedulingService.GetSettingsAsync();
-            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
-            if (schedulingStage == PsSchedulingStage.Unavailable)
-            {
-                return RedirectToAction(nameof(Settings));
-            }
-
-            var filter = new BaseFilter(page, KitsPerPage);
-
-            var kitList = await _performerSchedulingService.GetPaginatedKitListAsync(filter);
-
-            var paginateModel = new PaginateViewModel()
-            {
-                ItemCount = kitList.Count,
-                CurrentPage = page,
-                ItemsPerPage = filter.Take.Value
-            };
-            if (paginateModel.PastMaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
-            }
-
-            if (schedulingStage >= PsSchedulingStage.SchedulingOpen)
-            {
-                foreach (var kit in kitList.Data)
-                {
-                    kit.SelectionsCount = await _performerSchedulingService
-                        .GetKitSelectionCountAsync(kit.Id);
-                }
-            }
-
-            var viewModel = new KitListViewModel
-            {
-                Kits = kitList.Data.ToList(),
-                PaginateModel = paginateModel,
-                PerformerSchedulingEnabled = true,
-                SchedulingStage = schedulingStage
-            };
-
-            return View(viewModel);
-        }
 
         [HttpPost]
-        public async Task<IActionResult> KitDelete(KitListViewModel model)
+        public async Task<IActionResult> DeleteKitSelection(KitSelectionsViewModel model)
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Settings));
+                return RedirectToAction(nameof(PerformerManagementController.KitSelections),
+                    new { id = model.Kit.Id });
             }
-
-            if (schedulingStage < PsSchedulingStage.SchedulingOpen)
+            try
             {
-                try
-                {
-                    await _performerSchedulingService.RemoveKitAsync(
-                        model.KitToDelete.Id);
-                    ShowAlertSuccess($"Kit \"{model.KitToDelete.Name}\" removed!.");
-                }
-                catch (GraException gex)
-                {
-                    ShowAlertDanger("Unable to remove kit: ", gex);
-                }
+                var branchSelection = await _performerSchedulingService
+                    .GetBranchProgramSelectionByIdAsync(model.BranchSelectionId);
+                await _performerSchedulingService.DeleteBranchSelectionAsync(branchSelection);
+                var branch = await _siteService.GetBranchByIdAsync(branchSelection.BranchId);
+                var kit = await _performerSchedulingService.GetKitByIdAsync(model.Kit.Id);
+                ShowAlertSuccess($"{branch.Name}'s selection of \"{kit.Name}\" is deleted!");
             }
-            else
+            catch (GraException gex)
             {
-                ShowAlertDanger("Cannot remove kit after scheduling has opened.");
+                ShowAlertDanger("Unable to delete selection: ", gex);
+                _logger.LogError(gex,
+                    "Error deleting branch selection Id {BranchSelectionId} by user {GetActiveUserId}: {ErrorMessage}",
+                    model.BranchSelectionId, GetActiveUserId(), gex.Message);
             }
-
-            return RedirectToAction(nameof(Kits), new { page = model.PaginateModel.CurrentPage });
+            return RedirectToAction(nameof(PerformerManagementController.KitSelections),
+                new { id = model.Kit.Id });
         }
 
         public async Task<IActionResult> Kit(int id)
@@ -1441,6 +1389,37 @@ namespace GRA.Controllers.MissionControl
             };
 
             return View(nameof(KitDetails), viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> KitDelete(KitListViewModel model)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage == PsSchedulingStage.Unavailable)
+            {
+                return RedirectToAction(nameof(Settings));
+            }
+
+            if (schedulingStage < PsSchedulingStage.SchedulingOpen)
+            {
+                try
+                {
+                    await _performerSchedulingService.RemoveKitAsync(
+                        model.KitToDelete.Id);
+                    ShowAlertSuccess($"Kit \"{model.KitToDelete.Name}\" removed!.");
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger("Unable to remove kit: ", gex);
+                }
+            }
+            else
+            {
+                ShowAlertDanger("Cannot remove kit after scheduling has opened.");
+            }
+
+            return RedirectToAction(nameof(Kits), new { page = model.PaginateModel.CurrentPage });
         }
 
         public async Task<IActionResult> KitDetails(int id)
@@ -1526,15 +1505,11 @@ namespace GRA.Controllers.MissionControl
 
                         foreach (var image in model.Images)
                         {
-                            using (var fileStream = image.OpenReadStream())
-                            {
-                                using (var ms = new MemoryStream())
-                                {
-                                    fileStream.CopyTo(ms);
-                                    await _performerSchedulingService.AddKitImageAsync(
-                                        kit.Id, ms.ToArray(), Path.GetExtension(image.FileName));
-                                }
-                            }
+                            using var fileStream = image.OpenReadStream();
+                            using var ms = new MemoryStream();
+                            fileStream.CopyTo(ms);
+                            await _performerSchedulingService.AddKitImageAsync(
+                                kit.Id, ms.ToArray(), Path.GetExtension(image.FileName));
                         }
 
                         ShowAlertSuccess($"Kit \"{kit.Name}\" added!");
@@ -1558,36 +1533,6 @@ namespace GRA.Controllers.MissionControl
                 model.MaxUploadMB = MaxUploadMB;
             }
             return View(model);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> DeleteKitSelection(KitSelectionsViewModel model)
-        {
-            var settings = await _performerSchedulingService.GetSettingsAsync();
-            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
-            if (schedulingStage == PsSchedulingStage.Unavailable)
-            {
-                return RedirectToAction(nameof(PerformerManagementController.KitSelections),
-                    new { id = model.Kit.Id });
-            }
-            try
-            {
-                var branchSelection = await _performerSchedulingService
-                    .GetBranchProgramSelectionByIdAsync(model.BranchSelectionId);
-                await _performerSchedulingService.DeleteBranchSelectionAsync(branchSelection);
-                var branch = await _siteService.GetBranchByIdAsync(branchSelection.BranchId);
-                var kit = await _performerSchedulingService.GetKitByIdAsync(model.Kit.Id);
-                ShowAlertSuccess($"{branch.Name}'s selection of \"{kit.Name}\" is deleted!");
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger("Unable to delete selection: ", gex);
-                _logger.LogError(gex,
-                    "Error deleting branch selection Id {BranchSelectionId} by user {GetActiveUserId}: {ErrorMessage}",
-                    model.BranchSelectionId, GetActiveUserId(), gex.Message);
-            }
-            return RedirectToAction(nameof(PerformerManagementController.KitSelections),
-                new { id = model.Kit.Id });
         }
 
         public async Task<IActionResult> KitImages(int id)
@@ -1665,15 +1610,11 @@ namespace GRA.Controllers.MissionControl
             {
                 foreach (var image in model.Images)
                 {
-                    using (var fileStream = image.OpenReadStream())
-                    {
-                        using (var ms = new MemoryStream())
-                        {
-                            fileStream.CopyTo(ms);
-                            await _performerSchedulingService.AddKitImageAsync(
-                                kit.Id, ms.ToArray(), Path.GetExtension(image.FileName));
-                        }
-                    }
+                    using var fileStream = image.OpenReadStream();
+                    using var ms = new MemoryStream();
+                    fileStream.CopyTo(ms);
+                    await _performerSchedulingService.AddKitImageAsync(
+                        kit.Id, ms.ToArray(), Path.GetExtension(image.FileName));
                 }
                 ShowAlertSuccess("Image(s) added!");
                 return RedirectToAction(nameof(KitImages));
@@ -1711,78 +1652,58 @@ namespace GRA.Controllers.MissionControl
 
             return RedirectToAction(nameof(KitImages), new { id = model.KitId });
         }
-        #endregion
 
-        #region Kit Selections
-        public async Task<IActionResult> KitSelections(int id)
+        public async Task<IActionResult> Kits(int page = 1)
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
-            if (schedulingStage < PsSchedulingStage.SchedulingOpen)
+            if (schedulingStage == PsSchedulingStage.Unavailable)
             {
                 return RedirectToAction(nameof(Settings));
             }
 
-            var kit = new PsKit();
-            try
-            {
-                kit = await _performerSchedulingService.GetKitByIdAsync(id, includeAgeGroups: true);
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger($"Could not view kit selections: ", gex.Message);
-                return RedirectToAction(nameof(Kits));
-            }
+            var filter = new BaseFilter(page, KitsPerPage);
 
-            var kits = await _performerSchedulingService.GetAllKitsAsync();
-            var branchSelections = await _performerSchedulingService.GetKitBranchSelectionsAsync(id);
+            var kitList = await _performerSchedulingService.GetPaginatedKitListAsync(filter);
 
-            var viewModel = new KitSelectionsViewModel
+            var paginateModel = new PaginateViewModel()
             {
-                Kit = kit,
-                BranchSelections = branchSelections,
-                KitList = new SelectList(kits, "Id", "Name", kit.Id),
-                AgeGroupList = new SelectList(kit.AgeGroups, "Id", "Name")
+                ItemCount = kitList.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
             };
+            if (paginateModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
 
-            var kitIndexList = await _performerSchedulingService.GetKitIndexListAsync();
-            var index = kitIndexList.IndexOf(id);
-            viewModel.ReturnPage = (index / KitsPerPage) + 1;
-            if (index != 0)
+            if (schedulingStage >= PsSchedulingStage.SchedulingOpen)
             {
-                viewModel.PrevKit = kitIndexList[index - 1];
+                foreach (var kit in kitList.Data)
+                {
+                    kit.SelectionsCount = await _performerSchedulingService
+                        .GetKitSelectionCountAsync(kit.Id);
+                }
             }
-            if (kitIndexList.Count != index + 1)
+
+            var viewModel = new KitListViewModel
             {
-                viewModel.NextKit = kitIndexList[index + 1];
-            }
+                Kits = kitList.Data.ToList(),
+                PaginateModel = paginateModel,
+                PerformerSchedulingEnabled = true,
+                SchedulingStage = schedulingStage
+            };
 
             return View(viewModel);
         }
 
-        public async Task<JsonResult> GetKitAgeGroups(int kitId)
-        {
-            PsKit kit;
-            try
-            {
-                kit = await _performerSchedulingService.GetKitByIdAsync(kitId,
-                    includeAgeGroups: true);
-            }
-            catch (GraException gex)
-            {
-                return Json(new
-                {
-                    success = false,
-                    message = gex.Message
-                });
-            }
+        #endregion Kits
 
-            return Json(new
-            {
-                success = true,
-                data = new SelectList(kit.AgeGroups, "Id", "Name")
-            });
-        }
+        #region Kit Selections
 
         public async Task<JsonResult> CheckBranchAgeGroup(int ageGroupId, int branchId,
             int? currentSelectionId = null)
@@ -1840,7 +1761,7 @@ namespace GRA.Controllers.MissionControl
                 });
             }
 
-            _logger.LogInformation($"Selection {branchSelection.Id} edited");
+            _logger.LogInformation("Selection {BranchSelectionId} edited", branchSelection.Id);
 
             ShowAlertSuccess("Kit selection updated!");
             return Json(new
@@ -1848,9 +1769,115 @@ namespace GRA.Controllers.MissionControl
                 success = true
             });
         }
-        #endregion
+
+        public async Task<JsonResult> GetKitAgeGroups(int kitId)
+        {
+            PsKit kit;
+            try
+            {
+                kit = await _performerSchedulingService.GetKitByIdAsync(kitId,
+                    includeAgeGroups: true);
+            }
+            catch (GraException gex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = gex.Message
+                });
+            }
+
+            return Json(new
+            {
+                success = true,
+                data = new SelectList(kit.AgeGroups, "Id", "Name")
+            });
+        }
+
+        public async Task<IActionResult> KitSelections(int id)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage < PsSchedulingStage.SchedulingOpen)
+            {
+                return RedirectToAction(nameof(Settings));
+            }
+
+            var kit = new PsKit();
+            try
+            {
+                kit = await _performerSchedulingService.GetKitByIdAsync(id, includeAgeGroups: true);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Could not view kit selections: ", gex.Message);
+                return RedirectToAction(nameof(Kits));
+            }
+
+            var kits = await _performerSchedulingService.GetAllKitsAsync();
+            var branchSelections = await _performerSchedulingService.GetKitBranchSelectionsAsync(id);
+
+            var viewModel = new KitSelectionsViewModel
+            {
+                Kit = kit,
+                BranchSelections = branchSelections,
+                KitList = new SelectList(kits, "Id", "Name", kit.Id),
+                AgeGroupList = new SelectList(kit.AgeGroups, "Id", "Name")
+            };
+
+            var kitIndexList = await _performerSchedulingService.GetKitIndexListAsync();
+            var index = kitIndexList.IndexOf(id);
+            viewModel.ReturnPage = (index / KitsPerPage) + 1;
+            if (index != 0)
+            {
+                viewModel.PrevKit = kitIndexList[index - 1];
+            }
+            if (kitIndexList.Count != index + 1)
+            {
+                viewModel.NextKit = kitIndexList[index + 1];
+            }
+
+            return View(viewModel);
+        }
+
+        #endregion Kit Selections
 
         #region Age Groups
+
+        [HttpPost]
+        public async Task<IActionResult> AddAgeGroup(AgeGroupsListViewModel model)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var performerSchedulingEnabled = _performerSchedulingService.GetSchedulingStage(settings)
+                    != PsSchedulingStage.Unavailable;
+            if (!performerSchedulingEnabled)
+            {
+                return RedirectToAction(nameof(Settings));
+            }
+
+            if (string.IsNullOrEmpty(model.AgeGroup.Name?.Trim()))
+            {
+                ShowAlertDanger("You must provide a name to add Age Group.");
+            }
+            else
+            {
+                try
+                {
+                    var ageGroup = await _performerSchedulingService.AddAgeGroupAsync(model.AgeGroup);
+                    ShowAlertSuccess($"Added Age Group \"{ageGroup.Name}\"!");
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger("Unable to add Age Group: ", gex);
+                }
+            }
+
+            return RedirectToAction(nameof(AgeGroups), new
+            {
+                page = model.PaginateModel.CurrentPage
+            });
+        }
+
         public async Task<IActionResult> AgeGroups(int page = 1)
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();
@@ -1897,33 +1924,6 @@ namespace GRA.Controllers.MissionControl
             };
 
             return View(viewModel);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddAgeGroup(AgeGroupsListViewModel model)
-        {
-            var settings = await _performerSchedulingService.GetSettingsAsync();
-            var performerSchedulingEnabled = _performerSchedulingService.GetSchedulingStage(settings)
-                    != PsSchedulingStage.Unavailable;
-            if (!performerSchedulingEnabled)
-            {
-                return RedirectToAction(nameof(Settings));
-            }
-
-            try
-            {
-                var ageGroup = await _performerSchedulingService.AddAgeGroupAsync(model.AgeGroup);
-                ShowAlertSuccess($"Added Age Group \"{ageGroup.Name}\"!");
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger("Unable to add Age Group: ", gex);
-            }
-
-            return RedirectToAction(nameof(AgeGroups), new
-            {
-                page = model.PaginateModel.CurrentPage
-            });
         }
 
         [HttpPost]
@@ -1989,9 +1989,39 @@ namespace GRA.Controllers.MissionControl
                 page = model.PaginateModel.CurrentPage
             });
         }
-        #endregion
+
+        #endregion Age Groups
 
         #region Blackout Dates
+
+        [HttpPost]
+        public async Task<IActionResult> AddBlackoutDate(BlackoutDatesListViewModel model)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var performerSchedulingEnabled = _performerSchedulingService.GetSchedulingStage(settings)
+                    != PsSchedulingStage.Unavailable;
+            if (!performerSchedulingEnabled)
+            {
+                return RedirectToAction(nameof(Settings));
+            }
+
+            try
+            {
+                var blackoutDate = await _performerSchedulingService.AddBlackoutDateAsync(
+                    model.BlackoutDate);
+                ShowAlertSuccess($"Added Blackout Date \"{blackoutDate.Reason}\"!");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to add Blackout Date: ", gex);
+            }
+
+            return RedirectToAction(nameof(BlackoutDates), new
+            {
+                page = model.PaginateModel.CurrentPage
+            });
+        }
+
         public async Task<IActionResult> BlackoutDates(int page = 1)
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();
@@ -2033,34 +2063,6 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddBlackoutDate(BlackoutDatesListViewModel model)
-        {
-            var settings = await _performerSchedulingService.GetSettingsAsync();
-            var performerSchedulingEnabled = _performerSchedulingService.GetSchedulingStage(settings)
-                    != PsSchedulingStage.Unavailable;
-            if (!performerSchedulingEnabled)
-            {
-                return RedirectToAction(nameof(Settings));
-            }
-
-            try
-            {
-                var blackoutDate = await _performerSchedulingService.AddBlackoutDateAsync(
-                    model.BlackoutDate);
-                ShowAlertSuccess($"Added Blackout Date \"{blackoutDate.Reason}\"!");
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger("Unable to add Blackout Date: ", gex);
-            }
-
-            return RedirectToAction(nameof(BlackoutDates), new
-            {
-                page = model.PaginateModel.CurrentPage
-            });
-        }
-
-        [HttpPost]
         public async Task<IActionResult> DeleteBlackoutDate(BlackoutDatesListViewModel model)
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();
@@ -2086,53 +2088,10 @@ namespace GRA.Controllers.MissionControl
                 page = model.PaginateModel.CurrentPage
             });
         }
-        #endregion
+
+        #endregion Blackout Dates
 
         #region Excluded Branches
-        public async Task<IActionResult> ExcludedBranches(int page = 1)
-        {
-            var settings = await _performerSchedulingService.GetSettingsAsync();
-            var performerSchedulingEnabled = _performerSchedulingService.GetSchedulingStage(settings)
-                    != PsSchedulingStage.Unavailable;
-            if (!performerSchedulingEnabled)
-            {
-                return RedirectToAction(nameof(Settings));
-            }
-
-            var filter = new BaseFilter(page);
-
-            var excludedBranchList = await _performerSchedulingService
-                .GetPaginatedExcludedBranchListAsync(filter);
-
-            var paginateModel = new PaginateViewModel
-            {
-                ItemCount = excludedBranchList.Count,
-                CurrentPage = page,
-                ItemsPerPage = filter.Take.Value
-            };
-            if (paginateModel.PastMaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
-            }
-
-            var excludedBranchIds = await _performerSchedulingService.GetExcludedBranchIdsAsync();
-            var branches = await _siteService.GetAllBranches(true);
-            branches = branches.Where(_ => !excludedBranchIds.Contains(_.Id));
-
-            var viewModel = new ExcludedBranchListViewModel
-            {
-                ExcludedBranches = excludedBranchList.Data,
-                PaginateModel = paginateModel,
-                UnexcludedBranches = new SelectList(branches, "Id", "Name"),
-                PerformerSchedulingEnabled = performerSchedulingEnabled
-            };
-
-            return View(viewModel);
-        }
 
         [HttpPost]
         public async Task<IActionResult> AddBranchExclusion(ExcludedBranchListViewModel model)
@@ -2193,9 +2152,56 @@ namespace GRA.Controllers.MissionControl
                 page = model.PaginateModel.CurrentPage
             });
         }
-        #endregion
+
+        public async Task<IActionResult> ExcludedBranches(int page = 1)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var performerSchedulingEnabled = _performerSchedulingService.GetSchedulingStage(settings)
+                    != PsSchedulingStage.Unavailable;
+            if (!performerSchedulingEnabled)
+            {
+                return RedirectToAction(nameof(Settings));
+            }
+
+            var filter = new BaseFilter(page);
+
+            var excludedBranchList = await _performerSchedulingService
+                .GetPaginatedExcludedBranchListAsync(filter);
+
+            var paginateModel = new PaginateViewModel
+            {
+                ItemCount = excludedBranchList.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+            if (paginateModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+
+            var excludedBranchIds = await _performerSchedulingService.GetExcludedBranchIdsAsync();
+            var branches = await _siteService.GetAllBranches(true);
+            branches = branches.Where(_ => !excludedBranchIds.Contains(_.Id));
+
+            var viewModel = new ExcludedBranchListViewModel
+            {
+                ExcludedBranches = excludedBranchList.Data,
+                PaginateModel = paginateModel,
+                UnexcludedBranches = new SelectList(branches, "Id", "Name"),
+                PerformerSchedulingEnabled = performerSchedulingEnabled
+            };
+
+            return View(viewModel);
+        }
+
+        #endregion Excluded Branches
 
         #region Settings
+
         public async Task<IActionResult> Settings()
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();
@@ -2241,7 +2247,7 @@ namespace GRA.Controllers.MissionControl
                 try
                 {
                     await _performerSchedulingService.UpdateSettingsAsync(model.Settings);
-                    ShowAlertSuccess($"Settings updated!");
+                    ShowAlertSuccess("Settings updated!");
                     return RedirectToAction(nameof(Settings));
                 }
                 catch (GraException gex)
@@ -2259,6 +2265,7 @@ namespace GRA.Controllers.MissionControl
             };
             return View(viewModel);
         }
-        #endregion
+
+        #endregion Settings
     }
 }
