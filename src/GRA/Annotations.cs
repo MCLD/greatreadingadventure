@@ -54,6 +54,7 @@
             public const string GroupRegister = "Register new {0} Member";
             public const string LetYouKnowWhen = "Thanks! We'll let you know when you can join the program.";
             public const string MailForHelp = "If you can't find something, please <a href=\"{0}\">send us a mail</a> and let us know what you were looking for, we'll do our best to help.";
+            public const string NoAttachments = "There are no attachments for you to view yet.";
             public const string NoBadges = "You have not earned any badges yet.";
             public const string NoBooksLogged = "No books logged.";
             public const string NoHistory = "No history to display.";
@@ -92,6 +93,7 @@
             public const string AndOtherActivities = "and other activities";
             public const string AndTheir = "and their {0}";
             public const string Apply = "Apply";
+            public const string Attachments = "Attachments";
             public const string AvatarBundleAltText = "This badge was awarded when you unlocked the avatar bundle: {0}";
             public const string AvatarSaved = "Avatar saved.";
             public const string Back = "Back";
@@ -105,6 +107,7 @@
             public const string BookList = "Book List";
             public const string Bundle = "Bundle";
             public const string Cancel = "Cancel";
+            public const string Certificates = "Certificates";
             public const string ChangePassword = "Change Password";
             public const string ChooseAnOption = "Choose an option:";
             public const string Clear = "Clear";
@@ -123,10 +126,10 @@
             public const string DonateBook = "Donate book";
             public const string DonateYourBook = "Donate your book";
             public const string DownloadToShare = "Download to Share";
+            public const string EmailDefaultFooter = "You are receiving this email because you are subscribed for updates from {{Sitename}}. You can [instantly unsubscribe at any time]({{UnsubscribeLink}})";
             public const string EnterAddressOrZipCode = "Enter an address or ZIP code";
             public const string EnterChallengeSearch = "Enter text to search for a challenge here";
             public const string EnterEventSearch = "Enter text to search for an event here";
-            public const string EmailDefaultFooter = "You are receiving this email because you are subscribed for updates from {{Sitename}}. You can [instantly unsubscribe at any time]({{UnsubscribeLink}})";
             public const string EventHasEnded = "This streaming event has ended.";
             public const string EventNotFound = "Could not find the requested event.";
             public const string EventNotStarted = "This streaming event has not started yet.";
@@ -215,10 +218,12 @@
         public static class Title
         {
             public const string Activity = "Activity";
+            public const string Attachment = "Attachment";
             public const string Avatar = "Avatar";
             public const string Badge = "Badge";
             public const string BookCode = "Book Code";
             public const string BundleItems = "Bundle Items";
+            public const string Certificate = "Certificate";
             public const string ChallengeDetails = "Challenge: {0}";
             public const string ChallengeGroup = "Challenge Group: {0}";
             public const string Challenges = "Challenges";

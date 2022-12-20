@@ -33,7 +33,18 @@
                                         {
                                             <tr>
                                                 <td>@history.CreatedAt</td>
-                                                <td>@Html.Raw(history.Description)</td>
+                                                <td>
+                                                    <div>
+                                                        @Html.Raw(history.Description)
+                                                    </div>
+                                                    <div style="margin-top:5px">
+                                                        @SharedLocalizer[GRA.Annotations.Title.Certificate]: &nbsp;
+                                                        <a href="~/@history.AttachmentFilename" download="@history.AttachmentDownload">
+                                                            <img src="~/images/certificate.png"
+                                                                alt="Certificate" />
+                                                        </a>
+                                                    </div>
+                                                </td>
                                                 <td>
                                                     @if (!string.IsNullOrEmpty(history.BadgeFilename))
                                                     {

@@ -1,5 +1,4 @@
-﻿
-namespace GRA.Domain.Model
+﻿namespace GRA.Domain.Model
 {
     public enum Permission
     {
@@ -53,6 +52,7 @@ namespace GRA.Domain.Model
         SchedulePerformers,
         SendBroadcastMail,
         SendBulkEmails,
+        TriggerAttachments,
         UnDonateVendorCode,
         ViewAllChallenges,
         ViewAllReporting,

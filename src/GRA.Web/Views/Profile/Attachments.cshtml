@@ -1,0 +1,73 @@
+﻿@model GRA.Controllers.ViewModel.Profile.AttachmentListViewModel
+
+<div class="row">
+    <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="lead">@SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProfile]</span>
+            </div>
+            <div class="panel-body">
+
+                @await Html.PartialAsync("_ProfilePartial")
+
+                @if (Model.Attachments.Count() == 0)
+                {
+                    <div class="row" style="padding: 10px 0;">
+                        <div class="col-xs-12">
+                            <div class="alert alert-warning">@SharedLocalizer[GRA.Annotations.Info.NoAttachments]</div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <table class="table table-condensed table-hover">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Date</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                        @foreach (var item in Model.Attachments)
+                        {
+                            <td class="text-center">
+                                @if (!string.IsNullOrWhiteSpace(item.AttachmentFilename))
+                                {
+                                    if (item.ShowCertificate)
+                                    {
+                                    <a href="~/@item.AttachmentFilename" download="@item.AttachmentDownload">
+                                        <img src="~/images/certificate.png"
+                                            alt="Certificate" />
+                                    </a>
+                                    }
+                                    else
+                                    {
+                                    <a href="~/@item.AttachmentFilename" download="@item.AttachmentDownload">
+                                        <span>Download File</span>
+                                    </a>
+                                    }
+                                }
+                            </td>
+                            <td>@item.EarnedOn</td>
+                            <td>
+                                  <span>@item.Description</span>  
+                            </td>
+                        }
+                        </tr>
+                        </tbody>
+                    </table>
+                    @if (Model.PaginateModel.MaxPage > 1)
+                    {
+                        <div class="row">
+                            <div class="col-xs-12 text-center">
+                                <paginate paginateModel="@Model.PaginateModel"></paginate>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>

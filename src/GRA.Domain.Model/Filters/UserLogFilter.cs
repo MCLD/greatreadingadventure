@@ -2,8 +2,11 @@
 {
     public class UserLogFilter : BaseFilter
     {
-        public bool? HasBadge { get; set; }
+        public UserLogFilter(int? page = null, int take = 12) : base(page, take)
+        {
+        }
 
-        public UserLogFilter(int? page = null, int take = 12) : base(page, take) { }
+        public bool? HasAttachment { get; set; }
+        public bool? HasBadge { get; set; }
     }
 }

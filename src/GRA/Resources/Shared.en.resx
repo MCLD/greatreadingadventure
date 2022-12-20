@@ -1597,4 +1597,16 @@
     <value>&lt;em&gt;{0}&lt;/em&gt; was picked up on &lt;strong&gt;{1}&lt;/strong&gt;.</value>
     <comment>Display once a vendor item is picked up; {0} is the detail of the item, {1} is the date it was picked up</comment>
   </data>
+  <data name="Certificate" xml:space="preserve">
+    <value>Certificate</value>
+  </data>
+  <data name="Certificates" xml:space="preserve">
+    <value>Certificates</value>
+  </data>
+  <data name="Attachment" xml:space="preserve">
+    <value>Attachment</value>
+  </data>
+  <data name="Attachments" xml:space="preserve">
+    <value>Attachments</value>
+  </data>
 </root>

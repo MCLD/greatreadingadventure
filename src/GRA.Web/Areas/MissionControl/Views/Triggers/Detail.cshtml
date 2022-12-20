@@ -53,12 +53,14 @@
     <input asp-for="EditAvatarBundle" type="hidden" />
     <input asp-for="AwardsPrize" type="hidden" />
     <input asp-for="AwardsMail" type="hidden" />
+    <input asp-for="AwardsAttachment" type="hidden" />
     @if (Model.Action == "Edit")
     {
         <input asp-for="Trigger.Id" type="hidden" />
         <input asp-for="Trigger.RelatedBranchId" type="hidden" />
         <input asp-for="Trigger.RelatedSystemId" type="hidden" />
         <input asp-for="Trigger.AwardBadgeId" type="hidden" />
+        <input asp-for="Trigger.AwardAttachmentId" type="hidden" />
     }
 
     @if (Model.DependentTriggers?.Count > 0)
@@ -432,14 +434,14 @@
                     <div class="tab-content">
                         <div role="tabpanel" class="tab-pane @(Model.UseBadgeMaker ? "active" : "")" id="badge">
                             <button id="openMaker" type="button" class="btn btn-default">
-                                <span class="fas fa-certificate"></span> Create a Badge
+                                <span class="fas fa-badge-check"></span> Create a Badge
                             </button>
                         </div>
                         <div role="tabpanel" class="tab-pane @(Model.UseBadgeMaker ? "" : "active")" id="upload">
                             <p>Upload a badge image. Badge images must be square.</p>
                             <div class="input-group">
                                 <label class="input-group-btn">
-                                    <span class="btn btn-default btn-file">
+                                    <span id="selectBadge" class="btn btn-default btn-file">
                                         <span class="far fa-file-image"></span> Select an image<input type="file" asp-for="BadgeUploadImage" accept=".png,.jpg,.jpeg" style="display: none;" />
                                     </span>
                                 </label>
@@ -592,8 +594,55 @@
             </div>
         </div>
     }
-
-
+    @if (Model.EditAttachment || Model.AwardsAttachment)
+    {
+        <div class="panel-group" id="accordionAttachment" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-info">
+                <div class="panel-heading" role="tab" id="headingAttachment">
+                    <h4 class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#accordionAttachment" href="#collapseAttachment" aria-expanded="true" aria-controls="collapseAttachment">
+                            <span id="attachmentIcon" class="fas fa-lg @(Model.AwardsAttachment ? "fa-caret-down" : "fa-caret-right")"></span>
+                            Award Attachment
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseAttachment" class="panel-collapse collapse @(Model.AwardsAttachment ? "in" : "")" role="tabpanel" aria-labelledby="headingAttachment">                   
+                    <div class="panel-body">
+                        <div class="row row-spacing">
+                            <div class="col-xs-12">
+                                <p>Upload an attachment.</p>
+                                <div class="input-group">
+                                    <label class="input-group-btn">
+                                        <span id="selectAttachment" class="btn btn-default btn-file">
+                                            <span class="far fa-file"></span> Select a file<input type="file" asp-for="AttachmentUploadFile" accept=".pdf" style="display: none;" />
+                                        </span>
+                                    </label>
+                                    <input type="text" class="form-control" readonly id="selectedCertPdf">
+                                </div>
+                                <div>
+                                    <span asp-validation-for="AttachmentUploadFile" class="text-danger"></span>
+                                </div>
+                                <button id="clearAttachment" class="btn btn-default" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
+                            </div>
+                            <div class="col-xs-12">
+                                @if (Model.AwardsAttachment && !string.IsNullOrWhiteSpace(Model.Trigger.AwardAttachmentFilename))
+                                {
+                                <div class="form-row d-inline-block">
+                                    <div class="col-lg-12" style="margin-top:1.5rem;">
+                                            <a href="~/@Model.Trigger.AwardAttachmentFilename" target="_blank">
+                                        <img id="attachmentImage"
+                                        src="~/images/certificate.png" />
+                                        </a>
+                                    </div>
+                                </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
     <div class="form-group">
         <a asp-action="Index" class="btn btn-default">Return to List</a>
         @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
@@ -872,9 +921,16 @@
 
         $('#clearFile').on("click", function () {
             $('#BadgeUploadImage').val('');
-            $('.btn-file').addClass('btn-default');
-            $('.btn-file').removeClass('btn-success');
+            $('#selectBadge').addClass('btn-default');
+            $('#selectBadge').removeClass('btn-success');
             $('#selectedFile').val('');
+        });
+
+        $('#clearAttachment').on('click', function () {
+            $('#AttachmentUploadFile').val('');
+            $('#selectAttachment').addClass('btn-default');
+            $('#selectAttachment').removeClass('btn-success');
+            $('#selectedCertPdf').val('');
         });
 
         $(document).on("click", ".page-button", function() {
@@ -908,24 +964,40 @@
             $("#IsSecretCode").val("false");
         });
 
-        $(':file').on('fileselect', function(event, numFiles, label) {
+        $('#BadgeUploadImage:file').on('fileselect', function(event, numFiles, label) {
             var input = $(this).parents('.input-group').find(':text'),
                 log = numFiles > 1 ? numFiles = ' files selected' : label;
 
-            if (input.length)
-            {
+                if (input.length)
+                {
+                    input.val(log);
+                    $('#selectBadge').removeClass('btn-default');
+                    $('#selectBadge').addClass('btn-success');
+                    $("#badgeImage").removeAttr("src");
+                    $("#badgeImage").height(200);
+                    $("#BadgeMakerImage").val("");
+                }
+                else
+                {
+                    input.val('');
+                    $('#selectBadge').addClass('btn-default');
+                    $('#selectBadge').removeClass('btn-success');
+                }
+        });
+
+        $('#AttachmentUploadFile:file').on('fileselect', function (event, numFiles, label) {
+            var input = $(this).parents('.input-group').find(':text'),
+                log = numFiles > 1 ? numFiles = ' files selected' : label;
+
+            if (input.length) {
                 input.val(log);
-                $('.btn-file').removeClass('btn-default');
-                $('.btn-file').addClass('btn-success');
-                $("#badgeImage").removeAttr("src");
-                $("#badgeImage").height(200);
-                $("#BadgeMakerImage").val("");
+                $('#selectAttachment').removeClass('btn-default');
+                $('#selectAttachment').addClass('btn-success');
             }
-            else
-            {
+            else {
                 input.val('');
-                $('.btn-file').addClass('btn-default');
-                $('.btn-file').removeClass('btn-success');
+                $('#selectAttachment').addClass('btn-default');
+                $('#selectAttachment').removeClass('btn-success');
             }
         });
 
@@ -977,6 +1049,15 @@
         $("#collapseMail").on("hide.bs.collapse", function() {
             $("#AwardsMail").val("false");
             $("#mailIcon").removeClass("fa-caret-down").addClass("fa-caret-right");
+        });
+
+        $("#collapseAttachment").on("show.bs.collapse", function() {
+            $("#AwardsAttachment").val("true");
+            $("#attachmentIcon").removeClass("fa-caret-right").addClass("fa-caret-down");
+        });
+        $("#collapseAttachment").on("hide.bs.collapse", function() {
+            $("#AwardsAttachment").val("false");
+            $("#attachmentIcon").removeClass("fa-caret-down").addClass("fa-caret-right");
         });
 
         $("#Trigger_SecretCode").on("blur", function () {

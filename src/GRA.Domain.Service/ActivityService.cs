@@ -559,7 +559,8 @@ namespace GRA.Domain.Service
                 BadgeId = trigger.AwardBadgeId,
                 EventId = relatedEventId,
                 TriggerId = trigger.Id,
-                Description = trigger.AwardMessage
+                Description = trigger.AwardMessage,
+                AttachmentId = trigger.AwardAttachmentId
             };
 
             if (activeUserId != userToLog.Id)
