@@ -905,8 +905,8 @@
     <value>Share Your Avatar</value>
     <comment>Title for the avatar sharing page</comment>
   </data>
-  <data name="View Attachment" xml:space="preserve">
-    <value>View Attachment</value>
+  <data name="View Certificate" xml:space="preserve">
+    <value>View Certificate</value>
     <comment>Button text to view an attached file to a challenge task</comment>
   </data>
   <data name="Your status has been saved!" xml:space="preserve">
@@ -1602,11 +1602,5 @@
   </data>
   <data name="Certificates" xml:space="preserve">
     <value>Certificates</value>
-  </data>
-  <data name="Attachment" xml:space="preserve">
-    <value>Attachment</value>
-  </data>
-  <data name="Attachments" xml:space="preserve">
-    <value>Attachments</value>
   </data>
 </root>

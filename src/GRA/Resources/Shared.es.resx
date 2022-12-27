@@ -889,10 +889,6 @@
     <value>Comparta su Avatar</value>
     <comment>Title for the avatar sharing page</comment>
   </data>
-  <data name="View Attachment" xml:space="preserve">
-    <value>Vea el archivo adjunto</value>
-    <comment>Button text to view an attached file to a challenge task</comment>
-  </data>
   <data name="When you complete &lt;strong&gt;{0}&lt;/strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt; and a badge." xml:space="preserve">
     <value>Al completar &lt;strong&gt;{0}&lt;/strong&gt;, recibira &lt;strong&gt;{1}&lt;/strong&gt; y una medalla.</value>
     <comment>Inform the participant that when they complete a task, they receive a reward and a badge. {0} is the task, {1} is the reward.</comment>
@@ -1602,11 +1598,5 @@
   </data>
   <data name="Certificates" xml:space="preserve">
     <value>Certificados</value>
-  </data>
-  <data name="Attachment" xml:space="preserve">
-    <value>Archivo Adjunto</value>
-  </data>
-  <data name="Attachments" xml:space="preserve">
-    <value>Archivos Adjuntos</value>
   </data>
 </root>

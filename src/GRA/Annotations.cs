@@ -54,9 +54,9 @@
             public const string GroupRegister = "Register new {0} Member";
             public const string LetYouKnowWhen = "Thanks! We'll let you know when you can join the program.";
             public const string MailForHelp = "If you can't find something, please <a href=\"{0}\">send us a mail</a> and let us know what you were looking for, we'll do our best to help.";
-            public const string NoAttachments = "There are no attachments for you to view yet.";
             public const string NoBadges = "You have not earned any badges yet.";
             public const string NoBooksLogged = "No books logged.";
+            public const string NoCertificates = "There are no certificates for you to view yet.";
             public const string NoHistory = "No history to display.";
             public const string NoUnlockedBundles = "No unlocked bundles";
             public const string PasswordRecoverySent = "A password recovery email has been sent to the email for username '{0}'.";
@@ -93,7 +93,6 @@
             public const string AndOtherActivities = "and other activities";
             public const string AndTheir = "and their {0}";
             public const string Apply = "Apply";
-            public const string Attachments = "Attachments";
             public const string AvatarBundleAltText = "This badge was awarded when you unlocked the avatar bundle: {0}";
             public const string AvatarSaved = "Avatar saved.";
             public const string Back = "Back";
@@ -195,7 +194,7 @@
             public const string UpgradeToGroup = "Upgrade to Group";
             public const string UseMyZipCode = "Use my ZIP code";
             public const string ViewAll = "View All";
-            public const string ViewAttachment = "View Attachment";
+            public const string ViewCertificate = "View Certificate";
             public const string ViewCompleted = "View Completed";
             public const string ViewUncompleted = "View Uncompleted";
             public const string What = "What";
@@ -218,7 +217,6 @@
         public static class Title
         {
             public const string Activity = "Activity";
-            public const string Attachment = "Attachment";
             public const string Avatar = "Avatar";
             public const string Badge = "Badge";
             public const string BookCode = "Book Code";
