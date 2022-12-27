@@ -17,24 +17,20 @@ namespace GRA.Controllers
     [UnauthenticatedFilter]
     public class JoinController : Base.UserController
     {
-        private const string TempStep1 = "TempStep1";
-        private const string TempStep2 = "TempStep2";
-
         private const string AuthCodeAttempts = "AuthCodeAttempts";
         private const string EnteredAuthCode = "EnteredAuthCode";
-
-        private readonly ILogger<JoinController> _logger;
-        private readonly AutoMapper.IMapper _mapper;
+        private const string TempStep1 = "TempStep1";
+        private const string TempStep2 = "TempStep2";
         private readonly AuthenticationService _authenticationService;
         private readonly AuthorizationCodeService _authorizationCodeService;
+        private readonly ILogger<JoinController> _logger;
         private readonly MailService _mailService;
+        private readonly AutoMapper.IMapper _mapper;
         private readonly PointTranslationService _pointTranslationService;
+        private readonly QuestionnaireService _questionnaireService;
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
-        private readonly QuestionnaireService _questionnaireService;
         private readonly UserService _userService;
-
-        public static string Name { get { return "Join"; } }
 
         public JoinController(ILogger<JoinController> logger,
             ServiceFacade.Controller context,
@@ -64,6 +60,61 @@ namespace GRA.Controllers
                 ?? throw new ArgumentNullException(nameof(questionnaireService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = _sharedLocalizer[Annotations.Title.Join];
+        }
+
+        public static string Name
+        { get { return "Join"; } }
+
+        public IActionResult AuthorizationCode()
+        {
+            if (TempData.ContainsKey(AuthCodeAttempts) && (int)TempData.Peek(AuthCodeAttempts) >= 5)
+            {
+                ShowAlertDanger("Too many failed authorization attempts.");
+                return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AuthorizationCode(AuthorizationCodeViewModel model)
+        {
+            var site = await GetCurrentSiteAsync();
+            if (!TempData.ContainsKey(AuthCodeAttempts) || (int)TempData.Peek(AuthCodeAttempts) < 5)
+            {
+                var sanitized = model.AuthorizationCode.Trim().ToLowerInvariant();
+                if (await _authorizationCodeService.ValidateAuthorizationCode(sanitized))
+                {
+                    TempData.Remove(AuthCodeAttempts);
+                    TempData[EnteredAuthCode] = model.AuthorizationCode;
+                    ShowAlertInfo("Authorization code accepted.");
+
+                    if (site.SinglePageSignUp)
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                    {
+                        return RedirectToAction(nameof(Step1));
+                    }
+                }
+                if (TempData.ContainsKey(AuthCodeAttempts))
+                {
+                    TempData[AuthCodeAttempts] = (int)TempData[AuthCodeAttempts] + 1;
+                }
+                else
+                {
+                    TempData[AuthCodeAttempts] = 1;
+                }
+            }
+
+            if (TempData.ContainsKey(AuthCodeAttempts) && (int)TempData.Peek(AuthCodeAttempts) >= 5)
+            {
+                ShowAlertDanger("Too many failed authorization attempts.");
+                return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
+            }
+            ShowAlertDanger("Invalid authorization code.");
+
+            return View();
         }
 
         public async Task<IActionResult> Index()
@@ -182,7 +233,15 @@ namespace GRA.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(SinglePageViewModel model)
         {
+            bool askIfFirstTime;
+            bool askAge = false;
+            bool askSchool = false;
             var site = await GetCurrentSiteAsync();
+            bool askEmailSubscription;
+            string askEmailSubscriptionText;
+            bool askActivityGoal;
+            int defaultDailyGoal;
+
             if (!site.SinglePageSignUp)
             {
                 return RedirectToAction(nameof(Step1));
@@ -191,26 +250,26 @@ namespace GRA.Controllers
             {
                 ModelState.AddModelError(nameof(model.PostalCode),
                     _sharedLocalizer[ErrorMessages.Field,
-                        _sharedLocalizer[DisplayNames.ZipCode]]);
+                    _sharedLocalizer[DisplayNames.ZipCode]]);
             }
-
-            var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
+            askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
 
             if (!askIfFirstTime)
             {
                 ModelState.Remove(nameof(model.IsFirstTime));
             }
 
-            var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
+            (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
                 SiteSettingKey.Users.AskEmailSubPermission);
+
             if (!askEmailSubscription)
             {
                 ModelState.Remove(nameof(model.EmailSubscriptionRequested));
             }
             else
             {
-                var subscriptionRequested = model.EmailSubscriptionRequested.Equals(
-                        DropDownTrueValue, StringComparison.OrdinalIgnoreCase);
+                var subscriptionRequested = DropDownTrueValue.Equals(
+                        model.EmailSubscriptionRequested, StringComparison.OrdinalIgnoreCase);
                 if (subscriptionRequested && string.IsNullOrWhiteSpace(model.Email))
                 {
                     ModelState.AddModelError(nameof(model.Email), " ");
@@ -219,14 +278,13 @@ namespace GRA.Controllers
                 }
             }
 
-            var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
-            SiteSettingKey.Users.DefaultDailyPersonalGoal);
+            (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
+                SiteSettingKey.Users.DefaultDailyPersonalGoal);
 
-            bool askAge = false;
-            bool askSchool = false;
             if (model.ProgramId.HasValue)
             {
                 var program = await _siteService.GetProgramByIdAsync(model.ProgramId.Value);
+
                 askAge = program.AskAge;
                 askSchool = program.AskSchool;
                 if (program.AgeRequired && !model.Age.HasValue)
@@ -276,11 +334,11 @@ namespace GRA.Controllers
 
                 if (askEmailSubscription)
                 {
-                    user.IsEmailSubscribed = model.EmailSubscriptionRequested.Equals(
-                        DropDownTrueValue, StringComparison.OrdinalIgnoreCase);
+                    user.IsEmailSubscribed = DropDownTrueValue.Equals(
+                        model.EmailSubscriptionRequested, StringComparison.OrdinalIgnoreCase);
                 }
 
-                if (askActivityGoal && user.DailyPersonalGoal > 0)
+                if (askActivityGoal && user?.DailyPersonalGoal > 0)
                 {
                     if (user.DailyPersonalGoal > Defaults.MaxDailyActivityGoal)
                     {
@@ -303,7 +361,8 @@ namespace GRA.Controllers
                             .ValidateAuthorizationCode(sanitized);
                         if (!useAuthCode)
                         {
-                            _logger.LogError($"Invalid auth code used on join: {model.AuthorizationCode}");
+                            _logger.LogError("Invalid authorization code used on join: {AuthorizationCode}",
+                                model.AuthorizationCode);
                         }
                     }
                     await _userService.RegisterUserAsync(user, model.Password,
@@ -705,8 +764,8 @@ namespace GRA.Controllers
             }
             else
             {
-                var subscriptionRequested = model.EmailSubscriptionRequested.Equals(
-                        DropDownTrueValue, StringComparison.OrdinalIgnoreCase);
+                var subscriptionRequested = DropDownTrueValue.Equals(
+                        model.EmailSubscriptionRequested, StringComparison.OrdinalIgnoreCase);
                 if (subscriptionRequested && string.IsNullOrWhiteSpace(model.Email))
                 {
                     ModelState.AddModelError(nameof(model.Email), " ");
@@ -753,8 +812,8 @@ namespace GRA.Controllers
 
                 if (askEmailSubscription)
                 {
-                    user.IsEmailSubscribed = model.EmailSubscriptionRequested.Equals(
-                        DropDownTrueValue, StringComparison.OrdinalIgnoreCase);
+                    user.IsEmailSubscribed = DropDownTrueValue.Equals(
+                        model.EmailSubscriptionRequested, StringComparison.OrdinalIgnoreCase);
                 }
 
                 if (askActivityGoal && user.DailyPersonalGoal > 0)
@@ -780,7 +839,8 @@ namespace GRA.Controllers
                             .ValidateAuthorizationCode(sanitized);
                         if (!useAuthCode)
                         {
-                            _logger.LogError($"Invalid auth code used on join: {step1.AuthorizationCode}");
+                            _logger.LogError("Invalid authorization code used on join: {AuthorizationCode}",
+                                step1.AuthorizationCode);
                         }
                     }
                     await _userService.RegisterUserAsync(user, model.Password,
@@ -859,58 +919,6 @@ namespace GRA.Controllers
             PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, site.Name];
 
             return View(model);
-        }
-
-        public IActionResult AuthorizationCode()
-        {
-            if (TempData.ContainsKey(AuthCodeAttempts) && (int)TempData.Peek(AuthCodeAttempts) >= 5)
-            {
-                ShowAlertDanger("Too many failed authorization attempts.");
-                return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
-            }
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AuthorizationCode(AuthorizationCodeViewModel model)
-        {
-            var site = await GetCurrentSiteAsync();
-            if (!TempData.ContainsKey(AuthCodeAttempts) || (int)TempData.Peek(AuthCodeAttempts) < 5)
-            {
-                var sanitized = model.AuthorizationCode.Trim().ToLowerInvariant();
-                if (await _authorizationCodeService.ValidateAuthorizationCode(sanitized))
-                {
-                    TempData.Remove(AuthCodeAttempts);
-                    TempData[EnteredAuthCode] = model.AuthorizationCode;
-                    ShowAlertInfo("Authorization code accepted.");
-
-                    if (site.SinglePageSignUp)
-                    {
-                        return RedirectToAction(nameof(Index));
-                    }
-                    else
-                    {
-                        return RedirectToAction(nameof(Step1));
-                    }
-                }
-                if (TempData.ContainsKey(AuthCodeAttempts))
-                {
-                    TempData[AuthCodeAttempts] = (int)TempData[AuthCodeAttempts] + 1;
-                }
-                else
-                {
-                    TempData[AuthCodeAttempts] = 1;
-                }
-            }
-
-            if (TempData.ContainsKey(AuthCodeAttempts) && (int)TempData.Peek(AuthCodeAttempts) >= 5)
-            {
-                ShowAlertDanger("Too many failed authorization attempts.");
-                return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
-            }
-            ShowAlertDanger("Invalid authorization code.");
-
-            return View();
         }
     }
 }

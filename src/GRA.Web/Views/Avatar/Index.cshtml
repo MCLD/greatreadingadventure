@@ -372,7 +372,7 @@
             layer.addClass("selected");
             if (layer.data("layer") == 999) {
                 $("#avatarBundles").removeClass("hide");
-                $("#bundle-selected").text("@SharedLocalizer[GRA.Annotations.Interface.SelectABundle] ");
+                $("#bundle-selected").html("@SharedLocalizer[GRA.Annotations.Interface.SelectABundle] ");
                 $("#bundle-selected").append("<span class='caret'></span>");
                 $("#bundle-selected").data("bundleid", "");
                 $("#avatarItems").addClass("hide");
@@ -698,7 +698,7 @@
             $.post("@Url.Action("SaveAvatar")", { selectionJson: GetAvatarSelection() }, function (response) {
                 if (response.success == true) {
                     $(".avatar-save-message").removeClass("text-danger").addClass("text-success");
-                    $(".avatar-save-message").text("@SharedLocalizer[GRA.Annotations.Interface.AvatarSaved]");
+                    $(".avatar-save-message").html("@SharedLocalizer[GRA.Annotations.Interface.AvatarSaved]");
                     $(".avatar-save-message").show().delay(2000).fadeOut("slow");
 
                     @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null){
@@ -717,7 +717,7 @@
                 }
             }).fail(function () {
                 $(".avatar-save-message").removeClass("text-success").addClass("text-danger");
-                $(".avatar-save-message").text("@SharedLocalizer[GRA.Annotations.Validate.CouldNotSaveAvatar]");
+                $(".avatar-save-message").html("@SharedLocalizer[GRA.Annotations.Validate.CouldNotSaveAvatar]");
                 $(".avatar-save-message").show();
             })
             .always(function() {

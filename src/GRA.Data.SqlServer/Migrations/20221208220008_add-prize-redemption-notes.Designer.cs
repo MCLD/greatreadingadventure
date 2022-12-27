@@ -4,6 +4,7 @@ using GRA.Data.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GRA.Data.SqlServer.Migrations
 {
     [DbContext(typeof(SqlServerContext))]
-    partial class SqlServerContextModelSnapshot : ModelSnapshot
+    [Migration("20221208220008_add-prize-redemption-notes")]
+    partial class addprizeredemptionnotes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,35 +55,6 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasIndex("QuestionId");
 
                     b.ToTable("Answers");
-                });
-
-            modelBuilder.Entity("GRA.Data.Model.Attachment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FileName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool?>("IsCertificate")
-                        .IsRequired()
-                        .HasColumnType("bit");
-
-                    b.Property<int>("SiteId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Attachments");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.AuditLog", b =>
@@ -3526,9 +3500,6 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<DateTime?>("ActivationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("AwardAttachmentId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("AwardAvatarBundleId")
                         .HasColumnType("int");
 
@@ -3605,8 +3576,6 @@ namespace GRA.Data.SqlServer.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AwardAttachmentId");
 
                     b.HasIndex("AwardAvatarBundleId");
 
@@ -3969,9 +3938,6 @@ namespace GRA.Data.SqlServer.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("ActivityEarned")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("AttachmentId")
                         .HasColumnType("int");
 
                     b.Property<int?>("AvatarBundleId")
@@ -5064,11 +5030,6 @@ namespace GRA.Data.SqlServer.Migrations
 
             modelBuilder.Entity("GRA.Data.Model.Trigger", b =>
                 {
-                    b.HasOne("GRA.Data.Model.Attachment", "AwardAttachment")
-                        .WithMany()
-                        .HasForeignKey("AwardAttachmentId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("GRA.Data.Model.AvatarBundle", "AwardAvatarBundle")
                         .WithMany()
                         .HasForeignKey("AwardAvatarBundleId")
@@ -5099,8 +5060,6 @@ namespace GRA.Data.SqlServer.Migrations
                         .WithMany()
                         .HasForeignKey("LimitToSystemId")
                         .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("AwardAttachment");
 
                     b.Navigation("AwardAvatarBundle");
 
