@@ -166,6 +166,7 @@
             public const string RelatedChallenge = "Related Challenge";
             public const string RelatedChallenges = "Related Challenges";
             public const string RemovedItem = "Removed: {0}";
+            public const string ReplaceAttachment = "Replace the attachment";
             public const string Reply = "Reply";
             public const string ReplyTo = "Reply to:";
             public const string ReturnToTop = "Return to Top";
@@ -192,6 +193,7 @@
             public const string Unsubscribed = "You are now unsubscribed and will not receive any more emails from {0}.";
             public const string UpdatedItem = "Updated: {0}";
             public const string UpgradeToGroup = "Upgrade to Group";
+            public const string UploadAttachment = "Upload an attachment";
             public const string UseMyZipCode = "Use my ZIP code";
             public const string ViewAll = "View All";
             public const string ViewCertificate = "View Certificate";

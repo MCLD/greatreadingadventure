@@ -1595,8 +1595,10 @@
   </data>
   <data name="Certificate" xml:space="preserve">
     <value>Certificado</value>
+    <comment>Label for a user to download a certificate in their profile history.</comment>
   </data>
   <data name="Certificates" xml:space="preserve">
     <value>Certificados</value>
+    <comment>Button to view the participant's certificates.</comment>
   </data>
 </root>

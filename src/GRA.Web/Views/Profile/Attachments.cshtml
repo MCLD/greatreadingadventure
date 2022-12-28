@@ -29,33 +29,33 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
                         @foreach (var item in Model.Attachments)
                         {
-                            <td class="text-center">
-                                @if (!string.IsNullOrWhiteSpace(item.AttachmentFilename))
-                                {
-                                    if (item.ShowCertificate)
+                            <tr>
+                                <td class="text-center">
+                                    @if (!string.IsNullOrWhiteSpace(item.AttachmentFilename))
                                     {
-                                    <a href="~/@item.AttachmentFilename" download="@item.AttachmentDownload">
-                                        <img src="~/images/certificate.png"
-                                            alt="Certificate" />
-                                    </a>
+                                        if (item.ShowCertificate)
+                                        {
+                                        <a href="~/@item.AttachmentFilename" download="@item.AttachmentDownload">
+                                            <img src="~/images/certificate.png"
+                                                alt="Certificate" />
+                                        </a>
+                                        }
+                                        else
+                                        {
+                                        <a href="~/@item.AttachmentFilename" download="@item.AttachmentDownload">
+                                            <span>Download File</span>
+                                        </a>
+                                        }
                                     }
-                                    else
-                                    {
-                                    <a href="~/@item.AttachmentFilename" download="@item.AttachmentDownload">
-                                        <span>Download File</span>
-                                    </a>
-                                    }
-                                }
-                            </td>
+                                </td>
                             <td>@item.EarnedOn</td>
                             <td>
                                   <span>@item.Description</span>  
                             </td>
-                        }
                         </tr>
+                        }
                         </tbody>
                     </table>
                     @if (Model.PaginateModel.MaxPage > 1)

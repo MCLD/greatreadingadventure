@@ -22,5 +22,6 @@ namespace GRA.Domain.Model
         public string DisplayIcon { get; set; }
         public object LocalizedText { get; set; }
         public int? AvatarBundleId { get; set; }
+        public string AttachmentFilename { get; set; }
     }
 }

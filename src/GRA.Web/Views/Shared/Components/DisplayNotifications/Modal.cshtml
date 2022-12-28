@@ -61,6 +61,21 @@
                                     </div>
                                 </td>
                             </tr>
+                            @if (!string.IsNullOrEmpty(notification.AttachmentFilename))
+                            {
+                            <tr>
+                                <td>
+                                    <div class="col-xs-12">
+                                        <span>You've received a certificate!</span>
+                                        <a href="~/@notification.AttachmentFilename" target="_blank">
+                                        <img src="~/images/certificate.png" 
+                                            alt="Certificate"/>
+                                        <span>View certificate</span>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            }
                         }
                         <tr>
                             <td>
@@ -83,5 +98,5 @@
 </div>
 
 <script>
-    document.getElementById("notificationsAlert").style.display = "none";
+    document.getElementById("notificationsAlert").style.display = "block";
 </script>

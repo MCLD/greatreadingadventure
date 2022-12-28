@@ -1050,7 +1050,7 @@ namespace GRA.Controllers
                 if (item.AttachmentId.HasValue && !string.IsNullOrWhiteSpace(item.AttachmentFilename))
                 {
                     itemModel.AttachmentId = item.AttachmentId.Value;
-                    itemModel.ShowCertificate = item.AttachmentIsCertificate;
+                    itemModel.ShowCertificate = item.AttachmentIsCertificate && item.TriggerId.HasValue;
                     itemModel.AttachmentFilename = _pathResolver.ResolveContentPath(item.AttachmentFilename);
                     itemModel.AttachmentDownload = item.AttachmentFilename[item.AttachmentFilename.LastIndexOf('/')..].Trim('/');
                 }

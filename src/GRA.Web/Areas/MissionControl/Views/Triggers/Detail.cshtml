@@ -610,7 +610,7 @@
                     <div class="panel-body">
                         <div class="row row-spacing">
                             <div class="col-xs-12">
-                                <p>Upload an attachment.</p>
+                                <p>@(Model.Action == "Edit" ? "Replace the" : "Upload an") attachment.</p>
                                 <div class="input-group">
                                     <label class="input-group-btn">
                                         <span id="selectAttachment" class="btn btn-default btn-file">
@@ -632,6 +632,7 @@
                                             <a href="~/@Model.Trigger.AwardAttachmentFilename" target="_blank">
                                         <img id="attachmentImage"
                                         src="~/images/certificate.png" />
+                                        <span>View attachment</span>
                                         </a>
                                     </div>
                                 </div>

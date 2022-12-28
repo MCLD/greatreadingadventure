@@ -14,24 +14,23 @@ namespace GRA.Domain.Service
         private const string AttachmentPath = "attachments/certificates";
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly IPathResolver _pathResolver;
-        private readonly SiteLookupService _siteLookupService;
 
         public AttachmentService(ILogger<AttachmentService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IAttachmentRepository attachmentRepository,
-            SiteLookupService siteLookupService,
             IPathResolver pathResolver)
             : base(logger, dateTimeProvider, userContextProvider)
         {
+            SetManagementPermission(Permission.TriggerAttachments);
             _attachmentRepository = attachmentRepository;
-            _siteLookupService = siteLookupService
-                ?? throw new ArgumentNullException(nameof(siteLookupService));
             _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
         }
 
         public async Task<Attachment> AddAttachmentAsync(Attachment attachment, byte[] file)
         {
+            VerifyManagementPermission();
+
             attachment.SiteId = GetCurrentSiteId();
             attachment.IsCertificate = true;
             var result = await _attachmentRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), attachment);
@@ -48,6 +47,8 @@ namespace GRA.Domain.Service
         public async Task<Attachment> ReplaceAttachmentFileAsync(Attachment attachment,
                     byte[] file)
         {
+            VerifyManagementPermission();
+
             var existingAttachment = await _attachmentRepository.GetByIdAsync(attachment.Id);
 
             if (file != null)

@@ -17,5 +17,6 @@ namespace GRA.Data.Model
         public bool IsAchiever { get; set; }
         public bool IsJoiner { get; set; }
         public int? AvatarBundleId { get; set; }
+        public string AttachmentFilename { get; set; }
     }
 }

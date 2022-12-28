@@ -1599,12 +1599,26 @@
   </data>
   <data name="Certificate" xml:space="preserve">
     <value>Certificate</value>
+    <comment>Label for a user to download a certificate in their profile history.</comment>
   </data>
   <data name="Certificates" xml:space="preserve">
     <value>Certificates</value>
+    <comment>Button to view the participant's certificates.</comment>
   </data>
   <data name="There are no certificates for you to view yet." xml:space="preserve">
     <value>There are no certificates for you to view yet.</value>
     <comment>Message shown to user on the certificates tab when there are no earned certificates.</comment>
+  </data>
+  <data name="Replace Attachment" xml:space="preserve">
+    <value>Replace the attachment</value>
+    <comment>Label for replacing an existing attachment for a trigger</comment>
+  </data>
+  <data name="Upload Attachment" xml:space="preserve">
+    <value>Upload an attachment</value>
+    <comment>Label for uploading a trigger attachment</comment>
+  </data>
+  <data name="View Attachment" xml:space="preserve">
+    <value>View attachment</value>
+    <comment>Anchor tag label for the user to view the attachment</comment>
   </data>
 </root>
