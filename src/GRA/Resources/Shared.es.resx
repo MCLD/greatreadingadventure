@@ -1601,4 +1601,8 @@
     <value>Certificados</value>
     <comment>Button to view the participant's certificates.</comment>
   </data>
+  <data name="View Certificate" xml:space="preserve">
+    <value>Ver Certificado</value>
+    <comment>Button text to view an attached file to a challenge task</comment>
+  </data>
 </root>

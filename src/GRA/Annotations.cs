@@ -56,7 +56,6 @@
             public const string MailForHelp = "If you can't find something, please <a href=\"{0}\">send us a mail</a> and let us know what you were looking for, we'll do our best to help.";
             public const string NoBadges = "You have not earned any badges yet.";
             public const string NoBooksLogged = "No books logged.";
-            public const string NoCertificates = "There are no certificates for you to view yet.";
             public const string NoHistory = "No history to display.";
             public const string NoUnlockedBundles = "No unlocked bundles";
             public const string PasswordRecoverySent = "A password recovery email has been sent to the email for username '{0}'.";
@@ -166,7 +165,6 @@
             public const string RelatedChallenge = "Related Challenge";
             public const string RelatedChallenges = "Related Challenges";
             public const string RemovedItem = "Removed: {0}";
-            public const string ReplaceAttachment = "Replace the attachment";
             public const string Reply = "Reply";
             public const string ReplyTo = "Reply to:";
             public const string ReturnToTop = "Return to Top";
@@ -193,7 +191,6 @@
             public const string Unsubscribed = "You are now unsubscribed and will not receive any more emails from {0}.";
             public const string UpdatedItem = "Updated: {0}";
             public const string UpgradeToGroup = "Upgrade to Group";
-            public const string UploadAttachment = "Upload an attachment";
             public const string UseMyZipCode = "Use my ZIP code";
             public const string ViewAll = "View All";
             public const string ViewCertificate = "View Certificate";
