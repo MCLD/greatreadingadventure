@@ -1,0 +1,61 @@
+﻿@model GRA.Controllers.ViewModel.Profile.PrizeListViewModel
+
+<div class="row">
+    <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="lead">@SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProfile]</span>
+            </div>
+            <div class="panel-body">
+
+                @await Html.PartialAsync("_ProfilePartial")
+
+               <div>
+                   <table class="table table-condensed table-bordered table-striped">
+                       <thead>
+                           <tr>
+                               <th>@SharedLocalizer[GRA.Domain.Model.DisplayNames.Name]</th>
+                               <th>@SharedLocalizer[GRA.Annotations.Title.Participant]</th>
+                               <th>@SharedLocalizer[GRA.Domain.Model.DisplayNames.Location]</th>
+                               <th>@SharedLocalizer[GRA.Annotations.Interface.PickedUp]</th>
+                           </tr>
+                       </thead>
+                       <tbody>
+                            @foreach (var prizeWinner in Model.PrizeWinners)
+                            {
+                                <tr>
+                                    <td>@prizeWinner.PrizeName</td>
+                                    <td>@prizeWinner.UserFirstName</td>
+                                    <td>
+                                        @if (!string.IsNullOrWhiteSpace(prizeWinner.AvailableAtSystem))
+                                        {
+                                            @prizeWinner.AvailableAtSystem
+                                            @if (!string.IsNullOrWhiteSpace(prizeWinner.AvailableAtBranch))
+                                            {
+                                                @:- @prizeWinner.AvailableAtBranch
+                                            }
+                                        }
+                                        else
+                                        {
+                                            @: Any Library
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (prizeWinner.RedeemedAt.HasValue)
+                                        {
+                                            @SharedLocalizer[GRA.Annotations.Interface.Yes]
+                                        }
+                                        else
+                                        {
+                                            @SharedLocalizer[GRA.Annotations.Interface.No]
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                       </tbody>
+                   </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

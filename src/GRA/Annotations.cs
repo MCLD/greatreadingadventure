@@ -123,10 +123,10 @@
             public const string DonateBook = "Donate book";
             public const string DonateYourBook = "Donate your book";
             public const string DownloadToShare = "Download to Share";
+            public const string EmailDefaultFooter = "You are receiving this email because you are subscribed for updates from {{Sitename}}. You can [instantly unsubscribe at any time]({{UnsubscribeLink}})";
             public const string EnterAddressOrZipCode = "Enter an address or ZIP code";
             public const string EnterChallengeSearch = "Enter text to search for a challenge here";
             public const string EnterEventSearch = "Enter text to search for an event here";
-            public const string EmailDefaultFooter = "You are receiving this email because you are subscribed for updates from {{Sitename}}. You can [instantly unsubscribe at any time]({{UnsubscribeLink}})";
             public const string EventHasEnded = "This streaming event has ended.";
             public const string EventNotFound = "Could not find the requested event.";
             public const string EventNotStarted = "This streaming event has not started yet.";
@@ -153,7 +153,9 @@
             public const string NotStreamingYet = "Not streaming yet";
             public const string Optional = "Optional";
             public const string PasswordChanged = "Your password has been changed.";
+            public const string PickedUp = "Picked Up";
             public const string PointsYoullEarn = "Points you'll earn";
+            public const string Prizes = "Prizes";
             public const string ProfileUpdated = "Profile updated.";
             public const string ProgramIsOver = "Program is over";
             public const string Progress = "Progress";

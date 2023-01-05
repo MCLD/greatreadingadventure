@@ -106,7 +106,7 @@ namespace GRA.Domain.Service
         }
 
         public async Task<DataWithCount<ICollection<PrizeWinner>>>
-            PageUserPrizes(int userId, BaseFilter filter = default(BaseFilter))
+            PageUserPrizes(ICollection<int> userIds, BaseFilter filter = default(BaseFilter))
         {
             VerifyManagementPermission();
 
@@ -117,7 +117,7 @@ namespace GRA.Domain.Service
             }
 
             var prizes = await _prizeWinnerRepository
-                    .PageByWinnerAsync(siteId, userId, (int)filter.Skip, (int)filter.Take);
+                    .PageByWinnerAsync(siteId, userIds, (int)filter.Skip, (int)filter.Take);
 
             foreach (var prize in prizes)
             {
@@ -159,8 +159,13 @@ namespace GRA.Domain.Service
             return new DataWithCount<ICollection<PrizeWinner>>
             {
                 Data = prizes,
-                Count = await _prizeWinnerRepository.CountByWinningUserId(siteId, userId)
+                Count = await _prizeWinnerRepository.CountByWinningUserId(siteId, userIds)
             };
+        }
+
+        public async Task<DataWithCount<ICollection<PrizeWinner>>> PageUserPrizes(int userId, BaseFilter filter = default)
+        {
+            return await PageUserPrizes(new[] { userId }, filter);
         }
 
         public async Task RedeemPrizeAsync(int prizeWinnerId, string staffNotes)

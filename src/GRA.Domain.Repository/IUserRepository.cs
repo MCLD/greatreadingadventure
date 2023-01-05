@@ -38,6 +38,8 @@ namespace GRA.Domain.Repository
 
         Task<int> GetHouseholdCountAsync(int householdHeadUserId);
 
+        Task<IEnumerable<int>> GetHouseHoldUserIdsAsync(int householdHeadUserId);
+
         Task<ICollection<User>> GetHouseholdUsersWithAvailablePrizeAsync(
             int headId, int? drawingId, int? triggerId);
 

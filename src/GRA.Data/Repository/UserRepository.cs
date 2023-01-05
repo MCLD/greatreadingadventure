@@ -200,6 +200,16 @@ namespace GRA.Data.Repository
                        .CountAsync();
         }
 
+        public async Task<IEnumerable<int>> GetHouseHoldUserIdsAsync(int householdHeadUserId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => !_.IsDeleted && (_.HouseholdHeadUserId == householdHeadUserId || _.Id == householdHeadUserId))
+                .OrderBy(_ => _.CreatedAt)
+                .ProjectTo<User>(_mapper.ConfigurationProvider)
+                .Select(_ => _.Id)
+                .ToListAsync();
+        }
         public async Task<ICollection<User>> GetHouseholdUsersWithAvailablePrizeAsync(
             int headId, int? drawingId, int? triggerId)
         {

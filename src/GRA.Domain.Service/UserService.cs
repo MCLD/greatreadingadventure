@@ -659,6 +659,13 @@ namespace GRA.Domain.Service
             return household;
         }
 
+        public async Task<IEnumerable<int>> GetHouseholdUserIdsAsync(int headId)
+        {
+            VerifyPermission(Permission.ViewUserPrizes);
+
+            return await _userRepository.GetHouseHoldUserIdsAsync(headId);
+        }
+
         public async Task<ICollection<User>> GetHouseholdUsersWithAvailablePrizeAsync(int headId,
             int? drawingId, int? triggerId)
         {
@@ -1639,7 +1646,7 @@ namespace GRA.Domain.Service
 
         public async Task<bool> UsernameInUseAsync(string username)
         {
-            if(string.IsNullOrEmpty(username))
+            if (string.IsNullOrEmpty(username))
             {
                 return false;
             }

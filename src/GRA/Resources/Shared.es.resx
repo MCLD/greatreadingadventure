@@ -1597,4 +1597,12 @@
     <value>&lt;em&gt;{0}&lt;/em&gt; fue recogido el &lt;strong&gt;{1}&lt;/strong&gt;.</value>
     <comment>Display once a vendor item is picked up; {0} is the detail of the item, {1} is the date it was picked up</comment>
   </data>
+  <data name="Picked Up" xml:space="preserve">
+    <value>Recogido</value>
+    <comment>Participant's status on redemption of a prize.</comment>
+  </data>
+  <data name="Prizes" xml:space="preserve">
+    <value>Prêmios</value>
+    <comment>Button to view the particpant's household prizes.</comment>
+  </data>
 </root>

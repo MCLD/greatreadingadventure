@@ -36,6 +36,7 @@ namespace GRA.Controllers
         private readonly MailService _mailService;
         private readonly AutoMapper.IMapper _mapper;
         private readonly PointTranslationService _pointTranslationService;
+        private readonly PrizeWinnerService _prizeWinnerService;
         private readonly QuestionnaireService _questionnaireService;
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
@@ -55,6 +56,7 @@ namespace GRA.Controllers
             EventService eventService,
             MailService mailService,
             PointTranslationService pointTranslationService,
+            PrizeWinnerService prizeWinnerService,
             QuestionnaireService questionnaireService,
             SchoolService schoolService,
             SiteService siteService,
@@ -80,6 +82,8 @@ namespace GRA.Controllers
             _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
             _pointTranslationService = pointTranslationService
                 ?? throw new ArgumentNullException(nameof(pointTranslationService));
+            _prizeWinnerService = prizeWinnerService
+                ?? throw new ArgumentNullException(nameof(prizeWinnerService));
             _questionnaireService = questionnaireService
                 ?? throw new ArgumentNullException(nameof(questionnaireService));
             _schoolService = schoolService
@@ -1493,6 +1497,46 @@ namespace GRA.Controllers
             base.OnActionExecuting(context);
             HouseholdTitle = HttpContext.Items[ItemKey.HouseholdTitle] as string
                 ?? Annotations.Interface.Family;
+        }
+
+        public async Task<IActionResult> Prizes(int page = 1)
+        {
+            var id
+                = GetActiveUserId();
+
+            var user
+                = await _userService.GetDetails(id);
+
+            var userIds
+                = await _userService.GetHouseholdUserIdsAsync(user.HouseholdHeadUserId ?? id);
+
+            var filter = new BaseFilter(page);
+            var prizeList = await _prizeWinnerService.PageUserPrizes(userIds.ToList(), filter);
+
+            var paginateModel = new PaginateViewModel
+            {
+                ItemCount = prizeList.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+
+            if (paginateModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+
+            return View(new PrizeListViewModel
+            {
+                PrizeWinners = prizeList.Data,
+                PaginateModel = paginateModel,
+                HouseholdCount = await _userService.FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
+                HeadOfHouseholdId = user.HouseholdHeadUserId,
+                HasAccount = !string.IsNullOrWhiteSpace(user.Username)
+            });
         }
 
         [HttpPost]
