@@ -10,7 +10,7 @@
 
                 @await Html.PartialAsync("_ProfilePartial")
 
-                @if (Model.Attachments.Count() == 0)
+                @if (Model.Attachments.Count() == 0) 
                 {
                     <div class="row" style="padding: 10px 0;">
                         <div class="col-xs-12">
@@ -20,39 +20,33 @@
                 }
                 else
                 {
-                    <table class="table table-condensed table-hover">
+                    <table class="table table-bordered table-condensed table-striped table-hover">
                         <thead>
                             <tr>
-                                <th></th>
                                 <th>Date</th>
-                                <th>Description</th>
+                                <th colspan="2">Description</th>
                             </tr>
                         </thead>
                         <tbody>
                         @foreach (var item in Model.Attachments)
                         {
-                            <tr>
-                                <td class="text-center">
-                                    @if (!string.IsNullOrWhiteSpace(item.AttachmentFilename))
-                                    {
-                                        if (item.ShowCertificate)
+                        <tr>
+                            <td>@item.EarnedOn</td>
+                            <td>
+                                <span>@item.Description</span>  
+                            </td>
+                            <td class="text-center">
+                                    <a href="~/@item.AttachmentFilename" download="@item.AttachmentDownload">
+                                        @if (item.ShowCertificate)
                                         {
-                                        <a href="~/@item.AttachmentFilename" download="@item.AttachmentDownload">
-                                            <img src="~/images/certificate.png"
-                                                alt="Certificate" />
-                                        </a>
+                                        <img src="~/images/certificate.png"
+                                            alt="Certificate" />
                                         }
                                         else
                                         {
-                                        <a href="~/@item.AttachmentFilename" download="@item.AttachmentDownload">
-                                            <span>Download File</span>
-                                        </a>
+                                        <span>Download File</span>
                                         }
-                                    }
-                                </td>
-                            <td>@item.EarnedOn</td>
-                            <td>
-                                  <span>@item.Description</span>  
+                                    </a>
                             </td>
                         </tr>
                         }
