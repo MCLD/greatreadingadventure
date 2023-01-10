@@ -141,7 +141,10 @@ namespace GRA.Web
 
             app.UseRequestLocalization(requestLocalizationOptions);
 
-            app.UseResponseCompression();
+            if (!_isDevelopment)
+            {
+                app.UseResponseCompression();
+            }
 
             app.UseWebOptimizer();
 
@@ -300,10 +303,12 @@ namespace GRA.Web
             services.TryAddSingleton(_ => _config);
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.AddResponseCompression(_ =>
+            if (!_isDevelopment)
             {
-                _.Providers.Add<GzipCompressionProvider>();
-                _.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] {
+                services.AddResponseCompression(_ =>
+                {
+                    _.Providers.Add<GzipCompressionProvider>();
+                    _.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] {
                         "application/vnd.ms-fontobject",
                         "application/x-font-opentype",
                         "application/x-font-truetype",
@@ -315,8 +320,9 @@ namespace GRA.Web
                         "image/svg+xml",
                         "image/vnd.microsoft.icon",
                         "text/javascript"
+                    });
                 });
-            });
+            }
 
             switch (_config[ConfigurationKey.DistributedCache]?.ToLower(Culture.DefaultCulture))
             {
