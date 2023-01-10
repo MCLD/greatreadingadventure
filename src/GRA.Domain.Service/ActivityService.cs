@@ -135,7 +135,7 @@ namespace GRA.Domain.Service
                     userId);
                 throw new GraException("Books cannot be added while there is a pending questionnaire to be taken.");
             }
-            
+
             book.Title = book.Title?.Trim();
             book.Author = book.Author?.Trim();
 
@@ -538,7 +538,12 @@ namespace GRA.Domain.Service
 
             // every trigger awards a badge
             var badge = await AwardBadgeAsync(userIdToLog, trigger.AwardBadgeId);
-            Attachment attachment = await _attachmentRepository.GetByIdAsync(trigger.AwardAttachmentId.Value);
+            Attachment attachment = null;
+
+            if (trigger.AwardAttachmentId.HasValue)
+            {
+                attachment = await _attachmentRepository.GetByIdAsync(trigger.AwardAttachmentId.Value);
+            }
 
             // log the notification
             await _notificationRepository.AddSaveAsync(authUserId, new Notification
@@ -548,7 +553,7 @@ namespace GRA.Domain.Service
                 Text = trigger.AwardMessage,
                 BadgeId = trigger.AwardBadgeId,
                 BadgeFilename = badge.Filename,
-                AttachmentFilename = attachment.FileName
+                AttachmentFilename = attachment?.FileName
             });
 
             // find if the trigger is related to an event
@@ -1196,7 +1201,12 @@ namespace GRA.Domain.Service
 
                 // every trigger awards a badge
                 var badge = await AwardBadgeAsync(userId, trigger.AwardBadgeId);
-                Attachment attachment = await _attachmentRepository.GetByIdAsync(trigger.AwardAttachmentId.Value);
+                Attachment attachment = null;
+
+                if (trigger.AwardAttachmentId.HasValue)
+                {
+                    attachment = await _attachmentRepository.GetByIdAsync(trigger.AwardAttachmentId.Value);
+                }
 
                 // log the notification
                 await _notificationRepository.AddSaveAsync(userId, new Notification
@@ -1206,7 +1216,7 @@ namespace GRA.Domain.Service
                     Text = trigger.AwardMessage,
                     BadgeId = trigger.AwardBadgeId,
                     BadgeFilename = badge.Filename,
-                    AttachmentFilename = attachment.FileName
+                    AttachmentFilename = attachment?.FileName
                 });
 
                 // find if the trigger is related to an event

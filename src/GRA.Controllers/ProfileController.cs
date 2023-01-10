@@ -525,8 +525,9 @@ namespace GRA.Controllers
             return View("HouseholdAdd", model);
         }
 
-        public async Task<IActionResult> Attachments(int page = 1)
+        public async Task<IActionResult> Attachments(int page)
         {
+            page = page == 0 ? 1 : page;
             User user = await _userService.GetDetails(GetActiveUserId());
 
             var filter = new UserLogFilter(page)
