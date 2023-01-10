@@ -22,14 +22,14 @@ namespace GRA.Data.Repository
             return await CountByWinningUserId(siteId, userId, null);
         }
 
+        public async Task<int> CountByWinningUserId(int siteId, ICollection<int> userIds)
+        {
+            return await CountByWinningUserId(siteId, userIds, null);
+        }
+
         public async Task<int> CountByWinningUserId(int siteId, int userId, bool? redeemed)
         {
             return await CountByWinningUserId(siteId, new[] { userId }, redeemed);
-        }
-
-        public async Task<int> CountByWinningUserId(int siteId, ICollection<int> userIds)
-        {
-            return await CountByWinningUserId(siteId, userIds);
         }
 
         public async Task<int> CountByWinningUserId(int siteId, ICollection<int> userIds, bool? redeemed)
