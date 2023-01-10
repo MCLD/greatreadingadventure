@@ -163,7 +163,7 @@ namespace GRA.Domain.Service
             };
         }
 
-        public async Task<DataWithCount<ICollection<PrizeWinner>>> PageUserPrizes(int userId, BaseFilter filter = default)
+        public async Task<DataWithCount<ICollection<PrizeWinner>>> PageUserPrizes(int userId, BaseFilter filter)
         {
             return await PageUserPrizes(new[] { userId }, filter);
         }

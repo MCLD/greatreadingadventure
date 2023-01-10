@@ -6,9 +6,13 @@ namespace GRA.Domain.Repository
 {
     public interface IPrizeWinnerRepository : IRepository<PrizeWinner>
     {
-        Task<int> CountByWinningUserId(int siteId, int userId, bool? redeemed = null);
+        Task<int> CountByWinningUserId(int siteId, int userId, bool? redeemed);
 
-        Task<int> CountByWinningUserId(int siteId, ICollection<int> userIds, bool? redeemed = null);
+        Task<int> CountByWinningUserId(int siteId, int userId);
+
+        Task<int> CountByWinningUserId(int siteId, ICollection<int> userIds, bool? redeemed);
+
+        Task<int> CountByWinningUserId(int siteId, ICollection<int> userIds);
 
         Task<int> GetBranchPrizeRedemptionCountAsync(int branchId, IEnumerable<int> triggerIds);
 

@@ -1499,16 +1499,16 @@ namespace GRA.Controllers
                 ?? Annotations.Interface.Family;
         }
 
-        public async Task<IActionResult> Prizes(int page = 1)
+        public async Task<IActionResult> Prizes(int page)
         {
-            var id
-                = GetActiveUserId();
+            page = page == 0 ? 1 : page;
 
-            var user
-                = await _userService.GetDetails(id);
+            var id = GetActiveUserId();
 
-            var userIds
-                = await _userService.GetHouseholdUserIdsAsync(user.HouseholdHeadUserId ?? id);
+            var user = await _userService.GetDetails(id);
+
+            var userIds = await _userService
+                .GetHouseholdUserIdsAsync(user.HouseholdHeadUserId ?? id);
 
             var filter = new BaseFilter(page);
             var prizeList = await _prizeWinnerService.PageUserPrizes(userIds.ToList(), filter);
