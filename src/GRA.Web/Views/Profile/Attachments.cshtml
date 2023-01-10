@@ -10,7 +10,7 @@
 
                 @await Html.PartialAsync("_ProfilePartial")
 
-                @if (Model.Attachments.Count() == 0) 
+                @if (Model.Attachments.Count() == 0)
                 {
                     <div class="row" style="padding: 10px 0;">
                         <div class="col-xs-12">
@@ -28,28 +28,28 @@
                             </tr>
                         </thead>
                         <tbody>
-                        @foreach (var item in Model.Attachments)
-                        {
-                        <tr>
-                            <td>@item.EarnedOn</td>
-                            <td>
-                                <span>@item.Description</span>  
-                            </td>
-                            <td class="text-center">
-                                    <a href="~/@item.AttachmentFilename" download="@item.AttachmentDownload">
-                                        @if (item.ShowCertificate)
-                                        {
-                                        <img src="~/images/certificate.png"
-                                            alt="Certificate" />
-                                        }
-                                        else
-                                        {
-                                        <span>Download File</span>
-                                        }
-                                    </a>
-                            </td>
-                        </tr>
-                        }
+                            @foreach (var item in Model.Attachments)
+                            {
+                                <tr>
+                                    <td>@item.EarnedOn</td>
+                                    <td>
+                                        <span>@item.Description</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="~/@item.AttachmentFilename" download="@item.AttachmentDownload">
+                                            @if (item.ShowCertificate)
+                                            {
+                                                <img src="~/images/certificate.png"
+                                         alt="@SharedLocalizer[GRA.Annotations.Title.Certificate]" />
+                                            }
+                                            else
+                                            {
+                                                <span>Download File</span>
+                                            }
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                     @if (Model.PaginateModel.MaxPage > 1)

@@ -37,12 +37,13 @@
                                                     <div>
                                                         @Html.Raw(history.Description)
                                                     </div>
-                                                    @if (history.ShowCertificate) {
-                                                        <div style="margin-top:5px">
-                                                            @SharedLocalizer[GRA.Annotations.Title.Certificate]: &nbsp;
+                                                    @if (history.ShowCertificate)
+                                                    {
+                                                        <div style="margin-top:1rem;">
                                                             <a href="~/@history.AttachmentFilename" download="@history.AttachmentDownload">
                                                                 <img src="~/images/certificate.png"
-                                                                alt="Certificate" />
+                                                         alt="@SharedLocalizer[GRA.Annotations.Title.Certificate]" />
+                                                                @SharedLocalizer[GRA.Annotations.Interface.ViewCertificate]
                                                             </a>
                                                         </div>
                                                     }
@@ -52,9 +53,9 @@
                                                     {
                                                         <div style="text-align:center;">
                                                             <img class="img-thumbnail badge-sm"
-                                                                 src="~/@history.BadgeFilename"
-                                                                 alt="@history.BadgeAltText"
-                                                                 asp-append-version="true" />
+                                                     src="~/@history.BadgeFilename"
+                                                     alt="@history.BadgeAltText"
+                                                     asp-append-version="true" />
                                                         </div>
                                                     }
                                                     else
