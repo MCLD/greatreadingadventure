@@ -530,7 +530,7 @@ namespace GRA.Controllers
             page = page == 0 ? 1 : page;
             User user = await _userService.GetDetails(GetActiveUserId());
 
-            var filter = new UserLogFilter(page)
+            var filter = new UserLogFilter(page: page)
             {
                 HasAttachment = true
             };

@@ -63,6 +63,7 @@
             public const string PointSingular = "{0} point";
             public const string PointsPlural = "{0} points";
             public const string ProgramEnded = "{0} has ended, please join us next time!";
+            public const string ReceivedCertificate = "You've received a certificate!";
             public const string RegistrationNotOpenYet = "Registration for {0} is not open yet.";
             public const string StatusSaved = "Your status has been saved!";
             public const string StatusSavedPercentage = "Your status has been saved. You have completed {0}% of the required tasks for the challenge: {1}!";
@@ -123,6 +124,7 @@
             public const string Distance = "Distance";
             public const string DonateBook = "Donate book";
             public const string DonateYourBook = "Donate your book";
+            public const string Download = "Download";
             public const string DownloadToShare = "Download to Share";
             public const string EmailDefaultFooter = "You are receiving this email because you are subscribed for updates from {{Sitename}}. You can [instantly unsubscribe at any time]({{UnsubscribeLink}})";
             public const string EnterAddressOrZipCode = "Enter an address or ZIP code";

@@ -61,21 +61,21 @@
                                     </div>
                                 </td>
                             </tr>
-                            @if (!string.IsNullOrEmpty(notification.AttachmentFilename))
-                            {
-                                <tr>
-                                    <td>
-                                        <div class="col-xs-12">
-                                            <span>You've received a certificate!</span>
-                                            <a href="~/@notification.AttachmentFilename" target="_blank">
-                                                <img src="~/images/certificate.png"
-                                             alt="@SharedLocalizer[GRA.Annotations.Title.Certificate]" />
-                                                @SharedLocalizer[GRA.Annotations.Interface.ViewCertificate]
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
+                        @if (!string.IsNullOrEmpty(notification.AttachmentFilename))
+                        {
+                            <tr>
+                                <td>
+                                    <div class="col-xs-12">
+                                        <span>@SharedLocalizer[GRA.Annotations.Info.ReceivedCertificate]</span>
+                                        <a href="~/@notification.AttachmentFilename" target="_blank">
+                                            <img src="~/images/certificate.png"
+                                            alt="@SharedLocalizer[GRA.Annotations.Title.Certificate]" />
+                                            @SharedLocalizer[GRA.Annotations.Interface.ViewCertificate]
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
                         }
                         <tr>
                             <td>

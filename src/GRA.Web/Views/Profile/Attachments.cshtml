@@ -23,8 +23,8 @@
                     <table class="table table-bordered table-condensed table-striped table-hover">
                         <thead>
                             <tr>
-                                <th>Date</th>
-                                <th colspan="2">Description</th>
+                                <th>@SharedLocalizer[GRA.Annotations.Title.Date]</th>
+                                <th colspan="2">@SharedLocalizer[GRA.Annotations.Interface.Details]</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -40,11 +40,11 @@
                                             @if (item.ShowCertificate)
                                             {
                                                 <img src="~/images/certificate.png"
-                                         alt="@SharedLocalizer[GRA.Annotations.Title.Certificate]" />
+                                                    alt="@SharedLocalizer[GRA.Annotations.Title.Certificate]" />
                                             }
                                             else
                                             {
-                                                <span>Download File</span>
+                                                <span>@SharedLocalizer[GRA.Annotations.Interface.Download]</span>
                                             }
                                         </a>
                                     </td>

@@ -1605,4 +1605,12 @@
     <value>Certificates</value>
     <comment>Button to view the participant's certificates.</comment>
   </data>
+  <data name="Download" xml:space="preserve">
+    <value>Download</value>
+    <comment>Span text for download links.</comment>
+  </data>
+  <data name="You've received a certificate!" xml:space="preserve">
+    <value>You've received a certificate!</value>
+    <comment>Message shown to a participant when a notification is presented and a certificate is available.</comment>
+  </data>
 </root>
