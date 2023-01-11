@@ -108,8 +108,6 @@ namespace GRA.Domain.Service
         public async Task<DataWithCount<ICollection<PrizeWinner>>>
             PageUserPrizes(ICollection<int> userIds, BaseFilter filter = default(BaseFilter))
         {
-            VerifyManagementPermission();
-
             int siteId = GetCurrentSiteId();
             if (filter == null)
             {
@@ -124,18 +122,30 @@ namespace GRA.Domain.Service
                 if (prize.DrawingId != null)
                 {
                     var drawing = await _drawingRepository.GetByIdAsync((int)prize.DrawingId);
+
+                    var branch = await _branchRepository.GetByIdAsync(drawing.RelatedBranchId);
+
                     prize.PrizeName = drawing.Name;
                     prize.PrizeRedemptionInstructions = drawing.RedemptionInstructions;
 
                     var drawingCritera = await _drawingCriterionRepository
                         .GetByIdAsync(drawing.DrawingCriterionId);
                     prize.AvailableAtBranch = drawingCritera.BranchName;
+                    prize.AvailableAtBranchUrl = branch.Url;
                     prize.AvailableAtSystem = drawingCritera.SystemName;
                 }
                 else if (prize.TriggerId != null)
                 {
                     var trigger = await _triggerRepository.GetByIdAsync((int)prize.TriggerId);
+                    Branch branch = null;
+
+                    if (trigger.LimitToBranchId.HasValue)
+                    {
+                        branch = await _branchRepository.GetByIdAsync(trigger.LimitToBranchId.Value);
+                    }
+
                     prize.AvailableAtBranch = trigger.LimitToBranchName;
+                    prize.AvailableAtBranchUrl = branch?.Url;
                     prize.AvailableAtSystem = trigger.LimitToSystemName;
                     prize.PrizeName = trigger.AwardPrizeName;
                     prize.PrizeRedemptionInstructions = trigger.AwardPrizeRedemptionInstructions;
@@ -152,6 +162,7 @@ namespace GRA.Domain.Service
                     prize.PrizeName = $"{vendorCodeType.Description}: {vendorCode.Details}";
                     prize.PrizeRedemptionInstructions = $"Give customer {vendorCode.Details} and click the green redemption button.";
                     prize.AvailableAtBranch = branch.Name;
+                    prize.AvailableAtBranchUrl = branch.Url;
                     prize.AvailableAtSystem = system.Name;
                 }
             }
@@ -165,6 +176,8 @@ namespace GRA.Domain.Service
 
         public async Task<DataWithCount<ICollection<PrizeWinner>>> PageUserPrizes(int userId, BaseFilter filter)
         {
+            VerifyManagementPermission();
+
             return await PageUserPrizes(new[] { userId }, filter);
         }
 

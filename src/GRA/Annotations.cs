@@ -27,6 +27,8 @@
 
         public static class Info
         {
+            public const string AnyLibrary = "Any participating library";
+            public const string AvailableForPickup = "Available for pickup";
             public const string BadgeInfoError = "Error retrieving badge information.";
             public const string BetterSuitedOption = "This program may be better-suited to your age:";
             public const string ChallengeBadgeEarned = "You earned this badge for completing the challenge: <a href=\"{0}\" target=\"_blank\">{1}</a>";
@@ -57,9 +59,11 @@
             public const string NoBadges = "You have not earned any badges yet.";
             public const string NoBooksLogged = "No books logged.";
             public const string NoHistory = "No history to display.";
+            public const string NoPrizes = "No prizes yet, keep reading!";
             public const string NoUnlockedBundles = "No unlocked bundles";
             public const string PasswordRecoverySent = "A password recovery email has been sent to the email for username '{0}'.";
             public const string PasswordResetFor = "Password reset for: {0}";
+            public const string PickedUp = "Picked up";
             public const string PointSingular = "{0} point";
             public const string PointsPlural = "{0} points";
             public const string ProgramEnded = "{0} has ended, please join us next time!";
@@ -153,7 +157,6 @@
             public const string NotStreamingYet = "Not streaming yet";
             public const string Optional = "Optional";
             public const string PasswordChanged = "Your password has been changed.";
-            public const string PickedUp = "Picked Up";
             public const string PointsYoullEarn = "Points you'll earn";
             public const string Prizes = "Prizes";
             public const string ProfileUpdated = "Profile updated.";

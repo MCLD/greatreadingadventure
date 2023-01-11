@@ -661,8 +661,6 @@ namespace GRA.Domain.Service
 
         public async Task<IEnumerable<int>> GetHouseholdUserIdsAsync(int headId)
         {
-            VerifyPermission(Permission.ViewUserPrizes);
-
             return await _userRepository.GetHouseHoldUserIdsAsync(headId);
         }
 
