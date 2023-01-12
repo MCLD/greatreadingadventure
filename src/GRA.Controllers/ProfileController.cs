@@ -581,7 +581,7 @@ namespace GRA.Controllers
         {
             User user = await _userService.GetDetails(GetActiveUserId());
 
-            var filter = new UserLogFilter(page)
+            var filter = new UserLogFilter(page: page)
             {
                 HasBadge = true
             };
@@ -975,7 +975,7 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> History(int page = 1)
         {
-            var filter = new UserLogFilter(page);
+            var filter = new UserLogFilter(page: page);
 
             var history = await _userService
                 .GetPaginatedUserHistoryAsync(GetActiveUserId(), filter);
