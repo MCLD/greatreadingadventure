@@ -567,9 +567,6 @@ namespace GRA.Controllers
             {
                 var item = new AttachmentItemViewModel();
                 item.AttachmentFilename = _pathResolver.ResolveContentPath(userLog.AttachmentFilename);
-                item.AttachmentDownload = item.AttachmentFilename[item.AttachmentFilename
-                                                                        .LastIndexOf('/')..]
-                                                                        .Trim('/');
                 item.ShowCertificate = userLog.AttachmentIsCertificate;
                 item.Description = userLog.Description;
                 item.EarnedOn = userLog.CreatedAt.ToShortDateString();

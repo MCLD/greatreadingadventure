@@ -2,7 +2,6 @@
 {
     public class AttachmentItemViewModel
     {
-        public string AttachmentDownload { get; set; }
         public string AttachmentFilename { get; set; }
         public int AttachmentId { get; set; }
         public string CreatedAt { get; set; }

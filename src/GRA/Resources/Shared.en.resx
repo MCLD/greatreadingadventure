@@ -1613,4 +1613,8 @@
     <value>You've received a certificate!</value>
     <comment>Message shown to a participant when a notification is presented and a certificate is available.</comment>
   </data>
+  <data name="You have not earned any certificates yet." xml:space="preserve">
+    <value>You have not earned any certificates yet.</value>
+    <comment>Displayed in the participant profile if they view the certificates tab but have not earned any certificates yet.</comment>
+  </data>
 </root>
