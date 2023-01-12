@@ -23,15 +23,22 @@ namespace GRA.Data.SqlServer.Migrations
                 type: "int",
                 nullable: true);
 
+            migrationBuilder.AddColumn<string>(
+                name: "AttachmentFilename",
+                table: "Notifications",
+                type: "nvarchar(255)",
+                maxLength: 255,
+                nullable: true);
+
             migrationBuilder.CreateTable(
                 name: "Attachments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    FileName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    IsCertificate = table.Column<bool>(type: "bit", nullable: true),
                     SiteId = table.Column<int>(type: "int", nullable: false),
-                    FileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsCertificate = table.Column<bool>(type: "bit", nullable: false),
                     CreatedBy = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -75,6 +82,10 @@ namespace GRA.Data.SqlServer.Migrations
             migrationBuilder.DropColumn(
                 name: "AwardAttachmentId",
                 table: "Triggers");
+
+            migrationBuilder.DropColumn(
+                name: "AttachmentFilename",
+                table: "Notifications");
         }
     }
 }

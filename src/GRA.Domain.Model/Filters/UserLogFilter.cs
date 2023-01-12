@@ -6,10 +6,6 @@
         {
         }
 
-        public UserLogFilter(int take) : this(null, take)
-        {
-        }
-
         public UserLogFilter(int? page, int take) : base(page, take)
         {
         }

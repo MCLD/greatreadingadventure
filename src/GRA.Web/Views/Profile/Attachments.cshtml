@@ -52,11 +52,11 @@
                             }
                         </tbody>
                     </table>
-                    @if (Model.PaginateModel.MaxPage > 1)
+                    @if (Model.MaxPage > 1)
                     {
                         <div class="row">
                             <div class="col-xs-12 text-center">
-                                <paginate paginateModel="@Model.PaginateModel"></paginate>
+                                <paginate paginateModel="@Model"></paginate>
                             </div>
                         </div>
                     }

@@ -538,12 +538,9 @@ namespace GRA.Domain.Service
 
             // every trigger awards a badge
             var badge = await AwardBadgeAsync(userIdToLog, trigger.AwardBadgeId);
-            Attachment attachment = null;
-
-            if (trigger.AwardAttachmentId.HasValue)
-            {
-                attachment = await _attachmentRepository.GetByIdAsync(trigger.AwardAttachmentId.Value);
-            }
+            Attachment attachment = trigger.AwardAttachmentId.HasValue
+                ? await _attachmentRepository.GetByIdAsync(trigger.AwardAttachmentId.Value)
+                : null;
 
             // log the notification
             await _notificationRepository.AddSaveAsync(authUserId, new Notification
@@ -1201,12 +1198,9 @@ namespace GRA.Domain.Service
 
                 // every trigger awards a badge
                 var badge = await AwardBadgeAsync(userId, trigger.AwardBadgeId);
-                Attachment attachment = null;
-
-                if (trigger.AwardAttachmentId.HasValue)
-                {
-                    attachment = await _attachmentRepository.GetByIdAsync(trigger.AwardAttachmentId.Value);
-                }
+                Attachment attachment = trigger.AwardAttachmentId.HasValue
+                    ? await _attachmentRepository.GetByIdAsync(trigger.AwardAttachmentId.Value)
+                    : null;
 
                 // log the notification
                 await _notificationRepository.AddSaveAsync(userId, new Notification

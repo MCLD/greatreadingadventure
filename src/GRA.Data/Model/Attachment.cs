@@ -5,10 +5,13 @@ namespace GRA.Data.Model
 {
     public class Attachment : BaseDbEntity
     {
-        public string FileName { get; set; }
         [Required]
+        [MaxLength(255)]
+        public string FileName { get; set; }
+
         public bool? IsCertificate { get; set; } = true;
 
+        [Required]
         public int SiteId { get; set; }
     }
 }

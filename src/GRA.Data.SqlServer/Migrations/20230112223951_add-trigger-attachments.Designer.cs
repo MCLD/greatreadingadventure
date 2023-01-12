@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GRA.Data.SqlServer.Migrations
 {
     [DbContext(typeof(SqlServerContext))]
-    [Migration("20221220170206_add-trigger-attachments")]
+    [Migration("20230112223951_add-trigger-attachments")]
     partial class addtriggerattachments
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace GRA.Data.SqlServer.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.0")
+                .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -72,10 +72,11 @@ namespace GRA.Data.SqlServer.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("FileName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<bool?>("IsCertificate")
-                        .IsRequired()
                         .HasColumnType("bit");
 
                     b.Property<int>("SiteId")
@@ -1904,6 +1905,10 @@ namespace GRA.Data.SqlServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AttachmentFilename")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
                     b.Property<int?>("AvatarBundleId")
                         .HasColumnType("int");
 
@@ -2144,6 +2149,10 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<int>("SiteId")
                         .HasColumnType("int");
+
+                    b.Property<string>("StaffNotes")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int?>("TriggerId")
                         .HasColumnType("int");

@@ -537,31 +537,26 @@ namespace GRA.Controllers
 
             var userLogs = await _userService.GetPaginatedUserHistoryAsync(user.Id, filter);
 
-            var paginateModel = new PaginateViewModel
-            {
-                ItemCount = userLogs.Count,
-                CurrentPage = page,
-                ItemsPerPage = filter.Take.Value
-            };
-
-            if (paginateModel.PastMaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
-            }
-
             var viewModel = new AttachmentListViewModel
             {
                 Attachments = new List<AttachmentItemViewModel>(),
                 UserLogs = userLogs.Data,
-                PaginateModel = paginateModel,
+                ItemCount = userLogs.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value,
                 HouseholdCount = await _userService
                     .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? user.Id),
                 HasAccount = !string.IsNullOrWhiteSpace(user.Username)
             };
+
+            if (viewModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = viewModel.LastPage ?? 1
+                    });
+            }
 
             foreach (var userLog in userLogs.Data)
             {
