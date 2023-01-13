@@ -2078,7 +2078,7 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-                var filter = new UserLogFilter(page: page);
+                var filter = new UserLogFilter(page);
                 var history = await _userService.GetPaginatedUserHistoryAsync(id, filter);
 
                 var paginateModel = new PaginateViewModel

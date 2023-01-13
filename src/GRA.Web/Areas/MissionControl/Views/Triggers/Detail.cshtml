@@ -594,7 +594,7 @@
             </div>
         </div>
     }
-    @if (Model.EditAttachment || Model.AwardsAttachment)
+    @if ((Model.EditAttachment && Model.AwardsAttachment) || Model.EditAttachment)
     {
         <div class="panel-group" id="accordionAttachment" role="tablist" aria-multiselectable="true">
             <div class="panel panel-info">
