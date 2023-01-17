@@ -11,7 +11,7 @@ namespace GRA.Domain.Service
 {
     public class AttachmentService : Abstract.BaseUserService<AttachmentService>
     {
-        private const string AttachmentPath = "attachments/certificates";
+        private const string AttachmentPath = "attachments";
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly IPathResolver _pathResolver;
 
@@ -35,7 +35,7 @@ namespace GRA.Domain.Service
             attachment.IsCertificate = true;
             var result = await _attachmentRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), attachment);
             result.FileName = await WriteAttachmentFile(result, file);
-            
+
             return await _attachmentRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), result);
         }
 
@@ -63,6 +63,7 @@ namespace GRA.Domain.Service
 
             return await _attachmentRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), attachment);
         }
+
         private string GetFilePath(string filename)
         {
             string contentDir = _pathResolver.ResolveContentFilePath();
@@ -79,7 +80,7 @@ namespace GRA.Domain.Service
 
         private string GetUrlPath(string filename)
         {
-            return $"site{GetCurrentSiteId()}/{AttachmentPath}/{filename}";
+            return $"site{GetCurrentSiteId()}/{Path.Combine(AttachmentPath, "certificates")}/{filename}";
         }
 
         private async Task<string> WriteAttachmentFile(Attachment attachment,

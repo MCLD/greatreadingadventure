@@ -653,7 +653,7 @@ namespace GRA.Controllers.MissionControl
                         model.Trigger.AwardMailSubject = "";
                         model.Trigger.AwardMail = "";
                     }
-                    if (!model.AwardsAttachment)
+                    if (!model.AwardsAttachment && model.EditAttachment)
                     {
                         model.Trigger.AwardAttachmentFilename = "";
                         model.Trigger.AwardAttachmentId = null;
