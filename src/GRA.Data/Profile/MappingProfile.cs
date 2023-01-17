@@ -8,6 +8,7 @@ namespace GRA.Data.Profile
         {
             // Data to Domain Mappings
             CreateMap<Model.Answer, Domain.Model.Answer>();
+            CreateMap<Model.Attachment, Domain.Model.Attachment>();
             CreateMap<Model.AuthorizationCode, Domain.Model.AuthorizationCode>();
             CreateMap<Model.AvatarBundle, Domain.Model.AvatarBundle>()
                 .ForMember(dest => dest.AvatarItems,
@@ -135,6 +136,7 @@ namespace GRA.Data.Profile
 
             // Domain to Data Mappings
             CreateMap<Domain.Model.Answer, Model.Answer>();
+            CreateMap<Domain.Model.Attachment, Model.Attachment>();
             CreateMap<Domain.Model.AuthorizationCode, Model.AuthorizationCode>();
             CreateMap<Domain.Model.AvatarBundle, Model.AvatarBundle>();
             CreateMap<Domain.Model.AvatarColor, Model.AvatarColor>();

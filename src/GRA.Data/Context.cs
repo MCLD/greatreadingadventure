@@ -14,6 +14,8 @@ namespace GRA.Data
 
         public DbSet<Model.Answer> Answers { get; set; }
 
+        public DbSet<Model.Attachment> Attachments { get; set; }
+
         public DbSet<Model.AuditLog> AuditLogs { get; set; }
 
         public DbSet<Model.AuthorizationCode> AuthorizationCodes { get; set; }

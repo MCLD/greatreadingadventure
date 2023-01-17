@@ -199,7 +199,7 @@ namespace GRA.Controllers
                 await _vendorCodeService.PopulateVendorCodeStatusAsync(user);
 
                 var userLogs = await _userService.GetPaginatedUserHistoryAsync(user.Id,
-                    new UserLogFilter(take: BadgesToDisplay)
+                    new UserLogFilter(null, BadgesToDisplay)
                     {
                         HasBadge = true
                     });

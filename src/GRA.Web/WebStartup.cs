@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Abstract;
@@ -56,7 +57,7 @@ namespace GRA.Web
                 var pending = dbContext.GetPendingMigrations();
                 if (pending?.Count() > 0)
                 {
-                    _log.LogWarning("Applying {0} database migrations, last is: {1}",
+                    _log.LogWarning("Applying {MigrationCount} database migrations, last is: {MigrationName}",
                         pending.Count(),
                         pending.Last());
                 }
@@ -68,15 +69,22 @@ namespace GRA.Web
                 throw;
             }
 
+            var migrationTimer = Stopwatch.StartNew();
             try
             {
                 dbContext.Migrate();
+                _log.LogWarning("Applied migrations in {Elapsed} ms",
+                    migrationTimer.ElapsedMilliseconds);
             }
             catch (Exception ex)
             {
                 _log.LogError("Startup error applying database migrations: {ErrorMessage}",
                     ex.Message);
                 throw;
+            }
+            finally
+            {
+                migrationTimer.Stop();
             }
 
             try

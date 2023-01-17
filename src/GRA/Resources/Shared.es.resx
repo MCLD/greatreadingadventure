@@ -889,10 +889,6 @@
     <value>Comparta su Avatar</value>
     <comment>Title for the avatar sharing page</comment>
   </data>
-  <data name="View Attachment" xml:space="preserve">
-    <value>Vea el archivo adjunto</value>
-    <comment>Button text to view an attached file to a challenge task</comment>
-  </data>
   <data name="When you complete &lt;strong&gt;{0}&lt;/strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt; and a badge." xml:space="preserve">
     <value>Al completar &lt;strong&gt;{0}&lt;/strong&gt;, recibira &lt;strong&gt;{1}&lt;/strong&gt; y una medalla.</value>
     <comment>Inform the participant that when they complete a task, they receive a reward and a badge. {0} is the task, {1} is the reward.</comment>
@@ -1596,5 +1592,29 @@
   <data name="&lt;em&gt;{0}&lt;/em&gt; was picked up on &lt;strong&gt;{1}&lt;/strong&gt;." xml:space="preserve">
     <value>&lt;em&gt;{0}&lt;/em&gt; fue recogido el &lt;strong&gt;{1}&lt;/strong&gt;.</value>
     <comment>Display once a vendor item is picked up; {0} is the detail of the item, {1} is the date it was picked up</comment>
+  </data>
+  <data name="Certificate" xml:space="preserve">
+    <value>Certificado</value>
+    <comment>Label for a user to download a certificate in their profile history.</comment>
+  </data>
+  <data name="Certificates" xml:space="preserve">
+    <value>Certificados</value>
+    <comment>Button to view the participant's certificates.</comment>
+  </data>
+  <data name="View Certificate" xml:space="preserve">
+    <value>Ver Certificado</value>
+    <comment>Button text to view an attached file to a challenge task</comment>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Descargar</value>
+    <comment>Span text for download links.</comment>
+  </data>
+  <data name="You've received a certificate!" xml:space="preserve">
+    <value>¡Has recibido un certificado!</value>
+    <comment>Message shown to a participant when a notification is presented and a certificate is available.</comment>
+  </data>
+  <data name="You have not earned any certificates yet." xml:space="preserve">
+    <value>Aún no ha obtenido ningún certificado.</value>
+    <comment>Displayed in the participant profile if they view the certificates tab but have not earned any certificates yet.</comment>
   </data>
 </root>
