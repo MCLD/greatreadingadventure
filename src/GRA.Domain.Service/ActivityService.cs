@@ -538,7 +538,7 @@ namespace GRA.Domain.Service
 
             // every trigger awards a badge
             var badge = await AwardBadgeAsync(userIdToLog, trigger.AwardBadgeId);
-            Attachment attachment = trigger.AwardAttachmentId.HasValue
+            var attachment = trigger.AwardAttachmentId.HasValue
                 ? await _attachmentRepository.GetByIdAsync(trigger.AwardAttachmentId.Value)
                 : null;
 
@@ -1198,7 +1198,7 @@ namespace GRA.Domain.Service
 
                 // every trigger awards a badge
                 var badge = await AwardBadgeAsync(userId, trigger.AwardBadgeId);
-                Attachment attachment = trigger.AwardAttachmentId.HasValue
+                var attachment = trigger.AwardAttachmentId.HasValue
                     ? await _attachmentRepository.GetByIdAsync(trigger.AwardAttachmentId.Value)
                     : null;
 
