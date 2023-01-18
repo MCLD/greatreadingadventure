@@ -529,6 +529,53 @@ namespace GRA.Controllers
             return View("HouseholdAdd", model);
         }
 
+        public async Task<IActionResult> Attachments(int page)
+        {
+            page = page == 0 ? 1 : page;
+            User user = await _userService.GetDetails(GetActiveUserId());
+
+            var filter = new UserLogFilter(page)
+            {
+                HasAttachment = true
+            };
+
+            var userLogs = await _userService.GetPaginatedUserHistoryAsync(user.Id, filter);
+
+            var viewModel = new AttachmentListViewModel
+            {
+                Attachments = new List<AttachmentItemViewModel>(),
+                UserLogs = userLogs.Data,
+                ItemCount = userLogs.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value,
+                HouseholdCount = await _userService
+                    .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? user.Id),
+                HasAccount = !string.IsNullOrWhiteSpace(user.Username)
+            };
+
+            if (viewModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = viewModel.LastPage ?? 1
+                    });
+            }
+
+            foreach (var userLog in userLogs.Data)
+            {
+                var item = new AttachmentItemViewModel();
+                item.AttachmentFilename = _pathResolver.ResolveContentPath(userLog.AttachmentFilename);
+                item.ShowCertificate = userLog.AttachmentIsCertificate;
+                item.Description = userLog.Description;
+                item.EarnedOn = userLog.CreatedAt.ToShortDateString();
+
+                viewModel.Attachments.Add(item);
+            }
+
+            return View(viewModel);
+        }
+
         public async Task<IActionResult> Badges(int page = 1)
         {
             User user = await _userService.GetDetails(GetActiveUserId());
@@ -998,6 +1045,13 @@ namespace GRA.Controllers
                                 [Annotations.Interface.AvatarBundleAltText, bundle.Name];
                         }
                     }
+                }
+                if (item.AttachmentId.HasValue && !string.IsNullOrWhiteSpace(item.AttachmentFilename))
+                {
+                    itemModel.AttachmentId = item.AttachmentId.Value;
+                    itemModel.ShowCertificate = item.AttachmentIsCertificate && item.TriggerId.HasValue;
+                    itemModel.AttachmentFilename = _pathResolver.ResolveContentPath(item.AttachmentFilename);
+                    itemModel.AttachmentDownload = item.AttachmentFilename[item.AttachmentFilename.LastIndexOf('/')..].Trim('/');
                 }
                 itemModel.Description = description.ToString();
                 viewModel.Historys.Add(itemModel);

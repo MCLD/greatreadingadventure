@@ -15,9 +15,9 @@ namespace GRA.Domain.Service
         private readonly IBranchRepository _branchRepository;
         private readonly IEventRepository _eventRepository;
         private readonly IProgramRepository _programRepository;
+        private readonly SiteLookupService _siteLookupService;
         private readonly ISystemRepository _systemRepository;
         private readonly ITriggerRepository _triggerRepository;
-        private readonly SiteLookupService _siteLookupService;
 
         public TriggerService(ILogger<TriggerService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
@@ -32,38 +32,21 @@ namespace GRA.Domain.Service
             : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageTriggers);
-            _avatarBundleRepository = avatarBundleRepository 
+            _avatarBundleRepository = avatarBundleRepository
                 ?? throw new ArgumentNullException(
                 nameof(avatarBundleRepository));
-            _branchRepository = branchRepository 
+            _branchRepository = branchRepository
                 ?? throw new ArgumentNullException(nameof(branchRepository));
-            _eventRepository = eventRepository 
+            _eventRepository = eventRepository
                 ?? throw new ArgumentNullException(nameof(eventRepository));
-            _programRepository = programRepository 
+            _programRepository = programRepository
                 ?? throw new ArgumentNullException(nameof(programRepository));
-            _systemRepository = systemRepository 
+            _systemRepository = systemRepository
                 ?? throw new ArgumentNullException(nameof(systemRepository));
-            _triggerRepository = triggerRepository 
+            _triggerRepository = triggerRepository
                 ?? throw new ArgumentNullException(nameof(triggerRepository));
             _siteLookupService = siteLookupService
                 ?? throw new ArgumentNullException(nameof(siteLookupService));
-        }
-
-        public async Task<DataWithCount<ICollection<Trigger>>> GetPaginatedListAsync(TriggerFilter filter)
-        {
-            VerifyManagementPermission();
-            filter.SiteId = GetCurrentSiteId();
-            return new DataWithCount<ICollection<Trigger>>
-            {
-                Data = await _triggerRepository.PageAsync(filter),
-                Count = await _triggerRepository.CountAsync(filter)
-            };
-        }
-
-        public async Task<Trigger> GetByIdAsync(int id)
-        {
-            VerifyManagementPermission();
-            return await _triggerRepository.GetByIdAsync(id);
         }
 
         public async Task<Trigger> AddAsync(Trigger trigger)
@@ -85,37 +68,97 @@ namespace GRA.Domain.Service
                 trigger.AwardMail = null;
                 trigger.AwardMailSubject = null;
             }
+            if (!HasPermission(Permission.TriggerAttachments))
+            {
+                trigger.AwardAttachmentId = null;
+            }
             await ValidateTriggerAsync(trigger);
             return await _triggerRepository.AddSaveAsync(GetClaimId(ClaimType.UserId),
                 trigger);
         }
 
-        public async Task<Trigger> UpdateAsync(Trigger trigger)
+        public async Task<bool> CodeExistsAsync(string secretCode, int? triggerId = null)
+        {
+            return await _triggerRepository.CodeExistsAsync(
+                GetCurrentSiteId(), secretCode.Trim().ToLower(), triggerId);
+        }
+
+        public async Task<Trigger> GetByBadgeIdAsync(int badgeId)
+        {
+            return await _triggerRepository.GetByBadgeIdAsync(badgeId);
+        }
+
+        public async Task<Trigger> GetByIdAsync(int id)
         {
             VerifyManagementPermission();
-            trigger.SiteId = GetCurrentSiteId();
-            await ValidateTriggerAsync(trigger);
-            if (!HasPermission(Permission.ManageVendorCodes)
-                || !HasPermission(Permission.ManageTriggerMail)
-                || !HasPermission(Permission.ManageAvatars))
+            return await _triggerRepository.GetByIdAsync(id);
+        }
+
+        public async Task<ICollection<Trigger>> GetDependentsAsync(int triggerId)
+        {
+            return await _triggerRepository.GetTriggerDependentsAsync(triggerId);
+        }
+
+        public async Task<int?> GetMaximumAllowedPointsAsync(int siteId)
+        {
+            var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingIntAsync(siteId,
+                SiteSettingKey.Triggers.MaxPointsPerTrigger);
+
+            return IsSet ? SetValue : (int?)null;
+        }
+
+        public async Task<DataWithCount<ICollection<Trigger>>> GetPaginatedListAsync(TriggerFilter filter)
+        {
+            VerifyManagementPermission();
+            filter.SiteId = GetCurrentSiteId();
+            return new DataWithCount<ICollection<Trigger>>
             {
-                var currentTrigger = await _triggerRepository.GetByIdAsync(trigger.Id);
-                if (!HasPermission(Permission.ManageVendorCodes))
-                {
-                    trigger.AwardVendorCodeTypeId = currentTrigger.AwardVendorCodeTypeId;
-                }
-                if (!HasPermission(Permission.ManageAvatars))
-                {
-                    trigger.AwardAvatarBundleId = currentTrigger.AwardAvatarBundleId;
-                }
-                if (!HasPermission(Permission.ManageTriggerMail))
-                {
-                    trigger.AwardMail = currentTrigger.AwardMail;
-                    trigger.AwardMailSubject = currentTrigger.AwardMailSubject;
-                }
-            }
-            return await _triggerRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
-                trigger);
+                Data = await _triggerRepository.PageAsync(filter),
+                Count = await _triggerRepository.CountAsync(filter)
+            };
+        }
+
+        public async Task<ICollection<TriggerRequirement>> GetRequirementsByIdsAsync(
+            List<int> badgeIds, List<int> challengeIds)
+        {
+            VerifyManagementPermission();
+            var trigger = new Trigger()
+            {
+                BadgeIds = badgeIds,
+                ChallengeIds = challengeIds
+            };
+            return await _triggerRepository.GetTriggerRequirmentsAsync(trigger);
+        }
+
+        public async Task<string> GetTriggerPrizeNameAsync(int id)
+        {
+            VerifyPermission(Permission.ViewUserPrizes);
+
+            var trigger = await _triggerRepository.GetByIdAsync(id);
+
+            return trigger?.AwardPrizeName;
+        }
+
+        public async Task<ICollection<TriggerRequirement>> GetTriggerRequirementsAsync(Trigger trigger)
+        {
+            VerifyManagementPermission();
+            return await _triggerRepository.GetTriggerRequirmentsAsync(trigger);
+        }
+
+        public async Task<ICollection<Trigger>> GetTriggersAwardingPrizesAsync()
+        {
+            VerifyPermission(Permission.ViewAllReporting);
+            return await _triggerRepository.GetTriggersAwardingPrizesAsync(GetCurrentSiteId());
+        }
+
+        public async Task<DataWithCount<ICollection<TriggerRequirement>>> PageRequirementAsync(BaseFilter filter)
+        {
+            filter.SiteId = GetCurrentSiteId();
+            return new DataWithCount<ICollection<TriggerRequirement>>()
+            {
+                Data = await _triggerRepository.PageRequirementsAsync(filter),
+                Count = await _triggerRepository.CountRequirementsAsync(filter)
+            };
         }
 
         public async Task RemoveAsync(int triggerId)
@@ -149,69 +192,38 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<ICollection<TriggerRequirement>> GetTriggerRequirementsAsync(Trigger trigger)
-        {
-            VerifyManagementPermission();
-            return await _triggerRepository.GetTriggerRequirmentsAsync(trigger);
-        }
-
-        public async Task<ICollection<TriggerRequirement>> GetRequirementsByIdsAsync(
-            List<int> badgeIds, List<int> challengeIds)
-        {
-            VerifyManagementPermission();
-            var trigger = new Trigger()
-            {
-                BadgeIds = badgeIds,
-                ChallengeIds = challengeIds
-            };
-            return await _triggerRepository.GetTriggerRequirmentsAsync(trigger);
-        }
-
-        public async Task<DataWithCount<ICollection<TriggerRequirement>>> PageRequirementAsync(BaseFilter filter)
-        {
-            filter.SiteId = GetCurrentSiteId();
-            return new DataWithCount<ICollection<TriggerRequirement>>()
-            {
-                Data = await _triggerRepository.PageRequirementsAsync(filter),
-                Count = await _triggerRepository.CountRequirementsAsync(filter)
-            };
-        }
-
-        public async Task<bool> CodeExistsAsync(string secretCode, int? triggerId = null)
-        {
-            return await _triggerRepository.CodeExistsAsync(
-                GetCurrentSiteId(), secretCode.Trim().ToLower(), triggerId);
-        }
-
-        public async Task<ICollection<Trigger>> GetDependentsAsync(int triggerId)
-        {
-            return await _triggerRepository.GetTriggerDependentsAsync(triggerId);
-        }
-
         public async Task<bool> SecretCodeInUseAsync(string username)
         {
             string trimmedUsername = username.Trim();
             return await _triggerRepository.SecretCodeInUseAsync(GetCurrentSiteId(), trimmedUsername);
         }
 
-        public async Task<Trigger> GetByBadgeIdAsync(int badgeId)
+        public async Task<Trigger> UpdateAsync(Trigger trigger)
         {
-            return await _triggerRepository.GetByBadgeIdAsync(badgeId);
-        }
-
-        public async Task<ICollection<Trigger>> GetTriggersAwardingPrizesAsync()
-        {
-            VerifyPermission(Permission.ViewAllReporting);
-            return await _triggerRepository.GetTriggersAwardingPrizesAsync(GetCurrentSiteId());
-        }
-
-        public async Task<string> GetTriggerPrizeNameAsync(int id)
-        {
-            VerifyPermission(Permission.ViewUserPrizes);
-
-            var trigger = await _triggerRepository.GetByIdAsync(id);
-
-            return trigger?.AwardPrizeName;
+            VerifyManagementPermission();
+            trigger.SiteId = GetCurrentSiteId();
+            await ValidateTriggerAsync(trigger);
+            if (!HasPermission(Permission.ManageVendorCodes)
+                || !HasPermission(Permission.ManageTriggerMail)
+                || !HasPermission(Permission.ManageAvatars))
+            {
+                var currentTrigger = await _triggerRepository.GetByIdAsync(trigger.Id);
+                if (!HasPermission(Permission.ManageVendorCodes))
+                {
+                    trigger.AwardVendorCodeTypeId = currentTrigger.AwardVendorCodeTypeId;
+                }
+                if (!HasPermission(Permission.ManageAvatars))
+                {
+                    trigger.AwardAvatarBundleId = currentTrigger.AwardAvatarBundleId;
+                }
+                if (!HasPermission(Permission.ManageTriggerMail))
+                {
+                    trigger.AwardMail = currentTrigger.AwardMail;
+                    trigger.AwardMailSubject = currentTrigger.AwardMailSubject;
+                }
+            }
+            return await _triggerRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
+                trigger);
         }
 
         private async Task ValidateTriggerAsync(Trigger trigger)
@@ -283,14 +295,6 @@ namespace GRA.Domain.Service
                     throw new GraException($"A trigger may award a maximum of {maxPointLimit} points.");
                 }
             }
-        }
-
-        public async Task<int?> GetMaximumAllowedPointsAsync(int siteId)
-        {
-            var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingIntAsync(siteId,
-                SiteSettingKey.Triggers.MaxPointsPerTrigger);
-
-            return IsSet ? SetValue : (int?)null;
         }
     }
 }

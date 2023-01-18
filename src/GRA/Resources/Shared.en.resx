@@ -905,8 +905,8 @@
     <value>Share Your Avatar</value>
     <comment>Title for the avatar sharing page</comment>
   </data>
-  <data name="View Attachment" xml:space="preserve">
-    <value>View Attachment</value>
+  <data name="View Certificate" xml:space="preserve">
+    <value>View Certificate</value>
     <comment>Button text to view an attached file to a challenge task</comment>
   </data>
   <data name="Your status has been saved!" xml:space="preserve">
@@ -1616,5 +1616,25 @@
   <data name="No Prizes" xml:space="preserve">
     <value>No prizes yet, keep reading!</value>
     <comment>Message shown when a user attempts to view their prize history but they have not earned any.</comment>
+  </data>
+  <data name="Certificate" xml:space="preserve">
+    <value>Certificate</value>
+    <comment>Label for a user to download a certificate in their profile history.</comment>
+  </data>
+  <data name="Certificates" xml:space="preserve">
+    <value>Certificates</value>
+    <comment>Button to view the participant's certificates.</comment>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Download</value>
+    <comment>Span text for download links.</comment>
+  </data>
+  <data name="You've received a certificate!" xml:space="preserve">
+    <value>You've received a certificate!</value>
+    <comment>Message shown to a participant when a notification is presented and a certificate is available.</comment>
+  </data>
+  <data name="You have not earned any certificates yet." xml:space="preserve">
+    <value>You have not earned any certificates yet.</value>
+    <comment>Displayed in the participant profile if they view the certificates tab but have not earned any certificates yet.</comment>
   </data>
 </root>

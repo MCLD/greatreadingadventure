@@ -10,6 +10,8 @@ namespace GRA.Domain.Model
         [DisplayName("Activation Date")]
         public DateTime? ActivationDate { get; set; }
 
+        public string AwardAttachmentFilename { get; set; }
+        public int? AwardAttachmentId { get; set; }
         [DisplayName("Award avatar bundle")]
         public int? AwardAvatarBundleId { get; set; }
 
@@ -39,7 +41,7 @@ namespace GRA.Domain.Model
         public string AwardPrizeName { get; set; }
 
         [MaxLength(1000)]
-        [DisplayName("Redemption instructions for Staff")]
+        [DisplayName("Redemption instructions")]
         public string AwardPrizeRedemptionInstructions { get; set; }
 
         [DisplayName("Award vendor code")]
