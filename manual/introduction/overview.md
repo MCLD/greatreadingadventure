@@ -67,7 +67,7 @@ The built-in performer scheduling system allows performers to register themselve
 
 ## Triggers
 
-Want to award a special badge when participants earn a certain amount of points? Configure a mega-badge when participants earn a set of several other badges or complete a number of challenges? Triggers are the answer! Triggers can award badges or prizes based on the criteria you configure.
+Want to award a special badge when participants earn a certain amount of points? Configure a mega-badge when participants earn a set of several other badges or complete a number of challenges? [Triggers](../setup/triggers.md) are the answer! Triggers can award badges or prizes based on the criteria you configure.
 
 ## Questionnaires
 
