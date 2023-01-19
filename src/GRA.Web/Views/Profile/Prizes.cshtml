@@ -37,13 +37,23 @@
                                                 <td>
                                                     @if (!string.IsNullOrWhiteSpace(prizeWinner.AvailableAtSystem))
                                                     {
-                                                        @prizeWinner.AvailableAtSystem
-                                                        @if (!string.IsNullOrWhiteSpace(prizeWinner.AvailableAtBranch))
+                                                        @if (!string.IsNullOrWhiteSpace(prizeWinner.AvailableAtBranch) && !string.IsNullOrWhiteSpace(prizeWinner.AvailableAtBranchUrl))
                                                         {
-                                                            @: -
+                                                            @: @prizeWinner.AvailableAtSystem - 
                                                             <a href="@prizeWinner.AvailableAtBranchUrl" target="_blank">
                                                                 @prizeWinner.AvailableAtBranch
                                                             </a>
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.ActionLink(prizeWinner.AvailableAtSystem,
+                                                                            "Index",
+                                                                            "ParticipatingLibraries",
+                                                                            null,
+                                                                            null,
+                                                                            fragment: Html.GenerateIdFromName(string.Concat("3.,", prizeWinner.AvailableAtSystem, " .")),
+                                                                            null,
+                                                                            null)
                                                         }
                                                     }
                                                     else
