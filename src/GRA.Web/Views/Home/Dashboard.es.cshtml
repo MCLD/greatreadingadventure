@@ -148,6 +148,28 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
         }
         @if (Model.SiteStage == GRA.Domain.Model.SiteStage.ProgramOpen)
         {
+            @if (Model.ProgramReadingGoal.HasValue)
+            {
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <p style="font-size: large;">@SharedHtmlLocalizer["Participants in the program have read <strong>{0}</strong> minutes.", Model.TotalProgramMinutesRead.Value]</p>
+                        <p style="font-size: medium;">Program Reading Progress</p>
+                        <div class="progress" style="margin:0px;">
+                            <div class="progress-bar progress-bar-striped@(Model.MinutesReadPercentComplete == 100 ? " progress-bar-success" : "") wide-tooltip"
+                         role="progressbar"
+                         aria-valuenow="@Model.MinutesReadPercentComplete"
+                         aria-valuemin="0"
+                         aria-valuemax="100"
+                         style="width: @Model.MinutesReadPercentComplete%;"
+                         title="The reading goal of the program is @Model.ProgramReadingGoal minutes."
+                         data-toggle="tooltip"
+                         data-placement="top">
+                                @Model.MinutesReadPercentComplete%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
             if (Model.SingleEvent)
             {
                 <div class="panel panel-default">

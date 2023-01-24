@@ -12,6 +12,7 @@
         public static readonly string FeaturedChallengeGroups = "FeaturedChallengeGroups.{0}";
         public static readonly string LanguageId = "LanguageId.{0}";
         public static readonly string LatestNewsPostId = "LatestNewsPostId";
+        public static readonly string ProgramWideMinutesRead = "{0}.ProgramWideMinutesRead";
         public static readonly string SiteCss = "SiteCss";
         public static readonly string SiteJs = "SiteJs";
         public static readonly string Sites = "Sites";

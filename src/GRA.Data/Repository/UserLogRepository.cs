@@ -289,6 +289,17 @@ namespace GRA.Data.Repository
             };
         }
 
+        public async Task<int> GetProgramMinutesReadAsync(List<int> userIds)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => !_.IsDeleted
+                && _.ActivityEarned.HasValue
+                && !_.TriggerId.HasValue
+                && string.IsNullOrWhiteSpace(_.Description)
+                && userIds.Contains(_.UserId))
+                .SumAsync(_ => _.ActivityEarned.Value);
+        }
         public async Task<long> PointsEarnedTotalAsync(ReportCriterion request)
         {
             var eligibleUsers = GetEligibleUsers(request);

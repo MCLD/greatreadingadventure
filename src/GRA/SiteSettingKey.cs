@@ -85,6 +85,16 @@
             }
         }
 
+        public struct Program : System.IEquatable<Program>
+        {
+            public static readonly string ReadingGoalInMinutes = "Program.ReadingGoalInMinutes";
+
+            public bool Equals(Program other)
+            {
+                return true;
+            }
+        }
+
         public struct SecretCode : System.IEquatable<SecretCode>
         {
             // TODO make this truly disable secret codes for the site

@@ -18,6 +18,7 @@ namespace GRA.Domain.Service
         private readonly IAvatarItemRepository _avatarItemRepository;
         private readonly IBadgeRepository _badgeRepository;
         private readonly IBookRepository _bookRepository;
+        private readonly IGraCache _cache;
         private readonly IChallengeRepository _challengeRepository;
         private readonly IChallengeTaskRepository _challengeTaskRepository;
         private readonly ICodeSanitizer _codeSanitizer;
@@ -47,6 +48,7 @@ namespace GRA.Domain.Service
             IChallengeRepository challengeRepository,
             IChallengeTaskRepository challengeTaskRepository,
             IEventRepository eventRepository,
+            IGraCache cache,
             INotificationRepository notificationRepository,
             IPointTranslationRepository pointTranslationRepository,
             IProgramRepository programRepository,
@@ -72,6 +74,8 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(badgeRepository));
             _bookRepository = bookRepository
                 ?? throw new ArgumentNullException(nameof(bookRepository));
+            _cache = cache
+                ?? throw new ArgumentNullException(nameof(cache));
             _challengeRepository = challengeRepository
                 ?? throw new ArgumentNullException(nameof(challengeRepository));
             _challengeTaskRepository = challengeTaskRepository
@@ -190,6 +194,28 @@ namespace GRA.Domain.Service
         public async Task<int> GetActivityEarnedAsync()
         {
             return await _userLogRepository.GetActivityEarnedForUserAsync(GetActiveUserId());
+        }
+
+        public async Task<int?> GetProgramReadingActivityAsync()
+        {
+            string cacheKey = string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                CacheKey.ProgramWideMinutesRead,
+                GetCurrentSiteId());
+
+            var cumulativeMinutesRead = await _cache.GetIntFromCacheAsync(cacheKey);
+
+            if (cumulativeMinutesRead == null)
+            {
+                var userIds = await _userRepository.GetAllUserIds(GetCurrentSiteId());
+
+                cumulativeMinutesRead = await _userLogRepository.GetProgramMinutesReadAsync((List<int>)userIds);
+
+                await _cache.SaveToCacheAsync(cacheKey,
+                    cumulativeMinutesRead,
+                    ExpireInTimeSpan(5));
+            }
+
+            return cumulativeMinutesRead;
         }
 
         public async Task<PointTranslation> GetUserPointTranslationAsync()

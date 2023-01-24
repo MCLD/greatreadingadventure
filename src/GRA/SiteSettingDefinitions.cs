@@ -239,6 +239,14 @@ namespace GRA
                     Info = "Disable the in-software mail setting so that participants and administrators cannot exchange mail",
                     Category = typeof(SiteSettingKey.Mail).Name,
                     Format = SiteSettingFormat.Boolean
+                },
+                [SiteSettingKey.Program.ReadingGoalInMinutes] =
+                new SiteSettingDefinition
+                {
+                    Name = "Program Reading Goal",
+                    Info = "Sets a reading goal (minutes) for the duration of the reading program",
+                    Category = typeof(SiteSettingKey.Program).Name,
+                    Format = SiteSettingFormat.Integer
                 }
             };
     }
