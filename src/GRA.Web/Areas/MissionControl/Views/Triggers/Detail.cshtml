@@ -530,6 +530,7 @@
                     <div class="row row-spacing">
                         <div class="col-xs-12">
                             <label asp-for="Trigger.AwardPrizeName" class="control-label"></label>
+                            <description gra-description-for="Trigger.AwardPrizeName"></description>
                             <input asp-for="Trigger.AwardPrizeName"
                                    class="form-control"
                                    readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
