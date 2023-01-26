@@ -5,6 +5,7 @@ namespace GRA.Domain.Model
     public class PrizeWinner : Abstract.BaseDomainEntity
     {
         public string AvailableAtBranch { get; set; }
+        public string AvailableAtBranchUrl { get; set; }
         public string AvailableAtSystem { get; set; }
         public int? DrawingId { get; set; }
         public int? MailId { get; set; }

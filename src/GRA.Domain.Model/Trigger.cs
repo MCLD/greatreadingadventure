@@ -38,6 +38,7 @@ namespace GRA.Domain.Model
 
         [MaxLength(255)]
         [DisplayName("Prize name")]
+        [Display(Description = "Reminder: this name is visible to participants.")]
         public string AwardPrizeName { get; set; }
 
         [MaxLength(1000)]
