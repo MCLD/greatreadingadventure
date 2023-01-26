@@ -1506,7 +1506,7 @@ namespace GRA.Controllers
         [HttpPost]
         public async Task<IActionResult> LoginAs(int loginId)
         {
-            return await LoginAs(loginId, false)
+            return await LoginAs(loginId, false);
         }
 
         [HttpPost]
