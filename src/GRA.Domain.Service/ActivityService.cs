@@ -196,26 +196,24 @@ namespace GRA.Domain.Service
             return await _userLogRepository.GetActivityEarnedForUserAsync(GetActiveUserId());
         }
 
-        public async Task<int?> GetProgramReadingActivityAsync()
+        public async Task<int?> GetSiteActivityEarnedAsync()
         {
             string cacheKey = string.Format(System.Globalization.CultureInfo.InvariantCulture,
-                CacheKey.ProgramWideMinutesRead,
+                CacheKey.SiteActivityEarned,
                 GetCurrentSiteId());
 
-            var cumulativeMinutesRead = await _cache.GetIntFromCacheAsync(cacheKey);
+            var siteActivityEarned = await _cache.GetIntFromCacheAsync(cacheKey);
 
-            if (cumulativeMinutesRead == null)
+            if (siteActivityEarned == null)
             {
-                var userIds = await _userRepository.GetAllUserIds(GetCurrentSiteId());
-
-                cumulativeMinutesRead = await _userLogRepository.GetProgramMinutesReadAsync((List<int>)userIds);
+                siteActivityEarned = await _userLogRepository.GetSiteActivityEarnedAsync(GetCurrentSiteId());
 
                 await _cache.SaveToCacheAsync(cacheKey,
-                    cumulativeMinutesRead,
+                    siteActivityEarned,
                     ExpireInTimeSpan(5));
             }
 
-            return cumulativeMinutesRead;
+            return siteActivityEarned;
         }
 
         public async Task<PointTranslation> GetUserPointTranslationAsync()

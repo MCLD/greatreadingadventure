@@ -22,7 +22,7 @@ namespace GRA.Domain.Repository
 
         Task<DataWithCount<ICollection<UserLog>>> GetPaginatedHistoryAsync(UserLogFilter filter);
 
-        Task<int> GetProgramMinutesReadAsync(List<int> userIds);
+        Task<int> GetSiteActivityEarnedAsync(int siteId);
 
         Task<long> PointsEarnedTotalAsync(ReportCriterion request);
 

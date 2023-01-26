@@ -347,9 +347,9 @@ namespace GRA.Controllers
                 if (ProgramReadingGoalSet)
                 {
                     viewModel.ProgramReadingGoal = ReadingGoal;
-                    viewModel.TotalProgramMinutesRead = await _activityService.GetProgramReadingActivityAsync();
+                    viewModel.TotalProgramMinutesRead = await _activityService.GetSiteActivityEarnedAsync();
                     viewModel.MinutesReadPercentComplete = Math.Min(
-                        (int)(viewModel.TotalProgramMinutesRead * 100 / viewModel.ProgramReadingGoal), 100);
+                        (int)(viewModel.TotalProgramMinutesRead * 100.0 / viewModel.ProgramReadingGoal), 100);
                 }
 
                 var userVendorCode = await _vendorCodeService.GetUserVendorCodeAsync(user.Id);
