@@ -10,7 +10,14 @@
 
                 @await Html.PartialAsync("_ProfilePartial")
 
-                <div class="row" style="padding: 10px 0;">
+                @if (Model.PrizeWinners.Count() > 0)
+                {
+                    <div class="alert alert-warning" style="margin: 1rem 0;">
+                        <p>@SharedLocalizer[GRA.Annotations.Info.WhileSuppliesLast]</p>
+                    </div>
+                }
+
+                <div class="row" style="padding: 1rem 0;">
                     <div class="col-xs-12">
                         @if (Model.PrizeWinners.Count() == 0)
                         {
@@ -23,9 +30,9 @@
                                     <thead>
                                         <tr>
                                             <th>@SharedLocalizer[GRA.Domain.Model.DisplayNames.Name]</th>
-                                           <th>@SharedLocalizer[GRA.Annotations.Title.Participant]</th>
-                                           <th>@SharedLocalizer[GRA.Domain.Model.DisplayNames.Location]</th>
-                                           <th>@SharedLocalizer[GRA.Annotations.Interface.Status]</th>
+                                            <th>@SharedLocalizer[GRA.Annotations.Title.Participant]</th>
+                                            <th>@SharedLocalizer[GRA.Domain.Model.DisplayNames.Location]</th>
+                                            <th>@SharedLocalizer[GRA.Annotations.Interface.Status]</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -39,7 +46,7 @@
                                                     {
                                                         @if (!string.IsNullOrWhiteSpace(prizeWinner.AvailableAtBranch) && !string.IsNullOrWhiteSpace(prizeWinner.AvailableAtBranchUrl))
                                                         {
-                                                            @: @prizeWinner.AvailableAtSystem - 
+                                                            @: @prizeWinner.AvailableAtSystem -
                                                             <a href="@prizeWinner.AvailableAtBranchUrl" target="_blank">
                                                                 @prizeWinner.AvailableAtBranch
                                                             </a>
@@ -47,13 +54,13 @@
                                                         else
                                                         {
                                                             @Html.ActionLink(prizeWinner.AvailableAtSystem,
-                                                                            "Index",
-                                                                            "ParticipatingLibraries",
-                                                                            null,
-                                                                            null,
-                                                                            fragment: Html.GenerateIdFromName(prizeWinner.AvailableAtSystem),
-                                                                            null,
-                                                                            null)
+                                            "Index",
+                                            "ParticipatingLibraries",
+                                            null,
+                                            null,
+                                            fragment: Html.GenerateIdFromName(prizeWinner.AvailableAtSystem),
+                                            null,
+                                            null)
                                                         }
                                                     }
                                                     else

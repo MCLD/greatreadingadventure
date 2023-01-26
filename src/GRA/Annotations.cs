@@ -82,6 +82,7 @@
             public const string VendorItemOrdered = "<em>{0}</em> ordered on <strong>{1}</strong>.";
             public const string VendorItemPickedup = "<em>{0}</em> was picked up on <strong>{1}</strong>.";
             public const string VendorItemShipped = "<em>{0}</em> shipped on <strong>{1}</strong>.";
+            public const string WhileSuppliesLast = "Some prizes are available while supplies last, check with your library for more information.";
             public const string YouCanJoinOn = "You can join {0} on {1}.";
         }
 
