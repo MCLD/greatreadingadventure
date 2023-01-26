@@ -1593,6 +1593,26 @@
     <value>&lt;em&gt;{0}&lt;/em&gt; fue recogido el &lt;strong&gt;{1}&lt;/strong&gt;.</value>
     <comment>Display once a vendor item is picked up; {0} is the detail of the item, {1} is the date it was picked up</comment>
   </data>
+  <data name="Picked up" xml:space="preserve">
+    <value>Recogido</value>
+    <comment>Participant's status on redemption of a prize.</comment>
+  </data>
+  <data name="Prizes" xml:space="preserve">
+    <value>Premios</value>
+    <comment>Button to view the particpant's household prizes.</comment>
+  </data>
+  <data name="Any participating library" xml:space="preserve">
+    <value>Cualquiera de las bibliotecas participando</value>
+    <comment>Message shown when a user has a prize available for pickup at any participating library.</comment>
+  </data>
+  <data name="Available for pickup" xml:space="preserve">
+    <value>Disponible para recoger</value>
+    <comment>Message shown when user has a prize available for pickup, not yet redeemed.</comment>
+  </data>
+  <data name="No Prizes" xml:space="preserve">
+    <value />
+    <comment>Message shown when a user attempts to view their prize history but they have not earned any.</comment>
+  </data>
   <data name="Certificate" xml:space="preserve">
     <value>Certificado</value>
     <comment>Label for a user to download a certificate in their profile history.</comment>
@@ -1616,5 +1636,13 @@
   <data name="You have not earned any certificates yet." xml:space="preserve">
     <value>Aún no ha obtenido ningún certificado.</value>
     <comment>Displayed in the participant profile if they view the certificates tab but have not earned any certificates yet.</comment>
+  </data>
+  <data name="Some prizes are available while supplies last, check with your library for more information." xml:space="preserve">
+    <value>Algunos premios están disponibles mientras duren las reservas, consulte con su biblioteca para obtener más información.</value>
+    <comment>Reminder that some prizes are only available while supplies last - shown on the top of the Prize profile tab.</comment>
+  </data>
+  <data name="No prizes yet, keep reading!" xml:space="preserve">
+    <value>Aún no hay premios, ¡sigue leyendo!</value>
+    <comment>Shown on the profile page prize list if the participant hasn't earned any prizes</comment>
   </data>
 </root>

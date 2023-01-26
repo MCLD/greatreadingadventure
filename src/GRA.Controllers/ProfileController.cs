@@ -36,6 +36,7 @@ namespace GRA.Controllers
         private readonly MailService _mailService;
         private readonly AutoMapper.IMapper _mapper;
         private readonly PointTranslationService _pointTranslationService;
+        private readonly PrizeWinnerService _prizeWinnerService;
         private readonly QuestionnaireService _questionnaireService;
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
@@ -55,6 +56,7 @@ namespace GRA.Controllers
             EventService eventService,
             MailService mailService,
             PointTranslationService pointTranslationService,
+            PrizeWinnerService prizeWinnerService,
             QuestionnaireService questionnaireService,
             SchoolService schoolService,
             SiteService siteService,
@@ -80,6 +82,8 @@ namespace GRA.Controllers
             _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
             _pointTranslationService = pointTranslationService
                 ?? throw new ArgumentNullException(nameof(pointTranslationService));
+            _prizeWinnerService = prizeWinnerService
+                ?? throw new ArgumentNullException(nameof(prizeWinnerService));
             _questionnaireService = questionnaireService
                 ?? throw new ArgumentNullException(nameof(questionnaireService));
             _schoolService = schoolService
@@ -274,7 +278,7 @@ namespace GRA.Controllers
                 }
             }
 
-            var userBase = new User()
+            var userBase = new User
             {
                 LastName = authUser.LastName,
                 PostalCode = authUser.PostalCode,
@@ -488,7 +492,7 @@ namespace GRA.Controllers
             var branchList = await _siteService.GetBranches(model.User.SystemId);
             if (model.User.BranchId < 1)
             {
-                branchList = branchList.Prepend(new Branch() { Id = -1 });
+                branchList = branchList.Prepend(new Branch { Id = -1 });
             }
             var systemList = await _siteService.GetSystemList();
             var programList = await _siteService.GetProgramList();
@@ -572,8 +576,10 @@ namespace GRA.Controllers
             return View(viewModel);
         }
 
-        public async Task<IActionResult> Badges(int page = 1)
+        public async Task<IActionResult> Badges(int page)
         {
+            page = page == 0 ? 1 : page;
+
             User user = await _userService.GetDetails(GetActiveUserId());
 
             var filter = new UserLogFilter(page)
@@ -968,8 +974,9 @@ namespace GRA.Controllers
             return RedirectToAction(nameof(ProfileController.Household), ProfileController.Name);
         }
 
-        public async Task<IActionResult> History(int page = 1)
+        public async Task<IActionResult> History(int page)
         {
+            page = page == 0 ? 1 : page;
             var filter = new UserLogFilter(page);
 
             var history = await _userService
@@ -1152,7 +1159,7 @@ namespace GRA.Controllers
                                 {
                                     var dailyLiteracyTip = await _dailyLiteracyTipService
                                         .GetByIdAsync(program.DailyLiteracyTipId.Value);
-                                    var dailyImageViewModel = new DailyImageViewModel()
+                                    var dailyImageViewModel = new DailyImageViewModel
                                     {
                                         DailyImageMessage = dailyLiteracyTip.Message,
                                         DailyImagePath
@@ -1240,7 +1247,7 @@ namespace GRA.Controllers
                 TempData[SecretCodeMessage]
                     = _sharedLocalizer[Annotations.Required.SecretCode].ToString();
             }
-            else if (!string.IsNullOrWhiteSpace(model.UserSelection))
+            else if (!string.IsNullOrWhiteSpace(model?.UserSelection))
             {
                 var userSelection = model.UserSelection
                     .Split(',')
@@ -1497,7 +1504,13 @@ namespace GRA.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LoginAs(int loginId, bool goToMail = false)
+        public async Task<IActionResult> LoginAs(int loginId)
+        {
+            return await LoginAs(loginId, false);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LoginAs(int loginId, bool goToMail)
         {
             User user = null;
             try
@@ -1547,6 +1560,46 @@ namespace GRA.Controllers
             base.OnActionExecuting(context);
             HouseholdTitle = HttpContext.Items[ItemKey.HouseholdTitle] as string
                 ?? Annotations.Interface.Family;
+        }
+
+        public async Task<IActionResult> Prizes(int page)
+        {
+            page = page == 0 ? 1 : page;
+
+            var id = GetActiveUserId();
+
+            var user = await _userService.GetDetails(id);
+
+            var userIds = await _userService
+                .GetHouseholdUserIdsAsync(user.HouseholdHeadUserId ?? id);
+
+            var filter = new BaseFilter(page);
+            var prizeList = await _prizeWinnerService.PageUserPrizes(userIds.ToList(), filter);
+
+            var paginateModel = new PaginateViewModel
+            {
+                ItemCount = prizeList.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+
+            if (paginateModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+
+            return View(new PrizeListViewModel
+            {
+                PrizeWinners = prizeList.Data,
+                PaginateModel = paginateModel,
+                HouseholdCount = await _userService.FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
+                HeadOfHouseholdId = user.HouseholdHeadUserId,
+                HasAccount = !string.IsNullOrWhiteSpace(user.Username)
+            });
         }
 
         [HttpPost]
