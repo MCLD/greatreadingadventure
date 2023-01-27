@@ -240,12 +240,12 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Mail).Name,
                     Format = SiteSettingFormat.Boolean
                 },
-                [SiteSettingKey.Program.ReadingGoalInMinutes] =
+                [SiteSettingKey.Site.ReadingGoalInMinutes] =
                 new SiteSettingDefinition
                 {
-                    Name = "Program Reading Goal",
-                    Info = "Sets a reading goal (minutes) for the duration of the reading program",
-                    Category = typeof(SiteSettingKey.Program).Name,
+                    Name = "Site Reading Goal",
+                    Info = "Sets a reading goal (minutes) for the entire site and duration",
+                    Category = typeof(SiteSettingKey.Site).Name,
                     Format = SiteSettingFormat.Integer
                 }
             };

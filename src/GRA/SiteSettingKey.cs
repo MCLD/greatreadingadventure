@@ -85,11 +85,11 @@
             }
         }
 
-        public struct Program : System.IEquatable<Program>
+        public struct Site : System.IEquatable<Site>
         {
-            public static readonly string ReadingGoalInMinutes = "Program.ReadingGoalInMinutes";
+            public static readonly string ReadingGoalInMinutes = "Site.ReadingGoalInMinutes";
 
-            public bool Equals(Program other)
+            public bool Equals(Site other)
             {
                 return true;
             }
