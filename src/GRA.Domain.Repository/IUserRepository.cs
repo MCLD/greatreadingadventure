@@ -84,5 +84,6 @@ namespace GRA.Domain.Repository
             IEnumerable<int> rolesToRemove);
 
         Task<bool> UsernameInUseAsync(int siteId, string username);
+        Task<int> ReassignBranchAsync( int oldBranch, int newBranch);
     }
 }

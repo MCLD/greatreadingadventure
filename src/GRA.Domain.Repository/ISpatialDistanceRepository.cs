@@ -11,5 +11,6 @@ namespace GRA.Domain.Repository
             SpatialDistanceHeader spatialHeader,
             List<SpatialDistanceDetail> detailList);
         Task InvalidateHeadersAsync(int siteId);
+        Task RemoveBranchReferencesAsync(int branchId);
     }
 }

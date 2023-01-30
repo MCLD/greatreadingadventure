@@ -72,11 +72,11 @@ namespace GRA.Data.Repository
             return branchList;
         }
 
-        public async Task<bool> IsInUseAsync(int branchId)
+        public async Task<int> IsInUseAsync(int branchId)
         {
             return await _context.Users
                 .AsNoTracking()
-                .AnyAsync(_ => !_.IsDeleted && _.BranchId == branchId);
+                .CountAsync(_ => !_.IsDeleted && _.BranchId == branchId);
         }
 
         public async Task<bool> ValidateAsync(int branchId, int systemId)

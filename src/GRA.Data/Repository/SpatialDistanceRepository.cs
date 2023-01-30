@@ -50,5 +50,12 @@ namespace GRA.Data.Repository
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task RemoveBranchReferencesAsync(int branchId)
+        {
+            _context.SpatialDistanceDetails
+                .RemoveRange(_context.SpatialDistanceDetails.Where(_ => _.BranchId == branchId));
+            await _context.SaveChangesAsync();
+        }
     }
 }

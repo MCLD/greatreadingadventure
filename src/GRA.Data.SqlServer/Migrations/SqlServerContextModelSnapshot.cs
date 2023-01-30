@@ -51,7 +51,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("Answers");
+                    b.ToTable("Answers", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Attachment", b =>
@@ -81,7 +81,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Attachments");
+                    b.ToTable("Attachments", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.AuditLog", b =>
@@ -120,7 +120,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AuditLogs");
+                    b.ToTable("AuditLogs", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.AuthorizationCode", b =>
@@ -161,7 +161,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AuthorizationCodes");
+                    b.ToTable("AuthorizationCodes", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.AvatarBundle", b =>
@@ -197,7 +197,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AvatarBundles");
+                    b.ToTable("AvatarBundles", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.AvatarBundleItem", b =>
@@ -212,7 +212,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("AvatarItemId");
 
-                    b.ToTable("AvatarBundleItems");
+                    b.ToTable("AvatarBundleItems", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.AvatarColor", b =>
@@ -244,7 +244,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("AvatarLayerId");
 
-                    b.ToTable("AvatarColors");
+                    b.ToTable("AvatarColors", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.AvatarElement", b =>
@@ -278,7 +278,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("AvatarItemId");
 
-                    b.ToTable("AvatarElements");
+                    b.ToTable("AvatarElements", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.AvatarItem", b =>
@@ -317,7 +317,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("AvatarLayerId");
 
-                    b.ToTable("AvatarItems");
+                    b.ToTable("AvatarItems", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.AvatarLayer", b =>
@@ -370,7 +370,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AvatarLayers");
+                    b.ToTable("AvatarLayers", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.AvatarLayerText", b =>
@@ -394,7 +394,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("LanguageId");
 
-                    b.ToTable("AvatarLayerTexts");
+                    b.ToTable("AvatarLayerTexts", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Badge", b =>
@@ -424,7 +424,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Badges");
+                    b.ToTable("Badges", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Book", b =>
@@ -463,7 +463,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Books");
+                    b.ToTable("Books", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Branch", b =>
@@ -509,7 +509,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("SystemId");
 
-                    b.ToTable("Branches");
+                    b.ToTable("Branches", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Broadcast", b =>
@@ -547,7 +547,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Broadcasts");
+                    b.ToTable("Broadcasts", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Carousel", b =>
@@ -584,7 +584,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Carousels");
+                    b.ToTable("Carousels", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.CarouselItem", b =>
@@ -623,7 +623,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CarouselItems");
+                    b.ToTable("CarouselItems", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Category", b =>
@@ -658,7 +658,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Challenge", b =>
@@ -727,7 +727,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("SiteId");
 
-                    b.ToTable("Challenges");
+                    b.ToTable("Challenges", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.ChallengeCategory", b =>
@@ -748,7 +748,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("ChallengeCategories");
+                    b.ToTable("ChallengeCategories", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.ChallengeGroup", b =>
@@ -785,7 +785,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ChallengeGroups");
+                    b.ToTable("ChallengeGroups", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.ChallengeGroupChallenge", b =>
@@ -806,7 +806,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("ChallengeId");
 
-                    b.ToTable("ChallengeGroupChallenges");
+                    b.ToTable("ChallengeGroupChallenges", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.ChallengeTask", b =>
@@ -856,7 +856,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("ChallengeId");
 
-                    b.ToTable("ChallengeTasks");
+                    b.ToTable("ChallengeTasks", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.ChallengeTaskType", b =>
@@ -886,7 +886,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ChallengeTaskTypes");
+                    b.ToTable("ChallengeTaskTypes", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.DailyLiteracyTip", b =>
@@ -921,7 +921,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DailyLiteracyTip");
+                    b.ToTable("DailyLiteracyTip", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.DailyLiteracyTipImage", b =>
@@ -958,7 +958,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("DailyLiteracyTipId");
 
-                    b.ToTable("DailyLiteracyTipImage");
+                    b.ToTable("DailyLiteracyTipImage", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.DashboardContent", b =>
@@ -986,7 +986,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DashboardContents");
+                    b.ToTable("DashboardContents", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.DirectEmailHistory", b =>
@@ -1060,7 +1060,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("DirectEmailHistories");
+                    b.ToTable("DirectEmailHistories", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.DirectEmailTemplate", b =>
@@ -1099,7 +1099,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("EmailBaseId");
 
-                    b.ToTable("DirectEmailTemplates");
+                    b.ToTable("DirectEmailTemplates", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.DirectEmailTemplateText", b =>
@@ -1143,7 +1143,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("LanguageId");
 
-                    b.ToTable("DirectEmailTemplateTexts");
+                    b.ToTable("DirectEmailTemplateTexts", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Drawing", b =>
@@ -1196,7 +1196,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("DrawingCriterionId");
 
-                    b.ToTable("Drawings");
+                    b.ToTable("Drawings", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.DrawingCriterion", b =>
@@ -1263,7 +1263,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("SystemId");
 
-                    b.ToTable("DrawingCriteria");
+                    b.ToTable("DrawingCriteria", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.DrawingCriterionProgram", b =>
@@ -1276,7 +1276,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("DrawingCriterionId", "ProgramId");
 
-                    b.ToTable("DrawingCriterionPrograms");
+                    b.ToTable("DrawingCriterionPrograms", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.EmailBase", b =>
@@ -1303,7 +1303,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EmailBases");
+                    b.ToTable("EmailBases", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.EmailBaseText", b =>
@@ -1333,7 +1333,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("LanguageId");
 
-                    b.ToTable("EmailBaseTexts");
+                    b.ToTable("EmailBaseTexts", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.EmailReminder", b =>
@@ -1369,7 +1369,7 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasIndex("Email", "SignUpSource")
                         .IsUnique();
 
-                    b.ToTable("EmailReminders");
+                    b.ToTable("EmailReminders", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.EmailSubscriptionAuditLog", b =>
@@ -1399,7 +1399,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("CreatedBy");
 
-                    b.ToTable("EmailSubscriptionAuditLogs");
+                    b.ToTable("EmailSubscriptionAuditLogs", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Event", b =>
@@ -1497,7 +1497,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("ChallengeId");
 
-                    b.ToTable("Events");
+                    b.ToTable("Events", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.FeaturedChallengeGroup", b =>
@@ -1538,7 +1538,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("ChallengeGroupId");
 
-                    b.ToTable("FeaturedChallengeGroups");
+                    b.ToTable("FeaturedChallengeGroups", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.FeaturedChallengeGroupText", b =>
@@ -1563,7 +1563,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("LanguageId");
 
-                    b.ToTable("FeaturedChallengeGroupTexts");
+                    b.ToTable("FeaturedChallengeGroupTexts", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.GroupInfo", b =>
@@ -1597,7 +1597,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("GroupInfos");
+                    b.ToTable("GroupInfos", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.GroupType", b =>
@@ -1624,7 +1624,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("GroupTypes");
+                    b.ToTable("GroupTypes", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Job", b =>
@@ -1674,7 +1674,7 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasIndex("JobToken")
                         .IsUnique();
 
-                    b.ToTable("Jobs");
+                    b.ToTable("Jobs", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Language", b =>
@@ -1707,7 +1707,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Languages");
+                    b.ToTable("Languages", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Location", b =>
@@ -1751,7 +1751,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Locations");
+                    b.ToTable("Locations", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Mail", b =>
@@ -1818,7 +1818,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("ToUserId", "IsDeleted", "IsNew");
 
-                    b.ToTable("Mails");
+                    b.ToTable("Mails", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.NewsCategory", b =>
@@ -1851,7 +1851,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("NewsCateories");
+                    b.ToTable("NewsCateories", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.NewsPost", b =>
@@ -1891,7 +1891,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("NewsPosts");
+                    b.ToTable("NewsPosts", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Notification", b =>
@@ -1944,7 +1944,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Page", b =>
@@ -1997,7 +1997,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("PageHeaderId");
 
-                    b.ToTable("Pages");
+                    b.ToTable("Pages", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PageHeader", b =>
@@ -2031,7 +2031,7 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasIndex("SiteId", "Stub")
                         .IsUnique();
 
-                    b.ToTable("PageHeaders");
+                    b.ToTable("PageHeaders", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Permission", b =>
@@ -2055,7 +2055,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Permissions");
+                    b.ToTable("Permissions", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PointTranslation", b =>
@@ -2109,7 +2109,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PointTranslations");
+                    b.ToTable("PointTranslations", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PrizeWinner", b =>
@@ -2170,7 +2170,7 @@ namespace GRA.Data.SqlServer.Migrations
                         .IsUnique()
                         .HasFilter("[DrawingId] IS NOT NULL AND [RedeemedAt] IS NOT NULL");
 
-                    b.ToTable("PrizeWinners");
+                    b.ToTable("PrizeWinners", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Program", b =>
@@ -2247,7 +2247,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("SiteId");
 
-                    b.ToTable("Programs");
+                    b.ToTable("Programs", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsAgeGroup", b =>
@@ -2276,7 +2276,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PsAgeGroups");
+                    b.ToTable("PsAgeGroups", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsBackToBack", b =>
@@ -2291,7 +2291,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("BranchId");
 
-                    b.ToTable("PsBackToBack");
+                    b.ToTable("PsBackToBack", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsBlackoutDate", b =>
@@ -2317,7 +2317,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PsBlackoutDates");
+                    b.ToTable("PsBlackoutDates", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsBranchSelection", b =>
@@ -2383,7 +2383,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("PsBranchSelections");
+                    b.ToTable("PsBranchSelections", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsExcludeBranch", b =>
@@ -2393,7 +2393,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("BranchId");
 
-                    b.ToTable("PsExcludeBranches");
+                    b.ToTable("PsExcludeBranches", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsKit", b =>
@@ -2426,7 +2426,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PsKits");
+                    b.ToTable("PsKits", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsKitAgeGroup", b =>
@@ -2441,7 +2441,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("AgeGroupId");
 
-                    b.ToTable("PsKitAgeGroups");
+                    b.ToTable("PsKitAgeGroups", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsKitImage", b =>
@@ -2469,7 +2469,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("KitId");
 
-                    b.ToTable("PsKitImages");
+                    b.ToTable("PsKitImages", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsPerformer", b =>
@@ -2544,7 +2544,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("PsPerformers");
+                    b.ToTable("PsPerformers", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsPerformerBranch", b =>
@@ -2559,7 +2559,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("BranchId");
 
-                    b.ToTable("PsPerformerBranches");
+                    b.ToTable("PsPerformerBranches", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsPerformerImage", b =>
@@ -2587,7 +2587,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("PerformerId");
 
-                    b.ToTable("PsPerformerImages");
+                    b.ToTable("PsPerformerImages", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsPerformerSchedule", b =>
@@ -2620,7 +2620,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("PerformerId");
 
-                    b.ToTable("PsPerformerSchedules");
+                    b.ToTable("PsPerformerSchedules", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsProgram", b =>
@@ -2686,7 +2686,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("PerformerId");
 
-                    b.ToTable("PsPrograms");
+                    b.ToTable("PsPrograms", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsProgramAgeGroup", b =>
@@ -2701,7 +2701,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("AgeGroupId");
 
-                    b.ToTable("PsProgramAgeGroups");
+                    b.ToTable("PsProgramAgeGroups", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsProgramImage", b =>
@@ -2729,7 +2729,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("ProgramId");
 
-                    b.ToTable("PsProgramImages");
+                    b.ToTable("PsProgramImages", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsSettings", b =>
@@ -2800,7 +2800,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("SiteId");
 
-                    b.ToTable("PsSettings");
+                    b.ToTable("PsSettings", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Question", b =>
@@ -2842,7 +2842,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("QuestionnaireId");
 
-                    b.ToTable("Questions");
+                    b.ToTable("Questions", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Questionnaire", b =>
@@ -2892,7 +2892,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Questionnaires");
+                    b.ToTable("Questionnaires", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.RecoveryToken", b =>
@@ -2919,7 +2919,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RecoveryTokens");
+                    b.ToTable("RecoveryTokens", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.ReportCriterion", b =>
@@ -2987,7 +2987,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ReportCriteria");
+                    b.ToTable("ReportCriteria", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.ReportRequest", b =>
@@ -3035,7 +3035,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ReportRequests");
+                    b.ToTable("ReportRequests", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.RequiredQuestionnaire", b =>
@@ -3072,7 +3072,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RequiredQuestionnaires");
+                    b.ToTable("RequiredQuestionnaires", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Role", b =>
@@ -3099,7 +3099,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.RolePermission", b =>
@@ -3120,7 +3120,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("PermissionId");
 
-                    b.ToTable("RolePermissions");
+                    b.ToTable("RolePermissions", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.School", b =>
@@ -3152,7 +3152,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("SchoolDistrictId");
 
-                    b.ToTable("Schools");
+                    b.ToTable("Schools", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.SchoolDistrict", b =>
@@ -3179,7 +3179,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SchoolDistricts");
+                    b.ToTable("SchoolDistricts", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Site", b =>
@@ -3322,7 +3322,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sites");
+                    b.ToTable("Sites", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.SiteSetting", b =>
@@ -3353,7 +3353,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SiteSettings");
+                    b.ToTable("SiteSettings", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Social", b =>
@@ -3398,7 +3398,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("LanguageId");
 
-                    b.ToTable("Socials");
+                    b.ToTable("Socials", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.SocialHeader", b =>
@@ -3428,7 +3428,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SocialHeaders");
+                    b.ToTable("SocialHeaders", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.SpatialDistanceDetail", b =>
@@ -3459,7 +3459,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("SpatialDistanceHeaderId");
 
-                    b.ToTable("SpatialDistanceDetails");
+                    b.ToTable("SpatialDistanceDetails", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.SpatialDistanceHeader", b =>
@@ -3488,7 +3488,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SpatialDistanceHeaders");
+                    b.ToTable("SpatialDistanceHeaders", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.System", b =>
@@ -3517,7 +3517,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("SiteId");
 
-                    b.ToTable("Systems");
+                    b.ToTable("Systems", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Trigger", b =>
@@ -3625,7 +3625,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("LimitToSystemId");
 
-                    b.ToTable("Triggers");
+                    b.ToTable("Triggers", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.TriggerBadge", b =>
@@ -3640,7 +3640,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("BadgeId");
 
-                    b.ToTable("TriggerBadges");
+                    b.ToTable("TriggerBadges", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.TriggerChallenge", b =>
@@ -3655,7 +3655,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("ChallengeId");
 
-                    b.ToTable("TriggerChallenges");
+                    b.ToTable("TriggerChallenges", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.User", b =>
@@ -3806,7 +3806,7 @@ namespace GRA.Data.SqlServer.Migrations
                         .IsUnique()
                         .HasFilter("[HouseholdHeadUserId] IS NOT NULL");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserAnswer", b =>
@@ -3824,7 +3824,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("AnswerId");
 
-                    b.ToTable("UserAnswers");
+                    b.ToTable("UserAnswers", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserAvatar", b =>
@@ -3839,7 +3839,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("AvatarElementId");
 
-                    b.ToTable("UserAvatars");
+                    b.ToTable("UserAvatars", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserAvatarItem", b =>
@@ -3854,7 +3854,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("AvatarItemId");
 
-                    b.ToTable("UserAvatarItems");
+                    b.ToTable("UserAvatarItems", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserBadge", b =>
@@ -3872,7 +3872,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("BadgeId");
 
-                    b.ToTable("UserBadges");
+                    b.ToTable("UserBadges", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserBook", b =>
@@ -3893,7 +3893,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("BookId");
 
-                    b.ToTable("UserBooks");
+                    b.ToTable("UserBooks", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserChallengeTask", b =>
@@ -3920,7 +3920,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("ChallengeTaskId");
 
-                    b.ToTable("UserChallengeTasks");
+                    b.ToTable("UserChallengeTasks", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserFavoriteChallenge", b =>
@@ -3941,7 +3941,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("ChallengeId");
 
-                    b.ToTable("UserFavoriteChallenges");
+                    b.ToTable("UserFavoriteChallenges", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserFavoriteEvent", b =>
@@ -3962,7 +3962,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("EventId");
 
-                    b.ToTable("UserFavoriteEvents");
+                    b.ToTable("UserFavoriteEvents", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserLog", b =>
@@ -4032,7 +4032,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("UserId", "IsDeleted", "PointTranslationId", "ActivityEarned");
 
-                    b.ToTable("UserLogs");
+                    b.ToTable("UserLogs", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserQuestionnaire", b =>
@@ -4050,7 +4050,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("QuestionnaireId");
 
-                    b.ToTable("UserQuestionnaires");
+                    b.ToTable("UserQuestionnaires", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserRole", b =>
@@ -4071,7 +4071,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UserRoles");
+                    b.ToTable("UserRoles", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserTrigger", b =>
@@ -4089,7 +4089,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("TriggerId");
 
-                    b.ToTable("UserTriggers");
+                    b.ToTable("UserTriggers", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.VendorCode", b =>
@@ -4182,7 +4182,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("VendorCodeTypeId");
 
-                    b.ToTable("VendorCodes");
+                    b.ToTable("VendorCodes", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.VendorCodePackingSlip", b =>
@@ -4210,7 +4210,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VendorCodePackingSlips");
+                    b.ToTable("VendorCodePackingSlips", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.VendorCodeType", b =>
@@ -4297,7 +4297,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("SiteId");
 
-                    b.ToTable("VendorCodeTypes");
+                    b.ToTable("VendorCodeTypes", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.VendorCodeTypeText", b =>
@@ -4316,7 +4316,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("VendorCodeTypeId");
 
-                    b.ToTable("VendorCodeTypeTexts");
+                    b.ToTable("VendorCodeTypeTexts", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey", b =>
@@ -4335,7 +4335,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DataProtectionKeys");
+                    b.ToTable("DataProtectionKeys", (string)null);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Answer", b =>

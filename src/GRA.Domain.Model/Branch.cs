@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -30,5 +31,8 @@ namespace GRA.Domain.Model
         public string SystemName { get; set; }
 
         public ICollection<PsBranchSelection> Selections { get; set; }
+
+        public int? DeletedBy { get; set; }
+        public DateTime? DeletedAt { get; set; }
     }
 }

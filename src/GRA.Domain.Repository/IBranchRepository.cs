@@ -11,7 +11,7 @@ namespace GRA.Domain.Repository
         Task<IEnumerable<Branch>> GetBySystemAsync(int systemId);
         Task<ICollection<Branch>> PageAsync(BaseFilter filter);
         Task<int> CountAsync(BaseFilter filter);
-        Task<bool> IsInUseAsync(int branchId);
+        Task<int> IsInUseAsync(int branchId);
 
         Task<bool> ValidateAsync(int branchId, int systemId);
         Task<bool> ValidateBySiteAsync(int branchId, int siteId);

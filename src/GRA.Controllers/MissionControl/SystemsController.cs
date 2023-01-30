@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -22,28 +23,31 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ManageSystems)]
     public class SystemsController : Base.MCController
     {
-        private readonly ILogger<SystemsController> _logger;
         private readonly BranchImportExportService _branchImportExportService;
+        private readonly ILogger<SystemsController> _logger;
+        private readonly JobService _jobService;
         private readonly SiteService _siteService;
         private readonly SpatialService _spatialService;
-        private readonly JobService _jobService;
+        private readonly UserService _userService;
 
         public const string Name = "Systems";
 
-        public SystemsController(ILogger<SystemsController> logger,
-            ServiceFacade.Controller context,
-            BranchImportExportService branchImportExportService,
+        public SystemsController(BranchImportExportService branchImportExportService,
+            ILogger<SystemsController> logger,
             JobService jobService,
+            ServiceFacade.Controller context,
             SiteService siteService,
-            SpatialService spatialService) : base(context)
+            SpatialService spatialService,
+            UserService userService) : base(context)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _branchImportExportService = branchImportExportService
                 ?? throw new ArgumentNullException(nameof(branchImportExportService));
             _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             _spatialService = spatialService
                 ?? throw new ArgumentNullException(nameof(spatialService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = "System & branch management";
         }
 
@@ -259,19 +263,66 @@ namespace GRA.Controllers.MissionControl
             return RedirectToAction("Branches", new { search = model?.Search });
         }
 
-        [HttpPost]
-        public async Task<IActionResult> DeleteBranch(int id, string search)
+        [HttpGet]
+        public async Task<IActionResult> RemoveBranch(int id)
         {
+            var branchList = new Dictionary<string, int>();
+            foreach (var system in await _siteService.GetSystemList())
+            {
+                foreach (var branch in await _siteService.GetBranches(system.Id))
+                {
+                    if (branch.Id != id)
+                    {
+                        branchList.Add($"{system.Name} - {branch.Name}", branch.Id);
+                    }
+                }
+            }
+
+            return View(new RemoveBranchViewModel
+            {
+                Branch = await _siteService.GetBranchByIdAsync(id),
+                BranchList = new SelectList(branchList, "Value", "Key"),
+                InUseCount = await _siteService.GetBranchInUseAsync(id),
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveBranch(RemoveBranchViewModel removeBranchViewModel)
+        {
+            int reassigned = 0;
+            string newBranchName = null;
             try
             {
-                await _siteService.RemoveBranchAsync(id);
-                AlertSuccess = "Branch removed";
+                if (removeBranchViewModel?.ReassignBranch.HasValue == true)
+                {
+                    reassigned = await _userService.ReassignBranchAsync(
+                        removeBranchViewModel.BranchId,
+                        removeBranchViewModel.ReassignBranch.Value);
+                    newBranchName = await _siteService
+                        .GetBranchName(removeBranchViewModel.ReassignBranch.Value);
+                }
+                await _siteService.RemoveBranchAsync(removeBranchViewModel.BranchId);
+                AlertSuccess = reassigned > 0
+                    ? $"Branch removed, {reassigned} users reassigned to {newBranchName}"
+                    : "Branch removed";
             }
             catch (GraException gex)
             {
-                ShowAlertDanger("Unable to delete Branch: ", gex);
+                if (reassigned > 0)
+                {
+                    Exception reportingException = gex;
+                    while (reportingException.InnerException != null)
+                    {
+                        reportingException = reportingException.InnerException;
+                    }
+                    ShowAlertDanger($"{reassigned} users reassigned to {newBranchName} but branch could not be removed: {reportingException.Message}");
+                }
+                else
+                {
+                    ShowAlertDanger("There was an error removing the branch: ", gex);
+                }
             }
-            return RedirectToAction("Branches", new { search });
+            return RedirectToAction(nameof(Branches));
         }
 
         [HttpPost]
