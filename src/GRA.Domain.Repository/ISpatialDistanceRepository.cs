@@ -6,10 +6,14 @@ namespace GRA.Domain.Repository
 {
     public interface ISpatialDistanceRepository : IRepository<Model.SpatialDistanceHeader>
     {
-        Task<int?> GetIdByGeolocationAsync(int siteId, string geolocation);
         Task<SpatialDistanceHeader> AddHeaderWithDetailsListAsync(
             SpatialDistanceHeader spatialHeader,
             List<SpatialDistanceDetail> detailList);
+
+        Task<int?> GetIdByGeolocationAsync(int siteId, string geolocation);
+
         Task InvalidateHeadersAsync(int siteId);
+
+        Task RemoveBranchReferencesAsync(int branchId);
     }
 }
