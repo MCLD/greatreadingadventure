@@ -211,6 +211,7 @@ namespace GRA.Data.Repository
                 .Select(_ => _.Id)
                 .ToListAsync();
         }
+
         public async Task<ICollection<User>> GetHouseholdUsersWithAvailablePrizeAsync(
             int headId, int? drawingId, int? triggerId)
         {
@@ -519,6 +520,27 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
+        public async Task<int> ReassignBranchAsync(int oldBranchId, int newBranchId)
+        {
+            int reassignedCount = 0;
+            var reassignTimer = Stopwatch.StartNew();
+            var userList = DbSet.Where(_ => _.BranchId == oldBranchId);
+            foreach (var user in userList)
+            {
+                user.BranchId = newBranchId;
+                reassignedCount++;
+            }
+            DbSet.UpdateRange(userList);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Reassigned {UserCount} users from branch id {OldBranchId} to branch id {NewBranchId} in {ElapsedMs} ms",
+                reassignedCount,
+                oldBranchId,
+                newBranchId,
+                reassignTimer.ElapsedMilliseconds);
+            reassignTimer.Stop();
+            return reassignedCount;
+        }
+
         public async Task SetUserPasswordAsync(int currentUserId, int userId, string password)
         {
             var user = DbSet.Find(userId);
@@ -565,27 +587,6 @@ namespace GRA.Data.Repository
             return await DbSet.AsNoTracking()
                 .Where(_ => _.SiteId == siteId && _.Username == username && !_.IsDeleted)
                 .AnyAsync();
-        }
-
-        public async Task<int> ReassignBranchAsync(int oldBranchId, int newBranchId)
-        {
-            int reassignedCount = 0;
-            var reassignTimer = Stopwatch.StartNew();
-            var userList = DbSet.Where(_ => _.BranchId == oldBranchId);
-            foreach (var user in userList)
-            {
-                user.BranchId = newBranchId;
-                reassignedCount++;
-            }
-            DbSet.UpdateRange(userList);
-            await _context.SaveChangesAsync();
-            _logger.LogInformation("Reassigned {UserCount} users from branch id {OldBranchId} to branch id {NewBranchId} in {ElapsedMs} ms",
-                reassignedCount,
-                oldBranchId,
-                newBranchId,
-                reassignTimer.ElapsedMilliseconds);
-            reassignTimer.Stop();
-            return reassignedCount;
         }
 
         private IQueryable<Model.User> ApplyUserFilter(UserFilter filter)

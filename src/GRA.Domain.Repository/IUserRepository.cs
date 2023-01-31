@@ -74,6 +74,8 @@ namespace GRA.Domain.Repository
             int skip,
             int take);
 
+        Task<int> ReassignBranchAsync(int oldBranch, int newBranch);
+
         Task SetUserPasswordAsync(int currentUserId, int userId, string password);
 
         Task<bool> UnsubscribeTokenExists(int siteId, string token);
@@ -84,6 +86,5 @@ namespace GRA.Domain.Repository
             IEnumerable<int> rolesToRemove);
 
         Task<bool> UsernameInUseAsync(int siteId, string username);
-        Task<int> ReassignBranchAsync( int oldBranch, int newBranch);
     }
 }

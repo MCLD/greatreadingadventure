@@ -1281,6 +1281,11 @@ namespace GRA.Domain.Service
             await _userRepository.SaveAsync();
         }
 
+        public async Task<int> ReassignBranchAsync(int oldBranch, int newBranch)
+        {
+            return await _userRepository.ReassignBranchAsync(oldBranch, newBranch);
+        }
+
         public async Task RegisterHouseholdMemberAsync(User memberToRegister, string password)
         {
             VerifyCanRegister();
@@ -1683,11 +1688,6 @@ namespace GRA.Domain.Service
             }
 
             return false;
-        }
-        
-        public async Task<int> ReassignBranchAsync(int oldBranch, int newBranch)
-        {
-            return await _userRepository.ReassignBranchAsync(oldBranch, newBranch); 
         }
 
         private async Task AwardMissingJoinBadgeAsync(int userId, bool awardHousehold)

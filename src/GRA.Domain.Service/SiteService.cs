@@ -132,11 +132,6 @@ namespace GRA.Domain.Service
             return await _branchRepository.GetByIdAsync(branchId);
         }
 
-        public async Task<int> GetBranchInUseAsync(int branchId)
-        {
-            return await _branchRepository.IsInUseAsync(branchId);
-        }
-
         public async Task<IEnumerable<Branch>> GetBranches(int systemId,
             bool prioritizeUserBranch = false)
         {
@@ -148,6 +143,11 @@ namespace GRA.Domain.Service
                     .ThenBy(_ => _.Name);
             }
             return branchList;
+        }
+
+        public async Task<int> GetBranchInUseAsync(int branchId)
+        {
+            return await _branchRepository.IsInUseAsync(branchId);
         }
 
         public async Task<string> GetBranchName(int branchId)

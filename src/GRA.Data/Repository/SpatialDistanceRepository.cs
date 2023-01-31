@@ -16,14 +16,6 @@ namespace GRA.Data.Repository
             ILogger<SpatialDistanceRepository> logger)
             : base(repositoryFacade, logger) { }
 
-        public async Task<int?> GetIdByGeolocationAsync(int siteId, string geolocation)
-        {
-            return await DbSet.AsNoTracking()
-                .Where(_ => _.SiteId == siteId && _.Geolocation == geolocation && _.IsValid)
-                .Select(_ => (int?)_.Id)
-                .FirstOrDefaultAsync();
-        }
-
         public async Task<SpatialDistanceHeader> AddHeaderWithDetailsListAsync(
             SpatialDistanceHeader spatialHeader,
             List<SpatialDistanceDetail> detailList)
@@ -40,6 +32,14 @@ namespace GRA.Data.Repository
             await _context.SaveChangesAsync();
 
             return _mapper.Map<Model.SpatialDistanceHeader, SpatialDistanceHeader>(dbHeader);
+        }
+
+        public async Task<int?> GetIdByGeolocationAsync(int siteId, string geolocation)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.SiteId == siteId && _.Geolocation == geolocation && _.IsValid)
+                .Select(_ => (int?)_.Id)
+                .FirstOrDefaultAsync();
         }
 
         public async Task InvalidateHeadersAsync(int siteId)
