@@ -19,8 +19,14 @@ namespace GRA.Data.Repository
         {
         }
 
+        public async Task<int> CountAsync(BaseFilter filter)
+        {
+            return await ApplyFilters(filter)
+                .CountAsync();
+        }
+
         public async Task<IEnumerable<Branch>> GetAllAsync(int siteId,
-            bool requireGeolocation = false)
+                    bool requireGeolocation = false)
         {
             return await DbSet
                 .AsNoTracking()
@@ -42,10 +48,11 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task<int> CountAsync(BaseFilter filter)
+        public async Task<int> IsInUseAsync(int branchId)
         {
-            return await ApplyFilters(filter)
-                .CountAsync();
+            return await _context.Users
+                .AsNoTracking()
+                .CountAsync(_ => !_.IsDeleted && _.BranchId == branchId);
         }
 
         public async Task<ICollection<Branch>> PageAsync(BaseFilter filter)
@@ -57,26 +64,16 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        private IQueryable<Model.Branch> ApplyFilters(BaseFilter filter)
+        public async Task UpdateCreatedByAsync(int userId, int branchId)
         {
-            var branchList = DbSet
-                .AsNoTracking()
-                .Where(_ => _.System.SiteId == filter.SiteId);
-
-            if (!string.IsNullOrWhiteSpace(filter.Search))
+            var branch = DbSet.Where(_ => _.Id == branchId).SingleOrDefault();
+            if (branch != null
+                && branch.CreatedBy == Defaults.InitialInsertUserId)
             {
-                branchList = branchList.Where(_ => _.Name.Contains(filter.Search)
-                || _.System.Name.Contains(filter.Search));
+                branch.CreatedBy = userId;
+                DbSet.Update(branch);
+                await _context.SaveChangesAsync();
             }
-
-            return branchList;
-        }
-
-        public async Task<bool> IsInUseAsync(int branchId)
-        {
-            return await _context.Users
-                .AsNoTracking()
-                .AnyAsync(_ => !_.IsDeleted && _.BranchId == branchId);
         }
 
         public async Task<bool> ValidateAsync(int branchId, int systemId)
@@ -95,16 +92,19 @@ namespace GRA.Data.Repository
                 .AnyAsync();
         }
 
-        public async Task UpdateCreatedByAsync(int userId, int branchId)
+        private IQueryable<Model.Branch> ApplyFilters(BaseFilter filter)
         {
-            var branch = DbSet.Where(_ => _.Id == branchId).SingleOrDefault();
-            if (branch != null
-                && branch.CreatedBy == Defaults.InitialInsertUserId)
+            var branchList = DbSet
+                .AsNoTracking()
+                .Where(_ => _.System.SiteId == filter.SiteId);
+
+            if (!string.IsNullOrWhiteSpace(filter.Search))
             {
-                branch.CreatedBy = userId;
-                DbSet.Update(branch);
-                await _context.SaveChangesAsync();
+                branchList = branchList.Where(_ => _.Name.Contains(filter.Search)
+                || _.System.Name.Contains(filter.Search));
             }
+
+            return branchList;
         }
     }
 }

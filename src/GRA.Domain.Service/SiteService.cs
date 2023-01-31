@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -144,6 +145,11 @@ namespace GRA.Domain.Service
             return branchList;
         }
 
+        public async Task<int> GetBranchInUseAsync(int branchId)
+        {
+            return await _branchRepository.IsInUseAsync(branchId);
+        }
+
         public async Task<string> GetBranchName(int branchId)
         {
             var branch = await _branchRepository.GetByIdAsync(branchId);
@@ -270,21 +276,42 @@ namespace GRA.Domain.Service
 
         public async Task RemoveBranchAsync(int branchId)
         {
-            VerifyPermission(Permission.ManageSystems);
-            if (!await _branchRepository.ValidateBySiteAsync(branchId, GetCurrentSiteId()))
+            var branchRemoveTimer = Stopwatch.StartNew();
+            try
             {
-                throw new GraException($"Permission denied - branch belongs to a different site.");
+                VerifyPermission(Permission.ManageSystems);
+                if (!await _branchRepository.ValidateBySiteAsync(branchId, GetCurrentSiteId()))
+                {
+                    throw new GraException("Permission denied - branch belongs to a different site.");
+                }
+                var branch = await _branchRepository.GetByIdAsync(branchId);
+                var inUseFor = await _branchRepository.IsInUseAsync(branchId);
+                if (inUseFor > 0)
+                {
+                    throw new GraException($"Users currently have branch {branch.Name} selected.");
+                }
+                if (!string.IsNullOrWhiteSpace(branch.Geolocation))
+                {
+                    await _spatialDistanceRepository.RemoveBranchReferencesAsync(branchId);
+                    await _spatialDistanceRepository.InvalidateHeadersAsync(GetCurrentSiteId());
+                }
+                await _branchRepository.RemoveSaveAsync(GetActiveUserId(), branchId);
+                _logger.LogInformation("Removed branch id {BranchId} after {ElapsedMs} ms",
+                    branchId,
+                    branchRemoveTimer.ElapsedMilliseconds);
             }
-            var branch = await _branchRepository.GetByIdAsync(branchId);
-            if (await _branchRepository.IsInUseAsync(branchId))
+            catch (Exception ex)
             {
-                throw new GraException($"Users currently have branch {branch.Name} selected.");
-            }
-            await _branchRepository.RemoveSaveAsync(GetActiveUserId(), branchId);
+                _logger.LogInformation("Error removing branch id {BranchId} after {ElapsedMs} ms {ErrorMessage}",
+                    branchId,
+                    branchRemoveTimer.ElapsedMilliseconds,
+                    ex.Message);
 
-            if (!string.IsNullOrWhiteSpace(branch.Geolocation))
+                throw;
+            }
+            finally
             {
-                await _spatialDistanceRepository.InvalidateHeadersAsync(GetCurrentSiteId());
+                branchRemoveTimer.Stop();
             }
         }
 
