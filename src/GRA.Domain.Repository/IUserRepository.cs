@@ -38,6 +38,8 @@ namespace GRA.Domain.Repository
 
         Task<int> GetHouseholdCountAsync(int householdHeadUserId);
 
+        Task<IEnumerable<int>> GetHouseHoldUserIdsAsync(int householdHeadUserId);
+
         Task<ICollection<User>> GetHouseholdUsersWithAvailablePrizeAsync(
             int headId, int? drawingId, int? triggerId);
 
@@ -71,6 +73,8 @@ namespace GRA.Domain.Repository
             int householdHeadUserId,
             int skip,
             int take);
+
+        Task<int> ReassignBranchAsync(int oldBranch, int newBranch);
 
         Task SetUserPasswordAsync(int currentUserId, int userId, string password);
 

@@ -8,7 +8,7 @@
 <div class="participating-libraries">
     @foreach (var system in Model.Systems)
     {
-        <h2 class="h3 system">@system.Name</h2>
+        <h2 id="@Html.GenerateIdFromName(system.Name)" class="h3 system">@system.Name</h2>
         <ul class="library-list">
             @foreach (var branch in system.Branches)
             {

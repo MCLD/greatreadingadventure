@@ -659,6 +659,11 @@ namespace GRA.Domain.Service
             return household;
         }
 
+        public async Task<IEnumerable<int>> GetHouseholdUserIdsAsync(int headId)
+        {
+            return await _userRepository.GetHouseHoldUserIdsAsync(headId);
+        }
+
         public async Task<ICollection<User>> GetHouseholdUsersWithAvailablePrizeAsync(int headId,
             int? drawingId, int? triggerId)
         {
@@ -1276,6 +1281,11 @@ namespace GRA.Domain.Service
             await _userRepository.SaveAsync();
         }
 
+        public async Task<int> ReassignBranchAsync(int oldBranch, int newBranch)
+        {
+            return await _userRepository.ReassignBranchAsync(oldBranch, newBranch);
+        }
+
         public async Task RegisterHouseholdMemberAsync(User memberToRegister, string password)
         {
             VerifyCanRegister();
@@ -1639,7 +1649,7 @@ namespace GRA.Domain.Service
 
         public async Task<bool> UsernameInUseAsync(string username)
         {
-            if(string.IsNullOrEmpty(username))
+            if (string.IsNullOrEmpty(username))
             {
                 return false;
             }

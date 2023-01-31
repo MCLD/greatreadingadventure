@@ -71,7 +71,117 @@ namespace GRA.Domain.Service
             return await _prizeWinnerRepository.AddSaveAsync(currentUserId, prizeWinner);
         }
 
-        public async Task RedeemPrizeAsync(int prizeWinnerId)
+        public async Task<List<PrizeCount>> GetHouseholdUnredeemedPrizesAsync(int headId)
+        {
+            VerifyManagementPermission();
+
+            return await _prizeWinnerRepository.GetHouseholdUnredeemedPrizesAsync(headId);
+        }
+
+        public async Task<PrizeWinner> GetPrizeForVendorCodeAsync(int vendorCodeId)
+        {
+            return await _prizeWinnerRepository.GetPrizeForVendorCodeAsync(vendorCodeId);
+        }
+
+        public async Task<PrizeWinner> GetUserDrawingPrizeAsync(int userId, int drawingId)
+        {
+            return await _prizeWinnerRepository.GetUserDrawingPrizeAsync(userId, drawingId);
+        }
+
+        public async Task<PrizeWinner> GetUserTriggerPrizeAsync(int userId, int triggerId)
+        {
+            return await _prizeWinnerRepository.GetUserTriggerPrizeAsync(userId, triggerId);
+        }
+
+        public async Task<int> GetUserWinCount(int userId, bool? redeemed = null)
+        {
+            VerifyManagementPermission();
+            return await _prizeWinnerRepository.CountByWinningUserId(GetCurrentSiteId(), userId,
+                redeemed);
+        }
+
+        public async Task<ICollection<PrizeWinner>> GetVendorCodePrizes(int userId)
+        {
+            return await _prizeWinnerRepository.GetVendorCodePrizesAsync(userId);
+        }
+
+        public async Task<DataWithCount<ICollection<PrizeWinner>>>
+            PageUserPrizes(ICollection<int> userIds, BaseFilter filter = default(BaseFilter))
+        {
+            int siteId = GetCurrentSiteId();
+            if (filter == null)
+            {
+                filter = new BaseFilter();
+            }
+
+            var prizes = await _prizeWinnerRepository
+                    .PageByWinnerAsync(siteId, userIds, (int)filter.Skip, (int)filter.Take);
+
+            foreach (var prize in prizes)
+            {
+                if (prize.DrawingId != null)
+                {
+                    var drawing = await _drawingRepository.GetByIdAsync((int)prize.DrawingId);
+
+                    var branch = await _branchRepository.GetByIdAsync(drawing.RelatedBranchId);
+
+                    prize.PrizeName = drawing.Name;
+                    prize.PrizeRedemptionInstructions = drawing.RedemptionInstructions;
+
+                    var drawingCritera = await _drawingCriterionRepository
+                        .GetByIdAsync(drawing.DrawingCriterionId);
+                    prize.AvailableAtBranch = drawingCritera.BranchName;
+                    prize.AvailableAtBranchUrl = branch.Url;
+                    prize.AvailableAtSystem = drawingCritera.SystemName;
+                }
+                else if (prize.TriggerId != null)
+                {
+                    var trigger = await _triggerRepository.GetByIdAsync((int)prize.TriggerId);
+                    Branch branch = null;
+
+                    if (trigger.LimitToBranchId.HasValue)
+                    {
+                        branch = await _branchRepository.GetByIdAsync(trigger.LimitToBranchId.Value);
+                    }
+
+                    prize.AvailableAtBranch = trigger.LimitToBranchName;
+                    prize.AvailableAtBranchUrl = branch?.Url;
+                    prize.AvailableAtSystem = trigger.LimitToSystemName;
+                    prize.PrizeName = trigger.AwardPrizeName;
+                    prize.PrizeRedemptionInstructions = trigger.AwardPrizeRedemptionInstructions;
+                }
+                else if (prize.VendorCodeId != null)
+                {
+                    var vendorCode = await _vendorCodeRepository
+                        .GetByIdAsync((int)prize.VendorCodeId);
+                    var vendorCodeType = await _vendorCodeTypeRepository
+                        .GetByIdAsync(vendorCode.VendorCodeTypeId);
+                    var branch = await _branchRepository.GetByIdAsync((int)vendorCode.BranchId);
+                    var system = await _systemRepository.GetByIdAsync(branch.SystemId);
+
+                    prize.PrizeName = $"{vendorCodeType.Description}: {vendorCode.Details}";
+                    prize.PrizeRedemptionInstructions = $"Give customer {vendorCode.Details} and click the green redemption button.";
+                    prize.AvailableAtBranch = branch.Name;
+                    prize.AvailableAtBranchUrl = branch.Url;
+                    prize.AvailableAtSystem = system.Name;
+                }
+            }
+
+            return new DataWithCount<ICollection<PrizeWinner>>
+            {
+                Data = prizes,
+                Count = await _prizeWinnerRepository.CountByWinningUserId(siteId, userIds)
+            };
+        }
+
+        public async Task<DataWithCount<ICollection<PrizeWinner>>> PageUserPrizes(int userId, BaseFilter filter)
+        {
+            VerifyManagementPermission();
+
+            return await PageUserPrizes(new[] { userId }, filter);
+        }
+
+        public async Task RedeemPrizeAsync(int prizeWinnerId, string staffNotes)
         {
             int authUserId = GetClaimId(ClaimType.UserId);
 
@@ -93,6 +203,7 @@ namespace GRA.Domain.Service
                     prize.RedeemedBy = authUserId;
                     prize.RedeemedByBranch = authUser.BranchId;
                     prize.RedeemedBySystem = authUser.SystemId;
+                    prize.StaffNotes = staffNotes;
 
                     await _prizeWinnerRepository.UpdateSaveAsync(authUserId, prize);
                 }
@@ -101,27 +212,6 @@ namespace GRA.Domain.Service
             {
                 _logger.LogError($"User {authUserId} doesn't have permission to redeem prize {prizeWinnerId}.");
                 throw new GraException("Permission denied.");
-            }
-        }
-
-        public async Task UndoRedemptionAsync(int prizeWinnerId)
-        {
-            VerifyManagementPermission();
-
-            int authUserId = GetClaimId(ClaimType.UserId);
-            var prize = await _prizeWinnerRepository.GetByIdAsync(prizeWinnerId);
-
-            if (!prize.RedeemedAt.HasValue)
-            {
-                _logger.LogError($"Prize not redeemed - undo attempt for {prizeWinnerId} by user {authUserId}");
-                throw new GraException("This prize has not been redeemed!");
-            }
-            else
-            {
-                prize.RedeemedAt = null;
-                prize.RedeemedBy = null;
-                await _prizeWinnerRepository.UpdateSaveAsync(authUserId, prize);
-                _logger.LogInformation($"User {authUserId} just undid redemption of prize id {prizeWinnerId} awarded to user {prize.UserId}");
             }
         }
 
@@ -153,96 +243,25 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<PrizeWinner> GetPrizeForVendorCodeAsync(int vendorCodeId)
-        {
-            return await _prizeWinnerRepository.GetPrizeForVendorCodeAsync(vendorCodeId);
-        }
-
-        public async Task<ICollection<PrizeWinner>> GetVendorCodePrizes(int userId)
-        {
-            return await _prizeWinnerRepository.GetVendorCodePrizesAsync(userId);
-        }
-
-        public async Task<DataWithCount<ICollection<PrizeWinner>>>
-            PageUserPrizes(int userId, BaseFilter filter = default(BaseFilter))
+        public async Task UndoRedemptionAsync(int prizeWinnerId)
         {
             VerifyManagementPermission();
 
-            int siteId = GetCurrentSiteId();
-            if (filter == null)
+            int authUserId = GetClaimId(ClaimType.UserId);
+            var prize = await _prizeWinnerRepository.GetByIdAsync(prizeWinnerId);
+
+            if (!prize.RedeemedAt.HasValue)
             {
-                filter = new BaseFilter();
+                _logger.LogError($"Prize not redeemed - undo attempt for {prizeWinnerId} by user {authUserId}");
+                throw new GraException("This prize has not been redeemed!");
             }
-
-            var prizes = await _prizeWinnerRepository
-                    .PageByWinnerAsync(siteId, userId, (int)filter.Skip, (int)filter.Take);
-
-            foreach (var prize in prizes)
+            else
             {
-                if (prize.DrawingId != null)
-                {
-                    var drawing = await _drawingRepository.GetByIdAsync((int)prize.DrawingId);
-                    prize.PrizeName = drawing.Name;
-                    prize.PrizeRedemptionInstructions = drawing.RedemptionInstructions;
-
-                    var drawingCritera = await _drawingCriterionRepository
-                        .GetByIdAsync(drawing.DrawingCriterionId);
-                    prize.AvailableAtBranch = drawingCritera.BranchName;
-                    prize.AvailableAtSystem = drawingCritera.SystemName;
-                }
-                else if (prize.TriggerId != null)
-                {
-                    var trigger = await _triggerRepository.GetByIdAsync((int)prize.TriggerId);
-                    prize.AvailableAtBranch = trigger.LimitToBranchName;
-                    prize.AvailableAtSystem = trigger.LimitToSystemName;
-                    prize.PrizeName = trigger.AwardPrizeName;
-                    prize.PrizeRedemptionInstructions = trigger.AwardPrizeRedemptionInstructions;
-                }
-                else if (prize.VendorCodeId != null)
-                {
-                    var vendorCode = await _vendorCodeRepository
-                        .GetByIdAsync((int)prize.VendorCodeId);
-                    var vendorCodeType = await _vendorCodeTypeRepository
-                        .GetByIdAsync(vendorCode.VendorCodeTypeId);
-                    var branch = await _branchRepository.GetByIdAsync((int)vendorCode.BranchId);
-                    var system = await _systemRepository.GetByIdAsync(branch.SystemId);
-
-                    prize.PrizeName = $"{vendorCodeType.Description}: {vendorCode.Details}";
-                    prize.PrizeRedemptionInstructions = $"Give customer {vendorCode.Details} and click the green redemption button.";
-                    prize.AvailableAtBranch = branch.Name;
-                    prize.AvailableAtSystem = system.Name;
-                }
+                prize.RedeemedAt = null;
+                prize.RedeemedBy = null;
+                await _prizeWinnerRepository.UpdateSaveAsync(authUserId, prize);
+                _logger.LogInformation($"User {authUserId} just undid redemption of prize id {prizeWinnerId} awarded to user {prize.UserId}");
             }
-
-            return new DataWithCount<ICollection<PrizeWinner>>
-            {
-                Data = prizes,
-                Count = await _prizeWinnerRepository.CountByWinningUserId(siteId, userId)
-            };
-        }
-
-        public async Task<int> GetUserWinCount(int userId, bool? redeemed = null)
-        {
-            VerifyManagementPermission();
-            return await _prizeWinnerRepository.CountByWinningUserId(GetCurrentSiteId(), userId,
-                redeemed);
-        }
-
-        public async Task<PrizeWinner> GetUserDrawingPrizeAsync(int userId, int drawingId)
-        {
-            return await _prizeWinnerRepository.GetUserDrawingPrizeAsync(userId, drawingId);
-        }
-
-        public async Task<PrizeWinner> GetUserTriggerPrizeAsync(int userId, int triggerId)
-        {
-            return await _prizeWinnerRepository.GetUserTriggerPrizeAsync(userId, triggerId);
-        }
-
-        public async Task<List<PrizeCount>> GetHouseholdUnredeemedPrizesAsync(int headId)
-        {
-            VerifyManagementPermission();
-
-            return await _prizeWinnerRepository.GetHouseholdUnredeemedPrizesAsync(headId);
         }
     }
 }

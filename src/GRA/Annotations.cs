@@ -27,6 +27,8 @@
 
         public static class Info
         {
+            public const string AnyLibrary = "Any participating library";
+            public const string AvailableForPickup = "Available for pickup";
             public const string BadgeInfoError = "Error retrieving badge information.";
             public const string BetterSuitedOption = "This program may be better-suited to your age:";
             public const string ChallengeBadgeEarned = "You earned this badge for completing the challenge: <a href=\"{0}\" target=\"_blank\">{1}</a>";
@@ -56,13 +58,17 @@
             public const string MailForHelp = "If you can't find something, please <a href=\"{0}\">send us a mail</a> and let us know what you were looking for, we'll do our best to help.";
             public const string NoBadges = "You have not earned any badges yet.";
             public const string NoBooksLogged = "No books logged.";
+            public const string NoCertificates = "You have not earned any certificates yet.";
             public const string NoHistory = "No history to display.";
+            public const string NoPrizes = "No prizes yet, keep reading!";
             public const string NoUnlockedBundles = "No unlocked bundles";
             public const string PasswordRecoverySent = "A password recovery email has been sent to the email for username '{0}'.";
             public const string PasswordResetFor = "Password reset for: {0}";
+            public const string PickedUp = "Picked up";
             public const string PointSingular = "{0} point";
             public const string PointsPlural = "{0} points";
             public const string ProgramEnded = "{0} has ended, please join us next time!";
+            public const string ReceivedCertificate = "You've received a certificate!";
             public const string RegistrationNotOpenYet = "Registration for {0} is not open yet.";
             public const string StatusSaved = "Your status has been saved!";
             public const string StatusSavedPercentage = "Your status has been saved. You have completed {0}% of the required tasks for the challenge: {1}!";
@@ -76,6 +82,7 @@
             public const string VendorItemOrdered = "<em>{0}</em> ordered on <strong>{1}</strong>.";
             public const string VendorItemPickedup = "<em>{0}</em> was picked up on <strong>{1}</strong>.";
             public const string VendorItemShipped = "<em>{0}</em> shipped on <strong>{1}</strong>.";
+            public const string WhileSuppliesLast = "Some prizes are available while supplies last, check with your library for more information.";
             public const string YouCanJoinOn = "You can join {0} on {1}.";
         }
 
@@ -105,6 +112,7 @@
             public const string BookList = "Book List";
             public const string Bundle = "Bundle";
             public const string Cancel = "Cancel";
+            public const string Certificates = "Certificates";
             public const string ChangePassword = "Change Password";
             public const string ChooseAnOption = "Choose an option:";
             public const string Clear = "Clear";
@@ -122,11 +130,12 @@
             public const string Distance = "Distance";
             public const string DonateBook = "Donate book";
             public const string DonateYourBook = "Donate your book";
+            public const string Download = "Download";
             public const string DownloadToShare = "Download to Share";
+            public const string EmailDefaultFooter = "You are receiving this email because you are subscribed for updates from {{Sitename}}. You can [instantly unsubscribe at any time]({{UnsubscribeLink}})";
             public const string EnterAddressOrZipCode = "Enter an address or ZIP code";
             public const string EnterChallengeSearch = "Enter text to search for a challenge here";
             public const string EnterEventSearch = "Enter text to search for an event here";
-            public const string EmailDefaultFooter = "You are receiving this email because you are subscribed for updates from {{Sitename}}. You can [instantly unsubscribe at any time]({{UnsubscribeLink}})";
             public const string EventHasEnded = "This streaming event has ended.";
             public const string EventNotFound = "Could not find the requested event.";
             public const string EventNotStarted = "This streaming event has not started yet.";
@@ -154,6 +163,7 @@
             public const string Optional = "Optional";
             public const string PasswordChanged = "Your password has been changed.";
             public const string PointsYoullEarn = "Points you'll earn";
+            public const string Prizes = "Prizes";
             public const string ProfileUpdated = "Profile updated.";
             public const string ProgramIsOver = "Program is over";
             public const string Progress = "Progress";
@@ -192,7 +202,7 @@
             public const string UpgradeToGroup = "Upgrade to Group";
             public const string UseMyZipCode = "Use my ZIP code";
             public const string ViewAll = "View All";
-            public const string ViewAttachment = "View Attachment";
+            public const string ViewCertificate = "View Certificate";
             public const string ViewCompleted = "View Completed";
             public const string ViewUncompleted = "View Uncompleted";
             public const string What = "What";
@@ -219,6 +229,7 @@
             public const string Badge = "Badge";
             public const string BookCode = "Book Code";
             public const string BundleItems = "Bundle Items";
+            public const string Certificate = "Certificate";
             public const string ChallengeDetails = "Challenge: {0}";
             public const string ChallengeGroup = "Challenge Group: {0}";
             public const string Challenges = "Challenges";

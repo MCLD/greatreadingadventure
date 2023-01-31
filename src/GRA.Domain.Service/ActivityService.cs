@@ -13,6 +13,7 @@ namespace GRA.Domain.Service
 {
     public class ActivityService : Abstract.BaseUserService<UserService>
     {
+        private readonly IAttachmentRepository _attachmentRepository;
         private readonly IAvatarBundleRepository _avatarBundleRepository;
         private readonly IAvatarItemRepository _avatarItemRepository;
         private readonly IBadgeRepository _badgeRepository;
@@ -38,6 +39,7 @@ namespace GRA.Domain.Service
         public ActivityService(ILogger<UserService> logger,
             IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContext,
+            IAttachmentRepository attachmentRepository,
             IAvatarBundleRepository avatarBundleRepository,
             IAvatarItemRepository avatarItemRepository,
             IBadgeRepository badgeRepository,
@@ -60,6 +62,8 @@ namespace GRA.Domain.Service
             SiteLookupService siteLookupService,
             VendorCodeService vendorCodeService) : base(logger, dateTimeProvider, userContext)
         {
+            _attachmentRepository = attachmentRepository
+                ?? throw new ArgumentNullException(nameof(attachmentRepository));
             _avatarBundleRepository = avatarBundleRepository
                 ?? throw new ArgumentNullException(nameof(avatarBundleRepository));
             _avatarItemRepository = avatarItemRepository
@@ -534,6 +538,9 @@ namespace GRA.Domain.Service
 
             // every trigger awards a badge
             var badge = await AwardBadgeAsync(userIdToLog, trigger.AwardBadgeId);
+            var attachment = trigger.AwardAttachmentId.HasValue
+                ? await _attachmentRepository.GetByIdAsync(trigger.AwardAttachmentId.Value)
+                : null;
 
             // log the notification
             await _notificationRepository.AddSaveAsync(authUserId, new Notification
@@ -542,7 +549,8 @@ namespace GRA.Domain.Service
                 UserId = userIdToLog,
                 Text = trigger.AwardMessage,
                 BadgeId = trigger.AwardBadgeId,
-                BadgeFilename = badge.Filename
+                BadgeFilename = badge.Filename,
+                AttachmentFilename = attachment?.FileName
             });
 
             // find if the trigger is related to an event
@@ -559,7 +567,8 @@ namespace GRA.Domain.Service
                 BadgeId = trigger.AwardBadgeId,
                 EventId = relatedEventId,
                 TriggerId = trigger.Id,
-                Description = trigger.AwardMessage
+                Description = trigger.AwardMessage,
+                AttachmentId = trigger.AwardAttachmentId
             };
 
             if (activeUserId != userToLog.Id)
@@ -1189,6 +1198,9 @@ namespace GRA.Domain.Service
 
                 // every trigger awards a badge
                 var badge = await AwardBadgeAsync(userId, trigger.AwardBadgeId);
+                var attachment = trigger.AwardAttachmentId.HasValue
+                    ? await _attachmentRepository.GetByIdAsync(trigger.AwardAttachmentId.Value)
+                    : null;
 
                 // log the notification
                 await _notificationRepository.AddSaveAsync(userId, new Notification
@@ -1197,7 +1209,8 @@ namespace GRA.Domain.Service
                     UserId = userId,
                     Text = trigger.AwardMessage,
                     BadgeId = trigger.AwardBadgeId,
-                    BadgeFilename = badge.Filename
+                    BadgeFilename = badge.Filename,
+                    AttachmentFilename = attachment?.FileName
                 });
 
                 // find if the trigger is related to an event
@@ -1214,7 +1227,8 @@ namespace GRA.Domain.Service
                     BadgeId = trigger.AwardBadgeId,
                     EventId = relatedEventId,
                     TriggerId = trigger.Id,
-                    Description = trigger.AwardMessage
+                    Description = trigger.AwardMessage,
+                    AttachmentId = trigger.AwardAttachmentId
                 });
 
                 // award any vendor code that is necessary

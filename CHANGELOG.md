@@ -6,28 +6,31 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## Unreleased
 
-### Added
+## Changed
 
-- Ability to mark vendor items as not damaged and not missing in case of accidental box checking
-- Ability to disable the in-software mail capability
-- Report to see a count of pending vendor code items per branch
-- Program-wide alert to dashboard page
+- Rename "Redemption Instructions" label to "Redemptions Instructions for Staff"
 
-### Changed
+## Added
 
-- Moved TempData storage to session from separate cookie
-- Updated Remaining Vendor Prize Pick-Up to separate out first/last names and username
+- Notes field on prize redemption for staff
+- Ability to change logging level from Seq using a logging level switch
+- Docker source container file pinning
+- Ability to reassign user branch when a branch is deleted
 
 ### Fixed
 
-- Expiration of social card cache
-- Site setting categories in Mission Control are now in alphabetical order
+- Display a friendly and accurate error if a social image is too large
+- Properly return appropriate HTTP status codes on page errors
+- Logging when the ErrorController is hit is no longer excluded from most log sources
+- Exception when trying to add a Role with a blank name
 
-### Updated
+## [4.4.0] 2022-11-29
 
-### Removed
+### Changed
 
-## 4.2.2
+- Upgrade from ASP.NET v6.0 to v7.0
+
+## [4.3.17] 2022-11-17
 
 ### Added
 
@@ -43,6 +46,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Ability to configure minimum worker threads and completion port threads
 - Featured challenge group scheduling and display carousel
 - Show reasons on MC participant history page as to why items cannot be deleted
+- Ability to mark vendor items as not damaged and not missing in case of accidental box checking
+- Ability to disable the in-software mail capability
+- Report to see a count of pending vendor code items per branch
+- Program-wide alert to dashboard page
 
 ### Changed
 
@@ -52,6 +59,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Vendor item status display on participants profile
 - Show wrench menu to all who have Mission Control access
 - Upgrade from ASP.NET v5.0 to v6.0
+- Moved TempData storage to session from separate cookie
+- Updated Remaining Vendor Prize Pick-Up to separate out first/last names and username
+- Import of avatar file will overwrite any files in teh avatar directories
 
 ### Fixed
 
@@ -75,6 +85,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Check for null viewmodel on some posts
 - Bug with empty username in UsernameInUseAsync
 - Allow deletion of events even if participants have favorited them
+- Expiration of social card cache
+- Site setting categories in Mission Control are now in alphabetical order
 
 ### Updated
 
@@ -388,6 +400,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Everything! First release of 4.0.
 
+[4.4.0]: https://github.com/mcld/greatreadingadventure/tree/v4.4.0
+[4.3.17]: https://github.com/mcld/greatreadingadventure/tree/v4.3.17
 [4.2.1]: https://github.com/mcld/greatreadingadventure/tree/v4.2.1
 [4.2.0]: https://github.com/mcld/greatreadingadventure/tree/v4.2.0
 [4.1.1]: https://github.com/mcld/greatreadingadventure/tree/v4.1.1

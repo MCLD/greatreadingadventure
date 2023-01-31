@@ -12,8 +12,6 @@
 set -Eeuo pipefail
 trap cleanup SIGINT SIGTERM ERR EXIT
 
-script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
-
 usage() {
   cat <<EOF
 Usage: $(basename "${BASH_SOURCE[0]}") [-h] [-v] [-df Dockerfile] [-p] [Docker tag]
@@ -34,10 +32,13 @@ Environment variables:
 - CR_OWNER - optional - owner of the container registry
 - CR_PASSWORD - optional - password to log into the container registry
 - CR_USER - optional - username to log in to the container registry
+- DOCKER_LOCK_VERSION - optional - a version of docker-lock to use (e.g. 0.8.10), can also be
+                                   specified in docker-lock-version.txt
 - GHCR_OWNER - optional - owner of the GitHub Container Registry (defaults to GHCR_USER)
 - GHCR_PAT - optional - GitHub Container Registry Personal Access Token
 - GHCR_USER - optional - username to log in to the GitHub Container Registry
 
+Version 1.2.0 released 2022-12-13
 EOF
   exit
 }
@@ -69,27 +70,27 @@ die() {
 parse_params() {
   dockerfile=''
   publish=0
-
+  
   while :; do
     case "${1-}" in
-    -h | --help) usage ;;
-    -v | --verbose) set -x ;;
-    --no-color) NO_COLOR=1 ;;
-    -df | --dockerfile)
-      dockerfile="${2-}"
-      shift
+      -h | --help) usage ;;
+      -v | --verbose) set -x ;;
+      --no-color) NO_COLOR=1 ;;
+      -df | --dockerfile)
+        dockerfile="${2-}"
+        shift
       ;;
-    -p | --publish)
-      publish=1
+      -p | --publish)
+        publish=1
       ;;
-    -?*) die "Unknown option: $1" ;;
-    *) break ;;
+      -?*) die "Unknown option: $1" ;;
+      *) break ;;
     esac
     shift
   done
-
+  
   readonly dockertag="${1-}"
-
+  
   return 0
 }
 
@@ -109,6 +110,37 @@ BLD_RELEASE_VERSION=''
 
 readonly BLD_STARTAT=$SECONDS
 
+SYSARCH=$(arch)
+readonly SYSARCH
+
+if [[ ${SYSARCH} = "i386" ]]; then
+  readonly ARCH="x86_32"
+  elif [[ ${SYSARCH} = "aarch64" ]]; then
+  readonly ARCH="armv7"
+else
+  readonly ARCH=${SYSARCH}
+fi
+
+OS=$(uname -s)
+readonly OS
+
+if [[ -z ${DOCKER_LOCK_VERSION-} && -f "docker-lock-version.txt" ]]; then
+  BLD_DOCKER_LOCK_VERSION=$(cat docker-lock-version.txt)
+  readonly BLD_DOCKER_LOCK_VERSION
+else
+  BLD_DOCKER_LOCK_VERSION=${DOCKER_LOCK_VERSION-}
+  readonly BLD_DOCKER_LOCK_VERSION
+fi
+
+if [[ -n ${BLD_DOCKER_LOCK_VERSION-} && -f "docker-lock.json" ]]; then
+  readonly DOCKER_LOCK_URL="https://github.com/safe-waters/docker-lock/releases/download/v${BLD_DOCKER_LOCK_VERSION}/docker-lock_${BLD_DOCKER_LOCK_VERSION}_${OS}_${ARCH}.tar.gz"
+  msg "${BLUE}===${NOFORMAT} Using docker-lock.json version ${BLD_DOCKER_LOCK_VERSION} to pin Dockerfile(s)"
+  mkdir -p ".docker/cli-plugins"
+  curl -fsSL "${DOCKER_LOCK_URL}" | tar -xz -C ".docker/cli-plugins" "docker-lock"
+  chmod +x ".docker/cli-plugins/docker-lock"
+  .docker/cli-plugins/docker-lock lock rewrite
+fi
+
 # Try getting branch from Azure DevOps
 readonly AZURE_BRANCH=${BUILD_SOURCEBRANCH-}
 BLD_BRANCH=''
@@ -127,13 +159,13 @@ if [[ -z ${BLD_BRANCH} ]]; then
 fi
 
 if [[ $BLD_BRANCH = "develop"
-      || $BLD_BRANCH = "main"
-      || $BLD_BRANCH = "master"
-      || $BLD_BRANCH = "test" ]]; then
+    || $BLD_BRANCH = "main"
+    || $BLD_BRANCH = "master"
+  || $BLD_BRANCH = "test" ]]; then
   BLD_DOCKER_TAG=$BLD_BRANCH
   BLD_VERSION=${BLD_BRANCH}-${BLD_VERSION_DATE}
   BLD_PUSH=true
-elif [[ "$BLD_BRANCH" =~ release/([0-9]+\.[0-9]+\.[0-9]+.*) ]]; then
+  elif [[ "$BLD_BRANCH" =~ release/([0-9]+\.[0-9]+\.[0-9]+.*) ]]; then
   BLD_RELEASE_VERSION=${BASH_REMATCH[1]}
   BLD_DOCKER_TAG=v${BLD_RELEASE_VERSION}
   BLD_VERSION=v${BLD_RELEASE_VERSION}
@@ -154,11 +186,8 @@ fi
 
 # Ensure a configured Docker image name
 if [[ -z ${BLD_DOCKER_IMAGE-} ]]; then
-  msg "Script Dir = $script_dir"
   BLD_DIRECTORY=${PWD##*/}
-  msg "BLD_DIRECTORY = $BLD_DIRECTORY"
   BLD_DOCKER_IMAGE=${BLD_DIRECTORY,,}
-  msg "BLD_DOCKER_IMAGE = $BLD_DOCKER_IMAGE"
   msg "${ORANGE}===${NOFORMAT} No BLD_DOCKER_IMAGE configured, using this directory name: $BLD_DOCKER_IMAGE"
 fi
 
@@ -203,12 +232,12 @@ if [[ $BLD_PUSH = true ]]; then
   --build-arg IMAGE_CREATED="$BLD_VERSION_DATE" \
   --build-arg IMAGE_REVISION="$BLD_COMMIT" \
   --build-arg IMAGE_VERSION="$BLD_VERSION" .
-
+  
   msg "${GREEN}===${NOFORMAT} Docker image built"
-
+  
   dockeruser=${CR_USER-}
   dockerpass=${CR_PASSWORD-}
-
+  
   if [[ -z $dockeruser || -z $dockerpass ]]; then
     msg "${ORANGE}===${NOFORMAT} Not pushing Docker image: username or password not specified"
   else
@@ -220,18 +249,18 @@ if [[ $BLD_PUSH = true ]]; then
       echo "$dockerpass" | \
       docker login -u "$dockeruser" --password-stdin "${CR_HOST-}" || exit $?
     fi
-
+    
     msg "${BLUE}===${NOFORMAT} Pushing image $BLD_FULL_DOCKER_IMAGE"
     docker push "$BLD_FULL_DOCKER_IMAGE"
-
+    
     if [[ $BLD_RELEASE = "true" ]]; then
       msg "${BLUE}===${NOFORMAT} Tagging and pushing $BLD_FULL_DOCKER_LATEST"
       docker tag "$BLD_FULL_DOCKER_IMAGE" "$BLD_FULL_DOCKER_LATEST"
       docker push "$BLD_FULL_DOCKER_LATEST"
     fi
-
+    
     msg "${GREEN}===${NOFORMAT} Docker image pushed"
-
+    
     msg "${BLUE}===${NOFORMAT} Executing logout"
     if [[ -z ${CR_HOST-} ]]; then
       docker logout
@@ -239,9 +268,9 @@ if [[ $BLD_PUSH = true ]]; then
       docker logout "${CR_HOST-}"
     fi
   fi
-
+  
   ghcruser=${GHCR_USER-}
-
+  
   if [[ -n $ghcruser ]]; then
     ghcrowner=${GHCR_OWNER-}
     if [[ -z $ghcrowner ]]; then
@@ -252,20 +281,20 @@ if [[ $BLD_PUSH = true ]]; then
     echo "$GHCR_PAT" | \
     docker login ghcr.io -u "${ghcruser}" --password-stdin || exit $?
     docker push "ghcr.io/${ghcrowner}/${BLD_DOCKER_IMAGE}"
-
+    
     if [[ $BLD_RELEASE = "true" ]]; then
       msg "${BLUE}===${NOFORMAT} Tagging and pushing ghcr.io/${ghcrowner}/${BLD_DOCKER_LATEST}"
       docker tag "${BLD_FULL_DOCKER_IMAGE}" "ghcr.io/${ghcrowner}/${BLD_DOCKER_LATEST}"
       docker push "ghcr.io/${ghcrowner}/${BLD_DOCKER_LATEST}"
     fi
-
+    
     docker logout ghcr.io
-
+    
     msg "${GREEN}===${NOFORMAT} Docker image pushed to ghcr.io"
   fi
-
+  
   # Perform release publish in the Docker machine if configuration is present
-
+  
   if [[ $BLD_RELEASE = "true" && -f "release-publish.bash" && publish -eq 1 ]]; then
     msg "${BLUE}===${NOFORMAT} Publishing release package for $BLD_RELEASE_VERSION"
     mkdir -p publish

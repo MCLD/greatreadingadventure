@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -22,63 +23,70 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ManageSystems)]
     public class SystemsController : Base.MCController
     {
-        private readonly ILogger<SystemsController> _logger;
+        public const string Name = "Systems";
         private readonly BranchImportExportService _branchImportExportService;
+        private readonly JobService _jobService;
+        private readonly ILogger<SystemsController> _logger;
         private readonly SiteService _siteService;
         private readonly SpatialService _spatialService;
-        private readonly JobService _jobService;
+        private readonly UserService _userService;
 
-        public const string Name = "Systems";
-
-        public SystemsController(ILogger<SystemsController> logger,
-            ServiceFacade.Controller context,
-            BranchImportExportService branchImportExportService,
+        public SystemsController(BranchImportExportService branchImportExportService,
+            ILogger<SystemsController> logger,
             JobService jobService,
+            ServiceFacade.Controller context,
             SiteService siteService,
-            SpatialService spatialService) : base(context)
+            SpatialService spatialService,
+            UserService userService) : base(context)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _branchImportExportService = branchImportExportService
                 ?? throw new ArgumentNullException(nameof(branchImportExportService));
             _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             _spatialService = spatialService
                 ?? throw new ArgumentNullException(nameof(spatialService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = "System & branch management";
         }
 
-        public async Task<IActionResult> Index(string search, int page = 1)
+        [HttpPost]
+        public async Task<IActionResult> AddBranch(BranchesListViewModel model)
         {
-            var filter = new BaseFilter(page)
+            if (model != null)
             {
-                Search = search
-            };
+                try
+                {
+                    model.Branch.Geolocation = null;
+                    var branch = await _siteService.AddBranchAsync(model.Branch);
+                    ShowAlertSuccess($"Added Branch '{branch.Name}'");
 
-            var systemList = await _siteService.GetPaginatedSystemListAsync(filter);
-
-            var paginateModel = new PaginateViewModel
-            {
-                ItemCount = systemList.Count,
-                CurrentPage = page,
-                ItemsPerPage = filter.Take.Value
-            };
-
-            if (paginateModel.PastMaxPage)
-            {
-                return RedirectToRoute(
-                    new
+                    if (await _siteLookupService.IsSiteSettingSetAsync(GetCurrentSiteId(),
+                        SiteSettingKey.Events.GoogleMapsAPIKey))
                     {
-                        page = paginateModel.LastPage ?? 1
-                    });
+                        var result = await _spatialService
+                            .GetGeocodedAddressAsync(branch.Address);
+                        if (result.Status == ServiceResultStatus.Success)
+                        {
+                            branch.Geolocation = result.Data;
+                            await _siteService.UpdateBranchAsync(branch);
+                        }
+                        else if (result.Status == ServiceResultStatus.Warning)
+                        {
+                            ShowAlertWarning("Unable to set branch geolocation: ", result.Message);
+                        }
+                        else
+                        {
+                            ShowAlertDanger("Unable to set branch geolocation: ", result.Message);
+                        }
+                    }
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger("Unable to add Branch: ", gex);
+                }
             }
-
-            var viewModel = new SystemListViewModel
-            {
-                Systems = systemList.Data.ToList(),
-                PaginateModel = paginateModel,
-            };
-
-            return View(viewModel);
+            return RedirectToAction("Branches", new { search = model?.Search });
         }
 
         [HttpPost]
@@ -97,39 +105,6 @@ namespace GRA.Controllers.MissionControl
                 }
             }
             return RedirectToAction("Index", new { search = model?.Search });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> EditSystem(SystemListViewModel model)
-        {
-            if (model != null)
-            {
-                try
-                {
-                    await _siteService.UpdateSystemAsync(model.System);
-                    ShowAlertSuccess($"System  '{model.System.Name}' updated");
-                }
-                catch (GraException gex)
-                {
-                    ShowAlertDanger("Unable to edit System: ", gex);
-                }
-            }
-            return RedirectToAction("Index", new { search = model?.Search });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> DeleteSystem(int id, string search)
-        {
-            try
-            {
-                await _siteService.RemoveSystemAsync(id);
-                AlertSuccess = "System removed";
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger("Unable to delete System: ", gex);
-            }
-            return RedirectToAction("Index", new { search });
         }
 
         public async Task<IActionResult> Branches(string search, int page = 1)
@@ -174,42 +149,18 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddBranch(BranchesListViewModel model)
+        public async Task<IActionResult> DeleteSystem(int id, string search)
         {
-            if (model != null)
+            try
             {
-                try
-                {
-                    model.Branch.Geolocation = null;
-                    var branch = await _siteService.AddBranchAsync(model.Branch);
-                    ShowAlertSuccess($"Added Branch '{branch.Name}'");
-
-                    if (await _siteLookupService.IsSiteSettingSetAsync(GetCurrentSiteId(),
-                        SiteSettingKey.Events.GoogleMapsAPIKey))
-                    {
-                        var result = await _spatialService
-                            .GetGeocodedAddressAsync(branch.Address);
-                        if (result.Status == ServiceResultStatus.Success)
-                        {
-                            branch.Geolocation = result.Data;
-                            await _siteService.UpdateBranchAsync(branch);
-                        }
-                        else if (result.Status == ServiceResultStatus.Warning)
-                        {
-                            ShowAlertWarning("Unable to set branch geolocation: ", result.Message);
-                        }
-                        else
-                        {
-                            ShowAlertDanger("Unable to set branch geolocation: ", result.Message);
-                        }
-                    }
-                }
-                catch (GraException gex)
-                {
-                    ShowAlertDanger("Unable to add Branch: ", gex);
-                }
+                await _siteService.RemoveSystemAsync(id);
+                AlertSuccess = "System removed";
             }
-            return RedirectToAction("Branches", new { search = model?.Search });
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to delete System: ", gex);
+            }
+            return RedirectToAction("Index", new { search });
         }
 
         [HttpPost]
@@ -260,61 +211,21 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteBranch(int id, string search)
+        public async Task<IActionResult> EditSystem(SystemListViewModel model)
         {
-            try
+            if (model != null)
             {
-                await _siteService.RemoveBranchAsync(id);
-                AlertSuccess = "Branch removed";
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger("Unable to delete Branch: ", gex);
-            }
-            return RedirectToAction("Branches", new { search });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> SetBranchGeolocation(int id)
-        {
-            var success = false;
-            var message = string.Empty;
-
-            if (await _siteLookupService.IsSiteSettingSetAsync(GetCurrentSiteId(),
-                    SiteSettingKey.Events.GoogleMapsAPIKey))
-            {
-                var branch = await _siteService.GetBranchByIdAsync(id);
-                if (string.IsNullOrEmpty(branch.Geolocation))
+                try
                 {
-                    var result = await _spatialService
-                            .GetGeocodedAddressAsync(branch.Address);
-                    if (result.Status == ServiceResultStatus.Success)
-                    {
-                        branch.Geolocation = result.Data;
-                        await _siteService.UpdateBranchAsync(branch);
-
-                        success = true;
-                    }
-                    else
-                    {
-                        message = result.Message;
-                    }
+                    await _siteService.UpdateSystemAsync(model.System);
+                    ShowAlertSuccess($"System  '{model.System.Name}' updated");
                 }
-                else
+                catch (GraException gex)
                 {
-                    message = "Geolocation is already set.";
+                    ShowAlertDanger("Unable to edit System: ", gex);
                 }
             }
-            else
-            {
-                message = "Geolocation is not set up.";
-            }
-
-            return Json(new
-            {
-                success,
-                message
-            });
+            return RedirectToAction("Index", new { search = model?.Search });
         }
 
         [HttpGet]
@@ -397,6 +308,145 @@ namespace GRA.Controllers.MissionControl
             {
                 return View(viewModel);
             }
+        }
+
+        public async Task<IActionResult> Index(string search, int page = 1)
+        {
+            var filter = new BaseFilter(page)
+            {
+                Search = search
+            };
+
+            var systemList = await _siteService.GetPaginatedSystemListAsync(filter);
+
+            var paginateModel = new PaginateViewModel
+            {
+                ItemCount = systemList.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+
+            if (paginateModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+
+            var viewModel = new SystemListViewModel
+            {
+                Systems = systemList.Data.ToList(),
+                PaginateModel = paginateModel,
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> RemoveBranch(int id)
+        {
+            var branchList = new Dictionary<string, int>();
+            foreach (var system in await _siteService.GetSystemList())
+            {
+                foreach (var branch in await _siteService.GetBranches(system.Id))
+                {
+                    if (branch.Id != id)
+                    {
+                        branchList.Add($"{system.Name} - {branch.Name}", branch.Id);
+                    }
+                }
+            }
+
+            return View(new RemoveBranchViewModel
+            {
+                Branch = await _siteService.GetBranchByIdAsync(id),
+                BranchList = new SelectList(branchList, "Value", "Key"),
+                InUseCount = await _siteService.GetBranchInUseAsync(id),
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveBranch(RemoveBranchViewModel removeBranchViewModel)
+        {
+            int reassigned = 0;
+            string newBranchName = null;
+            try
+            {
+                if (removeBranchViewModel?.ReassignBranch.HasValue == true)
+                {
+                    reassigned = await _userService.ReassignBranchAsync(
+                        removeBranchViewModel.BranchId,
+                        removeBranchViewModel.ReassignBranch.Value);
+                    newBranchName = await _siteService
+                        .GetBranchName(removeBranchViewModel.ReassignBranch.Value);
+                }
+                await _siteService.RemoveBranchAsync(removeBranchViewModel.BranchId);
+                AlertSuccess = reassigned > 0
+                    ? $"Branch removed, {reassigned} users reassigned to {newBranchName}"
+                    : "Branch removed";
+            }
+            catch (GraException gex)
+            {
+                if (reassigned > 0)
+                {
+                    Exception reportingException = gex;
+                    while (reportingException.InnerException != null)
+                    {
+                        reportingException = reportingException.InnerException;
+                    }
+                    ShowAlertDanger($"{reassigned} users reassigned to {newBranchName} but branch could not be removed: {reportingException.Message}");
+                }
+                else
+                {
+                    ShowAlertDanger("There was an error removing the branch: ", gex);
+                }
+            }
+            return RedirectToAction(nameof(Branches));
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> SetBranchGeolocation(int id)
+        {
+            var success = false;
+            var message = string.Empty;
+
+            if (await _siteLookupService.IsSiteSettingSetAsync(GetCurrentSiteId(),
+                    SiteSettingKey.Events.GoogleMapsAPIKey))
+            {
+                var branch = await _siteService.GetBranchByIdAsync(id);
+                if (string.IsNullOrEmpty(branch.Geolocation))
+                {
+                    var result = await _spatialService
+                            .GetGeocodedAddressAsync(branch.Address);
+                    if (result.Status == ServiceResultStatus.Success)
+                    {
+                        branch.Geolocation = result.Data;
+                        await _siteService.UpdateBranchAsync(branch);
+
+                        success = true;
+                    }
+                    else
+                    {
+                        message = result.Message;
+                    }
+                }
+                else
+                {
+                    message = "Geolocation is already set.";
+                }
+            }
+            else
+            {
+                message = "Geolocation is not set up.";
+            }
+
+            return Json(new
+            {
+                success,
+                message
+            });
         }
     }
 }

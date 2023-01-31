@@ -51,6 +51,11 @@ namespace GRA.Controllers.ViewComponents
                             = _pathResolver.ResolveContentPath(notification.BadgeFilename);
                         earnedBadge = true;
                     }
+                    if (!string.IsNullOrWhiteSpace(notification.AttachmentFilename))
+                    {
+                        notification.AttachmentFilename
+                            = _pathResolver.ResolveContentPath(notification.AttachmentFilename);
+                    }
                     notificationDisplayList.Add(notification);
                 }
                 notifications.Remove(notification);
@@ -66,6 +71,11 @@ namespace GRA.Controllers.ViewComponents
                         notification.BadgeFilename
                             = _pathResolver.ResolveContentPath(notification.BadgeFilename);
                         earnedBadge = true;
+                    }
+                    if (!string.IsNullOrWhiteSpace(notification.AttachmentFilename))
+                    {
+                        notification.AttachmentFilename
+                            = _pathResolver.ResolveContentPath(notification.AttachmentFilename);
                     }
                     notification.LocalizedText
                         = _sharedHtmlLocalizer[Annotations.Info.SuccessfullyJoined,
@@ -86,6 +96,11 @@ namespace GRA.Controllers.ViewComponents
                         notification.BadgeFilename
                             = _pathResolver.ResolveContentPath(notification.BadgeFilename);
                         earnedBadge = true;
+                    }
+                    if (!string.IsNullOrWhiteSpace(notification.AttachmentFilename))
+                    {
+                        notification.AttachmentFilename
+                            = _pathResolver.ResolveContentPath(notification.AttachmentFilename);
                     }
                     notification.DisplayIcon = "far fa-thumbs-up";
                     notification.Text = new StringBuilder(notification.Text)
@@ -112,6 +127,11 @@ namespace GRA.Controllers.ViewComponents
                     notification.BadgeFilename
                         = _pathResolver.ResolveContentPath(notification.BadgeFilename);
                     earnedBadge = true;
+                    if (!string.IsNullOrWhiteSpace(notification.AttachmentFilename))
+                    {
+                        notification.AttachmentFilename
+                            = _pathResolver.ResolveContentPath(notification.AttachmentFilename);
+                    }
                     notificationDisplayList.Add(notification);
                 }
                 notifications.Remove(notification);
@@ -124,6 +144,11 @@ namespace GRA.Controllers.ViewComponents
                 totalPointsEarned += notification.PointsEarned;
                 if (notificationDisplayList.Count < MaxNotifications)
                 {
+                    if (!string.IsNullOrWhiteSpace(notification.AttachmentFilename))
+                    {
+                        notification.AttachmentFilename
+                            = _pathResolver.ResolveContentPath(notification.AttachmentFilename);
+                    }
                     notificationDisplayList.Add(notification);
                 }
             }

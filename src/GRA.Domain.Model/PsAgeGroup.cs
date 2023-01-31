@@ -5,16 +5,15 @@ namespace GRA.Domain.Model
 {
     public class PsAgeGroup : Abstract.BaseDomainEntity
     {
-        [MaxLength(255)]
-        [Required]
-        public string Name { get; set; }
+        public ICollection<int> BackToBackBranchIds { get; set; }
 
-        [Display(Name = "Icon Color",
-            Description = "a Web color entered in hexadecimal such as #4682b4")]
+        [Display(Name = "Icon Color")]
         [MaxLength(32)]
         [Required]
         public string IconColor { get; set; }
 
-        public ICollection<int> BackToBackBranchIds { get; set; }
+        [MaxLength(255)]
+        [Required]
+        public string Name { get; set; }
     }
 }

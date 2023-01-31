@@ -43,6 +43,7 @@ namespace GRA.Web
         private const string ConnectionStringNameSQLite = "SQLite";
         private const string ConnectionStringNameSqlServer = "SqlServer";
         private const string DefaultInitialProgramSetup = ConfigurationMultipleProgramValue;
+        private const string ErrorControllerPath = "/Error";
         private readonly IConfiguration _config;
         private readonly bool _isDevelopment;
 
@@ -86,12 +87,14 @@ namespace GRA.Web
             }
             else
             {
-                app.UseStatusCodePagesWithReExecute(string.Join("/",
-                    "",
-                    Controllers.ErrorController.Name,
-                    nameof(Controllers.ErrorController.Index),
-                    "{0}"));
+                app.UseExceptionHandler(ErrorControllerPath);
             }
+
+            app.UseStatusCodePagesWithReExecute(string.Join("/",
+                "",
+                Controllers.ErrorController.Name,
+                nameof(Controllers.ErrorController.Index),
+                "{0}"));
 
             // override proxy IP address if one is present
             if (!string.IsNullOrEmpty(_config[ConfigurationKey.ReverseProxyAddress]))
@@ -138,7 +141,10 @@ namespace GRA.Web
 
             app.UseRequestLocalization(requestLocalizationOptions);
 
-            app.UseResponseCompression();
+            if (!_isDevelopment)
+            {
+                app.UseResponseCompression();
+            }
 
             app.UseWebOptimizer();
 
@@ -297,10 +303,12 @@ namespace GRA.Web
             services.TryAddSingleton(_ => _config);
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.AddResponseCompression(_ =>
+            if (!_isDevelopment)
             {
-                _.Providers.Add<GzipCompressionProvider>();
-                _.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] {
+                services.AddResponseCompression(_ =>
+                {
+                    _.Providers.Add<GzipCompressionProvider>();
+                    _.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] {
                         "application/vnd.ms-fontobject",
                         "application/x-font-opentype",
                         "application/x-font-truetype",
@@ -312,8 +320,9 @@ namespace GRA.Web
                         "image/svg+xml",
                         "image/vnd.microsoft.icon",
                         "text/javascript"
+                    });
                 });
-            });
+            }
 
             switch (_config[ConfigurationKey.DistributedCache]?.ToLower(Culture.DefaultCulture))
             {
@@ -525,6 +534,7 @@ namespace GRA.Web
 
             // services
             services.AddScoped<ActivityService>();
+            services.AddScoped<AttachmentService>();
             services.AddScoped<AuthenticationService>();
             services.AddScoped<AuthorizationCodeService>();
             services.AddScoped<AvatarService>();
@@ -615,6 +625,7 @@ namespace GRA.Web
 
             // repositories
             services.AddScoped<Domain.Repository.IAnswerRepository, Data.Repository.AnswerRepository>();
+            services.AddScoped<Domain.Repository.IAttachmentRepository, Data.Repository.AttachmentRepository>();
             services.AddScoped<Domain.Repository.IAuthorizationCodeRepository, Data.Repository.AuthorizationCodeRepository>();
             services.AddScoped<Domain.Repository.IAvatarBundleRepository, Data.Repository.AvatarBundleRepository>();
             services.AddScoped<Domain.Repository.IAvatarColorRepository, Data.Repository.AvatarColorRepository>();

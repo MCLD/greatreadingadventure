@@ -12,7 +12,7 @@ The critical settings to provide are the "SqlServer" setting under "ConnectionSt
 
 ```json
 "ConnectionStrings": {
-  "SqlServer": "Server=<servername>;Database=<databasename>;user id=<username>;password=<password>;MultipleActiveResultSets=true"
+  "SqlServer": "Server=<servername>;Database=<databasename>;user id=<username>;password=<password>;MultipleActiveResultSets=true;Encrypt=false"
 },
 ```
 
@@ -42,7 +42,7 @@ Here's what your `appsettings.json` file in your `shared` directory might look l
 ```json
 {
   "ConnectionStrings": {
-    "SqlServer": "Server=<servername>;Database=<databasename>;user id=<username>;password=<password>;MultipleActiveResultSets=true"
+    "SqlServer": "Server=<servername>;Database=<databasename>;user id=<username>;password=<password>;MultipleActiveResultSets=true;Encrypt=false"
   },
   "GraInitialAuthCode": "<authorizationcode>"
 }

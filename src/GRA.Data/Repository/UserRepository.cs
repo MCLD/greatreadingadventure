@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
@@ -198,6 +199,17 @@ namespace GRA.Data.Repository
                 .Where(_ => !_.IsDeleted
                        && _.HouseholdHeadUserId == householdHeadUserId)
                        .CountAsync();
+        }
+
+        public async Task<IEnumerable<int>> GetHouseHoldUserIdsAsync(int householdHeadUserId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => !_.IsDeleted && (_.HouseholdHeadUserId == householdHeadUserId || _.Id == householdHeadUserId))
+                .OrderBy(_ => _.CreatedAt)
+                .ProjectTo<User>(_mapper.ConfigurationProvider)
+                .Select(_ => _.Id)
+                .ToListAsync();
         }
 
         public async Task<ICollection<User>> GetHouseholdUsersWithAvailablePrizeAsync(
@@ -506,6 +518,27 @@ namespace GRA.Data.Repository
                 .Take(take)
                 .ProjectTo<User>(_mapper.ConfigurationProvider)
                 .ToListAsync();
+        }
+
+        public async Task<int> ReassignBranchAsync(int oldBranchId, int newBranchId)
+        {
+            int reassignedCount = 0;
+            var reassignTimer = Stopwatch.StartNew();
+            var userList = DbSet.Where(_ => _.BranchId == oldBranchId);
+            foreach (var user in userList)
+            {
+                user.BranchId = newBranchId;
+                reassignedCount++;
+            }
+            DbSet.UpdateRange(userList);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Reassigned {UserCount} users from branch id {OldBranchId} to branch id {NewBranchId} in {ElapsedMs} ms",
+                reassignedCount,
+                oldBranchId,
+                newBranchId,
+                reassignTimer.ElapsedMilliseconds);
+            reassignTimer.Stop();
+            return reassignedCount;
         }
 
         public async Task SetUserPasswordAsync(int currentUserId, int userId, string password)

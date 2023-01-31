@@ -15,8 +15,8 @@
     <Product>Great Reading Adventure</Product>
     <RepositoryType>Git</RepositoryType>
     <RepositoryUrl>https://github.com/mcld/greatreadingadventure/</RepositoryUrl>
-    <TargetFramework>net6.0</TargetFramework>
-    <Version>4.3.0</Version>
+    <TargetFramework>net7.0</TargetFramework>
+    <Version>4.4.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,12 +27,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.10">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.2" />
   </ItemGroup>
 
   <ItemGroup>

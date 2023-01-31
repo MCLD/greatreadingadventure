@@ -17,7 +17,7 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ManageSocial)]
     public class SocialController : Base.MCController
     {
-        private const long MaxFileSize = 1L * 1024L * 1024L;
+        private const long MaxFileSize = 512L * 1024L;
 
         private readonly LanguageService _languageService;
         private readonly SocialManagementService _socialManagementService;
@@ -38,7 +38,8 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Social";
         }
 
-        public static string Name { get { return "Social"; } }
+        public static string Name
+        { get { return "Social"; } }
 
         [HttpGet]
         public async Task<IActionResult> AddSocialHeader()
@@ -59,8 +60,6 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        [RequestSizeLimit(MaxFileSize)]
-        [RequestFormLimits(MultipartBodyLengthLimit = MaxFileSize)]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
             "CA1031:Do not catch general exception types",
             Justification = "Show the user a friendly error rather than an exception page")]
@@ -68,20 +67,29 @@ namespace GRA.Controllers.MissionControl
         {
             if (viewmodel == null)
             {
-                viewmodel = new SocialItemViewModel();
+                ShowAlertDanger("Unable to add social header - object was empty.");
+                return RedirectToAction(nameof(AddSocialHeader));
             }
-
             byte[] imageBytes = null;
 
-            try
+            // check filesize
+            if (viewmodel.UploadedImage?.Length > MaxFileSize)
             {
-                using var ms = new System.IO.MemoryStream();
-                await viewmodel.UploadedImage.CopyToAsync(ms);
-                imageBytes = ms.ToArray();
+                ModelState.AddModelError(nameof(viewmodel.UploadedImage),
+                    $"Uploaded file is too large, please upload a file smaller than {MaxFileSize:N0} bytes");
             }
-            catch (Exception ex)
+            else
             {
-                ModelState.AddModelError(nameof(viewmodel.UploadedImage), ex.Message);
+                try
+                {
+                    using var ms = new System.IO.MemoryStream();
+                    await viewmodel.UploadedImage.CopyToAsync(ms);
+                    imageBytes = ms.ToArray();
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(nameof(viewmodel.UploadedImage), ex.Message);
+                }
             }
 
             if (!ModelState.IsValid)
