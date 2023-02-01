@@ -53,6 +53,7 @@ This manual is split into several main sections:
    :caption: Setup
 
    setup/administrator-account
+   setup/roles-and-permissions
    setup/site-settings
    setup/adding-avatars
    setup/customizing-the-look-and-feel
