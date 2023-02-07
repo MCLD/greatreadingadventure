@@ -1609,10 +1609,6 @@
     <value>Disponible para recoger</value>
     <comment>Message shown when user has a prize available for pickup, not yet redeemed.</comment>
   </data>
-  <data name="No Prizes" xml:space="preserve">
-    <value />
-    <comment>Message shown when a user attempts to view their prize history but they have not earned any.</comment>
-  </data>
   <data name="Certificate" xml:space="preserve">
     <value>Certificado</value>
     <comment>Label for a user to download a certificate in their profile history.</comment>
@@ -1644,5 +1640,13 @@
   <data name="No prizes yet, keep reading!" xml:space="preserve">
     <value>Aún no hay premios, ¡sigue leyendo!</value>
     <comment>Shown on the profile page prize list if the participant hasn't earned any prizes</comment>
+  </data>
+  <data name="Minutes read so far: {0}" xml:space="preserve">
+    <value>Minutos leidos hasta ahora: {0}</value>
+    <comment>Label for the site reading goal display on a participant's dashboard</comment>
+  </data>
+  <data name="Our goal (in minutes): {0}" xml:space="preserve">
+    <value>Nuestro objetivo (en minutos): {0}</value>
+    <comment>Label for the site reading goal display to indicate site reading goal on a participant's dashboard</comment>
   </data>
 </root>

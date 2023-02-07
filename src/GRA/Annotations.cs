@@ -56,12 +56,14 @@
             public const string GroupRegister = "Register new {0} Member";
             public const string LetYouKnowWhen = "Thanks! We'll let you know when you can join the program.";
             public const string MailForHelp = "If you can't find something, please <a href=\"{0}\">send us a mail</a> and let us know what you were looking for, we'll do our best to help.";
+            public const string MinutesRead = "Minutes read so far: {0}";
             public const string NoBadges = "You have not earned any badges yet.";
             public const string NoBooksLogged = "No books logged.";
             public const string NoCertificates = "You have not earned any certificates yet.";
             public const string NoHistory = "No history to display.";
             public const string NoPrizes = "No prizes yet, keep reading!";
             public const string NoUnlockedBundles = "No unlocked bundles";
+            public const string OurGoalInMinutes = "Our goal (in minutes): {0}";
             public const string PasswordRecoverySent = "A password recovery email has been sent to the email for username '{0}'.";
             public const string PasswordResetFor = "Password reset for: {0}";
             public const string PickedUp = "Picked up";
