@@ -1641,12 +1641,16 @@
     <value>Aún no hay premios, ¡sigue leyendo!</value>
     <comment>Shown on the profile page prize list if the participant hasn't earned any prizes</comment>
   </data>
-  <data name="Minutes read so far: {0}" xml:space="preserve">
-    <value>Minutos leidos hasta ahora: {0}</value>
-    <comment>Label for the site reading goal display on a participant's dashboard</comment>
+  <data name="Minutes read so far: &lt;strong&gt;{0:n0}&lt;/strong&gt;" xml:space="preserve">
+    <value>Minutos leidos hasta ahora: &lt;strong&gt;{0:n0}&lt;/strong&gt;</value>
+    <comment>Label for the site reading goal display on a participant's dashboard while the program is open</comment>
   </data>
-  <data name="Our goal (in minutes): {0}" xml:space="preserve">
-    <value>Nuestro objetivo (en minutos): {0}</value>
+  <data name="Minutes read: &lt;strong&gt;{0:n0}&lt;/strong&gt;" xml:space="preserve">
+    <value>Minutos leidos: &lt;strong&gt;{0:n0}&lt;/strong&gt;</value>
+    <comment>Label for the site reading goal display on a participant's dashboard once the program has closed</comment>
+  </data>
+  <data name="Our goal (in minutes): {0:n0}" xml:space="preserve">
+    <value>Nuestro objetivo (en minutos): {0:n0}</value>
     <comment>Label for the site reading goal display to indicate site reading goal on a participant's dashboard</comment>
   </data>
 </root>

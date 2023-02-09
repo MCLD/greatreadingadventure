@@ -146,29 +146,29 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
                 @Model.DashboardAlert
             </div>
         }
-        @if (Model.SiteStage == GRA.Domain.Model.SiteStage.ProgramOpen)
+        @if (Model.SiteReadingGoal.HasValue && Model.SiteStage != SiteStage.BeforeRegistration && Model.SiteStage != SiteStage.RegistrationOpen)
         {
-            @if (Model.SiteReadingGoal.HasValue)
-            {
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <p style="font-size: large;">@SharedHtmlLocalizer["So far we have read <strong>{0:n0}</strong> minutes!", Model.TotalSiteActivity.Value]</p>
-                        <div class="progress" style="margin:0px;">
-                            <div class="progress-bar progress-bar-info progress-bar-striped @(Model.SiteActivityPercentComplete == 100 ? " progress-bar-success" : "") wide-tooltip"
+            <div class="panel panel-default">
+                <div class="panel-body text-center">
+                    <p style="font-size: large;">@SharedHtmlLocalizer[Model.SiteStage == SiteStage.ProgramOpen ? GRA.Annotations.Info.MinutesReadSoFar : GRA.Annotations.Info.MinutesRead, Model.TotalSiteActivity.Value]</p>
+                    <div class="progress" style="margin-bottom: 0;">
+                        <div class="progress-bar progress-bar-info progress-bar-striped @(Model.SiteActivityPercentComplete == 100 ? " progress-bar-success" : "") wide-tooltip"
                          role="progressbar"
                          aria-valuenow="@Model.SiteActivityPercentComplete"
                          aria-valuemin="0"
                          aria-valuemax="100"
                          style="width: @Model.SiteActivityPercentComplete%; min-width: 10%;"
-                         title="@SharedLocalizer["Our goal is {0:n0} minutes.", @Model.SiteReadingGoal]"
+                         title="@SharedLocalizer[GRA.Annotations.Info.OurGoalInMinutes, @Model.SiteReadingGoal]"
                          data-toggle="tooltip"
                          data-placement="top">
-                                @Model.SiteActivityPercentComplete%
-                            </div>
+                            @Model.SiteActivityPercentComplete%
                         </div>
                     </div>
                 </div>
-            }
+            </div>
+        }
+        @if (Model.SiteStage == GRA.Domain.Model.SiteStage.ProgramOpen)
+        {
             if (Model.SingleEvent)
             {
                 <div class="panel panel-default">
