@@ -51,6 +51,17 @@
                 </div>
             </div>
         }
+        @if (!string.IsNullOrEmpty(Model?.ReferencesPath))
+        {
+            <div class="row" style="padding-bottom:15px;">
+                <div class="col-xs-12" style="text-align:center;">
+                    <a aria-label="View References (Opens new window)"
+                   href="~/@Model.ReferencesPath"
+                   target="_blank"
+                   class="btn btn-primary">View References</a>
+                </div>
+            </div>
+        }
         <div class="row" style="padding-bottom:15px;">
             <div class="col-xs-12" style="text-align:center;">
                 <a asp-action="Performers" asp-route-page="@Model.ReturnPage" class="btn btn-default">Return to List</a>
@@ -82,8 +93,8 @@
                     @if (Model.Uri != null)
                     {
                         <a aria-label="@Model.Performer.Website (Opens new window)"
-                           href="@Model.Uri"
-                           target="_blank">@Model.Performer.Website</a>
+                   href="@Model.Uri"
+                   target="_blank">@Model.Performer.Website</a>
                     }
                     else
                     {
@@ -158,12 +169,15 @@
         </h2>
     </div>
     <div class="col-xs-12">
-        @{int count = 0;}
+        @{
+            int count = 0;
+        }
         @for (var calendarMonth = new DateTime(Model.Settings.ScheduleStartDate.Value.Year, Model.Settings.ScheduleStartDate.Value.Month, 1); calendarMonth <= Model.Settings.ScheduleEndDate.Value; calendarMonth = calendarMonth.AddMonths(1))
         {
             @if (count % 3 == 0)
             {
-                @Html.Raw("<div class=\"row\">");
+                @Html.Raw("<div class=\"row\">")
+                ;
             }
             <div class="col-xs-12 col-md-4">
                 <table class="table table-condensed">
@@ -180,7 +194,9 @@
                                     @day.ToShortDateString() @day.Date.DayOfWeek
                                 </td>
                                 <td>
-                                    @{var blackoutDate = Model.BlackoutDates.FirstOrDefault(_ => _.Date == day.Date); }
+                                    @{
+                                        var blackoutDate = Model.BlackoutDates.FirstOrDefault(_ => _.Date == day.Date);
+                                    }
                                     @if (blackoutDate != null)
                                     {
                                         <div class="blackout-text">@blackoutDate.Reason</div>
@@ -210,13 +226,15 @@
             </div>
             if (count % 3 == 2)
             {
-                @Html.Raw("</div>");
+                @Html.Raw("</div>")
+                ;
             }
             { count++; }
         }
         @if (count % 3 != 2)
         {
-            @Html.Raw("</div>");
+            @Html.Raw("</div>")
+            ;
         }
     </div>
 </div>
@@ -247,13 +265,13 @@
                         <div>
                             <span class="colored-icon fas fa-lg @(Model.Performer.AllBranches || Model.BranchAvailability.Contains(branch.Id) ? "fa-check" : "fa-times")"></span>
                             <label data-toggle="tooltip"
-                                   data-placement="top"
-                                   title="@branch.Address">
+                               data-placement="top"
+                               title="@branch.Address">
                                 @branch.Name
                             </label>
                             <a aria-label="Map (Opens new window)"
-                               href="https://www.google.com/maps/search/@branch.Address"
-                               target="_blank">
+                           href="https://www.google.com/maps/search/@branch.Address"
+                           target="_blank">
                                 <span class="far fa-map"></span>
                             </a>
                         </div>
