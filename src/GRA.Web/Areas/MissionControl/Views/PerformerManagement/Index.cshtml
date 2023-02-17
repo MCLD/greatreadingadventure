@@ -51,26 +51,26 @@
                     <div class="panel-heading" role="tab" id="heading-@system.Id">
                         <h4 class="panel-title">
                             <a class="collapsed"
-                               role="button"
-                               data-toggle="collapse"
-                               data-parent="#accordion"
-                               href="#collapse-@system.Id"
-                               aria-expanded="false"
-                               aria-controls="collapse-@system.Id">
+                           role="button"
+                           data-toggle="collapse"
+                           data-parent="#accordion"
+                           href="#collapse-@system.Id"
+                           aria-expanded="false"
+                           aria-controls="collapse-@system.Id">
                                 @system.Name
                                 <span class="pull-right">@Model.Percent[system.Id]<span class="hidden-xs"> @Model.Completion[system.Id]</span></span>
                             </a>
                         </h4>
                     </div>
                     <div id="collapse-@system.Id"
-                         class="panel-collapse @Model.CollapsePanel"
-                         role="tabpanel"
-                         aria-labelledby="heading-@system.Id">
+                     class="panel-collapse @Model.CollapsePanel"
+                     role="tabpanel"
+                     aria-labelledby="heading-@system.Id">
                         <div class="panel-body">
                             <div class="progress">
                                 <div class="progress-bar"
-                                     role="progressbar"
-                                     style="width: @Model.Percent[system.Id]; min-width: 2em;">
+                                 role="progressbar"
+                                 style="width: @Model.Percent[system.Id]; min-width: 2em;">
                                     @Model.Percent[system.Id]
                                 </div>
                             </div>
@@ -81,28 +81,34 @@
                                     <tr>
                                         <td>@branch.Name</td>
                                         <td class="text-right">
-                                            @{int count = 0;}
+                                            @{
+                                                int count = 0;
+                                            }
                                             @foreach (var selection in branch.Selections)
                                             {
                                                 count++;
                                                 <span class="fa-stack cursor-pointer"
-                                                      style="color: @selection.AgeGroup.IconColor"
-                                                      title="@selection.Summary"
-                                                      data-toggle="modal"
-                                                      data-target="#selectionDetailsModal"
-                                                      data-selectionname="@(selection.KitId.HasValue ? selection.Kit.Name : selection.Program.Title)"
-                                                      data-agegroupname="@selection.AgeGroup.Name"
-                                                      data-branchname="@branch.Name"
-                                                      data-systemname="@system.Name"
-                                                      data-contactname="@selection.User.FullName"
-                                                      data-contactemail="@selection.User.Email"
-                                                      data-scheduled="@selection.RequestedStartTime"
-                                                      data-selectedat="@selection.SelectedAt"
-                                                      data-backtoback="@selection.BackToBackProgram"
-                                                      data-duration="@selection.ScheduleDuration"
-                                                      data-startsat="@selection.StartsAt"
-                                                      data-endsat="@selection.EndsAt"
-                                                      data-iskit="@selection.KitId.HasValue">
+                                          style="color: @selection.AgeGroup.IconColor"
+                                          title="@selection.Summary"
+                                          data-toggle="modal"
+                                          data-target="#selectionDetailsModal"
+                                          data-performerid="@selection.Program?.PerformerId"
+                                          data-performername="@selection.Program?.PerformerName"
+                                          data-selectionid="@selection.Program?.Id"
+                                          data-kitid="@selection.Kit?.Id"
+                                          data-selectionname="@(selection.KitId.HasValue ? selection.Kit.Name : selection.Program.Title)"
+                                          data-agegroupname="@selection.AgeGroup.Name"
+                                          data-branchname="@branch.Name"
+                                          data-systemname="@system.Name"
+                                          data-contactname="@selection.User.FullName"
+                                          data-contactemail="@selection.User.Email"
+                                          data-scheduled="@selection.RequestedStartTime"
+                                          data-selectedat="@selection.SelectedAt"
+                                          data-backtoback="@selection.BackToBackProgram"
+                                          data-duration="@selection.ScheduleDuration"
+                                          data-startsat="@selection.StartsAt"
+                                          data-endsat="@selection.EndsAt"
+                                          data-iskit="@selection.KitId.HasValue">
                                                     @if (selection.KitId.HasValue)
                                                     {
                                                         <span class="fas fa-square fa-stack-2x age-group-id-@selection.AgeGroupId"></span>
@@ -157,9 +163,14 @@
             </div>
             <div class="modal-body">
                 <table class="table table-striped table-condensed">
+                    <tr id="performerrow">
+                        <th>Performer:</th>
+                        <td><a href="#" target="_blank" id="performerlink"><span id="performername"></span> <span class="fas fa-external-link-alt"></span></a></td>
+                    </tr>
+
                     <tr>
                         <th>Selection:</th>
-                        <td><span id="selectionname"></span></td>
+                        <td><a href="#" target="_blank" id="selectionlink"><span id="selectionname"></span> <span class="fas fa-external-link-alt"></span></a></td>
                     </tr>
                     <tr>
                         <th>System:</th>
@@ -207,6 +218,10 @@
 
 @section Scripts {
     <script>
+        var performerBaseLink = '@Url.Action(nameof(PerformerSchedulingController.Performer))'
+        var programBaseLink = '@Url.Action(nameof(PerformerSchedulingController.Program))'
+        var kitBaseLink = '@Url.Action(nameof(PerformerSchedulingController.Kit))'
+
         $('#selectionDetailsModal').on('show.bs.modal', function (e) {
             var dataElement = $(e.relatedTarget).closest('[data-target]');
             $('#selectionDetailsLabel').html(dataElement.data('selectionname') + ' @@ ' + dataElement.data('branchname'));
@@ -221,16 +236,28 @@
             $('#modalstartsat').text(dataElement.data('startsat'));
             $('#modalendsat').text(dataElement.data('endsat'));
             $('#modalselectedat').text(dataElement.data('selectedat'));
+            if (dataElement.data('performername')) {
+                $('#performerrow').show()
+                $('#performername').text(dataElement.data('performername'))
+                $('#performerlink').attr('href', performerBaseLink + '/' + dataElement.data('performerid'));
+            }
+            else {
+                $('#performerrow').hide()
+                $('#performername').text('')
+                $('#performerlink').attr('href', '#');
+            }
             if (dataElement.data('backtoback') === 'True') {
                 $('#modalbacktoback').show();
             } else {
                 $('#modalbacktoback').hide();
             }
             if (dataElement.data('iskit') === 'True') {
+                $('#selectionlink').attr('href', kitBaseLink + '/' + dataElement.data('kitid'))
                 $('#modalscheduledrow').hide();
                 $('#modaldurationrow').hide();
             }
             else {
+                $('#selectionlink').attr('href', programBaseLink + '/' + dataElement.data('selectionid'))
                 $('#modalscheduledrow').show();
                 $('#modaldurationrow').show();
             }
@@ -247,7 +274,7 @@
                     $("#psPerformerCount").text(performerStatus.performerCount);
                     $("#psKitCount").text(performerStatus.kitCount);
                     $("#psSchedulingStage").text(performerStatus.schedulingStage);
-               });
+                });
         }, 300000)
     </script>
 }
