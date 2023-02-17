@@ -446,6 +446,9 @@ namespace GRA.Controllers.MissionControl
                     .GetPerformerAgeGroupsAsync(performer.Id),
                 BlackoutDates = await _performerSchedulingService.GetBlackoutDatesAsync(),
                 Performer = performer,
+                ReferencesPath = string.IsNullOrEmpty(performer?.ReferencesFilename)
+                    ? ""
+                    : _pathResolver.ResolveContentPath(performer.ReferencesFilename),
                 Settings = settings,
                 System = system
             };

@@ -106,7 +106,7 @@
                     <div class="clearfix" style="margin-bottom: 3rem;"></div>
                     <p class="lead"><strong>@Model.SystemName status</strong></p>
                     <table class="table table-striped table-hover table-condensed"
-                           style="width: 70%;">
+                       style="width: 70%;">
                         <tr>
                             <th>Branch</th>
                             <th>Status</th>
@@ -117,28 +117,34 @@
                             <tr>
                                 <td>@branch.Name</td>
                                 <td>
-                                    @{int count = 0;}
+                                    @{
+                                        int count = 0;
+                                    }
                                     @foreach (var selection in branch.Selections)
                                     {
                                         count++;
                                         hasBackToBacks = hasBackToBacks || selection.BackToBackProgram;
                                         <span class="fa-stack cursor-pointer"
-                                              style="color: @selection.AgeGroup.IconColor"
-                                              title="@selection.Summary"
-                                              data-toggle="modal"
-                                              data-target="#selectionDetailsModal"
-                                              data-selectionname="@(selection.KitId.HasValue ? selection.Kit.Name : selection.Program.Title)"
-                                              data-agegroupname="@selection.AgeGroup.Name"
-                                              data-branchname="@branch.Name"
-                                              data-contactname="@selection.User.FullName"
-                                              data-contactemail="@selection.User.Email"
-                                              data-scheduled="@selection.RequestedStartTime"
-                                              data-selectedat="@selection.SelectedAt"
-                                              data-backtoback="@selection.BackToBackProgram"
-                                              data-duration="@selection.ScheduleDuration"
-                                              data-startsat="@selection.StartsAt"
-                                              data-endsat="@selection.EndsAt"
-                                              data-iskit="@selection.KitId.HasValue">
+                                  style="color: @selection.AgeGroup.IconColor"
+                                  title="@selection.Summary"
+                                  data-toggle="modal"
+                                  data-target="#selectionDetailsModal"
+                                  data-performerid="@selection.Program?.PerformerId"
+                                  data-performername="@selection.Program?.PerformerName"
+                                  data-selectionid="@selection.Program?.Id"
+                                  data-kitid="@selection.Kit?.Id"
+                                  data-selectionname="@(selection.KitId.HasValue ? selection.Kit.Name : selection.Program.Title)"
+                                  data-agegroupname="@selection.AgeGroup.Name"
+                                  data-branchname="@branch.Name"
+                                  data-contactname="@selection.User.FullName"
+                                  data-contactemail="@selection.User.Email"
+                                  data-scheduled="@selection.RequestedStartTime"
+                                  data-selectedat="@selection.SelectedAt"
+                                  data-backtoback="@selection.BackToBackProgram"
+                                  data-duration="@selection.ScheduleDuration"
+                                  data-startsat="@selection.StartsAt"
+                                  data-endsat="@selection.EndsAt"
+                                  data-iskit="@selection.KitId.HasValue">
 
                                             @if (selection.KitId.HasValue)
                                             {
@@ -173,7 +179,7 @@
                         @foreach (var ageGroup in Model.AgeGroups)
                         {
                             <span style="color: @ageGroup.IconColor"
-                                  style="white-space: nowrap; display: inline-block; margin-right: 1rem;">
+                          style="white-space: nowrap; display: inline-block; margin-right: 1rem;">
                                 <span class="fas fa-square"></span>
                                 @ageGroup.Name
                             </span>
@@ -213,9 +219,14 @@
             </div>
             <div class="modal-body">
                 <table class="table table-striped table-condensed">
+                    <tr id="performerrow">
+                        <th>Performer:</th>
+                        <td><a href="#" target="_blank" id="performerlink"><span id="performername"></span> <span class="fas fa-external-link-alt"></span></a></td>
+                    </tr>
+
                     <tr>
                         <th>Selection:</th>
-                        <td><span id="selectionname"></span></td>
+                        <td><a href="#" target="_blank" id="selectionlink"><span id="selectionname"></span> <span class="fas fa-external-link-alt"></span></a></td>
                     </tr>
                     <tr>
                         <th>Branch:</th>
@@ -271,6 +282,10 @@
 
 @section Scripts {
     <script>
+        var performerBaseLink = '@Url.Action(nameof(PerformerManagementController.Performer))'
+        var programBaseLink = '@Url.Action(nameof(PerformerManagementController.Program))'
+        var kitBaseLink = '@Url.Action(nameof(PerformerManagementController.Kit))'
+
         $('#selectionDetailsModal').on('show.bs.modal', function (e) {
             var dataElement = $(e.relatedTarget).closest('[data-target]');
             $('#selectionDetailsLabel').html(dataElement.data('selectionname') + ' @@ ' + dataElement.data('branchname'));
@@ -284,16 +299,28 @@
             $('#modalstartsat').text(dataElement.data('startsat'));
             $('#modalendsat').text(dataElement.data('endsat'));
             $('#modalselectedat').text(dataElement.data('selectedat'));
+            if(dataElement.data('performername')) {
+                $('#performerrow').show()
+                $('#performername').text(dataElement.data('performername'))
+                $('#performerlink').attr('href', performerBaseLink + '/' + dataElement.data('performerid'));
+            }
+            else {
+                $('#performerrow').hide()
+                $('#performername').text('')
+                $('#performerlink').attr('href', '#');
+            }
             if (dataElement.data('backtoback') === 'True') {
                 $('#modalbacktoback').show();
             } else {
                 $('#modalbacktoback').hide();
             }
             if (dataElement.data('iskit') === 'True') {
+                $('#selectionlink').attr('href', kitBaseLink + '/' + dataElement.data('kitid'))
                 $('#modalscheduledrow').hide();
                 $('#modaldurationrow').hide();
             }
             else {
+                $('#selectionlink').attr('href', programBaseLink + '/' + dataElement.data('selectionid'))
                 $('#modalscheduledrow').show();
                 $('#modaldurationrow').show();
             }
