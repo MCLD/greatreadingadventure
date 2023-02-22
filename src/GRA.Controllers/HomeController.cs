@@ -342,6 +342,16 @@ namespace GRA.Controllers
                 viewModel.PercentComplete = Math.Min(
                         (int)(viewModel.ActivityEarned * 100 / viewModel.TotalProgramGoal), 100);
 
+                var (siteReadingGoalSet, siteReadingGoal) = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(),
+                    SiteSettingKey.Site.ReadingGoalInMinutes);
+                if (siteReadingGoalSet)
+                {
+                    viewModel.SiteReadingGoal = siteReadingGoal;
+                    viewModel.TotalSiteActivity = await _activityService.GetSiteActivityEarnedAsync();
+                    viewModel.SiteActivityPercentComplete = Math.Min(
+                        (int)(viewModel.TotalSiteActivity * 100.0 / viewModel.SiteReadingGoal), 100);
+                }
+
                 var userVendorCode = await _vendorCodeService.GetUserVendorCodeAsync(user.Id);
                 if (userVendorCode?.CanBeDonated == true && userVendorCode.IsDonated == null
                     && (!userVendorCode.ExpirationDate.HasValue

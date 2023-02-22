@@ -18,6 +18,7 @@ namespace GRA.Domain.Service
         private readonly IAvatarItemRepository _avatarItemRepository;
         private readonly IBadgeRepository _badgeRepository;
         private readonly IBookRepository _bookRepository;
+        private readonly IGraCache _cache;
         private readonly IChallengeRepository _challengeRepository;
         private readonly IChallengeTaskRepository _challengeTaskRepository;
         private readonly ICodeSanitizer _codeSanitizer;
@@ -47,6 +48,7 @@ namespace GRA.Domain.Service
             IChallengeRepository challengeRepository,
             IChallengeTaskRepository challengeTaskRepository,
             IEventRepository eventRepository,
+            IGraCache cache,
             INotificationRepository notificationRepository,
             IPointTranslationRepository pointTranslationRepository,
             IProgramRepository programRepository,
@@ -72,6 +74,8 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(badgeRepository));
             _bookRepository = bookRepository
                 ?? throw new ArgumentNullException(nameof(bookRepository));
+            _cache = cache
+                ?? throw new ArgumentNullException(nameof(cache));
             _challengeRepository = challengeRepository
                 ?? throw new ArgumentNullException(nameof(challengeRepository));
             _challengeTaskRepository = challengeTaskRepository
@@ -190,6 +194,26 @@ namespace GRA.Domain.Service
         public async Task<int> GetActivityEarnedAsync()
         {
             return await _userLogRepository.GetActivityEarnedForUserAsync(GetActiveUserId());
+        }
+
+        public async Task<int?> GetSiteActivityEarnedAsync()
+        {
+            string cacheKey = string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                CacheKey.SiteActivityEarned,
+                GetCurrentSiteId());
+
+            var siteActivityEarned = await _cache.GetIntFromCacheAsync(cacheKey);
+
+            if (siteActivityEarned == null)
+            {
+                siteActivityEarned = await _userLogRepository.GetSiteActivityEarnedAsync(GetCurrentSiteId());
+
+                await _cache.SaveToCacheAsync(cacheKey,
+                    siteActivityEarned,
+                    ExpireInTimeSpan(5));
+            }
+
+            return siteActivityEarned;
         }
 
         public async Task<PointTranslation> GetUserPointTranslationAsync()

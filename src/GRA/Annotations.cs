@@ -56,12 +56,15 @@
             public const string GroupRegister = "Register new {0} Member";
             public const string LetYouKnowWhen = "Thanks! We'll let you know when you can join the program.";
             public const string MailForHelp = "If you can't find something, please <a href=\"{0}\">send us a mail</a> and let us know what you were looking for, we'll do our best to help.";
+            public const string MinutesRead = "Minutes read: <strong>{0:n0}</strong>";
+            public const string MinutesReadSoFar = "Minutes read so far: <strong>{0:n0}</strong>";
             public const string NoBadges = "You have not earned any badges yet.";
             public const string NoBooksLogged = "No books logged.";
             public const string NoCertificates = "You have not earned any certificates yet.";
             public const string NoHistory = "No history to display.";
             public const string NoPrizes = "No prizes yet, keep reading!";
             public const string NoUnlockedBundles = "No unlocked bundles";
+            public const string OurGoalInMinutes = "Our goal (in minutes): {0:n0}";
             public const string PasswordRecoverySent = "A password recovery email has been sent to the email for username '{0}'.";
             public const string PasswordResetFor = "Password reset for: {0}";
             public const string PickedUp = "Picked up";
@@ -70,6 +73,7 @@
             public const string ProgramEnded = "{0} has ended, please join us next time!";
             public const string ReceivedCertificate = "You've received a certificate!";
             public const string RegistrationNotOpenYet = "Registration for {0} is not open yet.";
+            public const string SiteGoalHeader = "Summer Reading Community Goal";
             public const string StatusSaved = "Your status has been saved!";
             public const string StatusSavedPercentage = "Your status has been saved. You have completed {0}% of the required tasks for the challenge: {1}!";
             public const string SuccessfullyJoined = "You've successfully joined <strong>{0}</strong>!";

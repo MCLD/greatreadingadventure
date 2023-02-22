@@ -16,7 +16,7 @@
         <p>@SharedLocalizer[GRA.Annotations.Home.GoOnAJourney]</p>
     </div>
     <div class="col-sm-6">
-        @SharedLocalizer[GRA.Annotations.Home.WelcomeTo, Model.SiteName]
+        <p>@SharedLocalizer[GRA.Annotations.Home.WelcomeTo, Model.SiteName]</p>
         @if (Model == null || string.IsNullOrEmpty(Model.RegistrationOpens))
         {
             <p>@SharedLocalizer[GRA.Annotations.Home.WhenProgramStarts]</p>
@@ -26,13 +26,14 @@
             <p>@SharedLocalizer[GRA.Annotations.Home.ProgramStartsOn, Model.RegistrationOpens]</p>
 
             <p>@SharedLocalizer[GRA.Annotations.Home.SubmitEmailBelow]</p>
+
             <form asp-controller="Home"
               asp-action="AddReminder"
               method="post"
               role="form"
               class="form-horizontal">
                 <input asp-for="SignUpSource" type="hidden" />
-                <div class="form-group" style="padding: 0.5em 1em;">
+                <div class="form-group" style="padding: 0.5em 1em; margin-top: 1rem;">
                     <label asp-for="Email" class="control-label sr-only">@SharedLocalizer[GRA.Domain.Model.DisplayNames.EmailAddress]</label>
                     <div class="input-group">
                         <input asp-for="Email" class="form-control" type="email" autofocus />
@@ -51,15 +52,17 @@
         {
             <p>@SharedLocalizer[GRA.Annotations.Home.ProgramStartsOn, Model.RegistrationOpens]</p>
         }
-        <form asp-controller="Home"
-              asp-action="GetIcs"
-              method="post"
-              role="form">
-            <button type="submit" class="btn btn-primary center-block">
-                <span class="fas fa-calendar-alt"></span>
-                @SharedLocalizer[GRA.Annotations.Home.CalendarReminder]
-            </button>
-        </form>
+        <div class="gra-landing-calendar-button">
+            <form asp-controller="Home"
+                  asp-action="GetIcs"
+                  method="post"
+                  role="form">
+                <button type="submit" class="btn btn-primary center-block">
+                    <span class="fas fa-calendar-alt"></span>
+                    @SharedLocalizer[GRA.Annotations.Home.CalendarReminder]
+                </button>
+            </form>
+        </div>
     </div>
     <div class="col-sm-3">
         <p>@SharedLocalizer[GRA.Annotations.Home.Read20]</p>
