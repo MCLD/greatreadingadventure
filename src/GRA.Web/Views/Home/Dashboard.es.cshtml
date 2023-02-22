@@ -90,12 +90,12 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
                     {
                         <p style="font-size:large">@SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProgress]</p>
                         <div class="progress" style="margin:0px;">
-                            <div class="progress-bar progress-bar-striped@(Model.PercentComplete == 100 ? " progress-bar-success" : "") wide-tooltip"
+                            <div class="progress-bar progress-bar-striped @(Model.PercentComplete == 100 ? " progress-bar-success" : "") wide-tooltip"
                          role="progressbar"
                          aria-valuenow="@Model.PercentComplete"
                          aria-valuemin="0"
                          aria-valuemax="100"
-                         style="width: @Model.PercentComplete%;"
+                         style="width: @Model.PercentComplete%; min-width: 10%;"
                          title="@Model.ProgressMessage"
                          data-toggle="tooltip"
                          data-placement="top">
@@ -112,38 +112,67 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
         }
     </div>
     <div class="col-sm-6">
-        <div class="panel panel-default">
-            <div class="panel-body text-center">
-                <span class="lead">@SharedHtmlLocalizer["Welcome <strong>{0}!</strong>", Model.User.FirstName]</span>
-                @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessPerformerRegistration))
-                && !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
-                && Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
-                {
-                    <p class="lead" style="padding-top: 2rem;">
-                        Welcome, performer! Please click on the theater masks icon at the top of the
-                        screen (<a asp-area="PerformerRegistration" asp-controller="Home" asp-action="Index"><span class="fas fa-theater-masks"></span></a>)
-                        and enter your performer information and details about the programs you are
-                        able to perform!
-                    </p>
-                }
-                @if (Model.SiteStage == GRA.Domain.Model.SiteStage.RegistrationOpen)
-                {
-                    <p class="lead" style="padding-top: 2rem;">
-                        @SharedLocalizer["Once the program starts, you will enter your activity right here!"]
-                    </p>
-                }
-                else if (Model.SiteStage == GRA.Domain.Model.SiteStage.ProgramEnded)
-                {
-                    <p class="lead" style="padding-top: 2rem;">
-                        @SharedLocalizer["The program has ended, thanks for participating!"]
-                    </p>
-                }
-            </div>
-        </div>
+        @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessPerformerRegistration))
+        && !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
+        && Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
+        {
+            <p class="lead" style="padding-top: 2rem;">
+                Welcome, performer! Please click on the theater masks icon at the top of the
+                screen (<a asp-area="PerformerRegistration" asp-controller="Home" asp-action="Index"><span class="fas fa-theater-masks"></span></a>)
+                and enter your performer information and details about the programs you are
+                able to perform!
+            </p>
+        }
+        else
+        {
+            @if (!Model.SiteReadingGoal.HasValue
+           || (Model.SiteReadingGoal.HasValue && (Model.SiteStage == SiteStage.BeforeRegistration || Model.SiteStage == SiteStage.RegistrationOpen)))
+            {
+                <div class="panel panel-default">
+                    <div class="panel-body text-center">
+                        <span class="lead">@SharedHtmlLocalizer["Welcome <strong>{0}!</strong>", Model.User.FirstName]</span>
+                        @if (Model.SiteStage == GRA.Domain.Model.SiteStage.RegistrationOpen)
+                        {
+                            <p class="lead" style="padding-top: 2rem;">
+                                @SharedLocalizer["Once the program starts, you will enter your activity right here!"]
+                            </p>
+                        }
+                        else if (Model.SiteStage == GRA.Domain.Model.SiteStage.ProgramEnded)
+                        {
+                            <p class="lead" style="padding-top: 2rem;">
+                                @SharedLocalizer["The program has ended, thanks for participating!"]
+                            </p>
+                        }
+                    </div>
+                </div>
+            }
+        }
         @if (!string.IsNullOrEmpty(Model.DashboardAlert?.Trim()))
         {
             <div class="alert @GRA.Controllers.ViewModel.Home.DashboardViewModel.AlertClass(Model.DashboardAlertType)">
                 @Model.DashboardAlert
+            </div>
+        }
+        @if (Model.SiteReadingGoal.HasValue && Model.SiteStage != SiteStage.BeforeRegistration && Model.SiteStage != SiteStage.RegistrationOpen)
+        {
+            <div class="panel panel-default">
+                <div class="panel-heading"><strong>@SharedLocalizer[GRA.Annotations.Info.SiteGoalHeader]</strong></div>
+                <div class="panel-body text-center">
+                    <p style="font-size: large;">@SharedHtmlLocalizer[Model.SiteStage == SiteStage.ProgramOpen ? GRA.Annotations.Info.MinutesReadSoFar : GRA.Annotations.Info.MinutesRead, Model.TotalSiteActivity.Value]</p>
+                    <div class="progress" style="margin-bottom: 0;">
+                        <div class="progress-bar progress-bar-info progress-bar-striped @(Model.SiteActivityPercentComplete == 100 ? " progress-bar-success" : "") wide-tooltip"
+                         role="progressbar"
+                         aria-valuenow="@Model.SiteActivityPercentComplete"
+                         aria-valuemin="0"
+                         aria-valuemax="100"
+                         style="width: @Model.SiteActivityPercentComplete%; min-width: 10%;"
+                         title="@SharedLocalizer[GRA.Annotations.Info.OurGoalInMinutes, @Model.SiteReadingGoal]"
+                         data-toggle="tooltip"
+                         data-placement="top">
+                            @Model.SiteActivityPercentComplete%
+                        </div>
+                    </div>
+                </div>
             </div>
         }
         @if (Model.SiteStage == GRA.Domain.Model.SiteStage.ProgramOpen)
@@ -191,14 +220,15 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
                                     <span asp-validation-for="ActivityAmount" class="text-danger"></span>
                                 </div>
                             </div>
-
-                            <div class="h4">
-                                <hr />
-                                @SharedLocalizer[GRA.Annotations.Interface.Optional]:
-                                <span class="fas fa-info-circle wide-tooltip"
-                              title="@SharedLocalizer[GRA.Annotations.Info.DashboardOptionalFields]"
-                              data-toggle="tooltip"
-                              data-placement="top"></span>
+                            <hr />
+                            <div class="row" style="margin-bottom: 1rem;">
+                                <div class="col-xs-12">
+                                    <span class="h4">@SharedLocalizer[GRA.Annotations.Interface.Optional]</span>
+                                    <span class="fas fa-info-circle fa-sm wide-tooltip"
+                                  title="@SharedLocalizer[GRA.Annotations.Info.DashboardOptionalFields]"
+                                  data-toggle="tooltip"
+                                  data-placement="top"></span>
+                                </div>
                             </div>
 
                             <div class="row row-spacing">
@@ -316,7 +346,6 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
                                     </div>
                                 }
                                 display++;
-
                                 if (display >= 6)
                                 {
                                     <div class="col-xs-12 visible-lg visible-md visible-xs">

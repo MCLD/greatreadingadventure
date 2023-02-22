@@ -1613,10 +1613,6 @@
     <value>Available for pickup</value>
     <comment>Message shown when user has a prize available for pickup, not yet redeemed.</comment>
   </data>
-  <data name="No Prizes" xml:space="preserve">
-    <value>No prizes yet, keep reading!</value>
-    <comment>Message shown when a user attempts to view their prize history but they have not earned any.</comment>
-  </data>
   <data name="Certificate" xml:space="preserve">
     <value>Certificate</value>
     <comment>Label for a user to download a certificate in their profile history.</comment>
@@ -1644,5 +1640,21 @@
   <data name="No prizes yet, keep reading!" xml:space="preserve">
     <value>No prizes yet, keep reading!</value>
     <comment>Shown on the profile page prize list if the participant hasn't earned any prizes</comment>
+  </data>
+  <data name="Minutes read so far: &lt;strong&gt;{0:n0}&lt;/strong&gt;" xml:space="preserve">
+    <value>Minutes read so far: &lt;strong&gt;{0:n0}&lt;/strong&gt;</value>
+    <comment>Label for the site reading goal display on a participant's dashboard while the program is open</comment>
+  </data>
+  <data name="Minutes read: &lt;strong&gt;{0:n0}&lt;/strong&gt;" xml:space="preserve">
+    <value>Minutes read: &lt;strong&gt;{0:n0}&lt;/strong&gt;</value>
+    <comment>Label for the site reading goal display on a participant's dashboard once the program has closed</comment>
+  </data>
+  <data name="Our goal (in minutes): {0:n0}" xml:space="preserve">
+    <value>Our goal (in minutes): {0:n0}</value>
+    <comment>Label for the site reading goal display to indicate site reading goal on a participant's dashboard</comment>
+  </data>
+  <data name="Summer Reading Community Goal" xml:space="preserve">
+    <value>Summer Reading Community Goal</value>
+    <comment>Shown at the top of the goal for all program participants</comment>
   </data>
 </root>
