@@ -343,6 +343,44 @@ namespace GRA.Domain.Service
             return await _vendorCodeRepository.GetUnreportedEmailAwardCodes(GetCurrentSiteId(),
                 vendorCodeTypeId);
         }
+        public async Task<IEnumerable<VendorCodeInfo>> GetAssociatedVendorCodeInfoAsync(int userId)
+        {
+            var authorized = false;
+            var authId = GetClaimId(ClaimType.UserId);
+            if (userId == authId
+                || userId == GetActiveUserId()
+                || HasPermission(Permission.ViewParticipantDetails))
+            {
+                authorized = true;
+            }
+
+            if (!authorized)
+            {
+                var user = await _userRepository.GetByIdAsync(userId);
+                authorized = user.HouseholdHeadUserId == authId;
+            }
+
+            if (authorized)
+            {
+                var codes = await _vendorCodeRepository.GetAssociatedVendorCodes(userId);
+
+                var vendorCodeInfos = new List<VendorCodeInfo>();
+
+                foreach (var code in codes)
+                {
+                    vendorCodeInfos.Add(await GetVendorCodeInfoAsync(code));
+                }
+
+                return vendorCodeInfos;
+            }
+            else
+            {
+                _logger.LogError("User {AuthId} doesn't have permission to view details for {UserId}.",
+                    authId,
+                    userId);
+                throw new GraException("Permission denied.");
+            }
+        }
 
         public async Task<VendorCode> GetUserVendorCodeAsync(int userId)
         {
@@ -390,7 +428,9 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {authId} doesn't have permission to view details for {userId}.");
+                _logger.LogError("User {AuthId} doesn't have permission to view details for {UserId}.",
+                    authId,
+                    userId);
                 throw new GraException("Permission denied.");
             }
         }
@@ -400,11 +440,32 @@ namespace GRA.Domain.Service
             return await _vendorCodeRepository.GetByCode(code);
         }
 
-        public Task PopulateVendorCodeStatusAsync(User user)
+        public async Task PopulateVendorCodeStatusAsync(User user)
         {
             if (user == null) { throw new ArgumentNullException(nameof(user)); }
 
-            return PopulateVendorCodeStatusInternalAsync(user);
+            var vendorCode = await GetUserVendorCodeAsync(user.Id);
+
+            if (!string.IsNullOrEmpty(vendorCode?.Code))
+            {
+                var vendorCodeInfo = await GetVendorCodeInfoAsync(vendorCode.Code);
+
+
+                user.CanDonateVendorCode = vendorCodeInfo.CanDonate;
+                user.CanEmailAwardVendorCode = vendorCodeInfo.CanEmailAward;
+                user.Donated = vendorCodeInfo.IsDonated;
+                user.EmailAwarded = vendorCodeInfo.IsEmailAwarded;
+                user.EmailAwardInstructions = vendorCodeInfo.EmailAwardInstructions;
+                user.IsDonationLocked = vendorCodeInfo.IsDonationLocked;
+                user.NeedsToAnswerVendorCodeQuestion = vendorCodeInfo.NeedsToAnswerVendorCodeQuestion;
+                user.VendorOrderStatus = vendorCodeInfo.OrderStatus;
+                user.VendorCode = vendorCodeInfo.VendorCodeDisplay;
+                user.VendorCodeMessage = vendorCodeInfo.VendorCodeMessage;
+                user.VendorCodePackingSlip = vendorCodeInfo.VendorCodePackingSlip;
+                user.VendorCodeUrl = vendorCodeInfo.VendorCodeUrl;
+                user.VendorIsDamaged = vendorCodeInfo.IsDamaged;
+                user.VendorIsMissing = vendorCodeInfo.IsMissing;
+            }
         }
 
         public async Task<JobStatus> ReceivePackingSlipJobAsync(int jobId,
@@ -1785,17 +1846,36 @@ namespace GRA.Domain.Service
             await _vendorCodeRepository.UpdateSaveAsync(GetActiveUserId(), vendorCode);
         }
 
-        private async Task PopulateVendorCodeStatusInternalAsync(User user)
+        public async Task<VendorCodeInfo> GetUserVendorCodeInfoAsync(int userId)
         {
-            var vendorCode = await GetUserVendorCodeAsync(user.Id);
+            var vendorCode = await GetUserVendorCodeAsync(userId);
+            if(vendorCode != null)
+            {
+                return await GetVendorCodeInfoAsync(vendorCode);
+            }
+            return null;
+        }
+
+        private async Task<VendorCodeInfo> GetVendorCodeInfoAsync(string code)
+        {
+            return await GetVendorCodeInfoAsync(await GetVendorCodeByCode(code));
+        }
+
+        private async Task<VendorCodeInfo> GetVendorCodeInfoAsync(VendorCode vendorCode)
+        {
+            var vendorCodeInfo = new VendorCodeInfo
+            {
+                VendorCode = vendorCode
+            };
+
             if (vendorCode != null)
             {
-                user.Donated = vendorCode.IsDonated;
-                if (user.Donated == true)
+                vendorCodeInfo.IsDonated = vendorCode.IsDonated;
+                if (vendorCodeInfo.IsDonated == true)
                 {
-                    user.IsDonationLocked = vendorCode.IsDonationLocked;
+                    vendorCodeInfo.IsDonationLocked = vendorCode.IsDonationLocked;
                 }
-                user.EmailAwarded = vendorCode.IsEmailAward;
+                vendorCodeInfo.IsEmailAwarded = vendorCode.IsEmailAward;
 
                 if ((vendorCode.CanBeDonated || vendorCode.CanBeEmailAward)
                     && vendorCode.IsDonated == null && vendorCode.IsEmailAward == null)
@@ -1803,19 +1883,19 @@ namespace GRA.Domain.Service
                     if (!vendorCode.ExpirationDate.HasValue
                         || vendorCode.ExpirationDate.Value > _dateTimeProvider.Now)
                     {
-                        user.CanDonateVendorCode = vendorCode.CanBeDonated;
-                        user.CanEmailAwardVendorCode = vendorCode.CanBeEmailAward;
-                        user.NeedsToAnswerVendorCodeQuestion = true;
+                        vendorCodeInfo.CanDonate = vendorCode.CanBeDonated;
+                        vendorCodeInfo.CanEmailAward = vendorCode.CanBeEmailAward;
+                        vendorCodeInfo.NeedsToAnswerVendorCodeQuestion = true;
 
                         if (vendorCode.CanBeEmailAward)
                         {
                             var currentCulture = _userContextProvider.GetCurrentCulture();
                             var languageId = await _languageService
                                 .GetLanguageIdAsync(currentCulture.Name);
-                            user.EmailAwardInstructions = await _vendorCodeTypeRepository
+                            vendorCodeInfo.EmailAwardInstructions = await _vendorCodeTypeRepository
                                 .GetEmailAwardInstructionText(vendorCode.VendorCodeTypeId,
                                     languageId);
-                            if (string.IsNullOrWhiteSpace(user.EmailAwardInstructions))
+                            if (string.IsNullOrWhiteSpace(vendorCodeInfo.EmailAwardInstructions))
                             {
                                 _logger.LogError("Email award instructions are not set for code type {codeTypeId}",
                                     vendorCode.VendorCodeTypeId);
@@ -1827,18 +1907,18 @@ namespace GRA.Domain.Service
                 {
                     var vendorCodeType = await _vendorCodeTypeRepository
                         .GetByIdAsync(vendorCode.VendorCodeTypeId);
-                    user.VendorCode = vendorCodeType.DonationMessage;
+                    vendorCodeInfo.VendorCodeDisplay = vendorCodeType.DonationMessage;
                 }
                 else if (vendorCode.CanBeEmailAward && vendorCode.IsEmailAward == true)
                 {
                     var vendorCodeType = await _vendorCodeTypeRepository
                         .GetByIdAsync(vendorCode.VendorCodeTypeId);
-                    user.VendorCode = vendorCodeType.EmailAwardMessage;
+                    vendorCodeInfo.VendorCodeDisplay = vendorCodeType.EmailAwardMessage;
                 }
                 else
                 {
-                    user.VendorCode = vendorCode.Code;
-                    user.VendorCodeUrl = vendorCode.Url;
+                    vendorCodeInfo.VendorCodeDisplay = vendorCode.Code;
+                    vendorCodeInfo.VendorCodeUrl = vendorCode.Url;
 
                     var vendorPrize = await _prizeWinnerService
                         .GetPrizeForVendorCodeAsync(vendorCode.Id);
@@ -1852,8 +1932,8 @@ namespace GRA.Domain.Service
 
                     if (vendorPrize?.RedeemedAt.HasValue == true)
                     {
-                        user.VendorOrderStatus = VendorOrderStatus.Receieved;
-                        user.VendorCodeMessage
+                        vendorCodeInfo.OrderStatus = VendorOrderStatus.Receieved;
+                        vendorCodeInfo.VendorCodeMessage
                             = _sharedLocalizer[Annotations.Info.VendorItemPickedup,
                                 itemName,
                                 vendorPrize.RedeemedAt.Value
@@ -1861,51 +1941,54 @@ namespace GRA.Domain.Service
                     }
                     else
                     {
-                        user.VendorIsMissing = vendorCode.IsMissing == true;
-                        user.VendorIsDamaged = vendorCode.IsDamaged == true;
+                        vendorCodeInfo.IsMissing = vendorCode.IsMissing == true;
+                        vendorCodeInfo.IsDamaged = vendorCode.IsDamaged == true;
 
                         if (vendorCode.ArrivalDate.HasValue
                             && vendorCode.IsDamaged != true
                             && vendorCode.IsMissing != true)
                         {
-                            user.VendorCodeMessage
+                            vendorCodeInfo.VendorCodeMessage
                                 = _sharedLocalizer[Annotations.Info.VendorItemArrived,
                                     itemName,
                                     vendorCode.ArrivalDate.Value
                                         .ToString("d", CultureInfo.InvariantCulture)];
 
-                            user.VendorOrderStatus = VendorOrderStatus.Arrived;
+                            vendorCodeInfo.OrderStatus = VendorOrderStatus.Arrived;
                         }
                         else if (vendorCode.ShipDate.HasValue)
                         {
-                            user.VendorCodeMessage
+                            vendorCodeInfo.VendorCodeMessage
                                 = _sharedLocalizer[Annotations.Info.VendorItemShipped,
                                     itemName,
                                     vendorCode.ShipDate.Value
                                         .ToString("d", CultureInfo.InvariantCulture)];
 
-                            user.VendorOrderStatus = VendorOrderStatus.Shipped;
+                            vendorCodeInfo.OrderStatus = VendorOrderStatus.Shipped;
                         }
                         else if (vendorCode.OrderDate.HasValue)
                         {
-                            user.VendorCodeMessage
+                            vendorCodeInfo.VendorCodeMessage
                                 = _sharedLocalizer[Annotations.Info.VendorItemOrdered,
                                     itemName,
                                     vendorCode.OrderDate.Value
                                         .ToString("d", CultureInfo.InvariantCulture)];
 
-                            user.VendorOrderStatus = VendorOrderStatus.Ordered;
+                            vendorCodeInfo.OrderStatus = VendorOrderStatus.Ordered;
                         }
                         else
                         {
-                            user.VendorOrderStatus = VendorOrderStatus.Pending;
+                            vendorCodeInfo.OrderStatus = VendorOrderStatus.Pending;
                         }
                     }
 
-                    user.VendorCodePackingSlip = vendorCode.PackingSlip;
+                    vendorCodeInfo.VendorCodePackingSlip = vendorCode.PackingSlip;
                 }
             }
+
+            return vendorCodeInfo;
         }
+
 
         private async Task<bool?> SendPickupEmailAsync(int templateId,
             int userId,

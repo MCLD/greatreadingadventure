@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using DocumentFormat.OpenXml.Math;
 using GRA.Controllers.ViewModel.MissionControl.Participants;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
@@ -2921,6 +2922,17 @@ namespace GRA.Controllers.MissionControl
             await _userService.UpdateGroup(GetActiveUserId(), groupInfo);
 
             return RedirectToAction("Household", new { id = viewModel.HouseholdHeadUserId });
+        }
+
+        [HttpGet]
+        [Authorize(Policy = Policy.ManageVendorCodes)]
+        public async Task<IActionResult> VendorCodes(int id)
+        {
+            return View(new VendorCodeViewModel
+            {
+                CurrentCode = await _vendorCodeService.GetUserVendorCodeInfoAsync(id),
+                AssociatedCodes = await _vendorCodeService.GetAssociatedVendorCodeInfoAsync(id)
+            });
         }
 
         [HttpPost]

@@ -30,5 +30,7 @@ namespace GRA.Domain.Repository
             int vendorCodeTypeId);
 
         Task<VendorCode> GetUserVendorCode(int userId);
+
+        Task<IEnumerable<string>> GetAssociatedVendorCodes(int userId);
     }
 }

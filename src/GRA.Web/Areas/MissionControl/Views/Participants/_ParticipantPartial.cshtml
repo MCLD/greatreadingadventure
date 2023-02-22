@@ -63,6 +63,10 @@
             {
                 <li ActiveBy routeKey="Action" value="PasswordReset"><a asp-action="PasswordReset" asp-route-id="@Model.Id">Password Reset</a></li>
             }
+            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageVendorCodes.ToString()) && Model.HasAccount)
+            {
+                <li ActiveBy routeKey="Action" value="VendorCodes"><a asp-action="@nameof(ParticipantsController.VendorCodes)" asp-route-id="@Model.Id">Vendor Codes</a></li>
+            }
             @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageRoles.ToString()) && Model.HasAccount)
             {
                 <li ActiveBy routeKey="Action" value="Roles">

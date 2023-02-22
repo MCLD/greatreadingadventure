@@ -81,6 +81,7 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
+
         public async Task<VendorCode> GetByCode(string code)
         {
             var vendorCode = await DbSet.AsNoTracking()
@@ -278,6 +279,15 @@ namespace GRA.Data.Repository
                 .OrderByDescending(_ => _.CreatedAt)
                 .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<string>> GetAssociatedVendorCodes(int userId)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.AssociatedUserId == userId)
+                .OrderBy(_ => _.CreatedAt)
+                .Select(_ => _.Code)
+                .ToListAsync();
         }
     }
 }

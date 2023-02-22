@@ -52,13 +52,15 @@ namespace GRA.Web
                 throw;
             }
 
+            int pendingCount;
             try
             {
                 var pending = dbContext.GetPendingMigrations();
-                if (pending?.Count() > 0)
+                pendingCount = pending?.Count() ?? 0;
+                if (pendingCount > 0)
                 {
                     _log.LogWarning("Applying {MigrationCount} database migrations, last is: {MigrationName}",
-                        pending.Count(),
+                        pendingCount,
                         pending.Last());
                 }
             }
@@ -69,22 +71,25 @@ namespace GRA.Web
                 throw;
             }
 
-            var migrationTimer = Stopwatch.StartNew();
-            try
+            if (pendingCount > 0)
             {
-                dbContext.Migrate();
-                _log.LogWarning("Applied migrations in {Elapsed} ms",
-                    migrationTimer.ElapsedMilliseconds);
-            }
-            catch (Exception ex)
-            {
-                _log.LogError("Startup error applying database migrations: {ErrorMessage}",
-                    ex.Message);
-                throw;
-            }
-            finally
-            {
-                migrationTimer.Stop();
+                var migrationTimer = Stopwatch.StartNew();
+                try
+                {
+                    dbContext.Migrate();
+                    _log.LogWarning("Applied migrations in {Elapsed} ms",
+                        migrationTimer.ElapsedMilliseconds);
+                }
+                catch (Exception ex)
+                {
+                    _log.LogError("Startup error applying database migrations: {ErrorMessage}",
+                        ex.Message);
+                    throw;
+                }
+                finally
+                {
+                    migrationTimer.Stop();
+                }
             }
 
             try

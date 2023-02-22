@@ -1,0 +1,46 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.VendorCodeViewModel
+
+@using GRA.Controllers.ViewModel.MissionControl.Participants
+
+@await Html.PartialAsync("_ParticipantPartial")
+
+<div class="row">
+    <div class="col-xs-12">
+        <table class="table table-condensed table-bordered table-striped">
+            <tr>
+                <th>Code</th>
+                <th>Item</th>
+                <th>Status</th>
+                <th>Dates</th>
+                <th>Notes</th>
+            </tr>
+            @if (Model?.CurrentCode?.VendorCode != null)
+            {
+                <tr class="success">
+                    <td>@Model.CurrentCode.VendorCode.Code</td>
+                    <td>@Model.CurrentCode.VendorCode.Details</td>
+                    <td>@(Model.CurrentCode.IsDonated == true ? "Donated" : Model.CurrentCode.OrderStatus)</td>
+                    <td>@Html.Raw(@VendorCodeViewModel.GetOrderShipDate(Model.CurrentCode))</td>
+                    <td>
+                        @(Model.CurrentCode.IsDamaged ? "Damaged" : null)
+                        @(Model.CurrentCode.IsMissing ? "Missing" : null)
+                    </td>
+                </tr>
+            }
+            @if (Model?.AssociatedCodes?.Count() > 0)
+                @foreach (var vendorInfo in Model?.AssociatedCodes)
+                {
+                    <tr>
+                        <td>@vendorInfo.VendorCode.Code</td>
+                        <td>@vendorInfo.VendorCode.Details</td>
+                        <td>@(vendorInfo.IsDonated == true ? "Donated" : vendorInfo.OrderStatus)</td>
+                        <td>@Html.Raw(VendorCodeViewModel.GetOrderShipDate(vendorInfo))</td>
+                        <td>
+                            @(vendorInfo.IsDamaged ? "Damaged" : null)
+                            @(vendorInfo.IsMissing ? "Missing" : null)
+                        </td>
+                    </tr>
+                }
+        </table>
+    </div>
+</div>
