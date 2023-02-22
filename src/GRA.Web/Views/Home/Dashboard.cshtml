@@ -112,34 +112,41 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
         }
     </div>
     <div class="col-sm-6">
-        <div class="panel panel-default">
-            <div class="panel-body text-center">
-                <span class="lead">@SharedHtmlLocalizer["Welcome <strong>{0}!</strong>", Model.User.FirstName]</span>
-                @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessPerformerRegistration))
-                && !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
-                && Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
-                {
-                    <p class="lead" style="padding-top: 2rem;">
-                        Welcome, performer! Please click on the theater masks icon at the top of the
-                        screen (<a asp-area="PerformerRegistration" asp-controller="Home" asp-action="Index"><span class="fas fa-theater-masks"></span></a>)
-                        and enter your performer information and details about the programs you are
-                        able to perform!
-                    </p>
-                }
-                @if (Model.SiteStage == GRA.Domain.Model.SiteStage.RegistrationOpen)
-                {
-                    <p class="lead" style="padding-top: 2rem;">
-                        @SharedLocalizer["Once the program starts, you will enter your activity right here!"]
-                    </p>
-                }
-                else if (Model.SiteStage == GRA.Domain.Model.SiteStage.ProgramEnded)
-                {
-                    <p class="lead" style="padding-top: 2rem;">
-                        @SharedLocalizer["The program has ended, thanks for participating!"]
-                    </p>
-                }
-            </div>
-        </div>
+        @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessPerformerRegistration))
+        && !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
+        && Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
+        {
+            <p class="lead" style="padding-top: 2rem;">
+                Welcome, performer! Please click on the theater masks icon at the top of the
+                screen (<a asp-area="PerformerRegistration" asp-controller="Home" asp-action="Index"><span class="fas fa-theater-masks"></span></a>)
+                and enter your performer information and details about the programs you are
+                able to perform!
+            </p>
+        }
+        else
+        {
+            @if (!Model.SiteReadingGoal.HasValue
+           || (Model.SiteReadingGoal.HasValue && (Model.SiteStage == SiteStage.BeforeRegistration || Model.SiteStage == SiteStage.RegistrationOpen)))
+            {
+                <div class="panel panel-default">
+                    <div class="panel-body text-center">
+                        <span class="lead">@SharedHtmlLocalizer["Welcome <strong>{0}!</strong>", Model.User.FirstName]</span>
+                        @if (Model.SiteStage == GRA.Domain.Model.SiteStage.RegistrationOpen)
+                        {
+                            <p class="lead" style="padding-top: 2rem;">
+                                @SharedLocalizer["Once the program starts, you will enter your activity right here!"]
+                            </p>
+                        }
+                        else if (Model.SiteStage == GRA.Domain.Model.SiteStage.ProgramEnded)
+                        {
+                            <p class="lead" style="padding-top: 2rem;">
+                                @SharedLocalizer["The program has ended, thanks for participating!"]
+                            </p>
+                        }
+                    </div>
+                </div>
+            }
+        }
         @if (!string.IsNullOrEmpty(Model.DashboardAlert?.Trim()))
         {
             <div class="alert @GRA.Controllers.ViewModel.Home.DashboardViewModel.AlertClass(Model.DashboardAlertType)">
@@ -149,6 +156,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
         @if (Model.SiteReadingGoal.HasValue && Model.SiteStage != SiteStage.BeforeRegistration && Model.SiteStage != SiteStage.RegistrationOpen)
         {
             <div class="panel panel-default">
+                <div class="panel-heading"><strong>@SharedLocalizer[GRA.Annotations.Info.SiteGoalHeader]</strong></div>
                 <div class="panel-body text-center">
                     <p style="font-size: large;">@SharedHtmlLocalizer[Model.SiteStage == SiteStage.ProgramOpen ? GRA.Annotations.Info.MinutesReadSoFar : GRA.Annotations.Info.MinutesRead, Model.TotalSiteActivity.Value]</p>
                     <div class="progress" style="margin-bottom: 0;">

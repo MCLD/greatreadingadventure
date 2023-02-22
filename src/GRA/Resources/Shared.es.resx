@@ -1653,4 +1653,8 @@
     <value>Nuestro objetivo (en minutos): {0:n0}</value>
     <comment>Label for the site reading goal display to indicate site reading goal on a participant's dashboard</comment>
   </data>
+  <data name="Summer Reading Community Goal" xml:space="preserve">
+    <value>Objetivo comunitario de la lectura de verano</value>
+    <comment>Shown at the top of the goal for all program participants</comment>
+  </data>
 </root>
