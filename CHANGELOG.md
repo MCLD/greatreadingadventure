@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Ability to reassign user branch when a branch is deleted
 - Links to performers, programs, and kits in performer scheduling
 - Allow everyone with scheduling permissions to see references
+- Site-wide program reading goal
 
 ### Fixed
 
