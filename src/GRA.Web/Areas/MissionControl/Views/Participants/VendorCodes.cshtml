@@ -4,6 +4,17 @@
 
 @await Html.PartialAsync("_ParticipantPartial")
 
+<div class="row" style="margin-bottom: 2rem;">
+    <div class="col-xs-12">
+        <button type="button"
+                class="btn btn-danger"
+                data-toggle="modal"
+                data-target="#areYouSureModal">
+            Assign new code
+        </button>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-xs-12">
         <table class="table table-condensed table-bordered table-striped">
@@ -20,27 +31,79 @@
                     <td>@Model.CurrentCode.VendorCode.Code</td>
                     <td>@Model.CurrentCode.VendorCode.Details</td>
                     <td>@(Model.CurrentCode.IsDonated == true ? "Donated" : Model.CurrentCode.OrderStatus)</td>
-                    <td>@Html.Raw(@VendorCodeViewModel.GetOrderShipDate(Model.CurrentCode))</td>
-                    <td>
-                        @(Model.CurrentCode.IsDamaged ? "Damaged" : null)
-                        @(Model.CurrentCode.IsMissing ? "Missing" : null)
-                    </td>
+                    <td>@Html.Raw(VendorCodeViewModel.GetFormattedDates(Model.CurrentCode))</td>
+                    <td>@Html.Raw(VendorCodeViewModel.GetFormattedNotes(Model.CurrentCode))</td>
                 </tr>
             }
             @if (Model?.AssociatedCodes?.Count() > 0)
+            {
+                <tr>
+                    <td colspan="5" class="text-center"><strong>Codes below have been replaced.</strong></td>
+                </tr>
                 @foreach (var vendorInfo in Model?.AssociatedCodes)
                 {
                     <tr>
                         <td>@vendorInfo.VendorCode.Code</td>
                         <td>@vendorInfo.VendorCode.Details</td>
                         <td>@(vendorInfo.IsDonated == true ? "Donated" : vendorInfo.OrderStatus)</td>
-                        <td>@Html.Raw(VendorCodeViewModel.GetOrderShipDate(vendorInfo))</td>
-                        <td>
-                            @(vendorInfo.IsDamaged ? "Damaged" : null)
-                            @(vendorInfo.IsMissing ? "Missing" : null)
-                        </td>
+                        <td>@Html.Raw(VendorCodeViewModel.GetFormattedDates(vendorInfo))</td>
+                        <td>@Html.Raw(VendorCodeViewModel.GetFormattedNotes(vendorInfo))</td>
                     </tr>
                 }
+            }
         </table>
     </div>
 </div>
+
+<form method="post" asp-action="@nameof(ParticipantsController.AssignNewCode)">
+    <input type="hidden" name="id" value="@Model.CurrentCode.VendorCode.UserId" />
+    <div class="modal" id="areYouSureModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Confirm code assignment</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to generate a new code?</p>
+                    <ul>
+                        <li>
+                            This participant will have their old Prize removed, and a new Prize
+                            created.
+                        </li>
+                        <li>
+                            This participant will receive a new Mail with their code. They will
+                            still have an old Mail with their old code in it.
+                        </li>
+                        <li>
+                            The primary view for this participant will be of the new code - that's
+                            what they will see in their profile and on the Dashboard.
+                        </li>
+                        <li>
+                            You should probably be in contact with the participant before taking
+                            this action so they are not confused.
+                        </li>
+                    </ul>
+                    <div class="form-group">
+                        <label for="reason">Please give a brief (255 or fewer characters) reason:</label>
+                        <input type="text"
+                               class="form-control"
+                               id="reason"
+                               name="reason"
+                               placeholder="Reason for generating a new code">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-danger">Assign new code</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

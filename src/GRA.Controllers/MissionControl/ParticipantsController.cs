@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using DocumentFormat.OpenXml.Math;
 using GRA.Controllers.ViewModel.MissionControl.Participants;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
@@ -510,19 +509,11 @@ namespace GRA.Controllers.MissionControl
 
                 await _vendorCodeService.PopulateVendorCodeStatusAsync(user);
 
-                var groupInfo
-                    = await _userService.GetGroupFromHouseholdHeadAsync(user.HouseholdHeadUserId ?? id);
-
-                var viewModel = new ParticipantsDetailViewModel
+                var viewModel = new ParticipantsDetailViewModel(await GetPopulatedBaseViewModel(user))
                 {
                     User = user,
-                    Id = user.Id,
                     Username = user.Username,
-                    HouseholdCount = await _userService
-                        .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
-                    IsGroup = groupInfo != null,
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
-                    HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                     CanEditDetails = UserHasPermission(Permission.EditParticipants),
                     RequirePostalCode = (await GetCurrentSiteAsync()).RequirePostalCode,
                     ShowAge = userProgram.AskAge,
@@ -536,26 +527,11 @@ namespace GRA.Controllers.MissionControl
                     IsHomeschooled = user.IsHomeschooled,
                     SchoolNotListed = user.SchoolNotListed,
                     SystemList = new SelectList(systemList.ToList(), "Id", "Name"),
-                    EmailSubscriptionEnabled = await IsSiteSettingSetAsync(
-                        SiteSettingKey.Users.AskEmailSubPermission)
                 };
 
                 if (viewModel.SchoolId.HasValue)
                 {
                     viewModel.School = await _schoolService.GetByIdAsync(viewModel.SchoolId.Value);
-                }
-
-                if (UserHasPermission(Permission.ViewUserPrizes))
-                {
-                    viewModel.PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false);
-                }
-                if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
-                {
-                    viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
-                }
-                if (UserHasPermission(Permission.EditParticipants))
-                {
-                    viewModel.HasEvelatedRole = user.IsAdmin;
                 }
 
                 if (UserHasPermission(Permission.EditParticipantUsernames)
@@ -780,37 +756,14 @@ namespace GRA.Controllers.MissionControl
             var user = await _userService.GetDetailsByPermission(id);
             SetPageTitle(user);
 
-            var groupInfo
-                = await _userService.GetGroupFromHouseholdHeadAsync(user.HouseholdHeadUserId ?? id);
-
-            var viewModel = new LogActivityViewModel
+            var viewModel = new LogActivityViewModel(await GetPopulatedBaseViewModel(user))
             {
-                Id = id,
                 HasPendingQuestionnaire = (await _questionnaireService
                     .GetRequiredQuestionnaire(user.Id, user.Age)).HasValue,
-                HouseholdCount = await _userService
-                    .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
-                IsGroup = groupInfo != null,
-                HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                 DisableSecretCode = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
                 PointTranslation = await _pointTranslationService
                     .GetByProgramIdAsync(user.ProgramId, true),
-                EmailSubscriptionEnabled = await IsSiteSettingSetAsync(
-                        SiteSettingKey.Users.AskEmailSubPermission)
             };
-
-            if (UserHasPermission(Permission.ViewUserPrizes))
-            {
-                viewModel.PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false);
-            }
-            if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
-            {
-                viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
-            }
-            if (UserHasPermission(Permission.EditParticipants))
-            {
-                viewModel.HasEvelatedRole = user.IsAdmin;
-            }
 
             if (UserHasPermission(Permission.ManageVendorCodes))
             {
@@ -1188,13 +1141,10 @@ namespace GRA.Controllers.MissionControl
                 var systemList = (await _siteService.GetSystemList())
                     .OrderByDescending(_ => _.Id == systemId);
 
-                var viewModel = new HouseholdListViewModel
+                var viewModel = new HouseholdListViewModel(await GetPopulatedBaseViewModel(user))
                 {
                     Users = household,
-                    Id = id,
-                    HouseholdCount = household.Count(),
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
-                    HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                     CanRedeemBulkVendorCodes = UserHasPermission(Permission.RedeemBulkVendorCodes),
                     CanEditDetails = UserHasPermission(Permission.EditParticipants),
                     CanImportNewMembers = UserHasPermission(Permission.ImportHouseholdMembers),
@@ -1209,8 +1159,6 @@ namespace GRA.Controllers.MissionControl
                     ShowVendorCodes = showVendorCodes,
                     PointTranslation = await _pointTranslationService
                         .GetByProgramIdAsync(user.ProgramId, true),
-                    EmailSubscriptionEnabled = await IsSiteSettingSetAsync(
-                        SiteSettingKey.Users.AskEmailSubPermission)
                 };
 
                 if (ViewUserPrizes)
@@ -1236,14 +1184,6 @@ namespace GRA.Controllers.MissionControl
                     }
 
                     viewModel.HouseholdPrizeList = prizeSelectList;
-                }
-                if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
-                {
-                    viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
-                }
-                if (UserHasPermission(Permission.EditParticipants))
-                {
-                    viewModel.HasEvelatedRole = user.IsAdmin;
                 }
 
                 if (TempData.ContainsKey(ActivityMessage))
@@ -1957,41 +1897,18 @@ namespace GRA.Controllers.MissionControl
                 var user = await _userService.GetDetailsByPermission(id);
                 SetPageTitle(user);
 
-                var groupInfo
-                    = await _userService.GetGroupFromHouseholdHeadAsync(user.HouseholdHeadUserId ?? id);
-
-                var viewModel = new BookListViewModel
+                var viewModel = new BookListViewModel(await GetPopulatedBaseViewModel(user))
                 {
                     Books = books.Data.ToList(),
                     PaginateModel = paginateModel,
                     Sort = sort,
                     IsDescending = isDescending,
-                    Id = id,
                     HasPendingQuestionnaire = (await _questionnaireService
                         .GetRequiredQuestionnaire(user.Id, user.Age)).HasValue,
-                    HouseholdCount = await _userService
-                        .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
-                    IsGroup = groupInfo != null,
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
-                    HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                     CanEditBooks = UserHasPermission(Permission.LogActivityForAny),
                     SortBooks = Enum.GetValues(typeof(SortBooksBy)),
-                    EmailSubscriptionEnabled = await IsSiteSettingSetAsync(
-                        SiteSettingKey.Users.AskEmailSubPermission)
                 };
-
-                if (UserHasPermission(Permission.ViewUserPrizes))
-                {
-                    viewModel.PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false);
-                }
-                if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
-                {
-                    viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
-                }
-                if (UserHasPermission(Permission.EditParticipants))
-                {
-                    viewModel.HasEvelatedRole = user.IsAdmin;
-                }
 
                 return View(viewModel);
             }
@@ -2053,6 +1970,28 @@ namespace GRA.Controllers.MissionControl
             return RedirectToAction("Books", new { id = model.Id, page });
         }
 
+        private async Task<ParticipantPartialViewModel> GetPopulatedBaseViewModel(User user)
+        {
+            var hasAccount = !string.IsNullOrWhiteSpace(user.Username);
+            var headUser = user.HouseholdHeadUserId ?? user.Id;
+            return new ParticipantPartialViewModel
+            {
+                Id = user.Id,
+                HouseholdCount = await _userService.FamilyMemberCountAsync(headUser),
+                HasAccount = hasAccount,
+                IsGroup = await _userService.GetGroupFromHouseholdHeadAsync(headUser) != null,
+                EmailSubscriptionEnabled = await IsSiteSettingSetAsync(
+                        SiteSettingKey.Users.AskEmailSubPermission),
+                PrizeCount = UserHasPermission(Permission.ViewUserPrizes)
+                    ? await _prizeWinnerService.GetUserWinCount(user.Id, false)
+                    : default,
+                HasElevatedRole = UserHasPermission(Permission.EditParticipants) && user.IsAdmin,
+                RoleCount = UserHasPermission(Permission.ManageRoles) && hasAccount
+                    ? (await _userService.GetUserRolesAsync(user.Id)).Count
+                    : default
+            };
+        }
+
         #endregion Books
 
         #region History
@@ -2100,37 +2039,16 @@ namespace GRA.Controllers.MissionControl
                 var user = await _userService.GetDetailsByPermission(id);
                 SetPageTitle(user);
 
-                var groupInfo
-                    = await _userService.GetGroupFromHouseholdHeadAsync(user.HouseholdHeadUserId ?? id);
-
-                var viewModel = new HistoryListViewModel
+                var viewModel = new HistoryListViewModel(await GetPopulatedBaseViewModel(user))
                 {
                     Historys = new List<HistoryItemViewModel>(),
                     PaginateModel = paginateModel,
-                    Id = id,
-                    HouseholdCount = await _userService
-                        .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
-                    IsGroup = groupInfo != null,
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
-                    HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                     CanRemoveHistory = UserHasPermission(Permission.LogActivityForAny),
                     TotalPoints = user.PointsEarned,
                     EmailSubscriptionEnabled = await IsSiteSettingSetAsync(
                         SiteSettingKey.Users.AskEmailSubPermission)
                 };
-
-                if (UserHasPermission(Permission.ViewUserPrizes))
-                {
-                    viewModel.PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false);
-                }
-                if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
-                {
-                    viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
-                }
-                if (UserHasPermission(Permission.EditParticipants))
-                {
-                    viewModel.HasEvelatedRole = user.IsAdmin;
-                }
 
                 bool editChallenges = UserHasPermission(Permission.EditChallenges);
 
@@ -2270,35 +2188,16 @@ namespace GRA.Controllers.MissionControl
                 var user = await _userService.GetDetailsByPermission(id);
                 SetPageTitle(user);
 
-                var groupInfo
-                    = await _userService.GetGroupFromHouseholdHeadAsync(user.HouseholdHeadUserId ?? id);
-
                 await _vendorCodeService.PopulateVendorCodeStatusAsync(user);
 
-                var viewModel = new PrizeListViewModel
+                var viewModel = new PrizeListViewModel(await GetPopulatedBaseViewModel(user))
                 {
                     PrizeWinners = prizeList.Data,
                     PaginateModel = paginateModel,
-                    Id = id,
-                    HouseholdCount = await _userService.FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
-                    IsGroup = groupInfo != null,
-                    PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false),
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
-                    HasAccount = !string.IsNullOrWhiteSpace(user.Username),
-                    EmailSubscriptionEnabled = await IsSiteSettingSetAsync(
-                        SiteSettingKey.Users.AskEmailSubPermission),
                     User = user,
                     CanEditDetails = UserHasPermission(Permission.EditParticipants)
                 };
-
-                if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
-                {
-                    viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
-                }
-                if (UserHasPermission(Permission.EditParticipants))
-                {
-                    viewModel.HasEvelatedRole = user.IsAdmin;
-                }
 
                 return View(viewModel);
             }
@@ -2352,33 +2251,11 @@ namespace GRA.Controllers.MissionControl
                 var user = await _userService.GetDetailsByPermission(id);
                 SetPageTitle(user);
 
-                var groupInfo
-                    = await _userService.GetGroupFromHouseholdHeadAsync(user.HouseholdHeadUserId ?? id);
-
-                var viewModel = new EmailSubscriptionLogViewModel
+                var viewModel = new EmailSubscriptionLogViewModel(await GetPopulatedBaseViewModel(user))
                 {
                     SubscritionAuditLogs = auditLog,
-                    Id = id,
-                    HouseholdCount = await _userService
-                        .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
-                    IsGroup = groupInfo != null,
-                    HasAccount = !string.IsNullOrWhiteSpace(user.Username),
-                    EmailSubscriptionEnabled = await IsSiteSettingSetAsync(
-                        SiteSettingKey.Users.AskEmailSubPermission)
                 };
 
-                if (UserHasPermission(Permission.ViewUserPrizes))
-                {
-                    viewModel.PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false);
-                }
-                if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
-                {
-                    viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
-                }
-                if (UserHasPermission(Permission.EditParticipants))
-                {
-                    viewModel.HasEvelatedRole = user.IsAdmin;
-                }
                 return View(viewModel);
             }
             catch (GraException gex)
@@ -2431,36 +2308,14 @@ namespace GRA.Controllers.MissionControl
                 var user = await _userService.GetDetailsByPermission(id);
                 SetPageTitle(user);
 
-                var groupInfo
-                    = await _userService.GetGroupFromHouseholdHeadAsync(user.HouseholdHeadUserId ?? id);
-
-                var viewModel = new MailListViewModel
+                var viewModel = new MailListViewModel(await GetPopulatedBaseViewModel(user))
                 {
                     Mails = mail.Data,
                     PaginateModel = paginateModel,
-                    Id = id,
-                    HouseholdCount = await _userService.FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
-                    IsGroup = groupInfo != null,
-                    HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                     CanRemoveMail = UserHasPermission(Permission.DeleteAnyMail),
                     CanSendMail = UserHasPermission(Permission.MailParticipants),
-                    EmailSubscriptionEnabled = await IsSiteSettingSetAsync(
-                        SiteSettingKey.Users.AskEmailSubPermission)
                 };
-
-                if (UserHasPermission(Permission.ViewUserPrizes))
-                {
-                    viewModel.PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false);
-                }
-                if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
-                {
-                    viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
-                }
-                if (UserHasPermission(Permission.EditParticipants))
-                {
-                    viewModel.HasEvelatedRole = user.IsAdmin;
-                }
 
                 return View(viewModel);
             }
@@ -2559,33 +2414,10 @@ namespace GRA.Controllers.MissionControl
                 var user = await _userService.GetDetailsByPermission(id);
                 SetPageTitle(user);
 
-                var groupInfo
-                    = await _userService.GetGroupFromHouseholdHeadAsync(user.HouseholdHeadUserId ?? id);
-
-                var viewModel = new PasswordResetViewModel
+                var viewModel = new PasswordResetViewModel(await GetPopulatedBaseViewModel(user))
                 {
-                    Id = id,
-                    HouseholdCount = await _userService
-                        .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
-                    HasAccount = !string.IsNullOrWhiteSpace(user.Username),
-                    IsGroup = groupInfo != null,
-                    EmailSubscriptionEnabled = await IsSiteSettingSetAsync(
-                        SiteSettingKey.Users.AskEmailSubPermission)
                 };
-
-                if (UserHasPermission(Permission.ViewUserPrizes))
-                {
-                    viewModel.PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false);
-                }
-                if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
-                {
-                    viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
-                }
-                if (UserHasPermission(Permission.EditParticipants))
-                {
-                    viewModel.HasEvelatedRole = user.IsAdmin;
-                }
 
                 return View(viewModel);
             }
@@ -2637,19 +2469,7 @@ namespace GRA.Controllers.MissionControl
 
                 SetPageTitle(user);
 
-                var groupInfo
-                    = await _userService.GetGroupFromHouseholdHeadAsync(user.HouseholdHeadUserId ?? id);
-
-                var viewModel = new RolesViewModel
-                {
-                    Id = id,
-                    HouseholdCount = await _userService
-                        .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
-                    HasAccount = !string.IsNullOrWhiteSpace(user.Username),
-                    IsGroup = groupInfo != null,
-                    EmailSubscriptionEnabled = await IsSiteSettingSetAsync(
-                        SiteSettingKey.Users.AskEmailSubPermission)
-                };
+                var viewModel = new RolesViewModel(await GetPopulatedBaseViewModel(user));
 
                 var userRoles = await _userService.GetUserRolesAsync(id);
                 var roles = await _roleService.GetAllAsync();
@@ -2659,7 +2479,7 @@ namespace GRA.Controllers.MissionControl
 
                 if (UserHasPermission(Permission.EditParticipants))
                 {
-                    viewModel.HasEvelatedRole = user.IsAdmin;
+                    viewModel.HasElevatedRole = user.IsAdmin;
                 }
 
                 return View(viewModel);
@@ -2800,6 +2620,62 @@ namespace GRA.Controllers.MissionControl
 
         #endregion Handle code/dontation selection
 
+        #region VendorCode
+
+        [HttpPost]
+        [Authorize(Policy = Policy.ManageVendorCodes)]
+        public async Task<IActionResult> AssignNewCode(int id, string reason)
+        {
+            if (string.IsNullOrEmpty(reason))
+            {
+                ShowAlertWarning("You must supply a reason for reassigning a code.");
+                return RedirectToAction(nameof(VendorCodes), new { id });
+            }
+            if (reason.Length > 255)
+            {
+                ShowAlertWarning("Please enter a reason of 255 characters or less.");
+                return RedirectToAction(nameof(VendorCodes), new { id });
+            }
+            try
+            {
+                var vendorCode = await _vendorCodeService.GetUserVendorCodeAsync(id);
+                if (vendorCode == null)
+                {
+                    throw new GraException("Could not find a vendor code for that user.");
+                }
+                var prizeWinner = await _prizeWinnerService
+                    .GetPrizeForVendorCodeAsync(vendorCode.Id);
+
+                if (prizeWinner != null)
+                {
+                    await _prizeWinnerService.RemovePrizeAsync(prizeWinner.Id);
+                }
+
+                await _vendorCodeService.AssociateAsync(vendorCode.Id, reason);
+                await _activityService.MCAwardVendorCodeAsync(id, vendorCode.VendorCodeTypeId);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger($"An error occurred: {gex.Message}");
+            }
+            return RedirectToAction(nameof(VendorCodes), new { id });
+        }
+
+        [HttpGet]
+        [Authorize(Policy = Policy.ManageVendorCodes)]
+        public async Task<IActionResult> VendorCodes(int id)
+        {
+            var user = await _userService.GetDetailsByPermission(id);
+
+            return View(new VendorCodeViewModel(await GetPopulatedBaseViewModel(user))
+            {
+                CurrentCode = await _vendorCodeService.GetUserVendorCodeInfoAsync(id),
+                AssociatedCodes = await _vendorCodeService.GetAssociatedVendorCodeInfoAsync(id)
+            });
+        }
+
+        #endregion VendorCode
+
         [HttpPost]
         [Authorize(Policy = Policy.EditParticipants)]
         public async Task<IActionResult> CreateGroup(GroupUpgradeViewModel viewModel)
@@ -2922,17 +2798,6 @@ namespace GRA.Controllers.MissionControl
             await _userService.UpdateGroup(GetActiveUserId(), groupInfo);
 
             return RedirectToAction("Household", new { id = viewModel.HouseholdHeadUserId });
-        }
-
-        [HttpGet]
-        [Authorize(Policy = Policy.ManageVendorCodes)]
-        public async Task<IActionResult> VendorCodes(int id)
-        {
-            return View(new VendorCodeViewModel
-            {
-                CurrentCode = await _vendorCodeService.GetUserVendorCodeInfoAsync(id),
-                AssociatedCodes = await _vendorCodeService.GetAssociatedVendorCodeInfoAsync(id)
-            });
         }
 
         [HttpPost]

@@ -6,6 +6,6 @@
         Ordered,
         Shipped,
         Arrived,
-        Receieved
+        Received
     }
 }

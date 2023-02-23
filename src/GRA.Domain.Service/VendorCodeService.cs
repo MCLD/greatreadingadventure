@@ -106,6 +106,15 @@ namespace GRA.Domain.Service
             return AddTypeInternalAsync(vendorCodeType);
         }
 
+        public async Task AssociateAsync(int vendorCodeId, string reason)
+        {
+            var code = await _vendorCodeRepository.GetByIdAsync(vendorCodeId);
+            code.AssociatedUserId = code.UserId;
+            code.UserId = null;
+            code.ReasonForReassignment = reason;
+            await _vendorCodeRepository.UpdateSaveAsync(GetActiveUserId(), code);
+        }
+
         public async Task<byte[]> ExportVendorCodesAsync(int vendorCodeTypeId)
         {
             VerifyManagementPermission();
@@ -298,6 +307,45 @@ namespace GRA.Domain.Service
             }
         }
 
+        public async Task<IEnumerable<VendorCodeInfo>> GetAssociatedVendorCodeInfoAsync(int userId)
+        {
+            var authorized = false;
+            var authId = GetClaimId(ClaimType.UserId);
+            if (userId == authId
+                || userId == GetActiveUserId()
+                || HasPermission(Permission.ViewParticipantDetails))
+            {
+                authorized = true;
+            }
+
+            if (!authorized)
+            {
+                var user = await _userRepository.GetByIdAsync(userId);
+                authorized = user.HouseholdHeadUserId == authId;
+            }
+
+            if (authorized)
+            {
+                var codes = await _vendorCodeRepository.GetAssociatedVendorCodes(userId);
+
+                var vendorCodeInfos = new List<VendorCodeInfo>();
+
+                foreach (var code in codes)
+                {
+                    vendorCodeInfos.Add(await GetVendorCodeInfoAsync(code));
+                }
+
+                return vendorCodeInfos;
+            }
+            else
+            {
+                _logger.LogError("User {AuthId} doesn't have permission to view details for {UserId}.",
+                    authId,
+                    userId);
+                throw new GraException("Permission denied.");
+            }
+        }
+
         public async Task<ICollection<VendorCodeType>> GetEmailAwardTypesAsync()
         {
             return await _vendorCodeTypeRepository.GetEmailAwardTypesAsync(GetCurrentSiteId());
@@ -342,44 +390,6 @@ namespace GRA.Domain.Service
 
             return await _vendorCodeRepository.GetUnreportedEmailAwardCodes(GetCurrentSiteId(),
                 vendorCodeTypeId);
-        }
-        public async Task<IEnumerable<VendorCodeInfo>> GetAssociatedVendorCodeInfoAsync(int userId)
-        {
-            var authorized = false;
-            var authId = GetClaimId(ClaimType.UserId);
-            if (userId == authId
-                || userId == GetActiveUserId()
-                || HasPermission(Permission.ViewParticipantDetails))
-            {
-                authorized = true;
-            }
-
-            if (!authorized)
-            {
-                var user = await _userRepository.GetByIdAsync(userId);
-                authorized = user.HouseholdHeadUserId == authId;
-            }
-
-            if (authorized)
-            {
-                var codes = await _vendorCodeRepository.GetAssociatedVendorCodes(userId);
-
-                var vendorCodeInfos = new List<VendorCodeInfo>();
-
-                foreach (var code in codes)
-                {
-                    vendorCodeInfos.Add(await GetVendorCodeInfoAsync(code));
-                }
-
-                return vendorCodeInfos;
-            }
-            else
-            {
-                _logger.LogError("User {AuthId} doesn't have permission to view details for {UserId}.",
-                    authId,
-                    userId);
-                throw new GraException("Permission denied.");
-            }
         }
 
         public async Task<VendorCode> GetUserVendorCodeAsync(int userId)
@@ -435,6 +445,16 @@ namespace GRA.Domain.Service
             }
         }
 
+        public async Task<VendorCodeInfo> GetUserVendorCodeInfoAsync(int userId)
+        {
+            var vendorCode = await GetUserVendorCodeAsync(userId);
+            if (vendorCode != null)
+            {
+                return await GetVendorCodeInfoAsync(vendorCode);
+            }
+            return null;
+        }
+
         public async Task<VendorCode> GetVendorCodeByCode(string code)
         {
             return await _vendorCodeRepository.GetByCode(code);
@@ -446,10 +466,9 @@ namespace GRA.Domain.Service
 
             var vendorCode = await GetUserVendorCodeAsync(user.Id);
 
-            if (!string.IsNullOrEmpty(vendorCode?.Code))
+            if (vendorCode != null && !string.IsNullOrEmpty(vendorCode?.Code))
             {
                 var vendorCodeInfo = await GetVendorCodeInfoAsync(vendorCode.Code);
-
 
                 user.CanDonateVendorCode = vendorCodeInfo.CanDonate;
                 user.CanEmailAwardVendorCode = vendorCodeInfo.CanEmailAward;
@@ -1834,28 +1853,6 @@ namespace GRA.Domain.Service
             }
         }
 
-        private async Task MarkCodeDonatedAsync(string coupon)
-        {
-            var vendorCode = await _vendorCodeRepository.GetByCode(coupon);
-            if (vendorCode == null)
-            {
-                throw new GraException("Unable to find vendor code {coupon}");
-            }
-
-            vendorCode.IsDonated = true;
-            await _vendorCodeRepository.UpdateSaveAsync(GetActiveUserId(), vendorCode);
-        }
-
-        public async Task<VendorCodeInfo> GetUserVendorCodeInfoAsync(int userId)
-        {
-            var vendorCode = await GetUserVendorCodeAsync(userId);
-            if(vendorCode != null)
-            {
-                return await GetVendorCodeInfoAsync(vendorCode);
-            }
-            return null;
-        }
-
         private async Task<VendorCodeInfo> GetVendorCodeInfoAsync(string code)
         {
             return await GetVendorCodeInfoAsync(await GetVendorCodeByCode(code));
@@ -1932,7 +1929,8 @@ namespace GRA.Domain.Service
 
                     if (vendorPrize?.RedeemedAt.HasValue == true)
                     {
-                        vendorCodeInfo.OrderStatus = VendorOrderStatus.Receieved;
+                        vendorCodeInfo.OrderStatus = VendorOrderStatus.Received;
+                        vendorCodeInfo.PickupDate = vendorPrize.RedeemedAt.Value;
                         vendorCodeInfo.VendorCodeMessage
                             = _sharedLocalizer[Annotations.Info.VendorItemPickedup,
                                 itemName,
@@ -1989,6 +1987,17 @@ namespace GRA.Domain.Service
             return vendorCodeInfo;
         }
 
+        private async Task MarkCodeDonatedAsync(string coupon)
+        {
+            var vendorCode = await _vendorCodeRepository.GetByCode(coupon);
+            if (vendorCode == null)
+            {
+                throw new GraException("Unable to find vendor code {coupon}");
+            }
+
+            vendorCode.IsDonated = true;
+            await _vendorCodeRepository.UpdateSaveAsync(GetActiveUserId(), vendorCode);
+        }
 
         private async Task<bool?> SendPickupEmailAsync(int templateId,
             int userId,

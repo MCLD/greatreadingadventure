@@ -6,6 +6,7 @@ namespace GRA.Domain.Model
     public class VendorCode : Abstract.BaseDomainEntity
     {
         public DateTime? ArrivalDate { get; set; }
+        public int? AssociatedUserId { get; set; }
         public int? BranchId { get; set; }
         public bool CanBeDonated { get; set; }
         public bool CanBeEmailAward { get; set; }
@@ -22,6 +23,7 @@ namespace GRA.Domain.Model
         public DateTime? EmailAwardSent { get; set; }
         public DateTime? EmailSentAt { get; set; }
         public DateTime? ExpirationDate { get; set; }
+        public bool IsAssigned { get; set; }
         public bool? IsDamaged { get; set; }
         public bool? IsDonated { get; set; }
         public bool IsDonationLocked { get; set; }
@@ -32,6 +34,7 @@ namespace GRA.Domain.Model
         public DateTime? OrderDate { get; set; }
         public long PackingSlip { get; set; }
         public string ParticipantName { get; set; }
+        public string ReasonForReassignment { get; set; }
         public DateTime? ShipDate { get; set; }
         public int SiteId { get; set; }
 
