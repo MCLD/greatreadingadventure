@@ -9,7 +9,11 @@ namespace GRA.Domain.Repository
     {
         Task<VendorCode> AssignCodeAsync(int vendorCodeTypeId, int userId);
 
+        Task<VendorCode> AssociateCodeAsync(int vendorCodeTypeId, int userId, string reason, int activeUserId);
+
         Task<ICollection<string>> GetAllCodesAsync(int vendorCodeTypeId);
+
+        Task<IEnumerable<string>> GetAssociatedVendorCodes(int userId);
 
         Task<VendorCode> GetByCode(string code);
 
@@ -30,7 +34,5 @@ namespace GRA.Domain.Repository
             int vendorCodeTypeId);
 
         Task<VendorCode> GetUserVendorCode(int userId);
-
-        Task<IEnumerable<string>> GetAssociatedVendorCodes(int userId);
     }
 }

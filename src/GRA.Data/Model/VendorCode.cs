@@ -6,7 +6,6 @@ namespace GRA.Data.Model
     public class VendorCode : Abstract.BaseDbEntity
     {
         public DateTime? ArrivalDate { get; set; }
-
         public int? AssociatedUserId { get; set; }
         public int? BranchId { get; set; }
 
@@ -23,32 +22,26 @@ namespace GRA.Data.Model
         public string EmailAwardAddress { get; set; }
 
         public DateTime? EmailAwardReported { get; set; }
-
         public DateTime? EmailAwardSent { get; set; }
-
         public DateTime? EmailSentAt { get; set; }
-
         public bool IsAssigned { get; set; }
         public bool? IsDamaged { get; set; }
-
         public bool? IsDonated { get; set; }
-
         public bool IsDonationLocked { get; set; }
-
         public bool? IsEmailAward { get; set; }
-
         public bool? IsMissing { get; set; }
 
         [Required]
         public bool IsUsed { get; set; }
 
         public DateTime? OrderDate { get; set; }
-
         public long PackingSlip { get; set; }
 
         [MaxLength(255)]
         public string ReasonForReassignment { get; set; }
 
+        public DateTime? ReassignedAt { get; set; }
+        public int? ReassignedByUserId { get; set; }
         public DateTime? ShipDate { get; set; }
 
         [Required]

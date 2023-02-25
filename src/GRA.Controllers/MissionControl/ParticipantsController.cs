@@ -2661,17 +2661,69 @@ namespace GRA.Controllers.MissionControl
             return RedirectToAction(nameof(VendorCodes), new { id });
         }
 
+        [HttpPost]
+        [Authorize(Policy = Policy.ManageVendorCodes)]
+        public async Task<IActionResult> AssignSpareCode(int id, int vendorCodeTypeId, string reason)
+        {
+            if (string.IsNullOrEmpty(reason))
+            {
+                ShowAlertWarning("You must supply an explanation for assigning a spare code.");
+                return RedirectToAction(nameof(VendorCodes), new { id });
+            }
+            if (reason.Length > 255)
+            {
+                ShowAlertWarning("Please enter an explanation of 255 characters or less.");
+                return RedirectToAction(nameof(VendorCodes), new { id });
+            }
+
+            await _vendorCodeService
+                .AssignSpareAsync(vendorCodeTypeId, id, reason, GetActiveUserId());
+
+            return RedirectToAction(nameof(VendorCodes), new { id });
+        }
+
         [HttpGet]
         [Authorize(Policy = Policy.ManageVendorCodes)]
         public async Task<IActionResult> VendorCodes(int id)
         {
             var user = await _userService.GetDetailsByPermission(id);
-
-            return View(new VendorCodeViewModel(await GetPopulatedBaseViewModel(user))
+            var viewModel = new VendorCodeViewModel(await GetPopulatedBaseViewModel(user))
             {
+                AssociatedCodes = await _vendorCodeService.GetAssociatedVendorCodeInfoAsync(id),
                 CurrentCode = await _vendorCodeService.GetUserVendorCodeInfoAsync(id),
-                AssociatedCodes = await _vendorCodeService.GetAssociatedVendorCodeInfoAsync(id)
-            });
+                CurrentUser = id == GetActiveUserId(),
+                VendorCodeTypeList = new SelectList(await _vendorCodeService.GetTypeAllAsync(),
+                    "Id",
+                    "Description")
+            };
+
+            if (viewModel.CurrentCode?.VendorCode?.PackingSlip > 0)
+            {
+                viewModel.CurrentCode.PackingSlipLink
+                    = Url.Action(nameof(VendorCodesController.ViewPackingSlip),
+                        VendorCodesController.Name,
+                        new { id = viewModel.CurrentCode.VendorCode.PackingSlip });
+            }
+
+            foreach (var code in viewModel.AssociatedCodes)
+            {
+                if (code.VendorCode.ReassignedByUserId.HasValue)
+                {
+                    code.ReassignedByUser = await _userService
+                        .GetUsersNameByIdAsync(code.VendorCode.ReassignedByUserId.Value);
+                    code.ReassignedByLink = Url.Action(nameof(ParticipantsController.Detail),
+                        ParticipantsController.Name,
+                        new { id = code.VendorCode.ReassignedByUserId.Value });
+                }
+                if (code.VendorCode?.PackingSlip > 0)
+                {
+                    code.PackingSlipLink = Url.Action(nameof(VendorCodesController.ViewPackingSlip),
+                        VendorCodesController.Name,
+                        new { id = code.VendorCode.PackingSlip });
+                }
+            }
+
+            return View(viewModel);
         }
 
         #endregion VendorCode
@@ -2837,7 +2889,7 @@ namespace GRA.Controllers.MissionControl
 
             if (!groupTypes.Any())
             {
-                _logger.LogError($"MC attempt to add family member, need to make a group, no group types configured.");
+                _logger.LogError("MC attempt to add family member, need to make a group, no group types configured.");
                 AlertDanger = "In order to add more members to this family it must be converted to a group, however there are no group types configured.";
                 return View("Household", id);
             }

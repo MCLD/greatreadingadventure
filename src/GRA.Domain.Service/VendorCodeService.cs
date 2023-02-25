@@ -106,12 +106,23 @@ namespace GRA.Domain.Service
             return AddTypeInternalAsync(vendorCodeType);
         }
 
+        public async Task AssignSpareAsync(int vendorCodeTypeId,
+            int userId,
+            string reason,
+            int activeUserId)
+        {
+            await _vendorCodeRepository
+                .AssociateCodeAsync(vendorCodeTypeId, userId, reason, activeUserId);
+        }
+
         public async Task AssociateAsync(int vendorCodeId, string reason)
         {
             var code = await _vendorCodeRepository.GetByIdAsync(vendorCodeId);
             code.AssociatedUserId = code.UserId;
-            code.UserId = null;
             code.ReasonForReassignment = reason;
+            code.ReassignedAt = _dateTimeProvider.Now;
+            code.ReassignedByUserId = GetActiveUserId();
+            code.UserId = null;
             await _vendorCodeRepository.UpdateSaveAsync(GetActiveUserId(), code);
         }
 

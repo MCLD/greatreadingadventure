@@ -36,7 +36,10 @@ namespace GRA.Domain.Model
 
         public bool NeedsToAnswerVendorCodeQuestion { get; set; }
         public VendorOrderStatus? OrderStatus { get; set; }
+        public string PackingSlipLink { get; set; }
         public DateTime? PickupDate { get; set; }
+        public string ReassignedByLink { get; set; }
+        public string ReassignedByUser { get; set; }
         public VendorCode VendorCode { get; set; }
         public string VendorCodeDisplay { get; set; }
         public string VendorCodeMessage { get; set; }

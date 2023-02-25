@@ -35,6 +35,8 @@ namespace GRA.Domain.Model
         public long PackingSlip { get; set; }
         public string ParticipantName { get; set; }
         public string ReasonForReassignment { get; set; }
+        public DateTime? ReassignedAt { get; set; }
+        public int? ReassignedByUserId { get; set; }
         public DateTime? ShipDate { get; set; }
         public int SiteId { get; set; }
 
