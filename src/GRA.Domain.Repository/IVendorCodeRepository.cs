@@ -21,6 +21,8 @@ namespace GRA.Domain.Repository
 
         Task<ICollection<VendorCode>> GetEarnedCodesAsync(ReportCriterion criterion);
 
+        Task<ICollection<VendorCode>> GetHoldSlipsAsync(long packingSlipNumber);
+
         Task<ICollection<VendorCode>> GetPendingHouseholdCodes(int headOfHouseholdId);
 
         //todo fix type

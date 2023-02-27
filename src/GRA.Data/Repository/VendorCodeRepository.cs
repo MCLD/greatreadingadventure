@@ -184,11 +184,32 @@ namespace GRA.Data.Repository
                 .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
+            var users = _context
+                .Users
+                .AsNoTracking()
+                .Where(_ => codes.Select(_ => _.UserId).Contains(_.Id))
+                .Select(_ => new
+                {
+                    _.Id,
+                    _.IsDeleted,
+                    _.FirstName,
+                    _.LastName
+                });
+
             foreach (var code in codes.Where(_ => _.UserId.HasValue))
             {
-                code.IsUserValid = _context.Users
-                    .AsNoTracking()
-                    .Any(_ => _.Id == code.UserId.Value && !_.IsDeleted);
+                var user = users.SingleOrDefault(_ => _.Id == code.UserId);
+                if (user == null)
+                {
+                    code.IsUserValid = false;
+                }
+                else
+                {
+                    code.IsUserValid = !user.IsDeleted;
+                    code.ParticipantName = string.IsNullOrEmpty(user.LastName)
+                        ? user.FirstName
+                        : $"{user.FirstName} {user.LastName}";
+                }
             }
 
             return codes;
@@ -226,6 +247,46 @@ namespace GRA.Data.Repository
                           select vendorCodes)
                           .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
                           .ToListAsync();
+        }
+
+        public async Task<ICollection<VendorCode>> GetHoldSlipsAsync(long packingSlipNumber)
+        {
+            var codes = await DbSet
+                .Where(_ => _.PackingSlip == packingSlipNumber
+                    && _.IsMissing != true
+                    && _.IsDamaged != true)
+                .AsNoTracking()
+                .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+
+            var users = _context
+                .Users
+                .AsNoTracking()
+                .Where(_ => codes.Select(_ => _.UserId).Contains(_.Id))
+                .Select(_ => new
+                {
+                    _.Id,
+                    _.IsDeleted,
+                    _.FirstName,
+                    _.LastName
+                });
+
+            foreach (var code in codes.Where(_ => _.UserId.HasValue))
+            {
+                var user = users.SingleOrDefault(_ => _.Id == code.UserId);
+                if (user == null)
+                {
+                    code.IsUserValid = false;
+                }
+                else
+                {
+                    code.IsUserValid = !user.IsDeleted;
+                    code.FirstName = user.FirstName;
+                    code.LastName = user.LastName;
+                }
+            }
+
+            return codes.Where(_ => _.IsUserValid).ToList();
         }
 
         public async Task<ICollection<VendorCode>> GetPendingHouseholdCodes(int headOfHouseholdId)

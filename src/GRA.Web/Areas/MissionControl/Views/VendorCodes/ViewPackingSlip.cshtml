@@ -59,6 +59,19 @@
                     </td>
                 </tr>
             }
+            @if (Model.CanViewDetails && !Model.CanBeReceived)
+            {
+                <tr class="hidden-print">
+                    <th>Hold slips</th>
+                    <td>
+                        <a asp-action="@nameof(VendorCodesController.ViewHoldSlips)"
+                       asp-route-id="@Model.PackingSlipNumber"
+                       target="_blank"
+                       class="btn btn-sm btn-success">Generate hold slips</a>
+                    </td>
+                </tr>
+            }
+
         </table>
     </div>
 </div>
@@ -75,7 +88,8 @@
                   enctype="multipart/form-data">
                     <table class="table table-striped table-condensed table-bordered">
                         <tr>
-                            <th>Status</th>
+                            <th>Participant Status</th>
+                            <th>Participant</th>
                             <th>Code</th>
                             <th>Details</th>
                             <th>Order Date</th>
@@ -88,13 +102,13 @@
                             }
                             else
                             {
-                                <th>Status</th>
+                                <th>Item Status</th>
                             }
                         </tr>
                         @foreach (var vendorCode in Model.VendorCodes)
                         {
                             <tr class="@(vendorCode.IsUserValid ? null : "danger")"
-                                title="@(vendorCode.IsUserValid ? null : "Participant has been deleted.")">
+                        title="@(vendorCode.IsUserValid ? null : "Participant has been deleted.")">
                                 <td class="text-center">
                                     @if (vendorCode.IsUserValid)
                                     {
@@ -106,19 +120,19 @@
                                         <span class="text-danger fas fa-exclamation-triangle"></span>
                                     }
                                 </td>
-                                <td>
-                                    <a asp-action="Detail"
+                                <td style="white-space:nowrap;">
+                                    <a asp-action="@nameof(ParticipantsController.Detail)"
                                asp-route-id="@vendorCode.UserId"
                                asp-controller="@ParticipantsController.Name"
                                asp-area="@nameof(GRA.Controllers.MissionControl)"
-                               target="_blank">@vendorCode.Code</a>
-                                </td>
+                               target="_blank">@vendorCode.ParticipantName</a>
+                                <td style="white-space: nowrap;">@vendorCode.Code</td>
                                 <td>@vendorCode.Details</td>
                                 <td>@vendorCode.OrderDate?.ToString("d")</td>
                                 <td>@vendorCode.ShipDate?.ToString("d")</td>
                                 <td>@vendorCode.ArrivalDate?.ToString("d")</td>
-                                @if (Model.CanBeReceived)
-                                {
+                                    @if (Model.CanBeReceived)
+                                    {
                                     <td class="text-center">
                                         <input name="DamagedItems"
                                    value="@vendorCode.Id"
@@ -131,22 +145,25 @@
                                    class="statusSelector"
                                    type="checkbox" />
                                     </td>
-                                }
-                                else
-                                {
-                                    @if (vendorCode.IsDamaged == true)
-                                    {
-                                        <td>Damaged</td>
-                                    }
-                                    else if (vendorCode.IsMissing == true)
-                                    {
-                                        <td>Missing</td>
                                     }
                                     else
                                     {
-                                        <td><span class="far fa-thumbs-up"></span></td>
+                                        @if (vendorCode.IsDamaged == true)
+                                        {
+                                        <td>Damaged</td>
+                                        }
+                                        else if (vendorCode.IsMissing == true)
+                                        {
+                                        <td>Missing</td>
+                                        }
+                                        else
+                                        {
+                                        <td class="text-center">
+                                            <span class="text-success far fa-thumbs-up"
+                                  title="Item is recorded not damaged or missing."></span>
+                                        </td>
+                                        }
                                     }
-                                }
                             </tr>
                         }
                     </table>
@@ -154,8 +171,7 @@
                     @if (Model.CanBeReceived)
                     {
                         <input asp-for="PackingSlipNumber" type="hidden" />
-
-                        <a asp-action="Index" class="btn btn-warning">Cancel</a>
+                        <a asp-action="@nameof(ParticipantsController.Index)" class="btn btn-warning">Cancel</a>
                         <button type="submit"
                         class="btn btn-success">
                             @Model.SubmitText
@@ -169,10 +185,10 @@
 
 @section scripts {
     <script>
-        $(".statusSelector").on("change", function() {
+        $(".statusSelector").on("change", function () {
             if ($(this).prop("checked")) {
                 $(this).parent().siblings().children(".statusSelector").prop("checked", false);
             }
-        })
+        });
     </script>
 }

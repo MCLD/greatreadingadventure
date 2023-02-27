@@ -636,6 +636,26 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpGet]
+        [Authorize(Policy = Policy.ViewParticipantDetails)]
+        public async Task<IActionResult> ViewHoldSlips(long id)
+        {
+            if (id == 0)
+            {
+                return View("EnterPackingSlip");
+            }
+
+            var holdSlipSummary = await _vendorCodeService.GetHoldSlipsAsync(id);
+
+            if (holdSlipSummary.VendorCodes.Count > 0 || holdSlipSummary.VendorCodePackingSlip != null)
+            {
+                return View("HoldSlips", holdSlipSummary);
+            }
+
+            ShowAlertDanger($"Could not find packing slip number {id}, please contact your administrator.");
+            return View("EnterPackingSlip", id);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> ViewPackingSlip(long id)
         {
             if (id == 0)

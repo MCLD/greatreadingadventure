@@ -23,6 +23,7 @@ namespace GRA.Domain.Model
         public DateTime? EmailAwardSent { get; set; }
         public DateTime? EmailSentAt { get; set; }
         public DateTime? ExpirationDate { get; set; }
+        public string FirstName { get; set; }
         public bool IsAssigned { get; set; }
         public bool? IsDamaged { get; set; }
         public bool? IsDonated { get; set; }
@@ -31,6 +32,7 @@ namespace GRA.Domain.Model
         public bool? IsMissing { get; set; }
         public bool IsUsed { get; set; }
         public bool IsUserValid { get; set; }
+        public string LastName { get; set; }
         public DateTime? OrderDate { get; set; }
         public long PackingSlip { get; set; }
         public string ParticipantName { get; set; }

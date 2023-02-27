@@ -362,6 +362,19 @@ namespace GRA.Domain.Service
             return await _vendorCodeTypeRepository.GetEmailAwardTypesAsync(GetCurrentSiteId());
         }
 
+        public async Task<PackingSlipSummary> GetHoldSlipsAsync(long packingSlipNumber)
+        {
+            var siteId = GetCurrentSiteId();
+            var siteLink = await _siteLookupService.GetSiteLinkAsync(siteId);
+            var site = await _siteLookupService.GetByIdAsync(siteId);
+            return new PackingSlipSummary
+            {
+                PackingSlipNumber = packingSlipNumber,
+                ProgramInfo = $"{site.Name} - {siteLink}",
+                VendorCodes = await _vendorCodeRepository.GetHoldSlipsAsync(packingSlipNumber)
+            };
+        }
+
         public async Task<VendorCodeStatus> GetStatusAsync()
         {
             VerifyManagementPermission();
