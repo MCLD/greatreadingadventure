@@ -19,6 +19,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Links to performers, programs, and kits in performer scheduling
 - Allow everyone with scheduling permissions to see references
 - Site-wide program reading goal
+- Ability to reassign a participant a new vendor code
+- Ability to assign self new auxiliary vendor codes
+- Participant names to packing slip detail
+- Ability to print hold slips from packing slip detail
+- Id values to system/branch export
 
 ### Fixed
 
@@ -26,6 +31,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Properly return appropriate HTTP status codes on page errors
 - Logging when the ErrorController is hit is no longer excluded from most log sources
 - Exception when trying to add a Role with a blank name
+- Decouple one-to-one mapping of vendor codes to participants
 
 ## [4.4.0] 2022-11-29
 

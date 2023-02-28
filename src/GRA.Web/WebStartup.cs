@@ -61,7 +61,7 @@ namespace GRA.Web
                 {
                     _log.LogWarning("Applying {MigrationCount} database migrations, last is: {MigrationName}",
                         pendingCount,
-                        pending.Last());
+                        pending?.Last() ?? "Unknown");
                 }
             }
             catch (Exception ex)

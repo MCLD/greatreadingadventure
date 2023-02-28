@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace GRA.Domain.Model
@@ -25,7 +26,7 @@ namespace GRA.Domain.Model
                 sb.Append(", ");
             }
             sb.Append(firstName);
-            return sb.ToString().ToUpper();
+            return sb.ToString().ToUpper(CultureInfo.CurrentCulture);
         }
     }
 }
