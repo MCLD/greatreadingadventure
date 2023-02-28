@@ -4,7 +4,7 @@
 			{
 				"name": "mcr.microsoft.com/dotnet/sdk",
 				"tag": "7.0",
-				"digest": "b71f327441d566f5b07e01d120b15da1089eda98f9665101f6389a3f471b01a5"
+				"digest": "6304beb70a625356de606a0f496c71191c7f6fd43941de022e0de62f1919e3eb"
 			},
 			{
 				"name": "mcr.microsoft.com/dotnet/aspnet",
