@@ -9,13 +9,19 @@ namespace GRA.Domain.Repository
     {
         Task<VendorCode> AssignCodeAsync(int vendorCodeTypeId, int userId);
 
+        Task<VendorCode> AssociateCodeAsync(int vendorCodeTypeId, int userId, string reason, int activeUserId);
+
         Task<ICollection<string>> GetAllCodesAsync(int vendorCodeTypeId);
+
+        Task<IEnumerable<string>> GetAssociatedVendorCodes(int userId);
 
         Task<VendorCode> GetByCode(string code);
 
         Task<ICollection<VendorCode>> GetByPackingSlipAsync(long packingSlipNumber);
 
         Task<ICollection<VendorCode>> GetEarnedCodesAsync(ReportCriterion criterion);
+
+        Task<ICollection<VendorCode>> GetHoldSlipsAsync(long packingSlipNumber);
 
         Task<ICollection<VendorCode>> GetPendingHouseholdCodes(int headOfHouseholdId);
 

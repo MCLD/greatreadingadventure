@@ -240,7 +240,10 @@ namespace GRA.Controllers.MissionControl
         [HttpGet]
         public IActionResult Import()
         {
-            return View();
+            return View(new ImportViewModel
+            {
+                SiteId = GetCurrentSiteId()
+            });
         }
 
         [HttpPost]

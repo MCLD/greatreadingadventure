@@ -1,6 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.ParticipantPartialViewModel
 
-@if (Model.HasEvelatedRole)
+@if (Model.HasElevatedRole)
 {
     <div class="row" style="padding: 10px 0; margin-top: 1rem;">
         <div class="col-xs-12">
@@ -63,6 +63,10 @@
             {
                 <li ActiveBy routeKey="Action" value="PasswordReset"><a asp-action="PasswordReset" asp-route-id="@Model.Id">Password Reset</a></li>
             }
+            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageVendorCodes.ToString()))
+            {
+                <li ActiveBy routeKey="Action" value="VendorCodes"><a asp-action="@nameof(ParticipantsController.VendorCodes)" asp-route-id="@Model.Id">Vendor Codes</a></li>
+            }
             @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageRoles.ToString()) && Model.HasAccount)
             {
                 <li ActiveBy routeKey="Action" value="Roles">
@@ -77,7 +81,7 @@
             }
             @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewUserPrizes.ToString()))
             {
-                <li class="pull-right">
+                <li class="pull-right" style="margin-top: 1rem;">
                     <form asp-action="@nameof(ParticipantsController.UpdatePrizes)" method="post" role="form">
                         <input name="Id" value="@Model.Id" type="hidden" />
                         <input name="ReturnUrl" value="@Context.Request.Path.ToString()" type="hidden" />

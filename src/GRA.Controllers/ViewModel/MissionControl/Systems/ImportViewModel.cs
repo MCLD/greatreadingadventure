@@ -6,5 +6,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.Systems
     {
         public bool DoImport { get; set; }
         public IFormFile FileUpload { get; set; }
+        public int SiteId { get; set; }
     }
 }

@@ -564,11 +564,13 @@ namespace GRA.Controllers
 
             foreach (var userLog in userLogs.Data)
             {
-                var item = new AttachmentItemViewModel();
-                item.AttachmentFilename = _pathResolver.ResolveContentPath(userLog.AttachmentFilename);
-                item.ShowCertificate = userLog.AttachmentIsCertificate;
-                item.Description = userLog.Description;
-                item.EarnedOn = userLog.CreatedAt.ToShortDateString();
+                var item = new AttachmentItemViewModel
+                {
+                    AttachmentFilename = _pathResolver.ResolveContentPath(userLog.AttachmentFilename),
+                    ShowCertificate = userLog.AttachmentIsCertificate,
+                    Description = userLog.Description,
+                    EarnedOn = userLog.CreatedAt.ToShortDateString()
+                };
 
                 viewModel.Attachments.Add(item);
             }

@@ -38,6 +38,9 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Site management";
         }
 
+        public static string Name
+        { get { return "Sites"; } }
+
         public async Task<IActionResult> Configuration(int id)
         {
             var site = await _siteLookupService.GetByIdAsync(id);

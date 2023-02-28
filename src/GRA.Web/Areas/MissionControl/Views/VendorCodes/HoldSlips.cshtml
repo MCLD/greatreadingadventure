@@ -1,0 +1,97 @@
+﻿@model GRA.Domain.Model.PackingSlipSummary
+@section styles {
+    <style type="text/css">
+        @@media print {
+            @@page {
+                size: letter;
+                margin: 1rem;
+            }
+
+            body {
+                margin: 0 auto;
+            }
+        }
+
+        .mc-page-title {
+            display: none;
+        }
+
+        footer {
+            display: none;
+        }
+
+        .hold-slip {
+            break-inside: avoid;
+            height: 12rem;
+        }
+
+        .vertical-element {
+            max-height: 12rem;
+            font-size: 1.5rem;
+        }
+
+        .rotate {
+            writing-mode: vertical-lr;
+            white-space: nowrap;
+            overflow: hidden;
+            height: 11.5rem;
+            transform: rotate(180deg);
+        }
+
+        .participant-name {
+            font-weight: bold;
+            font-size: 3rem;
+            line-height: 3.8rem;
+        }
+
+        .vendor-code {
+            font-size: 1.5rem;
+            line-height: 2.5rem;
+        }
+
+        .item-title {
+            font-weight: bold;
+            font-size: 2rem;
+            line-height: 2.7rem;
+        }
+
+        .reading-program {
+            font-size: 1.6rem;
+            font-weight: bold;
+        }
+
+        .print-line {
+            white-space: nowrap;
+            overflow: hidden;
+        }
+    </style>
+}
+
+@foreach (var vendorCode in Model.VendorCodes)
+{
+    <div class="row holdslip">
+        <div class="col-xs-1 vertical-element">
+            <div class="rotate">
+                @GRA.Domain.Model.PackingSlipSummary.LastCommaFirst(vendorCode.FirstName, vendorCode.LastName)
+            </div>
+        </div>
+        <div class="col-xs-11 slip-content">
+            <div class="participant-name">
+                @GRA.Domain.Model.PackingSlipSummary.LastCommaFirst(vendorCode.FirstName, vendorCode.LastName)
+            </div>
+            <div class="item-title">
+                @vendorCode.Details
+            </div>
+            <div class="vendor-code">
+                @vendorCode.Code @if (vendorCode.ArrivalDate.HasValue)
+                {
+                    @: - arrived @vendorCode.ArrivalDate?.ToString("d")
+                }
+            </div>
+            <div class="reading-program">
+                @Model.ProgramInfo
+            </div>
+        </div>
+    </div>
+    <div class="print-line">—————————————————————————————————————————————————————————————————————————————————————————</div>
+}

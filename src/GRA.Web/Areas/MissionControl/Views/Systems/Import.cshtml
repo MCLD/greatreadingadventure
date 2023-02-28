@@ -43,6 +43,20 @@
                     The easiest way to edit <code>.csv</code> files is in a spreadsheet application,
                     however you can edit them in a text editor as well.
                 </li>
+                <li>
+                    The CSV file may include <code>Id</code> numbers but they will 
+                    <strong>not be honored</strong>, the software will assign new <code>Id</code>
+                    values during import.
+                </li>
+                <li>
+                    Ensure that you have a Google Maps API key specified in
+                //http://localhost:5000/MissionControl/Sites/Settings/1#Events
+                <a asp-action="@nameof(SitesController.Settings)"
+                    asp-controller="@SitesController.Name"
+                    asp-route-id="@Model.SiteId">Site Settings</a>
+                    so that the software can reverse geocode addresses into coordinates for
+                    the nearby event search function.
+                </li>
             </ul>
         </div>
     </div>

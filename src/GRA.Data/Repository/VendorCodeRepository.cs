@@ -36,16 +36,20 @@ namespace GRA.Data.Repository
                 unusedCode = await DbSet
                     .Where(_ => _.SiteId == user.SiteId
                         && _.UserId == null
+                        && !_.IsAssigned
                         && _.VendorCodeTypeId == vendorCodeTypeId)
                     .FirstOrDefaultAsync();
 
                 if (unusedCode == null)
                 {
-                    _logger.LogCritical($"No available vendor codes of type {vendorCodeTypeId} to assign to {userId}.");
+                    _logger.LogCritical("No available vendor codes of type {VendorCodeTypeId} to assign to {UserId}.",
+                        vendorCodeTypeId,
+                        userId);
                     throw new GraException("No available vendor code to assign.");
                 }
 
                 unusedCode.UserId = userId;
+                unusedCode.IsAssigned = true;
 
                 tries++;
                 try
@@ -55,7 +59,12 @@ namespace GRA.Data.Repository
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning($"Exception trying to update vendor code id {unusedCode.Id}, trying for user {user.Id} again ({tries} tries): {ex.Message}");
+                    _logger.LogWarning(ex,
+                        "Exception trying to update vendor code id {UnusedCodeId}, trying for user {UserId} again ({Tries} tries): {ErrorMessage}",
+                        unusedCode.Id,
+                        user.Id,
+                        tries,
+                        ex.Message);
                     await Task.Delay(100);
                     await _context.Entry(unusedCode).ReloadAsync();
                 }
@@ -63,7 +72,77 @@ namespace GRA.Data.Repository
 
             if (!success)
             {
-                _logger.LogCritical($"Ultimately unsuccessful assigning vendor code type {vendorCodeTypeId} to {user.Id}");
+                _logger.LogCritical("Ultimately unsuccessful assigning vendor code type {VendorCodeTypeId} to {UserId}",
+                    vendorCodeTypeId,
+                    user.Id);
+                throw new GraException($"Unable to assign vendor code type {vendorCodeTypeId} to user {user.Id}");
+            }
+
+            return await GetByIdAsync(unusedCode.Id);
+        }
+
+        public async Task<VendorCode> AssociateCodeAsync(int vendorCodeTypeId,
+            int userId,
+            string reason,
+            int activeUserId)
+        {
+            var user = await _context.Users
+                .AsNoTracking()
+                .Where(_ => _.Id == userId)
+                .SingleOrDefaultAsync();
+
+            var success = false;
+            int tries = 0;
+
+            Model.VendorCode unusedCode = null;
+
+            while (!success && tries < 10)
+            {
+                unusedCode = await DbSet
+                    .Where(_ => _.SiteId == user.SiteId
+                        && _.UserId == null
+                        && !_.IsAssigned
+                        && _.VendorCodeTypeId == vendorCodeTypeId)
+                    .FirstOrDefaultAsync();
+
+                if (unusedCode == null)
+                {
+                    _logger.LogCritical("No available vendor codes of type {VendorCodeTypeId} to assign to {UserId}.",
+                        vendorCodeTypeId,
+                        userId);
+                    throw new GraException("No available vendor code to assign.");
+                }
+
+                unusedCode.AssociatedUserId = userId;
+                unusedCode.IsAssigned = true;
+                unusedCode.ReasonForReassignment = reason;
+                unusedCode.ReassignedAt = _dateTimeProvider.Now;
+                unusedCode.ReassignedByUserId = activeUserId;
+
+                tries++;
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    success = true;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex,
+                        "Exception trying to update vendor code id {UnusedCodeId}, trying for user {UserId} again ({Tries} tries): {ErrorMessage}",
+                        unusedCode.Id,
+                        user.Id,
+                        tries,
+                        ex.Message);
+                    await Task.Delay(100);
+                    await _context.Entry(unusedCode).ReloadAsync();
+                }
+            }
+
+            if (!success)
+            {
+                _logger.LogCritical("Ultimately unsuccessful assigning vendor code type {VendorCodeTypeId} to {UserId}",
+                    vendorCodeTypeId,
+                    user.Id);
                 throw new GraException($"Unable to assign vendor code type {vendorCodeTypeId} to user {user.Id}");
             }
 
@@ -76,6 +155,15 @@ namespace GRA.Data.Repository
                 .Where(_ => _.VendorCodeTypeId == vendorCodeTypeId)
                 .Select(_ => _.Code)
                 .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<string>> GetAssociatedVendorCodes(int userId)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.AssociatedUserId == userId)
+                .OrderBy(_ => _.CreatedAt)
+                .Select(_ => _.Code)
                 .ToListAsync();
         }
 
@@ -96,11 +184,32 @@ namespace GRA.Data.Repository
                 .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
+            var users = _context
+                .Users
+                .AsNoTracking()
+                .Where(_ => codes.Select(_ => _.UserId).Contains(_.Id))
+                .Select(_ => new
+                {
+                    _.Id,
+                    _.IsDeleted,
+                    _.FirstName,
+                    _.LastName
+                });
+
             foreach (var code in codes.Where(_ => _.UserId.HasValue))
             {
-                code.IsUserValid = _context.Users
-                    .AsNoTracking()
-                    .Any(_ => _.Id == code.UserId.Value && !_.IsDeleted);
+                var user = users.SingleOrDefault(_ => _.Id == code.UserId);
+                if (user == null)
+                {
+                    code.IsUserValid = false;
+                }
+                else
+                {
+                    code.IsUserValid = !user.IsDeleted;
+                    code.ParticipantName = string.IsNullOrEmpty(user.LastName)
+                        ? user.FirstName
+                        : $"{user.FirstName} {user.LastName}";
+                }
             }
 
             return codes;
@@ -138,6 +247,46 @@ namespace GRA.Data.Repository
                           select vendorCodes)
                           .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
                           .ToListAsync();
+        }
+
+        public async Task<ICollection<VendorCode>> GetHoldSlipsAsync(long packingSlipNumber)
+        {
+            var codes = await DbSet
+                .Where(_ => _.PackingSlip == packingSlipNumber
+                    && _.IsMissing != true
+                    && _.IsDamaged != true)
+                .AsNoTracking()
+                .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+
+            var users = _context
+                .Users
+                .AsNoTracking()
+                .Where(_ => codes.Select(_ => _.UserId).Contains(_.Id))
+                .Select(_ => new
+                {
+                    _.Id,
+                    _.IsDeleted,
+                    _.FirstName,
+                    _.LastName
+                });
+
+            foreach (var code in codes.Where(_ => _.UserId.HasValue))
+            {
+                var user = users.SingleOrDefault(_ => _.Id == code.UserId);
+                if (user == null)
+                {
+                    code.IsUserValid = false;
+                }
+                else
+                {
+                    code.IsUserValid = !user.IsDeleted;
+                    code.FirstName = user.FirstName;
+                    code.LastName = user.LastName;
+                }
+            }
+
+            return codes.Where(_ => _.IsUserValid).ToList();
         }
 
         public async Task<ICollection<VendorCode>> GetPendingHouseholdCodes(int headOfHouseholdId)
@@ -224,7 +373,7 @@ namespace GRA.Data.Repository
                 return new VendorCodeStatus();
             }
 
-            var assigned = all.Where(_ => _.UserId != null);
+            var assigned = all.Where(_ => _.IsAssigned);
             var emailAwards = assigned.Where(_ => _.IsEmailAward == true && _.IsDonated != true);
             var vendorAwards = assigned.Where(_ => _.IsEmailAward != true && _.IsDonated != true);
 
@@ -243,7 +392,7 @@ namespace GRA.Data.Repository
                     && _.OrderDate == null),
                 Ordered = await vendorAwards.CountAsync(_ => _.OrderDate != null),
                 Shipped = await vendorAwards.CountAsync(_ => _.ShipDate != null),
-                UnusedCodes = await all.CountAsync(_ => _.UserId == null),
+                UnusedCodes = await all.CountAsync(_ => !_.IsAssigned),
                 VendorSelected = await vendorAwards.CountAsync()
             };
         }

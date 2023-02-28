@@ -9,7 +9,7 @@
                     <span class="lead">@ViewData[ViewDataKey.Title]</span>
                 </div>
                 <div class="panel-body">
-                    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+                    @if (string.IsNullOrWhiteSpace(Model?.ErrorMessage) != true)
                     {
                         <div class="row row-spacing">
                             <div class="col-xs-12">
