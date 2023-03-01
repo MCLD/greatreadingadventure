@@ -136,6 +136,30 @@ namespace GRA.Controllers.MissionControl
             return View(viewModel);
         }
 
+        [HttpGet]
+        [Authorize(Policy = Policy.AccessMissionControl)]
+        public async Task<IActionResult> Post(int id)
+        {
+            // change user to default language
+            if (Culture.DefaultName != _userContextProvider.GetCurrentCulture().Name)
+            {
+                AlertInfo = $"Language changed to <strong>{Culture.DefaultCulture.DisplayName}</strong> for <strong>Mission Control</strong> <span class=\"fas fa-rocket\"></span>.";
+                return RedirectToAction(nameof(Post), new { id, culture = Culture.DefaultName });
+            }
+
+            Site site = await GetCurrentSiteAsync();
+
+            var post = await _newsService.GetPostByIdAsync(id, true);
+            post.Content = CommonMark.CommonMarkConverter.Convert(post.Content);
+            post.CreatedByName = await _userService.GetUsersNameByIdAsync(post.CreatedBy);
+            PageTitle = $"{post.Title} - {site.Name}";
+
+            return View(new PostViewModel
+            {
+                Post = post
+            });
+        }
+
         [HttpPost]
         [Authorize(Policy = Policy.AccessMissionControl)]
         public async Task<JsonResult> NewsSubscribe(bool subscribe)

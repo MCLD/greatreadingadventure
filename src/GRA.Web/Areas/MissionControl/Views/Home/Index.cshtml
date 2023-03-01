@@ -169,7 +169,8 @@ else
                     <div class="news-post panel panel-default">
                         <div class="panel-heading">
                             <div class="panel-title">
-                                @post.Title
+                                <div class="pull-right"><a asp-action="@nameof(HomeController.Post)" asp-route-id="@post.Id"><span class="fas fa-print"></span></a></div>
+                                <a asp-action="@nameof(HomeController.Post)" asp-route-id="@post.Id">@post.Title</a>
                             </div>
                         </div>
                         <div class="panel-body">

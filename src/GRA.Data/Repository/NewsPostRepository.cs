@@ -25,6 +25,42 @@ namespace GRA.Data.Repository
                 .AnyAsync();
         }
 
+        public async Task<NewsPost> GetByIdAsync(int id, bool getBorderingIds)
+        {
+            var post = await base.GetByIdAsync(id);
+
+            if (getBorderingIds)
+            {
+                var validIds = DbSet
+                    .AsNoTracking()
+                    .Where(_ => _.PublishedAt.HasValue);
+
+                post.PreviousPostId = (await validIds
+                    .OrderByDescending(_ => _.PublishedAt)
+                    .Where(_ => _.PublishedAt < post.PublishedAt)
+                    .FirstOrDefaultAsync())?.Id;
+
+                post.NextPostId = (await validIds
+                    .OrderBy(_ => _.PublishedAt)
+                    .Where(_ => _.PublishedAt > post.PublishedAt)
+                    .FirstOrDefaultAsync())?.Id;
+            }
+
+            return post;
+        }
+
+        public async Task<int> GetLatestActiveIdAsync(BaseFilter filter)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.Category.SiteId == filter.SiteId
+                    && _.PublishedAt.HasValue
+                    && _.Category.IsDefault)
+                .OrderByDescending(_ => _.PublishedAt)
+                .Select(_ => _.Id)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<DataWithCount<IEnumerable<NewsPost>>> PageAsync(NewsFilter filter)
         {
             var posts = DbSet
@@ -65,18 +101,6 @@ namespace GRA.Data.Repository
                 Data = data,
                 Count = count
             };
-        }
-
-        public async Task<int> GetLatestActiveIdAsync(BaseFilter filter)
-        {
-            return await DbSet
-                .AsNoTracking()
-                .Where(_ => _.Category.SiteId == filter.SiteId
-                    && _.PublishedAt.HasValue
-                    && _.Category.IsDefault)
-                .OrderByDescending(_ => _.PublishedAt)
-                .Select(_ => _.Id)
-                .FirstOrDefaultAsync();
         }
     }
 }
