@@ -12,13 +12,7 @@ namespace GRA.Domain.Model
         public string CategoryName { get; set; }
 
         [Required]
-        [MaxLength(255)]
-        public string Title { get; set; }
-
-        [Required]
         public string Content { get; set; }
-
-        public DateTime? PublishedAt { get; set; }
 
         public string CreatedByName { get; set; }
 
@@ -26,5 +20,15 @@ namespace GRA.Domain.Model
         [MaxLength(255)]
         [Required]
         public string EmailSummary { get; set; }
+
+        public int? NextPostId { get; set; }
+
+        public int? PreviousPostId { get; set; }
+
+        public DateTime? PublishedAt { get; set; }
+
+        [Required]
+        [MaxLength(255)]
+        public string Title { get; set; }
     }
 }

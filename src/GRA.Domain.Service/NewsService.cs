@@ -243,7 +243,12 @@ namespace GRA.Domain.Service
 
         public async Task<NewsPost> GetPostByIdAsync(int id)
         {
-            return await _newsPostRepository.GetByIdAsync(id);
+            return await GetPostByIdAsync(id, false);
+        }
+
+        public async Task<NewsPost> GetPostByIdAsync(int id, bool getBorderingIds)
+        {
+            return await _newsPostRepository.GetByIdAsync(id, getBorderingIds);
         }
 
         public async Task RemoveCategoryAsync(int categoryId)

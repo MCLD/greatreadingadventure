@@ -42,7 +42,7 @@ namespace GRA.Domain.Model
         public string AwardPrizeName { get; set; }
 
         [MaxLength(1000)]
-        [DisplayName("Redemption instructions")]
+        [DisplayName("Redemption Instructions for staff")]
         public string AwardPrizeRedemptionInstructions { get; set; }
 
         [DisplayName("Award vendor code")]

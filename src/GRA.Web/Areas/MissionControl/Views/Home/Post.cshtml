@@ -1,0 +1,44 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Home.PostViewModel
+
+@section styles {
+    <style type="text/css">
+        footer {
+            display: none;
+        }
+    </style>
+}
+
+<div>
+    <em>Posted on @Model.Post.PublishedAt.Value.ToShortDateString() by @Model.Post.CreatedByName</em>
+</div>
+
+<div style="margin-top: 2rem;">
+    @Html.Raw(Model.Post.Content)
+</div>
+
+<div class="hidden-print" style="margin-top: 2rem;">
+    @if (Model.Post.PreviousPostId.HasValue)
+    {
+        <a asp-action="@nameof(HomeController.Post)"
+       asp-route-id="@Model.Post.PreviousPostId"
+           title="Previous post"
+           class="btn btn-default">
+            <span class="fas fa-backward"></span>
+        </a>
+    }
+    <a asp-action="@nameof(HomeController.Index)"
+       title="Back to Mission Control"
+       class="btn btn-default">
+        <span class="fas fa-rocket"></span>
+    </a>
+
+    @if (Model.Post.NextPostId.HasValue)
+    {
+        <a asp-action="@nameof(HomeController.Post)"
+       asp-route-id="@Model.Post.NextPostId"
+           title="Next post"
+           class="btn btn-default">
+            <span class="fas fa-forward"></span>
+        </a>
+    }
+</div>
