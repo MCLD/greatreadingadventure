@@ -1,5 +1,4 @@
-﻿
-namespace GRA.Domain.Model
+﻿namespace GRA.Domain.Model
 {
     public static class Policy
     {
@@ -21,9 +20,9 @@ namespace GRA.Domain.Model
         public const string LogActivityForAny = "LogActivityForAny";
         public const string MailParticipants = "MailParticipants";
         public const string ManageAvatars = "ManageAvatars";
+        public const string ManageBulkEmails = "ManageBulkEmails";
         public const string ManageCarousels = "ManageCarousels";
         public const string ManageCategories = "ManageCategories";
-        public const string ManageBulkEmails = "ManageBulkEmails";
         public const string ManageDailyLiteracyTips = "ManageDailyLiteracyTips";
         public const string ManageDashboardContent = "ManageDashboardContent";
         public const string ManageEvents = "ManageEvents";
@@ -31,8 +30,8 @@ namespace GRA.Domain.Model
         public const string ManageGroupTypes = "ManageGroupTypes";
         public const string ManageLocations = "ManageLocations";
         public const string ManageNews = "ManageNews";
-        public const string ManagePerformers = "ManagePerformers";
         public const string ManagePages = "ManagePages";
+        public const string ManagePerformers = "ManagePerformers";
         public const string ManagePointTranslations = "ManagePointTranslations";
         public const string ManagePrograms = "ManagePrograms";
         public const string ManageQuestionnaires = "ManageQuestionnaires";
@@ -56,6 +55,7 @@ namespace GRA.Domain.Model
         public const string UnDonateVendorCode = "UnDonateVendorCode";
         public const string ViewAllChallenges = "ViewAllChallenges";
         public const string ViewAllReporting = "ViewAllReporting";
+        public const string ViewChangeHistory = "ViewChangeHistory";
         public const string ViewGroupList = "ViewGroupList";
         public const string ViewParticipantDetails = "ViewParticipantDetails";
         public const string ViewParticipantList = "ViewParticipantList";

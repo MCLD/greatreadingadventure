@@ -114,26 +114,28 @@
 else
 {
     <div class="row">
-        <div class="col-sm-2 text-center">
+        <div class="col-sm-4 col-md-3 text-center">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     Categories
                 </div>
                 <div class="panel-body">
                     <ul class="nav nav-pills nav-stacked">
-                        @foreach (var category in Model.NewsCategories)
+                        @foreach (var category in Model.NewsCategories.Where(_ => _.PostCount > 0))
                         {
                             if (category.IsNew)
                             {
-                            <li ActiveBy routeKey="Category" value="@(category.IsDefault ? $",{category.Id}" : $"{category.Id}")">
-                                <a style="padding: 5px 10px;  text-align: left;" asp-route-category="@(category.IsDefault ? "" : $"{category.Id}")">@category.Name 
-                                <span class="fas fa-asterisk fa-sm" style="color:#FF8C00; float: right; line-height: 20px;"></span></a>
-                            </li>
+                                <li ActiveBy routeKey="Category" value="@(category.IsDefault ? $",{category.Id}" : $"{category.Id}")">
+                                    <a style="padding: 5px 10px;  text-align: left;" asp-route-category="@(category.IsDefault ? "" : $"{category.Id}")">
+                                        @category.Name <small> (@category.PostCount)</small>
+                                        <small><span class="fas fa-asterisk fa-sm" style="color:#FF8C00; float: right; line-height: 20px;"></span></small>
+                                    </a>
+                                </li>
                             }
                             else
                             {
                                 <li ActiveBy routeKey="Category" value="@(category.IsDefault ? $",{category.Id}" : $"{category.Id}")">
-                                    <a style="padding: 5px 10px;  text-align: left;" asp-route-category="@(category.IsDefault ? "" : $"{category.Id}")">@category.Name</a>
+                                    <a style="padding: 5px 10px;  text-align: left;" asp-route-category="@(category.IsDefault ? "" : $"{category.Id}")">@category.Name<small> (@category.PostCount)</small></a>
                                 </li>
                             }
                         }
@@ -148,11 +150,13 @@ else
                             type="button"
                             name="Subscribe"
                             class="btn btn-link"
-                            data-subscribed="@Model.IsNewsSubscribed"><span id="subscribeCheck" class="far fa-lg @(Model.IsNewsSubscribed ? "fa-check-square" : "fa-square") mc-news-subscribe"></span></button>
+                            data-subscribed="@Model.IsNewsSubscribed">
+                        <span id="subscribeCheck" class="far fa-lg @(Model.IsNewsSubscribed ? "fa-check-square" : "fa-square") mc-news-subscribe"></span>
+                    </button>
                 </div>
             </div>
         </div>
-        <div class="col-sm-8 col-md-7">
+        <div class="col-sm-6 col-md-6">
             <div class="alert alert-info mc-news-banner text-center" style="display: none;">
                 There is a news update!
                 <a href="@Url.Action("Index")" class="mc-refresh-link">Click to refresh</a>
@@ -170,7 +174,7 @@ else
                         <div class="panel-heading">
                             <div class="panel-title">
                                 <div class="pull-right"><a asp-action="@nameof(HomeController.Post)" asp-route-id="@post.Id"><span class="fas fa-print"></span></a></div>
-                                <a asp-action="@nameof(HomeController.Post)" asp-route-id="@post.Id">@post.Title</a>
+                                <strong><a asp-action="@nameof(HomeController.Post)" asp-route-id="@post.Id">@post.Title</a></strong>
                             </div>
                         </div>
                         <div class="panel-body">
@@ -190,7 +194,7 @@ else
             }
 
         </div>
-        <div class="col-sm-2 col-md-3">
+        <div class="col-sm-2 col-lg-3">
             <div class="ataglancepill-sidebar ataglance-pill-darkslateblue ataglance-pill-filtered">
                 <div class="text-center hidden-sm">@Model.AtAGlanceReport.FilteredBranchDescription</div>
                 <div title="@Model.AtAGlanceReport.FilteredBranchDescription participant(s)">
@@ -325,12 +329,12 @@ else
             }, updateInterval);
         }
 
-        $().ready(function() {
+        $().ready(function () {
             mcAagStarted = Math.floor(new Date().getTime());
             console.log("Updating At a Glance status every " + mcAagUpdateEvery / 1000 + "s and slowing down after " + mcAagSlowDownAfter / 1000 + "s");
             updateAagReport(mcAagUpdateEvery);
             $(".mc-refresh-link").click(function () {
-            $(".mc-refresh-spinner").addClass("fa-spin");
+                $(".mc-refresh-spinner").addClass("fa-spin");
             });
         });
 
@@ -362,13 +366,13 @@ else
                         }
                     }
                 })
-                .fail(function () {
-                    alert("Error updating news subscription");
-                })
-                .always(function () {
-                    checkIcon.removeClass("fas fa-spinner fa-pulse disabled").addClass("far");
-                });
+                    .fail(function () {
+                        alert("Error updating news subscription");
+                    })
+                    .always(function () {
+                        checkIcon.removeClass("fas fa-spinner fa-pulse disabled").addClass("far");
+                    });
             }
         });
-                </script>
+    </script>
         }

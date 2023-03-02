@@ -21,77 +21,126 @@ namespace GRA.Domain.Service
     public class UserService : Abstract.BaseUserService<UserService>
     {
         private const string UnspecifiedCulture = "unspecified";
+
         private const int UnsubscribeTokenLength = 16;
+
         private readonly ActivityService _activityService;
+
         private readonly IAuthorizationCodeRepository _authorizationCodeRepository;
+
         private readonly IAvatarBundleRepository _avatarBundleRepository;
+
         private readonly IBadgeRepository _badgeRepository;
+
         private readonly IBookRepository _bookRepository;
+
         private readonly IBranchRepository _branchRepository;
+
         private readonly ICodeGenerator _codeGenerator;
+
         private readonly EmailManagementService _emailManagementService;
+
         private readonly IGroupInfoRepository _groupInfoRepository;
+
         private readonly IGroupTypeRepository _groupTypeRepository;
+
         private readonly IJobRepository _jobRepository;
+
         private readonly LanguageService _languageService;
+
         private readonly IMailRepository _mailRepository;
+
         private readonly INotificationRepository _notificationRepository;
+
         private readonly IPasswordValidator _passwordValidator;
+
         private readonly IPathResolver _pathResolver;
+
         private readonly IPrizeWinnerRepository _prizeWinnerRepository;
+
         private readonly IProgramRepository _programRepository;
+
         private readonly IRequiredQuestionnaireRepository _requireQuestionnaireRepository;
+
         private readonly IRoleRepository _roleRepository;
+
         private readonly ISchoolRepository _schoolRepository;
+
         private readonly IStringLocalizer<Resources.Shared> _sharedLocalizer;
+
         private readonly SiteLookupService _siteLookupService;
+
         private readonly ISiteRepository _siteRepository;
+
         private readonly ISystemRepository _systemRepository;
+
         private readonly UserImportService _userImportService;
+
         private readonly IUserLogRepository _userLogRepository;
+
         private readonly IUserRepository _userRepository;
+
         private readonly VendorCodeService _vendorCodeService;
 
-        public UserService(ILogger<UserService> logger,
-            IDateTimeProvider dateTimeProvider,
-            IUserContextProvider userContextProvider,
-            IPathResolver pathResolver,
-            ICodeGenerator codeGenerator,
-            IPasswordValidator passwordValidator,
+        private readonly string[] CompareProperties = new[]
+        {
+            "AchievedAt",
+            "Age",
+            "BranchId",
+            "Culture",
+            "DailyPersonalGoal",
+            "Email",
+            "FirstName",
+            "HouseholdHeadUserId",
+            "IsDeleted",
+            "IsEmailSubscribed",
+            "IsFirstTime",
+            "LastName",
+            "PhoneNumber",
+            "PointsEarned",
+            "PostalCode",
+            "ProgramId",
+            "SchoolId",
+            "SystemId",
+            "Username",
+        };
+
+        public UserService(ActivityService activityService,
+            EmailManagementService emailManagementService,
             IAuthorizationCodeRepository authorizationCodeRepository,
             IAvatarBundleRepository avatarBundleRepository,
             IBadgeRepository badgeRepository,
             IBookRepository bookRepository,
             IBranchRepository branchRepository,
+            ICodeGenerator codeGenerator,
+            IDateTimeProvider dateTimeProvider,
             IGroupInfoRepository groupInfoRepository,
             IGroupTypeRepository groupTypeRepository,
             IJobRepository jobRepository,
+            ILogger<UserService> logger,
             IMailRepository mailRepository,
             INotificationRepository notificationRepository,
+            IPasswordValidator passwordValidator,
+            IPathResolver pathResolver,
             IPrizeWinnerRepository prizeWinnerRepository,
             IProgramRepository programRepository,
             IRequiredQuestionnaireRepository requireQuestionnaireRepository,
             IRoleRepository roleRepository,
             ISchoolRepository schoolRepository,
             ISiteRepository siteRepository,
+            IStringLocalizer<Resources.Shared> sharedLocalizer,
             ISystemRepository systemRepository,
+            IUserContextProvider userContextProvider,
             IUserLogRepository userLogRepository,
             IUserRepository userRepository,
-            ActivityService activityService,
-            EmailManagementService emailManagementService,
             LanguageService languageService,
             SiteLookupService siteLookupService,
             UserImportService userImportService,
-            VendorCodeService vendorCodeService,
-            IStringLocalizer<Resources.Shared> sharedLocalizer)
+            VendorCodeService vendorCodeService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
-            _pathResolver = pathResolver
-                ?? throw new ArgumentNullException(nameof(pathResolver));
-            _codeGenerator = codeGenerator
-                ?? throw new ArgumentNullException(nameof(codeGenerator));
-            _passwordValidator = passwordValidator
-                ?? throw new ArgumentNullException(nameof(passwordValidator));
+            _activityService = activityService
+                ?? throw new ArgumentNullException(nameof(activityService));
             _authorizationCodeRepository = authorizationCodeRepository
                 ?? throw new ArgumentNullException(nameof(authorizationCodeRepository));
             _avatarBundleRepository = avatarBundleRepository
@@ -102,6 +151,10 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(bookRepository));
             _branchRepository = branchRepository
                 ?? throw new ArgumentNullException(nameof(branchRepository));
+            _codeGenerator = codeGenerator
+                ?? throw new ArgumentNullException(nameof(codeGenerator));
+            _emailManagementService = emailManagementService
+                ?? throw new ArgumentNullException(nameof(emailManagementService));
             _groupInfoRepository = groupInfoRepository
                 ?? throw new ArgumentNullException(nameof(groupInfoRepository));
             _groupTypeRepository = groupTypeRepository
@@ -114,6 +167,9 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(mailRepository));
             _notificationRepository = notificationRepository
                 ?? throw new ArgumentNullException(nameof(notificationRepository));
+            _passwordValidator = passwordValidator
+                ?? throw new ArgumentNullException(nameof(passwordValidator));
+            _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
             _prizeWinnerRepository = prizeWinnerRepository
                 ?? throw new ArgumentNullException(nameof(prizeWinnerRepository));
             _programRepository = programRepository
@@ -124,26 +180,22 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(roleRepository));
             _schoolRepository = schoolRepository
                 ?? throw new ArgumentNullException(nameof(schoolRepository));
+            _sharedLocalizer = sharedLocalizer
+                ?? throw new ArgumentNullException(nameof(sharedLocalizer));
+            _siteLookupService = siteLookupService
+                ?? throw new ArgumentNullException(nameof(siteLookupService));
             _siteRepository = siteRepository
                 ?? throw new ArgumentNullException(nameof(siteRepository));
             _systemRepository = systemRepository
                 ?? throw new ArgumentNullException(nameof(systemRepository));
+            _userImportService = userImportService
+                ?? throw new ArgumentNullException(nameof(userImportService));
             _userLogRepository = userLogRepository
                 ?? throw new ArgumentNullException(nameof(userLogRepository));
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
-            _activityService = activityService
-                ?? throw new ArgumentNullException(nameof(activityService));
-            _emailManagementService = emailManagementService
-                ?? throw new ArgumentNullException(nameof(emailManagementService));
-            _siteLookupService = siteLookupService
-                ?? throw new ArgumentNullException(nameof(siteLookupService));
-            _userImportService = userImportService
-                ?? throw new ArgumentNullException(nameof(userImportService));
             _vendorCodeService = vendorCodeService
                 ?? throw new ArgumentNullException(nameof(vendorCodeService));
-            _sharedLocalizer = sharedLocalizer
-                ?? throw new ArgumentNullException(nameof(sharedLocalizer));
         }
 
         public async Task<string>
@@ -526,6 +578,97 @@ namespace GRA.Domain.Service
                     throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
                 }
             }
+        }
+
+        public async Task<ICollection<ChangedItem<User>>> GetChangeHistoryAsync(int userId)
+        {
+            var changeHistory = await _userRepository.GetChangesAsync(userId)
+                ?? throw new GraException($"Unable to find history for user id {userId}");
+
+            var branches = (await _branchRepository.GetAllAsync(GetCurrentSiteId()))
+                .ToDictionary(k => k.Id, v => v.Name);
+            var systems = (await _systemRepository.GetAllAsync(GetCurrentSiteId()))
+                .ToDictionary(k => k.Id, v => v.Name);
+            var programs = (await _programRepository.GetAllAsync(GetCurrentSiteId()))
+                .ToDictionary(k => k.Id, v => v.Name);
+
+            foreach (var historyItem in changeHistory
+                .OrderBy(_ => _.ChangedAt)
+                .ThenBy(_ => _.ChangedByUserId))
+            {
+                historyItem.ChangedByUserName
+                    = await GetUsersNameByIdAsync(historyItem.ChangedByUserId);
+                historyItem.Differences = historyItem.OldItem.DetailedCompare(historyItem.NewItem,
+                    CompareProperties);
+
+                foreach (var diff in historyItem.Differences)
+                {
+                    if (diff.Property == "BranchId")
+                    {
+                        if (diff.Value1 != null
+                            && branches.TryGetValue((int)diff.Value1, out string val1Name))
+                        {
+                            diff.Value1Notes = val1Name;
+                        }
+                        if (diff.Value2 != null
+                            && branches.TryGetValue((int)diff.Value2, out string val2Name))
+                        {
+                            diff.Value2Notes = val2Name;
+                        }
+                    }
+                    if (diff.Property == "HouseholdHeadUserId")
+                    {
+                        if (diff.Value1 != null && diff.Value1 is int @userId1)
+                        {
+                            diff.Value1Notes = await GetUsersNameByIdAsync(@userId1)
+                                + $" (user id: {diff.Value1})";
+                        }
+                        if (diff.Value2 != null && diff.Value2 is int @userId2)
+                        {
+                            diff.Value2Notes = await GetUsersNameByIdAsync(@userId2)
+                                + $" (user id: {diff.Value2})";
+                        }
+                    }
+                    if (diff.Property == "PointsEarned")
+                    {
+                        var pointsOld = diff.Value1 as int?;
+                        var pointsNew = diff.Value2 as int?;
+                        if (pointsOld.HasValue && pointsNew.HasValue)
+                        {
+                            string sign = pointsNew > pointsOld ? "+" : null;
+
+                            diff.Value2Notes = $"{diff.Value2} ({sign}{pointsNew - pointsOld})";
+                        }
+                    }
+                    if (diff.Property == "ProgramId")
+                    {
+                        if (diff.Value1 != null
+                            && programs.TryGetValue((int)diff.Value1, out string val1Name))
+                        {
+                            diff.Value1Notes = val1Name;
+                        }
+                        if (diff.Value2 != null
+                            && programs.TryGetValue((int)diff.Value2, out string val2Name))
+                        {
+                            diff.Value2Notes = val2Name;
+                        }
+                    }
+                    if (diff.Property == "SystemId")
+                    {
+                        if (diff.Value1 != null
+                            && systems.TryGetValue((int)diff.Value1, out string val1Name))
+                        {
+                            diff.Value1Notes = val1Name;
+                        }
+                        if (diff.Value2 != null
+                            && systems.TryGetValue((int)diff.Value2, out string val2Name))
+                        {
+                            diff.Value2Notes = val2Name;
+                        }
+                    }
+                }
+            }
+            return changeHistory;
         }
 
         public async Task<GroupType> GetDefaultGroupTypeAsync()

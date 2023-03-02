@@ -56,7 +56,7 @@ namespace GRA.Web
                 .GetRequiredService<IWebHostEnvironment>();
 
             var loggingLevelSwitch = new Serilog.Core.LoggingLevelSwitch();
-            
+
             Log.Logger = LogConfig.Build(config, loggingLevelSwitch).CreateLogger();
             Log.Information("GRA v{Version} instance {Instance} environment {Environment} in {WebRootPath} with content root {ContentRoot}",
                 Version.GetVersion(),
@@ -158,10 +158,11 @@ namespace GRA.Web
                     }
                 }
 
-                if (minThreads != setThreads 
+                if (minThreads != setThreads
                     || minCompletionPortThreads != setCompletionPortThreads)
                 {
-                    if (ThreadPool.SetMinThreads(setThreads, setCompletionPortThreads)) {
+                    if (ThreadPool.SetMinThreads(setThreads, setCompletionPortThreads))
+                    {
                         Log.Information("Set minimum thread counts to {SetThreads} threads, {SetCompletionPortThreads} completion port threads",
                             setThreads,
                             setCompletionPortThreads);

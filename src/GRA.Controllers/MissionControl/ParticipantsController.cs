@@ -2722,7 +2722,7 @@ namespace GRA.Controllers.MissionControl
                         new { id = code.VendorCode.PackingSlip });
                 }
             }
-
+            SetPageTitle(user, "Assigned Vendor Codes");
             return View(viewModel);
         }
 
@@ -2900,6 +2900,36 @@ namespace GRA.Controllers.MissionControl
                 MaximumHouseholdAllowed = maximumHousehold,
                 GroupTypes = new SelectList(groupTypes.ToList(), "Id", "Name")
             });
+        }
+
+        [HttpGet]
+        [Authorize(Policy = Policy.ViewChangeHistory)]
+        public async Task<IActionResult> ViewChangeHistory(int id)
+        {
+            User user = null;
+            try
+            {
+                user = await _userService.GetDetailsByPermission(id);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning($"Unable to find user id {id}: {gex.Message}");
+                return RedirectToAction(nameof(Index));
+            }
+            if (user == null)
+            {
+                ShowAlertWarning($"Unable to find user id {id}");
+                return RedirectToAction(nameof(Index));
+            }
+
+            SetPageTitle(user, "Change History");
+
+            var viewModel = new ChangeHistoryViewModel(await GetPopulatedBaseViewModel(user))
+            {
+                ChangedItems = await _userService.GetChangeHistoryAsync(id),
+            };
+
+            return View(viewModel);
         }
 
         private void SetPageTitle(User user, string title = "Participant", string username = null)
