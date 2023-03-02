@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
 using GRA.Abstract;
 using GRA.Data.Abstract;
 using GRA.Data.Model;
+using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
@@ -60,7 +62,7 @@ namespace GRA.Data
         {
             get
             {
-                return _dbSet ?? (_dbSet = _context.Set<DbEntity>());
+                return _dbSet ??= _context.Set<DbEntity>();
             }
         }
 
@@ -96,6 +98,30 @@ namespace GRA.Data
             return _mapper.Map<DbEntity, DomainEntity>(entity);
         }
 
+        public async Task<ICollection<ChangedItem<DomainEntity>>> GetChangesAsync(int entityId)
+        {
+            var entityType = typeof(DbEntity).FullName;
+            var items = await _context.AuditLogs
+                .AsNoTracking()
+                .Where(_ => _.EntityId == entityId && _.EntityType == entityType)
+                .ToListAsync();
+
+            var changedItems = new List<ChangedItem<DomainEntity>>();
+
+            foreach (var item in items)
+            {
+                changedItems.Add(new ChangedItem<DomainEntity>
+                {
+                    ChangedAt = item.UpdatedAt,
+                    ChangedByUserId = item.UpdatedBy,
+                    OldItem = JsonSerializer.Deserialize<DomainEntity>(item.PreviousValue),
+                    NewItem = JsonSerializer.Deserialize<DomainEntity>(item.CurrentValue)
+                });
+            }
+
+            return changedItems;
+        }
+
         public virtual async Task<IEnumerable<DomainEntity>> PageAllAsync(int skip, int take)
         {
             return await DbSet
@@ -109,11 +135,8 @@ namespace GRA.Data
 
         public virtual async Task RemoveAsync(int userId, int id)
         {
-            var entity = await DbSet.FindAsync(id);
-            if (entity == null)
-            {
-                throw new GraException($"{nameof(DomainEntity)} id {id} could not be found.");
-            }
+            var entity = await DbSet.FindAsync(id)
+                ?? throw new GraException($"{nameof(DomainEntity)} id {id} could not be found.");
             DbSet.Remove(entity);
             if (AuditSet != null)
             {
@@ -221,7 +244,7 @@ namespace GRA.Data
         }
 
         protected async Task AuditLog(int currentUserId,
-                                                                                                                                            BaseDbEntity newObject,
+            BaseDbEntity newObject,
             BaseDbEntity priorObject)
         {
             await AuditLog(currentUserId, newObject.Id, newObject, priorObject);

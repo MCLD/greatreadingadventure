@@ -27,6 +27,7 @@ namespace GRA.Data.Repository
 
         public async Task<NewsPost> GetByIdAsync(int id, bool getBorderingIds)
         {
+            var now = _dateTimeProvider.Now;
             var post = await base.GetByIdAsync(id);
 
             if (getBorderingIds)
@@ -37,12 +38,12 @@ namespace GRA.Data.Repository
 
                 post.PreviousPostId = (await validIds
                     .OrderByDescending(_ => _.PublishedAt)
-                    .Where(_ => _.PublishedAt < post.PublishedAt)
+                    .Where(_ => _.PublishedAt < post.PublishedAt && _.PublishedAt < now)
                     .FirstOrDefaultAsync())?.Id;
 
                 post.NextPostId = (await validIds
                     .OrderBy(_ => _.PublishedAt)
-                    .Where(_ => _.PublishedAt > post.PublishedAt)
+                    .Where(_ => _.PublishedAt > post.PublishedAt && _.PublishedAt < now)
                     .FirstOrDefaultAsync())?.Id;
             }
 

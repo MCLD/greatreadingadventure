@@ -2,6 +2,8 @@
 
 @await Html.PartialAsync("_ParticipantPartial")
 
+<p class="hidden-print">History of this user's subscribe/unsubscribe actions.</p>
+
 <div class="row" style="padding: 10px 0;">
     <div class="col-xs-12">
         @if (Model.SubscritionAuditLogs.Count() == 0)

@@ -1,0 +1,66 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.ChangeHistoryViewModel
+
+@await Html.PartialAsync("_ParticipantPartial")
+
+<p class="hidden-print">Below are changes made to this user:</p>
+
+<div class="row">
+    <div class="col-xs-12">
+        <table class="table table-condensed table-bordered table-striped" style="margin-top: 2rem;">
+            <tr>
+                <th>Changed by/at</th>
+                <th>Field</th>
+                <th>Old Value</th>
+                <th>New Value</th>
+            </tr>
+            @if (Model.ChangedItems?.Where(_ => _.Differences?.Count > 0).Any() == true)
+            {
+                @foreach (var item in Model.ChangedItems.Where(_ => _.Differences?.Count > 0))
+                {
+                    int itemCount = 0;
+                    @foreach (var difference in item.Differences)
+                    {
+                        itemCount++;
+                        <tr>
+                            @if (itemCount == 1)
+                            {
+                                <td rowspan="@item.Differences.Count">
+                                    @item.ChangedAt<br>
+                                    <a asp-action="@nameof(ParticipantsController.Detail)"
+                       asp-route-id="@item.ChangedByUserId">@item.ChangedByUserName</a>
+                                </td>
+                            }
+                            <td>@difference.Property</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(difference.Value1Notes))
+                                {
+                                    @difference.Value1Notes
+                                }
+                                else
+                                {
+                                    @difference.Value1
+                                }
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(difference.Value2Notes))
+                                {
+                                    @difference.Value2Notes
+                                }
+                                else
+                                {
+                                    @difference.Value2
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4" class="warning">No change history found.</td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>

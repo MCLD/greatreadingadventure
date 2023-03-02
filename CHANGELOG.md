@@ -24,7 +24,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Participant names to packing slip detail
 - Ability to print hold slips from packing slip detail
 - Id values to system/branch export
-- Individual news post viewing in Mission Control optimized for printing
+- Individual news post viewing in Mission Control optimized for printingj
+- Post count next to category names on Mission Control dashboard
+- Ability to view history of changes submitted by another user from MC
 
 ### Fixed
 
