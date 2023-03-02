@@ -38,12 +38,12 @@ namespace GRA.Data.Repository
 
                 post.PreviousPostId = (await validIds
                     .OrderByDescending(_ => _.PublishedAt)
-                    .Where(_ => _.PublishedAt < post.PublishedAt && _.PublishedAt < now)
+                    .Where(_ => _.PublishedAt < post.PublishedAt && _.PublishedAt <= now)
                     .FirstOrDefaultAsync())?.Id;
 
                 post.NextPostId = (await validIds
                     .OrderBy(_ => _.PublishedAt)
-                    .Where(_ => _.PublishedAt > post.PublishedAt && _.PublishedAt < now)
+                    .Where(_ => _.PublishedAt > post.PublishedAt && _.PublishedAt <= now)
                     .FirstOrDefaultAsync())?.Id;
             }
 
