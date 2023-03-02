@@ -279,7 +279,7 @@ namespace GRA.Controllers.MissionControl
             Site site = await GetCurrentSiteAsync();
 
             var post = await _newsService.GetPostByIdAsync(id, true);
-            if (post.PublishedAt < _dateTimeProvider.Now)
+            if (post.PublishedAt >= _dateTimeProvider.Now)
             {
                 return RedirectToAction(nameof(Index));
             }
