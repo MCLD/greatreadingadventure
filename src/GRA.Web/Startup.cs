@@ -558,6 +558,7 @@ namespace GRA.Web
             services.AddScoped<JobService>();
             services.AddScoped<LanguageService>();
             services.AddScoped<MailService>();
+            services.AddScoped<MessageTemplateService>();
             services.AddScoped<NewsService>();
             services.AddScoped<PageService>();
             services.AddScoped<PerformerSchedulingService>();
@@ -569,6 +570,7 @@ namespace GRA.Web
             services.AddScoped<SampleDataService>();
             services.AddScoped<SchoolImportExportService>();
             services.AddScoped<SchoolService>();
+            services.AddScoped<SegmentService>();
             services.AddScoped<SiteLookupService>();
             services.AddScoped<SiteService>();
             services.AddScoped<SocialManagementService>();
@@ -660,6 +662,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.ILanguageRepository, Data.Repository.LanguageRepository>();
             services.AddScoped<Domain.Repository.ILocationRepository, Data.Repository.LocationRepository>();
             services.AddScoped<Domain.Repository.IMailRepository, Data.Repository.MailRepository>();
+            services.AddScoped<Domain.Repository.IMessageTemplateRepository, Data.Repository.MessageTemplateRepository>();
             services.AddScoped<Domain.Repository.INewsCategoryRepository, Data.Repository.NewsCategoryRepository>();
             services.AddScoped<Domain.Repository.INewsPostRepository, Data.Repository.NewsPostRepository>();
             services.AddScoped<Domain.Repository.INotificationRepository, Data.Repository.NotificationRepository>();
@@ -688,6 +691,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IRoleRepository, Data.Repository.RoleRepository>();
             services.AddScoped<Domain.Repository.ISchoolDistrictRepository, Data.Repository.SchoolDistrictRepository>();
             services.AddScoped<Domain.Repository.ISchoolRepository, Data.Repository.SchoolRepository>();
+            services.AddScoped<Domain.Repository.ISegmentRepository, Data.Repository.SegmentRepository>();
             services.AddScoped<Domain.Repository.ISiteRepository, Data.Repository.SiteRepository>();
             services.AddScoped<Domain.Repository.ISiteSettingRepository, Data.Repository.SiteSettingRepository>();
             services.AddScoped<Domain.Repository.ISocialHeaderRepository, Data.Repository.SocialHeaderRepository>();

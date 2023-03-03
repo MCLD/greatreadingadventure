@@ -68,6 +68,8 @@ namespace GRA.Data.Profile
             CreateMap<Model.Language, Domain.Model.Language>();
             CreateMap<Model.Location, Domain.Model.Location>();
             CreateMap<Model.Mail, Domain.Model.Mail>();
+            CreateMap<Model.MessageTemplate, Domain.Model.MessageTemplate>();
+            CreateMap<Model.MessageTemplateText, Domain.Model.MessageTemplateText>();
             CreateMap<Model.NewsCategory, Domain.Model.NewsCategory>()
                 .ForMember(dest => dest.PostCount, opt => opt.MapFrom(src => src.Posts.Count));
             CreateMap<Model.NewsPost, Domain.Model.NewsPost>();
@@ -114,6 +116,8 @@ namespace GRA.Data.Profile
             CreateMap<Model.Role, Domain.Model.Role>();
             CreateMap<Model.School, Domain.Model.School>();
             CreateMap<Model.SchoolDistrict, Domain.Model.SchoolDistrict>();
+            CreateMap<Model.Segment, Domain.Model.Segment>();
+            CreateMap<Model.SegmentText, Domain.Model.SegmentText>();
             CreateMap<Model.Site, Domain.Model.Site>();
             CreateMap<Model.SiteSetting, Domain.Model.SiteSetting>();
             CreateMap<Model.Social, Domain.Model.Social>();
