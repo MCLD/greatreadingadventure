@@ -1,14 +1,14 @@
 ﻿@using System.Globalization
-@model GRA.Domain.Model.VendorCodeType
+@model GRA.Controllers.ViewModel.MissionControl.VendorCodes.ConfigureViewModel
 
-@if (Model.Id > 0)
+@if (Model.VendorCodeType.Id > 0)
 {
     @await Html.PartialAsync("_VendorCodePartial")
 }
 
 <div class="row" style="margin-top: 1rem; margin-bottom: 1rem;">
     <div class="col-xs-12">
-        @if (Model.Id == 0)
+        @if (Model.VendorCodeType.Id == default)
         {
             <p>Vendor codes are not yet configured. Use this page to set them up.</p>
         }
@@ -36,186 +36,193 @@
       method="post"
       role="form"
       enctype="multipart/form-data">
-    <input type="hidden" asp-for="SiteId" value="@Model.SiteId" />
+    <input type="hidden" asp-for="VendorCodeType.SiteId" value="@Model.VendorCodeType.SiteId" />
     <div class="row">
         <div class="col-xs-12">
             <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>*
-                <description gra-description-for="Description"></description>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
+                <label asp-for="VendorCodeType.Description" class="control-label"></label>*
+                <description gra-description-for="VendorCodeType.Description"></description>
+                <input asp-for="VendorCodeType.Description" class="form-control" />
+                <span asp-validation-for="VendorCodeType.Description" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" asp-for="VendorCodeType.MessageTemplateId" value="@Model.VendorCodeType.MessageTemplateId">
+    @if (Model.VendorCodeType.Id != default)
+    {
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label class="control-label" asp-for="VendorCodeType.MessageTemplateId"></label>
+                    <description gra-description-for="VendorCodeType.MessageTemplateId"></description>
+                    <br />
+                    @foreach (var item in Model.Languages)
+                    {
+                        <a class="btn @Model.LanguageMessageClass(Model.VendorCodeType.MessageTemplateId, item.Value)"
+                           data-toggle="modal"
+                           data-target="#messageModal"
+                           data-item="MessageTemplateId"
+                           data-languageid="@item.Value">@item.Key</a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label asp-for="VendorCodeType.Url" class="control-label"></label>
+                <description gra-description-for="VendorCodeType.Url"></description>
+                <input asp-for="VendorCodeType.Url" class="form-control" />
+                <span asp-validation-for="VendorCodeType.Url" class="text-danger"></span>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-xs-12">
             <div class="form-group">
-                <label asp-for="MailSubject" class="control-label"></label>*
-                <description gra-description-for="MailSubject"></description>
-                <input asp-for="MailSubject" class="form-control" />
-                <span asp-validation-for="MailSubject" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="form-group">
-                <label asp-for="Mail" class="control-label"></label>*
-                <description gra-description-for="Mail"></description>
-                <textarea asp-for="Mail" class="form-control"></textarea>
-                <span asp-validation-for="Mail" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="form-group">
-                <label asp-for="Url" class="control-label"></label>
-                <description gra-description-for="Url"></description>
-                <input asp-for="Url" class="form-control" />
-                <span asp-validation-for="Url" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="form-group">
-                <label asp-for="ExpirationDate" class="control-label"></label>
-                <description gra-description-for="ExpirationDate"></description>
-                <input asp-for="ExpirationDate"
+                <label asp-for="VendorCodeType.ExpirationDate" class="control-label"></label>
+                <description gra-description-for="VendorCodeType.ExpirationDate"></description>
+                <input asp-for="VendorCodeType.ExpirationDate"
                        class="form-control"
                        type="date" />
-                <span asp-validation-for="ExpirationDate" class="text-danger"></span>
+                <span asp-validation-for="VendorCodeType.ExpirationDate" class="text-danger"></span>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-xs-12">
             <div class="form-group">
-                <label asp-for="AwardPrizeOnShipDate" class="control-label"></label>
-                <description gra-description-for="AwardPrizeOnShipDate"></description>
-                <select asp-for="AwardPrizeOnShipDate"
+                <label asp-for="VendorCodeType.AwardPrizeOnShipDate" class="control-label"></label>
+                <description gra-description-for="VendorCodeType.AwardPrizeOnShipDate"></description>
+                <select asp-for="VendorCodeType.AwardPrizeOnShipDate"
                         asp-items="VendorCodesController.ShipDateOptions"
                         class="form-control">
                 </select>
-                <span asp-validation-for="AwardPrizeOnShipDate" class="text-danger"></span>
+                <span asp-validation-for="VendorCodeType.AwardPrizeOnShipDate" class="text-danger"></span>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-xs-12">
             <div class="form-group">
-                <label asp-for="AwardPrizeOnPackingSlip" class="control-label"></label>
-                <description gra-description-for="AwardPrizeOnPackingSlip"></description>
-                <select asp-for="AwardPrizeOnPackingSlip"
+                <label asp-for="VendorCodeType.AwardPrizeOnPackingSlip" class="control-label"></label>
+                <description gra-description-for="VendorCodeType.AwardPrizeOnPackingSlip"></description>
+                <select asp-for="VendorCodeType.AwardPrizeOnPackingSlip"
                         asp-items="VendorCodesController.PackingSlipOptions"
                         class="form-control">
                 </select>
-                <span asp-validation-for="AwardPrizeOnPackingSlip" class="text-danger"></span>
+                <span asp-validation-for="VendorCodeType.AwardPrizeOnPackingSlip" class="text-danger"></span>
             </div>
         </div>
     </div>
-    <hr />
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="form-group">
-                <label asp-for="OptionSubject" class="control-label"></label>
-                <description gra-description-for="OptionSubject"></description>
-                <input asp-for="OptionSubject" class="form-control" />
-                <span asp-validation-for="OptionSubject" class="text-danger"></span>
+    @if (Model.VendorCodeType.Id != default)
+    {
+        <hr />
+        <input type="hidden" asp-for="VendorCodeType.OptionMessageTemplateId" value="@Model.VendorCodeType.OptionMessageTemplateId">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label class="control-label" asp-for="VendorCodeType.OptionMessageTemplateId"></label>
+                    <description gra-description-for="VendorCodeType.OptionMessageTemplateId"></description>
+                    <br />
+                    @foreach (var item in Model.Languages)
+                    {
+                        <a class="btn @Model.LanguageMessageClass(Model.VendorCodeType.OptionMessageTemplateId, item.Value)"
+                           data-toggle="modal"
+                           data-target="#messageModal"
+                           data-item="OptionMessageTemplateId"
+                           data-languageid="@item.Value">@item.Key</a>
+                    }
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="form-group">
-                <label asp-for="OptionMail" class="control-label"></label>
-                <description gra-description-for="OptionMail"></description>
-                <textarea asp-for="OptionMail" class="form-control"></textarea>
-                <span asp-validation-for="OptionMail" class="text-danger"></span>
+        @if (Model.AnyConfiguredLanguages(Model.VendorCodeType.OptionMessageTemplateId))
+        {
+            <hr />
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label asp-for="VendorCodeType.DonationSegmentId" class="control-label"></label><br />
+                        @foreach (var item in Model.Languages)
+                        {
+                            <a class="btn @Model.LanguageSegmentClass(Model.VendorCodeType.DonationSegmentId, item.Value)"
+                               data-toggle="modal"
+                               data-target="#segmentModal"
+                               data-item="DonationSegmentId"
+                               data-languageid="@item.Value">@item.Key</a>
+                        }
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    <hr />
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="form-group">
-                <label asp-for="DonationMessage" class="control-label"></label>
-                <description gra-description-for="DonationMessage"></description>
-                <input asp-for="DonationMessage" class="form-control" />
-                <span asp-validation-for="DonationMessage" class="text-danger"></span>
+            <input type="hidden" asp-for="VendorCodeType.DonationMessageTemplateId" value="@Model.VendorCodeType.DonationMessageTemplateId">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label class="control-label" asp-for="VendorCodeType.DonationMessageTemplateId"></label><br />
+                        @foreach (var item in Model.Languages)
+                        {
+                            <a class="btn @Model.LanguageMessageClass(Model.VendorCodeType.DonationMessageTemplateId, item.Value)"
+                               data-toggle="modal"
+                               data-target="#messageModal"
+                               data-item="DonationMessageTemplateId"
+                               data-languageid="@item.Value">@item.Key</a>
+                        }
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="form-group">
-                <label asp-for="DonationSubject" class="control-label"></label>
-                <description gra-description-for="DonationSubject"></description>
-                <input asp-for="DonationSubject" class="form-control" />
-                <span asp-validation-for="DonationSubject" class="text-danger"></span>
+            <hr />
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label asp-for="VendorCodeType.EmailAwardSegmentId" class="control-label"></label><br />
+                        @foreach (var item in Model.Languages)
+                        {
+                            <a class="btn @Model.LanguageSegmentClass(Model.VendorCodeType.EmailAwardSegmentId, item.Value)"
+                               data-toggle="modal"
+                               data-target="#segmentModal"
+                               data-item="EmailAwardSegmentId"
+                               data-languageid="@item.Value">@item.Key</a>
+                        }
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="form-group">
-                <label asp-for="DonationMail" class="control-label"></label>
-                <description gra-description-for="DonationMail"></description>
-                <textarea asp-for="DonationMail" class="form-control"></textarea>
-                <span asp-validation-for="DonationMail" class="text-danger"></span>
+            <input type="hidden" asp-for="VendorCodeType.EmailAwardMessageTemplateId" value="@Model.VendorCodeType.EmailAwardMessageTemplateId">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label class="control-label" asp-for="VendorCodeType.EmailAwardMessageTemplateId"></label><br />
+                        @foreach (var item in Model.Languages)
+                        {
+                            <a class="btn @Model.LanguageMessageClass(Model.VendorCodeType.EmailAwardMessageTemplateId, item.Value)"
+                               data-toggle="modal"
+                               data-target="#messageModal"
+                               data-item="EmailAwardMessageTemplateId"
+                               data-languageid="@item.Value">@item.Key</a>
+                        }
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    <hr />
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="form-group">
-                <label asp-for="EmailAwardMessage" class="control-label"></label>
-                <description gra-description-for="EmailAwardMessage"></description>
-                <input asp-for="EmailAwardMessage" class="form-control" />
-                <span asp-validation-for="EmailAwardMessage" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="form-group">
-                <label asp-for="EmailAwardSubject" class="control-label"></label>
-                <description gra-description-for="EmailAwardSubject"></description>
-                <input asp-for="EmailAwardSubject" class="form-control" />
-                <span asp-validation-for="EmailAwardSubject" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="form-group">
-                <label asp-for="EmailAwardMail" class="control-label"></label>
-                <description gra-description-for="EmailAwardMail"></description>
-                <textarea asp-for="EmailAwardMail" class="form-control"></textarea>
-                <span asp-validation-for="EmailAwardMail" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-    <hr/>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="form-group">
-                <label asp-for="ReadyForPickupEmailTemplateId" class="control-label"></label>
-                <description gra-description-for="ReadyForPickupEmailTemplateId"></description>
-                <select asp-for="ReadyForPickupEmailTemplateId"
+        }
+        <hr />
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label asp-for="VendorCodeType.ReadyForPickupEmailTemplateId" class="control-label"></label>
+                    <description gra-description-for="VendorCodeType.ReadyForPickupEmailTemplateId"></description>
+                    <select asp-for="VendorCodeType.ReadyForPickupEmailTemplateId"
                         asp-items="VendorCodesController.GetSelectList(Model.DirectEmailTemplates)"
-                        class="form-control">
+                            class="form-control">
                         <option value="">None</option>
-                </select>
-                <span asp-validation-for="ReadyForPickupEmailTemplateId" class="text-danger"></span>
+                    </select>
+                    <span asp-validation-for="VendorCodeType.ReadyForPickupEmailTemplateId" class="text-danger"></span>
+                </div>
             </div>
         </div>
-    </div>
+    }
     <div class="row row-spacing">
         <div class="col-xs-12 text-right">
-            @if (Model.Id > 0)
+            @if (Model.VendorCodeType.Id > 0)
             {
                 <a asp-action="@nameof(VendorCodesController.Index)"
                    class="btn btn-default">Back</a>
@@ -223,10 +230,315 @@
             else
             {
                 <a asp-controller="@HomeController.Name"
-                   asp-action="@nameof(HomeController.Index)"
+               asp-action="@nameof(HomeController.Index)"
                    class="btn btn-default">Cancel</a>
             }
             <button type="submit" class="btn btn-primary">Save vendor code</button>
         </div>
     </div>
 </form>
+
+<form id="updateSegmentText">
+    <input type="hidden" name="vendorCodeTypeId" value="@Model.VendorCodeType.Id" />
+    <input type="hidden" id="updateSegmentLanguageId" name="languageId" />
+    <input type="hidden" id="updateSegmentItem" name="item" />
+    <div class="modal fade"
+         id="segmentModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="segmentModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="segmentModalLabel">Pop-up Message</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="segmentModalCover"
+                         class="text-center">
+                        <span class="fa fa-spinner fa-spin" style="font-size: 3rem;"></span>
+                    </div>
+                    <div id="segmentModalContent" style="display: none;">
+                        <div class="form-group">
+                            <label>Pop-up text</label> 
+                            <input type="text"
+                                   class="form-control"
+                                   id="segmentText"
+                                   name="text" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-warning btn-spinner"
+                            id="clearSegment">
+                        Remove pop-up message
+                    </button>
+                    <button type="button"
+                            class="btn btn-default"
+                            data-dismiss="modal">
+                        Close
+                    </button>
+                    <button type="submit"
+                            button-spinner
+                            class="btn btn-primary btn-spinner"
+                            id="saveSegment">
+                        Save changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="updateMessageText">
+    <input type="hidden" name="vendorCodeTypeId" value="@Model.VendorCodeType.Id" />
+    <input type="hidden" id="updateLanguageId" name="languageId" />
+    <input type="hidden" id="updateItem" name="item" />
+    <div class="modal fade"
+         id="messageModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="messageModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="messageModalLabel">Message</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="messageModalCover"
+                         class="text-center">
+                        <span class="fa fa-spinner fa-spin" style="font-size: 3rem;"></span>
+                    </div>
+                    <div id="messageModalContent" style="display: none;">
+                        <div class="form-group">
+                            <label>Message subject</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="messageSubject"
+                                   name="subject" />
+                        </div>
+                        <div class="form-group">
+                            <label>Message text</label>
+                            <textarea class="form-control"
+                                      rows="4"
+                                      id="messageBody"
+                                      name="body"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-warning btn-spinner"
+                            id="clearMessageTemplate">
+                        Remove message
+                    </button>
+                    <button type="button"
+                            class="btn btn-default"
+                            data-dismiss="modal">
+                        Close
+                    </button>
+                    <button type="submit"
+                            button-spinner
+                            class="btn btn-primary btn-spinner"
+                            id="saveMessageTemplate">
+                        Save changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section scripts {
+    <script>
+        $('#updateMessageText').submit(function (e) {
+            e.preventDefault();
+            let form = $(this);
+            $.ajax({
+                url: '@Url.Action(nameof(VendorCodesController.SetMessageTemplate))',
+                type: "POST",
+                data: form.serialize(),
+                success: function (data, textStatus, jqXHR) {
+                    if (data.success === true) {
+                        location.reload();
+                    } else {
+                        window.alert("There as an error: " + data.message);
+                        ResetSpinners();
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    ResetSpinners();
+                    window.alert("There was an " + textStatus + ": " + errorThrown);
+                }
+            });
+        });
+
+        $('#updateSegmentText').submit(function(e) {
+            e.preventDefault();
+            let form = $(this);
+            $.ajax({
+                url: '@Url.Action(nameof(VendorCodesController.SetSegment))',
+                type: "POST",
+                data: form.serialize(),
+                success: function (data, textStatus, jqXHR) {
+                    if (data.success === true) {
+                        location.reload();
+                    } else {
+                        window.alert("There as an error: " + data.message);
+                        ResetSpinners();
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    ResetSpinners();
+                    window.alert("There was an " + textStatus + ": " + errorThrown);
+                }
+            });
+        });
+
+        $('#clearMessageTemplate').on('click', function (e) {
+            $('#messageSubject').val('');
+            $('#messageBody').val('');
+            $('#updateMessageText').submit();
+        });
+
+        $('#clearSegment').on('click', function(e) {
+            $('#segmentText').val('');
+            $('#updateSegmentText').submit();
+        });
+
+        $('#messageModal').on('show.bs.modal', function (e) {
+            $('#clearMessageTemplate').hide();
+            $('#messageModalCover').html('<span class="fa fa-spinner fa-spin" style="font-size: 3rem;"></span>');
+            $('#messageModalCover').show();
+            $('#messageModalContent').hide();
+            $('#saveMessageTemplate').prop('disabled', true);
+            let languageid = $(e.relatedTarget).data('languageid');
+            let item = $(e.relatedTarget).data('item');
+            switch (item) {
+                case '@nameof(Model.VendorCodeType.DonationMessageTemplateId)':
+                    $('#messageModalLabel').text('Donation message');
+                    break;
+                case '@nameof(Model.VendorCodeType.EmailAwardMessageTemplateId)':
+                    $('#messageModalLabel').text('Email award message');
+                    break;
+                case '@nameof(Model.VendorCodeType.OptionMessageTemplateId)':
+                    $('#messageModalLabel').text('Option message');
+                    break;
+                default:
+                    $('#messageModalLabel').text('Message with code');
+            }
+            $('#updateLanguageId').val(languageid);
+            $('#updateItem').val(item);
+            $.ajax({
+                url: '@Url.Action(nameof(VendorCodesController.GetMessageTemplate))',
+                type: "GET",
+                dataType: 'json',
+                data: {
+                    'vendorCodeTypeId': @Model.VendorCodeType.Id,
+                    'languageId': languageid,
+                    'item': item
+                },
+                success: function (data, textStatus, jqXHR) {
+                    let validData = false;
+                    if (data.success === true) {
+                        if (data.subject) {
+                            $('#messageSubject').val(data.subject);
+                            validData = true;
+                        }
+                        else {
+                            $('#messageSubject').val('');
+                        }
+                        if (data.body) {
+                            $('#messageBody').val(data.body);
+                            validData = true;
+                        } else {
+                            $('#messageBody').val('');
+                        }
+                        if (validData && item != '@nameof(Model.VendorCodeType.MessageTemplateId)') {
+                            $('#clearMessageTemplate').show();
+                        }
+                        $('#saveMessageTemplate').prop('disabled', false);
+                        $('#messageModalCover').hide();
+                        $('#messageModalContent').show();
+                    }
+                    else {
+                        console.log("Failure loading the message template: " + data.message);
+                        $('#messageModalCover').html('<div class="text-danger">' + data.message + '</span>');
+                        $('#saveMessageTemplate').prop('disabled', true);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log("Failure response for the message template: " + textStatus + " - " + errorThrown);
+                    $('#messageModalCover').html('<div class="text-danger">' + textStatus + ' - ' + errorThrown + '</span>');
+                    $('#saveMessageTemplate').prop('disabled', true);
+                }
+            });
+        });
+
+        $('#segmentModal').on('show.bs.modal', function (e) {
+            $('#segmentModalCover').html('<span class="fa fa-spinner fa-spin" style="font-size: 3rem;"></span>');
+            $('#segmentModalCover').show();
+            $('#segmentModalContent').hide();
+            $('#saveSegment').prop('disabled', true);
+            let languageid = $(e.relatedTarget).data('languageid');
+            let item = $(e.relatedTarget).data('item');
+            switch (item) {
+                case '@nameof(Model.VendorCodeType.DonationSegmentId)':
+                    $('#messageModalLabel').text('Segment pop-up message');
+                    break;
+                case '@nameof(Model.VendorCodeType.EmailAwardSegmentId)':
+                    $('#messageModalLabel').text('Email award pop-up message');
+                    break;
+            }
+            $('#updateSegmentLanguageId').val(languageid);
+            $('#updateSegmentItem').val(item);
+            $.ajax({
+                url: '@Url.Action(nameof(VendorCodesController.GetSegment))',
+                type: "GET",
+                dataType: 'json',
+                data: {
+                    'vendorCodeTypeId': @Model.VendorCodeType.Id,
+                    'languageId': languageid,
+                    'item': item
+                },
+                success: function (data, textStatus, jqXHR) {
+                    console.info("Response: %o", data)
+                    if (data.success === true) {
+                        if (data.text) {
+                            $('#segmentText').val(data.text);
+                            $('#clearSegment').show();
+                        } else {
+                            $('#segmentText').val('');
+                            $('#clearSegment').hide();
+                        }
+                        $('#saveSegment').prop('disabled', false);
+                        $('#segmentModalCover').hide();
+                        $('#segmentModalContent').show();
+                    }
+                    else {
+                        console.log("Failure loading the segment text: " + data.message);
+                        $('#segmentModalCover').html('<div class="text-danger">' + data.message + '</span>');
+                        $('#saveSegment').prop('disabled', true);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log("Failure response for the segment text: " + textStatus + " - " + errorThrown);
+                    $('#segmentModalCover').html('<div class="text-danger">' + textStatus + ' - ' + errorThrown + '</span>');
+                    $('#saveSegment').prop('disabled', true);
+                }
+            });
+        });
+    </script>
+}

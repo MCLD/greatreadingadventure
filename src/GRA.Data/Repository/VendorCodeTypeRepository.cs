@@ -19,6 +19,12 @@ namespace GRA.Data.Repository
         {
         }
 
+        // honors site id, skip, and take
+        public async Task<int> CountAsync(BaseFilter filter)
+        {
+            return await ApplyFilters(filter).CountAsync();
+        }
+
         public async Task<ICollection<VendorCodeType>> GetAllAsync(int siteId)
         {
             return await DbSet
@@ -26,21 +32,6 @@ namespace GRA.Data.Repository
                 .Where(_ => _.SiteId == siteId)
                 .ProjectTo<VendorCodeType>(_mapper.ConfigurationProvider)
                 .ToListAsync();
-        }
-
-        public async Task<ICollection<VendorCodeType>> GetEmailAwardTypesAsync(int siteId)
-        {
-            return await DbSet
-                .AsNoTracking()
-                .Where(_ => _.SiteId == siteId && !string.IsNullOrWhiteSpace(_.EmailAwardSubject))
-                .ProjectTo<VendorCodeType>(_mapper.ConfigurationProvider)
-                .ToListAsync();
-        }
-
-        // honors site id, skip, and take
-        public async Task<int> CountAsync(BaseFilter filter)
-        {
-            return await ApplyFilters(filter).CountAsync();
         }
 
         // honors site id, skip, and take
@@ -51,13 +42,6 @@ namespace GRA.Data.Repository
                 .ApplyPagination(filter)
                 .ProjectTo<VendorCodeType>(_mapper.ConfigurationProvider)
                 .ToListAsync();
-        }
-
-        private IQueryable<Model.VendorCodeType> ApplyFilters(BaseFilter filter)
-        {
-            return DbSet
-                .AsNoTracking()
-                .Where(_ => _.SiteId == filter.SiteId);
         }
 
         public async Task<bool> SiteHasCodesAsync(int siteId)
@@ -73,16 +57,14 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .AnyAsync(_ => _.SiteId == siteId
-                    && !string.IsNullOrWhiteSpace(_.EmailAwardSubject));
+                    && _.EmailAwardMessageTemplateId.HasValue);
         }
 
-        public async Task<string> GetEmailAwardInstructionText(int typeId, int languageId)
+        private IQueryable<Model.VendorCodeType> ApplyFilters(BaseFilter filter)
         {
-            return await _context.VendorCodeTypeTexts
+            return DbSet
                 .AsNoTracking()
-                .Where(_ => _.VendorCodeTypeId == typeId && _.LanguageId == languageId)
-                .Select(_ => _.EmailAwardInstructions)
-                .SingleOrDefaultAsync();
+                .Where(_ => _.SiteId == filter.SiteId);
         }
     }
 }

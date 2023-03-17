@@ -31,12 +31,8 @@ namespace GRA.Data.Repository
             var userLookup = await DbSet
                 .AsNoTracking()
                 .Where(_ => _.Id == userId && !_.IsDeleted)
-                .SingleOrDefaultAsync();
-
-            if (userLookup == null)
-            {
-                throw new GraException($"Unable to add roles to user {userId}.");
-            }
+                .SingleOrDefaultAsync()
+                ?? throw new GraException($"Unable to add roles to user {userId}.");
 
             var userRoleAssignment = new Model.UserRole
             {
@@ -164,6 +160,15 @@ namespace GRA.Data.Repository
                 .CountAsync();
         }
 
+        public async Task<string> GetCultureAsync(int userId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => !_.IsDeleted && _.Id == userId)
+                .Select(_ => _.Culture)
+                .SingleOrDefaultAsync();
+        }
+
         public async Task<int> GetFirstTimeCountAsync(ReportCriterion request)
         {
             var users = ApplyUserFilter(request);
@@ -285,7 +290,7 @@ namespace GRA.Data.Repository
                 systemUser = await DbSet
                     .SingleOrDefaultAsync(_ => _.IsSystemUser);
 
-                _logger.LogInformation("Inserted System Account, id is: {0}", systemUser.Id);
+                _logger.LogInformation("Inserted System Account, id is: {UserId}", systemUser.Id);
 
                 var site = await _context.Sites.SingleOrDefaultAsync(_ => _.IsDefault);
                 if (site != null)

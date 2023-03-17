@@ -21,13 +21,15 @@ namespace GRA.Domain.Service
         private readonly IDirectEmailTemplateRepository _directEmailTemplateRepository;
         private readonly IEmailBaseRepository _emailBaseRepository;
         private readonly LanguageService _languageService;
+        private readonly IMessageTemplateRepository _messageTemplateRepository;
         private readonly IUserRepository _userRepository;
 
-        public DefaultItemsService(ILogger<DefaultItemsService> logger,
+        public DefaultItemsService(IConfiguration config,
             IDateTimeProvider dateTimeProvider,
-            IConfiguration config,
             IDirectEmailTemplateRepository directEmailTemplateRepository,
             IEmailBaseRepository emailBaseRepository,
+            ILogger<DefaultItemsService> logger,
+            IMessageTemplateRepository messageTemplateRepository,
             IUserRepository userRepository,
             LanguageService languageService) : base(logger, dateTimeProvider)
         {
@@ -36,10 +38,12 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(directEmailTemplateRepository));
             _emailBaseRepository = emailBaseRepository
                 ?? throw new ArgumentNullException(nameof(emailBaseRepository));
-            _userRepository = userRepository
-                ?? throw new ArgumentNullException(nameof(userRepository));
             _languageService = languageService
                 ?? throw new ArgumentNullException(nameof(languageService));
+            _messageTemplateRepository = messageTemplateRepository
+                ?? throw new ArgumentNullException(nameof(messageTemplateRepository));
+            _userRepository = userRepository
+                ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
         public async Task EnsureDefaultItemsAsync()
@@ -70,6 +74,8 @@ namespace GRA.Domain.Service
             var languages = await _languageService.GetActiveAsync();
             var cultureLookup = languages.ToDictionary(k => k.Name, v => v.Id);
 
+            #region EmailBase
+
             var emailBasePath = Path.Combine(defaultItemsPath, "EmailBase");
             var emailBaseTextPath = Path.Combine(defaultItemsPath, "EmailBaseText");
 
@@ -81,56 +87,55 @@ namespace GRA.Domain.Service
                 defaultBaseId = defaultBase.Id;
             }
 
-            if (Directory.Exists(emailBasePath) && Directory.Exists(emailBaseTextPath))
+            if (Directory.Exists(emailBasePath)
+                && Directory.Exists(emailBaseTextPath)
+                && defaultBase == null)
             {
-                if (defaultBase == null)
+                var defaultBasePath = Path.Combine(emailBasePath, "default.json");
+                using var emailBaseFileStream = File.OpenRead(defaultBasePath);
+                try
                 {
-                    var defaultBasePath = Path.Combine(emailBasePath, "default.json");
-                    using var emailBaseFileStream = File.OpenRead(defaultBasePath);
-                    try
+                    var insertEmailBase = await JsonSerializer
+                        .DeserializeAsync<ItemImport<EmailBase>>(emailBaseFileStream);
+                    if (insertEmailBase.Data != null)
                     {
-                        var insertEmailBase = await JsonSerializer
-                            .DeserializeAsync<ItemImport<EmailBase>>(emailBaseFileStream);
-                        if (insertEmailBase.Data != null)
-                        {
-                            insertEmailBase.Data.IsDefault = true;
-                            defaultBase = await _emailBaseRepository
-                                .AddSaveAsync(systemUserId, insertEmailBase.Data);
-                            defaultBaseId = defaultBase.Id;
-                            insertedItems++;
-                        }
+                        insertEmailBase.Data.IsDefault = true;
+                        defaultBase = await _emailBaseRepository
+                            .AddSaveAsync(systemUserId, insertEmailBase.Data);
+                        defaultBaseId = defaultBase.Id;
+                        insertedItems++;
                     }
-                    catch (JsonException jex)
-                    {
-                        _logger.LogError(jex,
-                            "Unable to read JSON default EmailBase: {ErrorMessage}",
-                            jex.Message);
-                    }
+                }
+                catch (JsonException jex)
+                {
+                    _logger.LogError(jex,
+                        "Unable to read JSON default EmailBase: {ErrorMessage}",
+                        jex.Message);
+                }
 
-                    if (!defaultBaseId.HasValue)
+                if (!defaultBaseId.HasValue)
+                {
+                    _logger.LogError("No default base present or inserted, unable to insert default base texts.");
+                }
+                else
+                {
+                    foreach (var filePath in Directory
+                        .EnumerateFiles(emailBaseTextPath, "*.json"))
                     {
-                        _logger.LogError("No default base present or inserted, unable to insert default base texts.");
-                    }
-                    else
-                    {
-                        foreach (var filePath in Directory
-                            .EnumerateFiles(emailBaseTextPath, "*.json"))
+                        try
                         {
-                            try
-                            {
-                                string fullPath = Path.Combine(emailBaseTextPath, filePath);
-                                insertedItems += await ImportBaseTextAsync(fullPath,
-                                        cultureLookup,
-                                        systemUserId,
-                                        defaultBaseId.Value);
-                            }
-                            catch (JsonException jex)
-                            {
-                                _logger.LogError(jex,
-                                    "Unable to read JSON default EmailBaseText {Filename}: {ErrorMessage}",
-                                    filePath,
-                                    jex.Message);
-                            }
+                            string fullPath = Path.Combine(emailBaseTextPath, filePath);
+                            insertedItems += await ImportBaseTextAsync(fullPath,
+                                    cultureLookup,
+                                    systemUserId,
+                                    defaultBaseId.Value);
+                        }
+                        catch (JsonException jex)
+                        {
+                            _logger.LogError(jex,
+                                "Unable to read JSON default EmailBaseText {Filename}: {ErrorMessage}",
+                                filePath,
+                                jex.Message);
                         }
                     }
                 }
@@ -142,68 +147,127 @@ namespace GRA.Domain.Service
                     emailBaseTextPath);
             }
 
-            if (!defaultBaseId.HasValue)
+            #endregion EmailBase
+
+            #region DirectEmailTemplate
+
+            if (defaultBaseId.HasValue)
+            {
+                var directEmailTemplatePath = Path.Combine(defaultItemsPath, "DirectEmailTemplate");
+                var directEmailTemplateTextPath = Path
+                    .Combine(defaultItemsPath, "DirectEmailTemplateText");
+
+                if (Directory.Exists(directEmailTemplatePath)
+                    && Directory.Exists(directEmailTemplateTextPath))
+                {
+                    // directemailtemplate items to potentially import
+                    foreach (var filePath in Directory
+                        .EnumerateFiles(directEmailTemplatePath, "*.json"))
+                    {
+                        var fullPath = Path.Combine(emailBasePath, filePath);
+                        try
+                        {
+                            insertedItems += await ImportDirectEmailTemplateAsync(fullPath,
+                                systemUserId,
+                                defaultBaseId.Value);
+                        }
+                        catch (JsonException jex)
+                        {
+                            _logger.LogError(jex,
+                                "Unable to read JSON email template file {Filename}: {ErrorMessage}",
+                                filePath,
+                                jex.Message);
+                        }
+                    }
+
+                    foreach (var filePath in Directory
+                        .EnumerateFiles(directEmailTemplateTextPath, "*.json"))
+                    {
+                        var fullPath = Path.Combine(emailBasePath, filePath);
+                        try
+                        {
+                            insertedItems += await ImportDirectEmailTextAsync(fullPath,
+                                cultureLookup,
+                                systemUserId);
+                        }
+                        catch (JsonException jex)
+                        {
+                            _logger.LogError(jex,
+                                "Unable to read JSON email template file {Filename}: {ErrorMessage}",
+                                filePath,
+                                jex.Message);
+                        }
+                    }
+                }
+            }
+            else
             {
                 _logger.LogError("Unable to try to import direct email templates, no default email base.");
-                return;
             }
 
-            var directEmailTemplatePath = Path.Combine(defaultItemsPath, "DirectEmailTemplate");
-            var directEmailTemplateTextPath = Path
-                .Combine(defaultItemsPath, "DirectEmailTemplateText");
+            #endregion DirectEmailTemplate
 
-            if (Directory.Exists(directEmailTemplatePath)
-                && Directory.Exists(directEmailTemplateTextPath))
+            #region MessageTemplates
+
+            var messageTemplateBase = Path.Combine(defaultItemsPath, "MessageTemplate");
+            if (Directory.Exists(messageTemplateBase))
             {
-                // directemailtemplate items to potentially import
-                foreach (var filePath in Directory
-                    .EnumerateFiles(directEmailTemplatePath, "*.json"))
+                var messageTemplateIds = new Dictionary<string, int>();
+                foreach (var file in Directory.EnumerateFiles(messageTemplateBase))
                 {
-                    var fullPath = Path.Combine(emailBasePath, filePath);
+                    using var messageTemplate = File.OpenRead(file);
                     try
                     {
-                        insertedItems += await ImportDirectEmailTemplateAsync(fullPath,
-                            systemUserId,
-                            defaultBaseId.Value);
-                    }
-                    catch (JsonException jex)
-                    {
-                        _logger.LogError(jex,
-                            "Unable to read JSON email template file {Filename}: {ErrorMessage}",
-                            filePath,
-                            jex.Message);
-                    }
-                }
+                        var insertMessageTemplates = await JsonSerializer
+                            .DeserializeAsync<ListImport<MessageTemplateImport>>(messageTemplate);
+                        if (insertMessageTemplates.Data != null)
+                        {
+                            foreach (var template in insertMessageTemplates.Data)
+                            {
+                                if (!messageTemplateIds.ContainsKey(template.Name))
+                                {
+                                    messageTemplateIds.Add(template.Name,
+                                        await ImportLookupMessageTemplate(systemUserId,
+                                            template.Name));
+                                }
+                                var headerId = messageTemplateIds[template.Name];
 
-                foreach (var filePath in Directory
-                    .EnumerateFiles(directEmailTemplateTextPath, "*.json"))
-                {
-                    var fullPath = Path.Combine(emailBasePath, filePath);
-                    try
-                    {
-                        insertedItems += await ImportDirectEmailTextAsync(fullPath,
-                            cultureLookup,
-                            systemUserId);
+                                var languageId = cultureLookup[template.LanguageName];
+
+                                var templateExists = await _messageTemplateRepository
+                                    .TextExistsAsync(headerId, languageId);
+
+                                if (!templateExists)
+                                {
+                                    await _messageTemplateRepository.AddSaveTextAsync(headerId,
+                                        languageId,
+                                        template.Subject,
+                                        template.Body);
+                                }
+                            }
+                            insertedItems++;
+                        }
                     }
                     catch (JsonException jex)
                     {
                         _logger.LogError(jex,
-                            "Unable to read JSON email template file {Filename}: {ErrorMessage}",
-                            filePath,
+                            "Unable to read JSON default EmailBase: {ErrorMessage}",
                             jex.Message);
                     }
                 }
             }
+
+            #endregion MessageTemplates
 
             if (insertedItems > 0)
             {
-                _logger.LogInformation("Inserted {InsertedItems} missing email templates in {Elapsed} ms",
+                _logger.LogInformation("Inserted {InsertedItems} missing default items in {Elapsed} ms",
                     insertedItems,
                     sw.ElapsedMilliseconds);
             }
             else
             {
-                _logger.LogTrace("Email templates already present, checked in {Elapsed} ms",
+                _logger.LogTrace("Default items already present, checked in {Elapsed} ms",
                     sw.ElapsedMilliseconds);
             }
         }
@@ -327,6 +391,19 @@ namespace GRA.Domain.Service
             }
 
             return 0;
+        }
+
+        private async Task<int> ImportLookupMessageTemplate(int systemUserId, string name)
+        {
+            var messageTemplate = await _messageTemplateRepository.GetByNameAsync(name);
+            messageTemplate ??= await _messageTemplateRepository.AddSaveAsync(systemUserId,
+                    new MessageTemplate
+                    {
+                        CreatedAt = _dateTimeProvider.Now,
+                        CreatedBy = systemUserId,
+                        Name = name.Trim()
+                    });
+            return messageTemplate.Id;
         }
     }
 }

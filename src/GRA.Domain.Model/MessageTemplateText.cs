@@ -8,6 +8,7 @@ namespace GRA.Domain.Model
         public string Body { get; set; }
 
         public int LanguageId { get; set; }
+        public string LanguageName { get; set; }
         public int MessageTemplateId { get; set; }
 
         [MaxLength(500)]

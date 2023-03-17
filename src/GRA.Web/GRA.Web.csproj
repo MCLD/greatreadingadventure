@@ -119,6 +119,7 @@
     <Folder Include="assets\defaultitems\EmailBaseText\" />
     <Folder Include="assets\defaultitems\DirectEmailTemplate\" />
     <Folder Include="assets\defaultitems\DirectEmailTemplateText\" />
+    <Folder Include="assets\defaultitems\Segment\" />
     <Folder Include="wwwroot\webfonts\" />
   </ItemGroup>
 
