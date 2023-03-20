@@ -1,134 +1,133 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Systems.ImportViewModel
 
-    <div class="row">
-        <div class="col-xs-12">
-            <ul class="nav nav-pills" style="padding: 10px 0;">
-                <li ActiveBy routeKey="Action" value="Index"><a asp-action="Index">Systems</a></li>
-                <li ActiveBy routeKey="Action" value="Branches"><a asp-action="Branches">Branches</a></li>
-                <li class="pull-right">
-                    <div>
-                        <a asp-action="Import" class="btn btn-sm btn-default active">
-                            <span class="fas fa-file-upload"></span>
-                            Import
-                        </a>
-                        <a asp-action="Export" class="btn btn-sm btn-default">
-                            <span class="fas fa-file-download"></span>
-                            Export
-                        </a>
-                    </div>
-                </li>
-            </ul>
-        </div>
+<div class="row">
+    <div class="col-xs-12">
+        <ul class="nav nav-pills" style="padding: 10px 0;">
+            <li ActiveBy routeKey="Action" value="Index"><a asp-action="Index">Systems</a></li>
+            <li ActiveBy routeKey="Action" value="Branches"><a asp-action="Branches">Branches</a></li>
+            <li class="pull-right">
+                <div>
+                    <a asp-action="Import" class="btn btn-sm btn-default active">
+                        <span class="fas fa-file-upload"></span>
+                        Import
+                    </a>
+                    <a asp-action="Export" class="btn btn-sm btn-default">
+                        <span class="fas fa-file-download"></span>
+                        Export
+                    </a>
+                </div>
+            </li>
+        </ul>
     </div>
+</div>
 
-    <div class="row" style="margin-top: 1rem; margin-bottom: 1rem;">
-        <div class="col-xs-12">
-            <p>Import systems and branches from a properly-formatted <code>.csv</code> file.</p>
-            <ul>
-                <li>
-                    Imports and exports happen via
-                    <a href="https://en.wikipedia.org/wiki/Comma-separated_values"
-                       target="_blank">comma-separated value</a> (<code>.csv</code>) files.
-                </li>
-                <li>
-                    If there is only one system and one branch configured (e.g. how the GRA is
-                    configured when first deployed), the first system and branch in your import file
-                    will overwrite that single system and branch.
-                </li>
-                <li>
-                    If you need to see the file format, please perform an
-                    <strong><a asp-action="Export">Export</a></strong> and review the downloaded file.
-                </li>
-                <li>
-                    The easiest way to edit <code>.csv</code> files is in a spreadsheet application,
-                    however you can edit them in a text editor as well.
-                </li>
-                <li>
-                    The CSV file may include <code>Id</code> numbers but they will 
-                    <strong>not be honored</strong>, the software will assign new <code>Id</code>
-                    values during import.
-                </li>
-                <li>
-                    Ensure that you have a Google Maps API key specified in
-                //http://localhost:5000/MissionControl/Sites/Settings/1#Events
+<div class="row" style="margin-top: 1rem; margin-bottom: 1rem;">
+    <div class="col-xs-12">
+        <p>Import systems and branches from a properly-formatted <code>.csv</code> file.</p>
+        <ul>
+            <li>
+                Imports and exports happen via
+                <a href="https://en.wikipedia.org/wiki/Comma-separated_values"
+                   target="_blank">comma-separated value</a> (<code>.csv</code>) files.
+            </li>
+            <li>
+                If there is only one system and one branch configured (e.g. how the GRA is
+                configured when first deployed), the first system and branch in your import file
+                will overwrite that single system and branch.
+            </li>
+            <li>
+                If you need to see the file format, please perform an
+                <strong><a asp-action="Export">Export</a></strong> and review the downloaded file.
+            </li>
+            <li>
+                The easiest way to edit <code>.csv</code> files is in a spreadsheet application,
+                however you can edit them in a text editor as well.
+            </li>
+            <li>
+                The CSV file may include <code>Id</code> numbers but they will
+                <strong>not be honored</strong>, the software will assign new <code>Id</code>
+                values during import.
+            </li>
+            <li>
+                Ensure that you have a Google Maps API key specified in
                 <a asp-action="@nameof(SitesController.Settings)"
-                    asp-controller="@SitesController.Name"
-                    asp-route-id="@Model.SiteId">Site Settings</a>
-                    so that the software can reverse geocode addresses into coordinates for
-                    the nearby event search function.
-                </li>
-            </ul>
-        </div>
+                   asp-controller="@SitesController.Name"
+                   asp-route-id="@Model.SiteId">Site Settings</a>
+                so that the software can reverse geocode addresses into coordinates for
+                the nearby event search function.
+            </li>
+        </ul>
     </div>
+</div>
 
-    <div class="row" style="margin-bottom: 1rem;">
-        <div class="col-xs-12">
-            <form asp-controller="@SystemsController.Name"
-                  asp-action="@nameof(SystemsController.Import)"
-                  method="post"
-                  role="form"
-                  enctype="multipart/form-data">
-                <div class="row row-spacing">
-                    <div class="col-xs-12">
-                        <label for="selectedFile">Select CSV file:</label>
-                        <div class="input-group">
-                            <label class="input-group-btn">
-                                <span class="btn btn-default btn-file">
-                                    <span class="far fa-file-image"></span>
-                                    Select a CSV file to upload<input type="file" asp-for="FileUpload" accept=".csv" />
-                                </span>
-                            </label>
-                            <input type="text" class="form-control" readonly id="selectedFile">
-                        </div>
-                        <div>
-                            <span asp-validation-for="FileUpload" class="text-danger"></span>
-                        </div>
+<div class="row" style="margin-bottom: 1rem;">
+    <div class="col-xs-12">
+        <form asp-controller="@SystemsController.Name"
+              asp-action="@nameof(SystemsController.Import)"
+              method="post"
+              role="form"
+              enctype="multipart/form-data">
+            <div class="row row-spacing">
+                <div class="col-xs-12">
+                    <label for="selectedFile">Select CSV file:</label>
+                    <div class="input-group">
+                        <label class="input-group-btn">
+                            <span class="btn btn-default btn-file">
+                                <span class="far fa-file-image"></span>
+                                Select a CSV file to upload<input type="file" asp-for="FileUpload" accept=".csv" />
+                            </span>
+                        </label>
+                        <input type="text" class="form-control" readonly id="selectedFile">
+                    </div>
+                    <div>
+                        <span asp-validation-for="FileUpload" class="text-danger"></span>
                     </div>
                 </div>
+            </div>
 
-                <div class="row row-spacing">
-                    <div class="col-xs-12">
-                        <select class="form-control" asp-for="DoImport">
-                            <option value="false">Test run - read the CSV file and analyze import</option>
-                            <option value="true">Perform import</option>
-                        </select>
-                    </div>
+            <div class="row row-spacing">
+                <div class="col-xs-12">
+                    <select class="form-control" asp-for="DoImport">
+                        <option value="false">Test run - read the CSV file and analyze import</option>
+                        <option value="true">Perform import</option>
+                    </select>
                 </div>
+            </div>
 
-                <div class="row" style="margin-bottom: 2rem;">
-                    <div class="col-xs-12">
-                        <a asp-action="Index" class="btn btn-default">Return to Systems/Branches</a>
-                        <button type="submit" class="btn btn-primary btn-spinner" button-spinner>
-                            <span class="buttonText">Upload</span>
-                        </button>
-                    </div>
+            <div class="row" style="margin-bottom: 2rem;">
+                <div class="col-xs-12">
+                    <a asp-action="Index" class="btn btn-default">Return to Systems/Branches</a>
+                    <button type="submit" class="btn btn-primary btn-spinner" button-spinner>
+                        <span class="buttonText">Upload</span>
+                    </button>
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
-    @section scripts {
-        <script>
-            $(':file').on('fileselect', function (event, numFiles, label) {
-                var input = $(this).parents('.input-group').find(':text'),
-                    log = numFiles > 1 ? numFiles = ' files selected' : label;
+</div>
+@section scripts {
+    <script>
+        $(':file').on('fileselect', function (event, numFiles, label) {
+            var input = $(this).parents('.input-group').find(':text'),
+                log = numFiles > 1 ? numFiles = ' files selected' : label;
 
-                if (input.length) {
-                    input.val(log);
-                    $('.btn-file').removeClass('btn-default');
-                    $('.btn-file').addClass('btn-success');
-                }
-                else {
-                    input.val('');
-                    $('.btn-file').addClass('btn-default');
-                    $('.btn-file').removeClass('btn-success');
-                }
-            });
+            if (input.length) {
+                input.val(log);
+                $('.btn-file').removeClass('btn-default');
+                $('.btn-file').addClass('btn-success');
+            }
+            else {
+                input.val('');
+                $('.btn-file').addClass('btn-default');
+                $('.btn-file').removeClass('btn-success');
+            }
+        });
 
-            $(document).on('change', ':file', function () {
-                var input = $(this),
-                    numFiles = input.get(0).files ? input.get(0).files.length : 1,
-                    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-                input.trigger('fileselect', [numFiles, label]);
-            });
-        </script>
+        $(document).on('change', ':file', function () {
+            var input = $(this),
+                numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+            input.trigger('fileselect', [numFiles, label]);
+        });
+    </script>
     }

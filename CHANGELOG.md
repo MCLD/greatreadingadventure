@@ -35,6 +35,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Logging when the ErrorController is hit is no longer excluded from most log sources
 - Exception when trying to add a Role with a blank name
 - Decouple one-to-one mapping of vendor codes to participants
+- Branch/system import if the spreadsheet does not contain IDs
 
 ## [4.4.0] 2022-11-29
 
