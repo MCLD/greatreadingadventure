@@ -1355,12 +1355,25 @@ namespace GRA.Domain.Service
                             .GetMessageTextAsync(codeType.OptionMessageTemplateId.Value,
                                 languageId);
 
+                        var markedUpToken = "{{" + TemplateToken.VendorCodeToken + "}}";
+                        var markedUpUrl = codeType.Url.Contains(markedUpToken,
+                            StringComparison.OrdinalIgnoreCase)
+                            ? codeType.Url.Replace(markedUpToken,
+                                "",
+                                StringComparison.OrdinalIgnoreCase)
+                            : codeType.Url;
+
                         await _mailService.SendSystemMailAsync(new Mail
                         {
                             ToUserId = userId,
                             CanParticipantDelete = false,
                             Subject = message.Subject,
-                            Body = message.Body
+                            Body = message.Body,
+                            TemplateDictionary = new Dictionary<string, string>
+                            {
+                                { TemplateToken.VendorCodeToken, "" },
+                                { TemplateToken.VendorLinkToken, markedUpUrl }
+                            }
                         }, siteId);
                     }
                 }
