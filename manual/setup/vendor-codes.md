@@ -23,19 +23,16 @@ the trigger associated with the vendor code:
 
 ### Accepting participant codes
 
-Codes default to the format of three sets of five alphanumeric
-characters separated by hyphens (e.g. `X123X-456YY-ZZ789`). The party
-administering the GRA software generates a set of codes prior to the
-start of the program and exports the codes to a text file to provide
-to the vendor.
+Codes default to the format of three sets of five alphanumeric characters separated by hyphens
+(e.g. `X123X-456YY-ZZ789`). The party administering the GRA software generates a set of codes prior
+to the start of the program and exports the codes to a text file to provide to the vendor.
 
-When participants unlock the vendor code, the software informs them in
-an in-software mail message that includes a link. The GRA can include
-the code in the link provided to the customer. For example, a template
-URL of:
+When participants unlock the vendor code, the software informs them in an in-software mail message
+that includes a link. The GRA can include the code in the link provided to the customer. For
+example, a template URL of:
 
 ```
-https://vendor/?Code={Code}
+https://vendor/?Code={{Code}}
 ```
 
 Would expand (using the sample code from above) to:
@@ -44,12 +41,10 @@ Would expand (using the sample code from above) to:
 https://vendor/?Code=X123X-456YY-ZZ789
 ```
 
-This is a convenience for participants. Ideally the vendor Web site will
-capture any query string code when the customer arrives on the site and
-save it until the vendor gets to the shopping cart/check-out area so
-that it can be prepopulated. Note that it's ideal to allow the customer
-to enter a code as well in case the code does not come through the link
-properly.
+This is a convenience for participants. Ideally the vendor Web site will capture any query string
+code when the customer arrives on the site and save it until the vendor gets to the shopping
+cart/check-out area so that it can be prepopulated. Note that it's ideal to allow the customer to
+enter a code as well in case the code does not come through the link properly.
 
 ### Reporting status
 
@@ -66,85 +61,97 @@ for the following:
 - "Pickpack Number" (optional) - a packing slip number for the shipment of the item
 - "UPS Tracking Number" (optional) - comma-separated tracking numbers with a shipper
 
-Those titles should appear exactly as shown here in the first row of the
-spreadsheet.
+Those titles should appear exactly as shown here in the first row of the spreadsheet. The columns
+may be in any order in the sheet.
 
-If all fields except coupon are blank there's no reason to include the coupon code in the
-sheet.
+If all fields except coupon are blank there's no reason to include the coupon code in the sheet.
 
-An administrator of the reading program can import these spreadsheets
-periodically as needed so that participants can see their order status.
+An administrator of the reading program can import these spreadsheets periodically as needed so that
+participants can see their order status. The software shows progression from order placed (where
+"Creation Date" is populated but "Ship Date" is not), shipped ("Ship Date" is set), to ready for
+pick up (the packing slip number represented by the "Pickpack Number" column is entered in the
+packing slip interface of the software).
 
 ## Vendor code setup
 
 Vendor code configuration can be found in Mission Control: under the Setup menu you'll find
 "Vendor code management".
 
-### Vendor code configuration
+### Initial endor code configuration
 
 Required fields:
 
-- **Description** - the kind of vendor code, will be shown to staff and participants
-- **Mail subject** - the subject of the in-software mail to send when a participant is
-  assigned a code
-- **Mail** - the text of the in-software mail to send when a participant is assigned a code,
-  replaces the following tokens:
-  - `{Code}` - the participant's code (e.g. `X123X-456YY-ZZ789` from above)
-  - `{Link}` - the link (as defined in **Url** below)
+- **Description** - the kind of vendor code, will be shown to staff and participants (e.g. "Free
+  Book Code")
+- **Url** - _optional_ - a URL template (e.g. "https://vendor/?Code={{Code}}") to redeem a prize,
+  replaces the following token:
+  - `{{Code}}` - the participant's code (e.g. `X123X-456YY-ZZ789` from above)
+- **Expiration date** - _optional_ - a cut-off date after which the codes shouldn't be assigned
+- **Award prize on ship date** - _optional_ - add a prize to the participant's profile when an Excel
+  file is imported with the "Ship Date" column set for the code
+- **Award prize on received packing slip** - _optional_ - add a prize to the participant's profile
+  when:
 
-Optional fields:
-
-- **Url** - a URL template (e.g. "https://vendor/?Code={Code}") to redeem a prize, replaces the
-  following token:
-  - `{Code}` - the participant's code (e.g. `X123X-456YY-ZZ789` from above)
-- **Expiration date** - a cut-off date after which the codes shouldn't be assigned
-- **Award prize on ship date** - add a prize to the participant's profile when an Excel file is
-  imported with the "Ship Date" column set for the code
-- **Award prize on received packing slip** - add a prize to the participant's profile when:
   1. An Excel file is imported with a "Packing Slip" number set
   2. Also, the packing slip is entered as received through the packing slip interface
-    and the prize is not marked as damaged or missing
-  - Once a packing slip is marked as received any further invoice updates with the same
-    packing number will award the prize as soon as they're imported
+     and the prize is not marked as damaged or missing
 
-### Additional configuration options
+  _Once a packing slip is marked as received any further invoice updates with the same
+  packing number will award the prize as soon as they're imported._
 
-If you wish to configure options for awarding prizes you may do that in the additional
-configuration fields. Configure the first two fields to activate the option functionality
-(i.e. when they activate the trigger that awards the vendor code they are routed into the option
-selection route rather than just provided with a vendor code).
+### Subsequent configuration options
 
-- **OptionSubject** - The subject of the in-software mail sent letting the participant know they
-  need to choose an option for the code
-- **OptionMail** - The text of the in-software mail sent letting the participant know they
-  need to choose an option for the code
+Once you click "Save vendor code" the initial vendor code record is created with default mail
+messages. You can then continue to configure the vendor code as follows:
 
-Once you've activated the option functionality you should enable either donations or email rewards:
+Beneath the **Description** field buttons are shown for the mail message that is sent when a
+participant earns the code. Once you select a language button you can customize:
 
-- **DonationMessage** - A short message shown on the users profile letting them know the
+- **Message with code**
+  - **Mail subject** - the subject of the in-software mail to send when a participant is
+    assigned a code
+  - **Mail** - the text of the in-software mail to send when a participant is assigned a code,
+    replaces the following tokens:
+    - `{{Code}}` - the participant's code (e.g. `X123X-456YY-ZZ789` from above)
+    - `{{Link}}` - the link (as defined in **Url** above)
+
+Further down, there are additional configuration options:
+
+- **Option message** - If you wish to allow the participant to make a choice you can configure the
+  Option message. By selecting a language button you can customize:
+
+  - **OptionSubject** - The subject of the in-software mail sent letting the participant know they
+    need to choose an option for the code
+  - **OptionMail** - The text of the in-software mail sent letting the participant know they
+    need to choose an option for the code, the following token is replaced:
+    - `{{Link}}` - the link (as defined in **Url** above) with no code in it so the participant can
+      browse the available options
+
+- **Ready for pickup email template** - _optional_ - You may select a configured email (not in-
+  application mail) template to send to the participant when their item is ready for pick up. That
+  email tempalte will have the following fields replaced if they are present:
+  - `{{Details}}` - details of the item requested, typically the title that comes in from an invoice
+  - `{{LocationName}}` - the location where the item is ready for pick up
+  - `{{LocationTelephone}}` - the telephone number of the location
+  - `{{LocationLink}}` - a Web link to the location
+  - `{{LocationAddress}}` - the physical address of the location
+
+Once you activate the option functionality by configuring the **Option message** above, you must
+enable either donations and/or email rewards:
+
+- **Donation pop-up message** - a short message shown on the users profile letting them know the
   reward has been donated.
-- **DonationSubject** - The subject of the in-software mail sent letting the participant know
-  their reward has been donated.
-- **DonationMail** - The text of the in-software mail sent letting the participant know their
-  reward has been donated.
+- **Donation message** - an in-software mail letting the participant know their reward has been
+  donated.
 
-- **EmailAwardMessage** - A short message shown on the users profile letting the participant
-  know their reward will arrive via email.
-- **EmailAwardSubject** - The subject of the in-software mail sent letting the participant know
-  their reward will arrive via email.
-- **EmailAwardMail** - The text of the in-software mail sent letting the participant know
+- **Email award pop-up message** - a short message shown on the users profile letting the
+  participant know their reward will arrive via email.
+- **Email award message** - an in-software mail sent letting the participant know
   their reward will arrive via email.
 
-Addtionally for email delivery a **VendorCodeTypeText** record for each
-language needs to be added. The **EmailAwardInstructions** field is a
-message displayed to the participant when they select the email delivery
-option letting them know how the reward will arrive and what steps are
-needed to redeem it.
-
-Vendor codes that require an option be selected can have an
-**ExpirationDate** set. If set the date the reward expires will be shown
-to participants and after the date has passed the buttons to select a
-redemption option will be hidden.
+Vendor codes that require an option be selected can have an **ExpirationDate** set. If set the date
+the reward expires will be shown to participants and after the date has passed the buttons to select
+a redemption option will be hidden.
 
 ### Generating vendor codes
 
