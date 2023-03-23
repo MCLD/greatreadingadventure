@@ -448,9 +448,10 @@ namespace GRA.Domain.Service
                     vendorCode.ExpirationDate = codeType.ExpirationDate;
                     if (!string.IsNullOrEmpty(codeType.Url))
                     {
-                        vendorCode.Url = codeType.Url.Contains(TemplateToken.VendorCodeToken,
+                        var markedUpToken = "{{" + TemplateToken.VendorCodeToken + "}}";
+                        vendorCode.Url = codeType.Url.Contains(markedUpToken,
                             StringComparison.OrdinalIgnoreCase)
-                            ? codeType.Url.Replace(TemplateToken.VendorCodeToken,
+                            ? codeType.Url.Replace(markedUpToken,
                                 vendorCode.Code,
                                 StringComparison.OrdinalIgnoreCase)
                             : codeType.Url;
@@ -494,7 +495,7 @@ namespace GRA.Domain.Service
 
             if (vendorCode != null && !string.IsNullOrEmpty(vendorCode?.Code))
             {
-                var vendorCodeInfo = await GetVendorCodeInfoAsync(vendorCode.Code);
+                var vendorCodeInfo = await GetVendorCodeInfoAsync(vendorCode);
 
                 user.CanDonateVendorCode = vendorCodeInfo.CanDonate;
                 user.CanEmailAwardVendorCode = vendorCodeInfo.CanEmailAward;
@@ -1855,15 +1856,29 @@ namespace GRA.Domain.Service
                 }
                 else if (vendorCode.CanBeDonated && vendorCode.IsDonated == true)
                 {
-                    var segmentText = await _segmentService
-                        .MCGetTextAsync(vendorCodeType.DonationSegmentId.Value, languageId);
-                    vendorCodeInfo.VendorCodeDisplay = segmentText.Text;
+                    if (vendorCodeType.DonationSegmentId.HasValue)
+                    {
+                        var segmentText = await _segmentService
+                            .MCGetTextAsync(vendorCodeType.DonationSegmentId.Value, languageId);
+                        vendorCodeInfo.VendorCodeDisplay = segmentText.Text;
+                    }
+                    else
+                    {
+                        vendorCodeInfo.VendorCodeDisplay = string.Empty;
+                    }
                 }
                 else if (vendorCode.CanBeEmailAward && vendorCode.IsEmailAward == true)
                 {
-                    var segmentText = await _segmentService
-                        .MCGetTextAsync(vendorCodeType.EmailAwardSegmentId.Value, languageId);
-                    vendorCodeInfo.VendorCodeDisplay = segmentText.Text;
+                    if (vendorCodeType.EmailAwardSegmentId.HasValue)
+                    {
+                        var segmentText = await _segmentService
+                            .MCGetTextAsync(vendorCodeType.EmailAwardSegmentId.Value, languageId);
+                        vendorCodeInfo.VendorCodeDisplay = segmentText.Text;
+                    }
+                    else
+                    {
+                        vendorCodeInfo.VendorCodeDisplay = string.Empty;
+                    }
                 }
                 else
                 {
@@ -1996,20 +2011,26 @@ namespace GRA.Domain.Service
             var message = await _messageTemplateService
                 .GetMessageTextAsync(codeType.MessageTemplateId, languageId);
 
-            var stubble = new StubbleBuilder().Build();
-
-            var tags = new Dictionary<string, string>
-            {
-                { TemplateToken.VendorCodeToken, assignedCode },
-                { TemplateToken.VendorLinkToken, codeType.Url }
-            };
+            var markedUpUrl = codeType.Url.Contains("{{" + TemplateToken.VendorCodeToken + "}}",
+                    StringComparison.OrdinalIgnoreCase)
+                ? await new StubbleBuilder().Build()
+                .RenderAsync(codeType.Url, new Dictionary<string, string>
+                {
+                    {TemplateToken.VendorCodeToken, assignedCode }
+                })
+                : codeType.Url;
 
             await _mailService.SendSystemMailAsync(new Mail
             {
                 ToUserId = userId,
                 CanParticipantDelete = false,
                 Subject = message.Subject,
-                Body = await stubble.RenderAsync(message.Body, tags)
+                Body = message.Body,
+                TemplateDictionary = new Dictionary<string, string>
+                {
+                    { TemplateToken.VendorCodeToken, assignedCode },
+                    { TemplateToken.VendorLinkToken, markedUpUrl }
+                }
             }, siteId);
         }
 
@@ -2186,7 +2207,8 @@ namespace GRA.Domain.Service
             {
                 throw new ArgumentNullException(nameof(excelReader));
             }
-            if (excelReader.GetValue(columnId) != null)
+            var value = excelReader.GetValue(columnId);
+            if (value != null)
             {
                 try
                 {
@@ -2205,6 +2227,11 @@ namespace GRA.Domain.Service
                     }
                 }
                 catch (IndexOutOfRangeException ex)
+                {
+                    _logger.LogWarning(ErrorParseError, columnName, row, ex.Message);
+                    throw new GraException($"Issue reading {columnName} on row {row}: {ex.Message}");
+                }
+                catch (InvalidCastException ex)
                 {
                     _logger.LogWarning(ErrorParseError, columnName, row, ex.Message);
                     throw new GraException($"Issue reading {columnName} on row {row}: {ex.Message}");

@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Individual news post viewing in Mission Control optimized for printingj
 - Post count next to category names on Mission Control dashboard
 - Ability to view history of changes submitted by another user from MC
+- Internationalization for Vendor Code communications
 
 ### Fixed
 
@@ -36,6 +37,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Exception when trying to add a Role with a blank name
 - Decouple one-to-one mapping of vendor codes to participants
 - Branch/system import if the spreadsheet does not contain IDs
+- Clear cached unread mail count upon authentication
 
 ## [4.4.0] 2022-11-29
 

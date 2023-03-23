@@ -1352,7 +1352,8 @@ namespace GRA.Domain.Service
                             : await _languageService.GetLanguageIdAsync(user.Culture);
 
                         var message = await _messageTemplateService
-                            .GetMessageTextAsync(codeType.MessageTemplateId, languageId);
+                            .GetMessageTextAsync(codeType.OptionMessageTemplateId.Value,
+                                languageId);
 
                         await _mailService.SendSystemMailAsync(new Mail
                         {
