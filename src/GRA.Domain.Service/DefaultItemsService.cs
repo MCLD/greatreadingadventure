@@ -87,64 +87,66 @@ namespace GRA.Domain.Service
                 defaultBaseId = defaultBase.Id;
             }
 
-            if (Directory.Exists(emailBasePath)
-                && Directory.Exists(emailBaseTextPath)
-                && defaultBase == null)
+            if (defaultBase == null)
             {
-                var defaultBasePath = Path.Combine(emailBasePath, "default.json");
-                using var emailBaseFileStream = File.OpenRead(defaultBasePath);
-                try
+                if (Directory.Exists(emailBasePath)
+                    && Directory.Exists(emailBaseTextPath))
                 {
-                    var insertEmailBase = await JsonSerializer
-                        .DeserializeAsync<ItemImport<EmailBase>>(emailBaseFileStream);
-                    if (insertEmailBase.Data != null)
+                    var defaultBasePath = Path.Combine(emailBasePath, "default.json");
+                    using var emailBaseFileStream = File.OpenRead(defaultBasePath);
+                    try
                     {
-                        insertEmailBase.Data.IsDefault = true;
-                        defaultBase = await _emailBaseRepository
-                            .AddSaveAsync(systemUserId, insertEmailBase.Data);
-                        defaultBaseId = defaultBase.Id;
-                        insertedItems++;
+                        var insertEmailBase = await JsonSerializer
+                            .DeserializeAsync<ItemImport<EmailBase>>(emailBaseFileStream);
+                        if (insertEmailBase.Data != null)
+                        {
+                            insertEmailBase.Data.IsDefault = true;
+                            defaultBase = await _emailBaseRepository
+                                .AddSaveAsync(systemUserId, insertEmailBase.Data);
+                            defaultBaseId = defaultBase.Id;
+                            insertedItems++;
+                        }
                     }
-                }
-                catch (JsonException jex)
-                {
-                    _logger.LogError(jex,
-                        "Unable to read JSON default EmailBase: {ErrorMessage}",
-                        jex.Message);
-                }
+                    catch (JsonException jex)
+                    {
+                        _logger.LogError(jex,
+                            "Unable to read JSON default EmailBase: {ErrorMessage}",
+                            jex.Message);
+                    }
 
-                if (!defaultBaseId.HasValue)
-                {
-                    _logger.LogError("No default base present or inserted, unable to insert default base texts.");
+                    if (!defaultBaseId.HasValue)
+                    {
+                        _logger.LogError("No default base present or inserted, unable to insert default base texts.");
+                    }
+                    else
+                    {
+                        foreach (var filePath in Directory
+                            .EnumerateFiles(emailBaseTextPath, "*.json"))
+                        {
+                            try
+                            {
+                                string fullPath = Path.Combine(emailBaseTextPath, filePath);
+                                insertedItems += await ImportBaseTextAsync(fullPath,
+                                        cultureLookup,
+                                        systemUserId,
+                                        defaultBaseId.Value);
+                            }
+                            catch (JsonException jex)
+                            {
+                                _logger.LogError(jex,
+                                    "Unable to read JSON default EmailBaseText {Filename}: {ErrorMessage}",
+                                    filePath,
+                                    jex.Message);
+                            }
+                        }
+                    }
                 }
                 else
                 {
-                    foreach (var filePath in Directory
-                        .EnumerateFiles(emailBaseTextPath, "*.json"))
-                    {
-                        try
-                        {
-                            string fullPath = Path.Combine(emailBaseTextPath, filePath);
-                            insertedItems += await ImportBaseTextAsync(fullPath,
-                                    cultureLookup,
-                                    systemUserId,
-                                    defaultBaseId.Value);
-                        }
-                        catch (JsonException jex)
-                        {
-                            _logger.LogError(jex,
-                                "Unable to read JSON default EmailBaseText {Filename}: {ErrorMessage}",
-                                filePath,
-                                jex.Message);
-                        }
-                    }
+                    _logger.LogWarning("No default base template and no default items in {EmailBasePath} or {EmailBaseTextPath}",
+                        emailBasePath,
+                        emailBaseTextPath);
                 }
-            }
-            else
-            {
-                _logger.LogWarning("Unable to find default items in {EmailBasePath} or {EmailBaseTextPath}",
-                    emailBasePath,
-                    emailBaseTextPath);
             }
 
             #endregion EmailBase
@@ -243,9 +245,9 @@ namespace GRA.Domain.Service
                                         languageId,
                                         template.Subject,
                                         template.Body);
+                                    insertedItems++;
                                 }
                             }
-                            insertedItems++;
                         }
                     }
                     catch (JsonException jex)
