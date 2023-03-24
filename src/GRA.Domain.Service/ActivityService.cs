@@ -473,9 +473,11 @@ namespace GRA.Domain.Service
                 }
             }
 
-            var trigger = await _triggerRepository.GetByCodeAsync(GetCurrentSiteId(), secretCode,
-                true)
-                ?? throw new GraException($"<strong>{secretCode}</strong> is not a valid code.");
+            if (await _triggerRepository
+                .GetByCodeAsync(GetCurrentSiteId(), secretCode, true) == null)
+            {
+                throw new GraException($"<strong>{secretCode}</strong> is not a valid code.");
+            }
 
             var codeApplied = false;
 

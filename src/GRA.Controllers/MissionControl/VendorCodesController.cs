@@ -763,6 +763,9 @@ namespace GRA.Controllers.MissionControl
                         case nameof(vendorCode.OptionMessageTemplateId):
                             vendorCode.OptionMessageTemplateId = text.MessageTemplateId;
                             break;
+
+                        default:
+                            throw new GraException("Unable to determine which message template to set.");
                     }
 
                     await _vendorCodeService.UpdateTypeAsync(vendorCode);
@@ -826,7 +829,7 @@ namespace GRA.Controllers.MissionControl
                     if (string.IsNullOrEmpty(text))
                     {
                         var languageCheck = await _segmentService
-                                .GetLanguageStatusAsync(new int?[] {
+                                .GetLanguageStatusAsync(new[] {
                                     GetSegmentTextId(vendorCode, item)
                             });
 
@@ -861,15 +864,17 @@ namespace GRA.Controllers.MissionControl
                         text,
                         item);
 
-                    switch (item)
+                    if (item == nameof(vendorCode.DonationSegmentId))
                     {
-                        case nameof(vendorCode.DonationSegmentId):
-                            vendorCode.DonationSegmentId = addedText.SegmentId;
-                            break;
-
-                        case nameof(vendorCode.EmailAwardSegmentId):
-                            vendorCode.EmailAwardSegmentId = addedText.SegmentId;
-                            break;
+                        vendorCode.DonationSegmentId = addedText.SegmentId;
+                    }
+                    else if (item == nameof(vendorCode.EmailAwardSegmentId))
+                    {
+                        vendorCode.EmailAwardSegmentId = addedText.SegmentId;
+                    }
+                    else
+                    {
+                        throw new GraException("Unable to determine which message to set.");
                     }
 
                     await _vendorCodeService.UpdateTypeAsync(vendorCode);

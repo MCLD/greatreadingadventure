@@ -493,7 +493,7 @@ namespace GRA.Domain.Service
 
             var vendorCode = await GetUserVendorCodeAsync(user.Id);
 
-            if (vendorCode != null && !string.IsNullOrEmpty(vendorCode?.Code))
+            if (!string.IsNullOrEmpty(vendorCode?.Code))
             {
                 var vendorCodeInfo = await GetVendorCodeInfoAsync(vendorCode);
 
