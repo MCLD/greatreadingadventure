@@ -17,6 +17,7 @@ using GRA.Domain.Service.Models;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Stubble.Core.Builders;
 
 namespace GRA.Domain.Service
 {
@@ -34,13 +35,16 @@ namespace GRA.Domain.Service
         private const string ShipDateRowHeading = "Ship Date";
         private const string TrackingNumberRowHeading = "UPS Tracking Number";
         private const string UserIdRowHeading = "User Id";
+
         private readonly ICodeGenerator _codeGenerator;
         private readonly EmailService _emailService;
         private readonly IJobRepository _jobRepository;
         private readonly LanguageService _languageService;
         private readonly MailService _mailService;
+        private readonly MessageTemplateService _messageTemplateService;
         private readonly IPathResolver _pathResolver;
         private readonly PrizeWinnerService _prizeWinnerService;
+        private readonly SegmentService _segmentService;
         private readonly IStringLocalizer<Resources.Shared> _sharedLocalizer;
         private readonly SiteLookupService _siteLookupService;
         private readonly SiteService _siteService;
@@ -49,26 +53,29 @@ namespace GRA.Domain.Service
         private readonly IVendorCodeRepository _vendorCodeRepository;
         private readonly IVendorCodeTypeRepository _vendorCodeTypeRepository;
 
-        public VendorCodeService(ILogger<VendorCodeService> logger,
-            IDateTimeProvider dateTimeProvider,
-            IUserContextProvider userContextProvider,
-            EmailService emailService,
+        public VendorCodeService(EmailService emailService,
             ICodeGenerator codeGenerator,
+            IDateTimeProvider dateTimeProvider,
             IJobRepository jobRepository,
+            ILogger<VendorCodeService> logger,
             IPathResolver pathResolver,
             IStringLocalizer<Resources.Shared> sharedLocalizer,
+            IUserContextProvider userContextProvider,
             IUserRepository userRepository,
             IVendorCodePackingSlipRepository vendorCodePackingSlipRepository,
             IVendorCodeRepository vendorCodeRepository,
             IVendorCodeTypeRepository vendorCodeTypeRepository,
             LanguageService languageService,
             MailService mailService,
+            MessageTemplateService messageTemplateService,
             PrizeWinnerService prizeWinnerService,
+            SegmentService segmentService,
             SiteLookupService siteLookupService,
             SiteService siteService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageVendorCodes);
+
             _codeGenerator = codeGenerator
                 ?? throw new ArgumentNullException(nameof(codeGenerator));
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
@@ -77,13 +84,17 @@ namespace GRA.Domain.Service
             _languageService = languageService
                 ?? throw new ArgumentNullException(nameof(languageService));
             _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
+            _messageTemplateService = messageTemplateService
+                ?? throw new ArgumentNullException(nameof(messageTemplateService));
             _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
             _prizeWinnerService = prizeWinnerService
                 ?? throw new ArgumentNullException(nameof(prizeWinnerService));
+            _segmentService = segmentService
+                ?? throw new ArgumentNullException(nameof(segmentService));
             _sharedLocalizer = sharedLocalizer
                 ?? throw new ArgumentNullException(nameof(sharedLocalizer));
             _siteLookupService = siteLookupService
-                ?? throw new ArgumentNullException(nameof(SiteLookupService));
+                ?? throw new ArgumentNullException(nameof(siteLookupService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
@@ -357,11 +368,6 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<ICollection<VendorCodeType>> GetEmailAwardTypesAsync()
-        {
-            return await _vendorCodeTypeRepository.GetEmailAwardTypesAsync(GetCurrentSiteId());
-        }
-
         public async Task<PackingSlipSummary> GetHoldSlipsAsync(long packingSlipNumber)
         {
             var siteId = GetCurrentSiteId();
@@ -395,10 +401,7 @@ namespace GRA.Domain.Service
             GetTypePaginatedListAsync(BaseFilter filter)
         {
             VerifyManagementPermission();
-            if (filter == null)
-            {
-                filter = new BaseFilter();
-            }
+            filter ??= new BaseFilter();
             filter.SiteId = GetCurrentSiteId();
             return new DataWithCount<ICollection<VendorCodeType>>
             {
@@ -440,15 +443,15 @@ namespace GRA.Domain.Service
                 {
                     var codeType = await _vendorCodeTypeRepository
                         .GetByIdAsync(vendorCode.VendorCodeTypeId);
-                    vendorCode.CanBeDonated = !string.IsNullOrEmpty(codeType.DonationSubject);
-                    vendorCode.CanBeEmailAward =
-                        !string.IsNullOrWhiteSpace(codeType.EmailAwardSubject);
+                    vendorCode.CanBeDonated = codeType.DonationMessageTemplateId.HasValue;
+                    vendorCode.CanBeEmailAward = codeType.EmailAwardMessageTemplateId.HasValue;
                     vendorCode.ExpirationDate = codeType.ExpirationDate;
                     if (!string.IsNullOrEmpty(codeType.Url))
                     {
-                        vendorCode.Url = codeType.Url.Contains(TemplateToken.VendorCodeToken,
+                        var markedUpToken = "{{" + TemplateToken.VendorCodeToken + "}}";
+                        vendorCode.Url = codeType.Url.Contains(markedUpToken,
                             StringComparison.OrdinalIgnoreCase)
-                            ? codeType.Url.Replace(TemplateToken.VendorCodeToken,
+                            ? codeType.Url.Replace(markedUpToken,
                                 vendorCode.Code,
                                 StringComparison.OrdinalIgnoreCase)
                             : codeType.Url;
@@ -490,9 +493,9 @@ namespace GRA.Domain.Service
 
             var vendorCode = await GetUserVendorCodeAsync(user.Id);
 
-            if (vendorCode != null && !string.IsNullOrEmpty(vendorCode?.Code))
+            if (!string.IsNullOrEmpty(vendorCode?.Code))
             {
-                var vendorCodeInfo = await GetVendorCodeInfoAsync(vendorCode.Code);
+                var vendorCodeInfo = await GetVendorCodeInfoAsync(vendorCode);
 
                 user.CanDonateVendorCode = vendorCodeInfo.CanDonate;
                 user.CanEmailAwardVendorCode = vendorCodeInfo.CanEmailAward;
@@ -739,9 +742,10 @@ namespace GRA.Domain.Service
                 authorized = true;
             }
 
+            var user = await _userRepository.GetByIdAsync(userId);
+
             if (!authorized)
             {
-                var user = await _userRepository.GetByIdAsync(userId);
                 authorized = user.HouseholdHeadUserId == authId;
             }
 
@@ -756,17 +760,17 @@ namespace GRA.Domain.Service
 
                 if (_dateTimeProvider.Now >= vendorCodeType.ExpirationDate)
                 {
-                    _logger.LogError($"Vendor code {vendorCodeType.Id} has expired.");
+                    _logger.LogError("Vendor code {VendorCodeTypeId} has expired.", vendorCodeType.Id);
                     throw new GraException("The code you are trying to redeem has expired.");
                 }
 
-                if (donate == true && !string.IsNullOrWhiteSpace(vendorCodeType.DonationSubject))
+                if (donate == true && vendorCodeType.DonationMessageTemplateId.HasValue)
                 {
                     vendorCode.IsDonated = true;
                     vendorCode.IsEmailAward = false;
                 }
                 else if (emailAward == true && !string.IsNullOrWhiteSpace(emailAddrses)
-                    && !string.IsNullOrWhiteSpace(vendorCodeType.EmailAwardSubject))
+                    && vendorCodeType.EmailAwardMessageTemplateId.HasValue)
                 {
                     vendorCode.EmailAwardAddress = emailAddrses;
                     vendorCode.IsDonated = false;
@@ -774,7 +778,7 @@ namespace GRA.Domain.Service
                 }
                 else if (donate == false && emailAward == false)
                 {
-                    if (vendorCode.IsDonationLocked != true)
+                    if (!vendorCode.IsDonationLocked)
                     {
                         vendorCode.IsDonated = false;
                     }
@@ -792,24 +796,30 @@ namespace GRA.Domain.Service
                 }
                 await _vendorCodeRepository.UpdateSaveAsync(userId, vendorCode);
 
+                int languageId = string.IsNullOrEmpty(user.Culture)
+                    ? await _languageService.GetDefaultLanguageIdAsync()
+                    : await _languageService.GetLanguageIdAsync(user.Culture);
+
                 if (vendorCode.IsDonated == true)
                 {
-                    await SendVendorDonationMailAsync(userId, siteId, vendorCodeType);
+                    await SendVendorDonationMailAsync(userId, languageId, siteId, vendorCodeType);
                 }
                 else if (vendorCode.IsEmailAward == true)
                 {
-                    await SendVendorEmailAwardMailAsync(userId, siteId, vendorCodeType);
+                    await SendVendorEmailAwardMailAsync(userId, languageId, siteId, vendorCodeType);
                 }
                 else if (vendorCode.IsDonated == false && vendorCode.IsEmailAward == false)
                 {
-                    await SendVendorCodeMailAsync(userId, siteId, vendorCodeType, vendorCode.Code);
+                    await SendVendorCodeMailAsync(userId, languageId, siteId, vendorCodeType, vendorCode.Code);
                 }
 
                 return vendorCode;
             }
             else
             {
-                _logger.LogError($"User {authId} doesn't have permission to update code donation status for {userId}.");
+                _logger.LogError("User {AuthorizedUserId} doesn't have permission to update code donation status for {UserId}.",
+                    authId,
+                    userId);
                 throw new GraException("Permission denied.");
             }
         }
@@ -866,14 +876,17 @@ namespace GRA.Domain.Service
                         duration = $" after {sw.Elapsed:c}";
                     }
 
-                    _logger.LogWarning($"Import of {filename} for user {requestingUser} was cancelled{duration}.");
+                    _logger.LogWarning("Import of {Filename} for user {RequestingUser} was cancelled{Duration}.",
+                        filename,
+                        requestingUser,
+                        duration);
                 });
 
                 string fullPath = _pathResolver.ResolvePrivateTempFilePath(filename);
 
                 if (!File.Exists(fullPath))
                 {
-                    _logger.LogError($"Could not find {fullPath}");
+                    _logger.LogError("Could not find {FullPath}", fullPath);
                     return new JobStatus
                     {
                         PercentComplete = 0,
@@ -999,7 +1012,7 @@ namespace GRA.Domain.Service
                                             .GetUserVendorCode(userId.Value);
                                         if (code == null)
                                         {
-                                            _logger.LogError($"File contained code for user {userId} which was not found in the database");
+                                            _logger.LogError("File contained code for user {UserId} which was not found in the database", userId);
                                             issues.Add($"Uploaded file contained code for user <code>{userId}</code> which couldn't be found in the database.");
                                         }
                                         else
@@ -1064,7 +1077,7 @@ namespace GRA.Domain.Service
 
                     if (issues.Count > 0)
                     {
-                        _logger.LogInformation($"Import complete with issues: {sb}");
+                        _logger.LogInformation("Import complete with issues: {Issues}", sb);
                         sb.Append(" Issues detected:<ul>");
                         foreach (string issue in issues)
                         {
@@ -1082,7 +1095,7 @@ namespace GRA.Domain.Service
                     }
                     else
                     {
-                        _logger.LogInformation(sb.ToString());
+                        _logger.LogInformation("Import success: {Details}", sb);
                         return new JobStatus
                         {
                             PercentComplete = 100,
@@ -1098,7 +1111,7 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {requestingUser} doesn't have permission to import email award code statuses.");
+                _logger.LogError("User {UserId} doesn't have permission to import email award code statuses.", requestingUser);
                 return new JobStatus
                 {
                     PercentComplete = 0,
@@ -1411,7 +1424,7 @@ namespace GRA.Domain.Service
                                             if (trackingNumber?.Length > 512)
                                             {
                                                 issues.Add($"Tracking number on row {row} is too long, truncating at 512 characters!");
-                                                trackingNumber = trackingNumber.Substring(0, 512);
+                                                trackingNumber = trackingNumber[..512];
                                             }
                                         }
                                         catch (GraException gex)
@@ -1683,97 +1696,6 @@ namespace GRA.Domain.Service
         {
             var fieldErrors = new FieldErrorList();
 
-            // validate vendor code is accurate
-            if (!string.IsNullOrEmpty(vendorCodeType.OptionSubject))
-            {
-                if (string.IsNullOrEmpty(vendorCodeType.OptionMail))
-                {
-                    fieldErrors.Add(nameof(vendorCodeType.OptionMail),
-                        "You must supply the option mail along with the option subject");
-                }
-
-                if (string.IsNullOrEmpty(vendorCodeType.DonationSubject)
-                    && string.IsNullOrEmpty(vendorCodeType.EmailAwardSubject))
-                {
-                    fieldErrors.Add(nameof(vendorCodeType.OptionSubject),
-                        "If you are configuring the option you must also configure a Donation option or an Email option");
-                }
-            }
-            else
-            {
-                if (!string.IsNullOrEmpty(vendorCodeType.OptionMail))
-                {
-                    fieldErrors.Add(nameof(vendorCodeType.OptionSubject),
-                        "You must supply the option subject along with the option mail");
-                }
-            }
-
-            if (!string.IsNullOrEmpty(vendorCodeType.DonationSubject))
-            {
-                if (string.IsNullOrEmpty(vendorCodeType.DonationMail))
-                {
-                    fieldErrors.Add(nameof(vendorCodeType.DonationMail),
-                        "You must supply the donation mail along with the donation subject");
-                }
-                if (string.IsNullOrEmpty(vendorCodeType.DonationMessage))
-                {
-                    fieldErrors.Add(nameof(vendorCodeType.DonationMessage),
-                        "You must supply the donation message along with the donation subject");
-                }
-            }
-            else
-            {
-                if (!string.IsNullOrEmpty(vendorCodeType.DonationMail)
-                    && !string.IsNullOrEmpty(vendorCodeType.DonationMessage))
-                {
-                    fieldErrors.Add(nameof(vendorCodeType.DonationSubject),
-                        "You must supply the donation subject along with the donation mail and message");
-                }
-                else if (!string.IsNullOrEmpty(vendorCodeType.DonationMail))
-                {
-                    fieldErrors.Add(nameof(vendorCodeType.DonationSubject),
-                        "You must supply the donation subject along with the donation mail");
-                }
-                else if (!string.IsNullOrEmpty(vendorCodeType.DonationMessage))
-                {
-                    fieldErrors.Add(nameof(vendorCodeType.DonationSubject),
-                        "You must supply the donation subject along with the donation message");
-                }
-            }
-
-            if (!string.IsNullOrEmpty(vendorCodeType.EmailAwardSubject))
-            {
-                if (string.IsNullOrEmpty(vendorCodeType.EmailAwardMail))
-                {
-                    fieldErrors.Add(nameof(vendorCodeType.EmailAwardMail),
-                        "You must supply an email award mail along with the email award subject");
-                }
-                if (string.IsNullOrEmpty(vendorCodeType.EmailAwardMessage))
-                {
-                    fieldErrors.Add(nameof(vendorCodeType.EmailAwardMessage),
-                        "You must supply an email award message along with the email award subject");
-                }
-            }
-            else
-            {
-                if (!string.IsNullOrEmpty(vendorCodeType.EmailAwardMail)
-                    && !string.IsNullOrEmpty(vendorCodeType.EmailAwardMessage))
-                {
-                    fieldErrors.Add(nameof(vendorCodeType.EmailAwardSubject),
-                        "You must supply the award subject along with the email award mail and message");
-                }
-                else if (!string.IsNullOrEmpty(vendorCodeType.EmailAwardMail))
-                {
-                    fieldErrors.Add(nameof(vendorCodeType.EmailAwardSubject),
-                        "You must supply the award subject along with the email award mail");
-                }
-                else if (!string.IsNullOrEmpty(vendorCodeType.EmailAwardMessage))
-                {
-                    fieldErrors.Add(nameof(vendorCodeType.EmailAwardSubject),
-                        "You must supply the award subject along with the email award message");
-                }
-            }
-
             if (vendorCodeType.AwardPrizeOnPackingSlip && vendorCodeType.AwardPrizeOnShipDate)
             {
                 fieldErrors.Add(nameof(vendorCodeType.AwardPrizeOnPackingSlip),
@@ -1854,14 +1776,11 @@ namespace GRA.Domain.Service
         {
             VendorCodePackingSlip ps;
 
-            if (PsCache == null)
-            {
-                PsCache = new Dictionary<long, VendorCodePackingSlip>();
-            }
+            PsCache ??= new Dictionary<long, VendorCodePackingSlip>();
 
-            if (PsCache.ContainsKey(packingSlip))
+            if (PsCache.TryGetValue(packingSlip, out VendorCodePackingSlip value))
             {
-                return PsCache[packingSlip];
+                return value;
             }
             else
             {
@@ -1891,6 +1810,17 @@ namespace GRA.Domain.Service
 
             if (vendorCode != null)
             {
+                var userId = vendorCode.UserId ?? vendorCode.AssociatedUserId;
+
+                var culture = userId.HasValue
+                    ? await _userRepository.GetCultureAsync(userId.Value)
+                    : _userContextProvider.GetCurrentCulture().Name;
+
+                var languageId = await _languageService.GetLanguageIdAsync(culture);
+
+                var vendorCodeType = await _vendorCodeTypeRepository
+                    .GetByIdAsync(vendorCode.VendorCodeTypeId);
+
                 vendorCodeInfo.IsDonated = vendorCode.IsDonated;
                 if (vendorCodeInfo.IsDonated == true)
                 {
@@ -1910,12 +1840,12 @@ namespace GRA.Domain.Service
 
                         if (vendorCode.CanBeEmailAward)
                         {
-                            var currentCulture = _userContextProvider.GetCurrentCulture();
-                            var languageId = await _languageService
-                                .GetLanguageIdAsync(currentCulture.Name);
-                            vendorCodeInfo.EmailAwardInstructions = await _vendorCodeTypeRepository
-                                .GetEmailAwardInstructionText(vendorCode.VendorCodeTypeId,
+                            var templateText = await _messageTemplateService.GetMessageTextAsync(
+                                    vendorCodeType.EmailAwardMessageTemplateId.Value,
                                     languageId);
+
+                            vendorCodeInfo.EmailAwardInstructions = templateText.Body;
+
                             if (string.IsNullOrWhiteSpace(vendorCodeInfo.EmailAwardInstructions))
                             {
                                 _logger.LogError("Email award instructions are not set for code type {codeTypeId}",
@@ -1926,15 +1856,29 @@ namespace GRA.Domain.Service
                 }
                 else if (vendorCode.CanBeDonated && vendorCode.IsDonated == true)
                 {
-                    var vendorCodeType = await _vendorCodeTypeRepository
-                        .GetByIdAsync(vendorCode.VendorCodeTypeId);
-                    vendorCodeInfo.VendorCodeDisplay = vendorCodeType.DonationMessage;
+                    if (vendorCodeType.DonationSegmentId.HasValue)
+                    {
+                        var segmentText = await _segmentService
+                            .MCGetTextAsync(vendorCodeType.DonationSegmentId.Value, languageId);
+                        vendorCodeInfo.VendorCodeDisplay = segmentText.Text;
+                    }
+                    else
+                    {
+                        vendorCodeInfo.VendorCodeDisplay = string.Empty;
+                    }
                 }
                 else if (vendorCode.CanBeEmailAward && vendorCode.IsEmailAward == true)
                 {
-                    var vendorCodeType = await _vendorCodeTypeRepository
-                        .GetByIdAsync(vendorCode.VendorCodeTypeId);
-                    vendorCodeInfo.VendorCodeDisplay = vendorCodeType.EmailAwardMessage;
+                    if (vendorCodeType.EmailAwardSegmentId.HasValue)
+                    {
+                        var segmentText = await _segmentService
+                            .MCGetTextAsync(vendorCodeType.EmailAwardSegmentId.Value, languageId);
+                        vendorCodeInfo.VendorCodeDisplay = segmentText.Text;
+                    }
+                    else
+                    {
+                        vendorCodeInfo.VendorCodeDisplay = string.Empty;
+                    }
                 }
                 else
                 {
@@ -2013,11 +1957,8 @@ namespace GRA.Domain.Service
 
         private async Task MarkCodeDonatedAsync(string coupon)
         {
-            var vendorCode = await _vendorCodeRepository.GetByCode(coupon);
-            if (vendorCode == null)
-            {
-                throw new GraException("Unable to find vendor code {coupon}");
-            }
+            var vendorCode = await _vendorCodeRepository.GetByCode(coupon)
+                ?? throw new GraException("Unable to find vendor code {coupon}");
 
             vendorCode.IsDonated = true;
             await _vendorCodeRepository.UpdateSaveAsync(GetActiveUserId(), vendorCode);
@@ -2062,87 +2003,78 @@ namespace GRA.Domain.Service
         }
 
         private async Task SendVendorCodeMailAsync(int userId,
+            int languageId,
             int? siteId,
             VendorCodeType codeType,
             string assignedCode)
         {
-            string body;
-            if (!codeType.Mail.Contains(TemplateToken.VendorCodeToken,
-                StringComparison.OrdinalIgnoreCase))
-            {
-                // the token isn't in the message, just append the code to the end
-                body = $"{codeType.Mail} {assignedCode}";
-            }
-            else
-            {
-                if (string.IsNullOrEmpty(codeType.Url))
+            var message = await _messageTemplateService
+                .GetMessageTextAsync(codeType.MessageTemplateId, languageId);
+
+            var markedUpUrl = codeType.Url.Contains("{{" + TemplateToken.VendorCodeToken + "}}",
+                    StringComparison.OrdinalIgnoreCase)
+                ? await new StubbleBuilder().Build()
+                .RenderAsync(codeType.Url, new Dictionary<string, string>
                 {
-                    // we have a token but no url, replace the token with the code
-                    body = codeType.Mail.Replace(TemplateToken.VendorCodeToken,
-                        assignedCode,
-                        StringComparison.OrdinalIgnoreCase);
-                }
-                else
-                {
-                    string url;
-                    // see if the url has the token in it, if so swap in the code
-                    if (!codeType.Url.Contains(TemplateToken.VendorCodeToken,
-                        StringComparison.OrdinalIgnoreCase))
-                    {
-                        url = codeType.Url;
-                    }
-                    else
-                    {
-                        url = codeType.Url.Replace(TemplateToken.VendorCodeToken,
-                            assignedCode,
-                            StringComparison.OrdinalIgnoreCase);
-                    }
-                    // token and url - make token clickable to go to url
-                    body = codeType.Mail.Replace(TemplateToken.VendorCodeToken,
-                        $"<a href=\"{url}\" _target=\"blank\">{assignedCode}</a>",
-                        StringComparison.OrdinalIgnoreCase);
-                    if (body.Contains(TemplateToken.VendorLinkToken,
-                        StringComparison.OrdinalIgnoreCase))
-                    {
-                        body = body.Replace(TemplateToken.VendorLinkToken,
-                            url,
-                            StringComparison.OrdinalIgnoreCase);
-                    }
-                }
-            }
+                    {TemplateToken.VendorCodeToken, assignedCode }
+                })
+                : codeType.Url;
 
             await _mailService.SendSystemMailAsync(new Mail
             {
                 ToUserId = userId,
                 CanParticipantDelete = false,
-                Subject = codeType.MailSubject,
-                Body = body
+                Subject = message.Subject,
+                Body = message.Body,
+                TemplateDictionary = new Dictionary<string, string>
+                {
+                    { TemplateToken.VendorCodeToken, assignedCode },
+                    { TemplateToken.VendorLinkToken, markedUpUrl }
+                }
             }, siteId);
         }
 
         private async Task SendVendorDonationMailAsync(int userId,
+            int languageId,
             int? siteId,
             VendorCodeType codeType)
         {
+            if (!codeType.DonationMessageTemplateId.HasValue)
+            {
+                throw new GraException("Cannot send donation mail - it is not configured.");
+            }
+
+            var message = await _messageTemplateService
+                .GetMessageTextAsync(codeType.DonationMessageTemplateId.Value, languageId);
+
             await _mailService.SendSystemMailAsync(new Mail
             {
-                ToUserId = userId,
+                Body = message.Body,
                 CanParticipantDelete = false,
-                Subject = codeType.DonationSubject,
-                Body = codeType.DonationMail
+                Subject = message.Subject,
+                ToUserId = userId
             }, siteId);
         }
 
         private async Task SendVendorEmailAwardMailAsync(int userId,
+            int langaugeId,
             int? siteId,
             VendorCodeType codeType)
         {
+            if (!codeType.EmailAwardMessageTemplateId.HasValue)
+            {
+                throw new GraException("Cannot send email award mail - it is not configured");
+            }
+
+            var message = await _messageTemplateService
+                .GetMessageTextAsync(codeType.EmailAwardMessageTemplateId.Value, langaugeId);
+
             await _mailService.SendSystemMailAsync(new Mail
             {
-                ToUserId = userId,
+                Body = message.Body,
                 CanParticipantDelete = false,
-                Subject = codeType.EmailAwardSubject,
-                Body = codeType.EmailAwardMail
+                Subject = message.Subject,
+                ToUserId = userId
             }, siteId);
         }
 
@@ -2186,7 +2118,7 @@ namespace GRA.Domain.Service
             if (!string.IsNullOrEmpty(details))
             {
                 code.Details = details.Length > 255
-                    ? details.Substring(0, 255)
+                    ? details[..255]
                     : details;
             }
 
@@ -2275,7 +2207,8 @@ namespace GRA.Domain.Service
             {
                 throw new ArgumentNullException(nameof(excelReader));
             }
-            if (excelReader.GetValue(columnId) != null)
+            var value = excelReader.GetValue(columnId);
+            if (value != null)
             {
                 try
                 {
@@ -2294,6 +2227,11 @@ namespace GRA.Domain.Service
                     }
                 }
                 catch (IndexOutOfRangeException ex)
+                {
+                    _logger.LogWarning(ErrorParseError, columnName, row, ex.Message);
+                    throw new GraException($"Issue reading {columnName} on row {row}: {ex.Message}");
+                }
+                catch (InvalidCastException ex)
                 {
                     _logger.LogWarning(ErrorParseError, columnName, row, ex.Message);
                     throw new GraException($"Issue reading {columnName} on row {row}: {ex.Message}");

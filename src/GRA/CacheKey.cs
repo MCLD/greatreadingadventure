@@ -12,6 +12,7 @@
         public static readonly string FeaturedChallengeGroups = "FeaturedChallengeGroups.{0}";
         public static readonly string LanguageId = "LanguageId.{0}";
         public static readonly string LatestNewsPostId = "LatestNewsPostId";
+        public static readonly string SegmentText = "SegmentText.{0}.{1}";
         public static readonly string SiteActivityEarned = "SiteActivityEarned.{0}";
         public static readonly string SiteCss = "SiteCss";
         public static readonly string SiteJs = "SiteJs";
@@ -20,7 +21,7 @@
         public static readonly string Social = "Social.{0}.{1}";
         public static readonly string SocialHeader = "SocialHeader";
         public static readonly string StreamingEvents = "StreamingEvents";
-        public static readonly string UnhandledMailCount = "UnhandledMailCount";
-        public static readonly string UserUnreadMailCount = "UserUnreadMailCount";
+        public static readonly string UnhandledMailCount = "UnhandledMailCount.{0}";
+        public static readonly string UserUnreadMailCount = "UserUnreadMailCount.{0}.{1}";
     }
 }

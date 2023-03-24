@@ -17,41 +17,180 @@ namespace GRA.Controllers.MissionControl
     {
         private readonly ILogger<MailController> _logger;
         private readonly MailService _mailService;
+        private readonly MessageTemplateService _messageTemplateService;
         private readonly UserService _userService;
+
         public MailController(ILogger<MailController> logger,
             ServiceFacade.Controller context,
             MailService mailService,
+            MessageTemplateService messageTemplateService,
             UserService userService)
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
+            _messageTemplateService = messageTemplateService
+                ?? throw new ArgumentNullException(nameof(messageTemplateService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = "Mail";
         }
 
-        private void AddNoticeIfDisabled()
-        {
-            if (!HttpContext.Items.ContainsKey(ItemKey.ShowMail)
-                || HttpContext.Items[ItemKey.ShowMail] as bool? != true)
-            {
-                ShowAlertDanger("Mail is disabled in site settings, participants will not see it.");
-            }
-        }
-
-        public async Task<IActionResult> Index(int page = 1)
+        [Authorize(Policy.SendBroadcastMail)]
+        public IActionResult BroadcastCreate()
         {
             AddNoticeIfDisabled();
 
-            const int take = 15;
-            int skip = take * (page - 1);
-            var mailList = await _mailService.GetAllUnrepliedPaginatedAsync(skip, take);
+            var viewModel = new BroadcastDetailViewModel
+            {
+                Action = "Create"
+            };
+
+            PageTitle = "Create Broadcast";
+            return View("BroadcastDetail", viewModel);
+        }
+
+        [Authorize(Policy.SendBroadcastMail)]
+        [HttpPost]
+        public async Task<IActionResult> BroadcastCreate(BroadcastDetailViewModel model)
+        {
+            if (model == null)
+            {
+                return RedirectToAction(nameof(BroadcastCreate));
+            }
+
+            if (!model.SendNow)
+            {
+                if (model.Broadcast.SendAt == null)
+                {
+                    ModelState.AddModelError("Broadcast.SendAt", "Please select a date to send the Broadcast.");
+                }
+                else if (model.Broadcast.SendAt < _dateTimeProvider.Now)
+                {
+                    ModelState.AddModelError("Broadcast.SendAt", "Please select a date not in the past.");
+                }
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    if (model.SendNow)
+                    {
+                        model.Broadcast.SendAt = _dateTimeProvider.Now;
+                    }
+
+                    await _mailService.AddBroadcastAsync(model.Broadcast);
+                    ShowAlertSuccess($"Broadcast {model.Broadcast.Subject} successfully scheduled.");
+
+                    return RedirectToAction("Broadcasts",
+                        new { Upcoming = (model.SendNow ? "False" : null) });
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger("Unable to create broadcast: ", gex);
+                }
+            }
+            return View("BroadcastDetail", model);
+        }
+
+        [Authorize(Policy.SendBroadcastMail)]
+        [HttpPost]
+        public async Task<IActionResult> BroadcastDelete(int id)
+        {
+            try
+            {
+                await _mailService.RemoveBroadcastAsync(id);
+                ShowAlertSuccess("Broadcast successfully deleted!");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to delete broadcast: ", gex.Message);
+            }
+            return RedirectToAction("Broadcasts");
+        }
+
+        [Authorize(Policy.SendBroadcastMail)]
+        public async Task<IActionResult> BroadcastEdit(int id)
+        {
+            var viewModel = new BroadcastDetailViewModel
+            {
+                Broadcast = await _mailService.GetBroadcastByIdAsync(id),
+                Action = "Edit"
+            };
+
+            if (viewModel.Broadcast.SendAt <= _dateTimeProvider.Now)
+            {
+                viewModel.Sent = true;
+                PageTitle = "View Broadcast";
+            }
+            else
+            {
+                PageTitle = "Edit Broadcast";
+            }
+
+            return View("BroadcastDetail", viewModel);
+        }
+
+        [Authorize(Policy.SendBroadcastMail)]
+        [HttpPost]
+        public async Task<IActionResult> BroadcastEdit(BroadcastDetailViewModel model)
+        {
+            if (model == null)
+            {
+                return RedirectToAction(nameof(Broadcasts));
+            }
+
+            if (!model.SendNow)
+            {
+                if (model.Broadcast.SendAt == null)
+                {
+                    ModelState.AddModelError("Broadcast.SendAt", "Please select a date to send the Broadcast.");
+                }
+                else if (model.Broadcast.SendAt < _dateTimeProvider.Now)
+                {
+                    ModelState.AddModelError("Broadcast.SendAt", "Please select a date not in the past.");
+                }
+            }
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    if (model.SendNow)
+                    {
+                        model.Broadcast.SendAt = _dateTimeProvider.Now;
+                    }
+
+                    await _mailService.EditBroadcastAsync(model.Broadcast);
+                    ShowAlertSuccess($"Broadcast {model.Broadcast.Subject} successfully edited.");
+
+                    return RedirectToAction("Broadcasts",
+                        new { Upcoming = (model.SendNow ? "False" : null) });
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger("Unable to edit broadcast: ", gex);
+                }
+            }
+            return View("BroadcastDetail", model);
+        }
+
+        [Authorize(Policy.SendBroadcastMail)]
+        public async Task<IActionResult> Broadcasts(bool upcoming = true, int page = 1)
+        {
+            AddNoticeIfDisabled();
+
+            var filter = new BroadcastFilter(page)
+            {
+                Upcoming = upcoming
+            };
+
+            var broadcastList = await _mailService.PageBroadcastsAsync(filter);
 
             var paginateModel = new PaginateViewModel
             {
-                ItemCount = mailList.Count,
+                ItemCount = broadcastList.Count,
                 CurrentPage = page,
-                ItemsPerPage = take
+                ItemsPerPage = filter.Take.Value
             };
 
             if (paginateModel.PastMaxPage)
@@ -63,48 +202,22 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            var viewModel = new MailListViewModel
+            var viewModel = new BroadcastListViewModel
             {
-                Mail = mailList.Data,
+                Broadcasts = broadcastList.Data,
                 PaginateModel = paginateModel,
-                CanDelete = UserHasPermission(Permission.DeleteAnyMail)
+                Upcoming = upcoming
             };
 
             return View(viewModel);
         }
 
-        public async Task<IActionResult> ViewAll(int page = 1)
+        [Authorize(Policy.DeleteAnyMail)]
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
         {
-            AddNoticeIfDisabled();
-
-            const int take = 15;
-            int skip = take * (page - 1);
-            var mailList = await _mailService.GetAllPaginatedAsync(skip, take);
-
-            var paginateModel = new PaginateViewModel
-            {
-                ItemCount = mailList.Count,
-                CurrentPage = page,
-                ItemsPerPage = take
-            };
-
-            if (paginateModel.PastMaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
-            }
-
-            var viewModel = new MailListViewModel
-            {
-                Mail = mailList.Data,
-                PaginateModel = paginateModel,
-                CanDelete = UserHasPermission(Permission.DeleteAnyMail)
-            };
-
-            return View(viewModel);
+            await _mailService.RemoveAsync(id);
+            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Detail(int id)
@@ -149,6 +262,77 @@ namespace GRA.Controllers.MissionControl
                 ShowAlertWarning("Unable to view mail: ", gex);
                 return RedirectToAction("Index");
             }
+        }
+
+        [Authorize(Policy.SendBroadcastMail)]
+        [HttpGet]
+        public async Task<IActionResult> EditTemplate(int id, int languageId, string returnLink)
+        {
+            var messageTemplateText = await _messageTemplateService
+                .GetMessageTextAsync(id, languageId);
+
+            return View(new EditTemplateViewModel
+            {
+                Body = messageTemplateText.Body,
+                Id = id,
+                LanguageId = languageId,
+                ReturnLink = returnLink,
+                Subject = messageTemplateText.Subject
+            });
+        }
+
+        [Authorize(Policy.SendBroadcastMail)]
+        [HttpPost]
+        public async Task<IActionResult> EditTemplate(EditTemplateViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+            else
+            {
+                await _messageTemplateService.UpdateTextAsync(
+                    viewModel.Id,
+                    viewModel.LanguageId,
+                    viewModel.Subject,
+                    viewModel.Body);
+
+                return Redirect(viewModel.ReturnLink);
+            }
+        }
+
+        public async Task<IActionResult> Index(int page = 1)
+        {
+            AddNoticeIfDisabled();
+
+            const int take = 15;
+            int skip = take * (page - 1);
+            var mailList = await _mailService.GetAllUnrepliedPaginatedAsync(skip, take);
+
+            var paginateModel = new PaginateViewModel
+            {
+                ItemCount = mailList.Count,
+                CurrentPage = page,
+                ItemsPerPage = take
+            };
+
+            if (paginateModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+
+            var viewModel = new MailListViewModel
+            {
+                Mail = mailList.Data,
+                PaginateModel = paginateModel,
+                CanDelete = UserHasPermission(Permission.DeleteAnyMail)
+            };
+
+            return View(viewModel);
         }
 
         [Authorize(Policy.MailParticipants)]
@@ -240,31 +424,19 @@ namespace GRA.Controllers.MissionControl
             }
         }
 
-        [Authorize(Policy.DeleteAnyMail)]
-        [HttpPost]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await _mailService.RemoveAsync(id);
-            return RedirectToAction("Index");
-        }
-
-        [Authorize(Policy.SendBroadcastMail)]
-        public async Task<IActionResult> Broadcasts(bool upcoming = true, int page = 1)
+        public async Task<IActionResult> ViewAll(int page = 1)
         {
             AddNoticeIfDisabled();
 
-            var filter = new BroadcastFilter(page)
-            {
-                Upcoming = upcoming
-            };
-
-            var broadcastList = await _mailService.PageBroadcastsAsync(filter);
+            const int take = 15;
+            int skip = take * (page - 1);
+            var mailList = await _mailService.GetAllPaginatedAsync(skip, take);
 
             var paginateModel = new PaginateViewModel
             {
-                ItemCount = broadcastList.Count,
+                ItemCount = mailList.Count,
                 CurrentPage = page,
-                ItemsPerPage = filter.Take.Value
+                ItemsPerPage = take
             };
 
             if (paginateModel.PastMaxPage)
@@ -276,153 +448,23 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            var viewModel = new BroadcastListViewModel
+            var viewModel = new MailListViewModel
             {
-                Broadcasts = broadcastList.Data,
+                Mail = mailList.Data,
                 PaginateModel = paginateModel,
-                Upcoming = upcoming
+                CanDelete = UserHasPermission(Permission.DeleteAnyMail)
             };
 
             return View(viewModel);
         }
 
-        [Authorize(Policy.SendBroadcastMail)]
-        public IActionResult BroadcastCreate()
+        private void AddNoticeIfDisabled()
         {
-            AddNoticeIfDisabled();
-
-            var viewModel = new BroadcastDetailViewModel
+            if (!HttpContext.Items.ContainsKey(ItemKey.ShowMail)
+                || HttpContext.Items[ItemKey.ShowMail] as bool? != true)
             {
-                Action = "Create"
-            };
-
-            PageTitle = "Create Broadcast";
-            return View("BroadcastDetail", viewModel);
-        }
-
-        [Authorize(Policy.SendBroadcastMail)]
-        [HttpPost]
-        public async Task<IActionResult> BroadcastCreate(BroadcastDetailViewModel model)
-        {
-            if (model == null)
-            {
-                return RedirectToAction(nameof(BroadcastCreate));
+                ShowAlertDanger("Mail is disabled in site settings, participants will not see it.");
             }
-
-            if (!model.SendNow)
-            {
-                if (model.Broadcast.SendAt == null)
-                {
-                    ModelState.AddModelError("Broadcast.SendAt", "Please select a date to send the Broadcast.");
-                }
-                else if (model.Broadcast.SendAt < _dateTimeProvider.Now)
-                {
-                    ModelState.AddModelError("Broadcast.SendAt", "Please select a date not in the past.");
-                }
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    if (model.SendNow)
-                    {
-                        model.Broadcast.SendAt = _dateTimeProvider.Now;
-                    }
-
-                    await _mailService.AddBroadcastAsync(model.Broadcast);
-                    ShowAlertSuccess($"Broadcast {model.Broadcast.Subject} successfully scheduled.");
-
-                    return RedirectToAction("Broadcasts",
-                        new { Upcoming = (model.SendNow ? "False" : null) });
-                }
-                catch (GraException gex)
-                {
-                    ShowAlertDanger("Unable to create broadcast: ", gex);
-                }
-            }
-            return View("BroadcastDetail", model);
-        }
-
-        [Authorize(Policy.SendBroadcastMail)]
-        public async Task<IActionResult> BroadcastEdit(int id)
-        {
-            var viewModel = new BroadcastDetailViewModel
-            {
-                Broadcast = await _mailService.GetBroadcastByIdAsync(id),
-                Action = "Edit"
-            };
-
-            if (viewModel.Broadcast.SendAt <= _dateTimeProvider.Now)
-            {
-                viewModel.Sent = true;
-                PageTitle = "View Broadcast";
-            }
-            else
-            {
-                PageTitle = "Edit Broadcast";
-            }
-
-            return View("BroadcastDetail", viewModel);
-        }
-
-        [Authorize(Policy.SendBroadcastMail)]
-        [HttpPost]
-        public async Task<IActionResult> BroadcastEdit(BroadcastDetailViewModel model)
-        {
-            if (model == null)
-            {
-                return RedirectToAction(nameof(Broadcasts));
-            }
-
-            if (!model.SendNow)
-            {
-                if (model.Broadcast.SendAt == null)
-                {
-                    ModelState.AddModelError("Broadcast.SendAt", "Please select a date to send the Broadcast.");
-                }
-                else if (model.Broadcast.SendAt < _dateTimeProvider.Now)
-                {
-                    ModelState.AddModelError("Broadcast.SendAt", "Please select a date not in the past.");
-                }
-            }
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    if (model.SendNow)
-                    {
-                        model.Broadcast.SendAt = _dateTimeProvider.Now;
-                    }
-
-                    await _mailService.EditBroadcastAsync(model.Broadcast);
-                    ShowAlertSuccess($"Broadcast {model.Broadcast.Subject} successfully edited.");
-
-                    return RedirectToAction("Broadcasts",
-                        new { Upcoming = (model.SendNow ? "False" : null) });
-                }
-                catch (GraException gex)
-                {
-                    ShowAlertDanger("Unable to edit broadcast: ", gex);
-                }
-            }
-            return View("BroadcastDetail", model);
-        }
-
-        [Authorize(Policy.SendBroadcastMail)]
-        [HttpPost]
-        public async Task<IActionResult> BroadcastDelete(int id)
-        {
-            try
-            {
-                await _mailService.RemoveBroadcastAsync(id);
-                ShowAlertSuccess("Broadcast successfully deleted!");
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger("Unable to delete broadcast: ", gex.Message);
-            }
-            return RedirectToAction("Broadcasts");
         }
     }
 }

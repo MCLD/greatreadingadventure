@@ -1,0 +1,21 @@
+{
+  "Data": [
+    {
+      "Body": "You have reached the goal of the program and earned a free book! [Navigate to our bookstore]({{Link}}) and enter this code during checkout: {{Code}}",
+      "LanguageName": "en-US",
+      "Name": "Vendor Code Award",
+      "Subject": "Here's how to redeem your free book!"
+    },
+    {
+      "Body": "¡Has alcanzado la meta del programa y te has ganado un libro gratis! [Navega a nuestra librería]({{Link}}) e ingresa este código durante el pago: {{Code}}",
+      "LanguageName": "es-US",
+      "Name": "Vendor Code Award",
+      "Subject": "¡A continuación, te indicamos cómo canjear tu libro gratis!"
+    }
+  ],
+  "ExportedAt": "2023-03-01T16:00:00.0000000-07:00",
+  "ExportedBy": "Great Reading Adventure Development (https://github.com/MCLD/greatreadingadventure/discussions)",
+  "Source": "The Great Reading Adventure (https://github.com/MCLD/greatreadingadventure)",
+  "Type": "MessageTemplate",
+  "Version": 1
+}

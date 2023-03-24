@@ -30,6 +30,8 @@ namespace GRA.Domain.Repository
 
         Task<int> GetCountAsync(ReportCriterion request);
 
+        Task<string> GetCultureAsync(int userId);
+
         Task<int> GetFirstTimeCountAsync(ReportCriterion request);
 
         Task<string> GetFullNameByIdAsync(int userId);
@@ -67,14 +69,14 @@ namespace GRA.Domain.Repository
 
         Task<bool> IsEmailSubscribedAsync(string email);
 
-        Task<IEnumerable<Model.User>> PageAllAsync(UserFilter filter);
+        Task<IEnumerable<User>> PageAllAsync(UserFilter filter);
 
-        Task<IEnumerable<Model.User>> PageHouseholdAsync(
+        Task<IEnumerable<User>> PageHouseholdAsync(
             int householdHeadUserId,
             int skip,
             int take);
 
-        Task<int> ReassignBranchAsync(int oldBranch, int newBranch);
+        Task<int> ReassignBranchAsync(int oldBranchId, int newBranchId);
 
         Task SetUserPasswordAsync(int currentUserId, int userId, string password);
 

@@ -4,9 +4,11 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using GRA.Controllers.ViewModel.MissionControl.VendorCodes;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
 using GRA.Utility;
@@ -29,7 +31,10 @@ namespace GRA.Controllers.MissionControl
 
         private readonly EmailManagementService _emailManagementService;
         private readonly JobService _jobService;
+        private readonly LanguageService _languageService;
         private readonly ILogger _logger;
+        private readonly MessageTemplateService _messageTemplateService;
+        private readonly SegmentService _segmentService;
         private readonly UserService _userService;
         private readonly VendorCodeService _vendorCodeService;
 
@@ -37,17 +42,27 @@ namespace GRA.Controllers.MissionControl
             ILogger<VendorCodesController> logger,
             EmailManagementService emailManagementService,
             JobService jobService,
+            LanguageService languageService,
+            MessageTemplateService messageTemplateService,
+            SegmentService segmentService,
             UserService userService,
             VendorCodeService vendorCodeService)
             : base(context)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _emailManagementService = emailManagementService
                 ?? throw new ArgumentNullException(nameof(emailManagementService));
             _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
+            _languageService = languageService
+                ?? throw new ArgumentNullException(nameof(languageService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _messageTemplateService = messageTemplateService
+                ?? throw new ArgumentNullException(nameof(messageTemplateService));
+            _segmentService = segmentService
+                ?? throw new ArgumentNullException(nameof(segmentService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _vendorCodeService = vendorCodeService
                 ?? throw new ArgumentNullException(nameof(vendorCodeService));
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+
             PageTitle = "Vendor code management";
         }
 
@@ -88,16 +103,18 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.ManageVendorCodes)]
         public async Task<IActionResult> Configure()
         {
-            var vendorCodeType = await _vendorCodeService.GetTypeAllAsync();
-
-            var viewModel = vendorCodeType?.FirstOrDefault() ?? new VendorCodeType
+            var vendorCodeTypes = await _vendorCodeService.GetTypeAllAsync();
+            var vendorCodeType = vendorCodeTypes?.FirstOrDefault() ?? new VendorCodeType
             {
-                SiteId = GetCurrentSiteId()
+                SiteId = GetCurrentSiteId(),
+                MessageTemplateId = await _messageTemplateService
+                        .GetMessageIdAsync("Vendor Code Award"),
             };
 
-            viewModel.DirectEmailTemplates = await _emailManagementService.GetUserTemplatesAsync();
-
-            return View("Configure", viewModel);
+            return await ShowConfigurationAsync(new ConfigureViewModel
+            {
+                VendorCodeType = vendorCodeType
+            });
         }
 
         [HttpGet]
@@ -418,6 +435,71 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpGet]
+        public async Task<IActionResult> GetMessageTemplate(int vendorCodeTypeId,
+            int languageId,
+            string item)
+        {
+            int? id;
+            var vendorCodeType = await _vendorCodeService.GetTypeById(vendorCodeTypeId);
+
+            try
+            {
+                id = GetMessageTemplateId(vendorCodeType, item);
+            }
+            catch (GraException gex)
+            {
+                return Json(new
+                {
+                    Success = false,
+                    gex.Message
+                });
+            }
+
+            var messageTemplateText = id.HasValue
+                 ? await _messageTemplateService.GetMessageTextAsync(id.Value, languageId)
+                 : default;
+
+            return Json(new
+            {
+                Success = true,
+                messageTemplateText?.Subject,
+                messageTemplateText?.Body,
+            });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetSegment(int vendorCodeTypeId,
+            int languageId,
+            string item)
+        {
+            int? id;
+            var vendorCodeType = await _vendorCodeService.GetTypeById(vendorCodeTypeId);
+
+            try
+            {
+                id = GetSegmentTextId(vendorCodeType, item);
+            }
+            catch (GraException gex)
+            {
+                return Json(new
+                {
+                    Success = false,
+                    gex.Message
+                });
+            }
+
+            var segmentText = id.HasValue
+                 ? await _segmentService.MCGetTextAsync(id.Value, languageId)
+                 : default;
+
+            return Json(new
+            {
+                Success = true,
+                segmentText?.Text
+            });
+        }
+
+        [HttpGet]
         [Authorize(Policy = Policy.ManageVendorCodes)]
         public async Task<IActionResult> ImportStatus()
         {
@@ -590,21 +672,259 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        [Authorize(Policy = Policy.ManageVendorCodes)]
-        public async Task<IActionResult> UpdateConfiguration(VendorCodeType vendorCodeType)
+        public async Task<IActionResult> SetMessageTemplate(int vendorCodeTypeId,
+            int languageId,
+            string item,
+            string subject,
+            string body)
         {
-            if (vendorCodeType == null)
+            try
             {
-                AlertDanger = "Could not create empty vendor code type.";
+                if (string.IsNullOrEmpty(item))
+                {
+                    throw new GraException("Message to change not specified.");
+                }
+
+                var vendorCode = await _vendorCodeService.GetTypeById(vendorCodeTypeId)
+                    ?? throw new GraException("Could not find the requested vendor code type.");
+
+                var messageTemplateId = GetMessageTemplateId(vendorCode, item);
+
+                if (messageTemplateId.HasValue)
+                {
+                    if ((string.IsNullOrEmpty(subject) || string.IsNullOrEmpty(body))
+                        && item == nameof(vendorCode.MessageTemplateId))
+                    {
+                        throw new GraException("You cannot remove the achievement message.");
+                    }
+
+                    await _messageTemplateService.UpdateTextAsync(messageTemplateId.Value,
+                        languageId,
+                        subject,
+                        body);
+
+                    if (string.IsNullOrEmpty(subject) && string.IsNullOrEmpty(body))
+                    {
+                        var languageCheck = await _messageTemplateService
+                            .GetLanguageStatusAsync(new[] {
+                                GetMessageTemplateId(vendorCode, item)
+                            });
+
+                        if (languageCheck.First().Value.Length == 0)
+                        {
+                            switch (item)
+                            {
+                                case nameof(vendorCode.DonationMessageTemplateId):
+                                    vendorCode.DonationMessageTemplateId = null;
+                                    break;
+
+                                case nameof(vendorCode.EmailAwardMessageTemplateId):
+                                    vendorCode.EmailAwardMessageTemplateId = null;
+                                    break;
+
+                                case nameof(vendorCode.OptionMessageTemplateId):
+                                    vendorCode.OptionMessageTemplateId = null;
+                                    break;
+
+                                default:
+                                    throw new GraException("Unable to determine which message template to set.");
+                            }
+                            await _vendorCodeService.UpdateTypeAsync(vendorCode);
+                        }
+                    }
+                }
+                else
+                {
+                    if (string.IsNullOrWhiteSpace(subject) && string.IsNullOrWhiteSpace(body))
+                    {
+                        throw new GraException("Unable to add empty message.");
+                    }
+
+                    // messageTemplate needs to be inserted
+                    var text = await _messageTemplateService.AddTextAsync(languageId,
+                        subject,
+                        body,
+                        item);
+
+                    switch (item)
+                    {
+                        case nameof(vendorCode.DonationMessageTemplateId):
+                            vendorCode.DonationMessageTemplateId = text.MessageTemplateId;
+                            break;
+
+                        case nameof(vendorCode.EmailAwardMessageTemplateId):
+                            vendorCode.EmailAwardMessageTemplateId = text.MessageTemplateId;
+                            break;
+
+                        case nameof(vendorCode.MessageTemplateId):
+                            vendorCode.MessageTemplateId = text.MessageTemplateId;
+                            break;
+
+                        case nameof(vendorCode.OptionMessageTemplateId):
+                            vendorCode.OptionMessageTemplateId = text.MessageTemplateId;
+                            break;
+
+                        default:
+                            throw new GraException("Unable to determine which message template to set.");
+                    }
+
+                    await _vendorCodeService.UpdateTypeAsync(vendorCode);
+                }
+
+                return Json(new
+                {
+                    Success = true
+                });
+            }
+            catch (GraFieldValidationException gfvex)
+            {
+                var builder = new StringBuilder("Could not save vendor code type changes:").AppendLine();
+                foreach (var validationError in gfvex.FieldValidationErrors)
+                {
+                    foreach (var errorMessage in validationError)
+                    {
+                        builder.Append("- ").AppendLine(errorMessage);
+                    }
+                }
+                return Json(new
+                {
+                    Success = false,
+                    Message = builder.ToString()
+                });
+            }
+            catch (GraException gex)
+            {
+                return Json(new
+                {
+                    Success = false,
+                    gex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SetSegment(int vendorCodeTypeId,
+            int languageId,
+            string item,
+            string text)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(item))
+                {
+                    throw new GraException("Pop-up message to change not specified.");
+                }
+
+                var vendorCode = await _vendorCodeService.GetTypeById(vendorCodeTypeId)
+                    ?? throw new GraException("Could not find the requested vendor code type.");
+
+                var segmentTextId = GetSegmentTextId(vendorCode, item);
+
+                if (segmentTextId.HasValue)
+                {
+                    await _segmentService.UpdateTextAsync(segmentTextId.Value,
+                        languageId,
+                        text);
+
+                    if (string.IsNullOrEmpty(text))
+                    {
+                        var languageCheck = await _segmentService
+                                .GetLanguageStatusAsync(new[] {
+                                    GetSegmentTextId(vendorCode, item)
+                            });
+
+                        if (languageCheck.First().Value.Length == 0)
+                        {
+                            switch (item)
+                            {
+                                case nameof(vendorCode.DonationSegmentId):
+                                    vendorCode.DonationSegmentId = null;
+                                    break;
+
+                                case nameof(vendorCode.EmailAwardSegmentId):
+                                    vendorCode.EmailAwardSegmentId = null;
+                                    break;
+
+                                default:
+                                    throw new GraException("Unable to determine which message to set.");
+                            }
+                            await _vendorCodeService.UpdateTypeAsync(vendorCode);
+                        }
+                    }
+                }
+                else
+                {
+                    if (string.IsNullOrWhiteSpace(text))
+                    {
+                        throw new GraException("Unable to add empty message.");
+                    }
+
+                    var addedText = await _segmentService.AddTextAsync(GetActiveUserId(),
+                        languageId,
+                        text,
+                        item);
+
+                    if (item == nameof(vendorCode.DonationSegmentId))
+                    {
+                        vendorCode.DonationSegmentId = addedText.SegmentId;
+                    }
+                    else if (item == nameof(vendorCode.EmailAwardSegmentId))
+                    {
+                        vendorCode.EmailAwardSegmentId = addedText.SegmentId;
+                    }
+                    else
+                    {
+                        throw new GraException("Unable to determine which message to set.");
+                    }
+
+                    await _vendorCodeService.UpdateTypeAsync(vendorCode);
+                }
+
+                return Json(new
+                {
+                    Success = true
+                });
+            }
+            catch (GraFieldValidationException gfvex)
+            {
+                var builder = new StringBuilder("Could not save vendor code type changes:").AppendLine();
+                foreach (var validationError in gfvex.FieldValidationErrors)
+                {
+                    foreach (var errorMessage in validationError)
+                    {
+                        builder.Append("- ").AppendLine(errorMessage);
+                    }
+                }
+                return Json(new
+                {
+                    Success = false,
+                    Message = builder.ToString()
+                });
+            }
+            catch (GraException gex)
+            {
+                return Json(new
+                {
+                    Success = false,
+                    gex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Policy = Policy.ManageVendorCodes)]
+        public async Task<IActionResult> UpdateConfiguration(ConfigureViewModel viewModel)
+        {
+            if (viewModel.VendorCodeType == null)
+            {
+                ShowAlertDanger("Could not create empty vendor code type.");
                 return RedirectToAction(nameof(Index));
             }
 
             if (!ModelState.IsValid)
             {
-                vendorCodeType.DirectEmailTemplates = await _emailManagementService
-                    .GetUserTemplatesAsync();
-
-                return View("Configure", vendorCodeType);
+                ShowAlertWarning("There were issues with the vendor code.");
+                return await ShowConfigurationAsync(viewModel);
             }
 
             try
@@ -612,12 +932,12 @@ namespace GRA.Controllers.MissionControl
                 var existingVendorCodeType = await _vendorCodeService.GetTypeAllAsync();
                 if (existingVendorCodeType?.Count > 0)
                 {
-                    vendorCodeType.Id = existingVendorCodeType.First().Id;
-                    await _vendorCodeService.UpdateTypeAsync(vendorCodeType);
+                    viewModel.VendorCodeType.Id = existingVendorCodeType.First().Id;
+                    await _vendorCodeService.UpdateTypeAsync(viewModel.VendorCodeType);
                 }
                 else
                 {
-                    await _vendorCodeService.AddTypeAsync(vendorCodeType);
+                    await _vendorCodeService.AddTypeAsync(viewModel.VendorCodeType);
                 }
             }
             catch (GraFieldValidationException gex)
@@ -626,13 +946,16 @@ namespace GRA.Controllers.MissionControl
                 {
                     foreach (var errorMessage in validationError)
                     {
-                        ModelState.AddModelError(validationError.Key, errorMessage);
+                        ModelState.AddModelError(nameof(viewModel.VendorCodeType) + '.' + validationError.Key, errorMessage);
                     }
                 }
-                return View("Configure", vendorCodeType);
+                ShowAlertWarning("There were issues updating the vendor code.");
+                return await ShowConfigurationAsync(viewModel);
             }
 
-            return RedirectToAction(nameof(Index));
+            ShowAlertSuccess("Vendor code updated!");
+
+            return RedirectToAction(nameof(Configure));
         }
 
         [HttpGet]
@@ -711,20 +1034,59 @@ namespace GRA.Controllers.MissionControl
             return View("EnterPackingSlip", id);
         }
 
+        private static int? GetMessageTemplateId(VendorCodeType vendorCodeType, string item) => item switch
+        {
+            nameof(vendorCodeType.DonationMessageTemplateId) => vendorCodeType.DonationMessageTemplateId,
+            nameof(vendorCodeType.EmailAwardMessageTemplateId) => vendorCodeType.EmailAwardMessageTemplateId,
+            nameof(vendorCodeType.MessageTemplateId) => vendorCodeType.MessageTemplateId,
+            nameof(vendorCodeType.OptionMessageTemplateId) => vendorCodeType.OptionMessageTemplateId,
+            _ => throw new GraException("Unknown message template type")
+        };
+
+        private static int? GetSegmentTextId(VendorCodeType vendorCodeType, string item) => item switch
+        {
+            nameof(vendorCodeType.DonationSegmentId) => vendorCodeType.DonationSegmentId,
+            nameof(vendorCodeType.EmailAwardSegmentId) => vendorCodeType.EmailAwardSegmentId,
+            _ => throw new GraException("Unknown segment type")
+        };
+
+        private async Task<IActionResult> ShowConfigurationAsync(ConfigureViewModel viewModel)
+        {
+            viewModel.DirectEmailTemplates = await _emailManagementService.GetUserTemplatesAsync();
+            viewModel.MessageTemplateLanguageIds = await _messageTemplateService
+                .GetLanguageStatusAsync(new int?[] {
+                    viewModel.VendorCodeType.MessageTemplateId,
+                    viewModel.VendorCodeType.DonationMessageTemplateId,
+                    viewModel.VendorCodeType.EmailAwardMessageTemplateId,
+                    viewModel.VendorCodeType.OptionMessageTemplateId
+                });
+            viewModel.SegmentLanguageIds = await _segmentService
+                .GetLanguageStatusAsync(new int?[]
+                {
+                    viewModel.VendorCodeType.DonationSegmentId,
+                    viewModel.VendorCodeType.EmailAwardSegmentId
+                });
+            viewModel.Languages = (await _languageService.GetActiveAsync())
+                .OrderByDescending(_ => _.IsDefault)
+                .ThenBy(_ => _.Description)
+                .ToDictionary(k => k.Description, v => v.Id);
+
+            return View("Configure", viewModel);
+        }
+
         #region Spreadsheet utility methods
 
         private static (Cell cell, int length) CreateCell(object dataItem)
         {
             var addCell = new Cell
             {
-                CellValue = new CellValue(dataItem.ToString())
-            };
-
-            addCell.DataType = dataItem switch
-            {
-                int _ or long _ => CellValues.Number,
-                DateTime _ => CellValues.Date,
-                _ => CellValues.String,
+                CellValue = new CellValue(dataItem.ToString()),
+                DataType = dataItem switch
+                {
+                    int _ or long _ => CellValues.Number,
+                    DateTime _ => CellValues.Date,
+                    _ => CellValues.String,
+                }
             };
             return (addCell, dataItem.ToString().Length);
         }

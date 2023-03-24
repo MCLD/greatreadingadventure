@@ -23,7 +23,9 @@ namespace GRA.Domain.Service
         private readonly IChallengeTaskRepository _challengeTaskRepository;
         private readonly ICodeSanitizer _codeSanitizer;
         private readonly IEventRepository _eventRepository;
+        private readonly LanguageService _languageService;
         private readonly MailService _mailService;
+        private readonly MessageTemplateService _messageTemplateService;
         private readonly INotificationRepository _notificationRepository;
         private readonly IPointTranslationRepository _pointTranslationRepository;
         private readonly PrizeWinnerService _prizeWinnerService;
@@ -37,29 +39,31 @@ namespace GRA.Domain.Service
         private readonly VendorCodeService _vendorCodeService;
         private readonly IVendorCodeTypeRepository _vendorCodeTypeRepository;
 
-        public ActivityService(ILogger<UserService> logger,
-            IDateTimeProvider dateTimeProvider,
-            IUserContextProvider userContext,
-            IAttachmentRepository attachmentRepository,
+        public ActivityService(IAttachmentRepository attachmentRepository,
             IAvatarBundleRepository avatarBundleRepository,
             IAvatarItemRepository avatarItemRepository,
             IBadgeRepository badgeRepository,
             IBookRepository bookRepository,
             IChallengeRepository challengeRepository,
             IChallengeTaskRepository challengeTaskRepository,
+            ICodeSanitizer codeSanitizer,
+            IDateTimeProvider dateTimeProvider,
             IEventRepository eventRepository,
             IGraCache cache,
+            ILogger<UserService> logger,
             INotificationRepository notificationRepository,
             IPointTranslationRepository pointTranslationRepository,
             IProgramRepository programRepository,
             IRequiredQuestionnaireRepository requiredQuestionnaireRepository,
             ITriggerRepository triggerRepository,
-            IUserRepository userRepository,
+            IUserContextProvider userContext,
             IUserLogRepository userLogRepository,
+            IUserRepository userRepository,
             IVendorCodeRepository vendorCodeRepository,
             IVendorCodeTypeRepository vendorCodeTypeRepository,
-            ICodeSanitizer codeSanitizer,
+            LanguageService languageService,
             MailService mailService,
+            MessageTemplateService messageTemplateService,
             PrizeWinnerService prizeWinnerService,
             SiteLookupService siteLookupService,
             VendorCodeService vendorCodeService) : base(logger, dateTimeProvider, userContext)
@@ -74,41 +78,44 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(badgeRepository));
             _bookRepository = bookRepository
                 ?? throw new ArgumentNullException(nameof(bookRepository));
-            _cache = cache
-                ?? throw new ArgumentNullException(nameof(cache));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
             _challengeRepository = challengeRepository
                 ?? throw new ArgumentNullException(nameof(challengeRepository));
             _challengeTaskRepository = challengeTaskRepository
                 ?? throw new ArgumentNullException(nameof(challengeTaskRepository));
+            _codeSanitizer = codeSanitizer
+                ?? throw new ArgumentNullException(nameof(codeSanitizer));
             _eventRepository = eventRepository
                 ?? throw new ArgumentNullException(nameof(eventRepository));
+            _languageService = languageService
+                ?? throw new ArgumentNullException(nameof(languageService));
+            _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
+            _messageTemplateService = messageTemplateService
+                ?? throw new ArgumentNullException(nameof(messageTemplateService));
             _notificationRepository = notificationRepository
                 ?? throw new ArgumentNullException(nameof(notificationRepository));
             _pointTranslationRepository = pointTranslationRepository
                 ?? throw new ArgumentNullException(nameof(pointTranslationRepository));
+            _prizeWinnerService = prizeWinnerService
+                ?? throw new ArgumentNullException(nameof(prizeWinnerService));
             _programRepository = programRepository
                 ?? throw new ArgumentNullException(nameof(programRepository));
             _requiredQuestionnaireRepository = requiredQuestionnaireRepository
                 ?? throw new ArgumentNullException(nameof(requiredQuestionnaireRepository));
-            _triggerRepository = triggerRepository
-                ?? throw new ArgumentNullException(nameof(triggerRepository));
-            _userRepository = userRepository
-                ?? throw new ArgumentNullException(nameof(userRepository));
-            _userLogRepository = userLogRepository
-                ?? throw new ArgumentNullException(nameof(userLogRepository));
-            _vendorCodeRepository = vendorCodeRepository
-                ?? throw new ArgumentNullException(nameof(vendorCodeRepository));
-            _vendorCodeTypeRepository = vendorCodeTypeRepository
-                ?? throw new ArgumentNullException(nameof(vendorCodeTypeRepository));
-            _codeSanitizer = codeSanitizer
-                ?? throw new ArgumentNullException(nameof(codeSanitizer));
-            _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
-            _prizeWinnerService = prizeWinnerService
-                ?? throw new ArgumentNullException(nameof(prizeWinnerService));
             _siteLookupService = siteLookupService
                 ?? throw new ArgumentNullException(nameof(siteLookupService));
+            _triggerRepository = triggerRepository
+                ?? throw new ArgumentNullException(nameof(triggerRepository));
+            _userLogRepository = userLogRepository
+                ?? throw new ArgumentNullException(nameof(userLogRepository));
+            _userRepository = userRepository
+                ?? throw new ArgumentNullException(nameof(userRepository));
+            _vendorCodeRepository = vendorCodeRepository
+                ?? throw new ArgumentNullException(nameof(vendorCodeRepository));
             _vendorCodeService = vendorCodeService
                 ?? throw new ArgumentNullException(nameof(vendorCodeService));
+            _vendorCodeTypeRepository = vendorCodeTypeRepository
+                ?? throw new ArgumentNullException(nameof(vendorCodeTypeRepository));
         }
 
         public async Task<ServiceResult<int>> AddBookAsync(int userId, Book book, bool addNotification = false)
@@ -320,9 +327,10 @@ namespace GRA.Domain.Service
 
                 // prepare the notification text
                 string activityDescription = "for <strong>";
-                if (translation.TranslationDescriptionPresentTense.Contains("{0}"))
+                if (translation.TranslationDescriptionPresentTense.Contains("{0}", StringComparison.OrdinalIgnoreCase))
                 {
                     activityDescription += string.Format(
+                        System.Globalization.CultureInfo.InvariantCulture,
                         translation.TranslationDescriptionPresentTense,
                         userLog.ActivityEarned);
                     if (userLog.ActivityEarned == 1)
@@ -362,7 +370,8 @@ namespace GRA.Domain.Service
                 if (activityAmountToAdd < activityAmountEarned || totalActivity == maximumActivity)
                 {
                     string descriptionPastTense = translation.TranslationDescriptionPastTense
-                        .Replace("{0}", "").Trim();
+                        .Replace("{0}", "", StringComparison.InvariantCulture)
+                        .Trim();
 
                     var maxDescription = $"Congratulations, you have {descriptionPastTense} the maximum amount of {translation.ActivityDescriptionPlural} for this program. Good job!";
 
@@ -464,10 +473,8 @@ namespace GRA.Domain.Service
                 }
             }
 
-            var trigger = await _triggerRepository.GetByCodeAsync(GetCurrentSiteId(), secretCode,
-                true);
-
-            if (trigger == null)
+            if (await _triggerRepository
+                .GetByCodeAsync(GetCurrentSiteId(), secretCode, true) == null)
             {
                 throw new GraException($"<strong>{secretCode}</strong> is not a valid code.");
             }
@@ -523,12 +530,8 @@ namespace GRA.Domain.Service
             }
 
             var trigger = await _triggerRepository.GetByCodeAsync(GetCurrentSiteId(), secretCode,
-                true);
-
-            if (trigger == null)
-            {
-                throw new GraException($"<strong>{secretCode}</strong> is not a valid code.");
-            }
+                true)
+                ?? throw new GraException($"<strong>{secretCode}</strong> is not a valid code.");
 
             var pointsAwarded = trigger.AwardPoints;
 
@@ -962,7 +965,7 @@ namespace GRA.Domain.Service
                 Badge badge = await AwardBadgeAsync(activeUserId, challenge.BadgeId);
                 if (badge != null)
                 {
-                    badgeNotification = $" and a badge";
+                    badgeNotification = " and a badge";
                 }
 
                 // create the notification record
@@ -1002,7 +1005,9 @@ namespace GRA.Domain.Service
             {
                 serviceResult.Status = ServiceResultStatus.Warning;
                 serviceResult.Message = string.Format(
-                    Annotations.Validate.CouldNotFavorite, Annotations.Title.Challenges);
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    Annotations.Validate.CouldNotFavorite,
+                    Annotations.Title.Challenges);
             }
 
             var userFavorites = await _challengeRepository.GetUserFavoriteChallenges(activeUserId,
@@ -1038,7 +1043,9 @@ namespace GRA.Domain.Service
             {
                 serviceResult.Status = ServiceResultStatus.Warning;
                 serviceResult.Message = string.Format(
-                    Annotations.Validate.CouldNotFavorite, Annotations.Interface.Events);
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    Annotations.Validate.CouldNotFavorite,
+                    Annotations.Interface.Events);
             }
 
             var userFavorites = await _eventRepository.GetUserFavoriteEvents(activeUserId,
@@ -1069,14 +1076,11 @@ namespace GRA.Domain.Service
         {
             if (pointsEarned < 0)
             {
-                throw new GraException($"Cannot log negative points!");
+                throw new GraException("Cannot log negative points!");
             }
 
-            var earnedUser = await _userRepository.GetByIdAsync(whoEarnedUserId);
-            if (earnedUser == null)
-            {
-                throw new GraException($"Could not find a user with id {whoEarnedUserId}");
-            }
+            var earnedUser = await _userRepository.GetByIdAsync(whoEarnedUserId)
+                ?? throw new GraException($"Could not find a user with id {whoEarnedUserId}");
 
             // cap points at setting or int.MaxValue
             long totalPoints = Convert.ToInt64(earnedUser.PointsEarned)
@@ -1336,19 +1340,42 @@ namespace GRA.Domain.Service
                     await _vendorCodeRepository.AssignCodeAsync((int)vendorCodeTypeId, userId);
 
                     // if there are no award options then send the email with the code
-                    if (string.IsNullOrEmpty(codeType.OptionSubject))
+                    if (!codeType.OptionMessageTemplateId.HasValue)
                     {
                         await _vendorCodeService.ResolveCodeStatusAsync(userId, false, false);
                     }
                     else
                     {
                         // award has options, let the user know
+                        var user = await _userRepository.GetByIdAsync(userId);
+
+                        int languageId = string.IsNullOrEmpty(user.Culture)
+                            ? await _languageService.GetDefaultLanguageIdAsync()
+                            : await _languageService.GetLanguageIdAsync(user.Culture);
+
+                        var message = await _messageTemplateService
+                            .GetMessageTextAsync(codeType.OptionMessageTemplateId.Value,
+                                languageId);
+
+                        var markedUpToken = "{{" + TemplateToken.VendorCodeToken + "}}";
+                        var markedUpUrl = codeType.Url.Contains(markedUpToken,
+                            StringComparison.OrdinalIgnoreCase)
+                            ? codeType.Url.Replace(markedUpToken,
+                                "",
+                                StringComparison.OrdinalIgnoreCase)
+                            : codeType.Url;
+
                         await _mailService.SendSystemMailAsync(new Mail
                         {
                             ToUserId = userId,
                             CanParticipantDelete = false,
-                            Subject = codeType.OptionSubject,
-                            Body = codeType.OptionMail
+                            Subject = message.Subject,
+                            Body = message.Body,
+                            TemplateDictionary = new Dictionary<string, string>
+                            {
+                                { TemplateToken.VendorCodeToken, "" },
+                                { TemplateToken.VendorLinkToken, markedUpUrl }
+                            }
                         }, siteId);
                     }
                 }
@@ -1356,12 +1383,10 @@ namespace GRA.Domain.Service
                 {
                     await _mailService.SendSystemMailAsync(new Mail
                     {
-                        ToUserId = userId,
+                        Body = $"There was a difficulty assigning a {codeType.Description}, please contact us.",
                         CanParticipantDelete = true,
-                        Subject = codeType.MailSubject,
-                        Body = codeType.Mail.Contains(TemplateToken.VendorCodeToken)
-                            ? codeType.Mail.Replace(TemplateToken.VendorCodeToken, $"{codeType.Description} not available - please contact us.")
-                            : codeType.Mail + " " + $"{codeType.Description} not available - please contact us."
+                        Subject = "Your award",
+                        ToUserId = userId
                     }, siteId);
 
                     // TODO let admin know that vendor code assignment didn't work?
@@ -1388,8 +1413,7 @@ namespace GRA.Domain.Service
             return IsSet ? SetValue : int.MaxValue;
         }
 
-        private async Task<User>
-                                                                    RemovePointsSaveAsync(int currentUserId,
+        private async Task<User> RemovePointsSaveAsync(int currentUserId,
             int removePointsFromUserId,
             int pointsToRemove)
         {
@@ -1398,12 +1422,8 @@ namespace GRA.Domain.Service
                 throw new GraException($"Cannot remove negative points!");
             }
 
-            var removeUser = await _userRepository.GetByIdAsync(removePointsFromUserId);
-
-            if (removeUser == null)
-            {
-                throw new GraException($"Could not find single user with id {removePointsFromUserId}");
-            }
+            var removeUser = await _userRepository.GetByIdAsync(removePointsFromUserId)
+                ?? throw new GraException($"Could not find single user with id {removePointsFromUserId}");
 
             removeUser.PointsEarned -= pointsToRemove;
 

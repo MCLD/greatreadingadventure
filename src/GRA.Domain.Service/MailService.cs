@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
@@ -7,22 +8,23 @@ using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Logging;
+using Stubble.Core.Builders;
 
 namespace GRA.Domain.Service
 {
-    public class MailService : Abstract.BaseUserService<MailService>
+    public class MailService : BaseUserService<MailService>
     {
         private readonly IBroadcastRepository _broadcastRepository;
         private readonly GRA.Abstract.IGraCache _cache;
         private readonly IMailRepository _mailRepository;
         private readonly IUserRepository _userRepository;
 
-        public MailService(ILogger<MailService> logger,
-            GRA.Abstract.IDateTimeProvider dateTimeProvider,
-            IUserContextProvider userContextProvider,
-            IBroadcastRepository broadcastRepository,
+        public MailService(GRA.Abstract.IDateTimeProvider dateTimeProvider,
             GRA.Abstract.IGraCache cache,
+            IBroadcastRepository broadcastRepository,
+            ILogger<MailService> logger,
             IMailRepository mailRepository,
+            IUserContextProvider userContextProvider,
             IUserRepository userRepository) : base(logger, dateTimeProvider, userContextProvider)
         {
             _broadcastRepository = broadcastRepository
@@ -46,9 +48,16 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {authId} doesn't have permission to send broadcasts.");
+                _logger.LogError("User {UserId} doesn't have permission to send broadcasts.",
+                    authId);
                 throw new GraException("Permission denied");
             }
+        }
+
+        public async Task ClearCachedUserMailCountAsync(int userId)
+        {
+            var cacheKey = UnreadMailCacheKey(GetCurrentSiteId(), userId);
+            await _cache.RemoveAsync(cacheKey);
         }
 
         public async Task<Broadcast> EditBroadcastAsync(Broadcast broadcast)
@@ -61,7 +70,7 @@ namespace GRA.Domain.Service
 
                 if (currentBroadcast.SendAt <= _dateTimeProvider.Now)
                 {
-                    throw new GraException($"This Broadcast has already been sent.");
+                    throw new GraException("This Broadcast has already been sent.");
                 }
 
                 broadcast.SiteId = currentBroadcast.SiteId;
@@ -70,7 +79,8 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {authId} doesn't have permission to edit broadcasts.");
+                _logger.LogError("User {UserId} doesn't have permission to edit broadcasts.",
+                    authId);
                 throw new GraException("Permission denied");
             }
         }
@@ -96,7 +106,8 @@ namespace GRA.Domain.Service
             else
             {
                 var userId = GetClaimId(ClaimType.UserId);
-                _logger.LogError($"User {userId} doesn't have permission to get unread mail count.");
+                _logger.LogError("User {UserId} doesn't have permission to get unread mail count.",
+                    userId);
                 throw new GraException("Permission denied.");
             }
         }
@@ -116,7 +127,7 @@ namespace GRA.Domain.Service
             else
             {
                 var userId = GetClaimId(ClaimType.UserId);
-                _logger.LogError($"User {userId} doesn't have permission to get all mails.");
+                _logger.LogError("User {UserId} doesn't have permission to get all mails.", userId);
                 throw new GraException("Permission denied.");
             }
         }
@@ -136,7 +147,8 @@ namespace GRA.Domain.Service
             else
             {
                 var userId = GetClaimId(ClaimType.UserId);
-                _logger.LogError($"User {userId} doesn't have permission to get all unread mails.");
+                _logger.LogError("User {UserId} doesn't have permission to get all unread mails.",
+                    userId);
                 throw new GraException("Permission denied.");
             }
         }
@@ -151,7 +163,8 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {authId} doesn't have permission to view broadcasts.");
+                _logger.LogError("User {UserId} doesn't have permission to view broadcasts.",
+                    authId);
                 throw new GraException("Permission denied");
             }
         }
@@ -160,16 +173,16 @@ namespace GRA.Domain.Service
         {
             var activeUserId = GetActiveUserId();
             bool canReadAll = HasPermission(Permission.ReadAllMail);
-            var mail = await _mailRepository.GetByIdAsync(mailId);
-            if (mail == null)
-            {
-                throw new GraException("The requested mail could not be accessed or does not exist.");
-            }
+            var mail = await _mailRepository.GetByIdAsync(mailId)
+                ?? throw new GraException("The requested mail could not be accessed or does not exist.");
+
             if (mail.FromUserId == activeUserId || mail.ToUserId == activeUserId || canReadAll)
             {
                 return mail;
             }
-            _logger.LogError($"User {activeUserId} doesn't have permission to view details for message {mailId}.");
+            _logger.LogError("User {UserId} doesn't have permission to view details for message {MailId}.",
+                activeUserId,
+                mailId);
             throw new GraException("Permission denied.");
         }
 
@@ -227,7 +240,9 @@ namespace GRA.Domain.Service
             else
             {
                 var requestingUser = GetClaimId(ClaimType.UserId);
-                _logger.LogError($"User {requestingUser} doesn't have permission to view messages for {getMailForUserId}.");
+                _logger.LogError("User {RequestingUserId} doesn't have permission to view messages for {UserId}.",
+                    requestingUser,
+                    getMailForUserId);
                 throw new GraException("Permission denied.");
             }
         }
@@ -275,7 +290,9 @@ namespace GRA.Domain.Service
                 await _cache.RemoveAsync(UnreadMailCacheKey(mail.SiteId, activeUserId));
                 return;
             }
-            _logger.LogError($"User {activeUserId} doesn't have permission mark mail {mailId} as read.");
+            _logger.LogError("User {UserId} doesn't have permission mark mail {MailId} as read.",
+                activeUserId,
+                mailId);
             throw new GraException("Permission denied.");
         }
 
@@ -298,7 +315,8 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {authId} doesn't have permission to mark mail as handled.");
+                _logger.LogError("User {UserId} doesn't have permission to mark mail as handled.",
+                    authId);
                 throw new GraException("Permission denied");
             }
         }
@@ -315,7 +333,9 @@ namespace GRA.Domain.Service
                 }
             }
             var authId = GetClaimId(ClaimType.UserId);
-            _logger.LogError($"User {authId} doesn't have permission mark mail {mailId} as read.");
+            _logger.LogError("User {UserId} doesn't have permission mark mail {MailId} as read.",
+                authId,
+                mailId);
             throw new GraException("Permission denied.");
         }
 
@@ -345,7 +365,9 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {authId} doesn't have permission to send a mail to {mail.ToUserId}.");
+                _logger.LogError("User {CurrentUserId} doesn't have permission to send a mail to {UserId}.",
+                    authId,
+                    mail.ToUserId);
                 throw new GraException("Permission denied");
             }
         }
@@ -376,7 +398,9 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {authId} doesn't have permission to reply to mail {mail.InReplyToId}.");
+                _logger.LogError("User {UserId} doesn't have permission to reply to mail {MailId}.",
+                    authId,
+                    mail.InReplyToId);
                 throw new GraException("Permission denied");
             }
         }
@@ -397,7 +421,8 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {authId} doesn't have permission to view broadcasts.");
+                _logger.LogError("User {UserId} doesn't have permission to view broadcasts.",
+                    authId);
                 throw new GraException("Permission denied");
             }
         }
@@ -410,7 +435,9 @@ namespace GRA.Domain.Service
             var mail = await _mailRepository.GetByIdAsync(mailId);
             if (mail == null)
             {
-                _logger.LogInformation($"User {activeId} tried to remove {mailId} which doesn't exist.");
+                _logger.LogInformation("User {UserId} tried to remove {MailId} which doesn't exist.",
+                    activeId,
+                    mailId);
                 return;
             }
             else
@@ -430,7 +457,9 @@ namespace GRA.Domain.Service
                     return;
                 }
             }
-            _logger.LogError($"User {activeId} doesn't have permission remove mail {mailId}.");
+            _logger.LogError("User {UserId} doesn't have permission remove mail {MailId}.",
+                activeId,
+                mailId);
             throw new GraException("Permission denied.");
         }
 
@@ -444,14 +473,15 @@ namespace GRA.Domain.Service
 
                 if (broadcast.SendAt <= _dateTimeProvider.Now)
                 {
-                    throw new GraException($"This Broadcast has already been sent.");
+                    throw new GraException("This Broadcast has already been sent.");
                 }
 
                 await _broadcastRepository.RemoveSaveAsync(authId, id);
             }
             else
             {
-                _logger.LogError($"User {authId} doesn't have permission to delete broadcasts.");
+                _logger.LogError("User {UserId} doesn't have permission to delete broadcasts.",
+                    authId);
                 throw new GraException("Permission denied");
             }
         }
@@ -474,7 +504,9 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {activeUserId} doesn't have permission to send a mail to {mail.ToUserId}.");
+                _logger.LogError("User {CurrentUserId} doesn't have permission to send a mail to {UserId}.",
+                    activeUserId,
+                    mail.ToUserId);
                 throw new GraException("Permission denied");
             }
         }
@@ -505,7 +537,9 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {activeUserId} doesn't have permission to reply to a mail sent to {mail.ToUserId}.");
+                _logger.LogError("User {CurrentUserId} doesn't have permission to reply to a mail sent to {UserId}.",
+                    activeUserId,
+                    mail.ToUserId);
                 throw new GraException("Permission Denied");
             }
         }
@@ -522,6 +556,12 @@ namespace GRA.Domain.Service
                 mail.SiteId = siteId ?? GetClaimId(ClaimType.SiteId);
 
                 await _cache.RemoveAsync(UnreadMailCacheKey(mail.SiteId, (int)mail.ToUserId));
+
+                if (mail.TemplateDictionary?.Count > 0)
+                {
+                    var stubble = new StubbleBuilder().Build();
+                    mail.Body = await stubble.RenderAsync(mail.Body, mail.TemplateDictionary);
+                }
 
                 return await _mailRepository.AddSaveNoAuditAsync(mail);
             }
@@ -598,19 +638,26 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {authId} doesn't have permission to view messages for {userId}.");
+                _logger.LogError("User {CurrentUserId} doesn't have permission to view messages for {UserId}.",
+                    authId,
+                    userId);
                 throw new GraException("Permission denied.");
             }
         }
 
-        private string UnhandledMailCount(int siteId)
+        private static string UnhandledMailCount(int siteId)
         {
-            return $"s{siteId}.{CacheKey.UnhandledMailCount}";
+            return string.Format(CultureInfo.InvariantCulture,
+                CacheKey.UnhandledMailCount,
+                siteId);
         }
 
-        private string UnreadMailCacheKey(int siteId, int userId)
+        private static string UnreadMailCacheKey(int siteId, int userId)
         {
-            return $"s{siteId}.u{userId}.{CacheKey.UserUnreadMailCount}";
+            return string.Format(CultureInfo.InvariantCulture,
+                CacheKey.UserUnreadMailCount,
+                siteId,
+                userId);
         }
     }
 }

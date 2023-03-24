@@ -13,213 +13,115 @@ namespace GRA.Data
         }
 
         public DbSet<Model.Answer> Answers { get; set; }
-
         public DbSet<Model.Attachment> Attachments { get; set; }
-
         public DbSet<Model.AuditLog> AuditLogs { get; set; }
-
         public DbSet<Model.AuthorizationCode> AuthorizationCodes { get; set; }
-
         public DbSet<Model.AvatarBundleItem> AvatarBundleItems { get; set; }
-
         public DbSet<Model.AvatarBundle> AvatarBundles { get; set; }
-
         public DbSet<Model.AvatarColor> AvatarColors { get; set; }
-
         public DbSet<Model.AvatarElement> AvatarElements { get; set; }
-
         public DbSet<Model.AvatarItem> AvatarItems { get; set; }
-
         public DbSet<Model.AvatarLayer> AvatarLayers { get; set; }
-
         public DbSet<Model.AvatarLayerText> AvatarLayerTexts { get; set; }
-
         public DbSet<Model.Badge> Badges { get; set; }
-
         public DbSet<Model.Book> Books { get; set; }
-
         public DbSet<Model.Branch> Branches { get; set; }
-
         public DbSet<Model.Broadcast> Broadcasts { get; set; }
-
         public DbSet<Model.CarouselItem> CarouselItems { get; set; }
-
         public DbSet<Model.Carousel> Carousels { get; set; }
-
         public DbSet<Model.Category> Categories { get; set; }
-
         public DbSet<Model.ChallengeCategory> ChallengeCategories { get; set; }
-
         public DbSet<Model.ChallengeGroupChallenge> ChallengeGroupChallenges { get; set; }
-
         public DbSet<Model.ChallengeGroup> ChallengeGroups { get; set; }
-
         public DbSet<Model.Challenge> Challenges { get; set; }
-
         public DbSet<Model.ChallengeTask> ChallengeTasks { get; set; }
-
         public DbSet<Model.ChallengeTaskType> ChallengeTaskTypes { get; set; }
-
         public DbSet<Model.DashboardContent> DashboardContents { get; set; }
-
         public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
-
         public DbSet<Model.DirectEmailHistory> DirectEmailHistories { get; set; }
         public DbSet<Model.DirectEmailTemplate> DirectEmailTemplates { get; set; }
         public DbSet<Model.DirectEmailTemplateText> DirectEmailTemplateTexts { get; set; }
         public DbSet<Model.DrawingCriterion> DrawingCriteria { get; set; }
-
         public DbSet<Model.DrawingCriterionProgram> DrawingCriterionPrograms { get; set; }
-
         public DbSet<Model.Drawing> Drawings { get; set; }
-
         public DbSet<Model.EmailBase> EmailBases { get; set; }
         public DbSet<Model.EmailBaseText> EmailBaseTexts { get; set; }
         public DbSet<Model.EmailReminder> EmailReminders { get; set; }
-
         public DbSet<Model.EmailSubscriptionAuditLog> EmailSubscriptionAuditLogs { get; set; }
-
         public DbSet<Model.Event> Events { get; set; }
-
         public DbSet<Model.FeaturedChallengeGroup> FeaturedChallengeGroups { get; set; }
-
         public DbSet<Model.FeaturedChallengeGroupText> FeaturedChallengeGroupTexts { get; set; }
-
         public DbSet<Model.GroupInfo> GroupInfos { get; set; }
-
         public DbSet<Model.GroupType> GroupTypes { get; set; }
-
         public DbSet<Model.Job> Jobs { get; set; }
-
         public DbSet<Model.Language> Languages { get; set; }
-
         public DbSet<Model.Location> Locations { get; set; }
-
         public DbSet<Model.Mail> Mails { get; set; }
-
+        public DbSet<Model.MessageTemplate> MessageTemplates { get; set; }
+        public DbSet<Model.MessageTemplateText> MessageTemplateTexts { get; set; }
         public DbSet<Model.NewsCategory> NewsCateories { get; set; }
-
         public DbSet<Model.NewsPost> NewsPosts { get; set; }
-
         public DbSet<Model.Notification> Notifications { get; set; }
-
         public DbSet<Model.PageHeader> PageHeaders { get; set; }
-
         public DbSet<Model.Page> Pages { get; set; }
-
         public DbSet<Model.Permission> Permissions { get; set; }
-
         public DbSet<Model.PointTranslation> PointTranslations { get; set; }
-
         public DbSet<Model.PrizeWinner> PrizeWinners { get; set; }
-
         public DbSet<Model.Program> Programs { get; set; }
-
         public DbSet<Model.PsAgeGroup> PsAgeGroups { get; set; }
-
         public DbSet<Model.PsBackToBack> PsBackToBack { get; set; }
-
         public DbSet<Model.PsBlackoutDate> PsBlackoutDates { get; set; }
-
         public DbSet<Model.PsBranchSelection> PsBranchSelections { get; set; }
-
         public DbSet<Model.PsExcludeBranch> PsExcludeBranches { get; set; }
-
         public DbSet<Model.PsKitAgeGroup> PsKitAgeGroups { get; set; }
-
         public DbSet<Model.PsKitImage> PsKitImages { get; set; }
-
         public DbSet<Model.PsKit> PsKits { get; set; }
-
         public DbSet<Model.PsPerformerBranch> PsPerformerBranches { get; set; }
-
         public DbSet<Model.PsPerformerImage> PsPerformerImages { get; set; }
-
         public DbSet<Model.PsPerformer> PsPerformers { get; set; }
-
         public DbSet<Model.PsPerformerSchedule> PsPerformerSchedules { get; set; }
-
         public DbSet<Model.PsProgramAgeGroup> PsProgramAgeGroups { get; set; }
-
         public DbSet<Model.PsProgramImage> PsProgramImages { get; set; }
-
         public DbSet<Model.PsProgram> PsPrograms { get; set; }
-
         public DbSet<Model.PsSettings> PsSettings { get; set; }
-
         public DbSet<Model.Questionnaire> Questionnaires { get; set; }
-
         public DbSet<Model.Question> Questions { get; set; }
-
         public DbSet<Model.RecoveryToken> RecoveryTokens { get; set; }
-
         public DbSet<Model.ReportCriterion> ReportCriteria { get; set; }
-
         public DbSet<Model.ReportRequest> ReportRequests { get; set; }
-
         public DbSet<Model.RequiredQuestionnaire> RequiredQuestionnaires { get; set; }
-
         public DbSet<Model.RolePermission> RolePermissions { get; set; }
-
         public DbSet<Model.Role> Roles { get; set; }
-
         public DbSet<Model.SchoolDistrict> SchoolDistricts { get; set; }
-
         public DbSet<Model.School> Schools { get; set; }
-
+        public DbSet<Model.Segment> Segments { get; set; }
+        public DbSet<Model.SegmentText> SegmentTexts { get; set; }
         public DbSet<Model.Site> Sites { get; set; }
-
         public DbSet<Model.SiteSetting> SiteSettings { get; set; }
-
         public DbSet<Model.SocialHeader> SocialHeaders { get; set; }
-
         public DbSet<Model.Social> Socials { get; set; }
-
         public DbSet<Model.SpatialDistanceDetail> SpatialDistanceDetails { get; set; }
-
         public DbSet<Model.SpatialDistanceHeader> SpatialDistanceHeaders { get; set; }
-
         public DbSet<Model.System> Systems { get; set; }
-
         public DbSet<Model.TriggerBadge> TriggerBadges { get; set; }
-
         public DbSet<Model.TriggerChallenge> TriggerChallenges { get; set; }
-
         public DbSet<Model.Trigger> Triggers { get; set; }
-
         public DbSet<Model.UserAnswer> UserAnswers { get; set; }
-
         public DbSet<Model.UserAvatarItem> UserAvatarItems { get; set; }
-
         public DbSet<Model.UserAvatar> UserAvatars { get; set; }
-
         public DbSet<Model.UserBadge> UserBadges { get; set; }
-
         public DbSet<Model.UserBook> UserBooks { get; set; }
-
         public DbSet<Model.UserChallengeTask> UserChallengeTasks { get; set; }
-
         public DbSet<Model.UserFavoriteChallenge> UserFavoriteChallenges { get; set; }
-
         public DbSet<Model.UserFavoriteEvent> UserFavoriteEvents { get; set; }
-
         public DbSet<Model.UserLog> UserLogs { get; set; }
-
         public DbSet<Model.UserQuestionnaire> UserQuestionnaires { get; set; }
-
         public DbSet<Model.UserRole> UserRoles { get; set; }
-
         public DbSet<Model.User> Users { get; set; }
-
         public DbSet<Model.UserTrigger> UserTriggers { get; set; }
-
         public DbSet<Model.VendorCodePackingSlip> VendorCodePackingSlips { get; set; }
-
         public DbSet<Model.VendorCode> VendorCodes { get; set; }
-
         public DbSet<Model.VendorCodeType> VendorCodeTypes { get; set; }
-
-        public DbSet<Model.VendorCodeTypeText> VendorCodeTypeTexts { get; set; }
 
         public async Task<string> GetCurrentMigrationAsync()
         {
@@ -279,6 +181,8 @@ namespace GRA.Data
                 .HasKey(_ => new { _.EmailBaseId, _.LanguageId });
             modelBuilder.Entity<Model.FeaturedChallengeGroupText>()
                 .HasKey(_ => new { _.FeaturedChallengeGroupId, _.LanguageId });
+            modelBuilder.Entity<Model.MessageTemplateText>()
+                .HasKey(_ => new { _.MessageTemplateId, _.LanguageId });
             modelBuilder.Entity<Model.PsBackToBack>()
                 .HasKey(_ => new { _.PsAgeGroupId, _.BranchId });
             modelBuilder.Entity<Model.PsKitAgeGroup>()
@@ -289,6 +193,8 @@ namespace GRA.Data
                 .HasKey(_ => new { _.ProgramId, _.AgeGroupId });
             modelBuilder.Entity<Model.RolePermission>()
                 .HasKey(_ => new { _.RoleId, _.PermissionId });
+            modelBuilder.Entity<Model.SegmentText>()
+                .HasKey(_ => new { _.LanguageId, _.SegmentId });
             modelBuilder.Entity<Model.Social>()
                 .HasKey(_ => new { _.SocialHeaderId, _.LanguageId });
             modelBuilder.Entity<Model.TriggerBadge>()
@@ -317,8 +223,6 @@ namespace GRA.Data
                 .HasKey(_ => new { _.UserId, _.RoleId });
             modelBuilder.Entity<Model.UserTrigger>()
                 .HasKey(_ => new { _.UserId, _.TriggerId });
-            modelBuilder.Entity<Model.VendorCodeTypeText>()
-                .HasKey(_ => new { _.LanguageId, _.VendorCodeTypeId });
 
             // add indexing as needed
             // https://docs.microsoft.com/en-us/ef/core/modeling/indexes

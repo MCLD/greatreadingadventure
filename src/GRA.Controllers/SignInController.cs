@@ -14,27 +14,97 @@ namespace GRA.Controllers
     [UnauthenticatedFilter]
     public class SignInController : Base.UserController
     {
-        private readonly ILogger<SignInController> _logger;
         private readonly AuthenticationService _authenticationService;
+        private readonly ILogger<SignInController> _logger;
+        private readonly MailService _mailService;
         private readonly QuestionnaireService _questionnaireService;
         private readonly UserService _userService;
 
-        public static string Name { get { return "SignIn"; } }
-
-        public SignInController(ILogger<SignInController> logger,
-            ServiceFacade.Controller context,
-            AuthenticationService authenticationService,
+        public SignInController(AuthenticationService authenticationService,
+            ILogger<SignInController> logger,
+            MailService mailService,
             QuestionnaireService questionnaireService,
+            ServiceFacade.Controller context,
             UserService userService)
                 : base(context)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _authenticationService = authenticationService
                 ?? throw new ArgumentNullException(nameof(authenticationService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
             _questionnaireService = questionnaireService
                 ?? throw new ArgumentNullException(nameof(questionnaireService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = _sharedLocalizer[Annotations.Title.SignIn];
+        }
+
+        public static string Name
+        { get { return "SignIn"; } }
+
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(string username)
+        {
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                ModelState.AddModelError("", _sharedLocalizer[ErrorMessages.Field,
+                    _sharedLocalizer[DisplayNames.Username]]);
+            }
+            if (ModelState.IsValid)
+            {
+                string recoveryUrl = Url.Action(nameof(PasswordRecovery),
+                    Name,
+                    null,
+                    HttpContext.Request.Scheme);
+                var result = await _authenticationService
+                    .GenerateTokenAndEmail(username, recoveryUrl);
+
+                if (result.Status == Domain.Service.Models.ServiceResultStatus.Success)
+                {
+                    AlertSuccess = _sharedLocalizer[Annotations.Info.PasswordRecoverySent,
+                        username];
+                }
+                else
+                {
+                    ShowAlertWarning(_sharedLocalizer[Annotations.Validate.UnableToReset,
+                        _sharedLocalizer[result.Message, result.Arguments]]);
+                }
+            }
+            return View();
+        }
+
+        public IActionResult ForgotUsername()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotUsername(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                ModelState.AddModelError("", _sharedLocalizer[ErrorMessages.Field,
+                    _sharedLocalizer[DisplayNames.EmailAddress]]);
+            }
+            if (ModelState.IsValid)
+            {
+                var result = await _authenticationService.EmailAllUsernames(email);
+                if (result.Status == Domain.Service.Models.ServiceResultStatus.Success)
+                {
+                    AlertSuccess = _sharedLocalizer[Annotations.Info.UsernameListSent, email];
+                }
+                else
+                {
+                    ShowAlertWarning(_sharedLocalizer[Annotations.Validate.CouldNotRecover,
+                        _sharedLocalizer[result.Message, result.Arguments]]);
+                }
+            }
+
+            return View();
         }
 
         public async Task<IActionResult> Index(string ReturnUrl = null)
@@ -71,6 +141,8 @@ namespace GRA.Controllers
                             loginAttempt.User.Username,
                             loginAttempt.User.Id);
                         await LoginUserAsync(loginAttempt);
+
+                        _mailService.ClearCachedUserMailCountAsync(loginAttempt.User.Id);
 
                         _logger.LogTrace("Awarding triggers for {Username} ({UserId})",
                             loginAttempt.User.Id,
@@ -199,72 +271,6 @@ namespace GRA.Controllers
                     = _sharedLocalizer[Annotations.Validate.UsernamePasswordMismatch];
             }
             return View(model);
-        }
-
-        public IActionResult ForgotPassword()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> ForgotPassword(string username)
-        {
-            if (string.IsNullOrWhiteSpace(username))
-            {
-                ModelState.AddModelError("", _sharedLocalizer[ErrorMessages.Field,
-                    _sharedLocalizer[DisplayNames.Username]]);
-            }
-            if (ModelState.IsValid)
-            {
-                string recoveryUrl = Url.Action(nameof(PasswordRecovery),
-                    Name,
-                    null,
-                    HttpContext.Request.Scheme);
-                var result = await _authenticationService
-                    .GenerateTokenAndEmail(username, recoveryUrl);
-
-                if (result.Status == Domain.Service.Models.ServiceResultStatus.Success)
-                {
-                    AlertSuccess = _sharedLocalizer[Annotations.Info.PasswordRecoverySent,
-                        username];
-                }
-                else
-                {
-                    ShowAlertWarning(_sharedLocalizer[Annotations.Validate.UnableToReset,
-                        _sharedLocalizer[result.Message, result.Arguments]]);
-                }
-            }
-            return View();
-        }
-
-        public IActionResult ForgotUsername()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> ForgotUsername(string email)
-        {
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                ModelState.AddModelError("", _sharedLocalizer[ErrorMessages.Field,
-                    _sharedLocalizer[DisplayNames.EmailAddress]]);
-            }
-            if (ModelState.IsValid)
-            {
-                var result = await _authenticationService.EmailAllUsernames(email);
-                if (result.Status == Domain.Service.Models.ServiceResultStatus.Success)
-                {
-                    AlertSuccess = _sharedLocalizer[Annotations.Info.UsernameListSent, email];
-                }
-                else
-                {
-                    ShowAlertWarning(_sharedLocalizer[Annotations.Validate.CouldNotRecover,
-                        _sharedLocalizer[result.Message, result.Arguments]]);
-                }
-            }
-
-            return View();
         }
 
         public IActionResult PasswordRecovery(string username, string token)

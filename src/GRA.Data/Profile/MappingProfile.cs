@@ -68,6 +68,8 @@ namespace GRA.Data.Profile
             CreateMap<Model.Language, Domain.Model.Language>();
             CreateMap<Model.Location, Domain.Model.Location>();
             CreateMap<Model.Mail, Domain.Model.Mail>();
+            CreateMap<Model.MessageTemplate, Domain.Model.MessageTemplate>();
+            CreateMap<Model.MessageTemplateText, Domain.Model.MessageTemplateText>();
             CreateMap<Model.NewsCategory, Domain.Model.NewsCategory>()
                 .ForMember(dest => dest.PostCount, opt => opt.MapFrom(src => src.Posts.Count));
             CreateMap<Model.NewsPost, Domain.Model.NewsPost>();
@@ -114,6 +116,8 @@ namespace GRA.Data.Profile
             CreateMap<Model.Role, Domain.Model.Role>();
             CreateMap<Model.School, Domain.Model.School>();
             CreateMap<Model.SchoolDistrict, Domain.Model.SchoolDistrict>();
+            CreateMap<Model.Segment, Domain.Model.Segment>();
+            CreateMap<Model.SegmentText, Domain.Model.SegmentText>();
             CreateMap<Model.Site, Domain.Model.Site>();
             CreateMap<Model.SiteSetting, Domain.Model.SiteSetting>();
             CreateMap<Model.Social, Domain.Model.Social>();
@@ -174,6 +178,8 @@ namespace GRA.Data.Profile
             CreateMap<Domain.Model.Language, Model.Language>();
             CreateMap<Domain.Model.Location, Model.Location>();
             CreateMap<Domain.Model.Mail, Model.Mail>();
+            CreateMap<Domain.Model.MessageTemplate, Model.MessageTemplate>();
+            CreateMap<Domain.Model.MessageTemplateText, Model.MessageTemplateText>();
             CreateMap<Domain.Model.NewsCategory, Model.NewsCategory>();
             CreateMap<Domain.Model.NewsPost, Model.NewsPost>();
             CreateMap<Domain.Model.Notification, Model.Notification>();
@@ -202,6 +208,8 @@ namespace GRA.Data.Profile
             CreateMap<Domain.Model.Role, Model.Role>();
             CreateMap<Domain.Model.School, Model.School>();
             CreateMap<Domain.Model.SchoolDistrict, Model.SchoolDistrict>();
+            CreateMap<Domain.Model.Segment, Model.Segment>();
+            CreateMap<Domain.Model.SegmentText, Model.SegmentText>();
             CreateMap<Domain.Model.Site, Model.Site>();
             CreateMap<Domain.Model.SiteSetting, Model.SiteSetting>();
             CreateMap<Domain.Model.Social, Model.Social>();
