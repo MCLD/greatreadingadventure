@@ -131,7 +131,7 @@ namespace GRA.Domain.Service
 
             var segmentText = await _segmentRepository.GetTextAsync(segmentId, languageId);
 
-            if (!string.IsNullOrEmpty(segmentText?.Text))
+            if (segmentText != null && !string.IsNullOrEmpty(segmentText.Text))
             {
                 await _cache.SaveToCacheAsync(cacheKey, segmentText.Text, CacheSegmentsHours);
             }

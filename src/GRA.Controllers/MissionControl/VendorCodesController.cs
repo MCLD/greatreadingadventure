@@ -706,8 +706,8 @@ namespace GRA.Controllers.MissionControl
                     if (string.IsNullOrEmpty(subject) && string.IsNullOrEmpty(body))
                     {
                         var languageCheck = await _messageTemplateService
-                            .GetLanguageStatusAsync(new int?[] {
-                                                    GetMessageTemplateId(vendorCode, item)
+                            .GetLanguageStatusAsync(new[] {
+                                GetMessageTemplateId(vendorCode, item)
                             });
 
                         if (languageCheck.First().Value.Length == 0)
@@ -725,6 +725,9 @@ namespace GRA.Controllers.MissionControl
                                 case nameof(vendorCode.OptionMessageTemplateId):
                                     vendorCode.OptionMessageTemplateId = null;
                                     break;
+
+                                default:
+                                    throw new GraException("Unable to determine which message template to set.");
                             }
                             await _vendorCodeService.UpdateTypeAsync(vendorCode);
                         }
@@ -838,6 +841,9 @@ namespace GRA.Controllers.MissionControl
                                 case nameof(vendorCode.EmailAwardSegmentId):
                                     vendorCode.EmailAwardSegmentId = null;
                                     break;
+
+                                default:
+                                    throw new GraException("Unable to determine which message to set.");
                             }
                             await _vendorCodeService.UpdateTypeAsync(vendorCode);
                         }
