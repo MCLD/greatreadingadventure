@@ -2,7 +2,11 @@
 {
     public class PrizeFilter : BaseFilter
     {
-        public PrizeFilter(int? page = null) : base(page)
+        public PrizeFilter() : base(null)
+        {
+        }
+
+        public PrizeFilter(int page) : base(page)
         {
         }
 
