@@ -405,7 +405,8 @@ namespace GRA.Controllers.MissionControl
                 var site = await GetCurrentSiteAsync();
                 var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
                 viewModel.BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress);
-                viewModel.UseBadgeMaker = true;
+                viewModel.UseBadgeMaker = await _siteLookupService.GetSiteSettingBoolAsync(site.Id,
+                    SiteSettingKey.Badges.EnableBadgeMaker);
             }
 
             if (id.HasValue)
