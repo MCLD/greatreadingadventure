@@ -1,18 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 
 namespace GRA.Domain.Repository
 {
     public interface IPrizeWinnerRepository : IRepository<PrizeWinner>
     {
-        Task<int> CountByWinningUserId(int siteId, int userId, bool? redeemed);
-
-        Task<int> CountByWinningUserId(int siteId, int userId);
-
-        Task<int> CountByWinningUserId(int siteId, ICollection<int> userIds, bool? redeemed);
-
-        Task<int> CountByWinningUserId(int siteId, ICollection<int> userIds);
+        Task<int> CountByWinnerIdAsync(PrizeFilter filter);
 
         Task<int> GetBranchPrizeRedemptionCountAsync(int branchId, IEnumerable<int> triggerIds);
 
@@ -32,8 +27,6 @@ namespace GRA.Domain.Repository
 
         Task<ICollection<PrizeWinner>> GetVendorCodePrizesAsync(int userId);
 
-        Task<ICollection<PrizeWinner>> PageByWinnerAsync(int siteId, int userId, int skip, int take);
-
-        Task<ICollection<PrizeWinner>> PageByWinnerAsync(int siteId, ICollection<int> userIds, int skip, int take);
+        Task<ICollection<PrizeWinner>> PageByWinnerAsync(PrizeFilter filter);
     }
 }

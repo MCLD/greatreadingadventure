@@ -1572,11 +1572,14 @@ namespace GRA.Controllers
 
             var user = await _userService.GetDetails(id);
 
-            var userIds = await _userService
-                .GetHouseholdUserIdsAsync(user.HouseholdHeadUserId ?? id);
+            var filter = new PrizeFilter(page)
+            {
+                UserIds = (await _userService
+                    .GetHouseholdUserIdsAsync(user.HouseholdHeadUserId ?? id))
+                    .ToList()
+            };
 
-            var filter = new BaseFilter(page);
-            var prizeList = await _prizeWinnerService.PageUserPrizes(userIds.ToList(), filter);
+            var prizeList = await _prizeWinnerService.PageUserPrizes(filter);
 
             var paginateModel = new PaginateViewModel
             {
