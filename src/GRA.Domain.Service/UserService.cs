@@ -785,8 +785,14 @@ namespace GRA.Domain.Service
                     }
                     if (includePrize)
                     {
-                        member.HasUnclaimedPrize = (await _prizeWinnerRepository
-                            .CountByWinningUserId(GetCurrentSiteId(), member.Id, false)) > 0;
+                        var prizeCount = await _prizeWinnerRepository
+                            .CountByWinnerIdAsync(new PrizeFilter
+                            {
+                                SiteId = GetCurrentSiteId(),
+                                UserIds = new[] { member.Id },
+                                IsRedeemed = false
+                            });
+                        member.HasUnclaimedPrize = prizeCount > 0;
                     }
                     if (includeVendorCode)
                     {

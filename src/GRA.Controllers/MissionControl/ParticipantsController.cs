@@ -2167,8 +2167,13 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-                var filter = new BaseFilter(page);
-                var prizeList = await _prizeWinnerService.PageUserPrizes(id, filter);
+                var filter = new PrizeFilter(page)
+                {
+                    UserIds = new[] { id },
+                    IncludeDrawings = true
+                };
+
+                var prizeList = await _prizeWinnerService.PageUserPrizes(filter);
 
                 var paginateModel = new PaginateViewModel
                 {

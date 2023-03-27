@@ -3,7 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
+using GRA.Domain.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -17,32 +19,11 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<int> CountByWinningUserId(int siteId, int userId)
+        public async Task<int> CountByWinnerIdAsync(PrizeFilter filter)
         {
-            return await CountByWinningUserId(siteId, userId, null);
-        }
-
-        public async Task<int> CountByWinningUserId(int siteId, ICollection<int> userIds)
-        {
-            return await CountByWinningUserId(siteId, userIds, null);
-        }
-
-        public async Task<int> CountByWinningUserId(int siteId, int userId, bool? redeemed)
-        {
-            return await CountByWinningUserId(siteId, new[] { userId }, redeemed);
-        }
-
-        public async Task<int> CountByWinningUserId(int siteId, ICollection<int> userIds, bool? redeemed)
-        {
-            var prizeWinners = DbSet
+            return await ApplyFilters(filter)
                 .AsNoTracking()
-                .Where(_ => _.SiteId == siteId && userIds.Contains(_.UserId));
-            if (redeemed.HasValue)
-            {
-                prizeWinners = prizeWinners.Where(_ => _.RedeemedAt.HasValue == redeemed.Value);
-            }
-
-            return await prizeWinners.CountAsync();
+                .CountAsync();
         }
 
         public async Task<int> GetBranchPrizeRedemptionCountAsync(int branchId,
@@ -197,28 +178,41 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task<ICollection<PrizeWinner>> PageByWinnerAsync(int siteId,
-                                                                                    ICollection<int> userIds,
-            int skip,
-            int take)
+        public async Task<ICollection<PrizeWinner>> PageByWinnerAsync(PrizeFilter filter)
         {
-            return await DbSet
+            return await ApplyFilters(filter)
                 .AsNoTracking()
-                .Where(_ => _.SiteId == siteId && userIds.Contains(_.UserId))
                 .OrderBy(_ => _.RedeemedAt.HasValue)
                 .ThenByDescending(_ => _.RedeemedAt.Value)
-                .Skip(skip)
-                .Take(take)
+                .ApplyPagination(filter)
                 .ProjectTo<PrizeWinner>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
-        public async Task<ICollection<PrizeWinner>> PageByWinnerAsync(int siteId,
-            int userId,
-            int skip,
-            int take)
+        private IQueryable<Model.PrizeWinner> ApplyFilters(PrizeFilter filter)
         {
-            return await PageByWinnerAsync(siteId, new[] { userId }, skip, take);
+            var prizeWinners = DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == filter.SiteId);
+
+            if (!filter.IncludeDrawings)
+            {
+                prizeWinners = prizeWinners.Where(_ => _.DrawingId == null);
+            }
+
+            if (filter.IsRedeemed.HasValue)
+            {
+                prizeWinners = prizeWinners
+                    .Where(_ => _.RedeemedAt.HasValue == filter.IsRedeemed.Value);
+            }
+
+            if (filter.UserIds?.Count > 0)
+            {
+                prizeWinners = prizeWinners
+                    .Where(_ => filter.UserIds.Contains(_.UserId));
+            }
+
+            return prizeWinners;
         }
     }
 }

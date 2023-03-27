@@ -96,8 +96,13 @@ namespace GRA.Domain.Service
         public async Task<int> GetUserWinCount(int userId, bool? redeemed = null)
         {
             VerifyManagementPermission();
-            return await _prizeWinnerRepository.CountByWinningUserId(GetCurrentSiteId(), userId,
-                redeemed);
+            return await _prizeWinnerRepository.CountByWinnerIdAsync(new PrizeFilter
+            {
+                SiteId = GetCurrentSiteId(),
+                UserIds = new[] { userId },
+                IncludeDrawings = true,
+                IsRedeemed = redeemed
+            });
         }
 
         public async Task<ICollection<PrizeWinner>> GetVendorCodePrizes(int userId)
@@ -106,16 +111,14 @@ namespace GRA.Domain.Service
         }
 
         public async Task<DataWithCount<ICollection<PrizeWinner>>>
-            PageUserPrizes(ICollection<int> userIds, BaseFilter filter = default(BaseFilter))
+            PageUserPrizes(PrizeFilter filter)
         {
             int siteId = GetCurrentSiteId();
-            if (filter == null)
-            {
-                filter = new BaseFilter();
-            }
+            filter ??= new PrizeFilter();
 
-            var prizes = await _prizeWinnerRepository
-                    .PageByWinnerAsync(siteId, userIds, (int)filter.Skip, (int)filter.Take);
+            filter.SiteId = siteId;
+
+            var prizes = await _prizeWinnerRepository.PageByWinnerAsync(filter);
 
             foreach (var prize in prizes)
             {
@@ -141,7 +144,8 @@ namespace GRA.Domain.Service
 
                     if (trigger.LimitToBranchId.HasValue)
                     {
-                        branch = await _branchRepository.GetByIdAsync(trigger.LimitToBranchId.Value);
+                        branch = await _branchRepository
+                            .GetByIdAsync(trigger.LimitToBranchId.Value);
                     }
 
                     prize.AvailableAtBranch = trigger.LimitToBranchName;
@@ -170,15 +174,8 @@ namespace GRA.Domain.Service
             return new DataWithCount<ICollection<PrizeWinner>>
             {
                 Data = prizes,
-                Count = await _prizeWinnerRepository.CountByWinningUserId(siteId, userIds)
+                Count = await _prizeWinnerRepository.CountByWinnerIdAsync(filter)
             };
-        }
-
-        public async Task<DataWithCount<ICollection<PrizeWinner>>> PageUserPrizes(int userId, BaseFilter filter)
-        {
-            VerifyManagementPermission();
-
-            return await PageUserPrizes(new[] { userId }, filter);
         }
 
         public async Task RedeemPrizeAsync(int prizeWinnerId, string staffNotes)
