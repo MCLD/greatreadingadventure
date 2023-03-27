@@ -561,9 +561,12 @@
 
         <div class="col-xs-12 col-sm-8 col-md-9">
             <ul class="nav nav-tabs gra-nav-tabs" role="tablist">
-                <li role="presentation" class=@(Model.UseBadgeMaker ? "active" : "" )>
-                    <a id="badgeTab" href="#badge" aria-controls="badge" role="tab" data-toggle="tab">Badge Maker</a>
-                </li>
+                @if (Model.UseBadgeMaker)
+                {
+                    <li role="presentation" class=@(Model.UseBadgeMaker ? "active" : "" )>
+                        <a id="badgeTab" href="#badge" aria-controls="badge" role="tab" data-toggle="tab">Badge Maker</a>
+                    </li>
+                }
                 <li role="presentation" class=@(Model.UseBadgeMaker ? "" : "active" )>
                     <a id="uploadTab" href="#upload" aria-controls="upload" role="tab" data-toggle="tab">Upload an Image</a>
                 </li>

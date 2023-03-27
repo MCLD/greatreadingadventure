@@ -59,7 +59,8 @@ namespace GRA.Controllers.MissionControl
             {
                 Action = nameof(Create),
                 BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress),
-                UseBadgeMaker = true,
+                UseBadgeMaker = await _siteLookupService.GetSiteSettingBoolAsync(site.Id,
+                    SiteSettingKey.Badges.EnableBadgeMaker),
                 DailyLiteracyTipList = new SelectList(dailyLiteracyTipList, "Id", "Name"),
                 PointTranslationList = new SelectList(pointTranslationList, "Id", "TranslationName")
             };
@@ -243,7 +244,8 @@ namespace GRA.Controllers.MissionControl
                     SchoolValues = Convert.ToInt32(program.AskSchool)
                         + Convert.ToInt32(program.SchoolRequired),
                     BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress),
-                    UseBadgeMaker = true,
+                    UseBadgeMaker = await _siteLookupService.GetSiteSettingBoolAsync(site.Id,
+                        SiteSettingKey.Badges.EnableBadgeMaker),
                     DailyLiteracyTipList = new SelectList(dailyLiteracyTipList, "Id", "Name"),
                     PointTranslationList = new SelectList(pointTranslationList, "Id",
                         "TranslationName")

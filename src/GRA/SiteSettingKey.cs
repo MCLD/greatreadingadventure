@@ -1,13 +1,15 @@
-﻿namespace GRA
+﻿using System;
+
+namespace GRA
 {
-    public struct SiteSettingKey : System.IEquatable<SiteSettingKey>
+    public struct SiteSettingKey : IEquatable<SiteSettingKey>
     {
         public bool Equals(SiteSettingKey other)
         {
             return true;
         }
 
-        public struct Avatars : System.IEquatable<Avatars>
+        public readonly struct Avatars : IEquatable<Avatars>
         {
             public static readonly string DisableSharing = "Avatars.DisableSharing";
 
@@ -17,8 +19,9 @@
             }
         }
 
-        public struct Badges : System.IEquatable<Badges>
+        public readonly struct Badges : IEquatable<Badges>
         {
+            public static readonly string EnableBadgeMaker = "Badges.EnableMaker";
             public static readonly string MaxDimension = "Badges.MaxDimension";
             public static readonly string MaxFileSize = "Badges.MaxFileSize";
 
@@ -28,7 +31,7 @@
             }
         }
 
-        public struct Challenges : System.IEquatable<Challenges>
+        public readonly struct Challenges : IEquatable<Challenges>
         {
             public static readonly string HideUntilRegistrationOpen
                 = "Challenges.HideUntilRegistrationOpen";
@@ -42,7 +45,7 @@
             }
         }
 
-        public struct Events : System.IEquatable<Events>
+        public readonly struct Events : IEquatable<Events>
         {
             public static readonly string CommunityExperienceDescription
                 = "Events.CommunityExperienceDescription";
@@ -65,7 +68,7 @@
             }
         }
 
-        public struct Mail : System.IEquatable<Mail>
+        public readonly struct Mail : IEquatable<Mail>
         {
             public static readonly string Disable = "Mail.Enabled";
 
@@ -75,7 +78,7 @@
             }
         }
 
-        public struct Points : System.IEquatable<Points>
+        public readonly struct Points : IEquatable<Points>
         {
             public static readonly string MaximumPermitted = "Points.MaximumPermitted";
 
@@ -85,17 +88,7 @@
             }
         }
 
-        public struct Site : System.IEquatable<Site>
-        {
-            public static readonly string ReadingGoalInMinutes = "Site.ReadingGoalInMinutes";
-
-            public bool Equals(Site other)
-            {
-                return true;
-            }
-        }
-
-        public struct SecretCode : System.IEquatable<SecretCode>
+        public readonly struct SecretCode : IEquatable<SecretCode>
         {
             // TODO make this truly disable secret codes for the site
             public static readonly string Disable = "SecretCode.Disable";
@@ -106,7 +99,17 @@
             }
         }
 
-        public struct Triggers : System.IEquatable<Triggers>
+        public readonly struct Site : IEquatable<Site>
+        {
+            public static readonly string ReadingGoalInMinutes = "Site.ReadingGoalInMinutes";
+
+            public bool Equals(Site other)
+            {
+                return true;
+            }
+        }
+
+        public readonly struct Triggers : IEquatable<Triggers>
         {
             public static readonly string MaxPointsPerTrigger = "Triggers.MaxPointsPerTrigger";
 
@@ -116,7 +119,7 @@
             }
         }
 
-        public struct Users : System.IEquatable<Users>
+        public readonly struct Users : IEquatable<Users>
         {
             public static readonly string AskEmailSubPermission = "Users.AskEmailSubPermission";
 
@@ -156,7 +159,7 @@
             }
         }
 
-        public struct VendorCodes : System.IEquatable<VendorCodes>
+        public readonly struct VendorCodes : IEquatable<VendorCodes>
         {
             public static readonly string ShowPackingSlip = "VendorCodes.ShowPackingSlip";
 
@@ -166,7 +169,7 @@
             }
         }
 
-        public struct Web : System.IEquatable<Web>
+        public readonly struct Web : IEquatable<Web>
         {
             public static readonly string CacheSiteCustomizationsMinutes
                 = "Web.CacheSiteCustomizationsMinutes";

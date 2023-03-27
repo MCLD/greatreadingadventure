@@ -29,6 +29,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Ability to view history of changes submitted by another user from MC
 - Internationalization for Vendor Code communications
 - Prize view for participants (excluding drawing prizes)
+- System setting to disable badge maker
 
 ### Fixed
 

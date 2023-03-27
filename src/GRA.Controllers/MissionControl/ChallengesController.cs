@@ -68,7 +68,8 @@ namespace GRA.Controllers.MissionControl
             var viewModel = new ChallengesDetailViewModel
             {
                 BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress),
-                UseBadgeMaker = true,
+                UseBadgeMaker = await _siteLookupService.GetSiteSettingBoolAsync(site.Id,
+                    SiteSettingKey.Badges.EnableBadgeMaker),
                 IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
                 MaxPointLimit = await _challengeService.GetMaximumAllowedPointsAsync(site.Id)
             };
@@ -292,7 +293,8 @@ namespace GRA.Controllers.MissionControl
                 Groups = await _challengeService.GetGroupsByChallengeId(challenge.Id),
                 RelatedEvents = await _eventService.GetByChallengeIdAsync(challenge.Id),
                 BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress),
-                UseBadgeMaker = true,
+                UseBadgeMaker = await _siteLookupService.GetSiteSettingBoolAsync(site.Id,
+                    SiteSettingKey.Badges.EnableBadgeMaker),
                 IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
                 MaxPointLimit = await _challengeService.GetMaximumAllowedPointsAsync(site.Id)
             };

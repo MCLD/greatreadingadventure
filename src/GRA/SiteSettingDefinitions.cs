@@ -200,6 +200,14 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Web).Name,
                     Format = SiteSettingFormat.Integer
                 },
+                [SiteSettingKey.Badges.EnableBadgeMaker] =
+                new SiteSettingDefinition
+                {
+                    Name = "Enable badgemaker",
+                    Info = "Enable the openbadges.me badge maker",
+                    Category = typeof(SiteSettingKey.Badges).Name,
+                    Format = SiteSettingFormat.Boolean
+                },
                 [SiteSettingKey.Badges.MaxFileSize] =
                 new SiteSettingDefinition
                 {
