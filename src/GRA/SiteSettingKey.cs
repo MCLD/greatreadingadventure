@@ -101,6 +101,7 @@ namespace GRA
 
         public readonly struct Site : IEquatable<Site>
         {
+            public static readonly string BackgroundColor = "Site.BackgroundColor";
             public static readonly string ReadingGoalInMinutes = "Site.ReadingGoalInMinutes";
 
             public bool Equals(Site other)

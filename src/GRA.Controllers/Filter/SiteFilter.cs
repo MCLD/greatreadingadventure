@@ -141,6 +141,15 @@ namespace GRA.Controllers.Filter
                 }
             }
 
+            var backgroundColor = site.Settings
+                .FirstOrDefault(_ => _.Key == SiteSettingKey.Site.BackgroundColor)?
+                .Value;
+
+            if (backgroundColor?.StartsWith('#') == true
+                && backgroundColor?.EndsWith(';') == true)
+            {
+                context.HttpContext.Items[ItemKey.BackgroundColor] = backgroundColor.Trim();
+            }
             context.HttpContext.Items[ItemKey.GoogleAnalytics] = site.GoogleAnalyticsTrackingId;
             context.HttpContext.Items[ItemKey.RouteId] = context.RouteData.Values["id"];
             context.HttpContext.Items[ItemKey.SiteName] = site?.Name

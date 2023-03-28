@@ -30,6 +30,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Internationalization for Vendor Code communications
 - Prize view for participants (excluding drawing prizes)
 - System setting to disable badge maker
+- System setting to configure background color
 
 ### Fixed
 

@@ -41,6 +41,14 @@
             }
         </style>
     </noscript>
+    @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.BackgroundColor))
+    {
+        <style>
+            body {
+                background-color: @Context.Items[GRA.Controllers.ItemKey.BackgroundColor]
+            }
+        </style>
+    }
     @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.SiteCss))
     {
         <link rel="stylesheet" href="@Url.Content(Context.Items[GRA.Controllers.ItemKey.SiteCss].ToString())" />
@@ -50,7 +58,7 @@
         <script async src="https://www.googletagmanager.com/gtag/js?id=@Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics].ToString()"></script>
         <script>
             window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
+            function gtag() { dataLayer.push(arguments); }
             gtag('js', new Date());
 
             gtag('config', '@Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics].ToString()', {
@@ -60,14 +68,17 @@
                 }
             });
 
-            @if(Context.Items[GRA.Controllers.ItemKey.SignedIn] != null) {
+            @if (Context.Items[GRA.Controllers.ItemKey.SignedIn] != null)
+            {
                 @:gtag('event', 'login');
             }
         </script>
     }
 </head>
 <body>
-    @{SiteStage siteStage = (SiteStage)(Context.Items[GRA.Controllers.ItemKey.SiteStage] ?? SiteStage.ProgramOpen); }
+    @{
+        SiteStage siteStage = (SiteStage)(Context.Items[GRA.Controllers.ItemKey.SiteStage] ?? SiteStage.ProgramOpen);
+    }
     <div class="navbar gra-navbar navbar-static-top">
         <div class="container">
             <div class="navbar-header">
@@ -109,19 +120,23 @@
                     {
                         <li ActiveBy routeKey="Controller" value="Home"><a asp-controller="Home" asp-action="Index" title="Home"><span class="fas fa-home"></span><span class="visible-xs-inline"> @SharedLocalizer[GRA.Domain.Model.DisplayNames.Home]</span></a></li>
                         @if (User.Identity.IsAuthenticated && Context.Items.ContainsKey(ItemKey.ShowMail) && Context.Items[ItemKey.ShowMail] as bool? == true)
-                                {
+                        {
                             <li ActiveBy routeKey="Controller" value="Mail" title="Mail">
                                 <a asp-controller="Mail" asp-action="Index">
                                     @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.UnreadCount) && (int)Context.Items[GRA.Controllers.ItemKey.UnreadCount] > 0)
                                     {
-                                        <span class="fas fa-envelope text-danger" title="@SharedLocalizer[GRA.Annotations.Interface.NewMail]"></span><span class="visible-xs-inline"> @SharedLocalizer[GRA.Domain.Model.DisplayNames.Mail]</span>
+                                        <span class="fas fa-envelope text-danger" title="@SharedLocalizer[GRA.Annotations.Interface.NewMail]"></span>
+
+                                        <span class="visible-xs-inline"> @SharedLocalizer[GRA.Domain.Model.DisplayNames.Mail]</span>
                                         <span class="label label-default label-as-badge" style="background-color: #a94442;">
                                             @Context.Items[GRA.Controllers.ItemKey.UnreadCount]
                                         </span>
                                     }
                                     else
                                     {
-                                        <span class="far fa-envelope"></span><span class="visible-xs-inline"> @SharedLocalizer[GRA.Domain.Model.DisplayNames.Mail]</span>
+                                        <span class="far fa-envelope"></span>
+
+                                        <span class="visible-xs-inline"> @SharedLocalizer[GRA.Domain.Model.DisplayNames.Mail]</span>
                                     }
                                 </a>
                             </li>
@@ -152,7 +167,9 @@
                             <li ActiveBy routeKey="Controller" value="Profile">
                                 @if (Context.Session.Keys.Contains(GRA.Controllers.SessionKey.HeadOfHousehold))
                                 {
-                                    <a asp-controller="Profile" asp-action="Household" style="display:inline-block;padding-left:8px;padding-right:8px;"><span class="fas fa-users"></span></a><a asp-controller="Profile" asp-action="Index" style="display:inline-block;padding-left:8px;">@SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProfile]</a>
+                                    <a asp-controller="Profile" asp-action="Household" style="display:inline-block;padding-left:8px;padding-right:8px;"><span class="fas fa-users"></span></a>
+
+                                    <a asp-controller="Profile" asp-action="Index" style="display:inline-block;padding-left:8px;">@SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProfile]</a>
                                 }
                                 else
                                 {
@@ -234,13 +251,13 @@
     <script src="/js/main.min.js"></script>
     @RenderSection("scripts", required: false)
     <script>
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
-        })
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip()
+            })
         @if (Context.Items[GRA.Controllers.ItemKey.NotificationsModal] != null)
         {
-            @: $('#notificationsModal').modal('show');
-                                        }
+            @:$('#notificationsModal').modal('show');
+        }
     </script>
     @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.SiteJs))
     {
