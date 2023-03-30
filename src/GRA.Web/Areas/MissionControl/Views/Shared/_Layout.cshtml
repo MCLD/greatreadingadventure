@@ -162,6 +162,7 @@
                             {
                                 <li><a asp-controller="Dashboard" asp-action="Index">Dashboard Content management</a></li>
                             }
+                            <li><a asp-controller="@DownloadsController.Name" asp-action="@nameof(DownloadsController.Index)">Downloads</a></li>
                             @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageBulkEmails.ToString()))
                             {
                                 <li><a asp-controller="EmailManagement" asp-action="Index">Email management</a></li>

@@ -31,6 +31,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Prize view for participants (excluding drawing prizes)
 - System setting to disable badge maker
 - System setting to configure background color
+- Downloadable ZIP files of badge images for each system from Mission Control
 
 ### Fixed
 

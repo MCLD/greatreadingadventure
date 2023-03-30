@@ -31,61 +31,13 @@ namespace GRA.Data.Repository
             }
         }
 
-        public async Task<int> GetCountForUserAsync(int userId)
+        public async Task<string> GetBadgeFileNameAsync(int badgeId)
         {
-            return await _context.UserBadges
+            return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.UserId == userId)
-                .CountAsync();
-        }
-
-        public async Task<IEnumerable<Badge>> PageForUserAsync(int userId, int skip, int take)
-        {
-            return await _context.UserBadges
-                .AsNoTracking()
-                .Where(_ => _.UserId == userId)
-                .OrderByDescending(_ => _.CreatedAt)
-                .Skip(skip)
-                .Take(take)
-                .Select(_ => _.Badge)
-                .ProjectTo<Badge>(_mapper.ConfigurationProvider)
-                .ToListAsync();
-        }
-
-        public async Task<bool> UserHasBadge(int userId, int badgeId)
-        {
-            return null != await _context.UserBadges
-                .Where(_ => _.UserId == userId && _.BadgeId == badgeId)
+                .Where(_ => _.Id == badgeId)
+                .Select(_ => _.Filename)
                 .SingleOrDefaultAsync();
-        }
-
-        public async Task<bool> UserHasJoinBadgeAsync(int userId)
-        {
-            var joinBadges = _context.Programs.AsNoTracking()
-                .Where(_ => _.JoinBadgeId.HasValue)
-                .Join(_context.Users.Where(_ => _.Id == userId),
-                    program => program.SiteId,
-                    u => u.SiteId,
-                    (program, _) => program)
-                .Select(_ => _.JoinBadgeId.Value);
-
-            return await _context.UserBadges
-                .AsNoTracking()
-                .Where(_ => _.UserId == userId && joinBadges.Contains(_.BadgeId))
-                .AnyAsync();
-        }
-
-        public async Task RemoveUserBadgeAsync(int userId, int badgeId)
-        {
-            var userBadge = await _context.UserBadges
-                .Where(_ => _.UserId == userId && _.BadgeId == badgeId)
-                .SingleOrDefaultAsync();
-
-            if (userBadge != null)
-            {
-                _context.UserBadges.Remove(userBadge);
-                await _context.SaveChangesAsync();
-            }
         }
 
         public async Task<string> GetBadgeNameAsync(int badgeId)
@@ -132,13 +84,81 @@ namespace GRA.Data.Repository
             return $"Badge id {badgeId}";
         }
 
-        public async Task<string> GetBadgeFileNameAsync(int badgeId)
+        public async Task<int> GetCountBySystemAsync(int systemId)
         {
-            return await DbSet
+            return await _context.Users.Where(_ => _.SystemId == systemId)
+                .Join(_context.Badges,
+                    u => u.Id,
+                    b => b.CreatedBy,
+                    (_, b) => b.Id)
+                .CountAsync();
+        }
+
+        public async Task<int> GetCountForUserAsync(int userId)
+        {
+            return await _context.UserBadges
                 .AsNoTracking()
-                .Where(_ => _.Id == badgeId)
-                .Select(_ => _.Filename)
+                .Where(_ => _.UserId == userId)
+                .CountAsync();
+        }
+
+        public async Task<IEnumerable<string>> GetFilesBySystemAsync(int systemId)
+        {
+            return await _context.Users.Where(_ => _.SystemId == systemId)
+                .Join(_context.Badges,
+                    u => u.Id,
+                    b => b.CreatedBy,
+                    (_, b) => b.Filename)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Badge>> PageForUserAsync(int userId, int skip, int take)
+        {
+            return await _context.UserBadges
+                .AsNoTracking()
+                .Where(_ => _.UserId == userId)
+                .OrderByDescending(_ => _.CreatedAt)
+                .Skip(skip)
+                .Take(take)
+                .Select(_ => _.Badge)
+                .ProjectTo<Badge>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
+        public async Task RemoveUserBadgeAsync(int userId, int badgeId)
+        {
+            var userBadge = await _context.UserBadges
+                .Where(_ => _.UserId == userId && _.BadgeId == badgeId)
                 .SingleOrDefaultAsync();
+
+            if (userBadge != null)
+            {
+                _context.UserBadges.Remove(userBadge);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<bool> UserHasBadge(int userId, int badgeId)
+        {
+            return null != await _context.UserBadges
+                .Where(_ => _.UserId == userId && _.BadgeId == badgeId)
+                .SingleOrDefaultAsync();
+        }
+
+        public async Task<bool> UserHasJoinBadgeAsync(int userId)
+        {
+            var joinBadges = _context.Programs.AsNoTracking()
+                .Where(_ => _.JoinBadgeId.HasValue)
+                .Join(_context.Users.Where(_ => _.Id == userId),
+                    program => program.SiteId,
+                    u => u.SiteId,
+                    (program, _) => program)
+                .Select(_ => _.JoinBadgeId.Value);
+
+            return await _context.UserBadges
+                .AsNoTracking()
+                .Where(_ => _.UserId == userId && joinBadges.Contains(_.BadgeId))
+                .AnyAsync();
         }
     }
 }
