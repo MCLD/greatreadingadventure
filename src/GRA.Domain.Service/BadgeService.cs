@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -58,8 +59,18 @@ namespace GRA.Domain.Service
             return await _badgeRepository.GetByIdAsync(badgeId);
         }
 
+        public async Task<int> GetCountBySystemAsync(int systemId)
+        {
+            return await _badgeRepository.GetCountBySystemAsync(systemId);
+        }
+
+        public async Task<IEnumerable<string>> GetFilesBySystemAsync(int systemId)
+        {
+            return await _badgeRepository.GetFilesBySystemAsync(systemId);
+        }
+
         public async Task<Badge> ReplaceBadgeFileAsync(Badge badge,
-            byte[] imageFile,
+                            byte[] imageFile,
             string uploadFilename)
         {
             var existingBadge = await _badgeRepository.GetByIdAsync(badge.Id);
@@ -135,9 +146,6 @@ namespace GRA.Domain.Service
             return $"site{GetCurrentSiteId()}/{BadgePath}/{filename}";
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization",
-            "CA1308:Normalize strings to uppercase",
-            Justification = "Filename extension is ok to be lowercase")]
         private async Task<string> WriteBadgeFileAsync(Badge badge,
             byte[] imageFile,
             ImageType? imageType)
