@@ -9,32 +9,42 @@ using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service
 {
-    public class AttachmentService : Abstract.BaseUserService<AttachmentService>
+    public class AttachmentService : BaseUserService<AttachmentService>
     {
+        public static readonly string Certificates = "certificates";
         private const string AttachmentPath = "attachments";
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly IPathResolver _pathResolver;
 
-        public AttachmentService(ILogger<AttachmentService> logger,
-            GRA.Abstract.IDateTimeProvider dateTimeProvider,
-            IUserContextProvider userContextProvider,
-            IAttachmentRepository attachmentRepository,
-            IPathResolver pathResolver)
+        public AttachmentService(IAttachmentRepository attachmentRepository,
+            IDateTimeProvider dateTimeProvider,
+            ILogger<AttachmentService> logger,
+            IPathResolver pathResolver,
+            IUserContextProvider userContextProvider)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.TriggerAttachments);
+            ArgumentNullException.ThrowIfNull(attachmentRepository);
+            ArgumentNullException.ThrowIfNull(pathResolver);
             _attachmentRepository = attachmentRepository;
-            _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
+            _pathResolver = pathResolver;
         }
 
-        public async Task<Attachment> AddAttachmentAsync(Attachment attachment, byte[] file)
+        public async Task<Attachment> AddAttachmentAsync(Attachment attachment,
+            string attachmentType,
+            byte[] file)
         {
             VerifyManagementPermission();
+
+            if (attachmentType != Certificates)
+            {
+                throw new GraException($"Unknown attachment type: {attachmentType}");
+            }
 
             attachment.SiteId = GetCurrentSiteId();
             attachment.IsCertificate = true;
             var result = await _attachmentRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), attachment);
-            result.FileName = await WriteAttachmentFile(result, file);
+            result.FileName = await WriteAttachmentFile(result, attachmentType, file);
 
             return await _attachmentRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), result);
         }
@@ -45,9 +55,15 @@ namespace GRA.Domain.Service
         }
 
         public async Task<Attachment> ReplaceAttachmentFileAsync(Attachment attachment,
-                    byte[] file)
+            string attachmentType,
+            byte[] file)
         {
             VerifyManagementPermission();
+
+            if (attachmentType != Certificates)
+            {
+                throw new GraException($"Unknown attachment type: {attachmentType}");
+            }
 
             var existingAttachment = await _attachmentRepository.GetByIdAsync(attachment.Id);
 
@@ -58,36 +74,62 @@ namespace GRA.Domain.Service
                     File.Delete(existingAttachment.FileName);
                 }
 
-                attachment.FileName = await WriteAttachmentFile(existingAttachment, file);
+                attachment.FileName = await WriteAttachmentFile(existingAttachment,
+                    attachmentType,
+                    file);
             }
 
-            return await _attachmentRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), attachment);
+            return await _attachmentRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
+                attachment);
         }
 
-        private string GetFilePath(string filename)
+        private string GetFilePath(string filename, string attachmentType)
         {
+            if (attachmentType != Certificates)
+            {
+                throw new GraException($"Unknown attachment type: {attachmentType}");
+            }
+
             string contentDir = _pathResolver.ResolveContentFilePath();
-            contentDir = System.IO.Path.Combine(contentDir,
+            contentDir = Path.Combine(contentDir,
                     $"site{GetCurrentSiteId()}",
-                    AttachmentPath);
+                    AttachmentPath,
+                    Certificates);
 
             if (!Directory.Exists(contentDir))
             {
                 Directory.CreateDirectory(contentDir);
             }
+
             return Path.Combine(contentDir, filename);
         }
 
-        private string GetUrlPath(string filename)
+        private string GetLinkPath(string filename, string attachmentType)
         {
-            return $"site{GetCurrentSiteId()}/{Path.Combine(AttachmentPath, "certificates")}/{filename}";
+            if (attachmentType != Certificates)
+            {
+                throw new GraException($"Unknown attachment type: {attachmentType}");
+            }
+
+            return string.Join("/", new[]
+            {
+                $"site{GetCurrentSiteId()}",
+                AttachmentPath,
+                Certificates,
+                filename
+            });
         }
 
         private async Task<string> WriteAttachmentFile(Attachment attachment,
+            string attachmentType,
             byte[] file)
         {
+            if (attachmentType != Certificates)
+            {
+                throw new GraException($"Unknown attachment type: {attachmentType}");
+            }
             string filename = $"certificate{attachment.Id}.pdf";
-            string fullFilePath = GetFilePath(filename);
+            string fullFilePath = GetFilePath(filename, attachmentType);
 
             try
             {
@@ -103,7 +145,7 @@ namespace GRA.Domain.Service
                 throw new GraException("Unknown image type, please upload a PDF document.",
                     ex);
             }
-            return GetUrlPath(filename);
+            return GetLinkPath(filename, attachmentType);
         }
     }
 }

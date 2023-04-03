@@ -64,12 +64,12 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Create()
         {
             var site = await GetCurrentSiteAsync();
-            var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
+            var siteUrl = await _siteLookupService.GetSiteLinkAsync(site.Id);
             var viewModel = new TriggersDetailViewModel
             {
                 Action = "Create",
                 IsSecretCode = true,
-                BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress),
+                BadgeMakerUrl = GetBadgeMakerUrl(siteUrl.AbsoluteUri, site.FromEmailAddress),
                 UseBadgeMaker = await _siteLookupService.GetSiteSettingBoolAsync(site.Id,
                     SiteSettingKey.Badges.EnableBadgeMaker),
                 EditAvatarBundle = UserHasPermission(Permission.ManageAvatars),
@@ -80,7 +80,7 @@ namespace GRA.Controllers.MissionControl
                 BranchList = new SelectList(await _siteService.GetAllBranches(), "Id", "Name"),
                 ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
                 IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
-                MaxPointLimit = await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId())
+                MaxPointLimit = await _triggerService.GetMaximumAllowedPointsAsync(site.Id)
             };
             if (viewModel.MaxPointLimit.HasValue)
             {
@@ -276,11 +276,9 @@ namespace GRA.Controllers.MissionControl
                         {
                             if (badgeBytes == null)
                             {
-                                using (var ms = new MemoryStream())
-                                {
-                                    await model.BadgeUploadImage.CopyToAsync(ms);
-                                    badgeBytes = ms.ToArray();
-                                }
+                                using var ms = new MemoryStream();
+                                await model.BadgeUploadImage.CopyToAsync(ms);
+                                badgeBytes = ms.ToArray();
                             }
                             filename = Path.GetFileName(model.BadgeUploadImage.FileName);
                         }
@@ -307,7 +305,9 @@ namespace GRA.Controllers.MissionControl
                         {
                             FileName = fileName
                         };
-                        var attachment = await _attachmentService.AddAttachmentAsync(newAttachment, attachmentBytes);
+                        var attachment = await _attachmentService.AddAttachmentAsync(newAttachment,
+                            AttachmentService.Certificates,
+                            attachmentBytes);
                         model.Trigger.AwardAttachmentId = attachment.Id;
                     }
                     var trigger = await _triggerService.AddAsync(model.Trigger);
@@ -411,7 +411,7 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction("Index");
             }
             var site = await GetCurrentSiteAsync();
-            var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
+            var siteUrl = await _siteLookupService.GetSiteLinkAsync(site.Id);
             var badge = await _badgeService.GetByIdAsync(trigger.AwardBadgeId);
             Attachment attachment = null;
             if (trigger.AwardAttachmentId != null)
@@ -426,7 +426,7 @@ namespace GRA.Controllers.MissionControl
                 CanViewParticipants = UserHasPermission(Permission.ViewParticipantDetails),
                 Action = "Edit",
                 IsSecretCode = !string.IsNullOrWhiteSpace(trigger.SecretCode),
-                BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress),
+                BadgeMakerUrl = GetBadgeMakerUrl(siteUrl.AbsoluteUri, site.FromEmailAddress),
                 UseBadgeMaker = await _siteLookupService.GetSiteSettingBoolAsync(site.Id,
                     SiteSettingKey.Badges.EnableBadgeMaker),
                 EditAvatarBundle = UserHasPermission(Permission.ManageAvatars),
@@ -444,7 +444,7 @@ namespace GRA.Controllers.MissionControl
                 ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
                 IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
                 MaxPointLimit =
-                    await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId()),
+                    await _triggerService.GetMaximumAllowedPointsAsync(site.Id),
                 BadgeAltText = badge.AltText
             };
             if (viewModel?.MaxPointLimit != null)
@@ -677,15 +677,13 @@ namespace GRA.Controllers.MissionControl
                         {
                             if (badgeBytes == null)
                             {
-                                using (var ms = new MemoryStream())
-                                {
-                                    await model.BadgeUploadImage.CopyToAsync(ms);
-                                    badgeBytes = ms.ToArray();
-                                }
+                                using var ms = new MemoryStream();
+                                await model.BadgeUploadImage.CopyToAsync(ms);
+                                badgeBytes = ms.ToArray();
                             }
                             fileName = Path.GetFileName(model.BadgeUploadImage.FileName);
                         }
-                        if (model.Trigger.AwardBadgeId == null)
+                        if (model.Trigger.AwardBadgeId == default)
                         {
                             var newBadge = new Badge
                             {
@@ -730,7 +728,9 @@ namespace GRA.Controllers.MissionControl
                             var existingAttachment = await _attachmentService
                             .GetByIdAsync(model.Trigger.AwardAttachmentId.Value);
 
-                            await _attachmentService.ReplaceAttachmentFileAsync(existingAttachment, attachmentBytes);
+                            await _attachmentService.ReplaceAttachmentFileAsync(existingAttachment,
+                                AttachmentService.Certificates,
+                                attachmentBytes);
                         }
                         else
                         {
@@ -739,7 +739,9 @@ namespace GRA.Controllers.MissionControl
                                 FileName = Path.GetFileName(model.AttachmentUploadFile.FileName)
                             };
 
-                            attachment = await _attachmentService.AddAttachmentAsync(attachment, attachmentBytes);
+                            attachment = await _attachmentService.AddAttachmentAsync(attachment,
+                                AttachmentService.Certificates,
+                                attachmentBytes);
                             model.Trigger.AwardAttachmentId = attachment.Id;
                         }
                     }

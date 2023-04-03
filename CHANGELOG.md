@@ -32,6 +32,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - System setting to disable badge maker
 - System setting to configure background color
 - Downloadable ZIP files of badge images for each system from Mission Control
+- Ability to attach a certificate (uploaded PDF) to a trigger
 
 ### Fixed
 
