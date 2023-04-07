@@ -613,7 +613,6 @@
                 <div id="collapseAttachment" class="panel-collapse collapse @(Model.AwardsAttachment ? "in" : "")" role="tabpanel" aria-labelledby="headingAttachment">                   
                     <div class="panel-body">
                         <div class="row row-spacing">
-                            @if (Model.EditAttachment) {
                             <div class="col-xs-12">
                                 <p>@(Model.Action == "Edit" ? "Replace the" : "Upload an") attachment.</p>
                                 <div class="input-group">
@@ -629,7 +628,6 @@
                                 </div>
                                 <button id="clearAttachment" class="btn btn-default" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
                             </div>
-                        }
                         <div class="col-xs-12">
                                 @if (Model.AwardsAttachment && !string.IsNullOrWhiteSpace(Model.Trigger.AwardAttachmentFilename))
                                 {
