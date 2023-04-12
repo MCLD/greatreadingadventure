@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## Changed
 
 - Rename "Redemption Instructions" label to "Redemptions Instructions for Staff"
+- Update to use avatar package 4.2.2
 
 ## Added
 
