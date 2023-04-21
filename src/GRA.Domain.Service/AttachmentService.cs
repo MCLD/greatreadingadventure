@@ -54,8 +54,20 @@ namespace GRA.Domain.Service
             return await _attachmentRepository.GetByIdAsync(attachmentId);
         }
 
+        public async Task RemoveAttachmentFile(int attachmentId)
+        {
+            var attachment = await _attachmentRepository.GetByIdAsync(attachmentId);
+            if (attachment == null)
+            {
+                throw new GraException("Attachment does not exist.");
+            }
+            File.Delete("shared/content/" + attachment.FileName);
+            await _attachmentRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId),
+                attachmentId);
+        }
+
         public async Task<Attachment> ReplaceAttachmentFileAsync(Attachment attachment,
-            string attachmentType,
+                    string attachmentType,
             byte[] file)
         {
             VerifyManagementPermission();

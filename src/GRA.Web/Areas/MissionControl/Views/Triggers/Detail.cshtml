@@ -51,6 +51,7 @@
     <input asp-for="EditMail" type="hidden" />
     <input asp-for="EditVendorCode" type="hidden" />
     <input asp-for="EditAvatarBundle" type="hidden" />
+    <input asp-for="EditAttachment" type="hidden" />
     <input asp-for="AwardsPrize" type="hidden" />
     <input asp-for="AwardsMail" type="hidden" />
     <input asp-for="AwardsAttachment" type="hidden" />
@@ -61,6 +62,7 @@
         <input asp-for="Trigger.RelatedSystemId" type="hidden" />
         <input asp-for="Trigger.AwardBadgeId" type="hidden" />
         <input asp-for="Trigger.AwardAttachmentId" type="hidden" />
+        <input asp-for="RemoveAttachment" type="hidden" />
     }
 
     @if (Model.DependentTriggers?.Count > 0)
@@ -628,17 +630,18 @@
                                 </div>
                                 <button id="clearAttachment" class="btn btn-default" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
                             </div>
-                        <div class="col-xs-12">
+                        <div id="removeAttachmentContainer" class="col-xs-12">
                                 @if (Model.AwardsAttachment && !string.IsNullOrWhiteSpace(Model.Trigger.AwardAttachmentFilename))
                                 {
-                                <div class="form-row d-inline-block">
-                                    <div class="col-lg-12" style="margin-top:1.5rem;">
-                                            <a href="~/@Model.Trigger.AwardAttachmentFilename" target="_blank">
-                                        <img id="attachmentImage"
-                                        src="~/images/certificate.png" />
-                                        <span>View attachment</span>
+                                <div class="container" style="margin-top:1.5rem;">
+                                        <a class="btn btn-primary" href="~/@Model.Trigger.AwardAttachmentFilename" target="_blank">
+                                            <img id="attachmentImage" width="15"
+                                                src="~/images/certificate.png" />
+                                            <span>View attachment</span>
                                         </a>
-                                    </div>
+                                    <button type="button" class="btn btn-danger" id="btn-remove-attachment">
+                                        <span>Remove attachment</span>
+                                    </button>
                                 </div>
                                 }
                             </div>
@@ -1063,6 +1066,11 @@
         $("#collapseAttachment").on("hide.bs.collapse", function() {
             $("#AwardsAttachment").val("false");
             $("#attachmentIcon").removeClass("fa-caret-down").addClass("fa-caret-right");
+        });
+
+        $("#btn-remove-attachment").on("click", function() {
+            $("#removeAttachmentContainer").hide();
+            $("#RemoveAttachment").val(true);
         });
 
         $("#Trigger_SecretCode").on("blur", function () {

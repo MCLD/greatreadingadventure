@@ -655,11 +655,6 @@ namespace GRA.Controllers.MissionControl
                         model.Trigger.AwardMailSubject = "";
                         model.Trigger.AwardMail = "";
                     }
-                    if (!model.AwardsAttachment && model.EditAttachment)
-                    {
-                        model.Trigger.AwardAttachmentFilename = "";
-                        model.Trigger.AwardAttachmentId = null;
-                    }
                     var existing = await _badgeService
                         .GetByIdAsync(model.Trigger.AwardBadgeId);
                     string fileName;
@@ -746,6 +741,17 @@ namespace GRA.Controllers.MissionControl
                         }
                     }
                     var savedtrigger = await _triggerService.UpdateAsync(model.Trigger);
+
+                    if (model.RemoveAttachment)
+                    {
+                        if (model.Trigger.AwardAttachmentId.HasValue)
+                        {
+                            await _attachmentService.RemoveAttachmentFile(model.Trigger.AwardAttachmentId.Value);
+                        }
+                        model.Trigger.AwardAttachmentFilename = "";
+                        model.Trigger.AwardAttachmentId = null;
+                    }
+
                     ShowAlertSuccess($"Trigger '<strong>{savedtrigger.Name}</strong>' was successfully modified");
                     return RedirectToAction("Index");
                 }
