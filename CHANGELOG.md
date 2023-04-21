@@ -44,6 +44,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Decouple one-to-one mapping of vendor codes to participants
 - Branch/system import if the spreadsheet does not contain IDs
 - Clear cached unread mail count upon authentication
+- Updated URL to badge maker
 
 ## [4.4.0] 2022-11-29
 

@@ -19,7 +19,7 @@ namespace GRA.Controllers.Base
 
         protected static string GetBadgeMakerUrl(string origin, string email)
         {
-            return $"https://www.openbadges.me/designer.html?origin={origin}&email={email}";
+            return $"https://www.openbadges.me/designer/index.html?origin={origin}&email={email}";
         }
 
         protected IActionResult RedirectNotAuthorized(string reason)
