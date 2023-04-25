@@ -45,6 +45,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Branch/system import if the spreadsheet does not contain IDs
 - Clear cached unread mail count upon authentication
 - Updated URL to badge maker
+- Move zoom button for avatars in mobile mode to top so it's always tappable
 
 ## [4.4.0] 2022-11-29
 
