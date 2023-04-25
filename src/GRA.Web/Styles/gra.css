@@ -605,6 +605,7 @@ p.password-note {
 }
 
 .avatar-zoom-button {
+    z-index: 100;
     position: absolute;
     right: 25px;
     top: 10px;
