@@ -5,6 +5,7 @@ using GRA.Abstract;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service
@@ -30,9 +31,8 @@ namespace GRA.Domain.Service
             _pathResolver = pathResolver;
         }
 
-        public async Task<Attachment> AddAttachmentAsync(Attachment attachment,
-            string attachmentType,
-            byte[] file)
+        public async Task<Attachment> AddAttachmentAsync(string attachmentType,
+            IFormFile file)
         {
             VerifyManagementPermission();
 
@@ -41,12 +41,22 @@ namespace GRA.Domain.Service
                 throw new GraException($"Unknown attachment type: {attachmentType}");
             }
 
-            attachment.SiteId = GetCurrentSiteId();
-            attachment.IsCertificate = true;
-            var result = await _attachmentRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), attachment);
-            result.FileName = await WriteAttachmentFile(result, attachmentType, file);
+            if (file != null)
+            {
+                var attachment = new Attachment
+                {
+                    FileName = Path.GetFileName(file.FileName),
+                    SiteId = GetCurrentSiteId(),
+                    IsCertificate = true
+                };
+                var result = await _attachmentRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), attachment);
+                result.FileName = await WriteAttachmentFile(result,
+                    attachmentType,
+                    await ReadFile(file));
 
-            return await _attachmentRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), result);
+                return await _attachmentRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), result);
+            }
+            return null;
         }
 
         public async Task<Attachment> GetByIdAsync(int attachmentId)
@@ -54,45 +64,43 @@ namespace GRA.Domain.Service
             return await _attachmentRepository.GetByIdAsync(attachmentId);
         }
 
-        public async Task RemoveAttachmentFile(int attachmentId)
+        public async Task RemoveAttachmentFileAsync(int attachmentId)
         {
-            var attachment = await _attachmentRepository.GetByIdAsync(attachmentId);
-            if (attachment == null)
-            {
-                throw new GraException("Attachment does not exist.");
-            }
-            File.Delete("shared/content/" + attachment.FileName);
-            await _attachmentRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId),
-                attachmentId);
+            await RemoveAttachment(attachmentId);
         }
 
-        public async Task<Attachment> ReplaceAttachmentFileAsync(Attachment attachment,
+        public async Task<Attachment> ReplaceAttachmentFileAsync(int existingAttachmentId,
                     string attachmentType,
-            byte[] file)
+            IFormFile file)
         {
             VerifyManagementPermission();
-
             if (attachmentType != Certificates)
             {
                 throw new GraException($"Unknown attachment type: {attachmentType}");
             }
 
-            var existingAttachment = await _attachmentRepository.GetByIdAsync(attachment.Id);
+            await RemoveAttachment(existingAttachmentId);
+            await _attachmentRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId),
+                existingAttachmentId);
 
-            if (file != null)
+            byte[] attachmentBytes = await ReadFile(file);
+
+            if (attachmentBytes != null)
             {
-                if (File.Exists(existingAttachment.FileName))
+                var attachment = new Attachment
                 {
-                    File.Delete(existingAttachment.FileName);
-                }
+                    IsCertificate = attachmentType == Certificates
+                };
 
-                attachment.FileName = await WriteAttachmentFile(existingAttachment,
+                var result = await _attachmentRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), attachment);
+                result.FileName = await WriteAttachmentFile(attachment,
                     attachmentType,
-                    file);
-            }
+                    attachmentBytes);
 
-            return await _attachmentRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
-                attachment);
+                return await _attachmentRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
+                result);
+            }
+            return null;
         }
 
         private string GetFilePath(string filename, string attachmentType)
@@ -130,6 +138,26 @@ namespace GRA.Domain.Service
                 Certificates,
                 filename
             });
+        }
+
+        private async Task<byte[]> ReadFile(IFormFile file)
+        {
+            using var ms = new MemoryStream();
+            await file.CopyToAsync(ms);
+            return ms.ToArray();
+        }
+
+        private async Task RemoveAttachment(int attachmentId)
+        {
+            var attachment = await _attachmentRepository.GetByIdAsync(attachmentId);
+            if (attachment == null)
+            {
+                throw new GraException("Attachment does not exist.");
+            }
+
+            File.Delete(GetFilePath("certificate" + attachmentId, Certificates));
+            await _attachmentRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId),
+                attachmentId);
         }
 
         private async Task<string> WriteAttachmentFile(Attachment attachment,

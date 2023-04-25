@@ -615,8 +615,8 @@
                 <div id="collapseAttachment" class="panel-collapse collapse @(Model.AwardsAttachment ? "in" : "")" role="tabpanel" aria-labelledby="headingAttachment">                   
                     <div class="panel-body">
                         <div class="row row-spacing">
-                            <div class="col-xs-12">
-                                <p>@(Model.Action == "Edit" ? "Replace the" : "Upload an") attachment.</p>
+                            <div class="col-xs-12" id="uploadAttachmentContainer" style="display:@(Model.EditAttachment && Model.AwardsAttachment ? "none" : "")">
+                                <p>@(Model.Action == "Edit" && Model.AwardsAttachment ? "Replace the" : "Upload an") attachment.</p>
                                 <div class="input-group">
                                     <label class="input-group-btn">
                                         <span id="selectAttachment" class="btn btn-default btn-file">
@@ -634,12 +634,15 @@
                                 @if (Model.AwardsAttachment && !string.IsNullOrWhiteSpace(Model.Trigger.AwardAttachmentFilename))
                                 {
                                 <div class="container" style="margin-top:1.5rem;">
-                                        <a class="btn btn-primary" href="~/@Model.Trigger.AwardAttachmentFilename" target="_blank">
-                                            <img id="attachmentImage" width="15"
-                                                src="~/images/certificate.png" />
-                                            <span>View attachment</span>
-                                        </a>
-                                    <button type="button" class="btn btn-danger" id="btn-remove-attachment">
+                                    <a class="btn btn-primary btn-md" href="~/@Model.Trigger.AwardAttachmentFilename" target="_blank">
+                                        <img id="attachmentImage" width="20"
+                                            src="~/images/certificate.png" />
+                                        <span>View attachment</span>
+                                    </a>
+                                    <button type="button" class="btn btn-default btn-md" id="btn-replace-attachment">
+                                        <span>Replace attachment</span>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-md" id="btn-remove-attachment">
                                         <span>Remove attachment</span>
                                     </button>
                                 </div>
@@ -1070,7 +1073,17 @@
 
         $("#btn-remove-attachment").on("click", function() {
             $("#removeAttachmentContainer").hide();
+            $("#uploadAttachmentContainer").show();
             $("#RemoveAttachment").val(true);
+        });
+
+        $("#AttachmentUploadFile").on("change", function() {
+            $("#removeAttachmentContainer").remove();
+        });
+
+        $("#btn-replace-attachment").on("click", function() {
+            $("#uploadAttachmentContainer").show();
+            $("#btn-replace-attachment").hide();
         });
 
         $("#Trigger_SecretCode").on("blur", function () {
