@@ -24,30 +24,30 @@
                         <tr>
                             <th>Code</th>
                             <th>Role</th>
-                            <th>Can only be used once</th>
+                            <th>Usage</th>
                             <th>Uses</th>
-                            <th width="100">&nbsp;</th>
+                            <th style="min-width: 12rem">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var code in Model.AuthorizationCodes)
                         {
                             <tr>
-                                <td>
+                                <td class="text-middle">
                                     @code.Code
                                 </td>
-                                <td>
+                                <td class="text-middle">
                                     @code.RoleName
                                 </td>
-                                <td>
-                                    @(code.IsSingleUse ? "Yes" : "No")
+                                <td class="text-middle">
+                                    @(code.IsSingleUse ? "Single Use" : "Multiple Use")
                                 </td>
-                                <td>
+                                <td class="text-middle">
                                     @code.Uses
                                 </td>
-                                <td>
+                                <td class="text-middle">
                                     <button type="button"
-                                            class="btn btn-primary btn-xs"
+                                            class="btn btn-primary"
                                             data-toggle="modal"
                                             data-target="#editModal"
                                             data-id="@code.Id"
@@ -55,16 +55,15 @@
                                             data-code="@code.Code"
                                             data-description="@code.Description"
                                             data-single="@code.IsSingleUse">
-                                        <span class="fas fa-2x fa-pencil-alt" aria-hidden="true"></span>
+                                        <span class="fas fa-fw fa-pencil-alt" aria-hidden="true"></span>
                                     </button>
                                     <button type="button"
-                                            class="btn btn-danger btn-xs"
-                                            style="margin-left:16px;"
+                                            class="btn btn-danger"
                                             data-toggle="modal"
                                             data-target="#deleteModal"
                                             data-id="@code.Id"
                                             data-code="@code.Code">
-                                        <span class="fas fa-2x fa-times" aria-hidden="true"></span>
+                                        <span class="fas fa-fw fa-times" aria-hidden="true"></span>
                                     </button>
                                 </td>
                             </tr>
@@ -228,7 +227,7 @@
                             <span class="far fa-question-circle"
                                   data-toggle="tooltip"
                                   title="Single use codes may be used once and then are deactivated."></span>
-                            <select id="editingle"
+                            <select id="editSingle"
                                     asp-for="AuthorizationCode.IsSingleUse"
                                     class="form-control">
                                 <option value="true">Single Use</option>
@@ -319,28 +318,23 @@
         $('[data-toggle="tooltip"]').tooltip();
 
         $("#editModal").on("show.bs.modal", function (e) {
-            var button = $(e.relatedTarget);
-            var id = button.data("id");
-            var role = button.data("role");
-            var code = button.data("code");
-            var description = button.data("description");
-            var single = button.data("single");
-            var modal = $(this);
+            let button = $(e.relatedTarget);
+            let code = button.data("code");
+            let modal = $(this);
             modal.find("#editModalLabel").text("Edit Authorization Code - \"" + code + "\"");
-            modal.find("#editId").val(id);
-            modal.find("#editRole").val(role);
+            modal.find("#editId").val(button.data("id"));
+            modal.find("#editRole").val(button.data("role"));
             modal.find("#editCode").val(code);
-            modal.find("#editDescription").val(description);
-            modal.find("#editSingle").val(single);
+            modal.find("#editDescription").val(button.data("description"));
+            modal.find("#editSingle").val(button.data("single").toLowerCase());
         });
 
         $("#deleteModal").on("show.bs.modal", function (e) {
-            var button = $(e.relatedTarget);
-            var id = button.data("id");
-            var code = button.data("code");
-            var modal = $(this);
+            let button = $(e.relatedTarget);
+            let code = button.data("code");
+            let modal = $(this);
             modal.find("#modal-text").text("Are you sure you want to delete the authorization code \"" + code + "\"?");
-            modal.find("#deleteId").val(id);
+            modal.find("#deleteId").val(button.data("id"));
             modal.find("#deleteCode").val(code);
         });
     </script>
