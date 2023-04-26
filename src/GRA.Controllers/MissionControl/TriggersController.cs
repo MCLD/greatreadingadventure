@@ -698,12 +698,16 @@ namespace GRA.Controllers.MissionControl
 
                     if (model.AttachmentUploadFile != null)
                     {
-                        var trigger = model.Trigger;
-                        trigger.AwardAttachmentId = null;
-                        await _triggerService.UpdateAsync(trigger);
+                        var existingAttachmentId = model.Trigger.AwardAttachmentId;
+                        if (existingAttachmentId.HasValue)
+                        {
+                            var trigger = model.Trigger;
+                            trigger.AwardAttachmentId = null;
+                            await _triggerService.UpdateAsync(trigger);
+                        }
 
-                        var newAttachment = model.Trigger.AwardAttachmentId.HasValue
-                            ? await _attachmentService.ReplaceAttachmentFileAsync(model.Trigger.AwardAttachmentId.Value,
+                        var newAttachment = existingAttachmentId.HasValue
+                            ? await _attachmentService.ReplaceAttachmentFileAsync(existingAttachmentId.Value,
                                 AttachmentService.Certificates,
                                 model.AttachmentUploadFile)
                             : await _attachmentService.AddAttachmentAsync(AttachmentService.Certificates,

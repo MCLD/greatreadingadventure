@@ -62,6 +62,7 @@
         <input asp-for="Trigger.RelatedSystemId" type="hidden" />
         <input asp-for="Trigger.AwardBadgeId" type="hidden" />
         <input asp-for="Trigger.AwardAttachmentId" type="hidden" />
+        <input asp-for="Trigger.AwardAttachmentFilename" type="hidden" />
         <input asp-for="RemoveAttachment" type="hidden" />
     }
 
@@ -615,38 +616,61 @@
                 <div id="collapseAttachment" class="panel-collapse collapse @(Model.AwardsAttachment ? "in" : "")" role="tabpanel" aria-labelledby="headingAttachment">                   
                     <div class="panel-body">
                         <div class="row row-spacing">
-                            <div class="col-xs-12" id="uploadAttachmentContainer" style="display:@(Model.EditAttachment && Model.AwardsAttachment ? "none" : "")">
-                                <p>@(Model.Action == "Edit" && Model.AwardsAttachment ? "Replace the" : "Upload an") attachment.</p>
-                                <div class="input-group">
-                                    <label class="input-group-btn">
-                                        <span id="selectAttachment" class="btn btn-default btn-file">
-                                            <span class="far fa-file"></span> Select a file<input type="file" asp-for="AttachmentUploadFile" accept=".pdf" style="display: none;" />
-                                        </span>
-                                    </label>
-                                    <input type="text" class="form-control" readonly id="selectedCertPdf">
-                                </div>
-                                <div>
-                                    <span asp-validation-for="AttachmentUploadFile" class="text-danger"></span>
-                                </div>
-                                <button id="clearAttachment" class="btn btn-default" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
-                            </div>
-                        <div id="removeAttachmentContainer" class="col-xs-12">
-                                @if (Model.AwardsAttachment && !string.IsNullOrWhiteSpace(Model.Trigger.AwardAttachmentFilename))
+                            <div class="col-xs-12" id="uploadAttachmentContainer">
+                                <p id="uploadAttachmentHeader">
+                                    @if (Model.Trigger.AwardAttachmentId.HasValue && Model.RemoveAttachment)
+                                    {
+                                        @:Attachment will be removed when this trigger is saved. <br /> Click "Return to List" to cancel attachment removal
+                                    }
+                                    else if (Model.Trigger.AwardAttachmentId.HasValue)
+                                    {
+                                        @: Select a file to replace the existing attachment and click "Save Trigger". <br /> Click "Return to List" to cancel attachment replacement.
+                                    }
+                                    else
+                                    {
+                                        @:Upload an attachment.
+                                    }
+                                </p>
+                                @if (!Model.RemoveAttachment)
                                 {
-                                <div class="container" style="margin-top:1.5rem;">
-                                    <a class="btn btn-primary btn-md" href="~/@Model.Trigger.AwardAttachmentFilename" target="_blank">
-                                        <img id="attachmentImage" width="20"
-                                            src="~/images/certificate.png" />
-                                        <span>View attachment</span>
-                                    </a>
-                                    <button type="button" class="btn btn-default btn-md" id="btn-replace-attachment">
-                                        <span>Replace attachment</span>
-                                    </button>
-                                    <button type="button" class="btn btn-danger btn-md" id="btn-remove-attachment">
-                                        <span>Remove attachment</span>
-                                    </button>
-                                </div>
+                                    <div id="attachmentInputWrapper">
+                                        <div class="input-group">
+                                            <label class="input-group-btn">
+                                                <span id="selectAttachment" class="btn btn-default btn-file">
+                                                    <span class="far fa-file"></span> Select a file<input type="file" asp-for="AttachmentUploadFile" accept=".pdf" style="display: none;" />
+                                                </span>
+                                            </label>
+                                            <input type="text" class="form-control" readonly id="selectedCertPdf">
+                                        </div>
+                                        <div>
+                                            <span asp-validation-for="AttachmentUploadFile" class="text-danger"></span>
+                                        </div>
+                                        <button id="clearAttachment" class="btn btn-default" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
+                                    </div>
                                 }
+                                <div id="removeAttachmentContainer">
+                                    @if (Model.AwardsAttachment)
+                                    {                                    
+                                        @if (!string.IsNullOrWhiteSpace(Model.Trigger.AwardAttachmentFilename))
+                                        {
+                                        <div>
+                                            <a class="btn btn-primary" style="margin-top:0.5em;" href="~/@Model.Trigger.AwardAttachmentFilename" target="_blank">
+                                                <img id="attachmentImage" width="20"
+                                                    src="~/images/certificate.png" />
+                                                <span>View Attachment</span>
+                                            </a>
+                                        </div>
+                                        }
+                                        @if (!Model.RemoveAttachment)
+                                        {
+                                        <div>
+                                            <button type="button" class="btn btn-danger" style="margin-top:0.5em;" id="btn-remove-attachment">
+                                                <span>Remove Attachment</span>
+                                            </button>
+                                        </div>
+                                        }
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1071,19 +1095,11 @@
             $("#attachmentIcon").removeClass("fa-caret-down").addClass("fa-caret-right");
         });
 
-        $("#btn-remove-attachment").on("click", function() {
-            $("#removeAttachmentContainer").hide();
-            $("#uploadAttachmentContainer").show();
+        $("#btn-remove-attachment").on("mouseup", function() {
+            $("#attachmentInputWrapper").hide();
+            $("#uploadAttachmentHeader").text("Attachment will be removed when this trigger is saved. Click “Return to List” to cancel attachment removal.");
             $("#RemoveAttachment").val(true);
-        });
-
-        $("#AttachmentUploadFile").on("change", function() {
-            $("#removeAttachmentContainer").remove();
-        });
-
-        $("#btn-replace-attachment").on("click", function() {
-            $("#uploadAttachmentContainer").show();
-            $("#btn-replace-attachment").hide();
+            $("#btn-remove-attachment").hide();
         });
 
         $("#Trigger_SecretCode").on("blur", function () {
