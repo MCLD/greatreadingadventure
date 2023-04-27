@@ -618,13 +618,16 @@
                         <div class="row row-spacing">
                             <div class="col-xs-12" id="uploadAttachmentContainer">
                                 <p id="uploadAttachmentHeader">
-                                    @if (Model.Trigger.AwardAttachmentId.HasValue && Model.RemoveAttachment)
+                                    @if (Model.AwardsAttachment)
                                     {
-                                        @:Attachment will be removed when this trigger is saved. <br /> Click "Return to List" to cancel attachment removal
-                                    }
-                                    else if (Model.Trigger.AwardAttachmentId.HasValue)
-                                    {
-                                        @: Select a file to replace the existing attachment and click "Save Trigger". <br /> Click "Return to List" to cancel attachment replacement.
+                                        if (Model.Trigger.AwardAttachmentId.HasValue && Model.RemoveAttachment)
+                                        {
+                                            @:Attachment will be removed when this trigger is saved. <br /> Click "Return to List" to cancel attachment removal
+                                        }
+                                        else if (Model.Trigger.AwardAttachmentId.HasValue)
+                                        {
+                                            @: Select a file to replace the existing attachment and click "Save Trigger". <br /> Click "Return to List" to cancel attachment replacement.
+                                        }
                                     }
                                     else
                                     {
