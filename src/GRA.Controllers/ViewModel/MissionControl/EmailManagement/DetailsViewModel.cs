@@ -34,7 +34,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.EmailManagement
 
         public SelectList Languages { get; set; }
 
-        [Required]
+        [Required(AllowEmptyStrings = false)]
         [Display(Name = "Email preview",
             Description = "Shown to recipient before they open the email, up to 255 characters")]
         [MaxLength(255)]
@@ -43,14 +43,13 @@ namespace GRA.Controllers.ViewModel.MissionControl.EmailManagement
         [DisplayName("Email addresses for test email, comma separated")]
         public string SendTestRecipients { get; set; }
 
-        [Required]
+        [Required(AllowEmptyStrings = false)]
         [MaxLength(255)]
         [Display(Name = "Email subject", Description = "Up to 255 characters")]
         public string Subject { get; set; }
 
         [Required]
         [MaxLength(255)]
-        [Display(Name = "Template name")]
         public string TemplateDescription { get; set; }
 
         [Required]

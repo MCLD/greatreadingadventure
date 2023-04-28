@@ -259,7 +259,7 @@ namespace GRA.Controllers.MissionControl
             }
             issues.Append("</ul>");
             ShowAlertWarning(issues.ToString());
-            return View("Details", detailsViewModel);
+            return RedirectToAction(nameof(CreateTemplate));
         }
 
         [HttpGet]
