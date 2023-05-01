@@ -1506,12 +1506,6 @@ namespace GRA.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LoginAs(int loginId)
-        {
-            return await LoginAs(loginId, false);
-        }
-
-        [HttpPost]
         public async Task<IActionResult> LoginAs(int loginId, bool goToMail)
         {
             User user = null;
