@@ -48,6 +48,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Move zoom button for avatars in mobile mode to top so it's always tappable
 - Proper display of authorization code usage on edit modal
 - Issue with "login as" on the profile list of associated participants
+- Broken link from events in Mission Control to associated challenges
 
 ## [4.4.0] 2022-11-29
 
