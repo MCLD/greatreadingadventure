@@ -196,7 +196,7 @@ namespace GRA.Domain.Service
                             await image.SaveAsPngAsync(fullFilePath, new PngEncoder
                             {
                                 CompressionLevel = PngCompressionLevel.BestCompression,
-                                IgnoreMetadata = true
+                                SkipMetadata = true
                             });
                             break;
                     }
