@@ -16,9 +16,9 @@
         @if (Model.CanViewParticipants)
         {
             <a aria-label="@Model.CreatedByName (Opens new window)"
-               asp-controller="Participants"
-               asp-action="@nameof(ParticipantsController.Detail)"
-               asp-route-id="@Model.Event.CreatedBy"
+           asp-controller="Participants"
+           asp-action="@nameof(ParticipantsController.Detail)"
+           asp-route-id="@Model.Event.CreatedBy"
                target="_blank">@Model.CreatedByName</a>
         }
         else
@@ -35,9 +35,9 @@
             <div class="row" style="padding-top:10px;">
                 <div class="col-xs-12">
                     <a aria-label="View Related Trigger (Opens new window)"
-                       asp-controller="Triggers"
-                       asp-action="Edit"
-                       asp-route-id="@Model.Event.RelatedTriggerId"
+               asp-controller="Triggers"
+               asp-action="Edit"
+               asp-route-id="@Model.Event.RelatedTriggerId"
                        target="_blank"
                        class="btn btn-default">
                         View Related Trigger
@@ -194,16 +194,17 @@
                             <tr>
                                 <td>
                                     <a aria-label="@Model.Event.Challenge.Name (Opens new window)"
-                                       asp-action="Edit"
-                                       asp-route-id="@Model.Event.Challenge.Id"
+                               asp-controller="@ChallengesController.Name"
+                               asp-action="Edit"
+                               asp-route-id="@Model.Event.Challenge.Id"
                                        target="_blank">@Model.Event.Challenge.Name</a>
                                 </td>
                                 <td>
                                     @if (!string.IsNullOrWhiteSpace(Model.Event.Challenge.BadgeFilename))
                                     {
                                         <img class="img-thumbnail" style="height: auto; width: 64px;"
-                                             src="~/@Model.Event.Challenge.BadgeFilename?@DateTime.Now.ToString("yyMMddHHmmss")"
-                                             asp-append-version="true" />
+                                 src="~/@Model.Event.Challenge.BadgeFilename?@DateTime.Now.ToString("yyMMddHHmmss")"
+                                 asp-append-version="true" />
                                     }
                                     else
                                     {
@@ -252,9 +253,9 @@
                                     @if (Model.CanEditGroups)
                                     {
                                         <a aria-label="@Model.Event.ChallengeGroup.Name (Opens new window)"
-                                           asp-controller="Challenges"
-                                           asp-action="EditGroup"
-                                           asp-route-id="@Model.Event.ChallengeGroup.Id"
+                               asp-controller="Challenges"
+                               asp-action="EditGroup"
+                               asp-route-id="@Model.Event.ChallengeGroup.Id"
                                            target="_blank">@Model.Event.ChallengeGroup.Name</a>
                                     }
                                     else
@@ -267,9 +268,9 @@
                                 </td>
                                 <td>
                                     <a aria-label="@Model.Event.ChallengeGroup.Stub (Opens new window)"
-                                       asp-area="" asp-controller="Challenges"
-                                       asp-action="List"
-                                       asp-route-id="@Model.Event.ChallengeGroup.Stub"
+                               asp-area="" asp-controller="Challenges"
+                               asp-action="List"
+                               asp-route-id="@Model.Event.ChallengeGroup.Stub"
                                        target="_blank">@Model.Event.ChallengeGroup.Stub</a>
                                 </td>
                                 @if (Model.CanRelateChallenge)
@@ -541,21 +542,21 @@
     {
     <script>
         $("#pickerStart").datetimepicker({
-            @if (Model.Event != null && Model.Event.AllDay)
-            {
-                <text>format: "MM/DD/YYYY",</text>
-            }
+        @if (Model.Event != null && Model.Event.AllDay)
+        {
+            <text>format: "MM/DD/YYYY", </text>
+        }
             allowInputToggle: true,
             sideBySide: true,
             icons: {
-                time: "far fa-clock",
-                date: "fas fa-calendar-alt",
-                up: "fas fa-arrow-up",
-                down: "fas fa-arrow-down",
-                previous: "fas fa-arrow-left",
-                next: "fas fa-arrow-right"
-            }
-        });
+            time: "far fa-clock",
+            date: "fas fa-calendar-alt",
+            up: "fas fa-arrow-up",
+            down: "fas fa-arrow-down",
+            previous: "fas fa-arrow-left",
+            next: "fas fa-arrow-right"
+        }
+                                        });
 
         $("#pickerEnd").datetimepicker({
             format: "@(Model.Event?.AllDay == true ? "MM/DD/YYYY" : "hh:mm A")",
@@ -570,41 +571,39 @@
             }
         });
 
-        $("#Event_AllDay").on("change", function() {
-            if ($("#Event_AllDay").is(":checked"))
-            {
+        $("#Event_AllDay").on("change", function () {
+            if ($("#Event_AllDay").is(":checked")) {
                 $("#pickerStart").data("DateTimePicker").format("MM/DD/YYYY");
                 $("#pickerEnd").data("DateTimePicker").format("MM/DD/YYYY");
             }
-            else
-            {
+            else {
                 $("#pickerStart").data("DateTimePicker").format("MM/DD/YYYY hh:mm A");
                 $("#pickerEnd").data("DateTimePicker").format("hh:mm A");
             }
         });
 
-        $("#viewLocationList").on("click", function() {
+        $("#viewLocationList").on("click", function () {
             $("#branchGroup").addClass("hide");
             $("#locationGroup").removeClass("hide");
             $("#UseLocation").val("true");
         });
 
-        $("#viewBranchList").on("click", function() {
+        $("#viewBranchList").on("click", function () {
             $("#locationGroup").addClass("hide");
             $("#branchGroup").removeClass("hide");
             $("#UseLocation").val("false");
         });
 
-        $("#SystemId").on("change", function() {
+        $("#SystemId").on("change", function () {
             var systemId = $(this).val();
             var branchList = $("#Event_AtBranchId");
             var branchId = branchList.val();
             var url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
 
-            $.getJSON(url, { systemId: systemId, branchId: branchId, listAll: "false", prioritize: "true" }, function(response) {
+            $.getJSON(url, { systemId: systemId, branchId: branchId, listAll: "false", prioritize: "true" }, function (response) {
                 branchList.empty();
                 branchList.append(new Option("", ""));
-                $.each(response, function(index, item) {
+                $.each(response, function (index, item) {
                     branchList.append(new Option(item.text, item.value, item.selected, item.selected))
                 });
             });
@@ -613,41 +612,40 @@
         @if (Model.CanManageLocations)
         {
             <text>
-            $(document).on("click", "#addLocation", function() {
-                var name = $("#Location_Name");
-                var address = $("#Location_Address")
-                name.valid();
-                address.valid();
-                if (name.valid() && address.valid())
-                {
-                    var address = $("#Location_Address");
-                    var url = $("#Location_Url");
-                    var telephone = $("#Location_Telephone");
-                    var jsonUrl = "@Url.Action("AddLocationReturnList", "Events")";
-                    var locationList = $("#Event_AtLocationId");
-                    $.getJSON(jsonUrl, { name: name.val(), address: address.val(), url: url.val(), telephone: telephone.val() }, function (response) {
-                        if (response.success == true) {
-                            locationList.empty();
-                            locationList.append(new Option("", ""));
-                            $.each(response.data, function(index, item) {
-                                locationList.append(new Option(item.text, item.value, item.selected, item.selected))
-                            });
-                            $("#addModal").modal("hide");
-                            name.val("");
-                            address.val("");
-                            url.val("");
-                            telephone.val("");
+                $(document).on("click", "#addLocation", function () {
+                    var name = $("#Location_Name");
+                    var address = $("#Location_Address")
+                    name.valid();
+                    address.valid();
+                    if (name.valid() && address.valid()) {
+                        var address = $("#Location_Address");
+                        var url = $("#Location_Url");
+                        var telephone = $("#Location_Telephone");
+                        var jsonUrl = "@Url.Action("AddLocationReturnList", "Events")";
+                        var locationList = $("#Event_AtLocationId");
+                        $.getJSON(jsonUrl, { name: name.val(), address: address.val(), url: url.val(), telephone: telephone.val() }, function (response) {
+                            if (response.success == true) {
+                                locationList.empty();
+                                locationList.append(new Option("", ""));
+                                $.each(response.data, function (index, item) {
+                                    locationList.append(new Option(item.text, item.value, item.selected, item.selected))
+                                });
+                                $("#addModal").modal("hide");
+                                name.val("");
+                                address.val("");
+                                url.val("");
+                                telephone.val("");
 
-                            if (response.message != null) {
-                                alert(response.message);
+                                if (response.message != null) {
+                                    alert(response.message);
+                                }
                             }
-                        }
-                        else {
-                            alert(response.message)
-                        }
-                    });
-                }
-            });
+                            else {
+                                alert(response.message)
+                            }
+                        });
+                    }
+                });
             </text>
 
             @if (Model.ShowGeolocation)
@@ -662,8 +660,7 @@
 
                     if (address.length == 0) {
                         mapContainer.addClass("hide");
-                    }
-                    else {
+                    } else {
                         mapContainer.removeClass("hide");
                         mapContainer.children().attr("src", mapsUrl + address);
                     }
@@ -693,7 +690,7 @@
                         search: challengeSearch,
                         showActive: true,
                         page: challengePage
-                    }, function(response) {
+                    }, function (response) {
                         $("#modalChallengeList").html(response);
                     });
             }
@@ -723,7 +720,7 @@
                 }
             });
 
-            $("#addButton").on('click', function(e) {
+            $("#addButton").on('click', function (e) {
                 $("#listModal").modal("show");
                 if ($("#challenge").hasClass("active")) {
                     if (challengesLoaded == false) {
@@ -787,7 +784,7 @@
                 groupsLoaded = false;
             });
 
-            $(".challengeScope").on("click", function(e) {
+            $(".challengeScope").on("click", function (e) {
                 e.preventDefault();
                 $(this).siblings().removeClass("active");
                 $(this).addClass().addClass("active");
@@ -798,20 +795,18 @@
 
             $("#challengeSearchButton").on("click", function () {
                 challengeSearch = $("#challengeSearchText").val();
-                if (challengeSearch != "")
-                {
+                if (challengeSearch != "") {
                     $("#challengeSearchMessage").removeClass("hide");
                     $("#challengeSearchTerm").html(challengeSearch);
                 }
-                else
-                {
+                else {
                     $("#challengeSearchMessage").addClass("hide");
                 }
                 challengePage = 1;
                 UpdateChallengeList();
             })
 
-            $("#challengeClearButton").on("click", function() {
+            $("#challengeClearButton").on("click", function () {
                 $("#challengeSearchText").val("");
                 challengeSearch = "";
                 $("#challengeSearchMessage").addClass("hide");
