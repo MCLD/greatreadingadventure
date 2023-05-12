@@ -14,6 +14,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Triggers
         public bool AwardsAttachment { get; set; }
         public bool AwardsMail { get; set; }
         public bool AwardsPrize { get; set; }
+
         [DisplayName("Badge Alternative Text")]
         [MaxLength(255)]
         public string BadgeAltText { get; set; }
@@ -39,10 +40,13 @@ namespace GRA.Controllers.ViewModel.MissionControl.Triggers
         public string MaxPointsWarningMessage { get; set; }
         public SelectList ProgramList { get; set; }
         public ICollection<Event> RelatedEvents { get; set; }
+        public bool RemoveAttachment { get; set; }
         public SelectList SystemList { get; set; }
         public GRA.Domain.Model.Trigger Trigger { get; set; }
+
         [DisplayName("Challenges and triggers the participant must have earned")]
         public ICollection<TriggerRequirement> TriggerRequirements { get; set; }
+
         public string UnlockableAvatarBundle { get; set; }
         public SelectList UnlockableAvatarBundleList { get; set; }
         public bool UseBadgeMaker { get; set; }
