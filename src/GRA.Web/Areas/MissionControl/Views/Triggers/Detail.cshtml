@@ -51,6 +51,7 @@
     <input asp-for="EditMail" type="hidden" />
     <input asp-for="EditVendorCode" type="hidden" />
     <input asp-for="EditAvatarBundle" type="hidden" />
+    <input asp-for="EditAttachment" type="hidden" />
     <input asp-for="AwardsPrize" type="hidden" />
     <input asp-for="AwardsMail" type="hidden" />
     <input asp-for="AwardsAttachment" type="hidden" />
@@ -61,6 +62,8 @@
         <input asp-for="Trigger.RelatedSystemId" type="hidden" />
         <input asp-for="Trigger.AwardBadgeId" type="hidden" />
         <input asp-for="Trigger.AwardAttachmentId" type="hidden" />
+        <input asp-for="Trigger.AwardAttachmentFilename" type="hidden" />
+        <input asp-for="RemoveAttachment" type="hidden" />
     }
 
     @if (Model.DependentTriggers?.Count > 0)
@@ -613,36 +616,64 @@
                 <div id="collapseAttachment" class="panel-collapse collapse @(Model.AwardsAttachment ? "in" : "")" role="tabpanel" aria-labelledby="headingAttachment">                   
                     <div class="panel-body">
                         <div class="row row-spacing">
-                            @if (Model.EditAttachment) {
-                            <div class="col-xs-12">
-                                <p>@(Model.Action == "Edit" ? "Replace the" : "Upload an") attachment.</p>
-                                <div class="input-group">
-                                    <label class="input-group-btn">
-                                        <span id="selectAttachment" class="btn btn-default btn-file">
-                                            <span class="far fa-file"></span> Select a file<input type="file" asp-for="AttachmentUploadFile" accept=".pdf" style="display: none;" />
-                                        </span>
-                                    </label>
-                                    <input type="text" class="form-control" readonly id="selectedCertPdf">
-                                </div>
-                                <div>
-                                    <span asp-validation-for="AttachmentUploadFile" class="text-danger"></span>
-                                </div>
-                                <button id="clearAttachment" class="btn btn-default" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
-                            </div>
-                        }
-                        <div class="col-xs-12">
-                                @if (Model.AwardsAttachment && !string.IsNullOrWhiteSpace(Model.Trigger.AwardAttachmentFilename))
+                            <div class="col-xs-12" id="uploadAttachmentContainer">
+                                <p id="uploadAttachmentHeader">
+                                    @if (Model.AwardsAttachment)
+                                    {
+                                        if (Model.Trigger.AwardAttachmentId.HasValue && Model.RemoveAttachment)
+                                        {
+                                            @:Attachment will be removed when this trigger is saved. <br /> Click "Return to List" to cancel attachment removal
+                                        }
+                                        else if (Model.Trigger.AwardAttachmentId.HasValue)
+                                        {
+                                            @: Select a file to replace the existing attachment and click "Save Trigger". <br /> Click "Return to List" to cancel attachment replacement.
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @:Upload an attachment.
+                                    }
+                                </p>
+                                @if (!Model.RemoveAttachment)
                                 {
-                                <div class="form-row d-inline-block">
-                                    <div class="col-lg-12" style="margin-top:1.5rem;">
-                                            <a href="~/@Model.Trigger.AwardAttachmentFilename" target="_blank">
-                                        <img id="attachmentImage"
-                                        src="~/images/certificate.png" />
-                                        <span>View attachment</span>
-                                        </a>
+                                    <div id="attachmentInputWrapper">
+                                        <div class="input-group">
+                                            <label class="input-group-btn">
+                                                <span id="selectAttachment" class="btn btn-default btn-file">
+                                                    <span class="far fa-file"></span> Select a file<input type="file" asp-for="AttachmentUploadFile" accept=".pdf" style="display: none;" />
+                                                </span>
+                                            </label>
+                                            <input type="text" class="form-control" readonly id="selectedCertPdf">
+                                        </div>
+                                        <div>
+                                            <span asp-validation-for="AttachmentUploadFile" class="text-danger"></span>
+                                        </div>
+                                        <button id="clearAttachment" class="btn btn-default" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
                                     </div>
-                                </div>
                                 }
+                                <div id="removeAttachmentContainer">
+                                    @if (Model.AwardsAttachment)
+                                    {                                    
+                                        @if (!string.IsNullOrWhiteSpace(Model.Trigger.AwardAttachmentFilename))
+                                        {
+                                        <div>
+                                            <a class="btn btn-primary" style="margin-top:0.5em;" href="~/@Model.Trigger.AwardAttachmentFilename" target="_blank">
+                                                <img id="attachmentImage" width="20"
+                                                    src="~/images/certificate.png" />
+                                                <span>View Attachment</span>
+                                            </a>
+                                        </div>
+                                        }
+                                        @if (!Model.RemoveAttachment && Model.Trigger.AwardAttachmentId.HasValue)
+                                        {
+                                        <div>
+                                            <button type="button" class="btn btn-danger" style="margin-top:0.5em;" id="btn-remove-attachment">
+                                                <span>Remove Attachment</span>
+                                            </button>
+                                        </div>
+                                        }
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1065,6 +1096,13 @@
         $("#collapseAttachment").on("hide.bs.collapse", function() {
             $("#AwardsAttachment").val("false");
             $("#attachmentIcon").removeClass("fa-caret-down").addClass("fa-caret-right");
+        });
+
+        $("#btn-remove-attachment").on("mouseup", function() {
+            $("#attachmentInputWrapper").hide();
+            $("#uploadAttachmentHeader").text("Attachment will be removed when this trigger is saved. Click “Return to List” to cancel attachment removal.");
+            $("#RemoveAttachment").val(true);
+            $("#btn-remove-attachment").hide();
         });
 
         $("#Trigger_SecretCode").on("blur", function () {

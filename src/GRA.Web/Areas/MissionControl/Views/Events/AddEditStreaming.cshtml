@@ -154,9 +154,7 @@
         </div>
     </div>
 
-    @if (Model.Editing &&
-(Model.CanRelateChallenge
-|| Model.Event.Challenge != null || Model.Event.ChallengeGroup != null))
+    @if (Model.Editing && (Model.CanRelateChallenge || Model.Event.Challenge != null || Model.Event.ChallengeGroup != null))
     {
         <div class="row row-spacing">
             <div class="col-xs-12">
@@ -178,7 +176,9 @@
                         {
                             <tr>
                                 <td>
-                                    <a asp-action="Edit" asp-route-id="@Model.Event.Challenge.Id" target="_blank">@Model.Event.Challenge.Name</a>
+                                    <a asp-action="Edit"
+                                    asp-controller="@ChallengesController.Name" 
+                                    asp-route-id="@Model.Event.Challenge.Id" target="_blank">@Model.Event.Challenge.Name</a>
                                 </td>
                                 <td>
                                     @if (!string.IsNullOrWhiteSpace(Model.Event.Challenge.BadgeFilename))
@@ -928,8 +928,7 @@
                     if ($("#challenge").hasClass("active")) {
                         challengePage = $(this).data("page");
                         UpdateChallengeList();
-                    }
-                    else {
+                    } else {
                         groupPage = $(this).data("page");
                         UpdateGroupList();
                     }

@@ -33,7 +33,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - System setting to disable badge maker
 - System setting to configure background color
 - Downloadable ZIP files of badge images for each system from Mission Control
-- Ability to attach a certificate (uploaded PDF) to a trigger
+- Ability to attach, remove, or update a certificate (uploaded PDF) to a trigger
 
 ### Fixed
 
@@ -47,6 +47,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Updated URL to badge maker
 - Move zoom button for avatars in mobile mode to top so it's always tappable
 - Proper display of authorization code usage on edit modal
+- Issue with "login as" on the profile list of associated participants
+- Broken link from events in Mission Control to associated challenges
 
 ## [4.4.0] 2022-11-29
 

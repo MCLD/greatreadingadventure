@@ -293,21 +293,8 @@ namespace GRA.Controllers.MissionControl
 
                     if (model.AttachmentUploadFile != null)
                     {
-                        string fileName;
-                        using (var ms = new MemoryStream())
-                        {
-                            await model.AttachmentUploadFile.CopyToAsync(ms);
-                            attachmentBytes = ms.ToArray();
-                        }
-                        fileName = Path.GetFileName(model.AttachmentUploadFile.FileName);
-
-                        var newAttachment = new Attachment
-                        {
-                            FileName = fileName
-                        };
-                        var attachment = await _attachmentService.AddAttachmentAsync(newAttachment,
-                            AttachmentService.Certificates,
-                            attachmentBytes);
+                        var attachment = await _attachmentService.AddAttachmentAsync(AttachmentService.Certificates,
+                            model.AttachmentUploadFile);
                         model.Trigger.AwardAttachmentId = attachment.Id;
                     }
                     var trigger = await _triggerService.AddAsync(model.Trigger);
@@ -513,7 +500,6 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Edit(TriggersDetailViewModel model)
         {
             byte[] badgeBytes = null;
-            byte[] attachmentBytes = null;
 
             var badgeRequiredList = new List<int>();
             var challengeRequiredList = new List<int>();
@@ -655,11 +641,6 @@ namespace GRA.Controllers.MissionControl
                         model.Trigger.AwardMailSubject = "";
                         model.Trigger.AwardMail = "";
                     }
-                    if (!model.AwardsAttachment && model.EditAttachment)
-                    {
-                        model.Trigger.AwardAttachmentFilename = "";
-                        model.Trigger.AwardAttachmentId = null;
-                    }
                     var existing = await _badgeService
                         .GetByIdAsync(model.Trigger.AwardBadgeId);
                     string fileName;
@@ -717,35 +698,34 @@ namespace GRA.Controllers.MissionControl
 
                     if (model.AttachmentUploadFile != null)
                     {
-                        using (var ms = new MemoryStream())
+                        var existingAttachmentId = model.Trigger.AwardAttachmentId;
+                        if (existingAttachmentId.HasValue)
                         {
-                            await model.AttachmentUploadFile.CopyToAsync(ms);
-                            attachmentBytes = ms.ToArray();
+                            var trigger = model.Trigger;
+                            trigger.AwardAttachmentId = null;
+                            await _triggerService.UpdateAsync(trigger);
                         }
 
-                        if (model.Trigger.AwardAttachmentId != null)
-                        {
-                            var existingAttachment = await _attachmentService
-                            .GetByIdAsync(model.Trigger.AwardAttachmentId.Value);
-
-                            await _attachmentService.ReplaceAttachmentFileAsync(existingAttachment,
+                        var newAttachment = existingAttachmentId.HasValue
+                            ? await _attachmentService.ReplaceAttachmentFileAsync(existingAttachmentId.Value,
                                 AttachmentService.Certificates,
-                                attachmentBytes);
-                        }
-                        else
-                        {
-                            var attachment = new Attachment
-                            {
-                                FileName = Path.GetFileName(model.AttachmentUploadFile.FileName)
-                            };
-
-                            attachment = await _attachmentService.AddAttachmentAsync(attachment,
-                                AttachmentService.Certificates,
-                                attachmentBytes);
-                            model.Trigger.AwardAttachmentId = attachment.Id;
-                        }
+                                model.AttachmentUploadFile)
+                            : await _attachmentService.AddAttachmentAsync(AttachmentService.Certificates,
+                                model.AttachmentUploadFile);
+                        model.Trigger.AwardAttachmentId = newAttachment?.Id;
                     }
                     var savedtrigger = await _triggerService.UpdateAsync(model.Trigger);
+
+                    if (model.RemoveAttachment && model.AttachmentUploadFile == null)
+                    {
+                        if (model.Trigger.AwardAttachmentId.HasValue)
+                        {
+                            await _attachmentService.RemoveAttachmentFileAsync(model.Trigger.AwardAttachmentId.Value);
+                        }
+                        model.Trigger.AwardAttachmentFilename = "";
+                        model.Trigger.AwardAttachmentId = null;
+                    }
+
                     ShowAlertSuccess($"Trigger '<strong>{savedtrigger.Name}</strong>' was successfully modified");
                     return RedirectToAction("Index");
                 }
