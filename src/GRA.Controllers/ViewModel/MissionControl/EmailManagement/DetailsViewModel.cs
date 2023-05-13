@@ -50,6 +50,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.EmailManagement
 
         [Required]
         [MaxLength(255)]
+        [Display(Name = "Template name")]
         public string TemplateDescription { get; set; }
 
         [Required]

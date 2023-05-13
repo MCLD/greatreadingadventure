@@ -174,33 +174,7 @@ namespace GRA.Controllers.MissionControl
         [HttpGet]
         public async Task<IActionResult> CreateTemplate()
         {
-            var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
-            var emailBases = await _emailManagementService.GetEmailBasesAsync();
-
-            var languageSelect
-                = new SelectList(await _languageService.GetIdDescriptionDictionaryAsync(),
-                    "Key",
-                    "Value",
-                    defaultLanguageId);
-
-            foreach (var languageOption in languageSelect)
-            {
-                if (languageOption.Value != defaultLanguageId.ToString(CultureInfo.InvariantCulture))
-                {
-                    languageOption.Disabled = true;
-                }
-            }
-            return View("Details", new DetailsViewModel
-            {
-                Action = nameof(CreateTemplate),
-                EmailBases = new SelectList(emailBases,
-                    nameof(EmailBase.Id),
-                    nameof(EmailBase.Name)),
-                Footer = _sharedLocalizer[GRA.Annotations.Interface.EmailDefaultFooter],
-                Languages = languageSelect,
-                LanguageId = defaultLanguageId,
-                Title = DefaultMailTitle
-            });
+            return await ShowCreateTemplate(new DetailsViewModel());
         }
 
         [HttpPost]
@@ -248,18 +222,13 @@ namespace GRA.Controllers.MissionControl
                 }
             }
 
-            var issues = new StringBuilder("There were issues with your submission:<ul>");
             if (!string.IsNullOrEmpty(insertProblem))
             {
-                issues.Append("<li>").Append(insertProblem).AppendLine("</li>");
+                ShowAlertWarning("There were issues with your submission:<ul><li>"
+                    + insertProblem + "</li></ul>");
             }
-            foreach (var key in ModelState.Keys)
-            {
-                issues.Append("<li>").Append(ModelState[key]).AppendLine("</li>");
-            }
-            issues.Append("</ul>");
-            ShowAlertWarning(issues.ToString());
-            return RedirectToAction(nameof(CreateTemplate));
+
+            return await ShowCreateTemplate(detailsViewModel);
         }
 
         [HttpGet]
@@ -1241,6 +1210,36 @@ namespace GRA.Controllers.MissionControl
                 emailAddressesViewModel.HasSources = allEmailReminders.Count > 0;
             }
             return View(emailAddressesViewModel);
+        }
+
+        private async Task<IActionResult> ShowCreateTemplate(DetailsViewModel viewModel)
+        {
+            var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
+            var emailBases = await _emailManagementService.GetEmailBasesAsync();
+
+            var languageSelect
+                = new SelectList(await _languageService.GetIdDescriptionDictionaryAsync(),
+                    "Key",
+                    "Value",
+                    defaultLanguageId);
+
+            foreach (var languageOption in languageSelect)
+            {
+                if (languageOption.Value != defaultLanguageId.ToString(CultureInfo.InvariantCulture))
+                {
+                    languageOption.Disabled = true;
+                }
+            }
+
+            viewModel.Action = nameof(CreateTemplate);
+            viewModel.EmailBases = new SelectList(emailBases,
+                    nameof(EmailBase.Id),
+                    nameof(EmailBase.Name));
+            viewModel.Footer = _sharedLocalizer[Annotations.Interface.EmailDefaultFooter];
+            viewModel.Languages = languageSelect;
+            viewModel.LanguageId = defaultLanguageId;
+            viewModel.Title = DefaultMailTitle;
+            return View("Details", viewModel);
         }
 
         private string UnsubBase()
