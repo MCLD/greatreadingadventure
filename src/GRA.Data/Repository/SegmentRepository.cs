@@ -56,8 +56,7 @@ namespace GRA.Data.Repository
 
             if (!texts)
             {
-                var messageTemplate = await DbSet.SingleAsync(_ => _.Id == segmentId);
-                DbSet.Remove(messageTemplate);
+                DbSet.Remove(await DbSet.SingleAsync(_ => _.Id == segmentId));
                 await _context.SaveChangesAsync();
             }
         }
