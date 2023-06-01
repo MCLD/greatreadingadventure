@@ -1367,15 +1367,15 @@ namespace GRA.Domain.Service
 
                         await _mailService.SendSystemMailAsync(new Mail
                         {
-                            ToUserId = userId,
+                            Body = message.Body,
                             CanParticipantDelete = false,
                             Subject = message.Subject,
-                            Body = message.Body,
                             TemplateDictionary = new Dictionary<string, string>
                             {
                                 { TemplateToken.VendorCodeToken, "" },
                                 { TemplateToken.VendorLinkToken, markedUpUrl }
-                            }
+                            },
+                            ToUserId = userId
                         }, siteId);
                     }
                 }

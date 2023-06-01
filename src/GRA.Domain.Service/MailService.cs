@@ -546,6 +546,7 @@ namespace GRA.Domain.Service
 
         public async Task<Mail> SendSystemMailAsync(Mail mail, int? siteId = null)
         {
+            ArgumentNullException.ThrowIfNull(mail);
             var user = await _userRepository.GetByIdAsync(mail.ToUserId.Value);
             if (user != null)
             {
@@ -562,6 +563,8 @@ namespace GRA.Domain.Service
                     var stubble = new StubbleBuilder().Build();
                     mail.Body = await stubble.RenderAsync(mail.Body, mail.TemplateDictionary);
                 }
+
+                mail.Body = CommonMark.CommonMarkConverter.Convert(mail.Body);
 
                 return await _mailRepository.AddSaveNoAuditAsync(mail);
             }

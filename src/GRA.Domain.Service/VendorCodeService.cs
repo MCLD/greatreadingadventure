@@ -721,13 +721,6 @@ namespace GRA.Domain.Service
             return householdPendingCodes.Count;
         }
 
-        public async Task RemoveTypeAsync(int vendorCodeTypeId)
-        {
-            VerifyManagementPermission();
-            await _vendorCodeTypeRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId),
-                vendorCodeTypeId);
-        }
-
         public async Task<VendorCode> ResolveCodeStatusAsync(int userId,
             bool? donate,
             bool? emailAward,
@@ -2022,15 +2015,15 @@ namespace GRA.Domain.Service
 
             await _mailService.SendSystemMailAsync(new Mail
             {
-                ToUserId = userId,
+                Body = message.Body,
                 CanParticipantDelete = false,
                 Subject = message.Subject,
-                Body = message.Body,
                 TemplateDictionary = new Dictionary<string, string>
                 {
                     { TemplateToken.VendorCodeToken, assignedCode },
                     { TemplateToken.VendorLinkToken, markedUpUrl }
-                }
+                },
+                ToUserId = userId
             }, siteId);
         }
 
