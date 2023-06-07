@@ -521,11 +521,13 @@ namespace GRA.Controllers.MissionControl
             Microsoft.AspNetCore.Http.IFormFile excelFile)
         {
             if (excelFile == null
-                || !string.Equals(Path.GetExtension(excelFile.FileName), ".xls",
-                    StringComparison.OrdinalIgnoreCase))
+                || (!string.Equals(Path.GetExtension(excelFile.FileName), ".xls",
+                    StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(Path.GetExtension(excelFile.FileName), ".xlsx",
+                    StringComparison.OrdinalIgnoreCase)))
             {
-                AlertDanger = "You must select an .xls file.";
-                ModelState.AddModelError("excelFile", "You must select an .xls file.");
+                AlertDanger = "You must select an .xls or .xlsx file.";
+                ModelState.AddModelError("excelFile", "You must select an .xls or .xlsx file.");
                 return RedirectToAction("ImportStatus");
             }
 

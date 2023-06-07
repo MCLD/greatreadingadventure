@@ -1212,7 +1212,7 @@ namespace GRA.Domain.Service
                         SendingUserId = GetActiveUserId()
                     };
 
-                    using (var excelReader = ExcelReaderFactory.CreateBinaryReader(stream))
+                    using (var excelReader = ExcelReaderFactory.CreateReader(stream))
                     {
                         while (excelReader.Read())
                         {

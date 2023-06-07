@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -2549,32 +2550,44 @@ namespace GRA.Controllers.MissionControl
             string redeemButton,
             string undonateButton)
         {
+            if (viewModel == null)
+            {
+                ShowAlertWarning("Could not find that participant.");
+                return RedirectToAction(nameof(Index));
+            }
+
             int userId = 0;
+            bool? emailAward = null;
             bool? donationStatus = null;
             if (!string.IsNullOrEmpty(donateButton))
             {
                 donationStatus = true;
-                userId = int.Parse(donateButton);
+                userId = int.Parse(donateButton, CultureInfo.InvariantCulture);
             }
             if (!string.IsNullOrEmpty(redeemButton))
             {
                 donationStatus = false;
-                userId = int.Parse(redeemButton);
+                emailAward = false;
+                userId = int.Parse(redeemButton, CultureInfo.InvariantCulture);
             }
             if (!string.IsNullOrEmpty(undonateButton) && UserHasPermission(Permission.UnDonateVendorCode))
             {
                 donationStatus = null;
-                userId = int.Parse(undonateButton);
+                userId = int.Parse(undonateButton, CultureInfo.InvariantCulture);
             }
             if (userId == 0)
             {
-                _logger.LogError($"User {GetActiveUserId()} unsuccessfully attempted to change donation for user {userId} to {donationStatus}");
-                AlertDanger = "Could not make requested change.";
+                _logger.LogError("User {ActiveUserId)} unsuccessfully attempted to change donation for user {TargetUserId} to {DonationStatus}",
+                    GetActiveUserId(),
+                    userId,
+                    donationStatus);
+                ShowAlertDanger("Could not make requested change.");
             }
             else
             {
-                await _vendorCodeService.ResolveCodeStatusAsync(userId, donationStatus, null);
+                await _vendorCodeService.ResolveCodeStatusAsync(userId, donationStatus, emailAward);
             }
+
             return RedirectToAction("Household", "Participants", new { id = viewModel.Id });
         }
 
