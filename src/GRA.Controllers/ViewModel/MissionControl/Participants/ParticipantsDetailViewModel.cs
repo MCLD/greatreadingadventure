@@ -31,5 +31,15 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public string TranslationDescriptionPastTense { get; set; }
         public GRA.Domain.Model.User User { get; set; }
         public string Username { get; set; }
+
+        public bool IsVendorCodeDisplayed
+        {
+            get
+            {
+                return !string.IsNullOrWhiteSpace(User.VendorCode)
+                    || User.NeedsToAnswerVendorCodeQuestion
+                    || User.Donated == true;
+            }
+        }
     }
 }
