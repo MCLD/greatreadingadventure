@@ -24,13 +24,12 @@ namespace GRA.Controllers.ViewModel.Home
         public string DashboardAlert { get; set; }
         public AlertType DashboardAlertType { get; set; }
         public string DashboardPageContent { get; set; }
+        public int Day { get; set; }
         public bool DisableSecretCode { get; set; }
         public bool FirstTimeParticipant { get; set; }
         public bool HasPendingVendorCodeQuestion { get; set; }
-        public int? SiteActivityPercentComplete { get; set; }
         public int? PercentComplete { get; set; }
         public string ProgramName { get; set; }
-        public int? SiteReadingGoal { get; set; }
         public string ProgressMessage { get; set; }
 
         [DisplayName(DisplayNames.SecretCode)]
@@ -38,6 +37,8 @@ namespace GRA.Controllers.ViewModel.Home
 
         public string SecretCodeMessage { get; set; }
         public bool SingleEvent { get; set; }
+        public int? SiteActivityPercentComplete { get; set; }
+        public int? SiteReadingGoal { get; set; }
         public SiteStage SiteStage { get; set; }
 
         [MaxLength(500, ErrorMessage = ErrorMessages.MinLength)]

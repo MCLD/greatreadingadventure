@@ -237,7 +237,8 @@
                                                                 class="btn btn-primary btn-xs viewDailyImage"
                                                                 style="display: inline-block;vertical-align:top;"
                                                                 data-src="@Url.Content($"~/{Model.DailyImageDictionary[Model.Head.ProgramId].DailyImagePath}")"
-                                                                data-large="@Model.DailyImageDictionary[Model.Head.ProgramId].IsLarge">
+                                                                data-large="@Model.DailyImageDictionary[Model.Head.ProgramId].IsLarge"
+                                                                data-day="@Model.DailyImageDictionary[Model.Head.ProgramId].Day">
                                                             @Model.DailyImageDictionary[Model.Head.ProgramId].DailyImageMessage
                                                         </button>
                                                     }
@@ -389,7 +390,8 @@
                                                                     class="btn btn-primary btn-xs viewDailyImage"
                                                                     style="display: inline-block;vertical-align:top;"
                                                                     data-src="@Url.Content($"~/{Model.DailyImageDictionary[user.ProgramId].DailyImagePath}")"
-                                                                    data-large="@Model.DailyImageDictionary[user.ProgramId].IsLarge.ToString().ToLower()">
+                                                                    data-large="@Model.DailyImageDictionary[user.ProgramId].IsLarge.ToString().ToLower()"
+                                                                    data-day="@Model.DailyImageDictionary[user.ProgramId].Day">
                                                                 @Model.DailyImageDictionary[user.ProgramId].DailyImageMessage
                                                             </button>
                                                         }
@@ -658,14 +660,22 @@
         };
 
         $(".viewDailyImage").on("click", function () {
-            var src = $(this).data("src");
-            var isLarge = $(this).data("large");
+            let src = $(this).data("src");
+            let isLarge = $(this).data("large");
+            let day = $(this).data("day");
             $(".daily-image").attr("src", src);
             if (isLarge) {
                 $("#dailyImageModalDialog").addClass("modal-lg")
             }
             else {
                 $("#dailyImageModalDialog").removeClass("modal-lg")
+            }
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'view_daily_tip', {
+                    'source_page': 'household',
+                    'event_category': 'image',
+                    'event_label': day
+                });
             }
             $("#dailyImageModal").modal().show();
         });

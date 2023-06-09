@@ -64,7 +64,7 @@ namespace GRA.Controllers
             VendorCodeService vendorCodeService) : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _mapper = context.Mapper;
+            _mapper = context?.Mapper;
             _activityService = activityService
                 ?? throw new ArgumentNullException(nameof(activityService));
             _authenticationService = authenticationService
@@ -1166,15 +1166,16 @@ namespace GRA.Controllers
                                         DailyImageMessage = dailyLiteracyTip.Message,
                                         DailyImagePath
                                             = _pathResolver.ResolveContentPath(imagePath),
-                                        IsLarge = dailyLiteracyTip.IsLarge
+                                        IsLarge = dailyLiteracyTip.IsLarge,
+                                        Day = day.Value
                                     };
-                                    dailyImageDictionary.Add(program.Id, dailyImageViewModel);
+                                    viewModel.DailyImageDictionary.Add(program.Id,
+                                        dailyImageViewModel);
                                 }
                             }
                         }
                     }
                 }
-                viewModel.DailyImageDictionary = dailyImageDictionary;
 
                 if (showVendorCodes)
                 {
