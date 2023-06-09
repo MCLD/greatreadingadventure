@@ -68,7 +68,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
             {
                 sb.Append("<div>").Append(codeInfo.VendorCodeMessage).Append("</div>");
             }
-            if (codeInfo?.VendorCode?.PackingSlip > 0)
+            if (!string.IsNullOrEmpty(codeInfo?.VendorCode?.PackingSlip))
             {
                 sb.Append("<div>Packing slip: <a href=\"")
                     .Append(codeInfo.PackingSlipLink)

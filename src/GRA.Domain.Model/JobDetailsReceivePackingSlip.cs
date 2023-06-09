@@ -6,7 +6,7 @@ namespace GRA.Domain.Model
     {
         public IEnumerable<int> DamagedItems { get; set; }
         public IEnumerable<int> MissingItems { get; set; }
-        public long PackingSlipNumber { get; set; }
+        public string PackingSlipNumber { get; set; }
         public string SiteName { get; set; }
     }
 }

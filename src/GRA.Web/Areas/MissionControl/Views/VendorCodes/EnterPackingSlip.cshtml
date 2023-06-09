@@ -1,4 +1,4 @@
-﻿@model long
+﻿@model string
 
 @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageVendorCodes.ToString()))
 {
@@ -15,8 +15,7 @@
                 <div class="input-group">
                     <label for="numberOfCodes" 
                            class="input-group-addon">Packing slip number:</label>
-                    <input type="number"
-                           id="id"
+                    <input id="id"
                            name="id"
                            class="form-control"
                            value="@Model" />

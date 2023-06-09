@@ -35,7 +35,9 @@ namespace GRA.Data.Model
         public bool IsUsed { get; set; }
 
         public DateTime? OrderDate { get; set; }
-        public long PackingSlip { get; set; }
+
+        [MaxLength(255)]
+        public string PackingSlip { get; set; }
 
         [MaxLength(255)]
         public string ReasonForReassignment { get; set; }

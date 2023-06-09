@@ -136,7 +136,7 @@ namespace GRA.Domain.Model
 
         public string VendorCode { get; set; }
         public string VendorCodeMessage { get; set; }
-        public long VendorCodePackingSlip { get; set; }
+        public string VendorCodePackingSlip { get; set; }
         public string VendorCodeUrl { get; set; }
         public bool VendorIsDamaged { get; set; }
         public bool VendorIsMissing { get; set; }

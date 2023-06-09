@@ -2715,7 +2715,7 @@ namespace GRA.Controllers.MissionControl
                     "Description")
             };
 
-            if (viewModel.CurrentCode?.VendorCode?.PackingSlip > 0)
+            if (!string.IsNullOrEmpty(viewModel.CurrentCode?.VendorCode?.PackingSlip))
             {
                 viewModel.CurrentCode.PackingSlipLink
                     = Url.Action(nameof(VendorCodesController.ViewPackingSlip),
@@ -2733,7 +2733,7 @@ namespace GRA.Controllers.MissionControl
                         ParticipantsController.Name,
                         new { id = code.VendorCode.ReassignedByUserId.Value });
                 }
-                if (code.VendorCode?.PackingSlip > 0)
+                if (!string.IsNullOrEmpty(code.VendorCode?.PackingSlip))
                 {
                     code.PackingSlipLink = Url.Action(nameof(VendorCodesController.ViewPackingSlip),
                         VendorCodesController.Name,
