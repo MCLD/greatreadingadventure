@@ -5,6 +5,6 @@ namespace GRA.Domain.Repository
 {
     public interface IVendorCodePackingSlipRepository : IRepository<Model.VendorCodePackingSlip>
     {
-        public Task<VendorCodePackingSlip> GetByPackingSlipNumberAsync(long packingSlipNumber);
+        public Task<VendorCodePackingSlip> GetByPackingSlipNumberAsync(string packingSlipNumber);
     }
 }

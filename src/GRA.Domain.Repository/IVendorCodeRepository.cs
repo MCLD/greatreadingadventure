@@ -17,11 +17,11 @@ namespace GRA.Domain.Repository
 
         Task<VendorCode> GetByCode(string code);
 
-        Task<ICollection<VendorCode>> GetByPackingSlipAsync(long packingSlipNumber);
+        Task<ICollection<VendorCode>> GetByPackingSlipAsync(string packingSlipNumber);
 
         Task<ICollection<VendorCode>> GetEarnedCodesAsync(ReportCriterion criterion);
 
-        Task<ICollection<VendorCode>> GetHoldSlipsAsync(long packingSlipNumber);
+        Task<ICollection<VendorCode>> GetHoldSlipsAsync(string packingSlipNumber);
 
         Task<ICollection<VendorCode>> GetPendingHouseholdCodes(int headOfHouseholdId);
 

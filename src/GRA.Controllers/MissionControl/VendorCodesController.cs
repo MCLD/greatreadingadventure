@@ -604,7 +604,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public IActionResult LookupPackingSlip(long id)
+        public IActionResult LookupPackingSlip(string id)
         {
             return RedirectToAction(nameof(ViewPackingSlip), new { id });
         }
@@ -618,7 +618,7 @@ namespace GRA.Controllers.MissionControl
                 return RedirectNotAuthorized(NoAccess);
             }
 
-            if (summary.PackingSlipNumber == 0)
+            if (string.IsNullOrEmpty(summary.PackingSlipNumber))
             {
                 AlertWarning = "Please enter a valid packing slip number.";
                 return View("EnterPackingSlip", summary.PackingSlipNumber);
@@ -962,9 +962,9 @@ namespace GRA.Controllers.MissionControl
 
         [HttpGet]
         [Authorize(Policy = Policy.ViewParticipantDetails)]
-        public async Task<IActionResult> ViewHoldSlips(long id)
+        public async Task<IActionResult> ViewHoldSlips(string id)
         {
-            if (id == 0)
+            if (string.IsNullOrEmpty(id))
             {
                 return View("EnterPackingSlip");
             }
@@ -981,9 +981,9 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpGet]
-        public async Task<IActionResult> ViewPackingSlip(long id)
+        public async Task<IActionResult> ViewPackingSlip(string id)
         {
-            if (id == 0)
+            if (string.IsNullOrEmpty(id))
             {
                 return View("EnterPackingSlip");
             }

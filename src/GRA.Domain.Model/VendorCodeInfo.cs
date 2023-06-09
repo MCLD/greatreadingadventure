@@ -43,7 +43,7 @@ namespace GRA.Domain.Model
         public VendorCode VendorCode { get; set; }
         public string VendorCodeDisplay { get; set; }
         public string VendorCodeMessage { get; set; }
-        public long VendorCodePackingSlip { get; set; }
+        public string VendorCodePackingSlip { get; set; }
         public string VendorCodeUrl { get; set; }
     }
 }

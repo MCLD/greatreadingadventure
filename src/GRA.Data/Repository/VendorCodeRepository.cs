@@ -176,7 +176,7 @@ namespace GRA.Data.Repository
             return _mapper.Map<VendorCode>(vendorCode);
         }
 
-        public async Task<ICollection<VendorCode>> GetByPackingSlipAsync(long packingSlipNumber)
+        public async Task<ICollection<VendorCode>> GetByPackingSlipAsync(string packingSlipNumber)
         {
             var codes = await DbSet
                 .Where(_ => _.PackingSlip == packingSlipNumber)
@@ -249,7 +249,7 @@ namespace GRA.Data.Repository
                           .ToListAsync();
         }
 
-        public async Task<ICollection<VendorCode>> GetHoldSlipsAsync(long packingSlipNumber)
+        public async Task<ICollection<VendorCode>> GetHoldSlipsAsync(string packingSlipNumber)
         {
             var codes = await DbSet
                 .Where(_ => _.PackingSlip == packingSlipNumber

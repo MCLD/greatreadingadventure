@@ -10,7 +10,7 @@ namespace GRA.Domain.Model
         public bool CanViewDetails { get; set; }
         public IEnumerable<int> DamagedItems { get; set; }
         public IEnumerable<int> MissingItems { get; set; }
-        public long PackingSlipNumber { get; set; }
+        public string PackingSlipNumber { get; set; }
         public string ProgramInfo { get; set; }
         public string ReceivedBy { get; set; }
         public string SubmitText { get; set; }

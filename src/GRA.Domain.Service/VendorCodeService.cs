@@ -26,7 +26,7 @@ namespace GRA.Domain.Service
         private const string BranchIdRowHeading = "Branch Id";
         private const string CouponRowHeading = "Free Book Code";
         private const string DetailsRowHeading = "Title";
-        private const string EmailAddressRowHeading = "Email Address";
+        private const string EmailAddressRowHeading = "Email";
         private const string ErrorParseError = "Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}";
         private const string ErrorUnableToParse = "Unable to parse {Field}, row {SpreadsheetRow}: {Value}";
         private const string OrderDateRowHeading = "Creation Date";
@@ -106,7 +106,7 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(vendorCodeTypeRepository));
         }
 
-        private IDictionary<long, VendorCodePackingSlip> PsCache { get; set; }
+        private IDictionary<string, VendorCodePackingSlip> PsCache { get; set; }
 
         public Task<VendorCodeType> AddTypeAsync(VendorCodeType vendorCodeType)
         {
@@ -368,7 +368,7 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<PackingSlipSummary> GetHoldSlipsAsync(long packingSlipNumber)
+        public async Task<PackingSlipSummary> GetHoldSlipsAsync(string packingSlipNumber)
         {
             var siteId = GetCurrentSiteId();
             var siteLink = await _siteLookupService.GetSiteLinkAsync(siteId);
@@ -542,7 +542,7 @@ namespace GRA.Domain.Service
                     = JsonConvert
                         .DeserializeObject<JobDetailsReceivePackingSlip>(job.SerializedParameters);
 
-                long packingSlipNumber = jobDetails.PackingSlipNumber;
+                string packingSlipNumber = jobDetails.PackingSlipNumber;
 
                 token.Register(() =>
                 {
@@ -1326,7 +1326,7 @@ namespace GRA.Domain.Service
                                     string coupon = null;
                                     DateTime? orderDate = null;
                                     DateTime? shipDate = null;
-                                    long packingSlip = default;
+                                    string packingSlip = null;
                                     string trackingNumber = null;
                                     string details = null;
                                     int? branchId = null;
@@ -1395,7 +1395,7 @@ namespace GRA.Domain.Service
                                     {
                                         try
                                         {
-                                            packingSlip = GetExcelLong(excelReader,
+                                            packingSlip = GetExcelString(excelReader,
                                                 row,
                                                 packingSlipColumnId,
                                                 "packing slip");
@@ -1665,7 +1665,7 @@ namespace GRA.Domain.Service
             return UpdateTypeInternalAsync(vendorCodeType);
         }
 
-        public async Task<PackingSlipSummary> VerifyPackingSlipAsync(long packingSlipNumber)
+        public async Task<PackingSlipSummary> VerifyPackingSlipAsync(string packingSlipNumber)
         {
             var packingSlipSummary = new PackingSlipSummary
             {
@@ -1765,11 +1765,11 @@ namespace GRA.Domain.Service
             return result;
         }
 
-        private async Task<VendorCodePackingSlip> GetPs(long packingSlip)
+        private async Task<VendorCodePackingSlip> GetPs(string packingSlip)
         {
             VendorCodePackingSlip ps;
 
-            PsCache ??= new Dictionary<long, VendorCodePackingSlip>();
+            PsCache ??= new Dictionary<string, VendorCodePackingSlip>();
 
             if (PsCache.TryGetValue(packingSlip, out VendorCodePackingSlip value))
             {
@@ -2092,7 +2092,7 @@ namespace GRA.Domain.Service
             DateTime? shipDate,
             string details,
             int? branchId,
-            long packingSlip,
+            string packingSlip,
             string trackingNumber,
             DateTime? arrivalDate)
         {

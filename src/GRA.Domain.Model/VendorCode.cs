@@ -34,7 +34,10 @@ namespace GRA.Domain.Model
         public bool IsUserValid { get; set; }
         public string LastName { get; set; }
         public DateTime? OrderDate { get; set; }
-        public long PackingSlip { get; set; }
+
+        [MaxLength(255)]
+        public string PackingSlip { get; set; }
+
         public string ParticipantName { get; set; }
         public string ReasonForReassignment { get; set; }
         public DateTime? ReassignedAt { get; set; }

@@ -17,7 +17,7 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<VendorCodePackingSlip> GetByPackingSlipNumberAsync(long packingSlipNumber)
+        public async Task<VendorCodePackingSlip> GetByPackingSlipNumberAsync(string packingSlipNumber)
         {
             return await DbSet
                 .Where(_ => _.PackingSlip == packingSlipNumber)
