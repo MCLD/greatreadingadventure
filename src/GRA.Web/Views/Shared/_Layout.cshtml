@@ -70,7 +70,12 @@
 
             @if (Context.Items[GRA.Controllers.ItemKey.SignedIn] != null)
             {
-                @:gtag('event', 'login');
+                <text>
+                if (typeof gtag !== 'undefined')
+                {
+                    gtag('event', 'login');
+                }
+                </text>
             }
         </script>
     }
@@ -251,9 +256,9 @@
     <script src="/js/main.min.js"></script>
     @RenderSection("scripts", required: false)
     <script>
-            $(function () {
-                $('[data-toggle="tooltip"]').tooltip()
-            })
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
         @if (Context.Items[GRA.Controllers.ItemKey.NotificationsModal] != null)
         {
             @:$('#notificationsModal').modal('show');

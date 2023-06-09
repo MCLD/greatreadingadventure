@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Controllers.Attributes;
@@ -90,7 +89,7 @@ namespace GRA.Controllers
         [HttpPost]
         public async Task<IActionResult> AddReminder(LandingPageViewModel viewModel)
         {
-            if (!string.IsNullOrEmpty(viewModel.Email))
+            if (!string.IsNullOrEmpty(viewModel?.Email))
             {
                 var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
                 var currentLanguageId = await _languageService
@@ -135,8 +134,8 @@ namespace GRA.Controllers
         {
             var site = await GetCurrentSiteAsync();
             var filename = new string(site.Name.Where(_ => char.IsLetterOrDigit(_)).ToArray());
-            var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
-            var calendarBytes = await _siteService.GetIcsFile(siteUrl);
+            var siteLink = await _siteLookupService.GetSiteLinkAsync(site.Id);
+            var calendarBytes = await _siteService.GetIcsFile(siteLink.ToString());
             return File(calendarBytes, "text/calendar", $"{filename}.ics");
         }
 
@@ -242,10 +241,14 @@ namespace GRA.Controllers
                             program.DailyLiteracyTipId.Value, day.Value);
                         if (image != null)
                         {
-                            var imagePath = Path.Combine($"site{site.Id}",
+                            var pathElements = new[] {
+                                $"site{site.Id}",
                                 "dailyimages",
                                 $"dailyliteracytip{program.DailyLiteracyTipId}",
-                                $"{image.Name}{image.Extension}");
+                                image.Name + image.Extension
+                            };
+
+                            var imagePath = string.Join('/', pathElements);
 
                             if (System.IO.File.Exists(_pathResolver
                                 .ResolveContentFilePath(imagePath)))
@@ -256,6 +259,7 @@ namespace GRA.Controllers
                                 viewModel.DailyImageMessage = dailyLiteracyTip.Message;
                                 viewModel.DailyImagePath
                                     = _pathResolver.ResolveContentPath(imagePath);
+                                viewModel.Day = day.Value;
                             }
                         }
                     }
@@ -448,13 +452,20 @@ namespace GRA.Controllers
         [HttpPost]
         public async Task<IActionResult> LogSecretCode(DashboardViewModel viewModel)
         {
-            try
+            if (viewModel == null)
             {
-                await _activityService.LogSecretCodeAsync(GetActiveUserId(), viewModel.SecretCode);
+                TempData[SecretCodeMessage] = "There was an error with that code.";
             }
-            catch (GraException gex)
+            else
             {
-                TempData[SecretCodeMessage] = gex.Message;
+                try
+                {
+                    await _activityService.LogSecretCodeAsync(GetActiveUserId(), viewModel.SecretCode);
+                }
+                catch (GraException gex)
+                {
+                    TempData[SecretCodeMessage] = gex.Message;
+                }
             }
             return RedirectToAction(nameof(Index));
         }

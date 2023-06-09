@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Rename "Redemption Instructions" label to "Redemptions Instructions for Staff"
 - Update to use avatar package 4.2.2
+- Improve Google Analytics to better support GA 4 and events
 
 ## Added
 

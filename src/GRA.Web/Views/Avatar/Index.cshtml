@@ -234,7 +234,7 @@
         $.ajaxSetup({
             timeout: 30000
         });
-        $( document ).ready(function() {
+        $(document).ready(function () {
             //Sets the default layer
             SetLayer($("#layer-container").find("[data-layer='" + @Model.DefaultLayer +"']"));
             var saveSpinner = $("#saveAvatar").find("span.fa-spinner");
@@ -242,12 +242,12 @@
         });
         //Returns the layer's selected item Id
         function GetLayersSelectedItemId(layerId) {
-            var item = $("img.avatar-layer-selector[data-layer='" + layerId +"']").first();
+            var item = $("img.avatar-layer-selector[data-layer='" + layerId + "']").first();
             return item.data("item");
         }
         //Returns the layer's selected color Id
         function GetLayersSelectedColorId(layerId) {
-            var item = $("img.avatar-layer-selector[data-layer='" + layerId +"']").first();
+            var item = $("img.avatar-layer-selector[data-layer='" + layerId + "']").first();
             return item.data("color");
         }
         //Given a layer ID, returns the layer object
@@ -283,7 +283,7 @@
         }
         //returns the ItemId or ColorId for the first active object & marks it selected
         function SelectGetFirstActiveObjectId(type, layer) {
-            var item = $("#avatar" + type +"s").find(".slick-active").find(".avatar-"+type.toLowerCase()+"-selector").first();
+            var item = $("#avatar" + type + "s").find(".slick-active").find(".avatar-" + type.toLowerCase() + "-selector").first();
             layer.data(type.toLowerCase(), item.data(type.toLowerCase()));
             item.addClass("selected");
             return layer.data(type.toLowerCase());
@@ -301,9 +301,8 @@
             return items;
         }
         //Updates the the layer's image
-        function UpdateAvatarContainer(type,id, srcStr, layerId, hide) {
-            for (var idx = 0; idx < $(".avatar-container").length; idx++)
-            {
+        function UpdateAvatarContainer(type, id, srcStr, layerId, hide) {
+            for (var idx = 0; idx < $(".avatar-container").length; idx++) {
                 var image = $($(".avatar-container")[idx]).find(".image" + layerId);
                 image.data(type, id);
                 image.attr("src", srcStr);
@@ -360,8 +359,7 @@
         $(".avatar-layer-selector").on("click", function () {
             var layer = $(this);
             var currentLayer = CurrentSelectedLayer();
-            if (currentLayer == undefined || layer.data("layer") != currentLayer.data("layer"))
-            {
+            if (currentLayer == undefined || layer.data("layer") != currentLayer.data("layer")) {
                 currentLayer.removeClass("selected");
                 SetLayer(layer);
             }
@@ -378,8 +376,7 @@
                 $("#avatarItems").addClass("hide");
                 $("#removeButton").addClass("hide");
             }
-            else if (layer.data("showitemselector") == "True")
-            {
+            else if (layer.data("showitemselector") == "True") {
                 //If a regular item container is being displayed
                 $("#avatarBundles").addClass("hide");
                 $("#avatarItems").removeClass("hide");
@@ -405,7 +402,7 @@
         }
 
         // Initializes the item/color slicks
-        function SetLayersSelectors(divId,rowCount) {
+        function SetLayersSelectors(divId, rowCount) {
             var drag, infin = true;
             var selected, bundleId, totalitems = 0;
             var selectedIds, slickSettings = [];
@@ -418,29 +415,28 @@
             var layerObj = CurrentSelectedLayer();
             var layerId = $(layerObj).data("layer");
             // if we're dealing with bundles
-            if(layerId == 999) {
+            if (layerId == 999) {
                 selectedIds = GetAllSelectedItems();
                 selectType = "Bundle";
                 bundleId = $("#bundle-selected").data("bundleid");
-            }
-            else{
+            } else {
                 selected = (selectType == "Color") ? GetLayersSelectedColorId(layerId) : GetLayersSelectedItemId(layerId);
             }
             $.ajax(
-            {
-                type: 'GET',
-                traditional: true,
-                contentType: 'application/json; charset=utf-8',
-                data:
                 {
-                    type: selectType,
-                    layerId: layerId,
-                    selectedItemId: $.makeArray(selected),
-                    bundleId: bundleId,
-                    selectedItemIds: selectedIds
-                },
-                dataType: 'html',
-                url: "@Url.Action(nameof(AvatarController.GetLayersItems))",
+                    type: 'GET',
+                    traditional: true,
+                    contentType: 'application/json; charset=utf-8',
+                    data:
+                    {
+                        type: selectType,
+                        layerId: layerId,
+                        selectedItemId: $.makeArray(selected),
+                        bundleId: bundleId,
+                        selectedItemIds: selectedIds
+                    },
+                    dataType: 'html',
+                    url: "@Url.Action(nameof(AvatarController.GetLayersItems))",
                     success: function (data) {
                         $($(divId).parent()).html(data);
                     },
@@ -448,53 +444,53 @@
                         window.location.href = "@(Url.Action(nameof(SignInController.Index)))"
                     }
                 })
-            .then(function () {
-                var itemIndex = $(divId).data("index");
-                totalitems = $(divId).data("count");
-                lazyLoading = (totalitems > 15) ? true : false;
-                //Prevents the repeating of the slick items on mobile
-                if (layerId == 999 && totalitems / 12 <= 1) {
-                    drag = false;
-                    infin = false;
+                .then(function () {
+                    var itemIndex = $(divId).data("index");
+                    totalitems = $(divId).data("count");
+                    lazyLoading = (totalitems > 15) ? true : false;
+                    //Prevents the repeating of the slick items on mobile
+                    if (layerId == 999 && totalitems / 12 <= 1) {
+                        drag = false;
+                        infin = false;
                     }
-                if (selectType =="Color") {
-                    slickSettings.push(SlickSettings(768,(Math.floor(itemIndex/(rowCount*8))*8), 8,false, true));
-                    slickSettings.push(SlickSettings(992,(Math.floor(itemIndex/(rowCount*10))*10), 10,false, true));
-                    slickSettings.push(SlickSettings(1200,(Math.floor(itemIndex/(rowCount*12))*12),12,false,true));
-                }
-                else{
-                    slickSettings.push(SlickSettings(500,(Math.floor(itemIndex/(rowCount*3))*3), 3,drag, false));
-                    slickSettings.push(SlickSettings(768,(Math.floor(itemIndex/(rowCount*3))*3), 3, false, true));
-                    slickSettings.push(SlickSettings(992,(Math.floor(itemIndex/(rowCount*4))*4), 4, false, true));
-                    slickSettings.push(SlickSettings(1200,(Math.floor(itemIndex/(rowCount*6))*6),6,false,true));
-                }
-                $(divId).slick({
-                    arrows: false,
-                    initialSlide: Math.floor(itemIndex / rowCount),
-                    lazyLoad: 'anticipated',
-                    mobileFirst: true,
-                    rows: rowCount,
-                    slidesPerRow: 1,
-                    slidesToShow: (lazyLoading ? 10 : 1),
-                    swipeToSlide: true,
-                    touchThreshold: 100,
-                    variableWidth: true,
-                    waitForAnimate: false,
-                    infinite: infin,
-                    responsive: slickSettings,
+                    if (selectType == "Color") {
+                        slickSettings.push(SlickSettings(768, (Math.floor(itemIndex / (rowCount * 8)) * 8), 8, false, true));
+                        slickSettings.push(SlickSettings(992, (Math.floor(itemIndex / (rowCount * 10)) * 10), 10, false, true));
+                        slickSettings.push(SlickSettings(1200, (Math.floor(itemIndex / (rowCount * 12)) * 12), 12, false, true));
+                    }
+                    else {
+                        slickSettings.push(SlickSettings(500, (Math.floor(itemIndex / (rowCount * 3)) * 3), 3, drag, false));
+                        slickSettings.push(SlickSettings(768, (Math.floor(itemIndex / (rowCount * 3)) * 3), 3, false, true));
+                        slickSettings.push(SlickSettings(992, (Math.floor(itemIndex / (rowCount * 4)) * 4), 4, false, true));
+                        slickSettings.push(SlickSettings(1200, (Math.floor(itemIndex / (rowCount * 6)) * 6), 6, false, true));
+                    }
+                    $(divId).slick({
+                        arrows: false,
+                        initialSlide: Math.floor(itemIndex / rowCount),
+                        lazyLoad: 'anticipated',
+                        mobileFirst: true,
+                        rows: rowCount,
+                        slidesPerRow: 1,
+                        slidesToShow: (lazyLoading ? 10 : 1),
+                        swipeToSlide: true,
+                        touchThreshold: 100,
+                        variableWidth: true,
+                        waitForAnimate: false,
+                        infinite: infin,
+                        responsive: slickSettings,
+                    });
+                    if (layerId == 999) {
+                        var item = GetFirstActiveSelectedItem();
+                        UpdateRemoveButtonForBundle(item);
+                    }
+                    else {
+                        prevLayerSelected = [];
+                    }
                 });
-                if (layerId == 999) {
-                    var item = GetFirstActiveSelectedItem();
-                    UpdateRemoveButtonForBundle(item);
-                }
-                else {
-                    prevLayerSelected = [];
-                }
-            });
         }
 
         //Creates the slick data
-        function SlickSettings(breakpnt,initslide, toshow,drag,arrows) {
+        function SlickSettings(breakpnt, initslide, toshow, drag, arrows) {
             return {
                 breakpoint: breakpnt,
                 settings: {
@@ -519,65 +515,66 @@
             SaveAvatar();
         });
 
-        @if (Model.SharingEnabled) {
-        // Add's the avatars selection to the share form
+        @if (Model.SharingEnabled)
+        {
+            // Add's the avatars selection to the share form
             <text>
-            $("#shareForm").on("submit", function(e) {
-                if (unsavedChanges) {
-                    @if(Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null){
-                        @:gtag('event', 'avatar_update');
+                $("#shareForm").on("submit", function (e) {
+                    if (unsavedChanges) {
+                        if (typeof gtag !== 'undefined') {
+                            gtag('event', 'avatar_update');
+                        }
+                        $("#shareForm").find("input")
+                            .attr("value", GetAvatarSelection())
+                            .appendTo($(this));
                     }
-                    $("#shareForm").find("input")
-                        .attr("value", GetAvatarSelection())
-                        .appendTo($(this));
-                }
-            });
+                });
             </text>
         }
 
-        // When a user removes the layer's item
-        $("#removeButton").on("click", function () {
-            unsavedChanges = true;
-            $("#saveAvatar").removeClass("btn-default");
-            $("#saveAvatar").addClass("btn-success");
-            var button = $(this);
-            var layer = CurrentSelectedLayer();
-            if (layer.data("layer") != 999) {
-                if (!$("#removeButton").hasClass("hide") && $(".avatarItems").find(".selected") != undefined
-                    && layer.data("removable") == "True") {
-                    $(".avatar-item-selector.selected").removeClass("selected");
-                    $(".avatar-color-selector.selected").removeClass("selected");
-                    layer.data("item", "");
-                    layer.data("color", "");
-                    UpdateAvatarContainer("item", "", "/", layer.data("layer"), true);
-                }
-            }
-            else {
-                var itemsLayer = GetLayerById(button.data("layer"));
-                if (itemsLayer.data("removable") == "True") {
-                    var itemId = GetLayersSelectedItemId(button.data("layer"));
-                    itemsLayer.data("item", "");
-                    var item = $("#avatarItemSelectors").find("img.avatar-item-selector[data-item='" + itemId + "']");
-                    item.removeClass("selected");
-                    var nextSelected = undefined;
-                    UpdateAvatarContainer("item", "", "/", button.data("layer"), true);
-                    prevLayerSelected.splice(0, 1);
-                    if (prevLayerSelected[0] != undefined) {
-                        nextSelected = $("#avatarItemSelectors").find("img.avatar-item-selector.selected[data-layer='" + prevLayerSelected[0] + "']");
-                        UpdateRemoveButtonForBundle(nextSelected);
+            // When a user removes the layer's item
+            $("#removeButton").on("click", function () {
+                unsavedChanges = true;
+                $("#saveAvatar").removeClass("btn-default");
+                $("#saveAvatar").addClass("btn-success");
+                var button = $(this);
+                var layer = CurrentSelectedLayer();
+                if (layer.data("layer") != 999) {
+                    if (!$("#removeButton").hasClass("hide") && $(".avatarItems").find(".selected") != undefined
+                        && layer.data("removable") == "True") {
+                        $(".avatar-item-selector.selected").removeClass("selected");
+                        $(".avatar-color-selector.selected").removeClass("selected");
+                        layer.data("item", "");
+                        layer.data("color", "");
+                        UpdateAvatarContainer("item", "", "/", layer.data("layer"), true);
                     }
-                    else {
-                        nextSelected = GetFirstActiveSelectedItem();
-                        if (nextSelected == undefined) {
-                            $("#removeButton").addClass("hide");
-                        }
-                        else {
+                }
+                else {
+                    var itemsLayer = GetLayerById(button.data("layer"));
+                    if (itemsLayer.data("removable") == "True") {
+                        var itemId = GetLayersSelectedItemId(button.data("layer"));
+                        itemsLayer.data("item", "");
+                        var item = $("#avatarItemSelectors").find("img.avatar-item-selector[data-item='" + itemId + "']");
+                        item.removeClass("selected");
+                        var nextSelected = undefined;
+                        UpdateAvatarContainer("item", "", "/", button.data("layer"), true);
+                        prevLayerSelected.splice(0, 1);
+                        if (prevLayerSelected[0] != undefined) {
+                            nextSelected = $("#avatarItemSelectors").find("img.avatar-item-selector.selected[data-layer='" + prevLayerSelected[0] + "']");
                             UpdateRemoveButtonForBundle(nextSelected);
                         }
+                        else {
+                            nextSelected = GetFirstActiveSelectedItem();
+                            if (nextSelected == undefined) {
+                                $("#removeButton").addClass("hide");
+                            }
+                            else {
+                                UpdateRemoveButtonForBundle(nextSelected);
+                            }
+                        }
                     }
                 }
-            }
-        });
+            });
 
         // Mobile if user zooms in
         $(".avatar-zoom-button").on("click", function () {
@@ -591,7 +588,7 @@
                 var scale = layer.data("zoomscale");
                 var yOffset = layer.data("zoomyoffset");
                 $(this).children().removeClass("fa-search-plus").addClass("fa-search-minus");
-                $(".xsLayer").css({ "transform": "scale(" + scale +")", "top": "" + yOffset + "px" });
+                $(".xsLayer").css({ "transform": "scale(" + scale + ")", "top": "" + yOffset + "px" });
                 xsZoom = true;
             }
         });
@@ -614,12 +611,12 @@
                     function (response) {
                         if (response.success) {
                             listItem.find('span.newBundleSpan').remove();
-                            listItem.data("beenviewed","True")
+                            listItem.data("beenviewed", "True")
                             if ($("span.newBundleSpan").length == 0) {
                                 $("#selector999").attr("src", "/content/site1/avatarbundles/icon.png");
                             }
                         }
-                });
+                    });
             }
             SetLayersSelectors("#avatarItemSelectors", 3);
         }
@@ -663,14 +660,14 @@
             // Handles the image path with the correct color
             if (itemsLayer.data("showcolorselector") == "True") {
                 if ((colorId == undefined || colorId == "")) {
-                    colorId = SelectGetFirstActiveObjectId("Color",itemsLayer);
+                    colorId = SelectGetFirstActiveObjectId("Color", itemsLayer);
                 }
                 srcStr = srcStr + "/item_" + colorId + ".png";
             }
             else {
                 srcStr = srcStr + "/item.png";
             }
-            UpdateAvatarContainer("item",itemId,srcStr,itemsLayer.data("layer"), false);
+            UpdateAvatarContainer("item", itemId, srcStr, itemsLayer.data("layer"), false);
         };
 
         // Updates the color selected and removes the old
@@ -686,11 +683,11 @@
             var itemId = layer.data("item");
             layer.data("color", colorId);
             if (itemId == "" || itemId == undefined) {
-                itemId = SelectGetFirstActiveObjectId("Item",layer);
+                itemId = SelectGetFirstActiveObjectId("Item", layer);
             }
             var srcStr = baseImagePath + "layer" + layer.data("layer") + "/item" + itemId + "/item_" + colorId + ".png";
             //updates both containers with the appropriate images
-            UpdateAvatarContainer("color",colorId,srcStr,layer.data("layer"),false);
+            UpdateAvatarContainer("color", colorId, srcStr, layer.data("layer"), false);
         };
 
         // Saves the Avatars items
@@ -701,13 +698,10 @@
                     $(".avatar-save-message").html("@SharedLocalizer[GRA.Annotations.Interface.AvatarSaved]");
                     $(".avatar-save-message").show().delay(2000).fadeOut("slow");
 
-                    @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null){
-                        <text>
-                        if (unsavedChanges){
-                            gtag('event', 'avatar_update');
-                        }
-                        </text>
+                    if (unsavedChanges && typeof gtag !== 'undefined') {
+                        gtag('event', 'avatar_update');
                     }
+
                     SetUnsavedChanges(false);
                 }
                 else {
@@ -720,10 +714,10 @@
                 $(".avatar-save-message").html("@SharedLocalizer[GRA.Annotations.Validate.CouldNotSaveAvatar]");
                 $(".avatar-save-message").show();
             })
-            .always(function() {
-                $("#saveSpinner").addClass("hidden");
-                $("#saveAvatar").removeAttr("disabled");
-            });
+                .always(function () {
+                    $("#saveSpinner").addClass("hidden");
+                    $("#saveAvatar").removeAttr("disabled");
+                });
         }
     </script>
 }
