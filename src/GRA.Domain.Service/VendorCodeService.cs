@@ -373,11 +373,15 @@ namespace GRA.Domain.Service
             var siteId = GetCurrentSiteId();
             var siteLink = await _siteLookupService.GetSiteLinkAsync(siteId);
             var site = await _siteLookupService.GetByIdAsync(siteId);
+            var codes = await _vendorCodeRepository.GetHoldSlipsAsync(packingSlipNumber);
             return new PackingSlipSummary
             {
                 PackingSlipNumber = packingSlipNumber,
                 ProgramInfo = $"{site.Name} - {siteLink}",
-                VendorCodes = await _vendorCodeRepository.GetHoldSlipsAsync(packingSlipNumber)
+                VendorCodes = codes.OrderBy(_ => _.Details)
+                    .ThenBy(_ => _.LastName)
+                    .ThenBy(_ => _.FirstName)
+                    .ToList()
             };
         }
 
@@ -1667,10 +1671,14 @@ namespace GRA.Domain.Service
 
         public async Task<PackingSlipSummary> VerifyPackingSlipAsync(string packingSlipNumber)
         {
+            var codes = await _vendorCodeRepository.GetByPackingSlipAsync(packingSlipNumber);
             var packingSlipSummary = new PackingSlipSummary
             {
                 PackingSlipNumber = packingSlipNumber,
-                VendorCodes = await _vendorCodeRepository.GetByPackingSlipAsync(packingSlipNumber),
+                VendorCodes = codes.OrderBy(_ => _.Details)
+                    .ThenBy(_ => _.LastName)
+                    .ThenBy(_ => _.FirstName)
+                    .ToList(),
                 VendorCodePackingSlip = await _vendorCodePackingSlipRepository
                     .GetByPackingSlipNumberAsync(packingSlipNumber)
             };

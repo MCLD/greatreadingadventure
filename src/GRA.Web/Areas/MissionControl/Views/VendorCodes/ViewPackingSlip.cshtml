@@ -14,7 +14,7 @@
             </tr>
             <tr>
                 <th>Associated codes</th>
-                <td>@(Model.VendorCodes?.Count ?? 0)</td>
+                <td>@(Model.VendorCodes?.Count() ?? 0)</td>
             </tr>
             <tr>
                 <th>Status</th>
@@ -78,7 +78,7 @@
 
 <div class="row">
     <div class="col-xs-12">
-        @if (Model.VendorCodes?.Count > 0)
+        @if (Model.VendorCodes?.Count() > 0)
         {
             <div style="margin-bottom: 2rem;">
                 <form asp-action="@nameof(VendorCodesController.ProcessPackingSlip)"

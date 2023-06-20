@@ -209,6 +209,8 @@ namespace GRA.Data.Repository
                     code.ParticipantName = string.IsNullOrEmpty(user.LastName)
                         ? user.FirstName
                         : $"{user.FirstName} {user.LastName}";
+                    code.LastName = user.LastName;
+                    code.FirstName = user.FirstName;
                 }
             }
 
@@ -217,6 +219,8 @@ namespace GRA.Data.Repository
 
         public async Task<ICollection<VendorCode>> GetEarnedCodesAsync(ReportCriterion criterion)
         {
+            System.ArgumentNullException.ThrowIfNull(criterion);
+
             // Includes deleted users
             var validUsers = _context.Users.AsNoTracking()
                 .Where(_ => _.SiteId == criterion.SiteId);
