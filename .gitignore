@@ -278,3 +278,6 @@ _site
 .sass-cache
 .jekyll-metadata
 Gemfile.lock
+
+# exclude any Thumbs.db files
+Thumbs.db
