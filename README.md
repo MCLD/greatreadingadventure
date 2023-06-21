@@ -1,6 +1,6 @@
 # The Great Reading Adventure
 
-<img src="https://raw.githubusercontent.com/mcld/greatreadingadventure/develop/src/GRA.Web/wwwroot/images/great-reading-adventure-logo%401x.png"
+<img src="https://raw.githubusercontent.com/mcld/greatreadingadventure/main/src/GRA.Web/wwwroot/images/great-reading-adventure-logo%401x.png"
      alt="Great Reading Adventure logo"
      align="right">
 
@@ -21,7 +21,7 @@ You can visit the [Great Reading Adventure discussions](https://github.com/MCLD/
 
 ## Development
 
-The [`master`](https://github.com/mcld/greatreadingadventure/tree/master) branch contains the latest release, active development occurs on the [`develop`](https://github.com/mcld/greatreadingadventure/tree/develop) branch. Developer documentation can be found [in the project](dev/); developers can be reached via [development discussions](https://github.com/MCLD/greatreadingadventure/discussions/categories/development).
+Active development occurs on the [`main`](https://github.com/mcld/greatreadingadventure/tree/main) branch. Developer documentation can be found [in the project](dev/); developers can be reached via [development discussions](https://github.com/MCLD/greatreadingadventure/discussions/categories/development).
 
 | Windows build                                                                                                                                                     | Linux build                                                                                                                                                                                   | Codacy                                                                                                                                                                                                                                                                   | Documentation                                                                                                                                                        |
 | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
