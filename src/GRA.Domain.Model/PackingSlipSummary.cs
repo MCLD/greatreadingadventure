@@ -26,7 +26,12 @@ namespace GRA.Domain.Model
                 sb.Append(", ");
             }
             sb.Append(firstName);
-            return sb.ToString().ToUpper(CultureInfo.CurrentCulture);
+            return sb.ToString()?.Trim();
+        }
+
+        public static string LastCommaFirstUpper(string firstName, string lastName)
+        {
+            return LastCommaFirst(firstName, lastName)?.ToUpper(CultureInfo.CurrentCulture);
         }
     }
 }

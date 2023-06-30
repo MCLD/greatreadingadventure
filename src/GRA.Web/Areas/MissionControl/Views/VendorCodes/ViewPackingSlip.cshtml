@@ -27,10 +27,10 @@
                             @if (Model.CanViewDetails)
                             {
                                 <a asp-action="Detail"
-                           asp-route-id="@Model.VendorCodePackingSlip.CreatedBy"
-                           asp-controller="@ParticipantsController.Name"
-                           asp-area="@nameof(GRA.Controllers.MissionControl)"
-                           target="_blank">
+                                   asp-route-id="@Model.VendorCodePackingSlip.CreatedBy"
+                                   asp-controller="@ParticipantsController.Name"
+                                   asp-area="@nameof(GRA.Controllers.MissionControl)"
+                                   target="_blank">
                                     @Model.ReceivedBy
                                 </a>
                             }
@@ -65,9 +65,9 @@
                     <th>Hold slips</th>
                     <td>
                         <a asp-action="@nameof(VendorCodesController.ViewHoldSlips)"
-                       asp-route-id="@Model.PackingSlipNumber"
-                       target="_blank"
-                       class="btn btn-sm btn-success">Generate hold slips</a>
+                           asp-route-id="@Model.PackingSlipNumber"
+                           target="_blank"
+                           class="btn btn-sm btn-success">Generate hold slips</a>
                     </td>
                 </tr>
             }
@@ -82,10 +82,10 @@
         {
             <div style="margin-bottom: 2rem;">
                 <form asp-action="@nameof(VendorCodesController.ProcessPackingSlip)"
-                  id="processForm"
-                  method="post"
-                  role="form"
-                  enctype="multipart/form-data">
+                      id="processForm"
+                      method="post"
+                      role="form"
+                      enctype="multipart/form-data">
                     <table class="table table-striped table-condensed table-bordered">
                         <tr>
                             <th>Participant Status</th>
@@ -108,12 +108,12 @@
                         @foreach (var vendorCode in Model.VendorCodes)
                         {
                             <tr class="@(vendorCode.IsUserValid ? null : "danger")"
-                        title="@(vendorCode.IsUserValid ? null : "Participant has been deleted.")">
+                                title="@(vendorCode.IsUserValid ? null : "Participant has been deleted.")">
                                 <td class="text-center">
                                     @if (vendorCode.IsUserValid)
                                     {
                                         <span class="text-success far fa-thumbs-up"
-                                  title="Participant is still valid in the program."></span>
+                                              title="Participant is still valid in the program."></span>
                                     }
                                     else
                                     {
@@ -122,10 +122,10 @@
                                 </td>
                                 <td style="white-space:nowrap;">
                                     <a asp-action="@nameof(ParticipantsController.Detail)"
-                               asp-route-id="@vendorCode.UserId"
-                               asp-controller="@ParticipantsController.Name"
-                               asp-area="@nameof(GRA.Controllers.MissionControl)"
-                               target="_blank">@vendorCode.ParticipantName</a>
+                                       asp-route-id="@vendorCode.UserId"
+                                       asp-controller="@ParticipantsController.Name"
+                                       asp-area="@nameof(GRA.Controllers.MissionControl)"
+                                       target="_blank">@GRA.Domain.Model.PackingSlipSummary.LastCommaFirst(vendorCode.FirstName, vendorCode.LastName)</a>
                                 <td style="white-space: nowrap;">@vendorCode.Code</td>
                                 <td>@vendorCode.Details</td>
                                 <td>@vendorCode.OrderDate?.ToString("d")</td>
@@ -135,15 +135,15 @@
                                     {
                                     <td class="text-center">
                                         <input name="DamagedItems"
-                                   value="@vendorCode.Id"
-                                   class="statusSelector"
-                                   type="checkbox" />
+                                               value="@vendorCode.Id"
+                                               class="statusSelector"
+                                               type="checkbox" />
                                     </td>
                                     <td class="text-center">
                                         <input name="MissingItems"
-                                   value="@vendorCode.Id"
-                                   class="statusSelector"
-                                   type="checkbox" />
+                                               value="@vendorCode.Id"
+                                               class="statusSelector"
+                                               type="checkbox" />
                                     </td>
                                     }
                                     else
@@ -160,7 +160,7 @@
                                         {
                                         <td class="text-center">
                                             <span class="text-success far fa-thumbs-up"
-                                  title="Item is recorded not damaged or missing."></span>
+                                                  title="Item is recorded not damaged or missing."></span>
                                         </td>
                                         }
                                     }
@@ -173,7 +173,7 @@
                         <input asp-for="PackingSlipNumber" type="hidden" />
                         <a asp-action="@nameof(ParticipantsController.Index)" class="btn btn-warning">Cancel</a>
                         <button type="submit"
-                        class="btn btn-success">
+                                class="btn btn-success">
                             @Model.SubmitText
                         </button>
                     }
