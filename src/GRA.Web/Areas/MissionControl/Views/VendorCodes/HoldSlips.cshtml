@@ -72,12 +72,12 @@
     <div class="row holdslip">
         <div class="col-xs-1 vertical-element">
             <div class="rotate">
-                @GRA.Domain.Model.PackingSlipSummary.LastCommaFirst(vendorCode.FirstName, vendorCode.LastName)
+                @GRA.Domain.Model.PackingSlipSummary.LastCommaFirstUpper(vendorCode.FirstName, vendorCode.LastName)
             </div>
         </div>
         <div class="col-xs-11 slip-content">
             <div class="participant-name">
-                @GRA.Domain.Model.PackingSlipSummary.LastCommaFirst(vendorCode.FirstName, vendorCode.LastName)
+                @GRA.Domain.Model.PackingSlipSummary.LastCommaFirstUpper(vendorCode.FirstName, vendorCode.LastName)
             </div>
             <div class="item-title">
                 @vendorCode.Details

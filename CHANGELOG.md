@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Update to use avatar package 4.2.2
 - Improve Google Analytics to better support GA 4 and events
 - Order packing slip and hold slip views by detail, followed by last name and first name
+- Fix display of packing slip to show the name as last name - comma - first name
 
 ## Added
 
