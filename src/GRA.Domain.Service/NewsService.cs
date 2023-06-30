@@ -122,7 +122,7 @@ namespace GRA.Domain.Service
                 currentCategory);
         }
 
-        public async Task<NewsPost> EditPostAsync(NewsPost post, bool publish)
+        public async Task<NewsPost> EditPostAsync(NewsPost post, bool publish, bool markUpdated)
         {
             VerifyManagementPermission();
 
@@ -143,6 +143,12 @@ namespace GRA.Domain.Service
             {
                 currentPost.PublishedAt = _dateTimeProvider.Now;
                 sendSubscriptionEmails = true;
+            }
+
+            if (markUpdated)
+            {
+                currentPost.UpdatedAt = _dateTimeProvider.Now;
+                currentPost.UpdatedBy = GetActiveUserId();
             }
 
             currentPost = await _newsPostRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
@@ -224,17 +230,14 @@ namespace GRA.Domain.Service
         }
 
         public async Task<DataWithCount<IEnumerable<NewsPost>>> GetPaginatedPostListAsync(
-                                            NewsFilter filter)
+            NewsFilter filter)
         {
             if (filter?.IsActive != true)
             {
                 VerifyManagementPermission();
             }
 
-            if (filter == null)
-            {
-                filter = new NewsFilter();
-            }
+            filter ??= new NewsFilter();
 
             filter.SiteId = GetClaimId(ClaimType.SiteId);
 

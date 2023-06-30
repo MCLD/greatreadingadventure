@@ -43,12 +43,22 @@
                 <span asp-validation-for="Post.EmailSummary" class="text-danger"></span>
             </div>
 
+            @if (Model.Post?.PublishedAt != null)
+            {
+                <div class="row row-spacing">
+                    <div class="col-xs-12">
+                        <label asp-for="MarkUpdated" class="control-label"></label>
+                        <select asp-for="MarkUpdated" asp-items="Model.NoYes" class="form-control"></select>
+                    </div>
+                </div>
+            }
+
             <div class="form-group">
                 <a asp-action="Index" class="btn btn-default">Return to List</a>
                 @if (Model.Post?.PublishedAt != null)
                 {
                     <button type="submit" class="btn btn-primary btn-spinner" button-spinner>
-                        <span class="buttonText">Save Post</span>
+                        <span class="buttonText">Update Post</span>
                     </button>
                 }
                 else
@@ -74,7 +84,7 @@
 </form>
 
 @section scripts {
-    <script src="/js/markdown.min.js" ></script>
+    <script src="/js/markdown.min.js"></script>
 
     <script>
         var editor = new Markdown.Editor({ allowUploads: true, privateUpload: true });
