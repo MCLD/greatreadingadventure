@@ -8,8 +8,18 @@
     </style>
 }
 
-<div>
-    <em>Posted on @Model.Post.PublishedAt.Value.ToShortDateString() by @Model.Post.CreatedByName</em>
+<div style="margin-top: 0.5rem;">
+    <em>
+        Posted on @Model.Post.PublishedAt.Value.ToShortDateString() by @Model.Post.CreatedByName
+        @if (Model.Post.UpdatedAt.HasValue)
+        {
+            <text> - updated @Model.Post.UpdatedAt.Value.ToShortDateString()</text>
+            @if (Model.Post.UpdatedBy != Model.Post.CreatedBy)
+            {
+                <text> by @Model.Post.UpdatedByName</text>
+            }
+        }
+    </em>
 </div>
 
 <div style="margin-top: 2rem;">
@@ -20,7 +30,7 @@
     @if (Model.Post.PreviousPostId.HasValue)
     {
         <a asp-action="@nameof(HomeController.Post)"
-       asp-route-id="@Model.Post.PreviousPostId"
+           asp-route-id="@Model.Post.PreviousPostId"
            title="Previous post"
            class="btn btn-default">
             <span class="fas fa-backward"></span>
@@ -35,7 +45,7 @@
     @if (Model.Post.NextPostId.HasValue)
     {
         <a asp-action="@nameof(HomeController.Post)"
-       asp-route-id="@Model.Post.NextPostId"
+           asp-route-id="@Model.Post.NextPostId"
            title="Next post"
            class="btn btn-default">
             <span class="fas fa-forward"></span>

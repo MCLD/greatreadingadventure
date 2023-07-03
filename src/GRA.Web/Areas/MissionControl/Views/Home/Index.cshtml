@@ -183,7 +183,16 @@ else
                             </div>
                         </div>
                         <div class="panel-footer mc-news-panel-footer">
-                            <em>Posted on @post.PublishedAt.Value.ToShortDateString() by <a href="mailto:@(Model.SiteAdministratorEmail)?Subject=Post @(post.Title)" target="_top">@post.CreatedByName</a></em>
+                            <em>Posted on @post.PublishedAt.Value.ToShortDateString() by <a href="mailto:@(Model.SiteAdministratorEmail)?Subject=Post @(post.Title)" target="_top">@post.CreatedByName</a>
+                                @if(post.UpdatedAt.HasValue)
+                                { 
+                                   <text> - updated @post.UpdatedAt.Value.ToShortDateString()</text>
+                                    @if(post.UpdatedBy != post.CreatedBy)
+                                    {
+                                        <text> by <a href="mailto:@(Model.SiteAdministratorEmail)?Subject=Post @(post.Title)" target="_top">@post.UpdatedByName</a></text>
+                                    }
+                                }
+                            </em>
                         </div>
                     </div>
                 }

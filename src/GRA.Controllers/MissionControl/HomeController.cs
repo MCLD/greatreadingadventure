@@ -200,6 +200,12 @@ namespace GRA.Controllers.MissionControl
                 {
                     post.Content = CommonMark.CommonMarkConverter.Convert(post.Content);
                     post.CreatedByName = await _userService.GetUsersNameByIdAsync(post.CreatedBy);
+                    if (post.UpdatedBy.HasValue)
+                    {
+                        post.UpdatedByName = post.CreatedBy == post.UpdatedBy
+                            ? post.CreatedByName
+                            : await _userService.GetUsersNameByIdAsync(post.UpdatedBy.Value);
+                    }
                 }
 
                 var user = await _userService.GetDetails(GetId(ClaimType.UserId));
@@ -254,7 +260,9 @@ namespace GRA.Controllers.MissionControl
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error updating new subscription status for user {GetId(ClaimType.UserId)}", ex);
+                _logger.LogError(ex,
+                    "Error updating new subscription status for user {UserId}",
+                    GetId(ClaimType.UserId));
                 message = "Error updating news subscription";
             }
 
@@ -285,6 +293,12 @@ namespace GRA.Controllers.MissionControl
             }
             post.Content = CommonMark.CommonMarkConverter.Convert(post.Content);
             post.CreatedByName = await _userService.GetUsersNameByIdAsync(post.CreatedBy);
+            if (post.UpdatedBy.HasValue)
+            {
+                post.UpdatedByName = post.CreatedBy == post.UpdatedBy
+                    ? post.CreatedByName
+                    : await _userService.GetUsersNameByIdAsync(post.UpdatedBy.Value);
+            }
             PageTitle = $"{post.Title} - {site.Name}";
 
             return View(new PostViewModel

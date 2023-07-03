@@ -189,9 +189,9 @@ namespace GRA.Controllers.Base
         {
             return new SelectList(new Dictionary<string, string>
             {
-                {string.Empty, string.Empty},
-                {DropDownFalseValue, _sharedLocalizer[GRA.Annotations.Interface.No] },
-                {DropDownTrueValue, _sharedLocalizer[GRA.Annotations.Interface.Yes] }
+                { string.Empty, string.Empty },
+                { DropDownFalseValue, _sharedLocalizer[GRA.Annotations.Interface.No] },
+                { DropDownTrueValue, _sharedLocalizer[GRA.Annotations.Interface.Yes] }
             },
             "Key",
             "Value",
@@ -279,6 +279,24 @@ namespace GRA.Controllers.Base
             }
 
             return LoginUserInternalAsync(authResult);
+        }
+
+        /// <summary>
+        /// Construct a drop-down list with No and Yes options.
+        /// </summary>
+        /// <returns>A SelectList with No and Yes options. Keys are
+        /// <see cref="DropDownFalseValue"/> for no and <see cref="DropDownTrueValue"/> for yes.
+        /// </returns>
+        protected SelectList NoYesSelectList()
+        {
+            return new SelectList(new Dictionary<string, string>
+            {
+                { DropDownFalseValue, _sharedLocalizer[GRA.Annotations.Interface.No] },
+                { DropDownTrueValue, _sharedLocalizer[GRA.Annotations.Interface.Yes] }
+            },
+            "Key",
+            "Value",
+            string.Empty);
         }
 
         protected IActionResult RedirectToSignIn()

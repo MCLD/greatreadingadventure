@@ -22,13 +22,15 @@ namespace GRA.Domain.Model
         public string EmailSummary { get; set; }
 
         public int? NextPostId { get; set; }
-
         public int? PreviousPostId { get; set; }
-
         public DateTime? PublishedAt { get; set; }
 
         [Required]
         [MaxLength(255)]
         public string Title { get; set; }
+
+        public DateTime? UpdatedAt { get; set; }
+        public int? UpdatedBy { get; set; }
+        public string UpdatedByName { get; set; }
     }
 }

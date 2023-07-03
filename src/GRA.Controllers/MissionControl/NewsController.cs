@@ -18,8 +18,8 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ManageNews)]
     public class NewsController : Base.MCController
     {
-        private readonly ILogger<NewsController> _logger;
         private readonly JobService _jobService;
+        private readonly ILogger<NewsController> _logger;
         private readonly NewsService _newsService;
 
         public NewsController(ILogger<NewsController> logger,
@@ -34,23 +34,15 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Mission Control News management";
         }
 
-        public async Task<IActionResult> Index(string search, int? category, int page = 1)
+        public async Task<IActionResult> Categories(int page = 1)
         {
-            var filter = new NewsFilter(page)
-            {
-                Search = search
-            };
+            var filter = new BaseFilter(page);
 
-            if (category.HasValue)
-            {
-                filter.CategoryIds = new List<int> { category.Value };
-            }
-
-            var postList = await _newsService.GetPaginatedPostListAsync(filter);
+            var categoryList = await _newsService.GetPaginatedCategoryListAsync(filter);
 
             var paginateModel = new PaginateViewModel
             {
-                ItemCount = postList.Count,
+                ItemCount = categoryList.Count,
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
@@ -59,48 +51,42 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToRoute(new { page = paginateModel.LastPage ?? 1 });
             }
 
-            var viewModel = new PostListViewModel
+            var viewModel = new CategoryListViewModel
             {
-                Posts = postList.Data,
+                Categories = categoryList.Data,
                 PaginateModel = paginateModel,
-                Search = search,
-                CategoryId = category,
-                CategoryList = await _newsService.GetAllCategoriesAsync()
             };
-
-            if (category.HasValue)
-            {
-                viewModel.Category = await _newsService.GetCategoryByIdAsync(category.Value);
-            }
 
             return View(viewModel);
         }
 
+        public IActionResult CreateCategory()
+        {
+            return View("CategoryDetail", new CategoryDetailViewModel
+            {
+                Action = nameof(CreateCategory)
+            });
+        }
+
         [HttpPost]
-        public async Task<IActionResult> DeletePost(PostListViewModel model)
+        public async Task<IActionResult> CreateCategory(CategoryDetailViewModel model)
         {
             if (model == null)
             {
-                ShowAlertDanger("Could not delete empty post.");
+                ShowAlertDanger("Could not create empty category.");
                 return RedirectToAction(nameof(Index));
             }
 
-            try
+            if (ModelState.IsValid)
             {
-                await _newsService.RemovePostAsync(model.Post.Id);
-                ShowAlertSuccess($"Removed Post \"{model.Post.Title}\"!");
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger("Unable to remove Post: ", gex);
+                var category = await _newsService.CreateCategoryAsync(model.Category);
+                ShowAlertSuccess($"Added Category \"{category.Name}\"!");
+                return RedirectToAction(nameof(Categories));
             }
 
-            return RedirectToAction(nameof(Index), new
-            {
-                category = model.Category,
-                page = model.PaginateModel.CurrentPage,
-                search = model.Search
-            });
+            model.Action = nameof(CreateCategory);
+
+            return View("CategoryDetail", model);
         }
 
         public async Task<IActionResult> CreatePost()
@@ -146,74 +132,6 @@ namespace GRA.Controllers.MissionControl
             return View("PostDetail", model);
         }
 
-        public async Task<IActionResult> EditPost(int id)
-        {
-            return View("PostDetail", new PostDetailViewModel
-            {
-                Post = await _newsService.GetPostByIdAsync(id),
-                Action = nameof(EditPost),
-                Categories
-                    = new SelectList(await _newsService.GetAllCategoriesAsync(), "Id", "Name")
-            });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> EditPost(PostDetailViewModel model)
-        {
-            if (model == null)
-            {
-                ShowAlertDanger("Could not edit empty post.");
-                return RedirectToAction(nameof(Index));
-            }
-
-            if (ModelState.IsValid)
-            {
-                var post = await _newsService.EditPostAsync(model.Post, model.Publish);
-
-                if (model.Publish)
-                {
-                    return await SendEmailJobAsync(GetJobParameters(post));
-                }
-                else
-                {
-                    ShowAlertSuccess($"Updated Post \"{post.Title}\"!");
-                    return RedirectToAction(nameof(Index));
-                }
-            }
-
-            model.Action = nameof(CreatePost);
-            model.Categories
-                = new SelectList(await _newsService.GetAllCategoriesAsync(), "Id", "Name");
-
-            return View("PostDetail", model);
-        }
-
-        public async Task<IActionResult> Categories(int page = 1)
-        {
-            var filter = new BaseFilter(page);
-
-            var categoryList = await _newsService.GetPaginatedCategoryListAsync(filter);
-
-            var paginateModel = new PaginateViewModel
-            {
-                ItemCount = categoryList.Count,
-                CurrentPage = page,
-                ItemsPerPage = filter.Take.Value
-            };
-            if (paginateModel.PastMaxPage)
-            {
-                return RedirectToRoute(new { page = paginateModel.LastPage ?? 1 });
-            }
-
-            var viewModel = new CategoryListViewModel
-            {
-                Categories = categoryList.Data,
-                PaginateModel = paginateModel,
-            };
-
-            return View(viewModel);
-        }
-
         [HttpPost]
         public async Task<IActionResult> DeleteCategory(CategoryListViewModel model)
         {
@@ -239,33 +157,31 @@ namespace GRA.Controllers.MissionControl
             });
         }
 
-        public IActionResult CreateCategory()
-        {
-            return View("CategoryDetail", new CategoryDetailViewModel
-            {
-                Action = nameof(CreateCategory)
-            });
-        }
-
         [HttpPost]
-        public async Task<IActionResult> CreateCategory(CategoryDetailViewModel model)
+        public async Task<IActionResult> DeletePost(PostListViewModel model)
         {
             if (model == null)
             {
-                ShowAlertDanger("Could not create empty category.");
+                ShowAlertDanger("Could not delete empty post.");
                 return RedirectToAction(nameof(Index));
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                var category = await _newsService.CreateCategoryAsync(model.Category);
-                ShowAlertSuccess($"Added Category \"{category.Name}\"!");
-                return RedirectToAction(nameof(Categories));
+                await _newsService.RemovePostAsync(model.Post.Id);
+                ShowAlertSuccess($"Removed Post \"{model.Post.Title}\"!");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to remove Post: ", gex);
             }
 
-            model.Action = nameof(CreateCategory);
-
-            return View("CategoryDetail", model);
+            return RedirectToAction(nameof(Index), new
+            {
+                category = model.Category,
+                page = model.PaginateModel.CurrentPage,
+                search = model.Search
+            });
         }
 
         public async Task<IActionResult> EditCategory(int id)
@@ -296,6 +212,93 @@ namespace GRA.Controllers.MissionControl
             model.Action = nameof(EditCategory);
 
             return View("CategoryDetail", model);
+        }
+
+        public async Task<IActionResult> EditPost(int id)
+        {
+            return View("PostDetail", new PostDetailViewModel
+            {
+                Action = nameof(EditPost),
+                Categories
+                    = new SelectList(await _newsService.GetAllCategoriesAsync(), "Id", "Name"),
+                NoYes = NoYesSelectList(),
+                Post = await _newsService.GetPostByIdAsync(id)
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditPost(PostDetailViewModel model)
+        {
+            if (model == null)
+            {
+                ShowAlertDanger("Could not edit empty post.");
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (ModelState.IsValid)
+            {
+                var post = await _newsService.EditPostAsync(model.Post,
+                    model.Publish,
+                    model.MarkUpdated);
+
+                if (model.Publish)
+                {
+                    return await SendEmailJobAsync(GetJobParameters(post));
+                }
+                else
+                {
+                    ShowAlertSuccess($"Updated Post \"{post.Title}\"!");
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+
+            model.Action = nameof(CreatePost);
+            model.Categories
+                = new SelectList(await _newsService.GetAllCategoriesAsync(), "Id", "Name");
+
+            return View("PostDetail", model);
+        }
+
+        public async Task<IActionResult> Index(string search, int? category, int page = 1)
+        {
+            var filter = new NewsFilter(page)
+            {
+                Search = search
+            };
+
+            if (category.HasValue)
+            {
+                filter.CategoryIds = new List<int> { category.Value };
+            }
+
+            var postList = await _newsService.GetPaginatedPostListAsync(filter);
+
+            var paginateModel = new PaginateViewModel
+            {
+                ItemCount = postList.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+            if (paginateModel.PastMaxPage)
+            {
+                return RedirectToRoute(new { page = paginateModel.LastPage ?? 1 });
+            }
+
+            var viewModel = new PostListViewModel
+            {
+                Posts = postList.Data,
+                PaginateModel = paginateModel,
+                Search = search,
+                CategoryId = category,
+                CategoryList = await _newsService.GetAllCategoriesAsync()
+            };
+
+            if (category.HasValue)
+            {
+                viewModel.Category = await _newsService.GetCategoryByIdAsync(category.Value);
+            }
+
+            return View(viewModel);
         }
 
         private JobSendNewsEmails GetJobParameters(NewsPost post)
