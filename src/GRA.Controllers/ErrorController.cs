@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -7,6 +8,7 @@ namespace GRA.Controllers
 {
     public class ErrorController : Base.UserController
     {
+        private const string UnsubscribeInMcLink = "/MissionControl/Home/Unsubscribe/";
         private readonly ILogger<ErrorController> _logger;
 
         public ErrorController(ILogger<ErrorController> logger,
@@ -20,10 +22,27 @@ namespace GRA.Controllers
 
         public IActionResult Index(int id)
         {
+            var statusFeature = HttpContext.Features.Get<IStatusCodeReExecuteFeature>();
+
+            // there was an issue where a /MissionControl/ link was being included in unsub URLS,
+            // this routes requests to the right place if those links are clicked
+            if (statusFeature?.OriginalPath?.StartsWith(UnsubscribeInMcLink) == true
+                && statusFeature.OriginalPath.Length > UnsubscribeInMcLink.Length)
+            {
+                var token = statusFeature.OriginalPath[UnsubscribeInMcLink.Length..];
+                return RedirectToAction(nameof(HomeController.Unsubscribe),
+                    HomeController.Name,
+                    new
+                    {
+                        Area = "",
+                        id = token
+                    });
+            }
+
             // 0 means we came from UseExceptionHandler
             Response.StatusCode = id > 0 ? id : 500;
 
-            if (Response.StatusCode == 404)
+            if (Response.StatusCode == (int)HttpStatusCode.NotFound)
             {
                 return View("404");
             }

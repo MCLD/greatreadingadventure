@@ -54,6 +54,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Issue with "login as" on the profile list of associated participants
 - Broken link from events in Mission Control to associated challenges
 - Proper rendering of vendor code (templated) messages
+- Mail unsubscribe links
 
 ## [4.4.0] 2022-11-29
 
