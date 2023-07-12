@@ -1246,7 +1246,7 @@ namespace GRA.Controllers.MissionControl
         {
             return Url.Action(nameof(Controllers.HomeController.Unsubscribe),
                 Controllers.HomeController.Name,
-                null,
+                new { Area = "" },
                 HttpContext.Request.Scheme);
         }
     }
