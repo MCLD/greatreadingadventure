@@ -12,6 +12,7 @@
         UpdateEmailAwardStatus,
         BranchImport,
         SendNewsEmails,
-        ReceivePackingSlip
+        ReceivePackingSlip,
+        BulkReassignCodes
     }
 }
