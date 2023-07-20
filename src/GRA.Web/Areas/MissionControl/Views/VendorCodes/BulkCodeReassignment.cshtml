@@ -1,11 +1,37 @@
 ﻿@await Html.PartialAsync("_VendorCodePartial")
 
+<div class="row">
+    <div class="col-xs-12">
+        <h3>Bulk code reassignment</h3>
+        <p>Use this form to upload a list of vendor codes and have each user associated with one of those vendor codes assigned a new vendor code. Please be aware of the following:</p>
+        <ul>
+            <li>
+                This participant will have their old Prize removed, and a new Prize
+                created (if possible, we do not remove redeemed prizes).
+            </li>
+            <li>
+                This participant will receive a new Mail with their code. They will
+                still have an old Mail with their old code in it.
+            </li>
+            <li>
+                The primary view for this participant will be of the new code - that's
+                what they will see in their profile and on the Dashboard.
+            </li>
+            <li>
+                You should probably be in contact with the participant before taking
+                this action so they are not confused.
+            </li>
+        </ul>
+    </div>
+</div>
+
 <form asp-controller="@VendorCodesController.Name"
       asp-action="@nameof(VendorCodesController.BulkCodeReassignment)"
       method="post"
       role="form"
       enctype="multipart/form-data">
-    <div class="row">
+    <div class="row" style="margin-top: 2rem;">
+        <div class="col-xs-12">
         <div class="form-group">
             <label for="reason">Enter reason - only for staff to see</label>
             <input type="text" class="form-control" maxlength="255" name="reason" />
@@ -28,6 +54,7 @@
                         <span class="fas fa-upload"></span>
                     </button>
                 </span>
+            </div>
             </div>
         </div>
     </div>
@@ -54,6 +81,7 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
 @section scripts
     {
     <script>
