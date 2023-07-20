@@ -214,7 +214,7 @@ namespace GRA.Domain.Service
 
         public async Task<JobStatus> BulkReassignCodes(int jobId,
             CancellationToken token,
-            IProgress<JobStatus> progress = null)
+            IProgress<JobStatus> progress)
         {
             var requestingUser = GetClaimId(ClaimType.UserId);
 

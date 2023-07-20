@@ -138,8 +138,6 @@ namespace GRA.Controllers.MissionControl
 
                 string file = WebUtility.UrlEncode(Path.GetFileName(tempFile));
 
-                var site = await GetCurrentSiteAsync();
-
                 var jobToken = await _jobService.CreateJobAsync(new Job
                 {
                     JobType = JobType.BulkReassignCodes,
