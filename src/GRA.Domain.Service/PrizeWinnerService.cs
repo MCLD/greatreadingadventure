@@ -59,7 +59,7 @@ namespace GRA.Domain.Service
         public async Task<PrizeWinner> AddPrizeWinnerAsync(PrizeWinner prizeWinner,
             bool userIdIsCurrentUser = false)
         {
-            if (prizeWinner.DrawingId == null
+            if (prizeWinner?.DrawingId == null
                 && prizeWinner.TriggerId == null
                 && prizeWinner.VendorCodeId == null)
             {
@@ -190,7 +190,9 @@ namespace GRA.Domain.Service
             {
                 if (prize.RedeemedAt.HasValue)
                 {
-                    _logger.LogError($"Double redeem attempt for prize {prizeWinnerId} by user {authUserId}");
+                    _logger.LogError("Double redeem attempt for prize {PrizeWinnerId} by user {CurrentUserId}",
+                        prizeWinnerId,
+                        authUserId);
                     throw new GraException($"This prize was already redeemed on {prize.RedeemedAt}");
                 }
                 else
@@ -207,7 +209,9 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {authUserId} doesn't have permission to redeem prize {prizeWinnerId}.");
+                _logger.LogError("User {CurrentUserId} doesn't have permission to redeem prize winner {PrizeWinnerId}.",
+                    authUserId,
+                    prizeWinnerId);
                 throw new GraException("Permission denied.");
             }
         }
@@ -235,8 +239,11 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {authUserId} cannot remove claimed prize {prize.Id}.");
-                throw new GraException("Prizes that have been claimed cannot be removed.");
+                _logger.LogError("User {ActiveUser} cannot remove claimed prize {PrizeId} from user id {UserId}.",
+                    authUserId,
+                    prize.Id,
+                    prize.UserId);
+                throw new GraException($"Prize id {prize.Id} has already been redeemed for user id {prize.UserId}");
             }
         }
 
@@ -249,7 +256,9 @@ namespace GRA.Domain.Service
 
             if (!prize.RedeemedAt.HasValue)
             {
-                _logger.LogError($"Prize not redeemed - undo attempt for {prizeWinnerId} by user {authUserId}");
+                _logger.LogError("Prize not redeemed - undo attempt for prize winner id {PrizeWinnerId} by user {CurrentUserId}",
+                    prizeWinnerId,
+                    authUserId);
                 throw new GraException("This prize has not been redeemed!");
             }
             else
@@ -257,7 +266,10 @@ namespace GRA.Domain.Service
                 prize.RedeemedAt = null;
                 prize.RedeemedBy = null;
                 await _prizeWinnerRepository.UpdateSaveAsync(authUserId, prize);
-                _logger.LogInformation($"User {authUserId} just undid redemption of prize id {prizeWinnerId} awarded to user {prize.UserId}");
+                _logger.LogInformation("User {CurrentUserId} just undid redemption of prize winner id {PrizeWinnerId} awarded to user {UserId}",
+                    authUserId,
+                    prizeWinnerId,
+                    prize.UserId);
             }
         }
     }

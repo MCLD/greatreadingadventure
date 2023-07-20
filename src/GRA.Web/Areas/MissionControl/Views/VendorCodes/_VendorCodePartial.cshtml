@@ -25,9 +25,14 @@
                    role="button"
                    aria-haspopup="true"
                    aria-expanded="false">
-                    Configuration <span class="fas fa-caret-down"></span>
+                    Administration <span class="fas fa-caret-down"></span>
                 </a>
                 <ul class="dropdown-menu">
+                    <li>
+                        <a asp-action="@nameof(VendorCodesController.BulkCodeReassignment)">
+                            Bulk code reassignment
+                        </a>
+                    </li>
                     <li>
                         <a asp-action="@nameof(VendorCodesController.Configure)">
                             Configure

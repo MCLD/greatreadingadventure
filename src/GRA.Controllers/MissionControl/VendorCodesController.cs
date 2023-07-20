@@ -13,6 +13,7 @@ using GRA.Domain.Model;
 using GRA.Domain.Service;
 using GRA.Utility;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
@@ -96,6 +97,72 @@ namespace GRA.Controllers.MissionControl
                     new SelectListItem("Don't award a prize when item marked shipped from an import", "False"),
                     new SelectListItem("Award a prize when item is marked shipped from an import", "True")
                 };
+            }
+        }
+
+        [HttpGet]
+        [Authorize(Policy = Policy.ManageVendorCodes)]
+        public IActionResult BulkCodeReassignment()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Policy = Policy.ManageVendorCodes)]
+        public async Task<IActionResult> BulkCodeReassignment(string reason, IFormFile textFile)
+        {
+            var issues = new List<string>();
+            if (string.IsNullOrEmpty(reason) || reason.Length > 255)
+            {
+                issues.Add("Please supply a reason between 1 and 255 characters.");
+                ModelState.AddModelError(nameof(reason), "You must supply a reason between 1-255 characters.");
+            }
+
+            if (textFile?.FileName == null
+                || (!string.Equals(Path.GetExtension(textFile.FileName), ".txt",
+                    StringComparison.OrdinalIgnoreCase)))
+            {
+                issues.Add("You must select a .txt file.");
+                ModelState.AddModelError(nameof(textFile), "You must select a .txt file.");
+            }
+
+            if (ModelState.ErrorCount == 0)
+            {
+                var tempFile = _pathResolver.ResolvePrivateTempFilePath();
+                _logger.LogInformation("Accepted reassignment import file {UploadFile} as {TempFile}",
+                    textFile.FileName,
+                    tempFile);
+
+                using var fileStream = new FileStream(tempFile, FileMode.Create);
+                await textFile.CopyToAsync(fileStream);
+
+                string file = WebUtility.UrlEncode(Path.GetFileName(tempFile));
+
+                var jobToken = await _jobService.CreateJobAsync(new Job
+                {
+                    JobType = JobType.BulkReassignCodes,
+                    SerializedParameters = JsonConvert
+                        .SerializeObject(new JobDetailsVendorCodeBulkReassignment
+                        {
+                            Filename = file,
+                            Reason = reason
+                        })
+                });
+
+                return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
+                {
+                    CancelUrl = Url.Action(nameof(BulkCodeReassignment)),
+                    JobToken = jobToken.ToString(),
+                    PingSeconds = 5,
+                    SuccessRedirectUrl = "",
+                    SuccessUrl = Url.Action(nameof(BulkCodeReassignment)),
+                    Title = "Loading import..."
+                });
+            }
+            else
+            {
+                AlertDanger = string.Join(' ', issues)?.Trim();
+                return RedirectToAction(nameof(BulkCodeReassignment));
             }
         }
 
@@ -612,6 +679,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> ProcessPackingSlip(PackingSlipSummary summary)
         {
+            ArgumentNullException.ThrowIfNull(summary);
+
             if (!UserHasPermission(Permission.ManageVendorCodes)
                && !UserHasPermission(Permission.ReceivePackingSlips))
             {
@@ -917,6 +986,8 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.ManageVendorCodes)]
         public async Task<IActionResult> UpdateConfiguration(ConfigureViewModel viewModel)
         {
+            ArgumentNullException.ThrowIfNull(viewModel);
+
             if (viewModel.VendorCodeType == null)
             {
                 ShowAlertDanger("Could not create empty vendor code type.");

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using GRA.Abstract;
 using GRA.Domain.Model;
@@ -8,6 +11,7 @@ using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using GRA.Domain.Service.Models;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace GRA.Domain.Service
 {
@@ -23,10 +27,12 @@ namespace GRA.Domain.Service
         private readonly IChallengeTaskRepository _challengeTaskRepository;
         private readonly ICodeSanitizer _codeSanitizer;
         private readonly IEventRepository _eventRepository;
+        private readonly IJobRepository _jobRepository;
         private readonly LanguageService _languageService;
         private readonly MailService _mailService;
         private readonly MessageTemplateService _messageTemplateService;
         private readonly INotificationRepository _notificationRepository;
+        private readonly IPathResolver _pathResolver;
         private readonly IPointTranslationRepository _pointTranslationRepository;
         private readonly PrizeWinnerService _prizeWinnerService;
         private readonly IProgramRepository _programRepository;
@@ -50,8 +56,10 @@ namespace GRA.Domain.Service
             IDateTimeProvider dateTimeProvider,
             IEventRepository eventRepository,
             IGraCache cache,
+            IJobRepository jobRepository,
             ILogger<UserService> logger,
             INotificationRepository notificationRepository,
+            IPathResolver pathResolver,
             IPointTranslationRepository pointTranslationRepository,
             IProgramRepository programRepository,
             IRequiredQuestionnaireRepository requiredQuestionnaireRepository,
@@ -87,6 +95,8 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(codeSanitizer));
             _eventRepository = eventRepository
                 ?? throw new ArgumentNullException(nameof(eventRepository));
+            _jobRepository = jobRepository
+                ?? throw new ArgumentNullException(nameof(jobRepository));
             _languageService = languageService
                 ?? throw new ArgumentNullException(nameof(languageService));
             _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
@@ -94,6 +104,7 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(messageTemplateService));
             _notificationRepository = notificationRepository
                 ?? throw new ArgumentNullException(nameof(notificationRepository));
+            _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
             _pointTranslationRepository = pointTranslationRepository
                 ?? throw new ArgumentNullException(nameof(pointTranslationRepository));
             _prizeWinnerService = prizeWinnerService
@@ -147,8 +158,11 @@ namespace GRA.Domain.Service
                 throw new GraException("Books cannot be added while there is a pending questionnaire to be taken.");
             }
 
-            book.Title = book.Title?.Trim();
-            book.Author = book.Author?.Trim();
+            if (book != null)
+            {
+                book.Title = book.Title?.Trim();
+                book.Author = book.Author?.Trim();
+            }
 
             var addedBook = await _bookRepository.GetBookAsync(book) ?? book;
             if (await _bookRepository.UserHasBookAsync(userId, addedBook.Id))
@@ -160,7 +174,7 @@ namespace GRA.Domain.Service
             {
                 await _bookRepository.AddSaveForUserAsync(activeUserId, userId, addedBook);
 
-                if (addNotification)
+                if (addNotification && book != null)
                 {
                     var notification = new Notification
                     {
@@ -195,6 +209,198 @@ namespace GRA.Domain.Service
                             !userContext.User.Identity.IsAuthenticated);
                     }
                 }
+            }
+        }
+
+        public async Task<JobStatus> BulkReassignCodes(int jobId,
+            CancellationToken token,
+            IProgress<JobStatus> progress)
+        {
+            var requestingUser = GetClaimId(ClaimType.UserId);
+
+            if (HasPermission(Permission.ManageVendorCodes))
+            {
+                var sw = Stopwatch.StartNew();
+
+                var job = await _jobRepository.GetByIdAsync(jobId);
+                var jobDetails
+                    = JsonConvert
+                        .DeserializeObject<JobDetailsVendorCodeBulkReassignment>(job.SerializedParameters);
+
+                var filename = jobDetails.Filename;
+                var reason = jobDetails.Reason;
+
+                token.Register(() =>
+                {
+                    _logger.LogWarning("Import of {FilePath} for user {UserId} was cancelled after {Elapsed} ms",
+                        filename,
+                        requestingUser,
+                        sw?.Elapsed.TotalMilliseconds);
+                });
+
+                string fullPath = _pathResolver.ResolvePrivateTempFilePath(filename);
+
+                if (!System.IO.File.Exists(fullPath))
+                {
+                    _logger.LogError("Could not find {FilePath}", fullPath);
+                    return new JobStatus
+                    {
+                        PercentComplete = 0,
+                        Status = "Could not find the import file.",
+                        Error = true,
+                        Complete = true
+                    };
+                }
+
+                try
+                {
+                    // perform the import
+                    int row = 0;
+                    int success = 0;
+                    var lines = System.IO.File.ReadLines(fullPath);
+                    var totalRows = lines.Count();
+                    var issues = new List<string>();
+
+                    foreach (var line in lines)
+                    {
+                        row++;
+                        if (row % 10 == 0 || row == 1)
+                        {
+                            await _jobRepository.UpdateStatusAsync(jobId,
+                                $"Processing line {row}/{totalRows}...");
+
+                            progress?.Report(new JobStatus
+                            {
+                                PercentComplete = row * 100 / totalRows,
+                                Status = $"Processing line {row}/{totalRows}...",
+                                Error = false
+                            });
+                        }
+
+                        try
+                        {
+                            var vendorCode = await _vendorCodeService.GetVendorCodeByCode(line)
+                                ?? throw new GraException($"Could not find vendor code {line}.");
+
+                            if (!vendorCode.UserId.HasValue)
+                            {
+                                throw new GraException($"Vendor code {line} is not associated with a participant.");
+                            }
+
+                            int userId = vendorCode.UserId.Value;
+
+                            var user = await _userRepository.GetByIdAsync(userId);
+                            if (user?.IsDeleted != false)
+                            {
+                                throw new GraException($"User id {userId} associated with code {line} has been deleted.");
+                            }
+
+                            var prizeWinner = await _prizeWinnerService
+                                .GetPrizeForVendorCodeAsync(vendorCode.Id);
+
+                            if (prizeWinner != null)
+                            {
+                                try
+                                {
+                                    await _prizeWinnerService.RemovePrizeAsync(prizeWinner.Id);
+                                }
+                                catch (GraException gex)
+                                {
+                                    if (!issues.Contains(gex.Message))
+                                    {
+                                        issues.Add(gex.Message);
+                                    }
+                                }
+                            }
+
+                            await _vendorCodeService.AssociateAsync(vendorCode.Id, reason);
+                            await MCAwardVendorCodeAsync(userId, vendorCode.VendorCodeTypeId);
+                            success++;
+                        }
+                        catch (GraException gex)
+                        {
+                            issues.Add(gex.Message);
+                        }
+                    }
+
+                    if (token.IsCancellationRequested)
+                    {
+                        await _jobRepository.UpdateStatusAsync(jobId,
+                            $"Import cancelled at line {row}/{totalRows}.");
+
+                        return new JobStatus
+                        {
+                            Status = $"Operation cancelled at line {row}."
+                        };
+                    }
+
+                    await _jobRepository.UpdateStatusAsync(jobId,
+                        $"Updated {success} records, {issues?.Count ?? 0} issues of {totalRows} total lines.");
+
+                    _logger.LogInformation("Import of {FileName} completed: {UpdatedRecords} updates, {IssueCount} issues, of {TotalRows} total lines in {Elapsed} ms",
+                        filename,
+                        success,
+                        issues?.Count ?? 0,
+                        totalRows,
+                        sw?.ElapsedMilliseconds ?? 0);
+
+                    var sb = new StringBuilder("<strong>Import complete</strong>");
+                    if (success > 0)
+                    {
+                        sb.Append(": ").Append(success).Append(" records were updated");
+                    }
+                    if (issues?.Count > 0)
+                    {
+                        if (sb.Length > 0)
+                        {
+                            sb.Append(", ");
+                        }
+                        sb.Append(issues.Count).Append(" issues encountered");
+                    }
+                    sb.Append('.');
+
+                    if (issues.Count > 0)
+                    {
+                        sb.Append(" Issues detected:<ul>");
+                        foreach (string issue in issues)
+                        {
+                            sb.Append("<li>").Append(issue).Append("</li>");
+                        }
+                        sb.Append("</ul>");
+                        return new JobStatus
+                        {
+                            PercentComplete = 100,
+                            Complete = true,
+                            Status = sb.ToString(),
+                            Error = true
+                        };
+                    }
+                    else
+                    {
+                        return new JobStatus
+                        {
+                            PercentComplete = 100,
+                            Complete = true,
+                            Status = sb.ToString(),
+                        };
+                    }
+                }
+                finally
+                {
+                    System.IO.File.Delete(fullPath);
+                }
+            }
+            else
+            {
+                _logger.LogError("User {UserId} doesn't have permission to bulk reassign codes.",
+                    requestingUser);
+                return new JobStatus
+                {
+                    PercentComplete = 0,
+                    Status = "Permission denied.",
+                    Error = true,
+                    Complete = true
+                };
             }
         }
 
@@ -409,6 +615,9 @@ namespace GRA.Domain.Service
             {
                 throw new GraException("Amount must be at least 1.");
             }
+
+            ArgumentNullException.ThrowIfNull(userIds);
+
             int authUserId = GetClaimId(ClaimType.UserId);
 
             if (!HasPermission(Permission.LogActivityForAny))
@@ -447,6 +656,8 @@ namespace GRA.Domain.Service
             {
                 throw new GraException(Annotations.Required.SecretCode);
             }
+
+            ArgumentNullException.ThrowIfNull(userIds);
 
             secretCode = _codeSanitizer.Sanitize(secretCode);
 
@@ -748,6 +959,8 @@ namespace GRA.Domain.Service
 
         public async Task UpdateBookAsync(Book book, int? userId = null)
         {
+            ArgumentNullException.ThrowIfNull(book);
+
             var authUserId = GetClaimId(ClaimType.UserId);
             var activeUserId = GetActiveUserId();
             var forUserId = userId ?? activeUserId;
@@ -1329,6 +1542,9 @@ namespace GRA.Domain.Service
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
+            "CA1031:Do not catch general exception types",
+            Justification = "Any exception here is a critical error and should send an email.")]
         private async Task AwardVendorCodeAsync(int userId, int? vendorCodeTypeId, int? siteId = null)
         {
             if (vendorCodeTypeId != null)
@@ -1419,7 +1635,7 @@ namespace GRA.Domain.Service
         {
             if (pointsToRemove < 0)
             {
-                throw new GraException($"Cannot remove negative points!");
+                throw new GraException("Cannot remove negative points!");
             }
 
             var removeUser = await _userRepository.GetByIdAsync(removePointsFromUserId)
