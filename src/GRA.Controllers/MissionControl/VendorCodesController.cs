@@ -410,9 +410,10 @@ namespace GRA.Controllers.MissionControl
                     SerializedParameters = JsonConvert
                         .SerializeObject(new JobDetailsVendorCodeStatus
                         {
-                            VendorCodeTypeId = vendorCodeTypeId,
                             Filename = file,
-                            SiteName = site.Name
+                            OriginalFilename = excelFile.FileName,
+                            SiteName = site.Name,
+                            VendorCodeTypeId = vendorCodeTypeId
                         })
                 });
 
@@ -621,9 +622,10 @@ namespace GRA.Controllers.MissionControl
                     SerializedParameters = JsonConvert
                         .SerializeObject(new JobDetailsVendorCodeStatus
                         {
-                            VendorCodeTypeId = vendorCodeTypeId,
                             Filename = file,
-                            SiteName = site.Name
+                            OriginalFilename = excelFile.FileName,
+                            SiteName = site.Name,
+                            VendorCodeTypeId = vendorCodeTypeId
                         })
                 });
 

@@ -17,6 +17,7 @@ using GRA.Domain.Service.Models;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Serilog.Context;
 using Stubble.Core.Builders;
 
 namespace GRA.Domain.Service
@@ -1165,485 +1166,519 @@ namespace GRA.Domain.Service
 
                 string filename = jobDetails.Filename;
 
-                token.Register(() =>
+                using (LogContext.PushProperty("ImportFileName", jobDetails.OriginalFilename))
                 {
-                    _logger.LogWarning("Import of {FilePath} for user {UserId} was cancelled after {Elapsed} ms",
-                        filename,
-                        requestingUser,
-                        sw?.Elapsed.TotalMilliseconds);
-                });
-
-                string fullPath = _pathResolver.ResolvePrivateTempFilePath(filename);
-
-                if (!File.Exists(fullPath))
-                {
-                    _logger.LogError("Could not find {FilePath}", fullPath);
-                    return new JobStatus
+                    token.Register(() =>
                     {
-                        PercentComplete = 0,
-                        Status = "Could not find the import file.",
-                        Error = true,
-                        Complete = true
-                    };
-                }
+                        _logger.LogWarning("Import of {FilePath} for user {UserId} was cancelled after {Elapsed} ms",
+                            filename,
+                            requestingUser,
+                            sw?.Elapsed.TotalMilliseconds);
+                    });
 
-                try
-                {
-                    using var stream = new FileStream(fullPath, FileMode.Open);
-                    int branchColumnId = 0;
-                    int couponColumnId = 0;
-                    int detailsColumnId = 0;
-                    int orderDateColumnId = 0;
-                    int shipDateColumnId = 0;
-                    int packingSlipColumnId = 0;
-                    int trackingNumberColumnId = 0;
-                    bool hasPackingSlipColumn = false;
-                    bool hasTrackingNumberColumn = false;
-                    var issues = new List<string>();
-                    int row = 0;
-                    int totalRows = 0;
-                    int updated = 0;
-                    int alreadyCurrent = 0;
-                    int donationCount = 0;
-                    int undonationCount = 0;
-                    var vendorCodeType = await _vendorCodeTypeRepository
-                        .GetByIdAsync(jobDetails.VendorCodeTypeId);
+                    string fullPath = _pathResolver.ResolvePrivateTempFilePath(filename);
 
-                    int emailsSent = 0;
-                    int emailErrors = 0;
-                    var emailDetails = new Model.Utility.DirectEmailDetails(jobDetails.SiteName)
+                    if (!File.Exists(fullPath))
                     {
-                        SendingUserId = GetActiveUserId()
-                    };
-
-                    using (var excelReader = ExcelReaderFactory.CreateReader(stream))
-                    {
-                        while (excelReader.Read())
+                        _logger.LogError("Could not find {FilePath}", fullPath);
+                        return new JobStatus
                         {
-                            row++;
-                        }
-                        totalRows = row;
-                        row = 0;
+                            PercentComplete = 0,
+                            Status = "Could not find the import file.",
+                            Error = true,
+                            Complete = true
+                        };
+                    }
 
-                        excelReader.Reset();
-                        while (excelReader.Read())
+                    try
+                    {
+                        using var stream = new FileStream(fullPath, FileMode.Open);
+                        int branchColumnId = 0;
+                        int couponColumnId = 0;
+                        int detailsColumnId = 0;
+                        int orderDateColumnId = 0;
+                        int shipDateColumnId = 0;
+                        int packingSlipColumnId = 0;
+                        int trackingNumberColumnId = 0;
+                        bool hasPackingSlipColumn = false;
+                        bool hasTrackingNumberColumn = false;
+                        var issues = new List<string>();
+                        int row = 0;
+                        int totalRows = 0;
+                        int updated = 0;
+                        int alreadyCurrent = 0;
+                        int donationCount = 0;
+                        int undonationCount = 0;
+                        var vendorCodeType = await _vendorCodeTypeRepository
+                            .GetByIdAsync(jobDetails.VendorCodeTypeId);
+
+                        int emailsSent = 0;
+                        int emailErrors = 0;
+                        var emailDetails = new Model.Utility.DirectEmailDetails(jobDetails.SiteName)
                         {
-                            row++;
-                            if (row % 10 == 0)
+                            SendingUserId = GetActiveUserId()
+                        };
+
+                        using (var excelReader = ExcelReaderFactory.CreateReader(stream))
+                        {
+                            while (excelReader.Read())
                             {
-                                await _jobRepository.UpdateStatusAsync(jobId,
-                                    $"Processing row {row}/{totalRows}...");
-
-                                progress?.Report(new JobStatus
-                                {
-                                    PercentComplete = row * 100 / totalRows,
-                                    Status = $"Processing row {row}/{totalRows}...",
-                                    Error = false
-                                });
+                                row++;
                             }
-                            if (row == 1)
+                            totalRows = row;
+                            row = 0;
+
+                            excelReader.Reset();
+                            while (excelReader.Read())
                             {
-                                progress?.Report(new JobStatus
+                                row++;
+                                using (LogContext.PushProperty("ImportFileRow", row))
                                 {
-                                    PercentComplete = 1,
-                                    Status = $"Processing row {row}/{totalRows}...",
-                                    Error = false
-                                });
-                                for (int i = 0; i < excelReader.FieldCount; i++)
-                                {
-                                    switch (excelReader.GetString(i)?.Trim() ?? $"Column{i}")
+                                    if (row % 10 == 0)
                                     {
-                                        case BranchIdRowHeading:
-                                            branchColumnId = i;
-                                            break;
+                                        await _jobRepository.UpdateStatusAsync(jobId,
+                                            $"Processing row {row}/{totalRows}...");
 
-                                        case CouponRowHeading:
-                                            couponColumnId = i;
-                                            break;
+                                        progress?.Report(new JobStatus
+                                        {
+                                            PercentComplete = row * 100 / totalRows,
+                                            Status = $"Processing row {row}/{totalRows}...",
+                                            Error = false
+                                        });
+                                    }
+                                    if (row == 1)
+                                    {
+                                        progress?.Report(new JobStatus
+                                        {
+                                            PercentComplete = 1,
+                                            Status = $"Processing row {row}/{totalRows}...",
+                                            Error = false
+                                        });
+                                        for (int i = 0; i < excelReader.FieldCount; i++)
+                                        {
+                                            switch (excelReader.GetString(i)?.Trim() ?? $"Column{i}")
+                                            {
+                                                case BranchIdRowHeading:
+                                                    branchColumnId = i;
+                                                    break;
 
-                                        case DetailsRowHeading:
-                                            detailsColumnId = i;
-                                            break;
+                                                case CouponRowHeading:
+                                                    couponColumnId = i;
+                                                    break;
 
-                                        case OrderDateRowHeading:
-                                            orderDateColumnId = i;
-                                            break;
+                                                case DetailsRowHeading:
+                                                    detailsColumnId = i;
+                                                    break;
 
-                                        case ShipDateRowHeading:
-                                            shipDateColumnId = i;
-                                            break;
+                                                case OrderDateRowHeading:
+                                                    orderDateColumnId = i;
+                                                    break;
 
-                                        case PackingSlipRowHeading:
-                                            packingSlipColumnId = i;
-                                            hasPackingSlipColumn = true;
-                                            break;
+                                                case ShipDateRowHeading:
+                                                    shipDateColumnId = i;
+                                                    break;
 
-                                        case TrackingNumberRowHeading:
-                                            trackingNumberColumnId = i;
-                                            hasTrackingNumberColumn = true;
-                                            break;
+                                                case PackingSlipRowHeading:
+                                                    packingSlipColumnId = i;
+                                                    hasPackingSlipColumn = true;
+                                                    break;
+
+                                                case TrackingNumberRowHeading:
+                                                    trackingNumberColumnId = i;
+                                                    hasTrackingNumberColumn = true;
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (excelReader.GetValue(couponColumnId) != null
+                                            && excelReader.GetValue(branchColumnId) == null)
+                                        {
+                                            string coupon = null;
+                                            try
+                                            {
+                                                coupon = GetExcelString(excelReader,
+                                                    row,
+                                                    couponColumnId,
+                                                    "code");
+                                            }
+                                            catch (GraException gex)
+                                            {
+                                                issues.Add(gex.Message);
+                                            }
+                                            if (!string.IsNullOrEmpty(coupon))
+                                            {
+                                                try
+                                                {
+                                                    _logger.LogInformation("In import of {FileName}, code {Code} has no branch id, marking as donated",
+                                                        filename,
+                                                        coupon);
+                                                    await MarkCodeDonatedAsync(coupon);
+                                                    updated++;
+                                                    donationCount++;
+                                                }
+                                                catch (GraException gex)
+                                                {
+                                                    issues.Add(gex.Message);
+                                                }
+                                            }
+                                        }
+                                        else if (excelReader.GetValue(couponColumnId) != null
+                                            && (excelReader.GetValue(orderDateColumnId) != null
+                                                || excelReader.GetValue(shipDateColumnId) != null
+                                                || excelReader.GetValue(detailsColumnId) != null
+                                                || excelReader.GetValue(branchColumnId) != null
+                                                || excelReader.GetValue(packingSlipColumnId) != null
+                                                || excelReader.GetValue(trackingNumberColumnId) != null))
+                                        {
+                                            string coupon = null;
+                                            DateTime? orderDate = null;
+                                            DateTime? shipDate = null;
+                                            string packingSlip = null;
+                                            string trackingNumber = null;
+                                            string details = null;
+                                            int? branchId = null;
+
+                                            try
+                                            {
+                                                coupon = GetExcelString(excelReader,
+                                                    row,
+                                                    couponColumnId,
+                                                    "code");
+                                            }
+                                            catch (InvalidCastException icex)
+                                            {
+                                                issues.Add($"The value in row {row} for {CouponRowHeading} is invalid: {icex.Message}");
+                                            }
+                                            catch (GraException gex)
+                                            {
+                                                issues.Add(gex.Message);
+                                            }
+
+                                            try
+                                            {
+                                                orderDate = GetExcelDateTime(excelReader,
+                                                    row,
+                                                    orderDateColumnId,
+                                                    "order date");
+                                            }
+                                            catch (InvalidCastException icex)
+                                            {
+                                                issues.Add($"The value in row {row} for {OrderDateRowHeading} is invalid: {icex.Message}");
+                                            }
+                                            catch (GraException gex)
+                                            {
+                                                issues.Add(gex.Message);
+                                            }
+
+                                            try
+                                            {
+                                                shipDate = GetExcelDateTime(excelReader,
+                                                    row,
+                                                    shipDateColumnId,
+                                                    "ship date");
+                                            }
+                                            catch (InvalidCastException icex)
+                                            {
+                                                issues.Add($"The value in row {row} for {ShipDateRowHeading} is invalid: {icex.Message}");
+                                            }
+                                            catch (GraException gex)
+                                            {
+                                                issues.Add(gex.Message);
+                                            }
+
+                                            try
+                                            {
+                                                details = GetExcelString(excelReader,
+                                                    row,
+                                                    detailsColumnId,
+                                                    "details");
+                                            }
+                                            catch (InvalidCastException icex)
+                                            {
+                                                issues.Add($"The value in row {row} for {DetailsRowHeading} is invalid: {icex.Message}");
+                                            }
+                                            catch (GraException gex)
+                                            {
+                                                issues.Add(gex.Message);
+                                            }
+
+                                            try
+                                            {
+                                                branchId = GetExcelInt(excelReader,
+                                                    row,
+                                                    branchColumnId,
+                                                    "branch id");
+                                            }
+                                            catch (InvalidCastException icex)
+                                            {
+                                                issues.Add($"The value in row {row} for {BranchIdRowHeading} is invalid: {icex.Message}");
+                                            }
+                                            catch (GraException gex)
+                                            {
+                                                issues.Add(gex.Message);
+                                            }
+
+                                            if (hasPackingSlipColumn)
+                                            {
+                                                try
+                                                {
+                                                    packingSlip = GetExcelString(excelReader,
+                                                        row,
+                                                        packingSlipColumnId,
+                                                        "packing slip");
+                                                }
+                                                catch (InvalidCastException icex)
+                                                {
+                                                    issues.Add($"The value in row {row} for {PackingSlipRowHeading} is invalid: {icex.Message}");
+                                                }
+                                                catch (GraException gex)
+                                                {
+                                                    issues.Add(gex.Message);
+                                                }
+                                            }
+
+                                            if (hasTrackingNumberColumn)
+                                            {
+                                                try
+                                                {
+                                                    trackingNumber = GetExcelString(excelReader,
+                                                        row,
+                                                        trackingNumberColumnId,
+                                                        "tracking number");
+                                                    if (trackingNumber?.Length > 512)
+                                                    {
+                                                        issues.Add($"Tracking number on row {row} is too long, truncating at 512 characters!");
+                                                        trackingNumber = trackingNumber[..512];
+                                                    }
+                                                }
+                                                catch (InvalidCastException icex)
+                                                {
+                                                    issues.Add($"The value in row {row} for {TrackingNumberRowHeading} is invalid: {icex.Message}");
+                                                }
+                                                catch (GraException gex)
+                                                {
+                                                    issues.Add(gex.Message);
+                                                }
+                                            }
+
+                                            if (!string.IsNullOrEmpty(coupon)
+                                                && (orderDate != null
+                                                    || shipDate != null
+                                                    || !string.IsNullOrEmpty(details)
+                                                    || branchId != null
+                                                    || packingSlip != default
+                                                    || trackingNumber != null))
+                                            {
+                                                var code = await _vendorCodeRepository.GetByCode(coupon);
+                                                if (code == null)
+                                                {
+                                                    _logger.LogError("File contained code {Code} which was not found in the database",
+                                                        coupon);
+                                                    issues.Add($"Uploaded file contained code <code>{coupon}</code> which couldn't be found in the database.");
+                                                }
+                                                else
+                                                {
+                                                    bool recordIsCurrent = (code.ArrivalDate.HasValue
+                                                            && code.IsDamaged != true
+                                                            && code.IsMissing != true)
+                                                        || (orderDate == code.OrderDate
+                                                            && shipDate == code.ShipDate
+                                                            && details == code.Details
+                                                            && branchId == code.BranchId
+                                                            && trackingNumber == code.TrackingNumber
+                                                            && (packingSlip == default
+                                                                || code.PackingSlip == packingSlip));
+
+                                                    if (recordIsCurrent)
+                                                    {
+                                                        // looks current but let's verify that if there is
+                                                        // a branchId that it is NOT set as donated
+                                                        if (branchId.HasValue && code.IsDonated == true)
+                                                        {
+                                                            _logger.LogInformation("Import: {FileName}, code {Code} has a branch id but is marked donated, un-donating",
+                                                                filename,
+                                                                code.Code);
+                                                            recordIsCurrent = false;
+                                                            undonationCount++;
+                                                        }
+                                                    }
+
+                                                    if (recordIsCurrent)
+                                                    {
+                                                        alreadyCurrent++;
+                                                    }
+                                                    else
+                                                    {
+                                                        DateTime? arrivalDate = null;
+
+                                                        if (packingSlip != default
+                                                            && code.ArrivalDate == null)
+                                                        {
+                                                            arrivalDate = (await GetPs(packingSlip))?
+                                                                .CreatedAt;
+                                                        }
+
+                                                        code = await UpdateVendorCodeAsync(code,
+                                                            orderDate,
+                                                            shipDate,
+                                                            details,
+                                                            branchId,
+                                                            packingSlip,
+                                                            trackingNumber,
+                                                            arrivalDate);
+
+                                                        bool prizeAwarded = false;
+
+                                                        if (shipDate != null
+                                                            && branchId != null
+                                                            && vendorCodeType.AwardPrizeOnShipDate)
+                                                        {
+                                                            await AwardPrizeAsync(code);
+                                                            prizeAwarded = true;
+                                                        }
+
+                                                        if (packingSlip != default
+                                                            && vendorCodeType.AwardPrizeOnPackingSlip
+                                                            && await GetPs(packingSlip) != null)
+                                                        {
+                                                            await AwardPrizeAsync(code);
+                                                            prizeAwarded = true;
+                                                        }
+
+                                                        if (prizeAwarded
+                                                            && vendorCodeType
+                                                                .ReadyForPickupEmailTemplateId
+                                                                .HasValue
+                                                            && code.UserId.HasValue)
+                                                        {
+                                                            var result = await SendPickupEmailAsync(
+                                                                vendorCodeType
+                                                                    .ReadyForPickupEmailTemplateId
+                                                                    .Value,
+                                                                code.UserId.Value,
+                                                                emailDetails,
+                                                                code);
+
+                                                            if (result == true)
+                                                            {
+                                                                emailsSent++;
+                                                            }
+                                                            else if (result == false)
+                                                            {
+                                                                emailErrors++;
+                                                            }
+                                                        }
+
+                                                        updated++;
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
+                                if (token.IsCancellationRequested)
+                                {
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (token.IsCancellationRequested)
+                        {
+                            await _jobRepository.UpdateStatusAsync(jobId,
+                                $"Import cancelled at row {row}/{totalRows}.");
+
+                            return new JobStatus
+                            {
+                                Status = $"Operation cancelled at row {row}."
+                            };
+                        }
+
+                        await _jobRepository.UpdateStatusAsync(jobId,
+                            $"Updated {updated} records, {donationCount} donations, {undonationCount} un-donations, {alreadyCurrent} already current, {issues?.Count ?? 0} issues.");
+
+                        _logger.LogInformation("Import of {FileName} completed: {UpdatedRecords} updates, {DonationCount} donations, {UndonationCount} un-donations, {CurrentRecords} already current, {IssueCount} issues, {EmailsSent} sent emails, {ErrorEmails} errors emails in {Elapsed} ms",
+                            filename,
+                            updated,
+                            donationCount,
+                            undonationCount,
+                            alreadyCurrent,
+                            issues?.Count ?? 0,
+                            emailsSent,
+                            emailErrors,
+                            sw?.ElapsedMilliseconds ?? 0);
+
+                        var sb = new StringBuilder("<strong>Import complete</strong>");
+                        if (updated > 0)
+                        {
+                            sb.Append(": ").Append(updated).Append(" records were updated");
+                        }
+                        if (donationCount > 0)
+                        {
+                            sb.Append(", ").Append(donationCount).Append(" donations");
+                        }
+                        if (undonationCount > 0)
+                        {
+                            sb.Append(", ").Append(undonationCount).Append(" un-donations");
+                        }
+                        if (alreadyCurrent > 0)
+                        {
+                            if (updated > 0)
+                            {
+                                sb.Append(", ");
                             }
                             else
                             {
-                                if (excelReader.GetValue(couponColumnId) != null
-                                    && excelReader.GetValue(branchColumnId) == null)
-                                {
-                                    string coupon = null;
-                                    try
-                                    {
-                                        coupon = GetExcelString(excelReader,
-                                            row,
-                                            couponColumnId,
-                                            "code");
-                                    }
-                                    catch (GraException gex)
-                                    {
-                                        issues.Add(gex.Message);
-                                    }
-                                    if (!string.IsNullOrEmpty(coupon))
-                                    {
-                                        try
-                                        {
-                                            _logger.LogInformation("In import of {FileName}, code {Code} has no branch id, marking as donated",
-                                                filename,
-                                                coupon);
-                                            await MarkCodeDonatedAsync(coupon);
-                                            updated++;
-                                            donationCount++;
-                                        }
-                                        catch (GraException gex)
-                                        {
-                                            issues.Add(gex.Message);
-                                        }
-                                    }
-                                }
-                                else if (excelReader.GetValue(couponColumnId) != null
-                                    && (excelReader.GetValue(orderDateColumnId) != null
-                                        || excelReader.GetValue(shipDateColumnId) != null
-                                        || excelReader.GetValue(detailsColumnId) != null
-                                        || excelReader.GetValue(branchColumnId) != null
-                                        || excelReader.GetValue(packingSlipColumnId) != null
-                                        || excelReader.GetValue(trackingNumberColumnId) != null))
-                                {
-                                    string coupon = null;
-                                    DateTime? orderDate = null;
-                                    DateTime? shipDate = null;
-                                    string packingSlip = null;
-                                    string trackingNumber = null;
-                                    string details = null;
-                                    int? branchId = null;
-
-                                    try
-                                    {
-                                        coupon = GetExcelString(excelReader,
-                                            row,
-                                            couponColumnId,
-                                            "code");
-                                    }
-                                    catch (GraException gex)
-                                    {
-                                        issues.Add(gex.Message);
-                                    }
-
-                                    try
-                                    {
-                                        orderDate = GetExcelDateTime(excelReader,
-                                            row,
-                                            orderDateColumnId,
-                                            "order date");
-                                    }
-                                    catch (GraException gex)
-                                    {
-                                        issues.Add(gex.Message);
-                                    }
-
-                                    try
-                                    {
-                                        shipDate = GetExcelDateTime(excelReader,
-                                            row,
-                                            shipDateColumnId,
-                                            "ship date");
-                                    }
-                                    catch (GraException gex)
-                                    {
-                                        issues.Add(gex.Message);
-                                    }
-
-                                    try
-                                    {
-                                        details = GetExcelString(excelReader,
-                                            row,
-                                            detailsColumnId,
-                                            "details");
-                                    }
-                                    catch (GraException gex)
-                                    {
-                                        issues.Add(gex.Message);
-                                    }
-
-                                    try
-                                    {
-                                        branchId = GetExcelInt(excelReader,
-                                            row,
-                                            branchColumnId,
-                                            "branch id");
-                                    }
-                                    catch (GraException gex)
-                                    {
-                                        issues.Add(gex.Message);
-                                    }
-
-                                    if (hasPackingSlipColumn)
-                                    {
-                                        try
-                                        {
-                                            packingSlip = GetExcelString(excelReader,
-                                                row,
-                                                packingSlipColumnId,
-                                                "packing slip");
-                                        }
-                                        catch (GraException gex)
-                                        {
-                                            issues.Add(gex.Message);
-                                        }
-                                    }
-
-                                    if (hasTrackingNumberColumn)
-                                    {
-                                        try
-                                        {
-                                            trackingNumber = GetExcelString(excelReader,
-                                                row,
-                                                trackingNumberColumnId,
-                                                "tracking number");
-                                            if (trackingNumber?.Length > 512)
-                                            {
-                                                issues.Add($"Tracking number on row {row} is too long, truncating at 512 characters!");
-                                                trackingNumber = trackingNumber[..512];
-                                            }
-                                        }
-                                        catch (GraException gex)
-                                        {
-                                            issues.Add(gex.Message);
-                                        }
-                                    }
-
-                                    if (!string.IsNullOrEmpty(coupon)
-                                        && (orderDate != null
-                                            || shipDate != null
-                                            || !string.IsNullOrEmpty(details)
-                                            || branchId != null
-                                            || packingSlip != default
-                                            || trackingNumber != null))
-                                    {
-                                        var code = await _vendorCodeRepository.GetByCode(coupon);
-                                        if (code == null)
-                                        {
-                                            _logger.LogError("File contained code {Code} which was not found in the database",
-                                                coupon);
-                                            issues.Add($"Uploaded file contained code <code>{coupon}</code> which couldn't be found in the database.");
-                                        }
-                                        else
-                                        {
-                                            bool recordIsCurrent = (code.ArrivalDate.HasValue
-                                                    && code.IsDamaged != true
-                                                    && code.IsMissing != true)
-                                                || (orderDate == code.OrderDate
-                                                    && shipDate == code.ShipDate
-                                                    && details == code.Details
-                                                    && branchId == code.BranchId
-                                                    && trackingNumber == code.TrackingNumber
-                                                    && (packingSlip == default
-                                                        || code.PackingSlip == packingSlip));
-
-                                            if (recordIsCurrent)
-                                            {
-                                                // looks current but let's verify that if there is
-                                                // a branchId that it is NOT set as donated
-                                                if (branchId.HasValue && code.IsDonated == true)
-                                                {
-                                                    _logger.LogInformation("Import: {FileName}, code {Code} has a branch id but is marked donated, un-donating",
-                                                        filename,
-                                                        code.Code);
-                                                    recordIsCurrent = false;
-                                                    undonationCount++;
-                                                }
-                                            }
-
-                                            if (recordIsCurrent)
-                                            {
-                                                alreadyCurrent++;
-                                            }
-                                            else
-                                            {
-                                                DateTime? arrivalDate = null;
-
-                                                if (packingSlip != default
-                                                    && code.ArrivalDate == null)
-                                                {
-                                                    arrivalDate = (await GetPs(packingSlip))?
-                                                        .CreatedAt;
-                                                }
-
-                                                code = await UpdateVendorCodeAsync(code,
-                                                    orderDate,
-                                                    shipDate,
-                                                    details,
-                                                    branchId,
-                                                    packingSlip,
-                                                    trackingNumber,
-                                                    arrivalDate);
-
-                                                bool prizeAwarded = false;
-
-                                                if (shipDate != null
-                                                    && branchId != null
-                                                    && vendorCodeType.AwardPrizeOnShipDate)
-                                                {
-                                                    await AwardPrizeAsync(code);
-                                                    prizeAwarded = true;
-                                                }
-
-                                                if (packingSlip != default
-                                                    && vendorCodeType.AwardPrizeOnPackingSlip
-                                                    && await GetPs(packingSlip) != null)
-                                                {
-                                                    await AwardPrizeAsync(code);
-                                                    prizeAwarded = true;
-                                                }
-
-                                                if (prizeAwarded
-                                                    && vendorCodeType
-                                                        .ReadyForPickupEmailTemplateId
-                                                        .HasValue
-                                                    && code.UserId.HasValue)
-                                                {
-                                                    var result = await SendPickupEmailAsync(
-                                                        vendorCodeType
-                                                            .ReadyForPickupEmailTemplateId
-                                                            .Value,
-                                                        code.UserId.Value,
-                                                        emailDetails,
-                                                        code);
-
-                                                    if (result == true)
-                                                    {
-                                                        emailsSent++;
-                                                    }
-                                                    else if (result == false)
-                                                    {
-                                                        emailErrors++;
-                                                    }
-                                                }
-
-                                                updated++;
-                                            }
-                                        }
-                                    }
-                                }
+                                sb.Append(": ");
                             }
-                            if (token.IsCancellationRequested)
+                            sb.Append(alreadyCurrent).Append(" records were already current");
+                        }
+                        if (emailsSent + emailErrors > 0)
+                        {
+                            sb.Append(", sent ")
+                                .Append(emailsSent)
+                                .Append(" emails");
+                            if (emailErrors > 0)
                             {
-                                break;
+                                sb.Append(" with ")
+                                .Append(emailErrors)
+                                .Append(" email errors");
                             }
                         }
-                    }
+                        sb.Append('.');
 
-                    if (token.IsCancellationRequested)
-                    {
-                        await _jobRepository.UpdateStatusAsync(jobId,
-                            $"Import cancelled at row {row}/{totalRows}.");
-
-                        return new JobStatus
+                        if (issues.Count > 0)
                         {
-                            Status = $"Operation cancelled at row {row}."
-                        };
-                    }
-
-                    await _jobRepository.UpdateStatusAsync(jobId,
-                        $"Updated {updated} records, {donationCount} donations, {undonationCount} un-donations, {alreadyCurrent} already current, {issues?.Count ?? 0} issues.");
-
-                    _logger.LogInformation("Import of {FileName} completed: {UpdatedRecords} updates, {DonationCount} donations, {UndonationCount} un-donations, {CurrentRecords} already current, {IssueCount} issues, {EmailsSent} sent emails, {ErrorEmails} errors emails in {Elapsed} ms",
-                        filename,
-                        updated,
-                        donationCount,
-                        undonationCount,
-                        alreadyCurrent,
-                        issues?.Count ?? 0,
-                        emailsSent,
-                        emailErrors,
-                        sw?.ElapsedMilliseconds ?? 0);
-
-                    var sb = new StringBuilder("<strong>Import complete</strong>");
-                    if (updated > 0)
-                    {
-                        sb.Append(": ").Append(updated).Append(" records were updated");
-                    }
-                    if (donationCount > 0)
-                    {
-                        sb.Append(", ").Append(donationCount).Append(" donations");
-                    }
-                    if (undonationCount > 0)
-                    {
-                        sb.Append(", ").Append(undonationCount).Append(" un-donations");
-                    }
-                    if (alreadyCurrent > 0)
-                    {
-                        if (updated > 0)
-                        {
-                            sb.Append(", ");
+                            sb.Append(" Issues detected:<ul>");
+                            foreach (string issue in issues)
+                            {
+                                sb.Append("<li>").Append(issue).Append("</li>");
+                            }
+                            sb.Append("</ul>");
+                            return new JobStatus
+                            {
+                                PercentComplete = 100,
+                                Complete = true,
+                                Status = sb.ToString(),
+                                Error = true
+                            };
                         }
                         else
                         {
-                            sb.Append(": ");
-                        }
-                        sb.Append(alreadyCurrent).Append(" records were already current");
-                    }
-                    if (emailsSent + emailErrors > 0)
-                    {
-                        sb.Append(", sent ")
-                            .Append(emailsSent)
-                            .Append(" emails");
-                        if (emailErrors > 0)
-                        {
-                            sb.Append(" with ")
-                            .Append(emailErrors)
-                            .Append(" email errors");
+                            return new JobStatus
+                            {
+                                PercentComplete = 100,
+                                Complete = true,
+                                Status = sb.ToString(),
+                            };
                         }
                     }
-                    sb.Append('.');
-
-                    if (issues.Count > 0)
+                    finally
                     {
-                        sb.Append(" Issues detected:<ul>");
-                        foreach (string issue in issues)
-                        {
-                            sb.Append("<li>").Append(issue).Append("</li>");
-                        }
-                        sb.Append("</ul>");
-                        return new JobStatus
-                        {
-                            PercentComplete = 100,
-                            Complete = true,
-                            Status = sb.ToString(),
-                            Error = true
-                        };
+                        File.Delete(fullPath);
                     }
-                    else
-                    {
-                        return new JobStatus
-                        {
-                            PercentComplete = 100,
-                            Complete = true,
-                            Status = sb.ToString(),
-                        };
-                    }
-                }
-                finally
-                {
-                    File.Delete(fullPath);
                 }
             }
             else
@@ -2241,44 +2276,8 @@ namespace GRA.Domain.Service
             return default;
         }
 
-        private long GetExcelLong(IExcelDataReader excelReader,
-            int row,
-            int columnId,
-            string columnName)
-        {
-            if (excelReader == null)
-            {
-                throw new ArgumentNullException(nameof(excelReader));
-            }
-            if (excelReader.GetValue(columnId) != null)
-            {
-                try
-                {
-                    var value = excelReader.GetValue(columnId);
-                    if (long.TryParse(value.ToString(), out long longValue))
-                    {
-                        return longValue;
-                    }
-                    else
-                    {
-                        _logger.LogWarning(ErrorParseError,
-                            columnName,
-                            row,
-                            "Couldn't convert to a number");
-                        throw new GraException($"Issue reading {columnName} on row {row}: Couldn't convert to a number");
-                    }
-                }
-                catch (IndexOutOfRangeException ex)
-                {
-                    _logger.LogWarning(ErrorParseError, columnName, row, ex.Message);
-                    throw new GraException($"Issue reading {columnName} on row {row}: {ex.Message}");
-                }
-            }
-            return default;
-        }
-
         private string GetExcelString(IExcelDataReader excelReader,
-                                    int row,
+            int row,
             int columnId,
             string columnName)
         {

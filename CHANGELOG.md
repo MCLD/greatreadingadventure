@@ -39,6 +39,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Ability to attach, remove, or update a certificate (uploaded PDF) to a trigger
 - News stand post updates are shown as updated and sorted by update date
 - Uploading a list of vendor codes to invalidate them and send participants new ones
+- Better error handling for type conversion errors on vendor code status report import
 
 ### Fixed
 
