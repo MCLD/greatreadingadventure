@@ -306,7 +306,7 @@ namespace GRA.Domain.Service
         }
 
         private async Task<JobStatus> UpdateStatusFromExcelAsync(int jobId,
-                                    CancellationToken token,
+            CancellationToken token,
             IProgress<JobStatus> progress = null)
         {
             var vendorCodeService = _httpContextAccessor
