@@ -40,6 +40,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - News stand post updates are shown as updated and sorted by update date
 - Uploading a list of vendor codes to invalidate them and send participants new ones
 - Better error handling for type conversion errors on vendor code status report import
+- Reassigned vendor codes can now be used in participant search
 
 ### Fixed
 
@@ -57,6 +58,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Broken link from events in Mission Control to associated challenges
 - Proper rendering of vendor code (templated) messages
 - Mail unsubscribe links
+- Reassigned codes no longer say the user is deleted in packing slip summaries
 
 ## [4.4.0] 2022-11-29
 

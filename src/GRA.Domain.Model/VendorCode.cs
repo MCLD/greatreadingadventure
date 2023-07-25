@@ -52,6 +52,7 @@ namespace GRA.Domain.Model
         public string Url { get; set; }
 
         public int? UserId { get; set; }
+        public string ValidityReason { get; set; }
         public string VendorCodeTypeDescription { get; set; }
         public int VendorCodeTypeId { get; set; }
     }
