@@ -703,12 +703,8 @@ namespace GRA.Domain.Service
             VerifyPermission(Permission.ViewParticipantDetails);
 
             var requestedUser = await _userRepository.GetByIdAsync(userId);
-            if (requestedUser == null)
-            {
-                throw new GraException("The requested participant could not be accessed or does not exist.");
-            }
-
-            return requestedUser;
+            return requestedUser
+                ?? throw new GraException("The requested participant could not be accessed or does not exist.");
         }
 
         public async Task<GroupInfo> GetGroupFromHouseholdHeadAsync(int householdHeadUserId)
@@ -932,12 +928,19 @@ namespace GRA.Domain.Service
                 {
                     var vendorCode = await _vendorCodeService
                         .GetVendorCodeByCode(filter.Search.ToUpper(CultureInfo.InvariantCulture));
-                    if (vendorCode?.UserId.HasValue == true)
+                    if (vendorCode?.UserId.HasValue == true
+                        || vendorCode?.AssociatedUserId.HasValue == true)
                     {
-                        filter.UserIds = new List<int>
+                        if (vendorCode?.UserId.HasValue == true)
                         {
-                            vendorCode.UserId.Value
-                        };
+                            filter.UserIds ??= new List<int>();
+                            filter.UserIds.Add(vendorCode.UserId.Value);
+                        }
+                        if (vendorCode?.AssociatedUserId.HasValue == true)
+                        {
+                            filter.UserIds ??= new List<int>();
+                            filter.UserIds.Add(vendorCode.AssociatedUserId.Value);
+                        }
                         filter.Search = null;
                     }
                 }
@@ -970,7 +973,7 @@ namespace GRA.Domain.Service
             {
                 int languageId = key == UnspecifiedCulture
                     ? defaultLanguageId
-                    : languages.Where(_ => _.Name == key).SingleOrDefault().Id;
+                    : languages.SingleOrDefault(_ => _.Name == key).Id;
 
                 if (subscribedLanguageCount.ContainsKey(languageId))
                 {
@@ -1365,7 +1368,9 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {requestedByUserId} doesn't have permission to update user {userToUpdate.Id}.");
+                _logger.LogError("User {ActiveUserId} doesn't have permission to update user {UserId}.",
+                    requestedByUserId,
+                    userToUpdate.Id);
                 throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
         }
@@ -1622,12 +1627,14 @@ namespace GRA.Domain.Service
 
             if (string.IsNullOrWhiteSpace(user.Username))
             {
-                _logger.LogError($"User {userId} cannot be removed from a family/group without a username.");
+                _logger.LogError("User {UserId} cannot be removed from a family/group without a username.",
+                    userId);
                 throw new GraException("Participant does not have a username.");
             }
             if (!user.HouseholdHeadUserId.HasValue)
             {
-                _logger.LogError($"User {userId} cannot be removed from a family/group.");
+                _logger.LogError("User {UserId} cannot be removed from a family/group.",
+                    userId);
                 throw new GraException("Participant does not have a family/group or is the manager.");
             }
             user.HouseholdHeadUserId = null;

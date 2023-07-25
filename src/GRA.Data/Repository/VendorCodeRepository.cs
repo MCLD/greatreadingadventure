@@ -196,21 +196,60 @@ namespace GRA.Data.Repository
                     _.LastName
                 });
 
-            foreach (var code in codes.Where(_ => _.UserId.HasValue))
+            var associated = _context
+                .Users
+                .AsNoTracking()
+                .Where(_ => codes.Select(_ => _.AssociatedUserId).Contains(_.Id))
+                .Select(_ => new
+                {
+                    _.Id,
+                    _.IsDeleted,
+                    _.FirstName,
+                    _.LastName
+                });
+
+            foreach (var code in codes.Where(_ => _.UserId.HasValue || _.AssociatedUserId.HasValue))
             {
                 var user = users.SingleOrDefault(_ => _.Id == code.UserId);
                 if (user == null)
                 {
                     code.IsUserValid = false;
+                    var associatedUser = associated.Where(_ => _.Id == code.AssociatedUserId).ToList();
+                    if (associatedUser.Count > 0)
+                    {
+                        var firstUser = associatedUser[0];
+                        code.FirstName = firstUser.FirstName;
+                        code.LastName = firstUser.LastName;
+                        code.ParticipantName = string.IsNullOrEmpty(firstUser.LastName)
+                            ? firstUser.FirstName
+                            : $"{firstUser.FirstName} {firstUser.LastName}";
+                        code.UserId = code.AssociatedUserId;
+                        if (associatedUser.Count == 1)
+                        {
+                            code.ValidityReason = "Deactivated code, this participant has a different active code.";
+                            if (!string.IsNullOrEmpty(code.ReasonForReassignment))
+                            {
+                                code.ValidityReason += " Deactivation reason: " + code.ReasonForReassignment;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        code.ValidityReason = "Unable to map this code to a participant, participant is possibly deleted.";
+                    }
                 }
                 else
                 {
                     code.IsUserValid = !user.IsDeleted;
+                    code.FirstName = user.FirstName;
+                    code.LastName = user.LastName;
                     code.ParticipantName = string.IsNullOrEmpty(user.LastName)
                         ? user.FirstName
                         : $"{user.FirstName} {user.LastName}";
-                    code.LastName = user.LastName;
-                    code.FirstName = user.FirstName;
+                    if (user.IsDeleted)
+                    {
+                        code.ValidityReason = "This participant has been deleted.";
+                    }
                 }
             }
 

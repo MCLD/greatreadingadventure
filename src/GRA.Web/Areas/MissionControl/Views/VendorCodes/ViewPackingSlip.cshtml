@@ -108,7 +108,7 @@
                         @foreach (var vendorCode in Model.VendorCodes)
                         {
                             <tr class="@(vendorCode.IsUserValid ? null : "danger")"
-                                title="@(vendorCode.IsUserValid ? null : "Participant has been deleted.")">
+                                title="@(vendorCode.IsUserValid ? null : vendorCode.ValidityReason)">
                                 <td class="text-center">
                                     @if (vendorCode.IsUserValid)
                                     {
@@ -117,7 +117,14 @@
                                     }
                                     else
                                     {
-                                        <span class="text-danger fas fa-exclamation-triangle"></span>
+                                        @if (vendorCode.ValidityReason?.Contains("deleted") == true)
+                                        {
+                                            <span class="text-danger fas fa-exclamation-triangle"></span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-warning fas fa-exclamation-triangle"></span>
+                                        }
                                     }
                                 </td>
                                 <td style="white-space:nowrap;">
