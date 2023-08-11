@@ -59,6 +59,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dev", "dev", "{2F931D25-1A2
 		dev\docker-yarn-update.sh = dev\docker-yarn-update.sh
 		dev\docker.md = dev\docker.md
 		dev\initial-developer-setup.md = dev\initial-developer-setup.md
+		dev\migration.ps1 = dev\migration.ps1
 		dev\project-organization.md = dev\project-organization.md
 		dev\README.md = dev\README.md
 	EndProjectSection

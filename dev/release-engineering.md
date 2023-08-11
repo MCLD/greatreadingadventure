@@ -33,7 +33,7 @@ Areas to check:
 If there have been changes to the avatars, take these steps:
 
 1. Ensure the [MCLD/gra-avatars](https://github.com/MCLD/gra-avatars) project is up-to-date and has a successfully built release .ZIP file. There's no build process here - GitHub will produce a .ZIP file of the repository when you create a release.
-2. Test the .ZIP file produced by GitHub (import it locally by placing it in `shared/private/` named `defaultavatars.zip`. The avatar file will not upload by default through the Web interface due to its size).
+2. Test the .ZIP file produced by GitHub (unzip the contents locally into `src/GRA.Web/assets/` in a folder named named `defaultavatars`. The avatar file will not upload by default through the Web interface due to its size).
 3. In the GRA project, update `release-prep.bash` to reference the new avatar release file.
 
 When the project's GitHub Action runs against a git branch named in the format `release/x.y.z`, it will download and incorporate the avatars into the Docker image and final package.

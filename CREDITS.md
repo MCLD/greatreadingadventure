@@ -44,16 +44,15 @@ The Great Reading Adventure is open source software developed with the help of [
 
 - [AppHarbor](https://appharbor.com/) - free hosting tier that will run the GRA for testing
 - [AppVeyor](http://www.appveyor.com/) - continuous integration, ensuring code check-ins don't break Windows builds
-- [Atomist](https://atomist.com/) - DevSecOps tool to keep up-to-date and prevent vulnerabilities
 - [Codacy](https://www.codacy.com/) - automated code reviews and code analytics
 - [Docker](https://www.docker.com/) - containerized builds and deployment
 - [Eleven Giants](http://www.elevengiants.com/) - helped with extraction of avatars from the Glitch public domain game art
 - [GitHub](https://github.com/) - hosts the source code, discussions, issue tracker, continuous integration, Wiki, [www.greatreadingadventure.com](http://www.greatreadingadventure.com/) and more
-- [GitMagic](https://gitmagic.io/) - enforces revision control guidelines
 - [Glitch public domain game art](https://www.glitchthegame.com/public-domain-game-art/) - free fantastic art provided by [Tiny Speck](https://tinyspeck.com/) which can be seen in the default banner and avatars
 - [Mailtrap](https://mailtrap.io/) - painless email testing during development
 - [MyKnowledgeMap](https://www.myknowledgemap.com/) - creators and maintainers of [OpenBadges.me](https://www.openbadges.me/), our integrated badge maker
 - [Open Library](https://openlibrary.org/) - book cover images, title, and author lookups for challenges
+- [Podman](https://podman.io/) - local containers for testing
 - [Read The Docs](https://readthedocs.org/) - powers [the online manual](http://manual.greatreadingadventure.com)
 
 ## <a name="source"></a>Open-source software and components
@@ -69,11 +68,6 @@ The Great Reading Adventure uses open source components. You can find informatio
 
 - [AutoMapper](http://automapper.org/): A convention-based object-object mapper.
 - Source on GitHub: [automapper/automapper](https://github.com/AutoMapper/AutoMapper) - [MIT License](https://github.com/AutoMapper/AutoMapper/blob/master/LICENSE.txt)
-
-### Bogus
-
-- [Bogus](https://github.com/bchavez/Bogus): A simple and sane fake data generator for C#. Based on and ported from the famed faker.js.
-- Source on GitHub [bchavez/Bogus](https://github.com/bchavez/Bogus) - [MIT License](https://github.com/bchavez/Bogus/blob/master/LICENSE)
 
 ### Bootstrap
 
@@ -95,10 +89,10 @@ The Great Reading Adventure uses open source components. You can find informatio
 - The jQuery plugin that brings select elements into the 21st century with intuitive multiselection, searching, and much more [Bootstrap-Select](https://developer.snapappointments.com/bootstrap-select/)
 - Source on GitHub: [snapappointments/bootstrap-select](https://github.com/snapappointments/bootstrap-select/) - [MIT License](https://github.com/snapappointments/bootstrap-select/blob/master/LICENSE)
 
-### CommandLineUtils
+### buildscript
 
-- Command line parsing and utilities for .NET Core and .NET Framework
-- Source on GitHub: [natemcmaster/CommandLineUtils](https://github.com/natemcmaster/CommandLineUtils) - [Apache License, Version 2.0](https://github.com/natemcmaster/CommandLineUtils/blob/master/LICENSE.txt)
+- The build.bash script helps build Docker images and upload them to container registries.
+- Source on GitHub: [https://github.com/MCLD/buildscript](https://github.com/MCLD/buildscript) - [MIT License](https://github.com/MCLD/buildscript/blob/main/LICENSE.md)
 
 ### CommonMark.js
 
@@ -110,15 +104,25 @@ The Great Reading Adventure uses open source components. You can find informatio
 - Implementation of [CommonMark](http://commonmark.org/) specification in C# for converting Markdown documents to HTML. Optimized for maximum performance and portability.
 - Source on GitHub: [Knagis/CommonMark.NET](https://github.com/Knagis/CommonMark.NET) - [BSD-3-Clause](https://github.com/Knagis/CommonMark.NET/blob/master/LICENSE.md)
 
-### Console Progress Bar
-
-- Display progress in console applications.
-- Source on GitHub Gist: [DanielSWolf/Program.cs](https://gist.github.com/DanielSWolf/0ab6a96899cc5377bf54) - [MIT License](https://opensource.org/licenses/MIT)
-
 ### CsvHelper
 
 - Library to help reading and writing CSV files [CsvHelper](https://joshclose.github.io/CsvHelper/)
 - Source on GitHub: [JoshClose/CsvHelper](https://github.com/joshclose/csvhelper) - [Apache License, Version 2.0](https://github.com/JoshClose/CsvHelper/blob/master/LICENSE.txt)
+
+### docker-lock
+
+- docker-lock is a cli tool that automates managing image digests by tracking them in a separate Lockfile
+- Source on GitHub: [safe-waters/docker-lock](https://github.com/safe-waters/docker-lock) - [Apache License, Version 2.0](https://github.com/safe-waters/docker-lock/blob/master/LICENSE)
+
+### dotnet-outdated
+
+- dotnet-outdated is a .NET Core Global tool that allows you to quickly report on any outdated NuGet packages in your .NET Core and .NET Standard projects.
+- Source on GitHub: [dotnet-outdated/dotnet-outdated](https://github.com/dotnet-outdated/dotnet-outdated) - [MIT License](https://github.com/dotnet-outdated/dotnet-outdated/blob/master/LICENSE)
+
+### dotnet-outdated-action
+
+- This is a GitHub Action for running dotnet-outdated against .NET projects.
+- Source on GitHub: [MCLD/dotnet-outdated-action](https://github.com/MCLD/dotnet-outdated-action) - [MIT License](https://github.com/MCLD/dotnet-outdated-action/blob/main/LICENSE)
 
 ### Entity Framework Core
 
@@ -144,6 +148,11 @@ The Great Reading Adventure uses open source components. You can find informatio
 
 - A fast, small, and feature-rich JavaScript library
 - Source on GitHub: [jquery/jquery](https://github.com/jquery/jquery) - [MIT License](https://github.com/jquery/jquery/blob/master/LICENSE.txt)
+
+### LigerShark.WebOptimizer
+
+- ASP.NET Core middleware for bundling and minification of CSS and JavaScript files at runtime.
+- Source on GitHub: [ligershark/WebOptimizer](https://github.com/ligershark/WebOptimizer) - [Apache License, Version 2.0](https://github.com/ligershark/WebOptimizer/blob/master/LICENSE)
 
 ### MailKit
 

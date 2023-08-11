@@ -14,9 +14,15 @@ The project ships with the Microsoft SQL Server data provider configured. If you
 
 Database migrations are included with feature commits so in the case of using SQL Server you shouldn't need to add a migration to start using the software. If you wish to use SQLite or make changes to the data model, you must add database migrations to the project. The GRA applies all pending database migrations upon startup.
 
-Migrations can be managed with the [`dotnet ef`](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dotnet) command line tool or the [Package Manager Console](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/powershell).
+Migrations can be managed with the `migration.ps1` [PowerShell](https://github.com/PowerShell/PowerShell) script in the project `dev/` directory, [`dotnet ef`](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dotnet) command line tool, or the [Package Manager Console](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/powershell).
 
 Connection strings for creating migrations are located in the `GRA.Development` namespace and mirror the definitions in the default `appsettings.json` file.
+
+#### Using migration.ps1
+
+1. Navigate in a PowerShell window to `dev/` in the project.
+2. Enter `.\migration.ps1` followed by whatever command you would give `dotnet ef`, such as `list`
+3. Add a new develop migration, if desired: `.\migration.ps1 add develop`
 
 #### Using dotnet ef
 

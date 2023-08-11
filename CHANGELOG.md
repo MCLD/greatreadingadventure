@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## Unreleased
 
+## [4.4.1] 2023-08-11
+
 ## Changed
 
 - Rename "Redemption Instructions" label to "Redemptions Instructions for Staff"
@@ -13,6 +15,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Improve Google Analytics to better support GA 4 and events
 - Order packing slip and hold slip views by detail, followed by last name and first name
 - Fix display of packing slip to show the name as last name - comma - first name
+- Upgrade from ASP.NET v7.0 to v7.0.10
 
 ## Added
 
@@ -28,7 +31,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Participant names to packing slip detail
 - Ability to print hold slips from packing slip detail
 - Id values to system/branch export
-- Individual news post viewing in Mission Control optimized for printingj
+- Individual news post viewing in Mission Control optimized for printing
 - Post count next to category names on Mission Control dashboard
 - Ability to view history of changes submitted by another user from MC
 - Internationalization for Vendor Code communications
@@ -436,6 +439,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Everything! First release of 4.0.
 
+[4.4.1]: https://github.com/mcld/greatreadingadventure/tree/v4.4.1
 [4.4.0]: https://github.com/mcld/greatreadingadventure/tree/v4.4.0
 [4.3.17]: https://github.com/mcld/greatreadingadventure/tree/v4.3.17
 [4.2.1]: https://github.com/mcld/greatreadingadventure/tree/v4.2.1
