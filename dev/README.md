@@ -2,7 +2,7 @@
 
 ## Environment
 
-GRA code should successfully compile using either the free [Visual Studio Code](https://code.visualstudio.com/) or [Visual Studio Community](https://www.visualstudio.com/vs/community/) edition. External dependencies are managed with NuGet and should be automatically downloaded upon the first build. The current `develop` branch requires [C# 7.1](https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-7-1) to compile, we are currently using Visual Studio 2022.
+GRA code should successfully compile using either the free [Visual Studio Code](https://code.visualstudio.com/) or [Visual Studio Community](https://www.visualstudio.com/vs/community/) edition. External dependencies are managed with NuGet and should be automatically downloaded upon the first build. The current `main` branch requires [C# 11](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-11) to compile, we are currently using Visual Studio 2022.
 
 Framework history:
 
@@ -19,12 +19,12 @@ If you have any trouble getting the package to build, please submit an [issue](h
 
 ## Project conventions
 
-The `master` branch represents the latest release and the `develop` branch contains work in progress. For more information see the [OneFlow Git branching model](http://endoflineblog.com/oneflow-a-git-branching-model-and-workflow).
+The `main` branch contains work in progress.
 
 - Try to follow the [HTML](http://codeguide.co/#html) and [CSS](http://codeguide.co/#css) code guides.
 - Wrap lines at 100 characters whenever possible.
-- [`IDisposable`](https://msdn.microsoft.com/en-us/library/system.idisposable.aspx) calls should be wrapped in [`using()`](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/using-statement).
-- [`async`](https://docs.microsoft.com/en-us/dotnet/standard/async-in-depth) methods should have "Async" at the end of the method name.
+- [`IDisposable`](https://msdn.microsoft.com/en-us/library/system.idisposable.aspx) calls should be called with [`using`](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/using-statement).
+- [`async`](https://docs.microsoft.com/en-us/dotnet/standard/async-in-depth) methods should have "Async" at the end of the method name unless they are Controllers.
 - Avoid "[magic numbers](<https://en.wikipedia.org/wiki/Magic_number_(programming)>)," place them in constants.
 - Avoid adding settings to the `appsettings.json` configuration file, preferences generally belong somewhere that they can be set in the application.
 - Review the [project organization](project-organization.md).
