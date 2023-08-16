@@ -317,7 +317,20 @@ namespace GRA.Data.Repository
                     .Where(_ => _.CreatedAt <= request.EndDate);
             }
 
-            return await pointCount.SumAsync(_ => Convert.ToInt64(_.PointsEarned));
+            long result = 0;
+            try
+            {
+                result = await pointCount.SumAsync(_ => Convert.ToInt64(_.PointsEarned));
+            }
+            catch (InvalidOperationException)
+            {
+                // may be using a database provider (SQLite) that doesn't support Convert.ToInt64
+                foreach (var points in pointCount.Select(_ => _.PointsEarned))
+                {
+                    result += points;
+                }
+            }
+            return result;
         }
 
         public async Task<bool> PointTranslationHasBeenUsedAsync(int translationId)

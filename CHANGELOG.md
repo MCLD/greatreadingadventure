@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Improved release prep and publish scripts
 
+## Fixed
+
+- At a glance report now works with SQLite
+
 ## [4.4.1] 2023-08-11
 
 ## Changed
