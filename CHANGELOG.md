@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## Unreleased
 
+## Changed
+
+- Improved release prep and publish scripts
+
 ## [4.4.1] 2023-08-11
 
 ## Changed
