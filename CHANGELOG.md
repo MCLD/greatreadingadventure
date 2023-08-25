@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## Fixed
 
 - At a glance report now works with SQLite
+- Trim coupon codes when they come in from a status update spreadsheet
 
 ## [4.4.1] 2023-08-11
 

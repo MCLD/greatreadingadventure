@@ -1302,6 +1302,7 @@ namespace GRA.Domain.Service
                                                     row,
                                                     couponColumnId,
                                                     "code");
+                                                coupon = coupon?.Trim();
                                             }
                                             catch (GraException gex)
                                             {
@@ -1346,6 +1347,7 @@ namespace GRA.Domain.Service
                                                     row,
                                                     couponColumnId,
                                                     "code");
+                                                coupon = coupon?.Trim();
                                             }
                                             catch (InvalidCastException icex)
                                             {
