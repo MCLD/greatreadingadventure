@@ -105,17 +105,20 @@ namespace GRA.Domain.Report
 
                 var user = await _userRepository.GetByIdAsync(prize.UserId.Value);
 
-                reportData.Add(new object[]
+                if (user != null)
                 {
-                    user.FirstName,
-                    user.LastName,
-                    user.Username,
-                    user.Email,
-                    user.PhoneNumber,
-                    prize.Details,
-                    prize.ArrivalDate?.ToString("g", CultureInfo.CurrentCulture),
-                    prize.EmailSentAt?.ToString("g", CultureInfo.CurrentCulture)
-                });
+                    reportData.Add(new object[]
+                    {
+                        user.FirstName,
+                        user.LastName,
+                        user.Username,
+                        user.Email,
+                        user.PhoneNumber,
+                        prize.Details,
+                        prize.ArrivalDate?.ToString("g", CultureInfo.CurrentCulture),
+                        prize.EmailSentAt?.ToString("g", CultureInfo.CurrentCulture)
+                    });
+                }
             }
 
             report.Data = reportData.ToArray();
