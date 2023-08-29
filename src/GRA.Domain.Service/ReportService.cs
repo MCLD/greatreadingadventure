@@ -165,6 +165,9 @@ namespace GRA.Domain.Service
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
+            "CA1031:Do not catch general exception types",
+            Justification = "Job failures should report the exception and return a friendly response")]
         public async Task<JobStatus> RunReportJobAsync(int jobId,
             CancellationToken token,
             IProgress<JobStatus> progress = null)
@@ -276,6 +279,9 @@ namespace GRA.Domain.Service
                     }
                     catch (Exception ex)
                     {
+                        _logger.LogCritical(ex,
+                            "Report failure: {Message}",
+                            ex.Message);
                         await _jobRepository.UpdateStatusAsync(jobId, $"An error occurred: {ex.Message}");
                         return new JobStatus
                         {
