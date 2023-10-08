@@ -164,7 +164,7 @@ namespace GRA.Controllers.MissionControl
 
             if (page?.IsPublished == true)
             {
-                var baseUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
+                var baseUrl = await _siteLookupService.GetSiteLinkAsync(GetCurrentSiteId());
                 var action = Url.Action("Index", "Info", new
                 {
                     area = "",
@@ -221,7 +221,7 @@ namespace GRA.Controllers.MissionControl
 
             if (currentPage?.IsPublished == true)
             {
-                var baseUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
+                var baseUrl = await _siteLookupService.GetSiteLinkAsync(GetCurrentSiteId());
                 var action = Url.Action("Index", "Info", new
                 {
                     area = "",
