@@ -108,25 +108,6 @@ namespace GRA.Domain.Service
             return branchList;
         }
 
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("GetBaseUrl is deprecated, use SiteLookupService.GetSiteLinkAsync instead.")]
-        public async Task<string> GetBaseUrl(string scheme, string host)
-        {
-            var site = await _siteRepository.GetByIdAsync(GetCurrentSiteId());
-            if (site.IsHttpsForced)
-            {
-                scheme = "https";
-            }
-            if (site.IsDefault)
-            {
-                return $"{scheme}://{host}";
-            }
-            else
-            {
-                return $"{scheme}://{host}/{site.Path}";
-            }
-        }
-
         public async Task<Branch> GetBranchByIdAsync(int branchId)
         {
             return await _branchRepository.GetByIdAsync(branchId);
