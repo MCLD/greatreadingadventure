@@ -348,12 +348,23 @@ namespace GRA.Controllers
 
                 var (siteReadingGoalSet, siteReadingGoal) = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(),
                     SiteSettingKey.Site.ReadingGoalInMinutes);
+
+                var (secondaryReadingGoalSet, secondaryReadingGoal) = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(),
+                    SiteSettingKey.Site.SecondaryReadingGoalInMinutes);
+
                 if (siteReadingGoalSet)
                 {
                     viewModel.SiteReadingGoal = siteReadingGoal;
                     viewModel.TotalSiteActivity = await _activityService.GetSiteActivityEarnedAsync();
                     viewModel.SiteActivityPercentComplete = Math.Min(
                         (int)(viewModel.TotalSiteActivity * 100.0 / viewModel.SiteReadingGoal), 100);
+                    viewModel.SiteActivityCompleted = viewModel.SiteActivityPercentComplete == 100 && secondaryReadingGoalSet;
+                } 
+                if (secondaryReadingGoalSet && viewModel.SiteActivityCompleted)
+                {
+                    viewModel.SecondarySiteReadingGoal = secondaryReadingGoal;
+                    viewModel.SiteActivityPercentComplete = Math.Min(
+                        (int)(viewModel.TotalSiteActivity * 100.0 / viewModel.SecondarySiteReadingGoal), 100);
                 }
 
                 var userVendorCode = await _vendorCodeService.GetUserVendorCodeAsync(user.Id);

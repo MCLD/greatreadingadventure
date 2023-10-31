@@ -103,6 +103,7 @@ namespace GRA
         {
             public static readonly string BackgroundColor = "Site.BackgroundColor";
             public static readonly string ReadingGoalInMinutes = "Site.ReadingGoalInMinutes";
+            public static readonly string SecondaryReadingGoalInMinutes = "Site.SecondaryReadingGoalInMinutes";
 
             public bool Equals(Site other)
             {

@@ -231,6 +231,13 @@ namespace GRA
                     Info = "Sets a reading goal (minutes) for the entire site and duration",
                     Category = typeof(SiteSettingKey.Site).Name,
                     Format = SiteSettingFormat.Integer
+                },
+                [SiteSettingKey.Site.SecondaryReadingGoalInMinutes] = new SiteSettingDefinition
+                {
+                    Name = "Secondary Site Reading Goal",
+                    Info = "Sets a secondary reading goal (minutes) after the first goal is reached",
+                    Category = typeof(SiteSettingKey.Site).Name,
+                    Format = SiteSettingFormat.Integer
                 }
             };
     }

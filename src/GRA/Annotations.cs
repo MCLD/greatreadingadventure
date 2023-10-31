@@ -65,6 +65,8 @@
             public const string NoPrizes = "No prizes yet, keep reading!";
             public const string NoUnlockedBundles = "No unlocked bundles";
             public const string OurGoalInMinutes = "Our goal (in minutes): {0:n0}";
+            public const string SecondaryGoalInMinutes = "Bonus goal (in minutes): {0:n0}";
+            public const string FirstGoalCompleted = "Primary goal ({0:n0} minutes) complete!";
             public const string PasswordRecoverySent = "A password recovery email has been sent to the email for username '{0}'.";
             public const string PasswordResetFor = "Password reset for: {0}";
             public const string PickedUp = "Picked up";

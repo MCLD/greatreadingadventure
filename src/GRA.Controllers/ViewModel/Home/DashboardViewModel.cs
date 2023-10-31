@@ -37,8 +37,10 @@ namespace GRA.Controllers.ViewModel.Home
 
         public string SecretCodeMessage { get; set; }
         public bool SingleEvent { get; set; }
-        public int? SiteActivityPercentComplete { get; set; }
         public int? SiteReadingGoal { get; set; }
+        public int? SiteActivityPercentComplete { get; set; }
+        public bool SiteActivityCompleted { get; set; }
+        public int? SecondarySiteReadingGoal { get; set; }
         public SiteStage SiteStage { get; set; }
 
         [MaxLength(500, ErrorMessage = ErrorMessages.MinLength)]
