@@ -27,7 +27,7 @@ Digital badges are an easy way to enhance your reading program. They can be used
 
 ## Carousels
 
-Create carousels of materials or electronic resources which are shown when participants log in. Carousels can be scheduled so the items shown can change as frequntly as you like.
+Create carousels of materials or electronic resources which are shown when participants log in. Carousels can be scheduled so the items shown can change as frequently as you like.
 
 ## Challenges
 
@@ -63,7 +63,7 @@ Participant management has different configurable permissions so that volunteers
 
 ## Performer management
 
-The built-in performer scheduling system allows performers to register themselves along with their availbility (indicating calendar dates and times throughout the program when they are or are not available). Staff can then go and select specific performers and schedule them during their availability.
+The built-in performer scheduling system allows performers to register themselves along with their availability (indicating calendar dates and times throughout the program when they are or are not available). Staff can then go and select specific performers and schedule them during their availability.
 
 ## Triggers
 
