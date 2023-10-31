@@ -66,11 +66,10 @@ namespace GRA.Controllers.MissionControl
                                 System.IO.File.WriteAllBytes(filePath, ms.ToArray());
                             }
                         }
-                        var siteUrl = await _siteService.GetBaseUrl(Request.Scheme,
-                            Request.Host.Value);
+                        var siteUrl = await _siteLookupService.GetSiteLinkAsync(GetCurrentSiteId());
                         var contentPath = _pathResolver.ResolveContentPath(Path.Combine(folderPath,
                             filename));
-                        var fileUrl = Path.Combine(siteUrl, contentPath).Replace("\\", "/");
+                        var fileUrl = Path.Combine(siteUrl.ToString(), contentPath).Replace("\\", "/");
 
                         return Json(fileUrl);
                     }

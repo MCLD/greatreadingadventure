@@ -62,12 +62,12 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Create()
         {
             var site = await GetCurrentSiteAsync();
-            var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
+            var siteUrl = await _siteLookupService.GetSiteLinkAsync(site.Id);
             PageTitle = "Create Challenge";
 
             var viewModel = new ChallengesDetailViewModel
             {
-                BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress),
+                BadgeMakerUrl = GetBadgeMakerUrl(siteUrl.ToString(), site.FromEmailAddress),
                 UseBadgeMaker = await _siteLookupService.GetSiteSettingBoolAsync(site.Id,
                     SiteSettingKey.Badges.EnableBadgeMaker),
                 IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
@@ -226,7 +226,7 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Edit(int id)
         {
             var site = await GetCurrentSiteAsync();
-            var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
+            var siteUrl = await _siteLookupService.GetSiteLinkAsync(site.Id);
             Challenge challenge;
             try
             {
@@ -292,7 +292,7 @@ namespace GRA.Controllers.MissionControl
                 DependentTriggers = await _challengeService.GetDependentsAsync(challenge.Id),
                 Groups = await _challengeService.GetGroupsByChallengeId(challenge.Id),
                 RelatedEvents = await _eventService.GetByChallengeIdAsync(challenge.Id),
-                BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress),
+                BadgeMakerUrl = GetBadgeMakerUrl(siteUrl.ToString(), site.FromEmailAddress),
                 UseBadgeMaker = await _siteLookupService.GetSiteSettingBoolAsync(site.Id,
                     SiteSettingKey.Badges.EnableBadgeMaker),
                 IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
@@ -1130,7 +1130,7 @@ namespace GRA.Controllers.MissionControl
         {
             PageTitle = "Edit Challenge Group";
             var challengeGroup = await _challengeService.GetGroupByIdAsync(id);
-            var baseUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
+            var baseUrl = await _siteLookupService.GetSiteLinkAsync(GetCurrentSiteId());
 
             var viewModel = new ChallengeGroupDetailViewModel()
             {

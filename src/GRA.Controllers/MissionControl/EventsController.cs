@@ -403,8 +403,9 @@ namespace GRA.Controllers.MissionControl
             if (viewModel.CanAddSecretCode)
             {
                 var site = await GetCurrentSiteAsync();
-                var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
-                viewModel.BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress);
+                var siteUrl = await _siteLookupService.GetSiteLinkAsync(site.Id);
+                viewModel.BadgeMakerUrl = GetBadgeMakerUrl(siteUrl.ToString(), 
+                    site.FromEmailAddress);
                 viewModel.UseBadgeMaker = await _siteLookupService.GetSiteSettingBoolAsync(site.Id,
                     SiteSettingKey.Badges.EnableBadgeMaker);
             }

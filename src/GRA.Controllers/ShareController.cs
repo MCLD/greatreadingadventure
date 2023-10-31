@@ -34,10 +34,10 @@ namespace GRA.Controllers
                 .ResolveContentFilePath($"site{site.Id}/useravatars/{id}.png");
             if (System.IO.File.Exists(filePath))
             {
-                var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
+                var siteUrl = await _siteLookupService.GetSiteLinkAsync(site.Id);
                 var contentPath = _pathResolver
                     .ResolveContentPath($"site{site.Id}/useravatars/{id}.png");
-                var imageUrl = Path.Combine(siteUrl, contentPath)
+                var imageUrl = Path.Combine(siteUrl.ToString(), contentPath)
                     .Replace("\\", "/", StringComparison.OrdinalIgnoreCase);
                 var viewModel = new ShareAvatarViewModel()
                 {

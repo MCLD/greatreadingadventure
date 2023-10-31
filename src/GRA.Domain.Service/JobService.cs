@@ -77,7 +77,7 @@ namespace GRA.Domain.Service
                             }
                             catch (Exception ex)
                             {
-                                _logger.LogError(ex,
+                                _logger.LogCritical(ex,
                                     "Error executing job id {JobId}: {Message}",
                                     jobInfo.Id,
                                     ex.Message);

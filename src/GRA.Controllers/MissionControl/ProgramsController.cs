@@ -52,13 +52,13 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Create Program";
 
             var site = await GetCurrentSiteAsync();
-            var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
+            var siteUrl = await _siteLookupService.GetSiteLinkAsync(site.Id);
             var dailyLiteracyTipList = await _dailyLiteracyTipService.GetListAsync();
             var pointTranslationList = await _pointTranslationService.GetListAsync();
             var viewModel = new ProgramDetailViewModel()
             {
                 Action = nameof(Create),
-                BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress),
+                BadgeMakerUrl = GetBadgeMakerUrl(siteUrl.ToString(), site.FromEmailAddress),
                 UseBadgeMaker = await _siteLookupService.GetSiteSettingBoolAsync(site.Id,
                     SiteSettingKey.Badges.EnableBadgeMaker),
                 DailyLiteracyTipList = new SelectList(dailyLiteracyTipList, "Id", "Name"),
@@ -231,7 +231,7 @@ namespace GRA.Controllers.MissionControl
                 PageTitle = "Edit Program";
 
                 var site = await GetCurrentSiteAsync();
-                var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
+                var siteUrl = await _siteLookupService.GetSiteLinkAsync(site.Id);
                 var program = await _siteService.GetProgramByIdAsync(id);
                 var dailyLiteracyTipList = await _dailyLiteracyTipService.GetListAsync();
                 var pointTranslationList = await _pointTranslationService.GetListAsync();
@@ -243,7 +243,7 @@ namespace GRA.Controllers.MissionControl
                         + Convert.ToInt32(program.AgeRequired),
                     SchoolValues = Convert.ToInt32(program.AskSchool)
                         + Convert.ToInt32(program.SchoolRequired),
-                    BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress),
+                    BadgeMakerUrl = GetBadgeMakerUrl(siteUrl.ToString(), site.FromEmailAddress),
                     UseBadgeMaker = await _siteLookupService.GetSiteSettingBoolAsync(site.Id,
                         SiteSettingKey.Badges.EnableBadgeMaker),
                     DailyLiteracyTipList = new SelectList(dailyLiteracyTipList, "Id", "Name"),
