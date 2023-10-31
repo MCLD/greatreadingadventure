@@ -2,6 +2,10 @@
 The Great Reading Adventure
 ===========================
 
+.. image:: _static/great-reading-adventure-logo@1x.png
+  :width: 250
+  :alt: Great Reading Adventure logo
+
 `The Great Reading Adventure`_ is a robust, open source software designed to manage library reading
 programs. The GRA is free to use, modify, and share. We hope you like it and will consider becoming
 a part of the community.

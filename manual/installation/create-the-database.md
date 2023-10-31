@@ -4,15 +4,15 @@ The GRA uses its own database to store reading program data. This database can b
 
 There are two options when creating the database: you can execute a script or manually create the database and users using [SQL Server Management Studio (SSMS)](https://msdn.microsoft.com/en-us/library/ms174173.aspx).
 
-### From a script
+## From a script
 
 1. Connect to the database server to run a query (this can be done with SQL Server Management Studio by right-clicking on the server in the Object Explorer on the left and choosing **New Query**).
 2. Copy the text from the [database create script](https://raw.githubusercontent.com/MCLD/greatreadingadventure/develop/db/SQL-Server-createdb.sql) and paste it into the query window.
 3. Click the **Execute** button in the toolbar.
 
-### From the user interface
+## From the user interface
 
-#### Create the database
+### Create the database
 
 1. Launch SQL Server Management Studio and connect to the database server.
 2. Double-click the server name to show the **Databases** folder.
@@ -23,7 +23,7 @@ There are two options when creating the database: you can execute a script or ma
 7. For the [**Recovery model** drop-down](https://msdn.microsoft.com/en-us/library/ms189275.aspx), change the selection from `Full` to `Simple`.
 8. Select **OK** to create the database.
 
-#### Create the logins and users
+### Create the logins and users
 
 1. Right-click the **Security** folder and select **New** **->** **Login...**.
 2. Enter the **Login name** for the database owner user, for example: `srp_owner`.
