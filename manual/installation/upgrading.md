@@ -11,7 +11,7 @@ Note that during the upgrade there will be an interruption in service so it may 
 3. Remove the current Docker container (`docker rm gra`). Data will be saved in your database and any uploaded files are contained in your `shared` directory.
 4. Look for any GRA docker images you have on your system (`docker image ls`).
 5. Remove any GRA docker images on your system (`docker rmi mcld/gra:latest`).
-6. Use the command that you initially used to run the Docker container to download the latest container and run it (for example `docker run -d -p 80:80 --name gra --restart unless-stopped -v /gra/shared:/app/shared mcld/gra`, see the [Install the Software](../install-the-software/#install-and-run-the-gra-in-docker) section of this manual for more information).
+6. Use the command that you initially used to run the Docker container to download the latest container and run it (for example `docker run -d -p 80:80 --name gra --restart unless-stopped -v /gra/shared:/app/shared mcld/gra`, see the [Install the Software](../installation/install-the-software) section of this manual for more information).
 7. Load the site in your browser. It will take longer than normal as the database is upgraded (you can see evidence of the database upgrade in the log file in `shared/logs`).
 
 ## Upgrading a Web server

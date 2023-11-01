@@ -2,6 +2,8 @@
 
 ## The Great Reading Adventure
 
+![Great Reading Adventure logo](../_static/great-reading-adventure-logo@1x.png)
+
 The Great Reading Adventure was initially developed by the [Maricopa County Library District](http://www.mcldaz.org/) with support by the [Arizona State Library, Archives and Public Records](http://www.azlibrary.gov/), a division of the Secretary of State, with federal funds from the [Institute of Museum and Library Services](http://www.imls.gov/).
 
 The Great Reading Adventure source code is distributed under [The MIT License](http://opensource.org/licenses/MIT).
