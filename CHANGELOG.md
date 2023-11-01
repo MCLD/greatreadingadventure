@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Trim coupon codes when they come in from a status update spreadsheet
 - Bug in Remaining Vendor Prize report - deleted users with prizes caused error
 - Remove references to deprecated GetBaseUrl call
+- Automatically direct performers to the performer area if they sign in before the program opens
 
 ## [4.4.1] 2023-08-11
 
