@@ -245,6 +245,13 @@ namespace GRA.Controllers
                                     HomeController.Name,
                                     new { Area = nameof(MissionControl) });
                             }
+                            else if (role == "Performer" && GetSiteStage() < SiteStage.ProgramOpen)
+                            {
+                                return RedirectToAction(
+                                    nameof(PerformerRegistration.HomeController.Index),
+                                    PerformerRegistration.HomeController.Name,
+                                    new { Area = nameof(PerformerRegistration) });
+                            }
                             else
                             {
                                 return RedirectToAction(nameof(Index), HomeController.Name);

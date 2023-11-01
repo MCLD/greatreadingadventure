@@ -21,8 +21,8 @@ namespace GRA.Controllers.PerformerRegistration
         private const int MaxUploadMB = 25;
         private const int MBSize = 1024 * 1024;
 
-        private readonly ILogger<HomeController> _logger;
         private readonly AuthenticationService _authenticationService;
+        private readonly ILogger<HomeController> _logger;
         private readonly PerformerSchedulingService _performerSchedulingService;
         private readonly UserService _userService;
 
@@ -41,50 +41,8 @@ namespace GRA.Controllers.PerformerRegistration
             PageTitle = "Performer Registration";
         }
 
-        [AllowAnonymous]
-        public async Task<IActionResult> Index()
-        {
-            if (!AuthUser.Identity.IsAuthenticated)
-            {
-                return RedirectToSignIn();
-            }
-
-            if (!UserHasPermission(Permission.AccessPerformerRegistration))
-            {
-                // not authorized for Performer registration, redirect to authorization code
-
-                return RedirectToAction(nameof(AuthorizationCode));
-            }
-
-            var settings = await _performerSchedulingService.GetSettingsAsync();
-            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
-            if (schedulingStage == PsSchedulingStage.Unavailable)
-            {
-                return RedirectToAction(nameof(Controllers.HomeController.Index), "Home",
-                    new { Area = string.Empty });
-            }
-
-            var hasPermission = UserHasPermission(Permission.AccessPerformerRegistration);
-
-            var userId = GetId(ClaimType.UserId);
-            var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId,
-                includeBranches: true);
-
-            if (hasPermission
-                && (performer != null || schedulingStage == PsSchedulingStage.RegistrationOpen))
-            {
-                return RedirectToAction(nameof(Dashboard));
-            }
-
-            var viewModel = new IndexViewModel
-            {
-                HasPermission = hasPermission,
-                Settings = settings,
-                SchedulingStage = schedulingStage
-            };
-
-            return View(viewModel);
-        }
+        public static string Name
+        { get { return "Home"; } }
 
         [AllowAnonymous]
         public IActionResult AuthorizationCode()
@@ -136,6 +94,223 @@ namespace GRA.Controllers.PerformerRegistration
                 }
             }
             return View();
+        }
+
+        public async Task<IActionResult> Dashboard()
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage < PsSchedulingStage.RegistrationOpen)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var userId = GetId(ClaimType.UserId);
+            var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId,
+                includeBranches: true,
+                includeImages: true,
+                includePrograms: true,
+                includeSchedule: true);
+
+            if (performer?.RegistrationCompleted != true)
+            {
+                return RedirectToAction(nameof(Information));
+            }
+
+            var viewModel = new DashboardViewModel
+            {
+                BlackoutDates = await _performerSchedulingService.GetBlackoutDatesAsync(),
+                BranchAvailability = performer.Branches.Select(_ => _.Id).ToList(),
+                IsEditable = schedulingStage == PsSchedulingStage.RegistrationOpen,
+                Performer = performer,
+                ReferencesPath = _pathResolver.ResolveContentPath(performer.ReferencesFilename),
+                Settings = settings,
+                Systems = await _performerSchedulingService
+                    .GetSystemListWithoutExcludedBranchesAsync()
+            };
+
+            if (performer.Images.Count > 0)
+            {
+                viewModel.ImagePath = _pathResolver.ResolveContentPath(
+                    performer.Images[0].Filename);
+            }
+
+            if (!string.IsNullOrWhiteSpace(performer.Website)
+                && Uri.TryCreate(performer.Website, UriKind.Absolute, out Uri absoluteUri))
+            {
+                viewModel.Uri = absoluteUri;
+            }
+
+            return View(viewModel);
+        }
+
+        public async Task<IActionResult> Images()
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage < PsSchedulingStage.RegistrationOpen)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var userId = GetId(ClaimType.UserId);
+            var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId,
+                includeImages: true);
+
+            if (performer?.RegistrationCompleted != true)
+            {
+                return RedirectToAction(nameof(Information));
+            }
+
+            var performerImages = performer.Images.ToList();
+            performerImages.ForEach(_ => _.Filename = _pathResolver.ResolveContentPath(_.Filename));
+
+            var viewModel = new PerformerImagesViewModel
+            {
+                IsEditable = schedulingStage == PsSchedulingStage.RegistrationOpen,
+                MaxUploadMB = MaxUploadMB,
+                PerformerImages = performerImages
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Images(PerformerImagesViewModel model)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage != PsSchedulingStage.RegistrationOpen)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var userId = GetId(ClaimType.UserId);
+            var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId,
+                includeImages: true);
+
+            if (performer?.RegistrationCompleted != true)
+            {
+                return RedirectToAction(nameof(Information));
+            }
+
+            if (model.Images == null)
+            {
+                ModelState.AddModelError("Images", "Please attach an image to submit.");
+            }
+            else if (model.Images.Count > 0)
+            {
+                var extensions = model.Images.Select(_ => Path.GetExtension(_.FileName).ToLower());
+                if (extensions.Any(_ => !ValidImageExtensions.Contains(_)))
+                {
+                    ModelState.AddModelError("Images", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
+                }
+                else if (model.Images.Sum(_ => _.Length) > MaxUploadMB * MBSize)
+                {
+                    ModelState.AddModelError("Images", $"Please limit uploads to a max of {MaxUploadMB}MB.");
+                }
+            }
+            if (ModelState.IsValid)
+            {
+                foreach (var image in model.Images)
+                {
+                    using (var fileStream = image.OpenReadStream())
+                    {
+                        using (var ms = new MemoryStream())
+                        {
+                            fileStream.CopyTo(ms);
+                            await _performerSchedulingService.AddPerformerImageAsync(
+                                performer.Id, ms.ToArray(), Path.GetExtension(image.FileName));
+                        }
+                    }
+                }
+                ShowAlertSuccess("Image(s) added!");
+                return RedirectToAction(nameof(Images));
+            }
+
+            var performerImages = performer.Images.ToList();
+            performerImages.ForEach(_ => _.Filename = _pathResolver.ResolveContentPath(_.Filename));
+
+            model.IsEditable = schedulingStage == PsSchedulingStage.RegistrationOpen;
+            model.MaxUploadMB = MaxUploadMB;
+            model.PerformerImages = performerImages;
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ImagesDelete(PerformerImagesViewModel model)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage != PsSchedulingStage.RegistrationOpen)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var userId = GetId(ClaimType.UserId);
+            var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId);
+
+            if (performer?.RegistrationCompleted != true)
+            {
+                return RedirectToAction(nameof(Information));
+            }
+
+            var imageIds = Newtonsoft.Json.JsonConvert
+                .DeserializeObject<List<int>>(model.ImagesToDelete);
+            if (imageIds.Count > 0)
+            {
+                foreach (var imageId in imageIds)
+                {
+                    await _performerSchedulingService.RemovePerformerImageByIdAsync(imageId);
+                }
+                ShowAlertSuccess("Image(s) deleted!");
+            }
+            return RedirectToAction(nameof(Images));
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> Index()
+        {
+            if (!AuthUser.Identity.IsAuthenticated)
+            {
+                return RedirectToSignIn();
+            }
+
+            if (!UserHasPermission(Permission.AccessPerformerRegistration))
+            {
+                // not authorized for Performer registration, redirect to authorization code
+
+                return RedirectToAction(nameof(AuthorizationCode));
+            }
+
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage == PsSchedulingStage.Unavailable)
+            {
+                return RedirectToAction(nameof(Controllers.HomeController.Index), "Home",
+                    new { Area = string.Empty });
+            }
+
+            var hasPermission = UserHasPermission(Permission.AccessPerformerRegistration);
+
+            var userId = GetId(ClaimType.UserId);
+            var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId,
+                includeBranches: true);
+
+            if (hasPermission
+                && (performer != null || schedulingStage == PsSchedulingStage.RegistrationOpen))
+            {
+                return RedirectToAction(nameof(Dashboard));
+            }
+
+            var viewModel = new IndexViewModel
+            {
+                HasPermission = hasPermission,
+                Settings = settings,
+                SchedulingStage = schedulingStage
+            };
+
+            return View(viewModel);
         }
 
         public async Task<IActionResult> Information()
@@ -321,129 +496,6 @@ namespace GRA.Controllers.PerformerRegistration
             return View(model);
         }
 
-        public async Task<IActionResult> Schedule()
-        {
-            var settings = await _performerSchedulingService.GetSettingsAsync();
-            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
-            if (schedulingStage != PsSchedulingStage.RegistrationOpen)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            var userId = GetId(ClaimType.UserId);
-            var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId,
-                includeSchedule: true);
-
-            if (performer == null)
-            {
-                return RedirectToAction(nameof(Information));
-            }
-            else if (performer.SetSchedule && !performer.RegistrationCompleted)
-            {
-                return RedirectToAction(nameof(Program));
-            }
-
-            var viewModel = new ScheduleViewModel
-            {
-                StartDate = settings.ScheduleStartDate.Value,
-                EndDate = settings.ScheduleEndDate.Value,
-                BlackoutDates = (await _performerSchedulingService.GetBlackoutDatesAsync())
-                    .ToList(),
-                EditingSchedule = performer.RegistrationCompleted
-            };
-
-            if (performer.Schedule != null)
-            {
-                viewModel.ScheduleDates = performer.Schedule.ToList();
-            }
-
-            PageTitle = "Schedule";
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Schedule(ScheduleViewModel model)
-        {
-            var settings = await _performerSchedulingService.GetSettingsAsync();
-            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
-            if (schedulingStage != PsSchedulingStage.RegistrationOpen)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            var userId = GetId(ClaimType.UserId);
-            var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId,
-                includeSchedule: true);
-
-            if (performer == null)
-            {
-                return RedirectToAction(nameof(Information));
-            }
-            else if (performer.SetSchedule && !performer.RegistrationCompleted)
-            {
-                return RedirectToAction(nameof(Program));
-            }
-
-            var schedule = new List<PsScheduleDate>();
-            try
-            {
-                schedule = JsonConvert.DeserializeObject<List<PsScheduleDate>>(model.JsonSchedule);
-
-                foreach (var date in schedule)
-                {
-                    date.ParsedDate = DateTime.Parse($"{date.Year}-{date.Month}-{date.Date}");
-                    if (Enum.TryParse(date.Availability, out PsScheduleDateStatus status))
-                    {
-                        date.Status = status;
-                    }
-                    else
-                    {
-                        date.Status = PsScheduleDateStatus.Available;
-                    }
-                }
-
-                try
-                {
-                    await _performerSchedulingService.EditPerformerScheduleAsync(performer.Id,
-                        schedule);
-
-                    if (!performer.RegistrationCompleted)
-                    {
-                        return RedirectToAction(nameof(Program));
-                    }
-                    else
-                    {
-                        ShowAlertSuccess("Schedule saved!");
-                        return RedirectToAction(nameof(Dashboard));
-                    }
-                }
-                catch (GraException gex)
-                {
-                    ShowAlertDanger("Error saving schedule: ", gex);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error submitting schedule for user {userId}: {ex}", ex);
-                ShowAlertDanger($"There was an error with your schedule, please try submitting " +
-                    $"it again or contact {settings.ContactEmail} for assistance.");
-            }
-
-            model.BlackoutDates = (await _performerSchedulingService.GetBlackoutDatesAsync())
-                .ToList();
-            model.EditingSchedule = performer.RegistrationCompleted;
-            model.StartDate = settings.ScheduleStartDate.Value;
-            model.EndDate = settings.ScheduleEndDate.Value;
-
-            if (performer.Schedule != null)
-            {
-                model.ScheduleDates = performer.Schedule.ToList();
-            }
-
-            PageTitle = "Schedule";
-            return View(model);
-        }
-
         public async Task<IActionResult> Program(int? id = null)
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();
@@ -608,178 +660,6 @@ namespace GRA.Controllers.PerformerRegistration
             model.MaxUploadMB = MaxUploadMB;
             model.SetupSupplementalText = settings.SetupSupplementalText;
             return View(model);
-        }
-
-        public async Task<IActionResult> Dashboard()
-        {
-            var settings = await _performerSchedulingService.GetSettingsAsync();
-            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
-            if (schedulingStage < PsSchedulingStage.RegistrationOpen)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            var userId = GetId(ClaimType.UserId);
-            var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId,
-                includeBranches: true,
-                includeImages: true,
-                includePrograms: true,
-                includeSchedule: true);
-
-            if (performer?.RegistrationCompleted != true)
-            {
-                return RedirectToAction(nameof(Information));
-            }
-
-            var viewModel = new DashboardViewModel
-            {
-                BlackoutDates = await _performerSchedulingService.GetBlackoutDatesAsync(),
-                BranchAvailability = performer.Branches.Select(_ => _.Id).ToList(),
-                IsEditable = schedulingStage == PsSchedulingStage.RegistrationOpen,
-                Performer = performer,
-                ReferencesPath = _pathResolver.ResolveContentPath(performer.ReferencesFilename),
-                Settings = settings,
-                Systems = await _performerSchedulingService
-                    .GetSystemListWithoutExcludedBranchesAsync()
-            };
-
-            if (performer.Images.Count > 0)
-            {
-                viewModel.ImagePath = _pathResolver.ResolveContentPath(
-                    performer.Images[0].Filename);
-            }
-
-            if (!string.IsNullOrWhiteSpace(performer.Website)
-                && Uri.TryCreate(performer.Website, UriKind.Absolute, out Uri absoluteUri))
-            {
-                viewModel.Uri = absoluteUri;
-            }
-
-            return View(viewModel);
-        }
-
-        public async Task<IActionResult> Images()
-        {
-            var settings = await _performerSchedulingService.GetSettingsAsync();
-            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
-            if (schedulingStage < PsSchedulingStage.RegistrationOpen)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            var userId = GetId(ClaimType.UserId);
-            var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId,
-                includeImages: true);
-
-            if (performer?.RegistrationCompleted != true)
-            {
-                return RedirectToAction(nameof(Information));
-            }
-
-            var performerImages = performer.Images.ToList();
-            performerImages.ForEach(_ => _.Filename = _pathResolver.ResolveContentPath(_.Filename));
-
-            var viewModel = new PerformerImagesViewModel
-            {
-                IsEditable = schedulingStage == PsSchedulingStage.RegistrationOpen,
-                MaxUploadMB = MaxUploadMB,
-                PerformerImages = performerImages
-            };
-
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Images(PerformerImagesViewModel model)
-        {
-            var settings = await _performerSchedulingService.GetSettingsAsync();
-            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
-            if (schedulingStage != PsSchedulingStage.RegistrationOpen)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            var userId = GetId(ClaimType.UserId);
-            var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId,
-                includeImages: true);
-
-            if (performer?.RegistrationCompleted != true)
-            {
-                return RedirectToAction(nameof(Information));
-            }
-
-            if (model.Images == null)
-            {
-                ModelState.AddModelError("Images", "Please attach an image to submit.");
-            }
-            else if (model.Images.Count > 0)
-            {
-                var extensions = model.Images.Select(_ => Path.GetExtension(_.FileName).ToLower());
-                if (extensions.Any(_ => !ValidImageExtensions.Contains(_)))
-                {
-                    ModelState.AddModelError("Images", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
-                }
-                else if (model.Images.Sum(_ => _.Length) > MaxUploadMB * MBSize)
-                {
-                    ModelState.AddModelError("Images", $"Please limit uploads to a max of {MaxUploadMB}MB.");
-                }
-            }
-            if (ModelState.IsValid)
-            {
-                foreach (var image in model.Images)
-                {
-                    using (var fileStream = image.OpenReadStream())
-                    {
-                        using (var ms = new MemoryStream())
-                        {
-                            fileStream.CopyTo(ms);
-                            await _performerSchedulingService.AddPerformerImageAsync(
-                                performer.Id, ms.ToArray(), Path.GetExtension(image.FileName));
-                        }
-                    }
-                }
-                ShowAlertSuccess("Image(s) added!");
-                return RedirectToAction(nameof(Images));
-            }
-
-            var performerImages = performer.Images.ToList();
-            performerImages.ForEach(_ => _.Filename = _pathResolver.ResolveContentPath(_.Filename));
-
-            model.IsEditable = schedulingStage == PsSchedulingStage.RegistrationOpen;
-            model.MaxUploadMB = MaxUploadMB;
-            model.PerformerImages = performerImages;
-            return View(model);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> ImagesDelete(PerformerImagesViewModel model)
-        {
-            var settings = await _performerSchedulingService.GetSettingsAsync();
-            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
-            if (schedulingStage != PsSchedulingStage.RegistrationOpen)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            var userId = GetId(ClaimType.UserId);
-            var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId);
-
-            if (performer?.RegistrationCompleted != true)
-            {
-                return RedirectToAction(nameof(Information));
-            }
-
-            var imageIds = Newtonsoft.Json.JsonConvert
-                .DeserializeObject<List<int>>(model.ImagesToDelete);
-            if (imageIds.Count > 0)
-            {
-                foreach (var imageId in imageIds)
-                {
-                    await _performerSchedulingService.RemovePerformerImageByIdAsync(imageId);
-                }
-                ShowAlertSuccess("Image(s) deleted!");
-            }
-            return RedirectToAction(nameof(Images));
         }
 
         [HttpPost]
@@ -1006,6 +886,129 @@ namespace GRA.Controllers.PerformerRegistration
                 ShowAlertSuccess("Image(s) deleted!");
             }
             return RedirectToAction(nameof(ProgramImages), new { id = program.Id });
+        }
+
+        public async Task<IActionResult> Schedule()
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage != PsSchedulingStage.RegistrationOpen)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var userId = GetId(ClaimType.UserId);
+            var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId,
+                includeSchedule: true);
+
+            if (performer == null)
+            {
+                return RedirectToAction(nameof(Information));
+            }
+            else if (performer.SetSchedule && !performer.RegistrationCompleted)
+            {
+                return RedirectToAction(nameof(Program));
+            }
+
+            var viewModel = new ScheduleViewModel
+            {
+                StartDate = settings.ScheduleStartDate.Value,
+                EndDate = settings.ScheduleEndDate.Value,
+                BlackoutDates = (await _performerSchedulingService.GetBlackoutDatesAsync())
+                    .ToList(),
+                EditingSchedule = performer.RegistrationCompleted
+            };
+
+            if (performer.Schedule != null)
+            {
+                viewModel.ScheduleDates = performer.Schedule.ToList();
+            }
+
+            PageTitle = "Schedule";
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Schedule(ScheduleViewModel model)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage != PsSchedulingStage.RegistrationOpen)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var userId = GetId(ClaimType.UserId);
+            var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId,
+                includeSchedule: true);
+
+            if (performer == null)
+            {
+                return RedirectToAction(nameof(Information));
+            }
+            else if (performer.SetSchedule && !performer.RegistrationCompleted)
+            {
+                return RedirectToAction(nameof(Program));
+            }
+
+            var schedule = new List<PsScheduleDate>();
+            try
+            {
+                schedule = JsonConvert.DeserializeObject<List<PsScheduleDate>>(model.JsonSchedule);
+
+                foreach (var date in schedule)
+                {
+                    date.ParsedDate = DateTime.Parse($"{date.Year}-{date.Month}-{date.Date}");
+                    if (Enum.TryParse(date.Availability, out PsScheduleDateStatus status))
+                    {
+                        date.Status = status;
+                    }
+                    else
+                    {
+                        date.Status = PsScheduleDateStatus.Available;
+                    }
+                }
+
+                try
+                {
+                    await _performerSchedulingService.EditPerformerScheduleAsync(performer.Id,
+                        schedule);
+
+                    if (!performer.RegistrationCompleted)
+                    {
+                        return RedirectToAction(nameof(Program));
+                    }
+                    else
+                    {
+                        ShowAlertSuccess("Schedule saved!");
+                        return RedirectToAction(nameof(Dashboard));
+                    }
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger("Error saving schedule: ", gex);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error submitting schedule for user {userId}: {ex}", ex);
+                ShowAlertDanger($"There was an error with your schedule, please try submitting " +
+                    $"it again or contact {settings.ContactEmail} for assistance.");
+            }
+
+            model.BlackoutDates = (await _performerSchedulingService.GetBlackoutDatesAsync())
+                .ToList();
+            model.EditingSchedule = performer.RegistrationCompleted;
+            model.StartDate = settings.ScheduleStartDate.Value;
+            model.EndDate = settings.ScheduleEndDate.Value;
+
+            if (performer.Schedule != null)
+            {
+                model.ScheduleDates = performer.Schedule.ToList();
+            }
+
+            PageTitle = "Schedule";
+            return View(model);
         }
     }
 }
