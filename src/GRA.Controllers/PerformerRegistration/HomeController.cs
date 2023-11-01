@@ -41,6 +41,9 @@ namespace GRA.Controllers.PerformerRegistration
             PageTitle = "Performer Registration";
         }
 
+        public static string Name
+        { get { return "PerformerRegistration"; } }
+
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
