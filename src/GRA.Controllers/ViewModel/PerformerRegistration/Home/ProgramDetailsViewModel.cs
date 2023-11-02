@@ -7,5 +7,6 @@ namespace GRA.Controllers.ViewModel.PerformerRegistration.Home
         public PsProgram Program { get; set; }
         public string Image { get; set; }
         public bool IsEditable { get; set; }
+        public bool DisablePerformerLivestreamQuestions { get; set; }
     }
 }

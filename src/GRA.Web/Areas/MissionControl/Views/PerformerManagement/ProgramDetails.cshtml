@@ -178,36 +178,39 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <div class="col-xs-12 col-sm-9 col-sm-offset-3">
-                <p>
-                    Are you willing to allow the library to livestream your program online?<span class="required-field"></span>
-                </p>
+        @if (!Model.DisablePerformerLivestreamQuestions)
+        {
+            <div class="form-group">
+                <div class="col-xs-12 col-sm-9 col-sm-offset-3">
+                    <p>
+                        Are you willing to allow the library to livestream your program online?<span class="required-field"></span>
+                    </p>
+                </div>
+                <div class="col-sm-9 col-sm-offset-3">
+                    <select asp-for="Program.AllowStreaming" class="form-control">
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                    <span asp-validation-for="Program.AllowStreaming" class="text-danger"></span>
+                </div>
             </div>
-            <div class="col-sm-9 col-sm-offset-3">
-                <select asp-for="Program.AllowStreaming" class="form-control">
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
-                </select>
-                <span asp-validation-for="Program.AllowStreaming" class="text-danger"></span>
-            </div>
-        </div>
 
-        <div class="form-group">
-            <div class="col-xs-12 col-sm-9 col-sm-offset-3">
-                <p>
-                    Are you willing to allow the library to save and share the archive of your event, if livestreamed or recorded?<span class="required-field"></span>
-                </p>
+            <div class="form-group">
+                <div class="col-xs-12 col-sm-9 col-sm-offset-3">
+                    <p>
+                        Are you willing to allow the library to save and share the archive of your event, if livestreamed or recorded?<span class="required-field"></span>
+                    </p>
+                </div>
+                <div class="col-sm-9 col-sm-offset-3">
+                    <select asp-for="Program.AllowArchiving" class="form-control">
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                    <span asp-validation-for="Program.AllowArchiving" class="text-danger"></span>
+                </div>
             </div>
-            <div class="col-sm-9 col-sm-offset-3">
-                <select asp-for="Program.AllowArchiving" class="form-control">
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
-                </select>
-                <span asp-validation-for="Program.AllowArchiving" class="text-danger"></span>
-            </div>
-        </div>
-
+        }
+        
         <div class="row">
             <div class="col-sm-9 col-sm-offset-3" style="margin-top: 1em;">
                 <button type="submit"

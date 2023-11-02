@@ -231,7 +231,22 @@ namespace GRA
                     Info = "Sets a reading goal (minutes) for the entire site and duration",
                     Category = typeof(SiteSettingKey.Site).Name,
                     Format = SiteSettingFormat.Integer
+                },
+                [SiteSettingKey.Site.DisablePerformerLivestreamQuestions] = new SiteSettingDefinition
+                {
+                    Name = "Disable Performer Livestream Questions",
+                    Info = "If disabled, performers will not be asked for livestream and archive consent during registration",
+                    Category = typeof(SiteSettingKey.Site).Name,
+                    Format = SiteSettingFormat.Boolean
+                },
+                [SiteSettingKey.Site.DisablePerformerInsuranceQuestion] = new SiteSettingDefinition
+                {
+                    Name = "Disable Performer Insurance Question",
+                    Info = "If disabled, performers will not be asked if they have insurance during registration",
+                    Category = typeof(SiteSettingKey.Site).Name,
+                    Format = SiteSettingFormat.Boolean
                 }
+
             };
     }
 }

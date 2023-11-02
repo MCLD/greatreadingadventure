@@ -17,5 +17,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.PerformerManagement
         public int BranchCount { get; set; }
         public string VendorIdPrompt { get; set; }
         public string VendorCodeFormat { get; set; }
+
+        public bool DisablePerformerInsuranceQuestion { get; set; }
     }
 }

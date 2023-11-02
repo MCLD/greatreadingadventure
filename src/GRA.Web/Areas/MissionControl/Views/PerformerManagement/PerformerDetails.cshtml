@@ -129,6 +129,20 @@
         </div>
     </div>
 
+    @if (!Model.DisablePerformerInsuranceQuestion)
+    {
+        <div class="form-group">
+            <label asp-for="Performer.HasInsurance" class="col-sm-3 control-label required-field"></label>
+            <div class="col-sm-9">
+                <select asp-for="Performer.HasInsurance" class="form-control">
+                    <option value="false">No</option>
+                    <option value="true">Yes</option>
+                </select>
+                <span asp-validation-for="Performer.HasInsurance" class="text-danger"></span>
+            </div>
+        </div>
+    }
+
     <div class="form-group">
         <div class="col-sm-9 col-sm-offset-3">
             <p>

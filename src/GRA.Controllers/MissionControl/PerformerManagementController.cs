@@ -205,7 +205,9 @@ namespace GRA.Controllers.MissionControl
                 SchedulingStage = schedulingStage,
                 Settings = settings,
                 Systems = await _performerSchedulingService
-                    .GetSystemListWithoutExcludedBranchesAsync()
+                    .GetSystemListWithoutExcludedBranchesAsync(),
+                DisablePerformerInsuranceQuestion = await 
+                    GetSiteSettingBoolAsync(SiteSettingKey.Site.DisablePerformerInsuranceQuestion)
             };
 
             if (performer.Images.Count > 0)
@@ -323,7 +325,9 @@ namespace GRA.Controllers.MissionControl
                 Systems = systems,
                 BranchCount = systems.Sum(_ => _.Branches.Count),
                 VendorCodeFormat = settings.VendorCodeFormat ?? "Unspecified",
-                VendorIdPrompt = settings.VendorIdPrompt ?? "Vendor ID"
+                VendorIdPrompt = settings.VendorIdPrompt ?? "Vendor ID",
+                DisablePerformerInsuranceQuestion = await 
+                    GetSiteSettingBoolAsync(SiteSettingKey.Site.DisablePerformerInsuranceQuestion)
             };
 
             if (performer.AllBranches)
@@ -730,7 +734,9 @@ namespace GRA.Controllers.MissionControl
 
             var viewModel = new ProgramViewModel
             {
-                Program = program
+                Program = program,
+                DisablePerformerLivestreamQuestions = await 
+                    GetSiteSettingBoolAsync(SiteSettingKey.Site.DisablePerformerLivestreamQuestions)
             };
 
             if (program.Images?.Count > 0)

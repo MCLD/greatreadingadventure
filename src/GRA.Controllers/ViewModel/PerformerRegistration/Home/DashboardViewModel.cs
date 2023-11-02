@@ -13,6 +13,7 @@ namespace GRA.Controllers.ViewModel.PerformerRegistration.Home
         public string ReferencesPath { get; set; }
         public Uri Uri { get; set; }
         public bool IsEditable { get; set; }
+        public bool DisablePerformerInsuranceQuestion { get; set; }
         public PsProgram ProgramToDelete { get; set; }
 
         public List<int> BranchAvailability { get; set; }

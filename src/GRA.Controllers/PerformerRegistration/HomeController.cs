@@ -117,6 +117,11 @@ namespace GRA.Controllers.PerformerRegistration
                 return RedirectToAction(nameof(Information));
             }
 
+            if (string.IsNullOrEmpty(settings.VendorIdPrompt))
+            {
+                settings.VendorIdPrompt = "Vendor ID";
+            }
+
             var viewModel = new DashboardViewModel
             {
                 BlackoutDates = await _performerSchedulingService.GetBlackoutDatesAsync(),
@@ -126,7 +131,9 @@ namespace GRA.Controllers.PerformerRegistration
                 ReferencesPath = _pathResolver.ResolveContentPath(performer.ReferencesFilename),
                 Settings = settings,
                 Systems = await _performerSchedulingService
-                    .GetSystemListWithoutExcludedBranchesAsync()
+                    .GetSystemListWithoutExcludedBranchesAsync(),
+                DisablePerformerInsuranceQuestion = await
+                    GetSiteSettingBoolAsync(SiteSettingKey.Site.DisablePerformerInsuranceQuestion)
             };
 
             if (performer.Images.Count > 0)
@@ -345,7 +352,9 @@ namespace GRA.Controllers.PerformerRegistration
                 Settings = settings,
                 Systems = systems,
                 BranchCount = systems.Sum(_ => _.Branches.Count),
-                MaxUploadMB = MaxUploadMB
+                MaxUploadMB = MaxUploadMB,
+                DisablePerformerInsuranceQuestion = await
+                    GetSiteSettingBoolAsync(SiteSettingKey.Site.DisablePerformerInsuranceQuestion)
             };
 
             if (performer != null)
@@ -529,7 +538,9 @@ namespace GRA.Controllers.PerformerRegistration
                 AgeList = ageList,
                 MaxUploadMB = MaxUploadMB,
                 RegistrationCompleted = performer.RegistrationCompleted,
-                SetupSupplementalText = settings.SetupSupplementalText
+                SetupSupplementalText = settings.SetupSupplementalText,
+                DisablePerformerLivestreamQuestions = await 
+                    GetSiteSettingBoolAsync(SiteSettingKey.Site.DisablePerformerLivestreamQuestions)
             };
 
             if (id.HasValue)
@@ -722,7 +733,9 @@ namespace GRA.Controllers.PerformerRegistration
             var viewModel = new ProgramDetailsViewModel
             {
                 IsEditable = schedulingStage == PsSchedulingStage.RegistrationOpen,
-                Program = program
+                Program = program,
+                DisablePerformerLivestreamQuestions = await 
+                    GetSiteSettingBoolAsync(SiteSettingKey.Site.DisablePerformerLivestreamQuestions)
             };
 
             if (program.Images?.Count > 0)

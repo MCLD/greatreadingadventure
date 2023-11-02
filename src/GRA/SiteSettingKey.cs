@@ -103,6 +103,8 @@ namespace GRA
         {
             public static readonly string BackgroundColor = "Site.BackgroundColor";
             public static readonly string ReadingGoalInMinutes = "Site.ReadingGoalInMinutes";
+            public static readonly string DisablePerformerLivestreamQuestions = "Site.DisablePerformerLivestreamQuestions";
+            public static readonly string DisablePerformerInsuranceQuestion = "Site.DisablePerformerInsuranceQuestion";
 
             public bool Equals(Site other)
             {

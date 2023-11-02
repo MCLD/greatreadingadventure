@@ -36,6 +36,9 @@ namespace GRA.Data.Model
         [DisplayName("I have a fingerprint clearance card")]
         public bool HasFingerprintCard { get; set; }
 
+        [DisplayName("I have liability insurance")]
+        public bool HasInsurance { get; set; }
+
         public bool AllBranches { get; set; }
 
         [MaxLength(255)]
