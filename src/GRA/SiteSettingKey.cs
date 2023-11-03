@@ -103,10 +103,20 @@ namespace GRA
         {
             public static readonly string BackgroundColor = "Site.BackgroundColor";
             public static readonly string ReadingGoalInMinutes = "Site.ReadingGoalInMinutes";
-            public static readonly string EnablePerformerLivestreamQuestions = "Site.EnablePerformerLivestreamQuestions";
-            public static readonly string EnablePerformerInsuranceQuestion = "Site.EnablePerformerInsuranceQuestion";
 
             public bool Equals(Site other)
+            {
+                return true;
+            }
+        }
+
+        public readonly struct Performers : IEquatable<Performers>
+        {
+            public static readonly string PerformerBackToBackInterval = "Performers.PerformerBackToBackInterval";
+            public static readonly string EnablePerformerLivestreamQuestions = "Performers.EnablePerformerLivestreamQuestions";
+            public static readonly string EnablePerformerInsuranceQuestion = "Performers.EnablePerformerInsuranceQuestion";
+
+            public bool Equals(Performers other)
             {
                 return true;
             }

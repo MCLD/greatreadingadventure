@@ -163,7 +163,12 @@ else
                 <span class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="If you are requested to do this program twice in a row, how much time do you require between them?"></span>
             </label>
             <div class="col-sm-2">
-                <input asp-for="Program.BackToBackMinutes" class="form-control input-lg" type="text" placeholder="" />
+                <select asp-for="Program.BackToBackMinutes" class="form-control input-lg">
+                    @for (int i = 0; i < Model.BackToBackSelection.Count; i++)
+                    {
+                        <option value="@Model.BackToBackSelection[i]">@Model.BackToBackSelection[i]</option>
+                    }
+                </select>
                 <span asp-validation-for="Program.BackToBackMinutes" class="text-danger"></span>
             </div>
         </div>

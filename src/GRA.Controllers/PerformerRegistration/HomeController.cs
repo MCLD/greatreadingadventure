@@ -133,7 +133,7 @@ namespace GRA.Controllers.PerformerRegistration
                 Systems = await _performerSchedulingService
                     .GetSystemListWithoutExcludedBranchesAsync(),
                 EnablePerformerInsuranceQuestion = await
-                    GetSiteSettingBoolAsync(SiteSettingKey.Site.EnablePerformerInsuranceQuestion)
+                    GetSiteSettingBoolAsync(SiteSettingKey.Performers.EnablePerformerInsuranceQuestion)
             };
 
             if (performer.Images.Count > 0)
@@ -354,7 +354,7 @@ namespace GRA.Controllers.PerformerRegistration
                 BranchCount = systems.Sum(_ => _.Branches.Count),
                 MaxUploadMB = MaxUploadMB,
                 EnablePerformerInsuranceQuestion = await
-                    GetSiteSettingBoolAsync(SiteSettingKey.Site.EnablePerformerInsuranceQuestion)
+                    GetSiteSettingBoolAsync(SiteSettingKey.Performers.EnablePerformerInsuranceQuestion)
             };
 
             if (performer != null)
@@ -539,8 +539,9 @@ namespace GRA.Controllers.PerformerRegistration
                 MaxUploadMB = MaxUploadMB,
                 RegistrationCompleted = performer.RegistrationCompleted,
                 SetupSupplementalText = settings.SetupSupplementalText,
-                EnablePerformerLivestreamQuestions = await 
-                    GetSiteSettingBoolAsync(SiteSettingKey.Site.EnablePerformerLivestreamQuestions)
+                EnablePerformerLivestreamQuestions = await
+                    GetSiteSettingBoolAsync(SiteSettingKey.Performers.EnablePerformerLivestreamQuestions),
+                BackToBackSelection = new List<int> { 30 }
             };
 
             if (id.HasValue)
@@ -557,6 +558,29 @@ namespace GRA.Controllers.PerformerRegistration
                 {
                     ShowAlertDanger("Unable to view Program: ", gex);
                     return RedirectToAction(nameof(Dashboard));
+                }
+            }
+
+            var (hasIntervalString, intervalString) = await GetSiteSettingStringAsync(SiteSettingKey.Performers.PerformerBackToBackInterval);
+
+            if (hasIntervalString)
+            {
+                var numberStrings = intervalString.Split(new[] { ',', ' ' },
+                                StringSplitOptions.RemoveEmptyEntries);
+
+                var numbers = new List<int>();
+
+                for (int i = 0; i < numberStrings.Length; i++)
+                {
+                    if (int.TryParse(numberStrings[i], out int number))
+                    {
+                        numbers.Add(number);
+                    }
+                }
+
+                if (numbers.Count > 0)
+                {
+                    viewModel.BackToBackSelection = numbers;
                 }
             }
 
@@ -734,8 +758,8 @@ namespace GRA.Controllers.PerformerRegistration
             {
                 IsEditable = schedulingStage == PsSchedulingStage.RegistrationOpen,
                 Program = program,
-                EnablePerformerLivestreamQuestions = await 
-                    GetSiteSettingBoolAsync(SiteSettingKey.Site.EnablePerformerLivestreamQuestions)
+                EnablePerformerLivestreamQuestions = await
+                    GetSiteSettingBoolAsync(SiteSettingKey.Performers.EnablePerformerLivestreamQuestions)
             };
 
             if (program.Images?.Count > 0)

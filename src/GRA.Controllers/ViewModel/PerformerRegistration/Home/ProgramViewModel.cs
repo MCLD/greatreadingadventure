@@ -15,6 +15,8 @@ namespace GRA.Controllers.ViewModel.PerformerRegistration.Home
         public List<IFormFile> Images { get; set; }
         public int MaxUploadMB { get; set; }
 
+        public List<int> BackToBackSelection { get; set; }
+
         public bool RegistrationCompleted { get; set; }
         public bool EditingProgram { get; set; }
         public bool EnablePerformerLivestreamQuestions { get; set; }
