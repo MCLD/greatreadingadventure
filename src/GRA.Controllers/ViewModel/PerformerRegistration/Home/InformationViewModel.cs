@@ -20,6 +20,6 @@ namespace GRA.Controllers.ViewModel.PerformerRegistration.Home
 
         public int BranchCount { get; set; }
 
-        public bool DisablePerformerInsuranceQuestion { get; set; }
+        public bool EnablePerformerInsuranceQuestion { get; set; }
     }
 }

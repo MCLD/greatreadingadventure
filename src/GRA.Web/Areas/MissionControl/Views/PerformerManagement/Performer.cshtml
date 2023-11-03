@@ -138,7 +138,7 @@
             <label>Has Fingerprint Clearance Card</label>
             <div>@(Model.Performer.HasFingerprintCard ? "Yes" : "No")</div>
         </div>
-        @if (!Model.DisablePerformerInsuranceQuestion)
+        @if (Model.EnablePerformerInsuranceQuestion)
         {
             <div class="form-group">
                 <label>Has Liability Insurance</label>

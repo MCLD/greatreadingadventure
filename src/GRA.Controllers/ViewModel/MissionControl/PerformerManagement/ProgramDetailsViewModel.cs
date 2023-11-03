@@ -17,7 +17,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.PerformerManagement
         public string PerformerName { get; set; }
 
         public int MaxUploadMB { get; set; }
-        public bool DisablePerformerLivestreamQuestions { get; set; }
+        public bool EnablePerformerLivestreamQuestions { get; set; }
 
         public string SetupSupplementalText { get; set; }
     }

@@ -83,7 +83,7 @@
             <label>Library Set-up</label>
             <div>@Model.Program.Setup</div>
         </div>
-        @if (!Model.DisablePerformerLivestreamQuestions)
+        @if (Model.EnablePerformerLivestreamQuestions)
         {
             <div class="form-group">
                 <label>Willing to allow the library to livestream the program online?</label>

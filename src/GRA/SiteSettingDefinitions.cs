@@ -232,17 +232,17 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Site).Name,
                     Format = SiteSettingFormat.Integer
                 },
-                [SiteSettingKey.Site.DisablePerformerLivestreamQuestions] = new SiteSettingDefinition
+                [SiteSettingKey.Site.EnablePerformerLivestreamQuestions] = new SiteSettingDefinition
                 {
-                    Name = "Disable Performer Livestream Questions",
-                    Info = "If disabled, performers will not be asked for livestream and archive consent during registration",
+                    Name = "Enable Performer Livestream Questions",
+                    Info = "If enabled, performers will be asked for livestream and archive consent during registration",
                     Category = typeof(SiteSettingKey.Site).Name,
                     Format = SiteSettingFormat.Boolean
                 },
-                [SiteSettingKey.Site.DisablePerformerInsuranceQuestion] = new SiteSettingDefinition
+                [SiteSettingKey.Site.EnablePerformerInsuranceQuestion] = new SiteSettingDefinition
                 {
-                    Name = "Disable Performer Insurance Question",
-                    Info = "If disabled, performers will not be asked if they have insurance during registration",
+                    Name = "Enable Performer Insurance Question",
+                    Info = "If enabled, performers will be asked if they have liability insurance during registration",
                     Category = typeof(SiteSettingKey.Site).Name,
                     Format = SiteSettingFormat.Boolean
                 }

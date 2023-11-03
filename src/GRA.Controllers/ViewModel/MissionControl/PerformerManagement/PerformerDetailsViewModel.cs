@@ -18,6 +18,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.PerformerManagement
         public string VendorIdPrompt { get; set; }
         public string VendorCodeFormat { get; set; }
 
-        public bool DisablePerformerInsuranceQuestion { get; set; }
+        public bool EnablePerformerInsuranceQuestion { get; set; }
     }
 }

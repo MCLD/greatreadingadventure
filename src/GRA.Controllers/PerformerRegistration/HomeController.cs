@@ -132,8 +132,8 @@ namespace GRA.Controllers.PerformerRegistration
                 Settings = settings,
                 Systems = await _performerSchedulingService
                     .GetSystemListWithoutExcludedBranchesAsync(),
-                DisablePerformerInsuranceQuestion = await
-                    GetSiteSettingBoolAsync(SiteSettingKey.Site.DisablePerformerInsuranceQuestion)
+                EnablePerformerInsuranceQuestion = await
+                    GetSiteSettingBoolAsync(SiteSettingKey.Site.EnablePerformerInsuranceQuestion)
             };
 
             if (performer.Images.Count > 0)
@@ -353,8 +353,8 @@ namespace GRA.Controllers.PerformerRegistration
                 Systems = systems,
                 BranchCount = systems.Sum(_ => _.Branches.Count),
                 MaxUploadMB = MaxUploadMB,
-                DisablePerformerInsuranceQuestion = await
-                    GetSiteSettingBoolAsync(SiteSettingKey.Site.DisablePerformerInsuranceQuestion)
+                EnablePerformerInsuranceQuestion = await
+                    GetSiteSettingBoolAsync(SiteSettingKey.Site.EnablePerformerInsuranceQuestion)
             };
 
             if (performer != null)
@@ -539,8 +539,8 @@ namespace GRA.Controllers.PerformerRegistration
                 MaxUploadMB = MaxUploadMB,
                 RegistrationCompleted = performer.RegistrationCompleted,
                 SetupSupplementalText = settings.SetupSupplementalText,
-                DisablePerformerLivestreamQuestions = await 
-                    GetSiteSettingBoolAsync(SiteSettingKey.Site.DisablePerformerLivestreamQuestions)
+                EnablePerformerLivestreamQuestions = await 
+                    GetSiteSettingBoolAsync(SiteSettingKey.Site.EnablePerformerLivestreamQuestions)
             };
 
             if (id.HasValue)
@@ -734,8 +734,8 @@ namespace GRA.Controllers.PerformerRegistration
             {
                 IsEditable = schedulingStage == PsSchedulingStage.RegistrationOpen,
                 Program = program,
-                DisablePerformerLivestreamQuestions = await 
-                    GetSiteSettingBoolAsync(SiteSettingKey.Site.DisablePerformerLivestreamQuestions)
+                EnablePerformerLivestreamQuestions = await 
+                    GetSiteSettingBoolAsync(SiteSettingKey.Site.EnablePerformerLivestreamQuestions)
             };
 
             if (program.Images?.Count > 0)

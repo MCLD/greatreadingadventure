@@ -209,7 +209,7 @@ else
         </div>
     </div>
 
-    @if (!Model.DisablePerformerInsuranceQuestion){
+    @if (Model.EnablePerformerInsuranceQuestion){
         <div class="form-group">
             <label asp-for="Performer.HasInsurance" class="col-sm-3 control-label required-field"></label>
             <div class="col-sm-9">
