@@ -541,7 +541,7 @@ namespace GRA.Controllers.PerformerRegistration
                 SetupSupplementalText = settings.SetupSupplementalText,
                 EnablePerformerLivestreamQuestions = await
                     GetSiteSettingBoolAsync(SiteSettingKey.Performers.EnablePerformerLivestreamQuestions),
-                BackToBackSelection = new List<int> { 30 }
+                BackToBackSelection = new SelectList(new[] { "30" })
             };
 
             if (id.HasValue)
@@ -565,23 +565,10 @@ namespace GRA.Controllers.PerformerRegistration
 
             if (hasIntervalString)
             {
-                var numberStrings = intervalString.Split(new[] { ',', ' ' },
+                var intervalOptions = intervalString.Split(new[] { ',', ' ' },
                                 StringSplitOptions.RemoveEmptyEntries);
 
-                var numbers = new List<int>();
-
-                for (int i = 0; i < numberStrings.Length; i++)
-                {
-                    if (int.TryParse(numberStrings[i], out int number))
-                    {
-                        numbers.Add(number);
-                    }
-                }
-
-                if (numbers.Count > 0)
-                {
-                    viewModel.BackToBackSelection = numbers;
-                }
+                viewModel.BackToBackSelection = new SelectList(intervalOptions);
             }
 
             return View(viewModel);

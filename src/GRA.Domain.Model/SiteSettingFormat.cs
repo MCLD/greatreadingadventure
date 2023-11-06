@@ -4,6 +4,7 @@
     {
         Boolean,
         Integer,
-        String
+        String,
+        IntegerCSV
     }
 }

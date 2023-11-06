@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.Sites;
 using GRA.Controllers.ViewModel.Shared;
@@ -279,6 +280,9 @@ namespace GRA.Controllers.MissionControl
                         && !int.TryParse(siteSetting.Value, out int value))
                     {
                         ModelState.AddModelError("", $"Please enter a whole number for {definition.Name}.");
+                    } else if (definition.Format == SiteSettingFormat.IntegerCSV && !Regex.IsMatch(siteSetting.Value, "^[0-9, ]*$"))
+                    {
+                        ModelState.AddModelError("", $"Please enter only numbers, commas, and spaces for {definition.Name}.");
                     }
                 }
             }
