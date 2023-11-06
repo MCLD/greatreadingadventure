@@ -218,6 +218,20 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Mail).Name,
                     Format = SiteSettingFormat.Boolean
                 },
+                [SiteSettingKey.Performer.EnableLivestreamQuestions] = new SiteSettingDefinition
+                {
+                    Name = "Enable Performer Livestream Questions",
+                    Info = "If enabled, performers will be asked for livestream and archive consent during registration",
+                    Category = typeof(SiteSettingKey.Performer).Name,
+                    Format = SiteSettingFormat.Boolean
+                },
+                [SiteSettingKey.Performer.EnableInsuranceQuestion] = new SiteSettingDefinition
+                {
+                    Name = "Enable Performer Insurance Question",
+                    Info = "If enabled, performers will be asked if they have liability insurance during registration",
+                    Category = typeof(SiteSettingKey.Performer).Name,
+                    Format = SiteSettingFormat.Boolean
+                },
                 [SiteSettingKey.Site.BackgroundColor] = new SiteSettingDefinition
                 {
                     Name = "Background color",
@@ -231,22 +245,7 @@ namespace GRA
                     Info = "Sets a reading goal (minutes) for the entire site and duration",
                     Category = typeof(SiteSettingKey.Site).Name,
                     Format = SiteSettingFormat.Integer
-                },
-                [SiteSettingKey.Site.EnablePerformerLivestreamQuestions] = new SiteSettingDefinition
-                {
-                    Name = "Enable Performer Livestream Questions",
-                    Info = "If enabled, performers will be asked for livestream and archive consent during registration",
-                    Category = typeof(SiteSettingKey.Site).Name,
-                    Format = SiteSettingFormat.Boolean
-                },
-                [SiteSettingKey.Site.EnablePerformerInsuranceQuestion] = new SiteSettingDefinition
-                {
-                    Name = "Enable Performer Insurance Question",
-                    Info = "If enabled, performers will be asked if they have liability insurance during registration",
-                    Category = typeof(SiteSettingKey.Site).Name,
-                    Format = SiteSettingFormat.Boolean
                 }
-
             };
     }
 }
