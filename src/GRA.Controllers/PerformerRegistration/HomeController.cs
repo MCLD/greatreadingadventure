@@ -530,7 +530,7 @@ namespace GRA.Controllers.PerformerRegistration
                 EnablePerformerLivestreamQuestions = await GetSiteSettingBoolAsync(SiteSettingKey
                     .Performer
                     .EnableLivestreamQuestions),
-                BackToBackSelection = new SelectList(new[] { "30" })
+                BackToBackSelection = new SelectList(new[] { GRA.Defaults.BackToBackInterval })
             };
 
             if (id.HasValue)
