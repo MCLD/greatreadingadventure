@@ -43,5 +43,8 @@ namespace GRA.Domain.Model
         public string EndsAt { get; set; }
         public string Summary { get; set; }
         public bool IsDeleted { get; set; }
+        public string OnSiteContactName { get; set; }
+        public string OnSiteContactPhone { get; set; }
+        public string OnSiteContactEmail { get; set; }
     }
 }

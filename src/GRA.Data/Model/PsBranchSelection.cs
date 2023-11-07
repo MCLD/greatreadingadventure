@@ -31,5 +31,12 @@ namespace GRA.Data.Model
         public string SecretCode { get; set; }
 
         public bool IsDeleted { get; set; }
+
+        [MaxLength(255)]
+        public string OnSiteContactName { get; set; }
+        [MaxLength(255)]
+        public string OnSiteContactPhone { get; set; }
+        [MaxLength(255)]
+        public string OnSiteContactEmail { get; set; }
     }
 }

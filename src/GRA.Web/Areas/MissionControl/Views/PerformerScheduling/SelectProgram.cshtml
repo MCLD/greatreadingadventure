@@ -120,16 +120,37 @@
                     </tbody>
                 </table>
             </div>
+            
             if (count % 3 == 2)
             {
                 @Html.Raw("</div>");
             }
             { count++; }
+            <div class="col-xs-12 col-md-8">
+                <form id="onSiteContactInfo">
+                    <div>
+                        <label for="OnSiteContactName">On site contact name</label>
+                        <input name="OnSiteContactName" asp-for="BranchSelection.OnSiteContactName" type="text" class="form-control">
+                        <span asp-validation-for="BranchSelection.OnSiteContactName" class="text-danger"></span>
+                    </div>
+                    <div>
+                        <label for="OnSiteContactEmail">On site contact email</label>
+                        <input name="OnSiteContactEmail" asp-for="BranchSelection.OnSiteContactEmail" type="text" class="form-control">
+                        <span asp-validation-for="BranchSelection.OnSiteContactEmail" class="text-danger"></span>
+                    </div>
+                    <div>
+                        <label for="OnSiteContactPhone">On site contact phone</label>
+                        <input name="OnSiteContactPhone" asp-for="BranchSelection.OnSiteContactPhone" type="text" class="form-control">
+                        <span asp-validation-for="BranchSelection.OnSiteContactPhone" class="text-danger"></span>
+                    </div>
+                </form>
+            </div>
         }
         @if (count % 3 != 0)
         {
             @Html.Raw("</div>");
         }
+
 
         <div class="row">
             <div class="col-xs-12">
@@ -192,6 +213,14 @@
         var selectedDate;
         var startTime;
         var startDateTime;
+
+        function onSiteFieldsComplete() {
+            var inputs = $("#onSiteContactInfo input");
+            for (let i = 0; i < inputs.length; ++i) {
+                console.log(inputs[i].value);
+            }
+            return true;
+        }
 
         $(".selectable").on("click", function () {
             $(".selected-date").removeClass("selected-date");
@@ -260,7 +289,9 @@
                     else {
                         checkAlert.addClass("alert-success").text("The performer is available at that time.");
                     }
-                    $("#scheduleProgram").removeClass("hidden");
+                    if (onSiteFieldsComplete()) {
+                        $("#scheduleProgram").removeClass("hidden");
+                    }
                 }
                 else {
                     checkAlert.addClass("alert-danger").text(response.message);
@@ -271,7 +302,7 @@
         $("#scheduleProgram").on("click", function () {
             if ($(this).hasClass("hidden") == false) {
                 $("#BranchSelection_RequestedStartTime").val(startDateTime);
-                var data = $("#branchSelectionForm").serializeArray().reduce(function (m, o) { m[o.name] = o.value; return m; }, {})
+                var data = $("#branchSelectionForm").serializeArray().concat($("#onSiteContactInfo").serializeArray()).reduce(function (m, o) { m[o.name] = o.value; return m; }, {})
                 $.post(scheduleBranchProgramUrl, { branchSelection: data }, function (response) {
                     if (response.success) {
                         window.location.href = "@Url.Action(nameof(PerformerSchedulingController.Program), new { id = Model.BranchSelection.ProgramId})";
