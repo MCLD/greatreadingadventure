@@ -17,6 +17,7 @@ namespace GRA.Controllers.ViewModel.PerformerRegistration.Home
 
         public bool RegistrationCompleted { get; set; }
         public bool EditingProgram { get; set; }
+        public bool EnablePerformerLivestreamQuestions { get; set; }
 
         public string SetupSupplementalText { get; set; }
     }

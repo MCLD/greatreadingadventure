@@ -218,6 +218,20 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Mail).Name,
                     Format = SiteSettingFormat.Boolean
                 },
+                [SiteSettingKey.Performer.EnableLivestreamQuestions] = new SiteSettingDefinition
+                {
+                    Name = "Enable Performer Livestream Questions",
+                    Info = "If enabled, performers will be asked for livestream and archive consent during registration",
+                    Category = typeof(SiteSettingKey.Performer).Name,
+                    Format = SiteSettingFormat.Boolean
+                },
+                [SiteSettingKey.Performer.EnableInsuranceQuestion] = new SiteSettingDefinition
+                {
+                    Name = "Enable Performer Insurance Question",
+                    Info = "If enabled, performers will be asked if they have liability insurance during registration",
+                    Category = typeof(SiteSettingKey.Performer).Name,
+                    Format = SiteSettingFormat.Boolean
+                },
                 [SiteSettingKey.Site.BackgroundColor] = new SiteSettingDefinition
                 {
                     Name = "Background color",

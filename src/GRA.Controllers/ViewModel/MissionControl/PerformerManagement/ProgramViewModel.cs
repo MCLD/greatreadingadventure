@@ -6,5 +6,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.PerformerManagement
     {
         public PsProgram Program { get; set; }
         public string Image { get; set; }
+        public bool EnablePerformerLivestreamQuestions { get; set; }
     }
 }

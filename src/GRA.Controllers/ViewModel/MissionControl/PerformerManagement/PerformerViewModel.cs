@@ -15,6 +15,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.PerformerManagement
         public Uri Uri { get; set; }
         public PsProgram ProgramToDelete { get; set; }
         public bool Approve { get; set; }
+        public bool EnablePerformerInsuranceQuestion { get; set; }
 
         public int? NextPerformer { get; set; }
         public int? PrevPerformer { get; set; }

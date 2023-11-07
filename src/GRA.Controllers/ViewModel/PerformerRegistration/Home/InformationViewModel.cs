@@ -19,5 +19,7 @@ namespace GRA.Controllers.ViewModel.PerformerRegistration.Home
         public int MaxUploadMB { get; set; }
 
         public int BranchCount { get; set; }
+
+        public bool EnablePerformerInsuranceQuestion { get; set; }
     }
 }

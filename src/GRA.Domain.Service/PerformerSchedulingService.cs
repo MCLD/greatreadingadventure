@@ -488,6 +488,7 @@ namespace GRA.Domain.Service
 
             currentPerformer.BillingAddress = performer.BillingAddress.Trim();
             currentPerformer.HasFingerprintCard = performer.HasFingerprintCard;
+            currentPerformer.HasInsurance = performer.HasInsurance;
             currentPerformer.Name = performer.Name.Trim();
             currentPerformer.Email = performer.Email.Trim();
             currentPerformer.Phone = performer.Phone.Trim();

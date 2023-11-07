@@ -205,7 +205,9 @@ namespace GRA.Controllers.MissionControl
                 SchedulingStage = schedulingStage,
                 Settings = settings,
                 Systems = await _performerSchedulingService
-                    .GetSystemListWithoutExcludedBranchesAsync()
+                    .GetSystemListWithoutExcludedBranchesAsync(),
+                EnablePerformerInsuranceQuestion = await
+                    GetSiteSettingBoolAsync(SiteSettingKey.Performer.EnableInsuranceQuestion)
             };
 
             if (performer.Images.Count > 0)
@@ -323,7 +325,9 @@ namespace GRA.Controllers.MissionControl
                 Systems = systems,
                 BranchCount = systems.Sum(_ => _.Branches.Count),
                 VendorCodeFormat = settings.VendorCodeFormat ?? "Unspecified",
-                VendorIdPrompt = settings.VendorIdPrompt ?? "Vendor ID"
+                VendorIdPrompt = settings.VendorIdPrompt ?? "Vendor ID",
+                EnablePerformerInsuranceQuestion = await
+                    GetSiteSettingBoolAsync(SiteSettingKey.Performer.EnableInsuranceQuestion)
             };
 
             if (performer.AllBranches)
@@ -730,7 +734,9 @@ namespace GRA.Controllers.MissionControl
 
             var viewModel = new ProgramViewModel
             {
-                Program = program
+                Program = program,
+                EnablePerformerLivestreamQuestions = await
+                    GetSiteSettingBoolAsync(SiteSettingKey.Performer.EnableLivestreamQuestions)
             };
 
             if (program.Images?.Count > 0)
@@ -2208,6 +2214,7 @@ namespace GRA.Controllers.MissionControl
             var viewModel = new SettingsViewModel
             {
                 Settings = settings,
+                SiteId = GetCurrentSiteId(),
                 PerformerSchedulingEnabled = _performerSchedulingService
                     .GetSchedulingStage(settings) != PsSchedulingStage.Unavailable
             };
@@ -2260,6 +2267,7 @@ namespace GRA.Controllers.MissionControl
             var viewModel = new SettingsViewModel
             {
                 Settings = model.Settings,
+                SiteId = GetCurrentSiteId(),
                 PerformerSchedulingEnabled = _performerSchedulingService
                     .GetSchedulingStage(currentSettings) != PsSchedulingStage.Unavailable
             };
