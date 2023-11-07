@@ -237,7 +237,7 @@ namespace GRA
                     Name = "Intervals Between Performer Back-To-Back Programs",
                     Info = "(Optional) Input a comma separated list of values for performers to select during registration (ie: 20, 25, 30)",
                     Category = typeof(SiteSettingKey.Performer).Name,
-                    Format = SiteSettingFormat.IntegerCSV
+                    Format = SiteSettingFormat.IntegerCsv
                 },
                 [SiteSettingKey.Site.BackgroundColor] = new SiteSettingDefinition
                 {

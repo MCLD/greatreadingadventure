@@ -4,7 +4,7 @@ namespace GRA
 {
     public struct SiteSettingKey : IEquatable<SiteSettingKey>
     {
-        public bool Equals(SiteSettingKey other)
+        public readonly bool Equals(SiteSettingKey other)
         {
             return true;
         }

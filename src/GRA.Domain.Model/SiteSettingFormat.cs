@@ -5,6 +5,6 @@
         Boolean,
         Integer,
         String,
-        IntegerCSV
+        IntegerCsv
     }
 }

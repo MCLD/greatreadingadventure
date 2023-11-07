@@ -221,15 +221,11 @@ namespace GRA.Controllers.PerformerRegistration
             {
                 foreach (var image in model.Images)
                 {
-                    using (var fileStream = image.OpenReadStream())
-                    {
-                        using (var ms = new MemoryStream())
-                        {
-                            fileStream.CopyTo(ms);
-                            await _performerSchedulingService.AddPerformerImageAsync(
-                                performer.Id, ms.ToArray(), Path.GetExtension(image.FileName));
-                        }
-                    }
+                    using var fileStream = image.OpenReadStream();
+                    using var ms = new MemoryStream();
+                    fileStream.CopyTo(ms);
+                    await _performerSchedulingService.AddPerformerImageAsync(
+                        performer.Id, ms.ToArray(), Path.GetExtension(image.FileName));
                 }
                 ShowAlertSuccess("Image(s) added!");
                 return RedirectToAction(nameof(Images));
@@ -459,31 +455,23 @@ namespace GRA.Controllers.PerformerRegistration
 
                 if (model.References != null)
                 {
-                    using (var fileStream = model.References.OpenReadStream())
-                    {
-                        using (var ms = new MemoryStream())
-                        {
-                            fileStream.CopyTo(ms);
-                            await _performerSchedulingService.SetPerformerReferencesAsync(
-                                performer.Id, ms.ToArray(),
-                                Path.GetExtension(model.References.FileName));
-                        }
-                    }
+                    using var fileStream = model.References.OpenReadStream();
+                    using var ms = new MemoryStream();
+                    fileStream.CopyTo(ms);
+                    await _performerSchedulingService.SetPerformerReferencesAsync(
+                        performer.Id, ms.ToArray(),
+                        Path.GetExtension(model.References.FileName));
                 }
 
                 if (!performer.RegistrationCompleted)
                 {
                     foreach (var image in model.Images)
                     {
-                        using (var fileStream = image.OpenReadStream())
-                        {
-                            using (var ms = new MemoryStream())
-                            {
-                                fileStream.CopyTo(ms);
-                                await _performerSchedulingService.AddPerformerImageAsync(
-                                    performer.Id, ms.ToArray(), Path.GetExtension(image.FileName));
-                            }
-                        }
+                        using var fileStream = image.OpenReadStream();
+                        using var ms = new MemoryStream();
+                        fileStream.CopyTo(ms);
+                        await _performerSchedulingService.AddPerformerImageAsync(
+                            performer.Id, ms.ToArray(), Path.GetExtension(image.FileName));
                     }
 
                     return RedirectToAction(nameof(Schedule));
@@ -647,15 +635,11 @@ namespace GRA.Controllers.PerformerRegistration
                     {
                         foreach (var image in model.Images)
                         {
-                            using (var fileStream = image.OpenReadStream())
-                            {
-                                using (var ms = new MemoryStream())
-                                {
-                                    fileStream.CopyTo(ms);
-                                    await _performerSchedulingService.AddProgramImageAsync(
-                                        program.Id, ms.ToArray(), Path.GetExtension(image.FileName));
-                                }
-                            }
+                            using var fileStream = image.OpenReadStream();
+                            using var ms = new MemoryStream();
+                            fileStream.CopyTo(ms);
+                            await _performerSchedulingService.AddProgramImageAsync(
+                                program.Id, ms.ToArray(), Path.GetExtension(image.FileName));
                         }
                     }
                 }
@@ -840,15 +824,11 @@ namespace GRA.Controllers.PerformerRegistration
             {
                 foreach (var image in model.Images)
                 {
-                    using (var fileStream = image.OpenReadStream())
-                    {
-                        using (var ms = new MemoryStream())
-                        {
-                            fileStream.CopyTo(ms);
-                            await _performerSchedulingService.AddProgramImageAsync(
-                                model.ProgramId, ms.ToArray(), Path.GetExtension(image.FileName));
-                        }
-                    }
+                    using var fileStream = image.OpenReadStream();
+                    using var ms = new MemoryStream();
+                    fileStream.CopyTo(ms);
+                    await _performerSchedulingService.AddProgramImageAsync(
+                        model.ProgramId, ms.ToArray(), Path.GetExtension(image.FileName));
                 }
                 ShowAlertSuccess("Image(s) added!");
                 return RedirectToAction(nameof(ProgramImages), new { id = model.ProgramId });
@@ -1016,8 +996,11 @@ namespace GRA.Controllers.PerformerRegistration
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error submitting schedule for user {userId}: {ex}", ex);
-                ShowAlertDanger($"There was an error with your schedule, please try submitting " +
+                _logger.LogError(ex,
+                    "Error submitting schedule for user {UserId}: {ErrorMessage}",
+                    userId,
+                    ex.Message);
+                ShowAlertDanger("There was an error with your schedule, please try submitting " +
                     $"it again or contact {settings.ContactEmail} for assistance.");
             }
 
