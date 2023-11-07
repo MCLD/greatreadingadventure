@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.Sites;
 using GRA.Controllers.ViewModel.Shared;
@@ -15,7 +16,7 @@ namespace GRA.Controllers.MissionControl
 {
     [Area("MissionControl")]
     [Authorize(Policy = Policy.ManageSites)]
-    public class SitesController : Base.MCController
+    public partial class SitesController : Base.MCController
     {
         private readonly EmailService _emailSerivce;
         private readonly ILogger<SitesController> _logger;
@@ -64,7 +65,7 @@ namespace GRA.Controllers.MissionControl
             {
                 try
                 {
-                    _mapper.Map<SiteConfigurationViewModel, Site>(model, site);
+                    _mapper.Map(model, site);
 
                     await _siteService.UpdateAsync(site);
                     ShowAlertSuccess($"Site '{site.Name}' successfully updated!");
@@ -96,7 +97,7 @@ namespace GRA.Controllers.MissionControl
                 try
                 {
                     var site = await _siteLookupService.GetByIdAsync(model.Id);
-                    _mapper.Map<SiteDetailViewModel, Site>(model, site);
+                    _mapper.Map(model, site);
 
                     await _siteService.UpdateAsync(site);
                     ShowAlertSuccess($"Site '{site.Name}' successfully updated!");
@@ -163,7 +164,7 @@ namespace GRA.Controllers.MissionControl
             {
                 try
                 {
-                    _mapper.Map<SiteScheduleViewModel, Site>(model, site);
+                    _mapper.Map(model, site);
 
                     await _siteService.UpdateAsync(site);
                     ShowAlertSuccess($"Site '{site.Name}' successfully updated!");
@@ -259,7 +260,7 @@ namespace GRA.Controllers.MissionControl
             if (invalidKeys.Any())
             {
                 var keysString = string.Join(", ", invalidKeys);
-                _logger.LogError($"Invalid site setting key(s): {keysString}");
+                _logger.LogError("Invalid site setting key(s): {Keys}", keysString);
                 ShowAlertDanger("Invalid site setting.");
                 return RedirectToAction(nameof(Settings), new { id = site.Id });
             }
@@ -279,6 +280,10 @@ namespace GRA.Controllers.MissionControl
                         && !int.TryParse(siteSetting.Value, out int value))
                     {
                         ModelState.AddModelError("", $"Please enter a whole number for {definition.Name}.");
+                    }
+                    else if (definition.Format == SiteSettingFormat.IntegerCsv && !CsvRegex().IsMatch(siteSetting.Value))
+                    {
+                        ModelState.AddModelError("", $"Please enter only numbers, commas, and spaces for {definition.Name}.");
                     }
                 }
             }
@@ -332,7 +337,7 @@ namespace GRA.Controllers.MissionControl
             {
                 try
                 {
-                    _mapper.Map<SiteSocialMediaViewModel, Site>(model, site);
+                    _mapper.Map(model, site);
 
                     await _siteService.UpdateAsync(site);
                     ShowAlertSuccess($"Site '{site.Name}' successfully updated!");
@@ -346,5 +351,8 @@ namespace GRA.Controllers.MissionControl
             PageTitle = $"Site management - {site.Name}";
             return View(model);
         }
+
+        [GeneratedRegex("^[0-9, ]*$")]
+        private static partial Regex CsvRegex();
     }
 }

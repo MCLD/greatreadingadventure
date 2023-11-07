@@ -29,7 +29,8 @@
                     {
                         <input asp-for="SiteSettingGroups[i].SettingInformations[j].SiteSetting.Value" type="number" class="form-control" />
                     }
-                    else if (Model.SiteSettingGroups[i].SettingInformations[j].Definition.Format == GRA.Domain.Model.SiteSettingFormat.String)
+                    else if (Model.SiteSettingGroups[i].SettingInformations[j].Definition.Format == GRA.Domain.Model.SiteSettingFormat.String ||
+                    Model.SiteSettingGroups[i].SettingInformations[j].Definition.Format == GRA.Domain.Model.SiteSettingFormat.IntegerCsv)
                     {
                         <input asp-for="SiteSettingGroups[i].SettingInformations[j].SiteSetting.Value" type="text" class="form-control" />
                     }

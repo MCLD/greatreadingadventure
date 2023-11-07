@@ -4,7 +4,7 @@ namespace GRA
 {
     public struct SiteSettingKey : IEquatable<SiteSettingKey>
     {
-        public bool Equals(SiteSettingKey other)
+        public readonly bool Equals(SiteSettingKey other)
         {
             return true;
         }
@@ -80,6 +80,7 @@ namespace GRA
 
         public readonly struct Performer : IEquatable<Performer>
         {
+            public static readonly string BackToBackInterval = "Performers.PerformerBackToBackInterval";
             public static readonly string EnableInsuranceQuestion = "Performer.EnableInsuranceQuestion";
             public static readonly string EnableLivestreamQuestions = "Performer.EnableLivestreamQuestions";
 
