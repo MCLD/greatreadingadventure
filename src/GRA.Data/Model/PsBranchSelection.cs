@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GRA.Data.Model
 {
@@ -7,6 +8,9 @@ namespace GRA.Data.Model
     {
         public int UserId { get; set; }
         public User User { get; set; }
+
+        [ForeignKey(nameof(CreatedBy))]
+        public User CreatedByUser { get; set; }
 
         public int BranchId { get; set; }
         public Branch Branch { get; set; }

@@ -1572,6 +1572,9 @@ namespace GRA.Domain.Service
             currentBranchSelection.ScheduleStartTime = branchSelection.RequestedStartTime
                 .AddMinutes(-program.SetupTimeMinutes);
 
+            currentBranchSelection.SelectedAt = _dateTimeProvider.Now;
+            currentBranchSelection.UserId = GetClaimId(ClaimType.UserId);
+
             await _psBranchSelectionRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
                 currentBranchSelection);
         }

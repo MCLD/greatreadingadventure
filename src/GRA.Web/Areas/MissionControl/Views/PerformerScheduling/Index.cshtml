@@ -136,9 +136,12 @@
                                   data-selectionname="@(selection.KitId.HasValue ? selection.Kit.Name : selection.Program.Title)"
                                   data-agegroupname="@selection.AgeGroup.Name"
                                   data-branchname="@branch.Name"
-                                  data-contactname="@selection.User.FullName"
-                                  data-contactemail="@selection.User.Email"
+                                  data-creatorname="@selection.CreatedByUser.FullName"
+                                  data-creatoremail="@selection.CreatedByUser.Email"
+                                  data-updatername="@selection.User.FullName"
+                                  data-updateremail="@selection.User.Email"
                                   data-scheduled="@selection.RequestedStartTime"
+                                  data-createdat="@selection.CreatedAt"
                                   data-selectedat="@selection.SelectedAt"
                                   data-backtoback="@selection.BackToBackProgram"
                                   data-duration="@selection.ScheduleDuration"
@@ -254,9 +257,15 @@
                         <td>Yes</td>
                     </tr>
                     <tr>
-                        <th>Selection made by:</th>
+                        <th>Scheduled by:</th>
                         <td>
-                            <a id="modalcontactmailto"></a> at <span id="modalselectedat"></span>
+                            <a id="modalschedulermailto"></a> at <span id="modalcreatedat"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Schedule updated by:</th>
+                        <td>
+                            <a id="modalupdatermailto"></a> at <span id="modalupdatedat"></span>
                         </td>
                     </tr>
                 </table>
@@ -292,13 +301,16 @@
             $('#selectionname').text(dataElement.data('selectionname'));
             $('#modalagegroupname').text(dataElement.data('agegroupname'));
             $('#modelbranchname').text(dataElement.data('branchname'));
-            $('#modalcontactmailto').attr('href', 'mailto:' + dataElement.data('contactemail'));
-            $('#modalcontactmailto').text(dataElement.data('contactname'));
+            $('#modalschedulermailto').attr('href', 'mailto:' + dataElement.data('creatoremail'));
+            $('#modalschedulermailto').text(dataElement.data('creatorname'));
+            $('#modalupdatermailto').attr('href', 'mailto:' + dataElement.data('updateremail'));
+            $('#modalupdatermailto').text(dataElement.data('updatername'));
             $('#modalscheduled').text(dataElement.data('scheduled'));
             $('#modalduration').text(dataElement.data('duration'));
             $('#modalstartsat').text(dataElement.data('startsat'));
             $('#modalendsat').text(dataElement.data('endsat'));
-            $('#modalselectedat').text(dataElement.data('selectedat'));
+            $('#modalcreatedat').text(dataElement.data('createdat'));
+            $('#modalupdatedat').text(dataElement.data('selectedat'));
             if(dataElement.data('performername')) {
                 $('#performerrow').show()
                 $('#performername').text(dataElement.data('performername'))

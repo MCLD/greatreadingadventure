@@ -8,6 +8,7 @@ namespace GRA.Domain.Model
     {
         public int UserId { get; set; }
         public User User { get; set; }
+        public User CreatedByUser {  get; set; }
 
         [DisplayName("Branch")]
         public int BranchId { get; set; }
