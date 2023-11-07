@@ -133,7 +133,7 @@ namespace GRA.Controllers.PerformerRegistration
                 Systems = await _performerSchedulingService
                     .GetSystemListWithoutExcludedBranchesAsync(),
                 EnablePerformerInsuranceQuestion = await
-                    GetSiteSettingBoolAsync(SiteSettingKey.Performers.EnablePerformerInsuranceQuestion)
+                    GetSiteSettingBoolAsync(SiteSettingKey.Performer.EnableInsuranceQuestion)
             };
 
             if (performer.Images.Count > 0)
@@ -354,7 +354,7 @@ namespace GRA.Controllers.PerformerRegistration
                 BranchCount = systems.Sum(_ => _.Branches.Count),
                 MaxUploadMB = MaxUploadMB,
                 EnablePerformerInsuranceQuestion = await
-                    GetSiteSettingBoolAsync(SiteSettingKey.Performers.EnablePerformerInsuranceQuestion)
+                    GetSiteSettingBoolAsync(SiteSettingKey.Performer.EnableInsuranceQuestion)
             };
 
             if (performer != null)
@@ -539,8 +539,9 @@ namespace GRA.Controllers.PerformerRegistration
                 MaxUploadMB = MaxUploadMB,
                 RegistrationCompleted = performer.RegistrationCompleted,
                 SetupSupplementalText = settings.SetupSupplementalText,
-                EnablePerformerLivestreamQuestions = await
-                    GetSiteSettingBoolAsync(SiteSettingKey.Performers.EnablePerformerLivestreamQuestions),
+                EnablePerformerLivestreamQuestions = await GetSiteSettingBoolAsync(SiteSettingKey
+                    .Performer
+                    .EnableLivestreamQuestions),
                 BackToBackSelection = new SelectList(new[] { "30" })
             };
 
@@ -561,7 +562,7 @@ namespace GRA.Controllers.PerformerRegistration
                 }
             }
 
-            var (hasIntervalString, intervalString) = await GetSiteSettingStringAsync(SiteSettingKey.Performers.PerformerBackToBackInterval);
+            var (hasIntervalString, intervalString) = await GetSiteSettingStringAsync(SiteSettingKey.Performer.BackToBackInterval);
 
             if (hasIntervalString)
             {
@@ -746,7 +747,7 @@ namespace GRA.Controllers.PerformerRegistration
                 IsEditable = schedulingStage == PsSchedulingStage.RegistrationOpen,
                 Program = program,
                 EnablePerformerLivestreamQuestions = await
-                    GetSiteSettingBoolAsync(SiteSettingKey.Performers.EnablePerformerLivestreamQuestions)
+                    GetSiteSettingBoolAsync(SiteSettingKey.Performer.EnableLivestreamQuestions)
             };
 
             if (program.Images?.Count > 0)

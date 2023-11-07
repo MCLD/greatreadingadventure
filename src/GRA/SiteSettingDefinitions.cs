@@ -218,6 +218,27 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Mail).Name,
                     Format = SiteSettingFormat.Boolean
                 },
+                [SiteSettingKey.Performer.EnableLivestreamQuestions] = new SiteSettingDefinition
+                {
+                    Name = "Enable Performer Livestream Questions",
+                    Info = "If enabled, performers will be asked for livestream and archive consent during registration",
+                    Category = typeof(SiteSettingKey.Performer).Name,
+                    Format = SiteSettingFormat.Boolean
+                },
+                [SiteSettingKey.Performer.EnableInsuranceQuestion] = new SiteSettingDefinition
+                {
+                    Name = "Enable Performer Insurance Question",
+                    Info = "If enabled, performers will be asked if they have liability insurance during registration",
+                    Category = typeof(SiteSettingKey.Performer).Name,
+                    Format = SiteSettingFormat.Boolean
+                },
+                [SiteSettingKey.Performer.BackToBackInterval] = new SiteSettingDefinition
+                {
+                    Name = "Intervals Between Performer Back-To-Back Programs",
+                    Info = "(Optional) Input a comma separated list of values for performers to select during registration (ie: 20, 25, 30)",
+                    Category = typeof(SiteSettingKey.Performer).Name,
+                    Format = SiteSettingFormat.IntegerCSV
+                },
                 [SiteSettingKey.Site.BackgroundColor] = new SiteSettingDefinition
                 {
                     Name = "Background color",
@@ -231,29 +252,7 @@ namespace GRA
                     Info = "Sets a reading goal (minutes) for the entire site and duration",
                     Category = typeof(SiteSettingKey.Site).Name,
                     Format = SiteSettingFormat.Integer
-                },
-                [SiteSettingKey.Performers.EnablePerformerLivestreamQuestions] = new SiteSettingDefinition
-                {
-                    Name = "Enable Performer Livestream Questions",
-                    Info = "If enabled, performers will be asked for livestream and archive consent during registration",
-                    Category = typeof(SiteSettingKey.Performers).Name,
-                    Format = SiteSettingFormat.Boolean
-                },
-                [SiteSettingKey.Performers.EnablePerformerInsuranceQuestion] = new SiteSettingDefinition
-                {
-                    Name = "Enable Performer Insurance Question",
-                    Info = "If enabled, performers will be asked if they have liability insurance during registration",
-                    Category = typeof(SiteSettingKey.Performers).Name,
-                    Format = SiteSettingFormat.Boolean
-                },
-                [SiteSettingKey.Performers.PerformerBackToBackInterval] = new SiteSettingDefinition
-                {
-                    Name = "Intervals Between Performer Back-To-Back Programs",
-                    Info = "(Optional) Input a comma separated list of values for performers to select during registration (ie: 20, 25, 30)",
-                    Category = typeof(SiteSettingKey.Performers).Name,
-                    Format = SiteSettingFormat.IntegerCSV
                 }
-
             };
     }
 }

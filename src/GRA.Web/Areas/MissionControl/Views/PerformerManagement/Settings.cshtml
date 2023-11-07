@@ -144,6 +144,17 @@
     </div>
 
     <div class="form-group">
+        <label class="control-label">Questions</label>
+        <div class="form-control-plaintext">Configure questions about livestreaming and insurance in
+            <a asp-controller="@GRA.Controllers.MissionControl.SitesController.Name"
+               asp-action="@nameof(GRA.Controllers.MissionControl.SitesController.Settings)"
+               asp-route-id="@Model.SiteId"
+               asp-fragment="@nameof(GRA.SiteSettingKey.Performer)"
+            target="_blank">Site Settings</a>
+        </div>
+    </div>
+
+    <div class="form-group" style="margin-top: 2rem;">
         <button type="submit"
                 id="Submit"
                 name="Submit"

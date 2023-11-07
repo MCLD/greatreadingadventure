@@ -78,6 +78,18 @@ namespace GRA
             }
         }
 
+        public readonly struct Performer : IEquatable<Performer>
+        {
+            public static readonly string BackToBackInterval = "Performers.PerformerBackToBackInterval";
+            public static readonly string EnableInsuranceQuestion = "Performer.EnableInsuranceQuestion";
+            public static readonly string EnableLivestreamQuestions = "Performer.EnableLivestreamQuestions";
+
+            public bool Equals(Performer other)
+            {
+                return true;
+            }
+        }
+
         public readonly struct Points : IEquatable<Points>
         {
             public static readonly string MaximumPermitted = "Points.MaximumPermitted";
@@ -105,18 +117,6 @@ namespace GRA
             public static readonly string ReadingGoalInMinutes = "Site.ReadingGoalInMinutes";
 
             public bool Equals(Site other)
-            {
-                return true;
-            }
-        }
-
-        public readonly struct Performers : IEquatable<Performers>
-        {
-            public static readonly string PerformerBackToBackInterval = "Performers.PerformerBackToBackInterval";
-            public static readonly string EnablePerformerLivestreamQuestions = "Performers.EnablePerformerLivestreamQuestions";
-            public static readonly string EnablePerformerInsuranceQuestion = "Performers.EnablePerformerInsuranceQuestion";
-
-            public bool Equals(Performers other)
             {
                 return true;
             }
