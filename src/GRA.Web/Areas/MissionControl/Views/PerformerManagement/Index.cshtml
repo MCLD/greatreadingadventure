@@ -51,26 +51,26 @@
                     <div class="panel-heading" role="tab" id="heading-@system.Id">
                         <h4 class="panel-title">
                             <a class="collapsed"
-                           role="button"
-                           data-toggle="collapse"
-                           data-parent="#accordion"
-                           href="#collapse-@system.Id"
-                           aria-expanded="false"
-                           aria-controls="collapse-@system.Id">
+                               role="button"
+                               data-toggle="collapse"
+                               data-parent="#accordion"
+                               href="#collapse-@system.Id"
+                               aria-expanded="false"
+                               aria-controls="collapse-@system.Id">
                                 @system.Name
                                 <span class="pull-right">@Model.Percent[system.Id]<span class="hidden-xs"> @Model.Completion[system.Id]</span></span>
                             </a>
                         </h4>
                     </div>
                     <div id="collapse-@system.Id"
-                     class="panel-collapse @Model.CollapsePanel"
-                     role="tabpanel"
-                     aria-labelledby="heading-@system.Id">
+                         class="panel-collapse @Model.CollapsePanel"
+                         role="tabpanel"
+                         aria-labelledby="heading-@system.Id">
                         <div class="panel-body">
                             <div class="progress">
                                 <div class="progress-bar"
-                                 role="progressbar"
-                                 style="width: @Model.Percent[system.Id]; min-width: 2em;">
+                                     role="progressbar"
+                                     style="width: @Model.Percent[system.Id]; min-width: 2em;">
                                     @Model.Percent[system.Id]
                                 </div>
                             </div>
@@ -88,27 +88,30 @@
                                             {
                                                 count++;
                                                 <span class="fa-stack cursor-pointer"
-                                          style="color: @selection.AgeGroup.IconColor"
-                                          title="@selection.Summary"
-                                          data-toggle="modal"
-                                          data-target="#selectionDetailsModal"
-                                          data-performerid="@selection.Program?.PerformerId"
-                                          data-performername="@selection.Program?.PerformerName"
-                                          data-selectionid="@selection.Program?.Id"
-                                          data-kitid="@selection.Kit?.Id"
-                                          data-selectionname="@(selection.KitId.HasValue ? selection.Kit.Name : selection.Program.Title)"
-                                          data-agegroupname="@selection.AgeGroup.Name"
-                                          data-branchname="@branch.Name"
-                                          data-systemname="@system.Name"
-                                          data-contactname="@selection.User.FullName"
-                                          data-contactemail="@selection.User.Email"
-                                          data-scheduled="@selection.RequestedStartTime"
-                                          data-selectedat="@selection.SelectedAt"
-                                          data-backtoback="@selection.BackToBackProgram"
-                                          data-duration="@selection.ScheduleDuration"
-                                          data-startsat="@selection.StartsAt"
-                                          data-endsat="@selection.EndsAt"
-                                          data-iskit="@selection.KitId.HasValue">
+                                                      style="color: @selection.AgeGroup.IconColor"
+                                                      title="@selection.Summary"
+                                                      data-toggle="modal"
+                                                      data-target="#selectionDetailsModal"
+                                                      data-performerid="@selection.Program?.PerformerId"
+                                                      data-performername="@selection.Program?.PerformerName"
+                                                      data-selectionid="@selection.Program?.Id"
+                                                      data-kitid="@selection.Kit?.Id"
+                                                      data-selectionname="@(selection.KitId.HasValue ? selection.Kit.Name : selection.Program.Title)"
+                                                      data-agegroupname="@selection.AgeGroup.Name"
+                                                      data-branchname="@branch.Name"
+                                                      data-systemname="@system.Name"
+                                                      data-creatorname="@selection.CreatedByUser.FullName"
+                                                      data-creatoremail="@selection.CreatedByUser.Email"
+                                                      data-updatername="@selection.UpdatedByUser?.FullName"
+                                                      data-updateremail="@selection.UpdatedByUser?.Email"
+                                                      data-scheduled="@selection.RequestedStartTime"
+                                                      data-createdat="@selection.CreatedAt"
+                                                      data-selectedat="@selection.SelectedAt"
+                                                      data-backtoback="@selection.BackToBackProgram"
+                                                      data-duration="@selection.ScheduleDuration"
+                                                      data-startsat="@selection.StartsAt"
+                                                      data-endsat="@selection.EndsAt"
+                                                      data-iskit="@selection.KitId.HasValue">
                                                     @if (selection.KitId.HasValue)
                                                     {
                                                         <span class="fas fa-square fa-stack-2x age-group-id-@selection.AgeGroupId"></span>
@@ -202,9 +205,15 @@
                         <td>Yes</td>
                     </tr>
                     <tr>
-                        <th>Selection made by:</th>
+                        <th>Scheduled by:</th>
                         <td>
-                            <a id="modalcontactmailto"></a> at <span id="modalselectedat"></span>
+                            <a id="modalschedulermailto"></a> at <span id="modalcreatedat"></span>
+                        </td>
+                    </tr>
+                    <tr id="scheduleupdatedby">
+                        <th>Schedule updated by:</th>
+                        <td>
+                            <a id="modalupdatermailto"></a> at <span id="modalupdatedat"></span>
                         </td>
                     </tr>
                 </table>
@@ -229,13 +238,33 @@
             $('#modalagegroupname').text(dataElement.data('agegroupname'));
             $('#modelbranchname').text(dataElement.data('branchname'));
             $('#modelsystemname').text(dataElement.data('systemname'));
-            $('#modalcontactmailto').attr('href', 'mailto:' + dataElement.data('contactemail'));
-            $('#modalcontactmailto').text(dataElement.data('contactname'));
+            if (dataElement.data('creatoremail')) {
+                $('#modalschedulermailto').attr('href', 'mailto:' + dataElement.data('creatoremail'));
+            }
+            else {
+                $('#modalschedulermailto').attr('href', 'javascript:alert(\'No email address provided.\');');
+            }
+            $('#modalschedulermailto').text(dataElement.data('creatorname'));
+            if (dataElement.data('updatername')) {
+                $('#scheduleupdatedby').show();
+                if (dataElement.data('updateremail')) {
+                    $('#modalupdatermailto').attr('href', 'mailto:' + dataElement.data('updateremail'));
+                }
+                else {
+                    $('#modalupdatermailto').attr('href', 'javascript:alert(\'No email address provided.\');');
+                }
+                $('#modalupdatermailto').text(dataElement.data('updatername'));
+            }
+            else {
+                $('#scheduleupdatedby').hide();
+            }
+            $('#modalupdatermailto').text(dataElement.data('updatername'));
             $('#modalscheduled').text(dataElement.data('scheduled'));
             $('#modalduration').text(dataElement.data('duration'));
             $('#modalstartsat').text(dataElement.data('startsat'));
             $('#modalendsat').text(dataElement.data('endsat'));
-            $('#modalselectedat').text(dataElement.data('selectedat'));
+            $('#modalcreatedat').text(dataElement.data('createdat'));
+            $('#modalupdatedat').text(dataElement.data('selectedat'));
             if (dataElement.data('performername')) {
                 $('#performerrow').show()
                 $('#performername').text(dataElement.data('performername'))
