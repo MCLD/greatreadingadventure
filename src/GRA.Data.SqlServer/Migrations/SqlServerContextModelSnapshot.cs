@@ -2417,7 +2417,7 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<DateTime>("SelectedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UpdatedByUserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -2432,7 +2432,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("ProgramId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UpdatedByUserId");
 
                     b.ToTable("PsBranchSelections");
                 });
@@ -4891,11 +4891,10 @@ namespace GRA.Data.SqlServer.Migrations
                         .HasForeignKey("ProgramId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("GRA.Data.Model.User", "User")
+                    b.HasOne("GRA.Data.Model.User", "UpdatedByUser")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("UpdatedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AgeGroup");
 
@@ -4907,7 +4906,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Navigation("Program");
 
-                    b.Navigation("User");
+                    b.Navigation("UpdatedByUser");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsExcludeBranch", b =>
