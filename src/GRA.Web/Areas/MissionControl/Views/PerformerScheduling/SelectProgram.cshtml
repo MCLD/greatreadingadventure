@@ -128,20 +128,20 @@
             { count++; }
             <div class="col-xs-12 col-md-8">
                 <form id="onSiteContactInfo">
-                    <div>
+                    <div class="form-group">
                         <label for="OnSiteContactName">On site contact name</label>
                         <input name="OnSiteContactName" asp-for="BranchSelection.OnSiteContactName" type="text" class="form-control">
-                        <span asp-validation-for="BranchSelection.OnSiteContactName" class="text-danger"></span>
+                        <span class="text-danger"></span>
                     </div>
-                    <div>
+                    <div class="form-group">
                         <label for="OnSiteContactEmail">On site contact email</label>
                         <input name="OnSiteContactEmail" asp-for="BranchSelection.OnSiteContactEmail" type="text" class="form-control">
-                        <span asp-validation-for="BranchSelection.OnSiteContactEmail" class="text-danger"></span>
-                    </div>
+                        <span class="text-danger"></span>
+                    </div class="form-group">
                     <div>
                         <label for="OnSiteContactPhone">On site contact phone</label>
                         <input name="OnSiteContactPhone" asp-for="BranchSelection.OnSiteContactPhone" type="text" class="form-control">
-                        <span asp-validation-for="BranchSelection.OnSiteContactPhone" class="text-danger"></span>
+                        <span class="text-danger"></span>
                     </div>
                 </form>
             </div>
@@ -213,23 +213,74 @@
         var selectedDate;
         var startTime;
         var startDateTime;
+        var selectedTimeValid = false;
+        var onSiteFieldsValid = false;
+        var showOnSiteWarnings = false;
 
-        function onSiteFieldsComplete() {
-            var inputs = $("#onSiteContactInfo input");
-            for (let i = 0; i < inputs.length; ++i) {
-                console.log(inputs[i].value);
+        function validateContactFields() {
+
+            var fieldsValid = true;
+
+            document.querySelectorAll("#onSiteContactInfo input").forEach(function (input) {
+                if (!input.value) {
+                    if (showOnSiteWarnings) { 
+                        input.parentNode.querySelector("span").innerText = `Please enter ${input.parentNode.querySelector("label").innerText.toLowerCase()}.`;
+                    }
+                    fieldsValid = false;
+                } else {
+                    input.parentNode.querySelector("span").innerText = "";
+                }
+            });
+
+            onSiteFieldsValid = fieldsValid;
+        }
+
+        async function validateSelectedTime() {
+            var time = $("#pickerStart").data("DateTimePicker").date().format("HH:mm");
+            startDateTime = selectedDate + "T" + time;
+            return $.getJSON(checkTimeUrl, { programId: "@Model.BranchSelection.ProgramId", dateTime: startDateTime, backToBack: backToBack }, function (response) {
+                var checkAlert = $("#checkAlert");
+                checkAlert.removeClass("hidden").removeClass("alert-warning alert-success alert-danger");
+                if (response.success == true) {
+                    if (response.message != null) {
+                        checkAlert.addClass("alert-warning").text(response.message);
+                    }
+                    else {
+                        checkAlert.addClass("alert-success").text("The performer is available at that time.");
+                    }
+                    selectedTimeValid = true;
+                }
+                else {
+                    checkAlert.addClass("alert-danger").text(response.message);
+                }
+            });
+        }
+
+        function showOrHideSubmit() {
+            var submitButton = document.querySelector("#scheduleProgram");
+            if (onSiteFieldsValid && selectedTimeValid) {
+                submitButton.classList.remove("hidden");
+            } else {
+                if (!submitButton.classList.contains("hidden")) {
+                    submitButton.classList.add("hidden");
+                }
             }
-            return true;
         }
 
         $(".selectable").on("click", function () {
+            var clickedDate = $(this).data("year") + "-" + $(this).data("month") + "-" + $(this).data("date");
+            if (clickedDate === selectedDate) return;
+
+            selectedDate = null;
+            selectedTimeValid = false;
+            showOrHideSubmit();
+            
             $(".selected-date").removeClass("selected-date");
             $(this).children().addClass("selected-date");
-            selectedDate = $(this).data("year") + "-" + $(this).data("month") + "-" + $(this).data("date");
+            selectedDate = clickedDate;
             startTime = $(this).data("start");
 
             $("#checkAlert").addClass("hidden");
-            $("#scheduleProgram").addClass("hidden");
             $.get(dayScheduleUrl, { performerId: "@Model.BranchSelection.Program.PerformerId", date: selectedDate }, function (response) {
                 $("#daySchedule").html(response);
                 $("#startTime").val("").removeAttr("disabled");
@@ -255,10 +306,12 @@
         $("#pickerStart").on("dp.show", function () {
             if ($("#startTime").val() == "") {
                 $(this).data("DateTimePicker").date(startTime);
+                $("#checkTime").removeAttr("disabled");
             }
         });
 
         $("#pickerStart").on("dp.change", function () {
+            selectedTimeValid = false;
             if ($("#pickerStart").data("DateTimePicker").date() != null) {
                 $("#checkTime").removeAttr("disabled");
                 var scheduleStartTime = $("#pickerStart").data("DateTimePicker").date().subtract(@Model.BranchSelection.Program.SetupTimeMinutes, "minutes").format("hh:mm A");
@@ -273,30 +326,17 @@
                 $("#programDuration").text();
             }
             $("#checkAlert").addClass("hidden");
-            $("#scheduleProgram").addClass("hidden");
+            showOrHideSubmit();
         });
 
-        $("#checkTime").on("click", function () {
-            var time = $("#pickerStart").data("DateTimePicker").date().format("HH:mm");
-            startDateTime = selectedDate + "T" + time;
-            $.getJSON(checkTimeUrl, { programId: "@Model.BranchSelection.ProgramId", dateTime: startDateTime, backToBack: backToBack }, function (response) {
-                var checkAlert = $("#checkAlert");
-                checkAlert.removeClass("hidden").removeClass("alert-warning alert-success alert-danger");
-                if (response.success == true) {
-                    if (response.message != null) {
-                        checkAlert.addClass("alert-warning").text(response.message);
-                    }
-                    else {
-                        checkAlert.addClass("alert-success").text("The performer is available at that time.");
-                    }
-                    if (onSiteFieldsComplete()) {
-                        $("#scheduleProgram").removeClass("hidden");
-                    }
-                }
-                else {
-                    checkAlert.addClass("alert-danger").text(response.message);
-                }
-            });
+        $("#checkTime").on("click", async function () { 
+            validateSelectedTime()
+                .then(function () {
+                    showOnSiteWarnings = true;
+                    validateContactFields();
+                    showOrHideSubmit();
+                    $("#checkTime").attr("disabled", "disabled");
+            })
         });
 
         $("#scheduleProgram").on("click", function () {
@@ -314,6 +354,14 @@
                     }
                 });
             }
+        });
+
+        document.querySelectorAll("#onSiteContactInfo input").forEach(function (input) {
+            input.addEventListener("input", function (e) {
+                var fromText = true;
+                validateContactFields();
+                showOrHideSubmit();
+            })
         });
     </script>
 }
