@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - System setting for performer livestreaming question
 - System setting for performer liability insurance question
 - System setting to configure acceptable back-to-back intervals
+- Last update information on performer scheduling selections
 
 ## Changed
 

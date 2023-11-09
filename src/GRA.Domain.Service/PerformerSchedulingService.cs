@@ -155,7 +155,7 @@ namespace GRA.Domain.Service
             branchSelection.SelectedAt = _dateTimeProvider.Now;
             branchSelection.ScheduleStartTime = default(DateTime);
             branchSelection.ScheduleDuration = 0;
-            branchSelection.UserId = authId;
+            branchSelection.CreatedBy = authId;
 
             return await _psBranchSelectionRepository.AddSaveAsync(authId,
                 branchSelection);
@@ -217,7 +217,7 @@ namespace GRA.Domain.Service
 
             branchSelection.KitId = null;
             branchSelection.SelectedAt = _dateTimeProvider.Now;
-            branchSelection.UserId = authId;
+            branchSelection.CreatedBy = authId;
             branchSelection.ScheduleStartTime = branchSelection.RequestedStartTime
                 .AddMinutes(-program.SetupTimeMinutes);
             branchSelection.ScheduleDuration = program.SetupTimeMinutes
@@ -1540,6 +1540,7 @@ namespace GRA.Domain.Service
 
             currentBranchSelection.AgeGroupId = branchSelection.AgeGroupId;
             currentBranchSelection.KitId = branchSelection.KitId;
+            currentBranchSelection.UpdatedByUserId = GetClaimId(ClaimType.UserId);
 
             await _psBranchSelectionRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
                 currentBranchSelection);
@@ -1571,6 +1572,9 @@ namespace GRA.Domain.Service
             currentBranchSelection.RequestedStartTime = branchSelection.RequestedStartTime;
             currentBranchSelection.ScheduleStartTime = branchSelection.RequestedStartTime
                 .AddMinutes(-program.SetupTimeMinutes);
+
+            currentBranchSelection.SelectedAt = _dateTimeProvider.Now;
+            currentBranchSelection.UpdatedByUserId = GetClaimId(ClaimType.UserId);
 
             await _psBranchSelectionRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
                 currentBranchSelection);
