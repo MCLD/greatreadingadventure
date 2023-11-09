@@ -12,6 +12,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.PerformerManagement
         public SelectList AgeList { get; set; }
         public List<int> AgeSelection { get; set; }
         public List<IFormFile> Images { get; set; }
+        public SelectList BackToBackSelection { get; set; }
 
         public int? PerformerId { get; set; }
         public string PerformerName { get; set; }
