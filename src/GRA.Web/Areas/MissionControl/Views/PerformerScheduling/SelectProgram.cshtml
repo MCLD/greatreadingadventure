@@ -62,6 +62,30 @@
             </div>
         </div>
 
+        <div class="row form-group">
+            <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+                <form id="onSiteContactInfo">
+                    <div class="form-group">
+                        <label class="required-field" for="OnSiteContactName">On-site contact name</label>
+                        <input name="OnSiteContactName" asp-for="BranchSelection.OnSiteContactName" type="text" class="form-control">
+                        <span class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="required-field" for="OnSiteContactEmail">On-site contact email</label>
+                        <input name="OnSiteContactEmail" asp-for="BranchSelection.OnSiteContactEmail" type="text" class="form-control">
+                        <span class="text-danger"></span>
+                    </div class="form-group">
+                    <div>
+                        <label class="required-field" for="OnSiteContactPhone">On-site contact phone</label>
+                        <input name="OnSiteContactPhone" asp-for="BranchSelection.OnSiteContactPhone" type="text" class="form-control">
+                        <span class="text-danger"></span>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="row form-group"></div>
+
         @{int count = 0;}
         @for (var calendarMonth = new DateTime(Model.Settings.ScheduleStartDate.Value.Year, Model.Settings.ScheduleStartDate.Value.Month, 1); calendarMonth <= Model.Settings.ScheduleEndDate.Value; calendarMonth = calendarMonth.AddMonths(1))
         {
@@ -126,31 +150,11 @@
                 @Html.Raw("</div>");
             }
             { count++; }
-            <div class="col-xs-12 col-md-8">
-                <form id="onSiteContactInfo">
-                    <div class="form-group">
-                        <label for="OnSiteContactName">On site contact name</label>
-                        <input name="OnSiteContactName" asp-for="BranchSelection.OnSiteContactName" type="text" class="form-control">
-                        <span class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="OnSiteContactEmail">On site contact email</label>
-                        <input name="OnSiteContactEmail" asp-for="BranchSelection.OnSiteContactEmail" type="text" class="form-control">
-                        <span class="text-danger"></span>
-                    </div class="form-group">
-                    <div>
-                        <label for="OnSiteContactPhone">On site contact phone</label>
-                        <input name="OnSiteContactPhone" asp-for="BranchSelection.OnSiteContactPhone" type="text" class="form-control">
-                        <span class="text-danger"></span>
-                    </div>
-                </form>
-            </div>
         }
         @if (count % 3 != 0)
         {
             @Html.Raw("</div>");
         }
-
 
         <div class="row">
             <div class="col-xs-12">
@@ -188,7 +192,7 @@
 
                 <div class="row">
                     <div class="col-xs-12 col-sm-6">
-                        <button id="scheduleProgram" type="button" class="btn btn-success hidden">Schedule Program</button>
+                        <button id="scheduleProgram" type="button" class="btn btn-success" disabled="true">Schedule Program</button>
                     </div>
                 </div>
             </div>
@@ -242,13 +246,13 @@
                 var checkAlert = $("#checkAlert");
                 checkAlert.removeClass("hidden").removeClass("alert-warning alert-success alert-danger");
                 if (response.success == true) {
+                    selectedTimeValid = true;
                     if (response.message != null) {
                         checkAlert.addClass("alert-warning").text(response.message);
                     }
                     else {
                         checkAlert.addClass("alert-success").text("The performer is available at that time.");
                     }
-                    selectedTimeValid = true;
                 }
                 else {
                     checkAlert.addClass("alert-danger").text(response.message);
@@ -256,14 +260,12 @@
             });
         }
 
-        function showOrHideSubmit() {
+        function enableOrDisableSubmit() {
             var submitButton = document.querySelector("#scheduleProgram");
             if (onSiteFieldsValid && selectedTimeValid) {
-                submitButton.classList.remove("hidden");
+                submitButton.disabled = false;
             } else {
-                if (!submitButton.classList.contains("hidden")) {
-                    submitButton.classList.add("hidden");
-                }
+                submitButton.disabled = true;
             }
         }
 
@@ -273,7 +275,7 @@
 
             selectedDate = null;
             selectedTimeValid = false;
-            showOrHideSubmit();
+            enableOrDisableSubmit();
             
             $(".selected-date").removeClass("selected-date");
             $(this).children().addClass("selected-date");
@@ -326,7 +328,7 @@
                 $("#programDuration").text();
             }
             $("#checkAlert").addClass("hidden");
-            showOrHideSubmit();
+            enableOrDisableSubmit();
         });
 
         $("#checkTime").on("click", async function () { 
@@ -334,33 +336,30 @@
                 .then(function () {
                     showOnSiteWarnings = true;
                     validateContactFields();
-                    showOrHideSubmit();
+                    enableOrDisableSubmit();
                     $("#checkTime").attr("disabled", "disabled");
             })
         });
 
         $("#scheduleProgram").on("click", function () {
-            if ($(this).hasClass("hidden") == false) {
-                $("#BranchSelection_RequestedStartTime").val(startDateTime);
-                var data = $("#branchSelectionForm").serializeArray().concat($("#onSiteContactInfo").serializeArray()).reduce(function (m, o) { m[o.name] = o.value; return m; }, {})
-                $.post(scheduleBranchProgramUrl, { branchSelection: data }, function (response) {
-                    if (response.success) {
-                        window.location.href = "@Url.Action(nameof(PerformerSchedulingController.Program), new { id = Model.BranchSelection.ProgramId})";
-                    }
-                    else {
-                        $("#checkAlert").addClass("hidden");
-                        $("#scheduleProgram").addClass("hidden");
-                        alert(response.message);
-                    }
-                });
-            }
+            $("#BranchSelection_RequestedStartTime").val(startDateTime);
+            var data = $("#branchSelectionForm").serializeArray().concat($("#onSiteContactInfo").serializeArray()).reduce(function (m, o) { m[o.name] = o.value; return m; }, {})
+            $.post(scheduleBranchProgramUrl, { branchSelection: data }, function (response) {
+                if (response.success) {
+                    window.location.href = "@Url.Action(nameof(PerformerSchedulingController.Program), new { id = Model.BranchSelection.ProgramId})";
+                }
+                else {
+                    $("#checkAlert").addClass("hidden");
+                    document.querySelector("#scheduleProgram").disabled = true;
+                    alert(response.message);
+                }
+            });
         });
 
         document.querySelectorAll("#onSiteContactInfo input").forEach(function (input) {
             input.addEventListener("input", function (e) {
-                var fromText = true;
                 validateContactFields();
-                showOrHideSubmit();
+                enableOrDisableSubmit();
             })
         });
     </script>
