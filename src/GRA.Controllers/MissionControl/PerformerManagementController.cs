@@ -780,8 +780,19 @@ namespace GRA.Controllers.MissionControl
                 PerformerId = id,
                 PerformerName = performer.Name,
                 MaxUploadMB = MaxUploadMB,
-                SetupSupplementalText = settings.SetupSupplementalText
+                SetupSupplementalText = settings.SetupSupplementalText,
+                BackToBackSelection = new SelectList(new[] { GRA.Defaults.BackToBackInterval } )
             };
+
+            var (hasIntervalString, intervalString) = await GetSiteSettingStringAsync(SiteSettingKey.Performer.BackToBackInterval);
+
+            if (hasIntervalString)
+            {
+                var intervalOptions = intervalString.Split(new[] { ',', ' ' },
+                                StringSplitOptions.RemoveEmptyEntries);
+
+                viewModel.BackToBackSelection = new SelectList(intervalOptions);
+            }
 
             return View(nameof(ProgramDetails), viewModel);
         }
@@ -837,8 +848,19 @@ namespace GRA.Controllers.MissionControl
                 AgeList = new SelectList(ageGroups, "Id", "Name"),
                 AgeSelection = program.AgeGroups.Select(_ => _.Id).ToList(),
                 Program = program,
-                SetupSupplementalText = settings.SetupSupplementalText
+                SetupSupplementalText = settings.SetupSupplementalText,
+                BackToBackSelection = new SelectList(new[] { GRA.Defaults.BackToBackInterval } )
             };
+
+            var (hasIntervalString, intervalString) = await GetSiteSettingStringAsync(SiteSettingKey.Performer.BackToBackInterval);
+
+            if (hasIntervalString)
+            {
+                var intervalOptions = intervalString.Split(new[] { ',', ' ' },
+                                StringSplitOptions.RemoveEmptyEntries);
+
+                viewModel.BackToBackSelection = new SelectList(intervalOptions);
+            }
 
             return View(viewModel);
         }

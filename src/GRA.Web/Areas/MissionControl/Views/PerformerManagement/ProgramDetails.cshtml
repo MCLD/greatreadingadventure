@@ -131,7 +131,7 @@
             <div class="visible-xs" style="padding-bottom:10px;"></div>
             <label asp-for="Program.BackToBackMinutes" class="col-sm-2 control-label required-field"></label>
             <div class="col-sm-2">
-                <input asp-for="Program.BackToBackMinutes" class="form-control input-lg" type="text" placeholder="" />
+                <select asp-for="Program.BackToBackMinutes" asp-items="Model.BackToBackSelection" class="form-control" type="text" ></select>
                 <span asp-validation-for="Program.BackToBackMinutes" class="text-danger"></span>
             </div>
         </div>
