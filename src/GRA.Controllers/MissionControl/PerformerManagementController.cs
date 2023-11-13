@@ -1131,8 +1131,6 @@ namespace GRA.Controllers.MissionControl
             }
 
             _logger.LogInformation("Contact info {BranchSelectionId} edited", branchSelection.Id);
-
-            ShowAlertSuccess("Program contact information edited!");
             return Json(new
             {
                 success = true

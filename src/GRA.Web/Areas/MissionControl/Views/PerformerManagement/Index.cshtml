@@ -235,8 +235,9 @@
                                 <label class="on-site-contact-label" for="onsitecontactphone">Phone:</label>
                                 <input class="on-site-contact-input disabled" type="text" id="onsitecontactphone" name="onsitecontactphone" disabled/>
                             </div>
-                                <button id="submitcontactinfo" type="button" class="on-site-contact-button btn btn-success hidden">submit Changes</button>
+                                <button id="submitcontactinfo" type="button" class="on-site-contact-button btn btn-success hidden" disabled>Submit</button>
                                 <button id="cancelcontactinfo" type="button" class="on-site-contact-button btn btn-danger hidden">Cancel</button>
+                                <div id="checkAlert" class="alert hidden"></div>
                         </td>
                     </tr>
                 </table>
@@ -257,6 +258,7 @@
         
         var prevContactInfo = {};
         var selectionId;
+        var contactInfoUpdated = false;
 
         function toggleEditContactInfo() {
             document.querySelectorAll(".on-site-contact-input").forEach(function (input) {
@@ -274,14 +276,31 @@
                 input.value = prevContactInfo[input.id];
             })
 
+            document.querySelector("#submitcontactinfo").disabled = true;
+
             toggleEditContactInfo();
         }
 
         $('#selectionDetailsModal').on('hide.bs.modal', function (e) {
-            if (!document.querySelector(".on-site-contact-input").classList.contains('hidden')) {
+            if (document.querySelector("#editcontactinfo").classList.contains('hidden')) {
                 cancelEditContactInfo();
             }
+            if (contactInfoUpdated) {
+                window.location.reload();
+            }
         })
+
+        function setAlert(alertType, message) {
+            var checkAlert = document.querySelector("#checkAlert");
+            checkAlert.classList.add(alertType);
+            checkAlert.innerText = message;
+            checkAlert.classList.remove('hidden');
+            setTimeout(function() {
+                checkAlert.classList.add('hidden');
+                checkAlert.classList.remove(alertType);
+                checkAlert.innerText = '';
+            }, 5000);
+        }
 
         $('#selectionDetailsModal').on('show.bs.modal', function (e) {
             var dataElement = $(e.relatedTarget).closest('[data-target]');
@@ -349,9 +368,10 @@
         })
 
         document.querySelector("#editcontactinfo").addEventListener("click", toggleEditContactInfo);
+
         document.querySelector("#cancelcontactinfo").addEventListener("click", cancelEditContactInfo)
 
-        document.querySelector("#submitcontactinfo").addEventListener("click", () => {
+        document.querySelector("#submitcontactinfo").addEventListener("click", async () => {
             var OnSiteContactName = document.querySelector("#onsitecontactname").value;
             var OnSiteContactEmail = document.querySelector("#onsitecontactemail").value;
             var OnSiteContactPhone = document.querySelector("#onsitecontactphone").value;
@@ -368,10 +388,14 @@
                         OnSiteContactEmail,
                         OnSiteContactPhone
                     })
+                }).then(function() {
+                    setAlert('alert-success', "Update successful!");
+                    contactInfoUpdated = true;
+                    toggleEditContactInfo();
                 })
             } catch (e) {
                 console.error(e);
-                alert("Error updating contact information.");
+                setAlert('alert-danger', "Error updating contact information.");
             }
         })
 
