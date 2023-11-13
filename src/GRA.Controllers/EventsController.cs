@@ -397,6 +397,11 @@ namespace GRA.Controllers
         [HttpPost]
         public IActionResult Index(EventsListViewModel model, bool keepPage = false)
         {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+
             string startDate = "False";
             string endDate = null;
             string visited = null;
@@ -515,7 +520,8 @@ namespace GRA.Controllers
                         var viewModel = new StreamViewModel
                         {
                             EventName = graEvent.Name,
-                            Embed = graEvent.StreamingLinkData
+                            Embed = graEvent.StreamingLinkData,
+                            EndDate = graEvent.EndDate
                         };
 
                         if (graEvent.RelatedTriggerId.HasValue
@@ -574,6 +580,11 @@ namespace GRA.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateFavorites(EventsListViewModel model)
         {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+
             var serviceResult = await _activityService.UpdateFavoriteEvents(model.Events);
             if (serviceResult.Status == ServiceResultStatus.Warning
                         && !string.IsNullOrWhiteSpace(serviceResult.Message))
