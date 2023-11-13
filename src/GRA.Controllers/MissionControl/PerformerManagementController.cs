@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -1096,6 +1097,42 @@ namespace GRA.Controllers.MissionControl
                 });
             }
 
+            return Json(new
+            {
+                success = true
+            });
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> EditBranchProgramContact([FromBody] PsBranchSelection branchSelection)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage < PsSchedulingStage.SchedulingOpen)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Program selection has not yet started."
+                });
+            }
+
+            try
+            {
+                await _performerSchedulingService.UpdateBranchProgramContactAsync(branchSelection);
+            }
+            catch (GraException gex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = gex.Message
+                });
+            }
+
+            _logger.LogInformation("Contact info {BranchSelectionId} edited", branchSelection.Id);
+
+            ShowAlertSuccess("Program contact information edited!");
             return Json(new
             {
                 success = true

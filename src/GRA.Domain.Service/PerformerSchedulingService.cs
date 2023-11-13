@@ -1546,6 +1546,29 @@ namespace GRA.Domain.Service
                 currentBranchSelection);
         }
 
+        public async Task UpdateBranchProgramContactAsync(PsBranchSelection branchSelection)
+        {
+            VerifyManagementPermission();
+            var currentBranchSelection = await _psBranchSelectionRepository.GetByIdAsync(
+                branchSelection.Id);
+
+            if (currentBranchSelection == null)
+            {
+                throw new GraException("Selection does not exist.");
+            }
+            else if (!currentBranchSelection.ProgramId.HasValue)
+            {
+                throw new GraException("Selection is not a program selection.");
+            }
+
+            currentBranchSelection.OnSiteContactName = branchSelection.OnSiteContactName;
+            currentBranchSelection.OnSiteContactEmail = branchSelection.OnSiteContactEmail;
+            currentBranchSelection.OnSiteContactPhone = branchSelection.OnSiteContactPhone;
+
+            await _psBranchSelectionRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
+                currentBranchSelection);
+        }
+
         public async Task UpdateBranchProgramSelectionAsync(PsBranchSelection branchSelection)
         {
             VerifyManagementPermission();
