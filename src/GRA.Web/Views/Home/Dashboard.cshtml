@@ -413,6 +413,11 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
                                     new { id = stream.Id })">
                                 @stream.Name
                             </a>
+                            @if (stream.EndDate.HasValue)
+                            {
+                                <br />
+                                <em style="font-size: smaller;">@SharedLocalizer[GRA.Annotations.Interface.StreamingEnds, stream.EndDate.Value.ToString("d")]</em>
+                            }
                         </li>
                     }
                 </ul>
@@ -572,67 +577,65 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
     </div>
 }
 @section scripts {
-    <script>
-        @if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))
-        {
-            <text>
-                $("#viewDailyImage").on("click", function () {
-                    let src = $(this).data("src");
-                    $(".daily-image").attr("src", src);
-                    $("#dailyImageModal").modal().show();
-                    if (typeof gtag !== 'undefined') {
-                        gtag('event', 'view_daily_tip', {
-                            'source_page': 'dashboard',
-                            'event_category': 'image',
-                            'event_label': @Model.Day
-                        });
-                    }
-                });
-            </text>
-        }
-        @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null && Model.UserJoined)
-        {
-            <text>
-                                        if (typeof gtag !== 'undefined') {
+    @if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))
+    {
+        <script>
+            $("#viewDailyImage").on("click", function () {
+                let src = $(this).data("src");
+                $(".daily-image").attr("src", src);
+                $("#dailyImageModal").modal().show();
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'view_daily_tip', {
+                        'source_page': 'dashboard',
+                        'event_category': 'image',
+                        'event_label': @Model.Day
+                                                                        });
+                }
+            });
+        </script>
+    }
+    @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null && Model.UserJoined)
+    {
+        <script>
+            if (typeof gtag !== 'undefined') {
                 gtag('event', 'sign_up', {
                     'First Time Participant': '@Model.FirstTimeParticipant',
                     'Program Name': '@Model.ProgramName',
                 });
             }
-            </text>
-        }
-    </script>
+        </script>
+    }
     @if (Model.Carousel != null)
     {
         <script>
-                $(".gra-carousel-link").on("click", function (event) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    event.stopImmediatePropagation();
-                    $("#graCarouselModalContent").html("<div class=\"gra-carousel-spinner\"><span class=\"fas fa-spinner fa-3x fa-spin\"></span></div>");
-                    let id = $(this).data("itemid");
-                    let title = $(this).data("title");
+            $(".gra-carousel-link").on("click", function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                event.stopImmediatePropagation();
+                $("#graCarouselModalContent").html("<div class=\"gra-carousel-spinner\"><span class=\"fas fa-spinner fa-3x fa-spin\"></span></div>");
+                let id = $(this).data("itemid");
+                let title = $(this).data("title");
 
-                    if (typeof gtag !== 'undefined') {
-                        gtag('event', 'select_content', {
-                            'content_type': 'dashboard carousel',
-                            'content_id': title
-                        });
-                    }
-
-                    $.get("@Url.Action("GetCarouselDescription", "Home")/" + id,
-                        function (data) {
-                            $("#graCarouselModalContent").html(data);
-                        }
-                    ).fail(function () {
-                        $("#graCarouselModalContent").html("Could not find details for this item, sorry!");
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'select_content', {
+                        'content_type': 'dashboard carousel',
+                        'content_id': title
                     });
+                }
 
-                    $("#graCarouselModalHeader").text($(this).data("title"));
-                    $("#graCarouselModalImage").attr("src", $(this).data("img"));
-
-                    $("#graCarouselModal").modal().show();
+                $.get("@Url.Action("GetCarouselDescription", "Home")/" + id,
+                    function (data) {
+                        $("#graCarouselModalContent").html(data);
+                    }
+                ).fail(function () {
+                    $("#graCarouselModalContent").html("Could not find details for this item, sorry!");
                 });
+
+                $("#graCarouselModalHeader").text($(this).data("title"));
+                $("#graCarouselModalImage").attr("src", $(this).data("img"));
+
+                $("#graCarouselModal").modal().show();
+            });
             if (typeof gtag !== 'undefined') {
                 $(".gra-carousel").on("beforeChange", function (e, s, c, n) {
                     gtag('event', 'select_content', {
