@@ -1657,4 +1657,8 @@
     <value>meta de Lectura Comunitaria</value>
     <comment>Shown at the top of the goal for all program participants</comment>
   </data>
+  <data name="Streaming ends: {0}" xml:space="preserve">
+    <value>La transmisión finaliza: {0}</value>
+    <comment>Tell a participant when a streaming program will no longer be available, {0} is replaced with a short date representation</comment>
+  </data>
 </root>
