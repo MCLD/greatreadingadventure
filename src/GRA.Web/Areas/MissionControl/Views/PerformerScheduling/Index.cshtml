@@ -336,13 +336,12 @@
             })
 
             contactInfoButtons.forEach(function (button) {
-                button.id === "editcontactinfo" ? button.classList.remove("hidden") : button.classList.add('hidden');
+                button.classList.add('hidden');
             })
         }
 
         function startEditContactInfo() {
             contactInfoInputs.forEach(function (input) {
-                prevContactInfo[input.id] = input.value;
                 input.disabled = false;
             })
 
@@ -419,6 +418,10 @@
             $('#onsitecontactname').val(dataElement.data('onsitecontactname'));
             $('#onsitecontactemail').val(dataElement.data('onsitecontactemail'));
             $('#onsitecontactphone').val(dataElement.data('onsitecontactphone'));
+
+            contactInfoInputs.forEach(function (input) {
+                prevContactInfo[input.id] = input.value;
+            });
 
             if (dataElement.data('issitemanager') === 'True' || dataElement.data('creatorid') === @Model.CurrentUserId) {
                 document.querySelector('#editcontactinfo').classList.remove('hidden');

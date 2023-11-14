@@ -276,7 +276,6 @@
 
         function startEditContactInfo() {
             contactInfoInputs.forEach(function (input) {
-                prevContactInfo[input.id] = input.value;
                 input.disabled = false;
             })
 
@@ -355,6 +354,11 @@
             $('#onsitecontactname').val(dataElement.data('onsitecontactname'));
             $('#onsitecontactemail').val(dataElement.data('onsitecontactemail'));
             $('#onsitecontactphone').val(dataElement.data('onsitecontactphone'));
+
+            contactInfoInputs.forEach(function (input) {
+                prevContactInfo[input.id] = input.value;
+            });
+
             if (dataElement.data('performername')) {
                 $('#performerrow').show()
                 $('#performername').text(dataElement.data('performername'))
