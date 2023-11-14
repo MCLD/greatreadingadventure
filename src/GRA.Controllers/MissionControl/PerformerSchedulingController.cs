@@ -76,6 +76,42 @@ namespace GRA.Controllers.MissionControl
             });
         }
 
+        //TODO Find a way to consolidate duplicate action in PerformerManagementController.
+        [HttpPost]
+        [Authorize(Policy = Policy.SchedulePerformers)]
+        public async Task<JsonResult> EditBranchProgramContact([FromBody] PsBranchSelection branchSelection)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage < PsSchedulingStage.SchedulingOpen)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Program selection has not yet started."
+                });
+            }
+
+            try
+            {
+                await _performerSchedulingService.UpdateBranchProgramContactAsync(branchSelection);
+            }
+            catch (GraException gex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = gex.Message
+                });
+            }
+
+            _logger.LogInformation("Contact info {BranchSelectionId} edited", branchSelection.Id);
+            return Json(new
+            {
+                success = true
+            });
+        }
+
         [Authorize(Policy = Policy.SchedulePerformers)]
         public async Task<JsonResult> GetKitAvailableAgeGroups(int branchId, int kitId)
         {
@@ -233,7 +269,9 @@ namespace GRA.Controllers.MissionControl
                 Settings = settings,
                 SchedulingStage = schedulingStage,
                 AgeGroups = await _performerSchedulingService.GetAgeGroupsAsync(),
-                CanSchedule = UserHasPermission(Permission.SchedulePerformers)
+                CanSchedule = UserHasPermission(Permission.SchedulePerformers),
+                IsSiteManager = UserHasPermission(Permission.ManagePerformers),
+                CurrentUserId = GetActiveUserId()
             };
 
             if (schedulingStage >= PsSchedulingStage.SchedulingOpen)

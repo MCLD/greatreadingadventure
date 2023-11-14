@@ -1548,7 +1548,6 @@ namespace GRA.Domain.Service
 
         public async Task UpdateBranchProgramContactAsync(PsBranchSelection branchSelection)
         {
-            VerifyManagementPermission();
             var currentBranchSelection = await _psBranchSelectionRepository.GetByIdAsync(
                 branchSelection.Id);
 
@@ -1559,6 +1558,11 @@ namespace GRA.Domain.Service
             else if (!currentBranchSelection.ProgramId.HasValue)
             {
                 throw new GraException("Selection is not a program selection.");
+            }
+
+            if (GetActiveUserId() != currentBranchSelection.CreatedBy)
+            {
+                VerifyManagementPermission();
             }
 
             currentBranchSelection.OnSiteContactName = branchSelection.OnSiteContactName;

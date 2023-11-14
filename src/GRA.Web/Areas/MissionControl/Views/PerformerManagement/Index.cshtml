@@ -95,6 +95,7 @@
                                                       data-performerid="@selection.Program?.PerformerId"
                                                       data-performername="@selection.Program?.PerformerName"
                                                       data-selectionid="@selection.Program?.Id"
+                                                      data-branchselectionid="@selection.Id"
                                                       data-kitid="@selection.Kit?.Id"
                                                       data-selectionname="@(selection.KitId.HasValue ? selection.Kit.Name : selection.Program.Title)"
                                                       data-agegroupname="@selection.AgeGroup.Name"
@@ -257,38 +258,42 @@
         var contactUpdateLink = '@Url.Action(nameof(PerformerManagementController.EditBranchProgramContact))'
         
         var prevContactInfo = {};
-        var selectionId;
+        var branchSelectionId;
         var contactInfoUpdated = false;
 
-        function toggleEditContactInfo() {
-            document.querySelectorAll(".on-site-contact-input").forEach(function (input) {
-                prevContactInfo[input.id] = input.value;
-                input.disabled = !input.disabled;
+        var contactInfoButtons = document.querySelectorAll(".on-site-contact-button");
+        var contactInfoInputs = document.querySelectorAll(".on-site-contact-input");
+
+        function hideEditContactInfo() {
+            contactInfoInputs.forEach(function (input) {
+                input.disabled = true;
             })
 
-            document.querySelectorAll(".on-site-contact-button").forEach(function (button) {
-                button.classList.contains('hidden') ? button.classList.remove('hidden') : button.classList.add('hidden');
+            contactInfoButtons.forEach(function (button) {
+                button.id === "editcontactinfo" ? button.classList.remove("hidden") : button.classList.add('hidden');
+            })
+        }
+
+        function startEditContactInfo() {
+            contactInfoInputs.forEach(function (input) {
+                prevContactInfo[input.id] = input.value;
+                input.disabled = false;
+            })
+
+            contactInfoButtons.forEach(function (button) {
+                button.id === "editcontactinfo" ? button.classList.add('hidden') : button.classList.remove('hidden');
             })
         }
 
         function cancelEditContactInfo() {
-            document.querySelectorAll(".on-site-contact-input").forEach(input => {
+            contactInfoInputs.forEach(input => {
                 input.value = prevContactInfo[input.id];
             })
 
             document.querySelector("#submitcontactinfo").disabled = true;
 
-            toggleEditContactInfo();
+            hideEditContactInfo();
         }
-
-        $('#selectionDetailsModal').on('hide.bs.modal', function (e) {
-            if (document.querySelector("#editcontactinfo").classList.contains('hidden')) {
-                cancelEditContactInfo();
-            }
-            if (contactInfoUpdated) {
-                window.location.reload();
-            }
-        })
 
         function setAlert(alertType, message) {
             var checkAlert = document.querySelector("#checkAlert");
@@ -302,9 +307,19 @@
             }, 5000);
         }
 
+        $('#selectionDetailsModal').on('hide.bs.modal', function (e) {
+            if (document.querySelector("#editcontactinfo").classList.contains('hidden')) {
+                cancelEditContactInfo();
+            }
+            if (contactInfoUpdated) {
+                window.location.reload();
+            }
+        })
+
         $('#selectionDetailsModal').on('show.bs.modal', function (e) {
             var dataElement = $(e.relatedTarget).closest('[data-target]');
-            selectionId = dataElement.data('selectionid');
+            branchSelectionId = dataElement.data('branchselectionid');
+            document.querySelector("#editcontactinfo").classList.remove('hidden');
             $('#selectionDetailsLabel').html(dataElement.data('selectionname') + ' @@ ' + dataElement.data('branchname'));
             $('#selectionname').text(dataElement.data('selectionname'));
             $('#modalagegroupname').text(dataElement.data('agegroupname'));
@@ -367,7 +382,7 @@
             }
         })
 
-        document.querySelector("#editcontactinfo").addEventListener("click", toggleEditContactInfo);
+        document.querySelector("#editcontactinfo").addEventListener("click", startEditContactInfo);
 
         document.querySelector("#cancelcontactinfo").addEventListener("click", cancelEditContactInfo)
 
@@ -383,7 +398,7 @@
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        Id: selectionId,
+                        Id: branchSelectionId,
                         OnSiteContactName,
                         OnSiteContactEmail,
                         OnSiteContactPhone
@@ -391,7 +406,7 @@
                 }).then(function() {
                     setAlert('alert-success', "Update successful!");
                     contactInfoUpdated = true;
-                    toggleEditContactInfo();
+                    hideEditContactInfo();
                 })
             } catch (e) {
                 console.error(e);

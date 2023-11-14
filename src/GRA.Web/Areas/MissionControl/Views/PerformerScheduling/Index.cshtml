@@ -132,14 +132,20 @@
                                               data-performerid="@selection.Program?.PerformerId"
                                               data-performername="@selection.Program?.PerformerName"
                                               data-selectionid="@selection.Program?.Id"
+                                              data-branchselectionid="@selection.Id"
                                               data-kitid="@selection.Kit?.Id"
                                               data-selectionname="@(selection.KitId.HasValue ? selection.Kit.Name : selection.Program.Title)"
                                               data-agegroupname="@selection.AgeGroup.Name"
                                               data-branchname="@branch.Name"
                                               data-creatorname="@selection.CreatedByUser.FullName"
+                                              data-creatorid="@selection.CreatedBy"
+                                              data-issitemanager="@Model.IsSiteManager"
                                               data-creatoremail="@selection.CreatedByUser.Email"
                                               data-updatername="@selection.UpdatedByUser?.FullName"
                                               data-updateremail="@selection.UpdatedByUser?.Email"
+                                              data-onsitecontactname="@selection.OnSiteContactName"
+                                              data-onsitecontactemail="@selection.OnSiteContactEmail"
+                                              data-onsitecontactphone="@selection.OnSiteContactPhone"
                                               data-scheduled="@selection.RequestedStartTime"
                                               data-createdat="@selection.CreatedAt"
                                               data-selectedat="@selection.SelectedAt"
@@ -268,6 +274,27 @@
                             <a id="modalupdatermailto"></a> at <span id="modalupdatedat"></span>
                         </td>
                     </tr>
+                    <tr>
+                        <th>On site contact:</th>
+                        <td>
+                            <span id="editcontactinfo" class="on-site-contact-button on-site-contact-edit fas fa-edit hidden"></span>
+                            <div>
+                                <label class="on-site-contact-label" for="onsitecontactname">Name:</label>
+                                <input class="on-site-contact-input disabled" type="text" id="onsitecontactname" name="onsitecontactname" disabled/>
+                            </div>
+                            <div>
+                                <label class="on-site-contact-label" for="onsitecontactemail">Email:</label>
+                                <input class="on-site-contact-input disabled" type="text" id="onsitecontactemail" name="onsitecontactemail" disabled/>
+                            </div>
+                            <div>
+                                <label class="on-site-contact-label" for="onsitecontactphone">Phone:</label>
+                                <input class="on-site-contact-input disabled" type="text" id="onsitecontactphone" name="onsitecontactphone" disabled/>
+                            </div>
+                                <button id="submitcontactinfo" type="button" class="on-site-contact-button btn btn-success hidden" disabled>Submit</button>
+                                <button id="cancelcontactinfo" type="button" class="on-site-contact-button btn btn-danger hidden">Cancel</button>
+                                <div id="checkalert" class="alert hidden"></div>
+                        </td>
+                    </tr>
                 </table>
             </div>
             <div class="modal-footer">
@@ -294,9 +321,70 @@
         var performerBaseLink = '@Url.Action(nameof(PerformerManagementController.Performer))'
         var programBaseLink = '@Url.Action(nameof(PerformerManagementController.Program))'
         var kitBaseLink = '@Url.Action(nameof(PerformerManagementController.Kit))'
+        var contactUpdateLink = '@Url.Action(nameof(PerformerSchedulingController.EditBranchProgramContact))'
+        
+        var prevContactInfo = {};
+        var branchSelectionId;
+        var contactInfoUpdated = false;
+
+        var contactInfoButtons = document.querySelectorAll(".on-site-contact-button");
+        var contactInfoInputs = document.querySelectorAll(".on-site-contact-input");
+
+        function hideEditContactInfo() {
+            contactInfoInputs.forEach(function (input) {
+                input.disabled = true;
+            })
+
+            contactInfoButtons.forEach(function (button) {
+                button.id === "editcontactinfo" ? button.classList.remove("hidden") : button.classList.add('hidden');
+            })
+        }
+
+        function startEditContactInfo() {
+            contactInfoInputs.forEach(function (input) {
+                prevContactInfo[input.id] = input.value;
+                input.disabled = false;
+            })
+
+            contactInfoButtons.forEach(function (button) {
+                button.id === "editcontactinfo" ? button.classList.add('hidden') : button.classList.remove('hidden');
+            })
+        }
+
+        function cancelEditContactInfo() {
+            contactInfoInputs.forEach(input => {
+                input.value = prevContactInfo[input.id];
+            })
+
+            document.querySelector("#submitcontactinfo").disabled = true;
+
+            hideEditContactInfo();
+        }
+
+        function setAlert(alertType, message) {
+            var checkAlert = document.querySelector("#checkalert");
+            checkAlert.classList.add(alertType);
+            checkAlert.innerText = message;
+            checkAlert.classList.remove('hidden');
+            setTimeout(function() {
+                checkAlert.classList.add('hidden');
+                checkAlert.classList.remove(alertType);
+                checkAlert.innerText = '';
+            }, 5000);
+        }
+
+        $('#selectionDetailsModal').on('hide.bs.modal', function (e) {
+            if (document.querySelector("#editcontactinfo").classList.contains('hidden')) {
+                cancelEditContactInfo();
+            }
+            if (contactInfoUpdated) {
+                window.location.reload();
+            }
+        })
 
         $('#selectionDetailsModal').on('show.bs.modal', function (e) {
             var dataElement = $(e.relatedTarget).closest('[data-target]');
+            branchSelectionId = dataElement.data('branchselectionid');
             $('#selectionDetailsLabel').html(dataElement.data('selectionname') + ' @@ ' + dataElement.data('branchname'));
             $('#selectionname').text(dataElement.data('selectionname'));
             $('#modalagegroupname').text(dataElement.data('agegroupname'));
@@ -328,6 +416,16 @@
             $('#modalendsat').text(dataElement.data('endsat'));
             $('#modalcreatedat').text(dataElement.data('createdat'));
             $('#modalupdatedat').text(dataElement.data('selectedat'));
+            $('#onsitecontactname').val(dataElement.data('onsitecontactname'));
+            $('#onsitecontactemail').val(dataElement.data('onsitecontactemail'));
+            $('#onsitecontactphone').val(dataElement.data('onsitecontactphone'));
+
+            if (dataElement.data('issitemanager') === 'True' || dataElement.data('creatorid') === @Model.CurrentUserId) {
+                document.querySelector('#editcontactinfo').classList.remove('hidden');
+            } else {
+                document.querySelector('#editcontactinfo').classList.add('hidden');
+            }
+
             if (dataElement.data('performername')) {
                 $('#performerrow').show()
                 $('#performername').text(dataElement.data('performername'))
@@ -353,6 +451,44 @@
                 $('#modalscheduledrow').show();
                 $('#modaldurationrow').show();
             }
+        })
+
+        document.querySelector("#editcontactinfo")?.addEventListener("click", startEditContactInfo);
+        document.querySelector("#cancelcontactinfo")?.addEventListener("click", cancelEditContactInfo)
+        document.querySelector("#submitcontactinfo")?.addEventListener("click", async () => {
+            var OnSiteContactName = document.querySelector("#onsitecontactname").value;
+            var OnSiteContactEmail = document.querySelector("#onsitecontactemail").value;
+            var OnSiteContactPhone = document.querySelector("#onsitecontactphone").value;
+            try {
+                fetch(contactUpdateLink, {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        Id: branchSelectionId,
+                        OnSiteContactName,
+                        OnSiteContactEmail,
+                        OnSiteContactPhone
+                    })
+                }).then(function() {
+                    setAlert('alert-success', "Update successful!");
+                    contactInfoUpdated = true;
+                    hideEditContactInfo();
+                })
+            } catch (e) {
+                console.error(e);
+                setAlert('alert-danger', "Error updating contact information.");
+            }
+        })
+        document.querySelectorAll(".on-site-contact-input").forEach(input => {
+            input.addEventListener("input", function () {
+                if (input.value == "") {
+                    document.querySelector("#submitcontactinfo").disabled = true;
+                } else {
+                    document.querySelector("#submitcontactinfo").disabled = false;
+                }
+            })
         })
     </script>
 }
