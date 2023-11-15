@@ -5,6 +5,8 @@ root = true
 [*]
 indent_style = space
 guidelines = 100
+guidelines_style = 2.5px solid 40ff0000
+
 # (Please don't specify an indent_size here; that has too many unintended consequences.)
 
 # Code files

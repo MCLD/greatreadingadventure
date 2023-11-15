@@ -29,6 +29,27 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Challenges).Name,
                     Format = SiteSettingFormat.Integer
                 },
+                [SiteSettingKey.Email.WelcomeDelayHours] = new SiteSettingDefinition
+                {
+                    Name = "Welcome email delay hours",
+                    Info = "The delay, in hours, to wait after someone signs up before sending them the welcome email. If set to 0 the email is sent as soon as possible",
+                    Category = typeof(SiteSettingKey.Email).Name,
+                    Format = SiteSettingFormat.Integer
+                },
+                [SiteSettingKey.Email.WelcomeTemplateId] = new SiteSettingDefinition
+                {
+                    Name = "Welcome email ID",
+                    Info = "The ID of the welcome email to send, if set to 0 then welcome emails are disabled",
+                    Category = typeof(SiteSettingKey.Email).Name,
+                    Format = SiteSettingFormat.Integer
+                },
+                [SiteSettingKey.Email.UnsubscribeBase] = new SiteSettingDefinition
+                {
+                    Name = "Unsubscribe base",
+                    Info = "Base part of the email unsubscribe url",
+                    Category = typeof(SiteSettingKey.Email).Name,
+                    Format = SiteSettingFormat.String
+                },
                 [SiteSettingKey.Events.CommunityExperienceDescription] = new SiteSettingDefinition
                 {
                     Name = "Community experience definition",

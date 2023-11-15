@@ -47,6 +47,11 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(initialSetupService));
         }
 
+        public async Task<IEnumerable<Site>> GetAllAsync()
+        {
+            return await GetSitesFromCacheAsync();
+        }
+
         public async Task<Site> GetByIdAsync(int siteId)
         {
             var sites = await GetSitesFromCacheAsync();
@@ -246,12 +251,8 @@ namespace GRA.Domain.Service
         /// set to NULL.</returns>
         public async Task<bool> IsSiteSettingSetAsync(int siteId, string key)
         {
-            var settingDefinition = SiteSettingDefinitions.DefinitionDictionary[key];
-
-            if (settingDefinition == null)
-            {
-                throw new GraException($"Invalid key: {key}");
-            }
+            var settingDefinition = SiteSettingDefinitions.DefinitionDictionary[key]
+                ?? throw new GraException($"Invalid key: {key}");
 
             var site = (await GetSitesFromCacheAsync())
                 .SingleOrDefault(_ => _.Id == siteId);

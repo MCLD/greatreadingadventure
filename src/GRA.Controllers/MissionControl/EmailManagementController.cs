@@ -27,7 +27,6 @@ namespace GRA.Controllers.MissionControl
             = "This template cannot be edited - bulk emails were already sent to participants utilizing it.";
 
         private const string DefaultMailTitle = "{{Sitename}}";
-        private const string SubscribedParticipants = "SubscribedParticipants";
         private readonly EmailManagementService _emailManagementService;
         private readonly EmailReminderService _emailReminderService;
         private readonly EmailService _emailService;
@@ -463,9 +462,6 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpGet]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability",
-            "CA2000:Dispose objects before losing scope",
-            Justification = "The File() method handles the stream disposal for us.")]
         public async Task<IActionResult> ExportAddresses(EmailAddressesViewModel viewModel)
         {
             if (string.IsNullOrEmpty(viewModel?.SignUpSource))
@@ -507,9 +503,6 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpGet]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability",
-            "CA2000:Dispose objects before losing scope",
-            Justification = "The File() method handles the stream disposal for us.")]
         public async Task<IActionResult> ExportBaseText(int emailBaseId, int languageId)
         {
             var baseTemplate = await _emailManagementService
@@ -557,9 +550,6 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpGet]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability",
-            "CA2000:Dispose objects before losing scope",
-            Justification = "The File() method handles the stream disposal for us.")]
         public async Task<IActionResult> ExportTemplateText(int emailTemplateId, int languageId)
         {
             var templateText = await _emailManagementService
@@ -995,7 +985,7 @@ namespace GRA.Controllers.MissionControl
             };
 
             viewModel.IsForSubscribers
-                = viewModel.Template.LanguageUnsub.Any(_ => _.Value == false);
+                = viewModel.Template.LanguageUnsub.Any(_ => !_.Value);
 
             if (!viewModel.IsForSubscribers)
             {
@@ -1034,11 +1024,11 @@ namespace GRA.Controllers.MissionControl
 
             // if any footer doesn't have the unsubscribe link then it's not for participants
             viewModel.IsForSubscribers
-                = viewModel.Template.LanguageUnsub.Any(_ => _.Value == false);
+                = viewModel.Template.LanguageUnsub.Any(_ => !_.Value);
 
             // if some footers have unsub link and some don't then we're in conflict
             viewModel.IsMixedFooter = viewModel.IsForSubscribers
-                && viewModel.Template.LanguageUnsub.Any(_ => _.Value == true);
+                && viewModel.Template.LanguageUnsub.Any(_ => _.Value);
 
             if (!viewModel.IsMixedFooter)
             {
@@ -1240,14 +1230,6 @@ namespace GRA.Controllers.MissionControl
             viewModel.LanguageId = defaultLanguageId;
             viewModel.Title = DefaultMailTitle;
             return View("Details", viewModel);
-        }
-
-        private string UnsubBase()
-        {
-            return Url.Action(nameof(Controllers.HomeController.Unsubscribe),
-                Controllers.HomeController.Name,
-                new { Area = "" },
-                HttpContext.Request.Scheme);
         }
     }
 }

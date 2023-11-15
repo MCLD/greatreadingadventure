@@ -100,6 +100,120 @@ namespace GRA.Domain.Service
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
+            "CA1031:Do not catch general exception types",
+            Justification = "Unattended job should never completely fail.")]
+        public async Task<bool> SendWelcomeScheduledTask()
+        {
+            int sentMails = 0;
+            const int maximumSend = 20;
+            int skip = 0;
+            const int take = 1000;
+
+            foreach (var site in await _siteLookupService.GetAllAsync())
+            {
+                var stage = _siteLookupService.GetSiteStage(site);
+                if (stage == SiteStage.ProgramOpen)
+                {
+                    var (emailIdSet, welcomeEmailId) = await _siteLookupService
+                        .GetSiteSettingIntAsync(site.Id, SiteSettingKey.Email.WelcomeTemplateId);
+
+                    if (!emailIdSet || welcomeEmailId == 0)
+                    {
+                        // abort if no welcome email is set
+                        return false;
+                    }
+
+                    var (unsubSet, unsubBase) = await _siteLookupService
+                        .GetSiteSettingStringAsync(site.Id, SiteSettingKey.Email.UnsubscribeBase);
+
+                    if (!unsubSet || string.IsNullOrEmpty(unsubBase))
+                    {
+                        _logger.LogWarning("Welcome email: can't send, UnsubscribeBase is not set.");
+                        return false;
+                    }
+
+                    var emailDetails = new DirectEmailDetails(site.Name)
+                    {
+                        IsBulk = true,
+                        SendingUserId = await _siteLookupService.GetSystemUserId(),
+                        DirectEmailTemplateId = welcomeEmailId
+                    };
+
+                    _logger.LogTrace("Welcome email: loading users - skip {Skip}, take {Take}", skip, take);
+                    var users = await _userService.GetWelcomeRecipientsAsync(site.Id, skip, take);
+                    skip = users.Count();
+
+                    if (!users.Any())
+                    {
+                        return false;
+                    }
+
+                    var problemUsers = new HashSet<int>();
+
+                    var alreadyReceived = await _directEmailHistoryRepository
+                        .GetSentEmailByTemplateIdAsync(welcomeEmailId);
+
+                    while (sentMails <= maximumSend && users.Any())
+                    {
+                        foreach (var user in users)
+                        {
+                            if (!problemUsers.Contains(user.Id)
+                                && !alreadyReceived.Contains(user.Email))
+                            {
+                                // do the email send
+                                emailDetails.ToUserId = user.Id;
+                                emailDetails.ClearTags();
+                                emailDetails.SetTag("Name", user.FullName);
+                                emailDetails.SetTag("Email", user.Email);
+                                emailDetails.SetTag("UnsubscribeLink",
+                                    BuildUnsub(unsubBase, user.UnsubscribeToken));
+
+                                try
+                                {
+                                    var result = await _emailService.SendDirectAsync(emailDetails);
+                                    if (result.Successful)
+                                    {
+                                        alreadyReceived.Add(user.Email);
+                                        sentMails++;
+                                    }
+                                    else
+                                    {
+                                        _logger.LogTrace("Welcome email: problem user {UserId} with address {EmailAddress}: {SentResponse}",
+                                            user.Id,
+                                            user.Email,
+                                            result.SentResponse);
+                                        problemUsers.Add(user.Id);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    _logger.LogError(ex,
+                                        "Welcome email: Send failed to {UserId} at {Email}: {ErrorMessage}",
+                                        user.Id,
+                                        user.Email,
+                                        ex.Message);
+
+                                    problemUsers.Add(user.Id);
+                                }
+                            }
+
+                            if (sentMails >= maximumSend)
+                            {
+                                return sentMails > 0;
+                            }
+                        }
+
+                        _logger.LogTrace("Welcome email: loading users - skip {Skip}, take {Take}", skip, take);
+                        users = await _userService.GetWelcomeRecipientsAsync(site.Id, skip, take);
+                        skip += users.Count();
+                    }
+                }
+            }
+
+            return sentMails > 0;
+        }
+
         private static string BuildUnsub(string baseLink, string token)
         {
             if (string.IsNullOrEmpty(baseLink))
@@ -108,7 +222,7 @@ namespace GRA.Domain.Service
             }
 
             return baseLink.EndsWith('/')
-                ? $"{baseLink}{token}"
+                ? baseLink + token
                 : $"{baseLink}/{token}";
         }
 
@@ -178,7 +292,7 @@ namespace GRA.Domain.Service
                 progress.Report(new JobStatus
                 {
                     PercentComplete = 0,
-                    Title = $"Sending email...",
+                    Title = "Sending email...",
                     Status = $"Preparing to email {subscribed.Count} participants...",
                     Error = false
                 });
@@ -372,7 +486,8 @@ namespace GRA.Domain.Service
                 await _jobRepository.UpdateStatusAsync(jobId,
                     statusText[..Math.Min(statusText.Length, 255)]);
 
-                _logger.LogInformation("Email job {JobId}: " + taskStatus + " {EmailsSent} sent, {EmailsSkipped} skipped of {SubscribedCount} total in {ElapsedTime}",
+                _logger.LogInformation("Email job {JobId}: {TaskStatus} {EmailsSent} sent, {EmailsSkipped} skipped of {SubscribedCount} total in {ElapsedTime}",
+                    taskStatus,
                     jobId,
                     emailsSent,
                     emailsSkipped,
@@ -461,7 +576,7 @@ namespace GRA.Domain.Service
                 progress.Report(new JobStatus
                 {
                     PercentComplete = 0,
-                    Title = $"Sending email...",
+                    Title = "Sending email...",
                     Status = $"Preparing to email {subscribedUsers.Count} participants...",
                     Error = false
                 });
@@ -635,10 +750,11 @@ namespace GRA.Domain.Service
                     finalStatus.Status);
 
                 await _jobRepository.UpdateStatusAsync(jobId,
-                    statusText.Substring(0, Math.Min(statusText.Length, 255)));
+                    statusText[..Math.Min(statusText.Length, 255)]);
 
-                _logger.LogInformation("Email job {JobId}: " + taskStatus + " {EmailsSent} sent, {EmailsSkipped} skipped of {SubscribedCount} total in {ElapsedTime}",
+                _logger.LogInformation("Email job {JobId}: {TaskStatus} {EmailsSent} sent, {EmailsSkipped} skipped of {SubscribedCount} total in {ElapsedTime}",
                     jobId,
+                    taskStatus,
                     emailsSent,
                     emailsSkipped,
                     subscribedUsers.Count,
@@ -664,7 +780,9 @@ namespace GRA.Domain.Service
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
+            "CA1031:Do not catch general exception types",
+            Justification = "Test email failure should not kill the entire site.")]
         private async Task<JobStatus> SendTestAsync(int userId,
             int jobId,
             IProgress<JobStatus> progress,
@@ -730,7 +848,7 @@ namespace GRA.Domain.Service
                 progress.Report(new JobStatus
                 {
                     PercentComplete = 0,
-                    Title = $"Sending test email...",
+                    Title = "Sending test email...",
                     Status = $"Preparing to send a test email to {subscribed.Count} participants...",
                     Error = false
                 });
@@ -747,9 +865,7 @@ namespace GRA.Domain.Service
                             continue;
                         }
 
-                        bool clearToSend = true;
-
-                        if (emailReminder.SentAt != null || !clearToSend)
+                        if (emailReminder.SentAt != null)
                         {
                             // send email
                             _logger.LogTrace("Test email job {JobId}: skipping email {Count}/{Total} to {Email}: {Message}",
@@ -899,8 +1015,9 @@ namespace GRA.Domain.Service
                 await _jobRepository.UpdateStatusAsync(jobId,
                     statusText[..Math.Min(statusText.Length, 255)]);
 
-                _logger.LogInformation("Test email job {JobId}: " + taskStatus + " {EmailsSent} sent, {EmailsSkipped} skipped of {SubscribedCount} total in {ElapsedTime}",
+                _logger.LogInformation("Test email job {JobId}: {TaskStatus} {EmailsSent} sent, {EmailsSkipped} skipped of {SubscribedCount} total in {ElapsedTime}",
                     jobId,
+                    taskStatus,
                     emailsSent,
                     emailsSkipped,
                     subscribedCount,

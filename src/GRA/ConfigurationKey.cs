@@ -24,6 +24,7 @@
         public static readonly string InitialProgramSetup = "GraInitialProgramSetup";
         public static readonly string InstanceName = "GraInstanceName";
         public static readonly string InternalContentPath = "GraInternalContentPath";
+        public static readonly string JobSleepSeconds = "GraJobSleepSeconds";
         public static readonly string RedisConfiguration = "GraRedisConfiguration";
         public static readonly string ReverseProxyAddress = "GraReverseProxyAddress";
         public static readonly string RollingLogHttp = "GraRollingLogHttp";
