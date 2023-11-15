@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using GRA.Controllers.ViewModel.Challenges;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
@@ -164,6 +165,48 @@ namespace GRA.Controllers
             ChallengeFilter.OrderingOption ordering = ChallengeFilter.OrderingOption.MostPopular,
             System.Net.HttpStatusCode httpStatus = System.Net.HttpStatusCode.OK)
         {
+            if (string.IsNullOrEmpty(Request.QueryString.Value))
+            {
+                var cookie = Request.Cookies[GRA.Defaults.ChallengesFilterCookieName];
+                if (cookie != null)
+                {
+                    var queryParams = HttpUtility.ParseQueryString(cookie);
+
+                    Search = queryParams?[nameof(Search)];
+                    Status = queryParams?[nameof(Status)];
+                    Group = queryParams?[nameof(Group)];
+                    if (Enum.TryParse(queryParams[nameof(ordering)], out ChallengeFilter.OrderingOption option))
+                    {
+                        ordering = option;
+                    }
+                    if (bool.TryParse(queryParams?[nameof(Favorites)], out bool favorites))
+                    {
+                        Favorites = favorites;
+                    }
+                    if(int.TryParse(queryParams?[nameof(Program)], out int program))
+                    {
+                        Program = program;
+                    }
+                }
+
+            } 
+            else if (Request.QueryString.Value.Contains("ClearSearch"))
+            {
+                var cookieOptions = new CookieOptions
+                {
+                    MaxAge = new TimeSpan(0) //TODO Replace magic number
+                };
+                Response.Cookies.Append(GRA.Defaults.ChallengesFilterCookieName, string.Empty, cookieOptions);
+            }
+            else
+            {
+                var cookieOptions = new CookieOptions
+                {
+                    MaxAge = new TimeSpan(60, 0, 0, 0) //TODO Replace magic number
+                };
+                Response.Cookies.Append(GRA.Defaults.ChallengesFilterCookieName, Request.QueryString.Value, cookieOptions);
+            }
+
             var filter = new ChallengeFilter(page)
             {
                 Ordering = ordering
