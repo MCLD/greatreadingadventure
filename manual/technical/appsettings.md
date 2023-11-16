@@ -73,12 +73,23 @@ When operating in a load-balanced environment these settings are used to configu
 - `GraSqlSessionSchemaName` - _optional_ - the schema to use for the SQL Server distributed cache table, defaults to "dbo"
 - `GraSqlSessionTable` - _optional_ - the table to use for the SQL Server distributed cache, defaults to "Sessions"
 
+## Job settings
+
+- `GraJobSleepSeconds` - _optional_ - number of seconds to sleep between running background job tests like sending the welcome email
+
 ## Developer settings
 
 These settings are primarily of interest to developers working on The Great Reading Adventure source code.
 
 - `GraEmailOverride` - _optional_ - override any emails and send them to this address
 - `GraEnableRequestLogging` - _optional_ - allow logging of all Web requests
+
+## Platform settings
+
+These may need changing if you are scaling up to tens of thousands of participants. For more information about these settings, review [Microsoft documentation](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool.setminthreads).
+
+- `GraCompletionPortThreads` - _optional_ - override the default minimum number of worker threads that the thread pool creates on demand
+- `GraWorkerThreads` - _optional_ - override the default minimum number of asynchronous I/O threads that the thread pool creates on demand
 
 ## Logging with Serilog
 

@@ -31,7 +31,7 @@
         public static readonly string RollingLogPath = "GraRollingLogPath";
         public static readonly string RuntimeCacheRedisConfiguration = "GraRuntimeCacheRedisConfiguration";
         public static readonly string RuntimeCacheRedisInstance = "GraRuntimeCacheRedisInstance";
-        public static readonly string RuntimeCacheSqlConfiguration = "RuntimeCacheSqlConfiguration";
+        public static readonly string RuntimeCacheSqlConfiguration = "GraRuntimeCacheSqlConfiguration";
         public static readonly string SeqApiKey = "GraSeqAPIKey";
         public static readonly string SeqEndpoint = "GraSeqEndpoint";
         public static readonly string SqlSessionSchemaName = "GraSqlSessionSchemaName";

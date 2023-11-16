@@ -13,6 +13,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - System setting to configure acceptable back-to-back intervals
 - Last update information on performer scheduling selections
 - End date to streaming program list on dashboard and streaming page
+- Scheduled task execution capability
+- Welcome email capability
 
 ## Changed
 
