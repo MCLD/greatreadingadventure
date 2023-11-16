@@ -75,7 +75,7 @@ When operating in a load-balanced environment these settings are used to configu
 
 ## Job settings
 
-- `GraJobSleepSeconds` - _optional_ - number of seconds to sleep between running background job tests like sending the welcome email
+- `GraJobSleepSeconds` - _optional_ - number of seconds to sleep between running background job tests like sending the welcome email **_Note_: You must only set this on one instance connected to the same database so that jobs don't collide and run at the same time**.
 
 ## Developer settings
 
