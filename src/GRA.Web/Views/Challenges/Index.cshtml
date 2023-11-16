@@ -200,6 +200,20 @@
                                 </div>
                             </div>
                         }
+                        @if (Model.IsFiltered)
+                        {
+                            <div class="row row-spacing">
+                                <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+                                    <div class="alert-success" style="padding:1rem;border-radius:4px;text-align:center">
+                                        @(Model.Challenges.Count() == 1 ? 
+                                            SharedLocalizer[GRA.Annotations.Info.SearchResultsMatchesSingular]
+                                            :
+                                            SharedLocalizer[GRA.Annotations.Info.SearchResultsMatchesPlural, Model.Challenges.Count()]
+                                        )  
+                                    </div>
+                                </div>
+                            </div>
+                        }
                         <div class="row">
                             @if (Model.IsLoggedIn)
                             {

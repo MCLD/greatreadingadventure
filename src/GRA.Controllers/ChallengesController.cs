@@ -161,11 +161,16 @@ namespace GRA.Controllers
             string Group = null,
             bool Favorites = false,
             string Status = null,
+            bool ClearSearch = false,
             int page = 1,
             ChallengeFilter.OrderingOption ordering = ChallengeFilter.OrderingOption.MostPopular,
             System.Net.HttpStatusCode httpStatus = System.Net.HttpStatusCode.OK)
         {
-            if (string.IsNullOrEmpty(Request.QueryString.Value))
+            if (ClearSearch)
+            {
+                Response.Cookies.Append(GRA.Defaults.ChallengesFilterCookieName, string.Empty, new CookieOptions { MaxAge = TimeSpan.Zero });
+            }
+            else if (string.IsNullOrEmpty(Request.QueryString.Value))
             {
                 var cookie = Request.Cookies[GRA.Defaults.ChallengesFilterCookieName];
                 if (cookie != null)
@@ -175,6 +180,7 @@ namespace GRA.Controllers
                     Search = queryParams?[nameof(Search)];
                     Status = queryParams?[nameof(Status)];
                     Group = queryParams?[nameof(Group)];
+                    Categories = queryParams?[nameof(Categories)];
                     if (Enum.TryParse(queryParams[nameof(ordering)], out ChallengeFilter.OrderingOption option))
                     {
                         ordering = option;
@@ -189,22 +195,10 @@ namespace GRA.Controllers
                     }
                 }
 
-            } 
-            else if (Request.QueryString.Value.Contains("ClearSearch"))
-            {
-                var cookieOptions = new CookieOptions
-                {
-                    MaxAge = new TimeSpan(0) //TODO Replace magic number
-                };
-                Response.Cookies.Append(GRA.Defaults.ChallengesFilterCookieName, string.Empty, cookieOptions);
             }
             else
             {
-                var cookieOptions = new CookieOptions
-                {
-                    MaxAge = new TimeSpan(60, 0, 0, 0) //TODO Replace magic number
-                };
-                Response.Cookies.Append(GRA.Defaults.ChallengesFilterCookieName, Request.QueryString.Value, cookieOptions);
+                Response.Cookies.Append(GRA.Defaults.ChallengesFilterCookieName, Request.QueryString.Value);
             }
 
             var filter = new ChallengeFilter(page)
@@ -315,7 +309,8 @@ namespace GRA.Controllers
                 Program = Program,
                 ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
                 Search = Search,
-                Status = Status
+                Status = Status,
+                IsFiltered = challengeList.Count < await _challengeService.GetChallengeCountAsync()
             };
             if (!string.IsNullOrWhiteSpace(Search))
             {
