@@ -1,12 +1,12 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.EmailManagement.EmailIndexViewModel
 
 @section Styles {
-<style>
-    .gra-button-buffer {
-        margin-right: 0.25rem;
-        margin-bottom: 0.25rem;
-    }
-</style>
+    <style>
+        .gra-button-buffer {
+            margin-right: 0.25rem;
+            margin-bottom: 0.25rem;
+        }
+    </style>
 }
 
 <div class="row" style="margin: 1rem 0;">
@@ -31,6 +31,14 @@
            asp-action="@nameof(EmailManagementController.BaseIndex)">
             Base Templates
         </a>
+        @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.SendBulkEmails.ToString()))
+        {
+            <a class="btn btn-default"
+               style="margin-left: 1rem;"
+               asp-action="@nameof(EmailManagementController.SetSpecialEmails)">
+                Set Special Emails
+            </a>
+        }
     </div>
 </div>
 
@@ -63,6 +71,10 @@
                             <tr>
                                 <td style="vertical-align: middle;">
                                     @template.Description
+                                    @if (template.Id == Model.WelcomeEmailTemplateId)
+                                    {
+                                        <span class="label label-primary">Welcome Email</span>
+                                    }
                                 </td>
                                 <td style="vertical-align: middle;">
                                     @template.EmailsSent
@@ -84,9 +96,9 @@
                                     @foreach (var language in template.LanguageIds)
                                     {
                                         <a asp-action="@nameof(EmailManagementController.EditTemplate)"
-                               asp-route-templateId="@template.Id"
-                               asp-route-languageId="@language"
-                               class="btn btn-file btn-default btn-sm gra-button-buffer">@Model.LanguageNames[language]</a>
+                                           asp-route-templateId="@template.Id"
+                                           asp-route-languageId="@language"
+                                           class="btn btn-file btn-default btn-sm gra-button-buffer">@Model.LanguageNames[language]</a>
                                     }
                                 </td>
                                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.SendBulkEmails.ToString()))
@@ -95,9 +107,9 @@
                                         @if (!template.IsSystem && Model.IsAnyoneSubscribed)
                                         {
                                             <a class="btn btn-sm btn-warning sendEmail gra-button-buffer"
-                               asp-action="@nameof(EmailManagementController.Send)"
-                               asp-route-templateId="@template.Id">
-                                                Send Email
+                                               asp-action="@nameof(EmailManagementController.Send)"
+                                               asp-route-templateId="@template.Id">
+                                                Send
                                             </a>
                                         }
                                     </td>

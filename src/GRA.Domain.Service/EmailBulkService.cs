@@ -135,12 +135,13 @@ namespace GRA.Domain.Service
 
                     var emailDetails = new DirectEmailDetails(site.Name)
                     {
-                        IsBulk = true,
                         SendingUserId = await _siteLookupService.GetSystemUserId(),
                         DirectEmailTemplateId = welcomeEmailId
                     };
 
-                    _logger.LogTrace("Welcome email: loading users - skip {Skip}, take {Take}", skip, take);
+                    _logger.LogTrace("Welcome email: loading users - skip {Skip}, take {Take}",
+                        skip,
+                        take);
                     var users = await _userService.GetWelcomeRecipientsAsync(site.Id, skip, take);
                     skip = users.Count();
 
@@ -204,7 +205,9 @@ namespace GRA.Domain.Service
                             }
                         }
 
-                        _logger.LogTrace("Welcome email: loading users - skip {Skip}, take {Take}", skip, take);
+                        _logger.LogTrace("Welcome email: loading users - skip {Skip}, take {Take}",
+                            skip,
+                            take);
                         users = await _userService.GetWelcomeRecipientsAsync(site.Id, skip, take);
                         skip += users.Count();
                     }
@@ -353,7 +356,8 @@ namespace GRA.Domain.Service
                                 try
                                 {
                                     result = await _emailService.SendDirectAsync(emailDetails);
-                                    await _emailReminderService.UpdateSentDateAsync(emailReminder.Id);
+                                    await _emailReminderService
+                                        .UpdateSentDateAsync(emailReminder.Id);
                                 }
                                 catch (Exception ex)
                                 {
@@ -662,7 +666,7 @@ namespace GRA.Domain.Service
                             var remaining = TimeSpan
                                 .FromMilliseconds(elapsedStatus.TotalMilliseconds / userCounter
                                     * (subscribedUsers.Count - userCounter))
-                                .ToString(SpanFormat, System.Globalization.CultureInfo.InvariantCulture);
+                                .ToString(SpanFormat, CultureInfo.InvariantCulture);
 
                             var status = new JobStatus
                             {
