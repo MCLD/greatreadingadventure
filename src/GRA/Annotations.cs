@@ -195,6 +195,7 @@
             public const string SignInToStream = "Sign in to stream!";
             public const string Status = "Status";
             public const string Stream = "Stream";
+            public const string StreamingEnds = "Streaming ends: {0}";
             public const string StreamingEvents = "Streaming Events";
             public const string StreamNow = "Stream Now!";
             public const string StreamStarts = "Stream starts";

@@ -10,6 +10,14 @@
         @Html.Raw(Model.Embed)
     </div>
 </div>
+@if (Model.EndDate.HasValue)
+{
+    <div class="row row-spacing">
+        <div class="col-sm-12 text-center">
+            <em>@SharedLocalizer[GRA.Annotations.Interface.StreamingEnds, Model.EndDate.Value.ToString("d")]</em>
+        </div>
+    </div>
+}
 @if (!string.IsNullOrWhiteSpace(Model.SecretCode))
 {
     <div class="row row-spacing">
