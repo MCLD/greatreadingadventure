@@ -251,8 +251,10 @@ namespace GRA.Domain.Service
         /// set to NULL.</returns>
         public async Task<bool> IsSiteSettingSetAsync(int siteId, string key)
         {
-            var settingDefinition = SiteSettingDefinitions.DefinitionDictionary[key]
-                ?? throw new GraException($"Invalid key: {key}");
+            if (!SiteSettingDefinitions.DefinitionDictionary.ContainsKey(key))
+            {
+                throw new GraException($"Invalid site setting key: {key}");
+            }
 
             var site = (await GetSitesFromCacheAsync())
                 .SingleOrDefault(_ => _.Id == siteId);
