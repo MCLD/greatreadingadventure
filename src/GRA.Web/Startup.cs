@@ -707,6 +707,9 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IVendorCodeTypeRepository, Data.Repository.VendorCodeTypeRepository>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            services.AddScoped<JobTaskRunner>();
+            services.AddHostedService<JobBackgroundService>();
         }
     }
 }

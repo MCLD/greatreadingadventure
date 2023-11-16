@@ -407,6 +407,30 @@ namespace GRA.Data.Repository
             };
         }
 
+        public async Task<IEnumerable<User>> GetWelcomeRecipientsAsync(int skip,
+            int take,
+            int memberLongerThanHours)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => !_.IsDeleted
+                    && _.IsEmailSubscribed
+                    && !string.IsNullOrEmpty(_.Email)
+                    && _.CreatedAt.AddHours(memberLongerThanHours) <= _dateTimeProvider.Now)
+                .OrderBy(_ => _.CreatedAt)
+                .Skip(skip)
+                .Take(take)
+                .Select(_ => new User
+                {
+                    Email = _.Email,
+                    FirstName = _.FirstName,
+                    Id = _.Id,
+                    LastName = _.LastName,
+                    UnsubscribeToken = _.UnsubscribeToken
+                })
+                .ToListAsync();
+        }
+
         public async Task<bool> IsAnyoneSubscribedAsync()
         {
             return await DbSet
@@ -567,7 +591,7 @@ namespace GRA.Data.Repository
         }
 
         public async Task UpdateUserRolesAsync(int currentUserId,
-                                                                                    int userId,
+            int userId,
             IEnumerable<int> rolesToAdd,
             IEnumerable<int> rolesToRemove)
         {

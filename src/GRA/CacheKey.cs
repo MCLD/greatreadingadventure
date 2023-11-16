@@ -10,6 +10,7 @@
         public static readonly string DirectEmailTemplateSystemId = "DirectEmailTemplateSystemId.{0}.{1}";
         public static readonly string EmailBase = "EmailBase.{0}.{1}";
         public static readonly string FeaturedChallengeGroups = "FeaturedChallengeGroups.{0}";
+        public static readonly string JobsStop = "JobsStop.{0}";
         public static readonly string LanguageId = "LanguageId.{0}";
         public static readonly string LatestNewsPostId = "LatestNewsPostId";
         public static readonly string SegmentText = "SegmentText.{0}.{1}";
