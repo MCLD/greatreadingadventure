@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -51,13 +51,14 @@ namespace GRA.Domain.Service
             _systemRepository = systemRepository
                 ?? throw new ArgumentNullException(nameof(systemRepository));
             _siteLookupService = siteLookupService
-                ?? throw new ArgumentException(nameof(siteLookupService));
+                ?? throw new ArgumentNullException(nameof(siteLookupService));
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
         public async Task<Branch> AddBranchAsync(Branch branch)
         {
+            ArgumentNullException.ThrowIfNull(branch);
             VerifyPermission(Permission.ManageSystems);
 
             branch.Address = branch.Address.Trim();
@@ -70,6 +71,7 @@ namespace GRA.Domain.Service
 
         public async Task<Program> AddProgramAsync(Program program)
         {
+            ArgumentNullException.ThrowIfNull(program);
             VerifyPermission(Permission.ManagePrograms);
             var siteId = GetCurrentSiteId();
             var filter = new BaseFilter()
@@ -84,6 +86,7 @@ namespace GRA.Domain.Service
 
         public async Task<Model.System> AddSystemAsync(Model.System system)
         {
+            ArgumentNullException.ThrowIfNull(system);
             VerifyPermission(Permission.ManageSystems);
             system.SiteId = GetCurrentSiteId();
             return await _systemRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), system);
@@ -149,10 +152,11 @@ namespace GRA.Domain.Service
             var site = await _siteRepository.GetByIdAsync(GetCurrentSiteId());
             if (site.RegistrationOpens == null)
             {
-                _logger.LogError($"Can't generate calendar file because RegistrationOpens date is not set for site {site.Id}");
+                _logger.LogError("Can't generate calendar file because RegistrationOpens date is not set for site {siteId}",
+                    site.Id);
                 throw new GraException("Unable to generate calendar file.");
             }
-            string project = new string(site.Name.Where(_ => char.IsLetterOrDigit(_)).ToArray());
+            string project = new(site.Name.Where(_ => char.IsLetterOrDigit(_)).ToArray());
 
             // if the start time is midnight then let's bump the calendar appointment to 0700
             var localStartTime = (DateTime)site.RegistrationOpens;
@@ -183,6 +187,7 @@ namespace GRA.Domain.Service
         public async Task<DataWithCount<ICollection<Branch>>> GetPaginatedBranchListAsync(
             BaseFilter filter)
         {
+            ArgumentNullException.ThrowIfNull(filter);
             VerifyPermission(Permission.ManageSystems);
             filter.SiteId = GetCurrentSiteId();
             return new DataWithCount<ICollection<Branch>>
@@ -201,6 +206,7 @@ namespace GRA.Domain.Service
         public async Task<DataWithCount<ICollection<Program>>> GetPaginatedProgramListAsync(
         BaseFilter filter)
         {
+            ArgumentNullException.ThrowIfNull(filter);
             VerifyPermission(Permission.ManagePrograms);
             filter.SiteId = GetCurrentSiteId();
             return new DataWithCount<ICollection<Program>>
@@ -213,6 +219,7 @@ namespace GRA.Domain.Service
         public async Task<DataWithCount<ICollection<Model.System>>> GetPaginatedSystemListAsync(
             BaseFilter filter)
         {
+            ArgumentNullException.ThrowIfNull(filter);
             VerifyPermission(Permission.ManageSystems);
             filter.SiteId = GetCurrentSiteId();
             return new DataWithCount<ICollection<Model.System>>
@@ -304,7 +311,10 @@ namespace GRA.Domain.Service
             var program = await _programRepository.GetByIdAsync(programId);
             if (program.SiteId != siteId)
             {
-                _logger.LogError($"User {authId} cannot remove program {programId} for site {program.SiteId}.");
+                _logger.LogError("User {UserId} cannot remove program {ProgramId} for site {SiteId}.",
+                    authId,
+                    programId,
+                    program.SiteId);
                 throw new GraException($"Permission denied - program belongs to site id {program.SiteId}.");
             }
             if (await _programRepository.IsInUseAsync(programId, siteId))
@@ -345,11 +355,12 @@ namespace GRA.Domain.Service
 
         public async Task UpdateBranchAsync(Branch branch)
         {
+            ArgumentNullException.ThrowIfNull(branch);
             VerifyPermission(Permission.ManageSystems);
             var currentBranch = await _branchRepository.GetByIdAsync(branch.Id);
             if (!await _branchRepository.ValidateBySiteAsync(currentBranch.Id, GetCurrentSiteId()))
             {
-                throw new GraException($"Permission denied - branch belongs to a different site.");
+                throw new GraException("Permission denied - branch belongs to a different site.");
             }
 
             var invalidateSpatialHeaders = false;
@@ -374,13 +385,17 @@ namespace GRA.Domain.Service
 
         public async Task UpdateProgramAsync(Program program)
         {
+            ArgumentNullException.ThrowIfNull(program);
             VerifyPermission(Permission.ManagePrograms);
             var authId = GetClaimId(ClaimType.UserId);
             var siteId = GetCurrentSiteId();
             var currentProgram = await _programRepository.GetByIdAsync(program.Id);
             if (currentProgram.SiteId != siteId)
             {
-                _logger.LogError($"User {authId} cannot remove program {currentProgram.Id} for site {currentProgram.SiteId}.");
+                _logger.LogError("User {AuthId} cannot remove program {CurrentProgramId} for site {SiteId}.",
+                    authId,
+                    currentProgram.Id,
+                    currentProgram.SiteId);
                 throw new GraException($"Permission denied - program belongs to site id {currentProgram.SiteId}.");
             }
 
@@ -394,7 +409,7 @@ namespace GRA.Domain.Service
             currentProgram.DashboardAlert = program.DashboardAlert?.Trim();
             currentProgram.DashboardAlertType = program.DashboardAlertType;
             currentProgram.JoinBadgeAltText = program.JoinBadgeAltText?.Trim();
-            currentProgram.JoinBadgeId = currentProgram.JoinBadgeId ?? program.JoinBadgeId;
+            currentProgram.JoinBadgeId ??= program.JoinBadgeId;
             currentProgram.JoinBadgeName = program.JoinBadgeName;
             currentProgram.Name = program.Name;
             currentProgram.PointTranslationId = program.PointTranslationId;
@@ -403,8 +418,9 @@ namespace GRA.Domain.Service
             await _programRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), currentProgram);
         }
 
-        public async Task UpdateProgramListOrderAsync(List<int> programOrderList)
+        public async Task UpdateProgramListOrderAsync(Collection<int> programOrderList)
         {
+            ArgumentNullException.ThrowIfNull(programOrderList);
             VerifyPermission(Permission.ManagePrograms);
             var authId = GetClaimId(ClaimType.UserId);
             var siteId = GetCurrentSiteId();
@@ -413,7 +429,9 @@ namespace GRA.Domain.Service
             var programIdList = programs.Select(_ => _.Id);
             if (programOrderList.All(programIdList.Contains) && programOrderList.Count == programIdList.Count())
             {
-                _logger.LogError($"User {authId} cannot update programs {string.Join(", ", programOrderList)} belonging to another site.");
+                _logger.LogError("User {UserId} cannot update programs {Programs} belonging to another site.",
+                    authId,
+                    string.Join(", ", programOrderList));
                 throw new GraException("Invalid program selection.");
             }
             foreach (var program in programs)
@@ -421,6 +439,34 @@ namespace GRA.Domain.Service
                 program.Position = programOrderList.IndexOf(program.Id);
                 await _programRepository.UpdateSaveAsync(authId, program);
             }
+        }
+
+        public async Task UpdateSiteSettingAsync(int siteId, string key, string value)
+        {
+            ArgumentNullException.ThrowIfNull(key?.Trim());
+            ArgumentNullException.ThrowIfNull(value?.Trim());
+            VerifyManagementPermission();
+
+            var currentSiteSettings = await _siteSettingRepository.GetBySiteIdAsync(siteId);
+            var currentSetting = currentSiteSettings.FirstOrDefault(_ => _.Key == key);
+            if (currentSetting != null)
+            {
+                currentSetting.Value = value;
+                await _siteSettingRepository.UpdateAsync(GetActiveUserId(), currentSetting);
+            }
+            else
+            {
+                await _siteSettingRepository.AddAsync(GetActiveUserId(), new SiteSetting
+                {
+                    CreatedAt = _dateTimeProvider.Now,
+                    CreatedBy = GetActiveUserId(),
+                    Key = key,
+                    Value = value,
+                    SiteId = siteId
+                });
+            }
+            await _siteSettingRepository.SaveAsync();
+            await _siteLookupService.ReloadSiteCacheAsync();
         }
 
         public async Task UpdateSiteSettingsAsync(int siteId, IEnumerable<SiteSetting> siteSettings)
@@ -446,6 +492,7 @@ namespace GRA.Domain.Service
 
         public async Task UpdateSystemAsync(Model.System system)
         {
+            ArgumentNullException.ThrowIfNull(system);
             VerifyPermission(Permission.ManageSystems);
             var currentSystem = await _systemRepository.GetByIdAsync(system.Id);
             if (currentSystem.SiteId != GetCurrentSiteId())

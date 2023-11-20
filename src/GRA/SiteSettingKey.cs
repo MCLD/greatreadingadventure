@@ -45,6 +45,18 @@ namespace GRA
             }
         }
 
+        public readonly struct Email : IEquatable<Events>
+        {
+            public static readonly string UnsubscribeBase = "Email.UnsubscribeBase";
+            public static readonly string WelcomeDelayHours = "Email.WelcomeEmailDelayHours";
+            public static readonly string WelcomeTemplateId = "Email.WelcomeEmailId";
+
+            public bool Equals(Events other)
+            {
+                return true;
+            }
+        }
+
         public readonly struct Events : IEquatable<Events>
         {
             public static readonly string CommunityExperienceDescription

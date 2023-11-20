@@ -27,13 +27,13 @@ namespace GRA.Controllers.MissionControl
             = "This template cannot be edited - bulk emails were already sent to participants utilizing it.";
 
         private const string DefaultMailTitle = "{{Sitename}}";
-        private const string SubscribedParticipants = "SubscribedParticipants";
         private readonly EmailManagementService _emailManagementService;
         private readonly EmailReminderService _emailReminderService;
         private readonly EmailService _emailService;
         private readonly JobService _jobService;
         private readonly LanguageService _languageService;
         private readonly ILogger _logger;
+        private readonly SiteService _siteService;
         private readonly UserService _userService;
 
         public EmailManagementController(ServiceFacade.Controller context,
@@ -43,6 +43,7 @@ namespace GRA.Controllers.MissionControl
             EmailReminderService emailReminderService,
             JobService jobService,
             LanguageService languageService,
+            SiteService siteService,
             UserService userService)
             : base(context)
         {
@@ -55,6 +56,7 @@ namespace GRA.Controllers.MissionControl
             _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
             _languageService = languageService
                 ?? throw new ArgumentNullException(nameof(languageService));
+            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = "Email Management";
         }
@@ -463,9 +465,6 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpGet]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability",
-            "CA2000:Dispose objects before losing scope",
-            Justification = "The File() method handles the stream disposal for us.")]
         public async Task<IActionResult> ExportAddresses(EmailAddressesViewModel viewModel)
         {
             if (string.IsNullOrEmpty(viewModel?.SignUpSource))
@@ -507,9 +506,6 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpGet]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability",
-            "CA2000:Dispose objects before losing scope",
-            Justification = "The File() method handles the stream disposal for us.")]
         public async Task<IActionResult> ExportBaseText(int emailBaseId, int languageId)
         {
             var baseTemplate = await _emailManagementService
@@ -557,9 +553,6 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpGet]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability",
-            "CA2000:Dispose objects before losing scope",
-            Justification = "The File() method handles the stream disposal for us.")]
         public async Task<IActionResult> ExportTemplateText(int emailTemplateId, int languageId)
         {
             var templateText = await _emailManagementService
@@ -945,41 +938,20 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> Index(int page = 1)
         {
-            var filter = new BaseFilter();
-            var templateList
-                = await _emailManagementService.GetPaginatedEmailTemplateListAsync(filter);
-
-            var viewModel = new EmailIndexViewModel
+            try
             {
-                ItemCount = templateList.Count,
-                CurrentPage = page,
-                ItemsPerPage = filter.Take.Value
-            };
-
-            if (viewModel.PastMaxPage)
+                var viewModel = await GetPaginatedEmailList(page);
+                return View(viewModel);
+            }
+            catch (GraException gex)
             {
+                var lastPage = gex.Data["LastPage"] as int?;
                 return RedirectToRoute(
-                    new
-                    {
-                        page = viewModel.LastPage ?? 1
-                    });
+                new
+                {
+                    page = lastPage ?? 1
+                });
             }
-
-            var currentUser = await _userService.GetDetails(GetActiveUserId());
-
-            var isAnyoneSubscribed = await _emailManagementService.IsAnyoneSubscribedAsync();
-
-            viewModel.EmailTemplates = templateList.Data;
-            viewModel.IsAdmin = currentUser?.IsAdmin == true;
-            viewModel.IsAnyoneSubscribed = isAnyoneSubscribed;
-            viewModel.LanguageNames = await _languageService.GetIdDescriptionDictionaryAsync();
-
-            if (!isAnyoneSubscribed)
-            {
-                ShowAlertWarning("There are no subscribed participants or interested parties to send an email to.");
-            }
-
-            return View(viewModel);
         }
 
         [HttpGet]
@@ -995,7 +967,7 @@ namespace GRA.Controllers.MissionControl
             };
 
             viewModel.IsForSubscribers
-                = viewModel.Template.LanguageUnsub.Any(_ => _.Value == false);
+                = viewModel.Template.LanguageUnsub.Any(_ => !_.Value);
 
             if (!viewModel.IsForSubscribers)
             {
@@ -1034,11 +1006,11 @@ namespace GRA.Controllers.MissionControl
 
             // if any footer doesn't have the unsubscribe link then it's not for participants
             viewModel.IsForSubscribers
-                = viewModel.Template.LanguageUnsub.Any(_ => _.Value == false);
+                = viewModel.Template.LanguageUnsub.Any(_ => !_.Value);
 
             // if some footers have unsub link and some don't then we're in conflict
             viewModel.IsMixedFooter = viewModel.IsForSubscribers
-                && viewModel.Template.LanguageUnsub.Any(_ => _.Value == true);
+                && viewModel.Template.LanguageUnsub.Any(_ => _.Value);
 
             if (!viewModel.IsMixedFooter)
             {
@@ -1187,6 +1159,96 @@ namespace GRA.Controllers.MissionControl
             });
         }
 
+        [HttpGet]
+        [Authorize(Policy = Policy.SendBulkEmails)]
+        public async Task<IActionResult> SetSpecialEmails(int page)
+        {
+            if (page == 0)
+            {
+                page = 1;
+            }
+
+            try
+            {
+                var viewModel = await GetPaginatedEmailList(page);
+                return View("SpecialEmails", viewModel);
+            }
+            catch (GraException gex)
+            {
+                var lastPage = gex.Data["LastPage"] as int?;
+                return RedirectToRoute(
+                new
+                {
+                    page = lastPage ?? 1
+                });
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Policy = Policy.SendBulkEmails)]
+        public async Task<IActionResult> SetWelcomeEmail(int id)
+        {
+            await _siteService.UpdateSiteSettingAsync(GetCurrentSiteId(),
+                SiteSettingKey.Email.WelcomeTemplateId,
+                id.ToString(CultureInfo.InvariantCulture));
+            return RedirectToAction(nameof(SetSpecialEmails));
+        }
+
+        [HttpPost]
+        [Authorize(Policy = Policy.SendBulkEmails)]
+        public async Task<IActionResult> UnsetWelcomeEmail()
+        {
+            await _siteService.UpdateSiteSettingAsync(GetCurrentSiteId(),
+                SiteSettingKey.Email.WelcomeTemplateId,
+                string.Empty);
+            return RedirectToAction(nameof(SetSpecialEmails));
+        }
+
+        private async Task<EmailIndexViewModel> GetPaginatedEmailList(int page)
+        {
+            var filter = new BaseFilter();
+            var templateList
+                = await _emailManagementService.GetPaginatedEmailTemplateListAsync(filter);
+
+            var viewModel = new EmailIndexViewModel
+            {
+                ItemCount = templateList.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+
+            if (viewModel.PastMaxPage)
+            {
+                var exception = new GraException();
+                exception.Data.Add("LastPage", viewModel.LastPage);
+                throw exception;
+            }
+
+            var currentUser = await _userService.GetDetails(GetActiveUserId());
+
+            var isAnyoneSubscribed = await _emailManagementService.IsAnyoneSubscribedAsync();
+
+            viewModel.EmailTemplates = templateList.Data;
+            viewModel.IsAdmin = currentUser?.IsAdmin == true;
+            viewModel.IsAnyoneSubscribed = isAnyoneSubscribed;
+            viewModel.LanguageNames = await _languageService.GetIdDescriptionDictionaryAsync();
+
+            var (isSet, welcomeEmailTemplateId) = await _siteLookupService
+                .GetSiteSettingIntAsync(GetCurrentSiteId(), SiteSettingKey.Email.WelcomeTemplateId);
+
+            if (isSet && welcomeEmailTemplateId > 0)
+            {
+                viewModel.WelcomeEmailTemplateId = welcomeEmailTemplateId;
+            }
+
+            if (!isAnyoneSubscribed)
+            {
+                ShowAlertWarning("There are no subscribed participants or interested parties to send an email to.");
+            }
+
+            return viewModel;
+        }
+
         private async Task<IActionResult> ShowAddressView(EmailAddressesViewModel viewModel)
         {
             var emailAddressesViewModel = viewModel ?? new EmailAddressesViewModel();
@@ -1240,14 +1302,6 @@ namespace GRA.Controllers.MissionControl
             viewModel.LanguageId = defaultLanguageId;
             viewModel.Title = DefaultMailTitle;
             return View("Details", viewModel);
-        }
-
-        private string UnsubBase()
-        {
-            return Url.Action(nameof(Controllers.HomeController.Unsubscribe),
-                Controllers.HomeController.Name,
-                new { Area = "" },
-                HttpContext.Request.Scheme);
         }
     }
 }

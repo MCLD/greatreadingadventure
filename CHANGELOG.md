@@ -14,6 +14,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Last update information on performer scheduling selections
 - End date to streaming program list on dashboard and streaming page
 - Filters applied to challenge list are retained in session cookie
+- Scheduled task execution capability
+- Welcome email capability
 
 ## Changed
 
