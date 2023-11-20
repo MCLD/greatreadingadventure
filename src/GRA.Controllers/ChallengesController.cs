@@ -181,7 +181,7 @@ namespace GRA.Controllers
                     Status = queryParams?[nameof(Status)];
                     Group = queryParams?[nameof(Group)];
                     Categories = queryParams?[nameof(Categories)];
-                    if (Enum.TryParse(queryParams[nameof(ordering)], out ChallengeFilter.OrderingOption option))
+                    if (Enum.TryParse(queryParams?[nameof(ordering)], out ChallengeFilter.OrderingOption option))
                     {
                         ordering = option;
                     }
