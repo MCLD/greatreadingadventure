@@ -1,4 +1,4 @@
-﻿@* @model GetLater *@
+﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.PerformerCoversheetViewModel
 
 @section styles {
     <link rel="stylesheet" href="/css/performercoversheet.min.css" />
@@ -19,7 +19,7 @@
                     Library Branch:
                 </th>
                 <td class="col-xs-9">
-                    Administration - Summer Reading Program
+                    @Model.LibraryBranch
                 </td>
             </tr>
             <tr>
@@ -27,7 +27,7 @@
                     Staff Contact:
                 </th>
                 <td class="col-xs-9">
-                    Jolene Bradley
+                    @Model.StaffContact
                 </td>
             </tr>
         </table>
@@ -55,7 +55,7 @@
                     Description:
                 </th>
                 <td class="col-xs-9" colspan="3">
-                    [Description]@* TODO *@
+                    @Model.Description
                 </td>
             </tr>
             <tr>
@@ -63,13 +63,13 @@
                     Cost:
                 </th>
                 <td class="col-xs-4">
-                    [Description]@* TODO *@
+                    @Model.Cost
                 </td>
                 <td class="col-xs-2 text-right">
                     <strong>Date:</strong>
                 </td>
                 <td class="col-xs-3">
-                    [Description]@* TODO *@
+                    @Model.ProgramDate.ToShortDateString();
                 </td>
             </tr>
             <tr>
@@ -77,24 +77,21 @@
                     Vendor #:
                 </th>
                 <td class="col-xs-4">
-                    [Description]@* TODO *@
+                    @Model.VendorId
                 </td>
                 <td class="col-xs-2 text-right">
                     <strong>Invoice #:</strong>
                 </td>
                 <td class="col-xs-3">
-                    [Description]@* TODO *@
+                    @Model.VendorId
                 </td>
             </tr>
             <tr>
                 <th class="col-xs-3 text-right">
                     Payable To:
                 </th>
-                <td class="col-xs-9" colspan="3">
-                    [Description]@* TODO *@
-                    <br />
-                    <br />
-                </td>
+                @* Don't reformat this line, set to white-space:pre-wrap *@
+                <td class="col-xs-9 pre-wrap" colspan="3">@Model.PayToName<br />@Model.PayToAddress</td>
             </tr>
         </table>
     </div>
@@ -104,10 +101,10 @@
             <strong>Payment Method:</strong>
         </div>
         <div class="col-xs-2">
-            <input type="checkbox" /> Mail Check
+            <input type="radio" name="payMethod" /> <label>Mail Check</label>
         </div>
         <div class="col-xs-2">
-            <input type="checkbox" /> eCheck
+            <input type="radio" name="payMethod" /> <label>eCheck</label>
         </div>
     </div>
 

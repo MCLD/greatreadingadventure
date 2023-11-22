@@ -265,7 +265,10 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> PerformerCoverSheet()
         {
-            return View();
+            //var performer = await _performerSchedulingService.GetPerformerByIdAsync(1);
+            var viewModel = new PerformerCoversheetViewModel();
+
+            return View(viewModel);
         }
 
         [HttpPost]
