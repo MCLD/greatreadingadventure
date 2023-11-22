@@ -263,6 +263,11 @@ namespace GRA.Controllers.MissionControl
             return RedirectToAction(nameof(Performer), new { model.Performer.Id });
         }
 
+        public async Task<IActionResult> PerformerCoverSheet()
+        {
+            return View();
+        }
+
         [HttpPost]
         public async Task<IActionResult> PerformerDelete(PerformerListViewModel model)
         {

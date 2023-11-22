@@ -1,0 +1,33 @@
+﻿.performer-coversheet-container td {
+    line-height: 4rem;
+    border: 1px solid black;
+}
+
+.coversheet-row-spacing {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.performer-coversheet-container .coversheet-table-subheading {
+    font-weight: bold;
+    font-style: italic;
+    text-align: center;
+    background: lightgray;
+    line-height: 2.2rem;
+}
+
+.coversheet-print-button {
+    padding-left: 3rem;
+    padding-right: 3rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.coversheet-footer {
+    position: fixed;
+    bottom: 1rem;
+    font-size: 1.2rem;
+    left: 50%;
+    transform: translate(-50%);
+    white-space: nowrap;
+}

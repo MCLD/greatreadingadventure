@@ -1,0 +1,152 @@
+﻿@* @model GetLater *@
+
+@section styles {
+    <link rel="stylesheet" href="/css/performercoversheet.min.css" />
+}
+
+<div class="performer-coversheet-container">
+    <div class="row">
+        <div class="col-xs-12 text-center text-muted">
+            <h2>Services Team Program Cover Sheet</h2>
+            <div>Include an invoice if requesting funds</div>
+            <div class="row-spacing"><strong>@(DateTime.Now.ToLongDateString())</strong></div>
+        </div>
+    </div>
+    <div class="row">
+        <table class="col-xs-12">
+            <tr>
+                <th class="col-xs-3 text-right">
+                    Library Branch:
+                </th>
+                <td class="col-xs-9">
+                    Administration - Summer Reading Program
+                </td>
+            </tr>
+            <tr>
+                <th class="col-xs-3 text-right">
+                    Staff Contact:
+                </th>
+                <td class="col-xs-9">
+                    Jolene Bradley
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="row coversheet-row-spacing">
+        <div class="col-xs-3 text-right">
+            <strong>Funding Source:</strong>
+        </div>
+        <div class="col-xs-9">
+            <input type="checkbox" checked /> Summer Reading Program Budget
+        </div>
+    </div>
+
+    <div class="row">
+        <table class="col-xs-12">
+            <tr>
+                <th class="col-xs-3 text-right"></th>
+                <td class="col-xs-9 coversheet-table-subheading" colspan="3">
+                    Program Info
+                </td>
+            </tr>
+            <tr>
+                <th class="col-xs-3 text-right">
+                    Description:
+                </th>
+                <td class="col-xs-9" colspan="3">
+                    [Description]@* TODO *@
+                </td>
+            </tr>
+            <tr>
+                <th class="col-xs-3 text-right">
+                    Cost:
+                </th>
+                <td class="col-xs-4">
+                    [Description]@* TODO *@
+                </td>
+                <td class="col-xs-2 text-right">
+                    <strong>Date:</strong>
+                </td>
+                <td class="col-xs-3">
+                    [Description]@* TODO *@
+                </td>
+            </tr>
+            <tr>
+                <th class="col-xs-3 text-right">
+                    Vendor #:
+                </th>
+                <td class="col-xs-4">
+                    [Description]@* TODO *@
+                </td>
+                <td class="col-xs-2 text-right">
+                    <strong>Invoice #:</strong>
+                </td>
+                <td class="col-xs-3">
+                    [Description]@* TODO *@
+                </td>
+            </tr>
+            <tr>
+                <th class="col-xs-3 text-right">
+                    Payable To:
+                </th>
+                <td class="col-xs-9" colspan="3">
+                    [Description]@* TODO *@
+                    <br />
+                    <br />
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="row coversheet-row-spacing">
+        <div class="col-xs-3 text-right">
+            <strong>Payment Method:</strong>
+        </div>
+        <div class="col-xs-2">
+            <input type="checkbox" /> Mail Check
+        </div>
+        <div class="col-xs-2">
+            <input type="checkbox" /> eCheck
+        </div>
+    </div>
+
+    <div class="row">
+        <table class="col-xs-12">
+            <tr>
+                <th class="col-xs-3 text-right"></th>
+                <td class="col-xs-9 coversheet-table-subheading" colspan="3">
+                    Signatures of Approval
+                </td>
+            </tr>
+            <tr>
+                <th class="col-xs-3 text-right">
+                    Services Team
+                </th>
+                <td class="col-xs-9" colspan="3">
+                    &nbsp;
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <button class="btn btn-primary center-block hidden-print coversheet-print-button" onclick="handlePrint()">Print</button>
+
+    <div class="visible-print coversheet-footer">
+        <strong>Questions?</strong> Contact the Services Team (<strong>ServicesTeam@mcldaz.org</strong>)
+    </div>
+</div>
+
+<script type="text/javascript">
+    function hideHeaderFooter() {
+        document.querySelector(".mc-page-title").classList.add("hidden-print");
+        document.querySelector("footer").classList.add("hidden-print");
+    }
+
+    function handlePrint() {
+        hideHeaderFooter();
+        window.print();
+    };
+
+    window.onload = hideHeaderFooter;
+</script>
