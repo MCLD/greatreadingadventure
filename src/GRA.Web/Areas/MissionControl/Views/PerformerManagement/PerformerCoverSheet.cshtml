@@ -54,9 +54,7 @@
                 <th class="col-xs-3 text-right">
                     Description:
                 </th>
-                <td class="col-xs-9" colspan="3">
-                    @Model.Description
-                </td>
+                <td class="col-xs-9 pre-wrap" colspan="3">@Model.Description</td>
             </tr>
             <tr>
                 <th class="col-xs-3 text-right">
@@ -83,7 +81,7 @@
                     <strong>Invoice #:</strong>
                 </td>
                 <td class="col-xs-3">
-                    @Model.VendorId
+                    @Model.InvoiceNumber
                 </td>
             </tr>
             <tr>
@@ -127,7 +125,7 @@
         </table>
     </div>
 
-    <button class="btn btn-primary center-block hidden-print coversheet-print-button" onclick="handlePrint()">Print</button>
+    <button id="print-button" class="btn btn-primary center-block hidden-print coversheet-print-button">Print</button>
 
     <div class="visible-print coversheet-footer">
         <strong>Questions?</strong> Contact the Services Team (<strong>ServicesTeam@mcldaz.org</strong>)
@@ -138,6 +136,7 @@
     function hideHeaderFooter() {
         document.querySelector(".mc-page-title").classList.add("hidden-print");
         document.querySelector("footer").classList.add("hidden-print");
+        document.querySelector("#print-button").addEventListener("click", handlePrint);
     }
 
     function handlePrint() {

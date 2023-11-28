@@ -12,6 +12,7 @@ using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -263,10 +264,33 @@ namespace GRA.Controllers.MissionControl
             return RedirectToAction(nameof(Performer), new { model.Performer.Id });
         }
 
-        public async Task<IActionResult> PerformerCoverSheet()
+        public async Task<IActionResult> PerformerCoverSheet(int id)
         {
-            //var performer = await _performerSchedulingService.GetPerformerByIdAsync(1);
-            var viewModel = new PerformerCoversheetViewModel();
+            var performer = await _performerSchedulingService.GetPerformerByIdAsync(id, false, false, true);
+            var selections = await _performerSchedulingService.GetBranchProgramSelectionsByPerformerAsync(performer.Id);
+
+            decimal costSum = 0;
+            string description = "";
+
+            foreach (var selection in selections)
+            {
+                var program = performer.Programs.FirstOrDefault(_ => _.Id == selection.ProgramId);
+                costSum += program?.Cost ?? 0;
+                description += program.Title + ": " + selection.ScheduleStartTime.ToShortDateString() + "\t";
+            }
+
+            var viewModel = new PerformerCoversheetViewModel
+            {
+                Description = description,
+                Cost = costSum,
+                ProgramDate = selections.FirstOrDefault().ScheduleStartTime,
+                VendorId = performer.VendorId,
+                PayToName = performer.Name,
+                PayToAddress = performer.BillingAddress,
+        };
+            
+            
+
 
             return View(viewModel);
         }

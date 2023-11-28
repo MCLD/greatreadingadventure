@@ -6,7 +6,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.PerformerManagement
 {
     public class PerformerCoversheetViewModel
     {
-        [DisplayName("Library Branch:")]
         public string LibraryBranch { get; set; } = "Administration - Summer Reading Program";
         public string StaffContact { get; set; } = "Jolene Bradley";
         public string Description { get; set; }
