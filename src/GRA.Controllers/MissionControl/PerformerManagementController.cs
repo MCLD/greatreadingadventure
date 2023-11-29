@@ -266,13 +266,29 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> PrepCoverSheet(int id)
         {
-            var performer = await _performerSchedulingService.GetPerformerByIdAsync(id, false, false, true);
-            var selections = (await _performerSchedulingService.GetBranchProgramSelectionsByPerformerAsync(performer.Id));
+            PsPerformer performer;
+            try
+            {
+                performer = await _performerSchedulingService.GetPerformerByIdAsync(id, false, false, true);
 
-            var months = selections.OrderBy(s => s.ScheduleStartTime.Month).GroupBy(s => s.ScheduleStartTime.Month).Select(g => new SelectListItem 
-            { 
-                Value = g.First().ScheduleStartTime.Month.ToString(), 
-                Text = g.First().ScheduleStartTime.ToString("MMMM") 
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to view performer: ", gex);
+                return RedirectToAction(nameof(Performers));
+            }
+
+            var selections = (await _performerSchedulingService.GetBranchProgramSelectionsByPerformerAsync(performer.Id));
+            if (!selections.Any())
+            {
+                ShowAlertInfo("No performances found for selected performer.");
+                return RedirectToAction(nameof(Performers));
+            }
+
+            var months = selections.OrderBy(s => s.ScheduleStartTime.Month).GroupBy(s => s.ScheduleStartTime.Month).Select(g => new SelectListItem
+            {
+                Value = g.First().ScheduleStartTime.Month.ToString(),
+                Text = g.First().ScheduleStartTime.ToString("MMMM")
             });
 
             var monthSelection = new SelectList(months, "Value", "Text");
@@ -289,9 +305,26 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> PrintCoverSheet(int id, int month, string invoiceNumber)
         {
-            var performer = await _performerSchedulingService.GetPerformerByIdAsync(id, false, false, true);
+            PsPerformer performer;
+            try
+            {
+                performer = await _performerSchedulingService.GetPerformerByIdAsync(id, false, false, true);
+
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to view performer: ", gex);
+                return RedirectToAction(nameof(Performers));
+            }
+
             var selections = (await _performerSchedulingService.GetBranchProgramSelectionsByPerformerAsync(performer.Id))
                 .Where(selection => selection.ScheduleStartTime.Month == month);
+
+            if (!selections.Any())
+            {
+                ShowAlertInfo("No performances found for selected performer for the selected month.");
+                return RedirectToAction(nameof(Performers));
+            }
 
             decimal costSum = 0;
             string description = "";
@@ -303,7 +336,7 @@ namespace GRA.Controllers.MissionControl
                 description += program.Title + ": " + selection.ScheduleStartTime.ToShortDateString() + "    ";
             }
 
-            
+
             var viewModel = new PerformerCoversheetViewModel
             {
                 Description = description,
@@ -313,7 +346,7 @@ namespace GRA.Controllers.MissionControl
                 PayToName = performer.Name,
                 PayToAddress = performer.BillingAddress,
                 InvoiceNumber = invoiceNumber
-        };
+            };
 
             return View(viewModel);
         }
@@ -836,7 +869,7 @@ namespace GRA.Controllers.MissionControl
                 PerformerName = performer.Name,
                 MaxUploadMB = MaxUploadMB,
                 SetupSupplementalText = settings.SetupSupplementalText,
-                BackToBackSelection = new SelectList(new[] { GRA.Defaults.BackToBackInterval } )
+                BackToBackSelection = new SelectList(new[] { GRA.Defaults.BackToBackInterval })
             };
 
             var (hasIntervalString, intervalString) = await GetSiteSettingStringAsync(SiteSettingKey.Performer.BackToBackInterval);
@@ -904,7 +937,7 @@ namespace GRA.Controllers.MissionControl
                 AgeSelection = program.AgeGroups.Select(_ => _.Id).ToList(),
                 Program = program,
                 SetupSupplementalText = settings.SetupSupplementalText,
-                BackToBackSelection = new SelectList(new[] { GRA.Defaults.BackToBackInterval } )
+                BackToBackSelection = new SelectList(new[] { GRA.Defaults.BackToBackInterval })
             };
 
             var (hasIntervalString, intervalString) = await GetSiteSettingStringAsync(SiteSettingKey.Performer.BackToBackInterval);
