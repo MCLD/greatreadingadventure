@@ -264,10 +264,34 @@ namespace GRA.Controllers.MissionControl
             return RedirectToAction(nameof(Performer), new { model.Performer.Id });
         }
 
-        public async Task<IActionResult> PerformerCoverSheet(int id)
+        public async Task<IActionResult> PrepCoverSheet(int id)
         {
             var performer = await _performerSchedulingService.GetPerformerByIdAsync(id, false, false, true);
-            var selections = await _performerSchedulingService.GetBranchProgramSelectionsByPerformerAsync(performer.Id);
+            var selections = (await _performerSchedulingService.GetBranchProgramSelectionsByPerformerAsync(performer.Id));
+
+            var months = selections.OrderBy(s => s.ScheduleStartTime.Month).GroupBy(s => s.ScheduleStartTime.Month).Select(g => new SelectListItem 
+            { 
+                Value = g.First().ScheduleStartTime.Month.ToString(), 
+                Text = g.First().ScheduleStartTime.ToString("MMMM") 
+            });
+
+            var monthSelection = new SelectList(months, "Value", "Text");
+
+            var viewModel = new PerformerCoversheetViewModel
+            {
+                Months = monthSelection,
+                PerformerId = performer.Id
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PrintCoverSheet(int id, int month, string invoiceNumber)
+        {
+            var performer = await _performerSchedulingService.GetPerformerByIdAsync(id, false, false, true);
+            var selections = (await _performerSchedulingService.GetBranchProgramSelectionsByPerformerAsync(performer.Id))
+                .Where(selection => selection.ScheduleStartTime.Month == month);
 
             decimal costSum = 0;
             string description = "";
@@ -275,10 +299,11 @@ namespace GRA.Controllers.MissionControl
             foreach (var selection in selections)
             {
                 var program = performer.Programs.FirstOrDefault(_ => _.Id == selection.ProgramId);
-                costSum += program?.Cost ?? 0;
-                description += program.Title + ": " + selection.ScheduleStartTime.ToShortDateString() + "\t";
+                costSum += program.Cost;
+                description += program.Title + ": " + selection.ScheduleStartTime.ToShortDateString() + "    ";
             }
 
+            
             var viewModel = new PerformerCoversheetViewModel
             {
                 Description = description,
@@ -287,10 +312,8 @@ namespace GRA.Controllers.MissionControl
                 VendorId = performer.VendorId,
                 PayToName = performer.Name,
                 PayToAddress = performer.BillingAddress,
+                InvoiceNumber = invoiceNumber
         };
-            
-            
-
 
             return View(viewModel);
         }

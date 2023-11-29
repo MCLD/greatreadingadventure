@@ -9,7 +9,7 @@
         <div class="col-xs-12 text-center text-muted">
             <h2>Services Team Program Cover Sheet</h2>
             <div>Include an invoice if requesting funds</div>
-            <div class="row-spacing"><strong>@(DateTime.Now.ToLongDateString())</strong></div>
+            <div class="row-spacing"><strong>@(DateTime.Today.ToLongDateString())</strong></div>
         </div>
     </div>
     <div class="row">
@@ -125,7 +125,14 @@
         </table>
     </div>
 
-    <button id="print-button" class="btn btn-primary center-block hidden-print coversheet-print-button">Print</button>
+    <div class="row hidden-print coversheet-row-spacing">
+        <div class="text-center coversheet-row-spacing">
+            <a class="link-unstyled" asp-controller="PerformerManagement" asp-action="Performers">
+                <button class="btn btn-secondary">Back to Performers</button>
+            </a>
+            <button id="print-button" class="btn btn-primary coversheet-print-button">Print</button>
+        </div>
+    </div>
 
     <div class="visible-print coversheet-footer">
         <strong>Questions?</strong> Contact the Services Team (<strong>ServicesTeam@mcldaz.org</strong>)

@@ -16,11 +16,15 @@
     line-height: 2.2rem;
 }
 
+.link-unstyled, .link-unstyled:hover {
+    color: inherit;
+    text-decoration: none;
+}
+
 .coversheet-print-button {
     padding-left: 3rem;
     padding-right: 3rem;
-    margin-top: 1.5rem;
-    margin-bottom: 1.5rem;
+    margin-left: 1.5rem;
 }
 
 .coversheet-footer {
