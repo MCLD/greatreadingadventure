@@ -21,13 +21,15 @@ namespace GRA.Controllers.MissionControl
         private readonly AuthorizationCodeService _authorizationCodeService;
         private readonly RoleService _roleService;
         private readonly UserService _userService;
+        private readonly SiteService _siteService;
         public static string Name { get { return "Roles"; } }
 
         public RolesController(ILogger<RolesController> logger,
             ServiceFacade.Controller context,
             AuthorizationCodeService authorizationCodeService,
             RoleService roleService,
-            UserService userService)
+            UserService userService,
+            SiteService siteService)
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -35,6 +37,7 @@ namespace GRA.Controllers.MissionControl
                 ?? throw new ArgumentNullException(nameof(authorizationCodeService));
             _roleService = roleService ?? throw new ArgumentNullException(nameof(roleService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
         }
 
         #region Roles
@@ -231,11 +234,14 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
+            var programs = await _siteService.GetProgramList();
+
             var viewModel = new AuthorizationCodeListViewModel
             {
                 AuthorizationCodes = authorizationCodeList.Data,
                 PaginateModel = paginateModel,
-                RoleList = new SelectList(await _roleService.GetAllAsync(), "Id", "Name")
+                RoleList = new SelectList(await _roleService.GetAllAsync(), "Id", "Name"),
+                ProgramList = new SelectList(programs, "Id", "Name")
             };
 
             return View(viewModel);

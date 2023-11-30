@@ -77,6 +77,8 @@ namespace GRA.Domain.Service
             currentAuthorizationCode.Description = authorizationCode.Description;
             currentAuthorizationCode.IsSingleUse = authorizationCode.IsSingleUse;
             currentAuthorizationCode.RoleId = authorizationCode.RoleId;
+            currentAuthorizationCode.ProgramId = authorizationCode.ProgramId;
+            currentAuthorizationCode.SinglePageSignUp = authorizationCode.SinglePageSignUp;
 
             await _authorizationCodeRepository.UpdateSaveAsync(authId, currentAuthorizationCode);
         }
