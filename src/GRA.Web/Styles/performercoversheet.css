@@ -13,7 +13,7 @@
     font-weight: bold;
     font-style: italic;
     text-align: center;
-    background-color: lightgray;
+    background: lightgray !important;
     line-height: 2.2rem;
 }
 
@@ -39,4 +39,11 @@
 
 .pre-wrap {
     white-space: pre-wrap;
+}
+
+@media print {
+    .performer-coversheet-container .coversheet-table-subheading {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
 }

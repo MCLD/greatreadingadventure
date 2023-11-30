@@ -239,8 +239,7 @@
         {
             @if (count % 3 == 0)
             {
-                @Html.Raw("<div class=\"row\">")
-                ;
+                @Html.Raw("<div class=\"row\">");
             }
             <div class="col-xs-12 col-md-4">
                 <table class="table table-condensed">
@@ -289,15 +288,13 @@
             </div>
             if (count % 3 == 2)
             {
-                @Html.Raw("</div>")
-                ;
+                @Html.Raw("</div>");
             }
             { count++; }
         }
         @if (count % 3 != 2)
         {
-            @Html.Raw("</div>")
-            ;
+            @Html.Raw("</div>");
         }
     </div>
 </div>
