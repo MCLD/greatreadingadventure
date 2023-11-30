@@ -1,5 +1,6 @@
 ﻿.performer-coversheet-container td {
-    line-height: 4rem;
+    height: 4rem;
+    line-height: 2.5rem;
     border: 1px solid black;
 }
 
@@ -12,7 +13,7 @@
     font-weight: bold;
     font-style: italic;
     text-align: center;
-    background: lightgray;
+    background-color: lightgray;
     line-height: 2.2rem;
 }
 

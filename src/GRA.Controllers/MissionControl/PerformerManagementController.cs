@@ -333,7 +333,7 @@ namespace GRA.Controllers.MissionControl
             {
                 var program = performer.Programs.FirstOrDefault(_ => _.Id == selection.ProgramId);
                 costSum += program.Cost;
-                description += program.Title + ": " + selection.ScheduleStartTime.ToShortDateString() + "    ";
+                description += program.Title + ": " + selection.ScheduleStartTime.ToShortDateString() + " $" + program.Cost.ToString("#,###.00") + "\n";
             }
 
 

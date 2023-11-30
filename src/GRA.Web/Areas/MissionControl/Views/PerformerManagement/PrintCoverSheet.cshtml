@@ -60,14 +60,8 @@
                 <th class="col-xs-3 text-right">
                     Cost:
                 </th>
-                <td class="col-xs-4">
-                    @Model.Cost
-                </td>
-                <td class="col-xs-2 text-right">
-                    <strong>Date:</strong>
-                </td>
-                <td class="col-xs-3">
-                    @Model.ProgramDate.ToShortDateString();
+                <td class="col-xs-4" colspan="3">
+                    $@Model.Cost.ToString("#,###.00")
                 </td>
             </tr>
             <tr>
