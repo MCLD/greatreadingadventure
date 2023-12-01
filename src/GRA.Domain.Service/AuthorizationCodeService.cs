@@ -111,5 +111,27 @@ namespace GRA.Domain.Service
                 return true;
             }
         }
+
+        public async Task<bool> SinglePageSignUpCode(string authorizationCode)
+        {
+            if (authorizationCode == null) { return false; }
+
+            string fixedCode = authorizationCode.Trim().ToLowerInvariant();
+            int siteId = GetCurrentSiteId();
+            var authCode = await _authorizationCodeRepository.GetByCodeAsync(siteId, fixedCode);
+
+            return authCode.SinglePageSignUp;
+        }
+
+        public async Task<int?> AssignedProgramFromCode(string authorizationCode)
+        {
+            if (authorizationCode == null) { return null; }
+
+            string fixedCode = authorizationCode.Trim().ToLowerInvariant();
+            int siteId = GetCurrentSiteId();
+            var authCode = await _authorizationCodeRepository.GetByCodeAsync(siteId, fixedCode);
+
+            return authCode.ProgramId;
+        }
     }
 }

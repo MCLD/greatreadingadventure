@@ -19,6 +19,9 @@ namespace GRA.Controllers
     {
         private const string AuthCodeAttempts = "AuthCodeAttempts";
         private const string EnteredAuthCode = "EnteredAuthCode";
+        private const string TwoStepSignUp = "TwoStepSignUp";
+        private const string SinglePageJoinCookie = "GRA.SinglePageSignUp";
+        private const string AssignedProgramCookie = "GRA.AssignedProgramId";
         private const string TempStep1 = "TempStep1";
         private const string TempStep2 = "TempStep2";
         private readonly AuthenticationService _authenticationService;
@@ -88,7 +91,21 @@ namespace GRA.Controllers
                     TempData[EnteredAuthCode] = model.AuthorizationCode;
                     ShowAlertInfo("Authorization code accepted.");
 
-                    if (site.SinglePageSignUp)
+                    var singlePageSignUp = site.SinglePageSignUp;
+                    
+                    if ((await _authorizationCodeService.SinglePageSignUpCode(sanitized))) {
+                        Response.Cookies.Append(SinglePageJoinCookie, "true");
+                        singlePageSignUp = true;
+                    }
+
+                    var programId = await _authorizationCodeService.AssignedProgramFromCode(sanitized);
+
+                    if (programId != null)
+                    {
+                        Response.Cookies.Append(AssignedProgramCookie, programId.ToString());
+                    }
+
+                    if (singlePageSignUp)
                     {
                         return RedirectToAction(nameof(Index));
                     }
@@ -127,7 +144,10 @@ namespace GRA.Controllers
             }
 
             var site = await GetCurrentSiteAsync();
-            if (!site.SinglePageSignUp)
+
+            var singlePageSignUp = site.SinglePageSignUp || Request.Cookies[SinglePageJoinCookie] == "true" || (await _authorizationCodeService.SinglePageSignUpCode(authCode));
+
+            if (!singlePageSignUp)
             {
                 return RedirectToAction(nameof(Step1));
             }
@@ -171,6 +191,12 @@ namespace GRA.Controllers
                 ProgramList = NameIdSelectList(programList.ToList()),
                 SchoolList = NameIdSelectList(await _schoolService.GetSchoolsAsync())
             };
+
+            if (int.TryParse(Request.Cookies[AssignedProgramCookie], out int id))
+            {
+                viewModel.ProgramId = id;
+                Response.Cookies.Append(AssignedProgramCookie, string.Empty, new CookieOptions { MaxAge = TimeSpan.Zero });
+            }
 
             var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
             if (askIfFirstTime)
@@ -242,7 +268,11 @@ namespace GRA.Controllers
             bool askActivityGoal;
             int defaultDailyGoal;
 
-            if (!site.SinglePageSignUp)
+            var singlePageSignUp = site.SinglePageSignUp || Request.Cookies[SinglePageJoinCookie] == "true";
+
+            Response.Cookies.Append(SinglePageJoinCookie, string.Empty, new CookieOptions { MaxAge = TimeSpan.Zero });
+
+            if (!singlePageSignUp)
             {
                 return RedirectToAction(nameof(Step1));
             }
@@ -468,7 +498,9 @@ namespace GRA.Controllers
             }
 
             var site = await GetCurrentSiteAsync();
-            if (site.SinglePageSignUp)
+            var singlePageSignUp = site.SinglePageSignUp || Request.Cookies[SinglePageJoinCookie] == "true" || (await _authorizationCodeService.SinglePageSignUpCode(authCode));
+
+            if (singlePageSignUp)
             {
                 return RedirectToAction(nameof(Index));
             }
@@ -506,6 +538,15 @@ namespace GRA.Controllers
                 RequirePostalCode = site.RequirePostalCode,
                 SystemList = NameIdSelectList(systemList.ToList())
             };
+
+            if (int.TryParse(Request.Cookies[AssignedProgramCookie], out int id)) {
+                var program = await _siteService.GetProgramByIdAsync(id);
+
+                if (program != null && !program.AskAge && !program.AskSchool)
+                {
+                    TempData[TwoStepSignUp] = true;
+                }
+            }
 
             if (systemList.Count() == 1)
             {
@@ -560,6 +601,30 @@ namespace GRA.Controllers
             if (ModelState.IsValid)
             {
                 TempData[TempStep1] = JsonConvert.SerializeObject(model);
+
+                if (int.TryParse(Request.Cookies[AssignedProgramCookie], out int programId))
+                {
+                    var program = await _siteService.GetProgramByIdAsync(programId);
+                    
+                    if (program == null || program.AskAge || program.AskSchool)
+                    {
+                        return RedirectToAction(nameof(Step2));
+                    }
+
+                    TempData[TempStep2] = JsonConvert.SerializeObject(new Step2ViewModel 
+                    { 
+                        ProgramId = programId,
+                        SchoolId = null,
+                        SchoolNotListed = false,
+                        IsHomeschooled = false,
+                        Age = null
+                    });
+
+                    Response.Cookies.Append(AssignedProgramCookie, string.Empty, new CookieOptions { MaxAge = TimeSpan.Zero });
+
+                    return RedirectToAction(nameof(Step3));
+                }
+
                 return RedirectToAction(nameof(Step2));
             }
 
@@ -608,7 +673,21 @@ namespace GRA.Controllers
                 SchoolList = NameIdSelectList(await _schoolService.GetSchoolsAsync())
             };
 
-            if (programList.Count() == 1)
+            if (int.TryParse(Request.Cookies[AssignedProgramCookie], out int id))
+            {
+                var program = await _siteService.GetProgramByIdAsync(id);
+                
+                if (program != null)
+                {
+                    viewModel.ProgramId = program.Id;
+                    viewModel.ShowAge = program.AskAge;
+                    viewModel.ShowSchool = program.AskSchool;
+                }
+
+                Response.Cookies.Append(AssignedProgramCookie, string.Empty, new CookieOptions { MaxAge = TimeSpan.Zero });
+            }
+
+                if (programList.Count() == 1)
             {
                 var programId = programList.Single().Id;
                 var program = await _siteService.GetProgramByIdAsync(programId);
