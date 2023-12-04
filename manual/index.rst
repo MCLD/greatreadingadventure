@@ -62,6 +62,7 @@ This manual is split into several main sections:
    setup/adding-avatars
    setup/customizing-the-look-and-feel
    setup/performer-registration
+   setup/email
    setup/triggers
    setup/vendor-codes
 
