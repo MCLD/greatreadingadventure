@@ -20,8 +20,8 @@ namespace GRA.Controllers
         private const string AuthCodeAttempts = "AuthCodeAttempts";
         private const string EnteredAuthCode = "EnteredAuthCode";
         private const string TwoStepSignUp = "TwoStepSignUp";
-        private const string SinglePageJoinCookie = "GRA.SinglePageSignUp";
-        private const string AssignedProgramCookie = "GRA.AssignedProgramId";
+        private const string SinglePageSignUp = "SinglePageSignUp";
+        private const string AuthCodeAssignedProgram = "AuthCodeAssignedProgram";
         private const string TempStep1 = "TempStep1";
         private const string TempStep2 = "TempStep2";
         private readonly AuthenticationService _authenticationService;
@@ -94,7 +94,7 @@ namespace GRA.Controllers
                     var singlePageSignUp = site.SinglePageSignUp;
                     
                     if ((await _authorizationCodeService.SinglePageSignUpCode(sanitized))) {
-                        Response.Cookies.Append(SinglePageJoinCookie, "true");
+                        TempData[SinglePageSignUp] = true;
                         singlePageSignUp = true;
                     }
 
@@ -102,7 +102,7 @@ namespace GRA.Controllers
 
                     if (programId != null)
                     {
-                        Response.Cookies.Append(AssignedProgramCookie, programId.ToString());
+                        TempData[AuthCodeAssignedProgram] = programId;
                     }
 
                     if (singlePageSignUp)
@@ -145,7 +145,7 @@ namespace GRA.Controllers
 
             var site = await GetCurrentSiteAsync();
 
-            var singlePageSignUp = site.SinglePageSignUp || Request.Cookies[SinglePageJoinCookie] == "true" || (await _authorizationCodeService.SinglePageSignUpCode(authCode));
+            var singlePageSignUp = site.SinglePageSignUp || TempData.ContainsKey(SinglePageSignUp) || (await _authorizationCodeService.SinglePageSignUpCode(authCode));
 
             if (!singlePageSignUp)
             {
@@ -192,10 +192,10 @@ namespace GRA.Controllers
                 SchoolList = NameIdSelectList(await _schoolService.GetSchoolsAsync())
             };
 
-            if (int.TryParse(Request.Cookies[AssignedProgramCookie], out int id))
+            if (TempData.ContainsKey(AuthCodeAssignedProgram))
             {
-                viewModel.ProgramId = id;
-                Response.Cookies.Append(AssignedProgramCookie, string.Empty, new CookieOptions { MaxAge = TimeSpan.Zero });
+                viewModel.ProgramId = (int)TempData[AuthCodeAssignedProgram];
+                TempData.Remove(AuthCodeAssignedProgram);
             }
 
             var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
@@ -268,9 +268,8 @@ namespace GRA.Controllers
             bool askActivityGoal;
             int defaultDailyGoal;
 
-            var singlePageSignUp = site.SinglePageSignUp || Request.Cookies[SinglePageJoinCookie] == "true";
-
-            Response.Cookies.Append(SinglePageJoinCookie, string.Empty, new CookieOptions { MaxAge = TimeSpan.Zero });
+            var singlePageSignUp = site.SinglePageSignUp || TempData.ContainsKey(SinglePageSignUp);
+            TempData.Remove(SinglePageSignUp);
 
             if (!singlePageSignUp)
             {
@@ -498,7 +497,7 @@ namespace GRA.Controllers
             }
 
             var site = await GetCurrentSiteAsync();
-            var singlePageSignUp = site.SinglePageSignUp || Request.Cookies[SinglePageJoinCookie] == "true" || (await _authorizationCodeService.SinglePageSignUpCode(authCode));
+            var singlePageSignUp = site.SinglePageSignUp || TempData.ContainsKey(SinglePageSignUp) || (await _authorizationCodeService.SinglePageSignUpCode(authCode));
 
             if (singlePageSignUp)
             {
@@ -539,8 +538,9 @@ namespace GRA.Controllers
                 SystemList = NameIdSelectList(systemList.ToList())
             };
 
-            if (int.TryParse(Request.Cookies[AssignedProgramCookie], out int id)) {
-                var program = await _siteService.GetProgramByIdAsync(id);
+            if (TempData.ContainsKey(AuthCodeAssignedProgram)) {
+                var program = await _siteService.GetProgramByIdAsync((int)TempData[AuthCodeAssignedProgram]);
+                TempData.Keep(AuthCodeAssignedProgram);
 
                 if (program != null && !program.AskAge && !program.AskSchool)
                 {
@@ -602,9 +602,9 @@ namespace GRA.Controllers
             {
                 TempData[TempStep1] = JsonConvert.SerializeObject(model);
 
-                if (int.TryParse(Request.Cookies[AssignedProgramCookie], out int programId))
+                if (TempData.ContainsKey(AuthCodeAssignedProgram))
                 {
-                    var program = await _siteService.GetProgramByIdAsync(programId);
+                    var program = await _siteService.GetProgramByIdAsync((int)TempData[AuthCodeAssignedProgram]);
                     
                     if (program == null || program.AskAge || program.AskSchool)
                     {
@@ -613,14 +613,14 @@ namespace GRA.Controllers
 
                     TempData[TempStep2] = JsonConvert.SerializeObject(new Step2ViewModel 
                     { 
-                        ProgramId = programId,
+                        ProgramId = program.Id,
                         SchoolId = null,
                         SchoolNotListed = false,
                         IsHomeschooled = false,
                         Age = null
                     });
 
-                    Response.Cookies.Append(AssignedProgramCookie, string.Empty, new CookieOptions { MaxAge = TimeSpan.Zero });
+                    TempData.Remove(AuthCodeAssignedProgram);
 
                     return RedirectToAction(nameof(Step3));
                 }
@@ -673,9 +673,9 @@ namespace GRA.Controllers
                 SchoolList = NameIdSelectList(await _schoolService.GetSchoolsAsync())
             };
 
-            if (int.TryParse(Request.Cookies[AssignedProgramCookie], out int id))
+            if (TempData.ContainsKey(AuthCodeAssignedProgram))
             {
-                var program = await _siteService.GetProgramByIdAsync(id);
+                var program = await _siteService.GetProgramByIdAsync((int)TempData[AuthCodeAssignedProgram]);
                 
                 if (program != null)
                 {
@@ -684,7 +684,7 @@ namespace GRA.Controllers
                     viewModel.ShowSchool = program.AskSchool;
                 }
 
-                Response.Cookies.Append(AssignedProgramCookie, string.Empty, new CookieOptions { MaxAge = TimeSpan.Zero });
+                TempData.Remove(AuthCodeAssignedProgram);
             }
 
                 if (programList.Count() == 1)
@@ -855,6 +855,9 @@ namespace GRA.Controllers
 
             var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
                 SiteSettingKey.Users.DefaultDailyPersonalGoal);
+
+            TempData.Remove(TwoStepSignUp);
+            TempData.Remove(AuthCodeAssignedProgram);
 
             if (site.SinglePageSignUp)
             {
