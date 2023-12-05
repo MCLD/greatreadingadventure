@@ -22,6 +22,7 @@ namespace GRA.Controllers
         private const string TwoStepSignUp = "TwoStepSignUp";
         private const string SinglePageSignUp = "SinglePageSignUp";
         private const string AuthCodeAssignedProgram = "AuthCodeAssignedProgram";
+        private const string AuthCodeAssignedBranch = "AuthCodeAssignedBranch";
         private const string TempStep1 = "TempStep1";
         private const string TempStep2 = "TempStep2";
         private readonly AuthenticationService _authenticationService;
@@ -105,6 +106,13 @@ namespace GRA.Controllers
                         TempData[AuthCodeAssignedProgram] = programId;
                     }
 
+                    var branchId = await _authorizationCodeService.AssignedBranchFromCode(sanitized);
+
+                    if (branchId != null)
+                    {
+                        TempData[AuthCodeAssignedBranch] = branchId;
+                    }
+
                     if (singlePageSignUp)
                     {
                         return RedirectToAction(nameof(Index));
@@ -179,9 +187,11 @@ namespace GRA.Controllers
 
             PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, site.Name];
 
-            var systemList = await _siteService.GetSystemList();
-            var programList = TempData.ContainsKey(AuthCodeAssignedProgram) 
-                ? new Program[] { (await _siteService.GetProgramByIdAsync((int)TempData[AuthCodeAssignedProgram])) } 
+            var systemList = TempData.ContainsKey(AuthCodeAssignedBranch)
+                ? Array.Empty<Domain.Model.System>()
+                : await _siteService.GetSystemList();
+            var programList = TempData.ContainsKey(AuthCodeAssignedProgram)
+                ? new Program[] { (await _siteService.GetProgramByIdAsync((int)TempData[AuthCodeAssignedProgram])) }
                 : await _siteService.GetProgramList();
             var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
 
@@ -197,17 +207,31 @@ namespace GRA.Controllers
             if (TempData.ContainsKey(AuthCodeAssignedProgram))
             {
                 viewModel.ProgramId = (int)TempData[AuthCodeAssignedProgram];
-                TempData.Remove(AuthCodeAssignedProgram);
+                TempData.Keep(AuthCodeAssignedProgram);
             }
 
-            var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
+            if (TempData.ContainsKey(AuthCodeAssignedBranch))
+            {
+                var branch = await _siteService.GetBranchByIdAsync((int)TempData[AuthCodeAssignedBranch]);
+                viewModel.BranchId = branch.Id;
+                viewModel.SystemId = branch.SystemId;
+                viewModel.EmailSubscriptionRequested = "No";
+                viewModel.IsFirstTime = "No";
+                viewModel.BranchList = NameIdSelectList(Array.Empty<Branch>());
+                TempData.Keep(AuthCodeAssignedBranch);
+            }
+
+            var askIfFirstTime = TempData.ContainsKey(SinglePageSignUp) 
+                ? false 
+                : await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
             if (askIfFirstTime)
             {
                 viewModel.AskFirstTime = EmptyNoYes();
             }
 
-            var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
-                SiteSettingKey.Users.AskEmailSubPermission);
+            var (askEmailSubscription, askEmailSubscriptionText) = TempData.ContainsKey(SinglePageSignUp) 
+                ? (false, "") 
+                : await GetSiteSettingStringAsync(SiteSettingKey.Users.AskEmailSubPermission);
             if (askEmailSubscription)
             {
                 viewModel.AskEmailSubscription = EmptyNoYes();
@@ -271,7 +295,7 @@ namespace GRA.Controllers
             int defaultDailyGoal;
 
             var singlePageSignUp = site.SinglePageSignUp || TempData.ContainsKey(SinglePageSignUp);
-            TempData.Remove(SinglePageSignUp);
+            TempData.Keep(SinglePageSignUp);
 
             if (!singlePageSignUp)
             {
@@ -283,15 +307,20 @@ namespace GRA.Controllers
                     _sharedLocalizer[ErrorMessages.Field,
                     _sharedLocalizer[DisplayNames.ZipCode]]);
             }
-            askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
+            askIfFirstTime = TempData.ContainsKey(SinglePageSignUp)
+                ? false
+                : await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
 
             if (!askIfFirstTime)
             {
                 ModelState.Remove(nameof(model.IsFirstTime));
             }
 
-            (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
-                SiteSettingKey.Users.AskEmailSubPermission);
+            (askEmailSubscription, askEmailSubscriptionText) = TempData.ContainsKey(SinglePageSignUp)
+                ? (false, "")
+                : await GetSiteSettingStringAsync(SiteSettingKey.Users.AskEmailSubPermission);
+
+            TempData.Keep(SinglePageSignUp);
 
             if (!askEmailSubscription)
             {
@@ -431,6 +460,10 @@ namespace GRA.Controllers
                         TempData.Add(TempDataKey.UserJoined, true);
                     }
 
+                    TempData.Remove(SinglePageSignUp);
+                    TempData.Remove(AuthCodeAssignedProgram);
+                    TempData.Remove(AuthCodeAssignedBranch);
+
                     return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
                 }
                 catch (GraException gex)
@@ -449,15 +482,21 @@ namespace GRA.Controllers
 
             if (model.SystemId.HasValue)
             {
-                var branchList = await _siteService.GetBranches(model.SystemId.Value);
+                var branchList = TempData.ContainsKey(AuthCodeAssignedBranch)
+                    ? new Branch[] { await _siteService.GetBranchByIdAsync((int)TempData[AuthCodeAssignedBranch]) }
+                    : await _siteService.GetBranches(model.SystemId.Value);
                 if (model.BranchId < 1)
                 {
                     branchList = branchList.Prepend(new Branch() { Id = -1 });
                 }
                 model.BranchList = NameIdSelectList(branchList.ToList());
             }
-            var systemList = await _siteService.GetSystemList();
-            var programList = await _siteService.GetProgramList();
+            var systemList = TempData.ContainsKey(AuthCodeAssignedBranch)
+                ? Array.Empty<Domain.Model.System>()
+                : await _siteService.GetSystemList();
+            var programList = TempData.ContainsKey(AuthCodeAssignedProgram)
+                ? new Program[] { (await _siteService.GetProgramByIdAsync((int)TempData[AuthCodeAssignedProgram])) }
+                : await _siteService.GetProgramList();
             var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
             model.SystemList = NameIdSelectList(systemList.ToList());
             model.ProgramList = NameIdSelectList(programList.ToList());
@@ -533,7 +572,9 @@ namespace GRA.Controllers
 
             PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, site.Name];
 
-            var systemList = await _siteService.GetSystemList();
+            var systemList = TempData.ContainsKey(AuthCodeAssignedBranch)
+                ? Array.Empty<Domain.Model.System>()
+                : await _siteService.GetSystemList();
             var viewModel = new Step1ViewModel
             {
                 RequirePostalCode = site.RequirePostalCode,
@@ -550,7 +591,14 @@ namespace GRA.Controllers
                 }
             }
 
-            if (systemList.Count() == 1)
+            if (TempData.ContainsKey(AuthCodeAssignedBranch))
+            {
+                var branch = await _siteService.GetBranchByIdAsync((int)TempData[AuthCodeAssignedBranch]);
+                viewModel.BranchId = branch.Id;
+                viewModel.SystemId = branch.SystemId;
+                viewModel.BranchList = NameIdSelectList(Array.Empty<Branch>());
+                TempData.Keep(AuthCodeAssignedBranch);
+            } else if (systemList.Count() == 1)
             {
                 var systemId = systemList.Single().Id;
                 var branchList = await _siteService.GetBranches(systemId);
@@ -623,9 +671,13 @@ namespace GRA.Controllers
                     });
 
                     TempData.Remove(AuthCodeAssignedProgram);
+                    TempData.Remove(AuthCodeAssignedBranch);
 
                     return RedirectToAction(nameof(Step3));
                 }
+
+                TempData.Remove(AuthCodeAssignedProgram);
+                TempData.Remove(AuthCodeAssignedBranch);
 
                 return RedirectToAction(nameof(Step2));
             }
@@ -858,9 +910,6 @@ namespace GRA.Controllers
             var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
                 SiteSettingKey.Users.DefaultDailyPersonalGoal);
 
-            TempData.Remove(TwoStepSignUp);
-            TempData.Remove(AuthCodeAssignedProgram);
-
             if (site.SinglePageSignUp)
             {
                 return RedirectToAction(nameof(Index));
@@ -963,6 +1012,8 @@ namespace GRA.Controllers
                     {
                         TempData.Add(TempDataKey.UserJoined, true);
                     }
+
+                    TempData.Remove(TwoStepSignUp);
 
                     return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
                 }

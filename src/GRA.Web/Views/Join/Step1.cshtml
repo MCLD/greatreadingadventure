@@ -66,7 +66,7 @@
                         <input asp-for="SystemId" type="hidden" />
                     }
 
-                    <div class="row row-spacing">
+                    <div class="row row-spacing @(Model.BranchList != null && Model.BranchList.Count() < 1 ? "hidden" : "")">
                         <div class="col-xs-12">
                             <label asp-for="BranchId" class="control-label"></label>
                             <select asp-for="BranchId" asp-items="Model.BranchList" class="form-control">

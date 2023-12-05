@@ -235,13 +235,15 @@ namespace GRA.Controllers.MissionControl
             }
 
             var programs = await _siteService.GetProgramList();
+            var branches = await _siteService.GetAllBranches(true);
 
             var viewModel = new AuthorizationCodeListViewModel
             {
                 AuthorizationCodes = authorizationCodeList.Data,
                 PaginateModel = paginateModel,
                 RoleList = new SelectList(await _roleService.GetAllAsync(), "Id", "Name"),
-                ProgramList = new SelectList(programs, "Id", "Name")
+                ProgramList = new SelectList(programs, "Id", "Name"),
+                BranchList = new SelectList(branches, "Id", "Name")
             };
 
             return View(viewModel);

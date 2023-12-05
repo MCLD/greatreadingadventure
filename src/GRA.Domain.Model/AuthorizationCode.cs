@@ -12,6 +12,8 @@ namespace GRA.Domain.Model
         public string Description { get; set; }
         [DisplayName("Role Program")]
         public int? ProgramId { get; set; }
+        [DisplayName("Assigned Branch")]
+        public int? BranchId { get; set; }
         [Required]
         [DisplayName("Role")]
         public int RoleId { get; set; }

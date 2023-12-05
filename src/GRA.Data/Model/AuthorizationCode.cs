@@ -13,6 +13,7 @@ namespace GRA.Data.Model
         [Required]
         public int RoleId { get; set; }
         public int? ProgramId { get; set; }
+        public int? BranchId { get; set; }
         public virtual Role Role { get; set; }
         public int Uses { get; set; }
         public bool IsSingleUse { get; set; }

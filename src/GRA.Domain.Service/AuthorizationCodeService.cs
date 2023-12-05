@@ -133,5 +133,16 @@ namespace GRA.Domain.Service
 
             return authCode.ProgramId;
         }
+
+        public async Task<int?> AssignedBranchFromCode(string authorizationCode)
+        {
+            if (authorizationCode == null) { return null; }
+
+            string fixedCode = authorizationCode.Trim().ToLowerInvariant();
+            int siteId = GetCurrentSiteId();
+            var authCode = await _authorizationCodeRepository.GetByCodeAsync(siteId, fixedCode);
+
+            return authCode.BranchId;
+        }
     }
 }
