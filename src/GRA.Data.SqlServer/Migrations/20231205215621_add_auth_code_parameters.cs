@@ -5,11 +5,17 @@
 namespace GRA.Data.SqlServer.Migrations
 {
     /// <inheritdoc />
-    public partial class add_program_and_signup_to_authorization_code : Migration
+    public partial class add_auth_code_parameters : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<int>(
+                name: "BranchId",
+                table: "AuthorizationCodes",
+                type: "int",
+                nullable: true);
+
             migrationBuilder.AddColumn<int>(
                 name: "ProgramId",
                 table: "AuthorizationCodes",
@@ -27,6 +33,10 @@ namespace GRA.Data.SqlServer.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropColumn(
+                name: "BranchId",
+                table: "AuthorizationCodes");
+
             migrationBuilder.DropColumn(
                 name: "ProgramId",
                 table: "AuthorizationCodes");

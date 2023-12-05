@@ -17,7 +17,7 @@ namespace GRA.Data.SqlServer.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.13")
+                .HasAnnotation("ProductVersion", "7.0.14")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -131,6 +131,9 @@ namespace GRA.Data.SqlServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("BranchId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -148,8 +151,14 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<bool>("IsSingleUse")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("ProgramId")
+                        .HasColumnType("int");
+
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("SinglePageSignUp")
+                        .HasColumnType("bit");
 
                     b.Property<int>("SiteId")
                         .HasColumnType("int");
