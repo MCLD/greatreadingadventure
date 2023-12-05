@@ -180,7 +180,9 @@ namespace GRA.Controllers
             PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, site.Name];
 
             var systemList = await _siteService.GetSystemList();
-            var programList = await _siteService.GetProgramList();
+            var programList = TempData.ContainsKey(AuthCodeAssignedProgram) 
+                ? new Program[] { (await _siteService.GetProgramByIdAsync((int)TempData[AuthCodeAssignedProgram])) } 
+                : await _siteService.GetProgramList();
             var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
 
             var viewModel = new SinglePageViewModel
