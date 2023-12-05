@@ -1041,8 +1041,19 @@ namespace GRA.Domain.Service
             return await _userRepository.GetFullNameByIdAsync(userId);
         }
 
+        public async Task<IEnumerable<User>> GetWelcomeRecipientsAsync(int siteId,
+            int skip,
+            int take)
+        {
+            var (_, memberLongerThanHours) = await _siteLookupService
+                .GetSiteSettingIntAsync(siteId, SiteSettingKey.Email.WelcomeDelayHours);
+
+            return await _userRepository
+                .GetWelcomeRecipientsAsync(skip, take, memberLongerThanHours);
+        }
+
         public async Task<JobStatus> ImportHouseholdMembersAsync(int jobId,
-                    CancellationToken token,
+                            CancellationToken token,
             IProgress<JobStatus> progress = null)
         {
             var requestingUser = GetClaimId(ClaimType.UserId);

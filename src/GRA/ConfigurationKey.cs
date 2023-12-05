@@ -24,13 +24,14 @@
         public static readonly string InitialProgramSetup = "GraInitialProgramSetup";
         public static readonly string InstanceName = "GraInstanceName";
         public static readonly string InternalContentPath = "GraInternalContentPath";
+        public static readonly string JobSleepSeconds = "GraJobSleepSeconds";
         public static readonly string RedisConfiguration = "GraRedisConfiguration";
         public static readonly string ReverseProxyAddress = "GraReverseProxyAddress";
         public static readonly string RollingLogHttp = "GraRollingLogHttp";
         public static readonly string RollingLogPath = "GraRollingLogPath";
         public static readonly string RuntimeCacheRedisConfiguration = "GraRuntimeCacheRedisConfiguration";
         public static readonly string RuntimeCacheRedisInstance = "GraRuntimeCacheRedisInstance";
-        public static readonly string RuntimeCacheSqlConfiguration = "RuntimeCacheSqlConfiguration";
+        public static readonly string RuntimeCacheSqlConfiguration = "GraRuntimeCacheSqlConfiguration";
         public static readonly string SeqApiKey = "GraSeqAPIKey";
         public static readonly string SeqEndpoint = "GraSeqEndpoint";
         public static readonly string SqlSessionSchemaName = "GraSqlSessionSchemaName";
