@@ -65,6 +65,10 @@ namespace GRA.Domain.Repository
 
         Task<DataWithCount<ICollection<User>>> GetUsersInRoleAsync(int roleId, BaseFilter filter);
 
+        Task<IEnumerable<User>> GetWelcomeRecipientsAsync(int skip,
+            int take,
+            int memberLongerThanHours);
+
         Task<bool> IsAnyoneSubscribedAsync();
 
         Task<bool> IsEmailSubscribedAsync(string email);

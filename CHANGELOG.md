@@ -14,6 +14,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Last update information on performer scheduling selections
 - Require day of event contact information when scheduling performer
 - End date to streaming program list on dashboard and streaming page
+- Scheduled task execution capability
+- Welcome email capability
 
 ## Changed
 

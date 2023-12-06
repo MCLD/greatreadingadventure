@@ -144,7 +144,6 @@ namespace GRA.Controllers.MissionControl
             if (!UserHasPermission(Permission.AccessMissionControl))
             {
                 // not authorized for Mission Control, redirect to authorization code
-
                 return RedirectToAction(nameof(AuthorizationCode));
             }
 
@@ -156,6 +155,20 @@ namespace GRA.Controllers.MissionControl
             }
 
             Site site = await GetCurrentSiteAsync();
+
+            if (UserHasPermission(Permission.ManageSites))
+            {
+                // set unsub base if not set
+                var (isSet, unsubBase) = await _siteLookupService.GetSiteSettingStringAsync(site.Id,
+                    SiteSettingKey.Email.UnsubscribeBase);
+
+                if (!isSet || string.IsNullOrEmpty(unsubBase))
+                {
+                    await _siteService.UpdateSiteSettingAsync(site.Id,
+                        SiteSettingKey.Email.UnsubscribeBase,
+                        UnsubBase());
+                }
+            }
 
             var viewModel = new AtAGlanceViewModel
             {
