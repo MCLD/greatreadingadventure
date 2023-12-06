@@ -64,23 +64,37 @@
 
         <div class="row form-group">
             <div class="col-xs-12 col-sm-8 col-sm-offset-2">
-                <form id="onSiteContactInfo">
-                    <div class="form-group">
-                        <label class="required-field" for="OnSiteContactName">On-site contact name</label>
-                        <input name="OnSiteContactName" asp-for="BranchSelection.OnSiteContactName" type="text" class="form-control">
-                        <span class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label class="required-field" for="OnSiteContactEmail">On-site contact email</label>
-                        <input name="OnSiteContactEmail" asp-for="BranchSelection.OnSiteContactEmail" type="text" class="form-control">
-                        <span class="text-danger"></span>
-                    </div class="form-group">
-                    <div>
-                        <label class="required-field" for="OnSiteContactPhone">On-site contact phone</label>
-                        <input name="OnSiteContactPhone" asp-for="BranchSelection.OnSiteContactPhone" type="text" class="form-control">
-                        <span class="text-danger"></span>
-                    </div>
-                </form>
+                <div class=" panel panel-default">
+                    <form class="panel-body" id="onSiteContactInfo">
+                        <div class="form-group">
+                            <label>Please provide contact information for someone the performer can contact the day of the performance.</label>
+                        </div>
+                        <div class="form-group">
+                            <label for="OnSiteContactName">Name:</label>
+                            <div class="input-with-validation">
+                                <input name="OnSiteContactName" asp-for="BranchSelection.OnSiteContactName" type="text" class="form-control" required>
+                                <div class="validation"></div>
+                            </div>
+                            <span class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="OnSiteContactEmail">Email:</label>
+                            <div class="input-with-validation">
+                                <input name="OnSiteContactEmail" asp-for="BranchSelection.OnSiteContactEmail" type="email" pattern=".+@@.+\..+" class="form-control" required>
+                                <div class="validation"></div>
+                            </div>
+                            <span class="text-danger"></span>
+                        </div class="form-group">
+                        <div>
+                            <label for="OnSiteContactPhone">Phone (please enter numbers only):</label>
+                            <div class="input-with-validation">
+                                <input name="OnSiteContactPhone" asp-for="BranchSelection.OnSiteContactPhone" type="tel" pattern="[0-9]{10}" class="form-control" required>
+                                <div class="validation"></div>
+                            </div>
+                            <span class="text-danger"></span>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
 
@@ -226,13 +240,13 @@
             var fieldsValid = true;
 
             document.querySelectorAll("#onSiteContactInfo input").forEach(function (input) {
-                if (!input.value) {
+                if (!input.checkValidity()) {
                     if (showOnSiteWarnings) { 
-                        input.parentNode.querySelector("span").innerText = `Please enter ${input.parentNode.querySelector("label").innerText.toLowerCase()}.`;
+                        input.parentNode.parentNode.querySelector("span").innerText = `Please enter ${input.parentNode.parentNode.querySelector("label").innerText.toLowerCase()}.`;
                     }
                     fieldsValid = false;
                 } else {
-                    input.parentNode.querySelector("span").innerText = "";
+                    input.parentNode.parentNode.querySelector("span").innerText = "";
                 }
             });
 

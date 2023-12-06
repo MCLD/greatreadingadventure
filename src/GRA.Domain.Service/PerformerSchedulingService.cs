@@ -228,6 +228,10 @@ namespace GRA.Domain.Service
                     + program.BackToBackMinutes;
             }
 
+            branchSelection.OnSiteContactName = branchSelection.OnSiteContactName.Trim();
+            branchSelection.OnSiteContactEmail = branchSelection.OnSiteContactEmail.Trim();
+            branchSelection.OnSiteContactPhone = branchSelection.OnSiteContactPhone.Trim();
+
             return await _psBranchSelectionRepository.AddSaveAsync(authId,
                 branchSelection);
         }
@@ -1565,9 +1569,9 @@ namespace GRA.Domain.Service
                 VerifyManagementPermission();
             }
 
-            currentBranchSelection.OnSiteContactName = branchSelection.OnSiteContactName;
-            currentBranchSelection.OnSiteContactEmail = branchSelection.OnSiteContactEmail;
-            currentBranchSelection.OnSiteContactPhone = branchSelection.OnSiteContactPhone;
+            currentBranchSelection.OnSiteContactName = branchSelection.OnSiteContactName.Trim();
+            currentBranchSelection.OnSiteContactEmail = branchSelection.OnSiteContactEmail.Trim();
+            currentBranchSelection.OnSiteContactPhone = branchSelection.OnSiteContactPhone.Trim();
 
             await _psBranchSelectionRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
                 currentBranchSelection);

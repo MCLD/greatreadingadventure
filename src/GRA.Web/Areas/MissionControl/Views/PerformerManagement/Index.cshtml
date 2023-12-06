@@ -226,19 +226,28 @@
                             <span id="editcontactinfo" class="on-site-contact-button on-site-contact-edit fas fa-edit"></span>
                             <div>
                                 <label class="on-site-contact-label" for="onsitecontactname">Name:</label>
-                                <input class="on-site-contact-input disabled" type="text" id="onsitecontactname" name="onsitecontactname" disabled/>
+                                <span class="input-with-validation">
+                                    <input class="on-site-contact-input disabled" type="text" id="onsitecontactname" name="onsitecontactname" disabled required />
+                                    <span class="validation"></span>
+                                </span>
                             </div>
                             <div>
                                 <label class="on-site-contact-label" for="onsitecontactemail">Email:</label>
-                                <input class="on-site-contact-input disabled" type="text" id="onsitecontactemail" name="onsitecontactemail" disabled/>
+                                <span class="input-with-validation">
+                                    <input class="on-site-contact-input disabled" type="email" pattern=".+@@.+\..+" id="onsitecontactemail" name="onsitecontactemail" disabled required />
+                                    <span class="validation"></span>
+                                </span>
                             </div>
                             <div>
                                 <label class="on-site-contact-label" for="onsitecontactphone">Phone:</label>
-                                <input class="on-site-contact-input disabled" type="text" id="onsitecontactphone" name="onsitecontactphone" disabled/>
+                                <span class="input-with-validation">
+                                    <input class="on-site-contact-input disabled" type="tel" pattern="[0-9]{10}" id="onsitecontactphone" name="onsitecontactphone" disabled required />
+                                    <span class="validation"></span>
+                                </span>
                             </div>
-                                <button id="submitcontactinfo" type="button" class="on-site-contact-button btn btn-success hidden" disabled>Submit</button>
-                                <button id="cancelcontactinfo" type="button" class="on-site-contact-button btn btn-danger hidden">Cancel</button>
-                                <div id="checkAlert" class="alert hidden"></div>
+                            <button id="submitcontactinfo" type="button" class="on-site-contact-button btn btn-success hidden" disabled>Submit</button>
+                            <button id="cancelcontactinfo" type="button" class="on-site-contact-button btn btn-danger hidden">Cancel</button>
+                            <div id="checkAlert" class="alert hidden"></div>
                         </td>
                     </tr>
                 </table>
@@ -263,6 +272,15 @@
 
         var contactInfoButtons = document.querySelectorAll(".on-site-contact-button");
         var contactInfoInputs = document.querySelectorAll(".on-site-contact-input");
+
+        function allInputsValid() {
+
+            for (const input of contactInfoInputs) {
+                if (!input.checkValidity()) return false;
+            };
+
+            return true;
+        }
 
         function hideEditContactInfo() {
             contactInfoInputs.forEach(function (input) {
@@ -420,10 +438,10 @@
 
         document.querySelectorAll(".on-site-contact-input").forEach(input => {
             input.addEventListener("input", function () {
-                if (input.value == "") {
-                    document.querySelector("#submitcontactinfo").disabled = true;
-                } else {
+                if (allInputsValid()) {
                     document.querySelector("#submitcontactinfo").disabled = false;
+                } else {
+                    document.querySelector("#submitcontactinfo").disabled = true;
                 }
             })
         })
