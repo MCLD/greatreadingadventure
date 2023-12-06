@@ -656,7 +656,7 @@ namespace GRA.Controllers
                 {
                     var program = await _siteService.GetProgramByIdAsync((int)TempData[AuthCodeAssignedProgram]);
                     
-                    if (program == null || program.AskAge || program.AskSchool)
+                    if (!TempData.ContainsKey(TwoStepSignUp))
                     {
                         return RedirectToAction(nameof(Step2));
                     }
@@ -670,14 +670,10 @@ namespace GRA.Controllers
                         Age = null
                     });
 
-                    TempData.Remove(AuthCodeAssignedProgram);
-                    TempData.Remove(AuthCodeAssignedBranch);
+                    TempData.Keep(AuthCodeAssignedProgram);
 
                     return RedirectToAction(nameof(Step3));
                 }
-
-                TempData.Remove(AuthCodeAssignedProgram);
-                TempData.Remove(AuthCodeAssignedBranch);
 
                 return RedirectToAction(nameof(Step2));
             }
@@ -738,7 +734,7 @@ namespace GRA.Controllers
                     viewModel.ShowSchool = program.AskSchool;
                 }
 
-                TempData.Remove(AuthCodeAssignedProgram);
+                TempData.Keep(AuthCodeAssignedProgram);
             }
 
                 if (programList.Count() == 1)
@@ -1014,6 +1010,8 @@ namespace GRA.Controllers
                     }
 
                     TempData.Remove(TwoStepSignUp);
+                    TempData.Remove(AuthCodeAssignedProgram);
+                    TempData.Remove(AuthCodeAssignedBranch);
 
                     return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
                 }
