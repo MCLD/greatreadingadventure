@@ -386,11 +386,6 @@ namespace GRA.Domain.Service
             return await _challengeRepository.GetByIdsAsync(GetCurrentSiteId(), challengeIds);
         }
 
-        public async Task<int> GetChallengeCountAsync()
-        {
-            return await _challengeRepository.GetChallengeCountAsync(new ChallengeFilter { SiteId = GetCurrentSiteId() });
-        }
-
         public async Task<Challenge> GetChallengeDetailsAsync(int challengeId)
         {
             int? userId = null;

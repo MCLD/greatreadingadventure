@@ -253,6 +253,7 @@ namespace GRA.Controllers
             }
 
             var challengeList = await _challengeService.GetPaginatedChallengeListAsync(filter);
+            var isFiltered = challengeList.Count < (await _challengeService.GetPaginatedChallengeListAsync(new ChallengeFilter { SiteId = GetCurrentSiteId() })).Count;
 
             var paginateModel = new PaginateViewModel
             {
@@ -310,7 +311,7 @@ namespace GRA.Controllers
                 ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
                 Search = Search,
                 Status = Status,
-                IsFiltered = challengeList.Count < await _challengeService.GetChallengeCountAsync()
+                IsFiltered = isFiltered
             };
             if (!string.IsNullOrWhiteSpace(Search))
             {
