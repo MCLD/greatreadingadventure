@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -295,7 +296,8 @@ namespace GRA.Controllers.MissionControl
             var viewModel = new PerformerCoversheetViewModel
             {
                 Months = monthSelection,
-                PerformerId = performer.Id
+                PerformerId = performer.Id,
+                PerformerName = performer.Name
             };
 
             return View(viewModel);
@@ -346,6 +348,8 @@ namespace GRA.Controllers.MissionControl
                 PayToAddress = performer.BillingAddress,
                 InvoiceNumber = invoiceNumber
             };
+
+            PageTitle = "Coversheet - " + performer.Name + " - " + CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month) + " " + DateTime.Today.Year.ToString();
 
             return View(viewModel);
         }

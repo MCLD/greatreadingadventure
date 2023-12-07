@@ -7,6 +7,9 @@
 <div class="performer-coversheet-container">
     <div class="row">
         <div class="col-xs-12 text-center text-muted">
+            <div class="text-danger hidden-print">
+                <h4>Please make sure to turn off printing web page header and footer in the print settings before outputting to PDF</h4>
+            </div>
             <h2>Services Team Program Cover Sheet</h2>
             <div>Include an invoice if requesting funds</div>
             <div class="row-spacing"><strong>@(DateTime.Today.ToLongDateString())</strong></div>
@@ -92,15 +95,15 @@
         <div class="col-xs-3 text-right">
             <strong>Payment Method:</strong>
         </div>
-        <div class="col-xs-2">
-            <input type="radio" name="payMethod" /> <label>Mail Check</label>
-        </div>
-        <div class="col-xs-2">
-            <input type="radio" name="payMethod" /> <label>eCheck</label>
-        </div>
+        <span class="coversheet-radio-button">
+            <input type="radio" name="payMethod" />&nbsp;<label>Mail Check</label>
+        </span>
+        <span class="coversheet-radio-button">
+            <input type="radio" name="payMethod" />&nbsp;<label>eCheck</label>
+        </span>
     </div>
 
-    <div class="row">
+    <div class="row form-group">
         <table class="col-xs-12">
             <tr>
                 <th class="col-xs-3 text-right"></th>

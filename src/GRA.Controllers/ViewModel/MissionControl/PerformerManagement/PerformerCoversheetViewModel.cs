@@ -12,6 +12,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.PerformerManagement
         public decimal Cost { get; set; }
         public DateTime ProgramDate { get; set; }
         public int PerformerId { get; set; }
+        public string PerformerName {  get; set; }
         public string VendorId { get; set; }
         public string InvoiceNumber { get; set; }
         public string PayToName { get; set; }

@@ -1,7 +1,23 @@
-﻿.performer-coversheet-container td {
+﻿.performer-coversheet-container {
+    margin: 2rem 0;
+}
+
+.performer-coversheet-container h1 {
+    margin-bottom: 2.5rem;
+}
+
+.performer-coversheet-container th {
+  vertical-align: top;
+}
+
+.performer-coversheet-container td {
     height: 4rem;
     line-height: 2.5rem;
     border: 1px solid black;
+}
+
+.coversheet-radio-button {
+    margin-left: 1.5rem;
 }
 
 .coversheet-row-spacing {
