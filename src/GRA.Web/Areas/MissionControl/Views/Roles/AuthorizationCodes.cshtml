@@ -6,7 +6,7 @@
     <div class="col-xs-12">
         <a class="btn btn-default"
            data-toggle="modal"
-           data-target="#addModal">Add a Authorization Code</a>
+           data-target="#addModal">Add an Authorization Code</a>
     </div>
 </div>
 
@@ -54,7 +54,10 @@
                                             data-role="@code.RoleId"
                                             data-code="@code.Code"
                                             data-description="@code.Description"
-                                            data-single="@code.IsSingleUse">
+                                            data-single="@code.IsSingleUse"
+                                            data-program="@code.ProgramId"
+                                            data-branch="@code.BranchId"
+                                            data-express="@code.SinglePageSignUp">
                                         <span class="fas fa-fw fa-pencil-alt" aria-hidden="true"></span>
                                     </button>
                                     <button type="button"
@@ -143,6 +146,45 @@
                             </select>
                             <span asp-validation-for="AuthorizationCode.IsSingleUse"
                                   class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="AuthorizationCode.ProgramId"
+                                   class="control-label"></label>
+                            <span class="far fa-question-circle"
+                                  data-toggle="tooltip"
+                                  title="Automatically assign users of this role to the selected program (optional)."></span>
+                            <select id="addProgram"
+                                    asp-for="AuthorizationCode.ProgramId"
+                                    asp-items="Model.ProgramList"
+                                    class="form-control">
+                                <option value="null" selected>None</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="AuthorizationCode.BranchId"
+                                   class="control-label"></label>
+                            <span class="far fa-question-circle"
+                                  data-toggle="tooltip"
+                                  title="Automatically assign users of this role to the selected branch (optional)."></span>
+                            <select id="addBranch"
+                                    asp-for="AuthorizationCode.BranchId"
+                                    asp-items="Model.BranchList"
+                                    class="form-control">
+                                <option value="null" selected>None</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="AuthorizationCode.SinglePageSignUp"
+                                   class="control-label"></label>
+                            <span class="far fa-question-circle"
+                                  data-toggle="tooltip"
+                                  title="Use a shortened, single-page sign-up to join with this code."></span>
+                            <select id="addSinglePage"
+                                    asp-for="AuthorizationCode.SinglePageSignUp"
+                                    class="form-control">
+                                <option value="False">No</option>
+                                <option value="True">Yes</option>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -236,7 +278,45 @@
                             <span asp-validation-for="AuthorizationCode.IsSingleUse"
                                   class="text-danger"></span>
                         </div>
-
+                        <div class="form-group">
+                            <label asp-for="AuthorizationCode.ProgramId"
+                                   class="control-label"></label>
+                            <span class="far fa-question-circle"
+                                  data-toggle="tooltip"
+                                  title="Automatically assign users of this role to a program (optional)"></span>
+                            <select id="editProgram"
+                                    asp-for="AuthorizationCode.ProgramId"
+                                    asp-items="Model.ProgramList"
+                                    class="form-control">
+                                <option value="null" selected>None</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="AuthorizationCode.BranchId"
+                                   class="control-label"></label>
+                            <span class="far fa-question-circle"
+                                  data-toggle="tooltip"
+                                  title="Automatically assign users of this role to the selected branch (optional)."></span>
+                            <select id="editBranch"
+                                    asp-for="AuthorizationCode.BranchId"
+                                    asp-items="Model.BranchList"
+                                    class="form-control">
+                                <option value="null" selected>None</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="AuthorizationCode.SinglePageSignUp"
+                                   class="control-label"></label>
+                            <span class="far fa-question-circle"
+                                  data-toggle="tooltip"
+                                  title="Use a shortened, single-page sign-up to join with this code."></span>
+                            <select id="editSinglePage"
+                                    asp-for="AuthorizationCode.SinglePageSignUp"
+                                    class="form-control">
+                                <option value="False">No</option>
+                                <option value="True">Yes</option>
+                            </select>
+                        </div>
                         <div class="modal-footer">
                             <button type="button"
                                     class="btn btn-default"
@@ -327,6 +407,9 @@
             modal.find("#editCode").val(code);
             modal.find("#editDescription").val(button.data("description"));
             modal.find("#editSingle").val(button.data("single").toLowerCase());
+            modal.find("#editProgram").val(!!button.data("program") ? button.data("program") : "null");
+            modal.find("#editBranch").val(!!button.data("branch") ? button.data("branch") : "null");
+            modal.find("#editSinglePage").val(button.data("express"));
         });
 
         $("#deleteModal").on("show.bs.modal", function (e) {

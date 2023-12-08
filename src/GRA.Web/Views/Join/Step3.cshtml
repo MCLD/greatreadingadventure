@@ -8,7 +8,14 @@
                     <span class="lead">@ViewData[ViewDataKey.Title]</span>
                 </div>
                 <div class="panel-body">
-                    @await Html.PartialAsync("_MultiStepPartial")
+
+                    @if (TempData.ContainsKey("TwoStepSignUp"))
+                    {
+                        <partial name="_TwoStepPartial" />
+                    } else
+                    {
+                        <partial name="_MultiStepPartial" />
+                    }
 
                     <div class="row row-spacing">
                         <div class="col-xs-12">
