@@ -11,5 +11,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Roles
         public PaginateViewModel PaginateModel { get; set; }
         public AuthorizationCode AuthorizationCode { get; set; }
         public SelectList RoleList { get; set; }
+        public SelectList ProgramList { get; set; }
+        public SelectList BranchList { get; set; }
     }
 }
