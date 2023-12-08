@@ -10,6 +10,10 @@ namespace GRA.Domain.Model
         [MaxLength(255)]
         public string Code { get; set; }
         public string Description { get; set; }
+        [DisplayName("Role Program")]
+        public int? ProgramId { get; set; }
+        [DisplayName("Assigned Branch")]
+        public int? BranchId { get; set; }
         [Required]
         [DisplayName("Role")]
         public int RoleId { get; set; }
@@ -17,5 +21,7 @@ namespace GRA.Domain.Model
         public int Uses { get; set; }
         [DisplayName("Single Use")]
         public bool IsSingleUse { get; set; }
+        [DisplayName("Express Sign-Up")]
+        public bool SinglePageSignUp { get; set; }
     }
 }

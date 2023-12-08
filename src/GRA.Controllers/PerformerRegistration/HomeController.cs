@@ -328,7 +328,7 @@ namespace GRA.Controllers.PerformerRegistration
             var userId = GetId(ClaimType.UserId);
             var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId,
                 includeBranches: true);
-
+            
             if (performer?.RegistrationCompleted == false)
             {
                 return RedirectToAction(nameof(Schedule));
@@ -366,6 +366,16 @@ namespace GRA.Controllers.PerformerRegistration
                 {
                     viewModel.BranchAvailability = performer.Branches?.Select(_ => _.Id).ToList();
                 }
+            } else
+            {
+                var user = await _userService.GetDetails(GetActiveUserId());
+
+                viewModel.Performer = new PsPerformer
+                {
+                    Name = user.FullName,
+                    Email = user.Email,
+                    Phone = user.PhoneNumber
+                };
             }
 
             PageTitle = "Performer Information";

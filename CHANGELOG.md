@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - End date to streaming program list on dashboard and streaming page
 - Scheduled task execution capability
 - Welcome email capability
+- Streamlined sign up options with authorization codes
 
 ## Changed
 

@@ -77,6 +77,9 @@ namespace GRA.Domain.Service
             currentAuthorizationCode.Description = authorizationCode.Description;
             currentAuthorizationCode.IsSingleUse = authorizationCode.IsSingleUse;
             currentAuthorizationCode.RoleId = authorizationCode.RoleId;
+            currentAuthorizationCode.ProgramId = authorizationCode.ProgramId;
+            currentAuthorizationCode.BranchId = authorizationCode.BranchId;
+            currentAuthorizationCode.SinglePageSignUp = authorizationCode.SinglePageSignUp;
 
             await _authorizationCodeRepository.UpdateSaveAsync(authId, currentAuthorizationCode);
         }
@@ -108,6 +111,39 @@ namespace GRA.Domain.Service
             {
                 return true;
             }
+        }
+
+        public async Task<bool> SinglePageSignUpCode(string authorizationCode)
+        {
+            if (authorizationCode == null) { return false; }
+
+            string fixedCode = authorizationCode.Trim().ToLowerInvariant();
+            int siteId = GetCurrentSiteId();
+            var authCode = await _authorizationCodeRepository.GetByCodeAsync(siteId, fixedCode);
+
+            return authCode.SinglePageSignUp;
+        }
+
+        public async Task<int?> AssignedProgramFromCode(string authorizationCode)
+        {
+            if (authorizationCode == null) { return null; }
+
+            string fixedCode = authorizationCode.Trim().ToLowerInvariant();
+            int siteId = GetCurrentSiteId();
+            var authCode = await _authorizationCodeRepository.GetByCodeAsync(siteId, fixedCode);
+
+            return authCode.ProgramId;
+        }
+
+        public async Task<int?> AssignedBranchFromCode(string authorizationCode)
+        {
+            if (authorizationCode == null) { return null; }
+
+            string fixedCode = authorizationCode.Trim().ToLowerInvariant();
+            int siteId = GetCurrentSiteId();
+            var authCode = await _authorizationCodeRepository.GetByCodeAsync(siteId, fixedCode);
+
+            return authCode.BranchId;
         }
     }
 }
