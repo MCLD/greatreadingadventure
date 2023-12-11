@@ -8,7 +8,10 @@
     <div class="row">
         <div class="col-xs-12 text-center text-muted">
             <div class="text-danger hidden-print">
-                <h4>Please make sure to turn off printing web page header and footer in the print settings before outputting to PDF</h4>
+                <h4>
+                    Please make sure to turn off printing web page header and footer in the print
+                    settings before outputting to PDF
+                </h4>
             </div>
             <h2>Services Team Program Cover Sheet</h2>
             <div>Include an invoice if requesting funds</div>
@@ -18,7 +21,7 @@
     <div class="row">
         <table class="col-xs-12">
             <tr>
-                <th class="col-xs-3 text-right">
+                <th class="col-xs-3 text-right" style="vertical-align: middle;">
                     Library Branch:
                 </th>
                 <td class="col-xs-9">
@@ -26,7 +29,7 @@
                 </td>
             </tr>
             <tr>
-                <th class="col-xs-3 text-right">
+                <th class="col-xs-3 text-right" style="vertical-align: middle;">
                     Staff Contact:
                 </th>
                 <td class="col-xs-9">
@@ -37,7 +40,7 @@
     </div>
 
     <div class="row coversheet-row-spacing">
-        <div class="col-xs-3 text-right">
+        <div class="col-xs-3 text-right" style="vertical-align: middle;">
             <strong>Funding Source:</strong>
         </div>
         <div class="col-xs-9">
@@ -60,21 +63,21 @@
                 <td class="col-xs-9 pre-wrap" colspan="3">@Model.Description</td>
             </tr>
             <tr>
-                <th class="col-xs-3 text-right">
+                <th class="col-xs-3 text-right" style="vertical-align: middle;">
                     Cost:
                 </th>
                 <td class="col-xs-4" colspan="3">
-                    $@Model.Cost.ToString("#,###.00")
+                    @Model.Cost.ToString("C")
                 </td>
             </tr>
             <tr>
-                <th class="col-xs-3 text-right">
+                <th class="col-xs-3 text-right" style="vertical-align: middle;">
                     Vendor #:
                 </th>
                 <td class="col-xs-4">
                     @Model.VendorId
                 </td>
-                <td class="col-xs-2 text-right">
+                <td class="col-xs-2 text-right" style="vertical-align: middle;">
                     <strong>Invoice #:</strong>
                 </td>
                 <td class="col-xs-3">
@@ -92,7 +95,7 @@
     </div>
 
     <div class="row coversheet-row-spacing">
-        <div class="col-xs-3 text-right">
+        <div class="col-xs-3 text-right" style="vertical-align: middle;">
             <strong>Payment Method:</strong>
         </div>
         <span class="coversheet-radio-button">
@@ -112,7 +115,7 @@
                 </td>
             </tr>
             <tr>
-                <th class="col-xs-3 text-right">
+                <th class="col-xs-3 text-right" style="vertical-align: middle;">
                     Services Team
                 </th>
                 <td class="col-xs-9" colspan="3">
@@ -132,7 +135,8 @@
     </div>
 
     <div class="visible-print coversheet-footer">
-        <strong>Questions?</strong> Contact the Services Team (<strong>ServicesTeam@mcldaz.org</strong>)
+        <strong>Questions?</strong> Contact the Services Team
+        (<strong>ServicesTeam@mcldaz.org</strong>)
     </div>
 </div>
 
