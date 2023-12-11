@@ -44,7 +44,7 @@
             public const string DashboardOptionalFields = "If you choose to enter a title and author, you can view a list of all the books you've read in your profile.";
             public const string EarnedOn = "Earned on {0}";
             public const string EventBadgeEarned = "You earned this badge for attending the event: <a href=\"{0}\" target=\"_blank\">{1}</a>";
-            public const string EventLimitedToProgram = "This event is limited to the program: {0}";
+            public const string EventLimitedToProgram = "This event is limited to the age group: {0}";
             public const string FreeBookRedeemDashboard = "You've earned a free book! Head over to <a href=\"{0}\"><strong>My Profile</strong></a> page to choose what to do with it.";
             public const string FreeBookRedeemExpirationDashboard = "You've earned a free book! Head over to <a href=\"{0}\"><strong>My Profile</strong></a> page by {1} to choose what to do with it.";
             public const string Goal = "The goal of this program is {0} points.";
@@ -99,7 +99,7 @@
             public const string AddExistingExplanation = "Add an existing participant into your {0}, if that participant is the head of a {0} their {0} members will be moved into your {0} as well.";
             public const string AddUsername = "Add username";
             public const string AllParticipatingLibraries = "All Participating Libraries";
-            public const string AllPrograms = "All Programs";
+            public const string AllPrograms = "All Age Groups";
             public const string AndOtherActivities = "and other activities";
             public const string AndTheir = "and their {0}";
             public const string Apply = "Apply";
@@ -299,7 +299,7 @@
             public const string PasswordsMatch = "Password and password confirmation do not match.";
             public const string Permission = "Permission denied.";
             public const string Phone = "The {0} field is not a valid phone number.";
-            public const string Program = "The program you've selected is not valid, please select another program.";
+            public const string Program = "The age group you've selected is not valid, please select another age group.";
             public const string School = "The school you've selected is not valid, please select another school.";
             public const string SessionExpired = "Your session has expired. Please sign in again.";
             public const string SomethingWentWrong = "Something went wrong, please send us a mail with details of what you were attempting to do.";
