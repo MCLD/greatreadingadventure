@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Improved release prep and publish scripts
 - Back-to-back interval now selectable from a list
 - Overall goal to "Community Reading Goal" so it works for all seasons
+- Changed display of "Program" on the participant side to "Age Group"
 
 ## Fixed
 
