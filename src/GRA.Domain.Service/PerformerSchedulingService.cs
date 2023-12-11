@@ -675,6 +675,11 @@ namespace GRA.Domain.Service
             return await _psBranchSelectionRepository.GetByIdAsync(id);
         }
 
+        public async Task<ICollection<PsBranchSelection>> GetBranchProgramSelectionsByPerformerAsync(int performerId)
+        {
+            return await _psBranchSelectionRepository.GetByPerformerIdAsync(performerId);
+        }
+
         public async Task<ICollection<int>> GetExcludedBranchIdsAsync()
         {
             if (!HasPermission(Permission.AccessPerformerRegistration)

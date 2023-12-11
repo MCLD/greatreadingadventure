@@ -59,6 +59,12 @@
                                             data-name="@performer.Name">
                                         <span class="fas fa-times" aria-hidden="true"></span>
                                     </button>
+                                    <a asp-action="PrepCoverSheet" asp-route-id="@performer.Id">
+                                        <span class="fas fa-file-alt fa-lg wide-tooltip pull-right"
+                                              title="Performer coversheet"
+                                              data-toggle="tooltip"
+                                              data-placement="top"></span>
+                                    </a>
                                 </td>
                             }
                             else
@@ -69,6 +75,12 @@
                                     {
                                         <a asp-action="PerformerSelections" asp-route-id="@performer.Id" class="btn btn-xs btn-default">View Selections</a>
                                     }
+                                    <a asp-action="PrepCoverSheet" asp-route-id="@performer.Id">
+                                        <span class="fas fa-file-alt fa-lg wide-tooltip pull-right"
+                                              title="Performer coversheet"
+                                              data-toggle="tooltip"
+                                              data-placement="top"></span>
+                                    </a>
                                 </td>
                             }
                         </tr>
@@ -151,14 +163,14 @@
         @if (Model.SchedulingStage < GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
         {
             <text>
-            $("#deleteModal").on("show.bs.modal", function(event) {
-                var button = $(event.relatedTarget);
-                var id = button.data("id");
-                var name = button.data("name");
-                $(this).find("#modal-text").text('Are you sure you want to delete the performer "' + name + '" and all information associated with them?');
-                $(this).find("#PerformerToDelete_Id").val(id);
-                $(this).find("#PerformerToDelete_Name").val(name);
-            });
+                $("#deleteModal").on("show.bs.modal", function (event) {
+                    var button = $(event.relatedTarget);
+                    var id = button.data("id");
+                    var name = button.data("name");
+                    $(this).find("#modal-text").text('Are you sure you want to delete the performer "' + name + '" and all information associated with them?');
+                    $(this).find("#PerformerToDelete_Id").val(id);
+                    $(this).find("#PerformerToDelete_Name").val(name);
+                });
             </text>
         }
     </script>
