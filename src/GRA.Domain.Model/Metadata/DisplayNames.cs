@@ -43,7 +43,7 @@
         public const string Ordering = "Ordering";
         public const string Password = "Password";
         public const string PhoneNumber = "Phone Number";
-        public const string Program = "Program";
+        public const string Program = "Age Group";
         public const string ReturnToSignIn = "Return to Sign In";
         public const string School = "School";
         public const string SchoolDistrict = "School District";
