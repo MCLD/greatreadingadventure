@@ -321,7 +321,7 @@
     <value>Escuela Privada</value>
     <comment>A school type - private school</comment>
   </data>
-  <data name="Program" xml:space="preserve">
+  <data name="Age Group" xml:space="preserve">
     <value>Grupo de edad</value>
     <comment>Prompt for a participant's program selection from a drop-down list, examples might be 'Adult' or 'Teen' - the context is that of a summer or winter library reading program</comment>
   </data>
@@ -421,7 +421,7 @@
     <value>El programa no está abierto para actividad en este momento.</value>
     <comment>A participant tried to enter activity when the program was not permitting it.</comment>
   </data>
-  <data name="The program you've selected is not valid, please select another program." xml:space="preserve">
+  <data name="The age group you've selected is not valid, please select another age group." xml:space="preserve">
     <value>El grupo de edad que ha seleccionado no es válido, seleccione otro grupo de edad.</value>
     <comment>The participant has selected a program that is not valid. This should not occur but could happen if a program became invalid while they were signing up.</comment>
   </data>
@@ -753,7 +753,7 @@
     <value>¡Debes introducir un código!</value>
     <comment>Validation prompt if the user clicked the secret code submission button without entering a secret code.</comment>
   </data>
-  <data name="All Programs" xml:space="preserve">
+  <data name="All Age Groups" xml:space="preserve">
     <value>Todos los grupos de edad</value>
     <comment>Select all programs in a program selection drop-down list</comment>
   </data>
@@ -937,7 +937,7 @@
     <value>Desafíos Relacionados</value>
     <comment>Text shown before a link to multiple challenges related to a shown event</comment>
   </data>
-  <data name="This event is limited to the program: {0}" xml:space="preserve">
+  <data name="This event is limited to the age group: {0}" xml:space="preserve">
     <value>Este evento está limitado al grupo de edad: {0}</value>
     <comment>Shown to a user when an event is limited to a specific program.</comment>
   </data>
