@@ -5,6 +5,6 @@ namespace GRA.Domain.Repository
 {
     public interface IDirectEmailHistoryRepository : IRepository<Model.DirectEmailHistory>
     {
-        public Task<ICollection<string>> GetSentEmailByTemplateIdAsync(int directEmailTemplateId);
+        public Task<ISet<string>> GetSentEmailByTemplateIdAsync(int directEmailTemplateId);
     }
 }
