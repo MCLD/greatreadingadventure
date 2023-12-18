@@ -17,16 +17,15 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<HashSet<string>> GetSentEmailByTemplateIdAsync(int directEmailTemplateId)
+        public async Task<ICollection<string>>
+            GetSentEmailByTemplateIdAsync(int directEmailTemplateId)
         {
-            var result = await DbSet
+            return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.DirectEmailTemplateId == directEmailTemplateId)
                 .Select(_ => _.ToEmailAddress)
                 .Distinct()
                 .ToListAsync();
-
-            return new HashSet<string>(result);
         }
     }
 }
