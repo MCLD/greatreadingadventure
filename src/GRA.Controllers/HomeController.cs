@@ -20,6 +20,7 @@ namespace GRA.Controllers
         private const string ModelData = "ModelData";
         private const string SecretCodeMessage = "SecretCodeMessage";
         private const string TitleErrorMessage = "TitleErrorMessage";
+        private const string LatestBook = "LatestBook";
         private readonly ActivityService _activityService;
         private readonly AvatarService _avatarService;
         private readonly CarouselService _carouselService;
@@ -221,6 +222,16 @@ namespace GRA.Controllers
                     UpcomingStreams = await _eventService
                         .GetUpcomingStreamListAsync()
                 };
+
+                var latestBookCookie = Request.Cookies[$"{GetActiveUserId()}{LatestBook}"];
+                if (latestBookCookie != null)
+                {
+                    var title = latestBookCookie.Split(";")[0];
+                    var author = latestBookCookie.Split(";")[1];
+
+                    viewModel.Title = title;
+                    viewModel.Author = author;
+                }
 
                 try
                 {
@@ -433,6 +444,11 @@ namespace GRA.Controllers
                     Author = viewModel.Author,
                     Title = viewModel.Title
                 };
+
+                if (viewModel.Title != null)
+                {
+                    Response.Cookies.Append($"{GetActiveUserId()}{LatestBook}", $"{viewModel.Title};{viewModel.Author ?? ""}");
+                }
 
                 try
                 {
