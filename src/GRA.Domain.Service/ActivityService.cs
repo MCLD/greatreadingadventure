@@ -169,10 +169,11 @@ namespace GRA.Domain.Service
             {
                 serviceResult.Status = ServiceResultStatus.Warning;
                 serviceResult.Message = $"The book <strong><em>{addedBook.Title}</em></strong> by <strong>{addedBook.Author}</strong> is already on the booklist.";
+                serviceResult.Data = addedBook.Id;
             }
             else
             {
-                await _bookRepository.AddSaveForUserAsync(activeUserId, userId, addedBook);
+                serviceResult.Data = await _bookRepository.AddSaveForUserAsync(activeUserId, userId, addedBook);
 
                 if (addNotification && book != null)
                 {
@@ -184,7 +185,6 @@ namespace GRA.Domain.Service
 
                     await _notificationRepository.AddSaveAsync(authUserId, notification);
                     serviceResult.Status = ServiceResultStatus.Success;
-                    serviceResult.Data = addedBook.Id;
                 }
             }
             return serviceResult;
@@ -480,6 +480,11 @@ namespace GRA.Domain.Service
 
             var activityLogResult = new ActivityLogResult();
 
+            if (book != null && !string.IsNullOrWhiteSpace(book.Title))
+            {
+                activityLogResult.BookId = (await AddBookAsync(GetActiveUserId(), book, true)).Data;
+            }
+
             var maximumActivity = await GetMaximumAllowedActivityAsync(userToLog.SiteId);
             var userActivityAmount = await _userLogRepository.GetActivityEarnedForUserAsync(
                 userToLog.Id);
@@ -521,15 +526,6 @@ namespace GRA.Domain.Service
                 {
                     userLog.AwardedBy = activeUserId;
                 }
-                userLog = await _userLogRepository.AddSaveAsync(activeUserId, userLog);
-
-                activityLogResult.UserLogId = userLog.Id;
-
-                // update the score in the user record
-                userToLog = await AddPointsSaveAsync(authUserId,
-                    activeUserId,
-                    userToLog.Id,
-                    pointsEarned);
 
                 // prepare the notification text
                 string activityDescription = "for <strong>";
@@ -565,10 +561,19 @@ namespace GRA.Domain.Service
                 // add the book if one was supplied
                 if (book != null && !string.IsNullOrWhiteSpace(book.Title))
                 {
-                    var bookData = await AddBookAsync(GetActiveUserId(), book);
-                    activityLogResult.BookId = bookData.Data;
                     notification.Text += $" The book <strong><em>{book.Title}</em></strong> by <strong>{book.Author}</strong> was added to your book list.";
+                    userLog.BookId = activityLogResult.BookId;
                 }
+
+                userLog = await _userLogRepository.AddSaveAsync(activeUserId, userLog);
+
+                activityLogResult.UserLogId = userLog.Id;
+
+                // update the score in the user record
+                userToLog = await AddPointsSaveAsync(authUserId,
+                    activeUserId,
+                    userToLog.Id,
+                    pointsEarned);
 
                 await _notificationRepository.AddSaveAsync(authUserId, notification);
 
@@ -598,11 +603,7 @@ namespace GRA.Domain.Service
 
                     await _notificationRepository.AddSaveAsync(authUserId, maxNotification);
                 }
-            }
-            else if (book != null && !string.IsNullOrWhiteSpace(book.Title))
-            {
-                activityLogResult.BookId = (await AddBookAsync(GetActiveUserId(), book, true)).Data;
-            }
+            } 
 
             return activityLogResult;
         }

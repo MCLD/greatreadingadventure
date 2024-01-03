@@ -24,6 +24,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Back-to-back interval now selectable from a list
 - Overall goal to "Community Reading Goal" so it works for all seasons
 - Changed display of "Program" on the participant side to "Age Group"
+- Book title and author now display in user history if provided
 
 ## Fixed
 
