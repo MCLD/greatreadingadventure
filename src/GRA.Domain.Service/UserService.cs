@@ -1490,8 +1490,8 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<User> RegisterUserAsync(User user, string password,
-                                                                                                                                                                                                                                                                                                                            bool MCRegistration = false, bool allowDuringCloseProgram = false)
+        public async Task<User> RegisterUserAsync(User user, string password, 
+            bool MCRegistration = false, bool allowDuringCloseProgram = false)
         {
             var siteId = GetCurrentSiteId();
 

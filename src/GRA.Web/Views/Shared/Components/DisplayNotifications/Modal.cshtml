@@ -7,6 +7,10 @@
             {
                 @Html.Raw(notification.Text.Replace("and a badge", $"<a href=\"{Url.Action("History", "Profile")}\">and a badge</a>"))
                 <br />
+                @if(notification.SupplementalText != null)
+                {
+                    @Html.Raw(notification.SupplementalText)
+                }
             }
             @if (!string.IsNullOrWhiteSpace(Model.SummaryText))
             {

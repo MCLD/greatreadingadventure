@@ -21,6 +21,7 @@ namespace GRA.Domain.Model
         public bool IsJoiner { get; set; }
         public string DisplayIcon { get; set; }
         public object LocalizedText { get; set; }
+        public object SupplementalText { get; set; }
         public int? AvatarBundleId { get; set; }
         public string AttachmentFilename { get; set; }
     }

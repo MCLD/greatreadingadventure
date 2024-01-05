@@ -77,6 +77,10 @@ namespace GRA.Controllers.ViewComponents
                         notification.AttachmentFilename
                             = _pathResolver.ResolveContentPath(notification.AttachmentFilename);
                     }
+                    if (HttpContext.Items[ItemKey.AskToAddFamilyMember].ToString() == "True")
+                    {
+                        notification.SupplementalText = $"Would you like to <a href='{Url.Action(nameof(ProfileController.AddHouseholdMember), ProfileController.Name)}'>add a family member?</a>";
+                    }
                     notification.LocalizedText
                         = _sharedHtmlLocalizer[Annotations.Info.SuccessfullyJoined,
                             HttpContext.Items[ItemKey.SiteName]];

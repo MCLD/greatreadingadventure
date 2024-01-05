@@ -273,6 +273,13 @@ namespace GRA
                     Info = "Sets a reading goal (minutes) for the entire site and duration",
                     Category = typeof(SiteSettingKey.Site).Name,
                     Format = SiteSettingFormat.Integer
+                },
+                [SiteSettingKey.Site.AskToAddFamilyMembers] = new SiteSettingDefinition
+                {
+                    Name = "Ask New Users to Add Family Members",
+                    Info = "Upon joining, new users will see a one-time notification asking if they would like to add any family members.",
+                    Category = typeof(SiteSettingKey.Site).Name,
+                    Format = SiteSettingFormat.Boolean
                 }
             };
     }

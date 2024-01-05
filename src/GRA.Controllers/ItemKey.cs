@@ -28,5 +28,6 @@
         public static readonly string SiteStage = "SiteStage";
         public static readonly string UnreadCount = "UnreadCount";
         public static readonly string WebScheme = "WebScheme";
+        public static readonly string AskToAddFamilyMember = "AskToAddFamilyMember";
     }
 }
