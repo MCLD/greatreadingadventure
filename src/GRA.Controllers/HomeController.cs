@@ -226,11 +226,10 @@ namespace GRA.Controllers
                 var latestBookCookie = Request.Cookies[$"{GetActiveUserId()}{LatestBook}"];
                 if (latestBookCookie != null)
                 {
-                    var title = latestBookCookie.Split(";")[0];
-                    var author = latestBookCookie.Split(";")[1];
+                    var bookData = latestBookCookie.Split(";;");
 
-                    viewModel.Title = title;
-                    viewModel.Author = author;
+                    viewModel.Title = bookData[0];
+                    viewModel.Author = bookData.Length == 2 ? bookData[1] : null;
                 }
 
                 try
@@ -447,7 +446,7 @@ namespace GRA.Controllers
 
                 if (viewModel.Title != null)
                 {
-                    Response.Cookies.Append($"{GetActiveUserId()}{LatestBook}", $"{viewModel.Title};{viewModel.Author ?? ""}");
+                    Response.Cookies.Append($"{GetActiveUserId()}{LatestBook}", $"{viewModel.Title};;{viewModel.Author ?? ""}");
                 }
 
                 try
