@@ -17,5 +17,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.PerformerScheduling
         public SelectList BranchList { get; set; }
 
         public bool CanSchedule { get; set; }
+        public int CurrentUserId { get; set; }
+        public bool IsSiteManager { get; set; }
     }
 }
