@@ -26,6 +26,7 @@ namespace GRA.Controllers
         private readonly ActivityService _activityService;
         private readonly CategoryService _categoryService;
         private readonly ChallengeService _challengeService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogger<ChallengesController> _logger;
         private readonly AutoMapper.IMapper _mapper;
         private readonly SiteService _siteService;
@@ -35,6 +36,7 @@ namespace GRA.Controllers
             ActivityService activityService,
             CategoryService categoryService,
             ChallengeService challengeService,
+            IHttpContextAccessor httpContextAccessor,
             SiteService siteService) : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -45,6 +47,8 @@ namespace GRA.Controllers
                 ?? throw new ArgumentNullException(nameof(categoryService));
             _challengeService = challengeService
                 ?? throw new ArgumentNullException(nameof(challengeService));
+            _httpContextAccessor = httpContextAccessor
+                ?? throw new ArgumentNullException(nameof(httpContextAccessor));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             PageTitle = _sharedLocalizer[Annotations.Title.Challenges];
         }
@@ -168,14 +172,21 @@ namespace GRA.Controllers
         {
             if (ClearSearch)
             {
-                Response.Cookies.Append(GRA.Defaults.ChallengesFilterCookieName, string.Empty, new CookieOptions { MaxAge = TimeSpan.Zero });
+                _httpContextAccessor
+                    .HttpContext
+                    .Session
+                    .Remove(Defaults.ChallengesFilterSessionKey);
             }
             else if (string.IsNullOrEmpty(Request.QueryString.Value))
             {
-                var cookie = Request.Cookies[GRA.Defaults.ChallengesFilterCookieName];
-                if (cookie != null)
+                var saved = _httpContextAccessor
+                    .HttpContext
+                    .Session
+                    .GetString(Defaults.ChallengesFilterSessionKey);
+
+                if (saved != null)
                 {
-                    var queryParams = HttpUtility.ParseQueryString(cookie);
+                    var queryParams = HttpUtility.ParseQueryString(saved);
 
                     Search = queryParams?[nameof(Search)];
                     Status = queryParams?[nameof(Status)];
@@ -189,16 +200,18 @@ namespace GRA.Controllers
                     {
                         Favorites = favorites;
                     }
-                    if(int.TryParse(queryParams?[nameof(Program)], out int program))
+                    if (int.TryParse(queryParams?[nameof(Program)], out int program))
                     {
                         Program = program;
                     }
                 }
-
             }
             else
             {
-                Response.Cookies.Append(GRA.Defaults.ChallengesFilterCookieName, Request.QueryString.Value);
+                _httpContextAccessor
+                    .HttpContext
+                    .Session
+                    .SetString(Defaults.ChallengesFilterSessionKey, Request.QueryString.Value);
             }
 
             var filter = new ChallengeFilter(page)
@@ -380,8 +393,7 @@ namespace GRA.Controllers
             {
                 var challengeList = new List<Challenge>
                 {
-                    new Challenge
-                    {
+                    new() {
                         Id = challengeId,
                         IsFavorited = favorite
                     }
