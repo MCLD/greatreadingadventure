@@ -12,8 +12,11 @@ namespace GRA.Data.Model
         public string Description { get; set; }
         [Required]
         public int RoleId { get; set; }
+        public int? ProgramId { get; set; }
+        public int? BranchId { get; set; }
         public virtual Role Role { get; set; }
         public int Uses { get; set; }
         public bool IsSingleUse { get; set; }
+        public bool SinglePageSignUp { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using GRA.Data.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,13 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GRA.Data.SqlServer.Migrations
 {
     [DbContext(typeof(SqlServerContext))]
-    partial class SqlServerContextModelSnapshot : ModelSnapshot
+    [Migration("20231107214310_add_psschedule_on_site_contact")]
+    partial class add_psschedule_on_site_contact
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.14")
+                .HasAnnotation("ProductVersion", "7.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -131,9 +134,6 @@ namespace GRA.Data.SqlServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("BranchId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -151,14 +151,8 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<bool>("IsSingleUse")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("ProgramId")
-                        .HasColumnType("int");
-
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("SinglePageSignUp")
-                        .HasColumnType("bit");
 
                     b.Property<int>("SiteId")
                         .HasColumnType("int");
@@ -2407,6 +2401,18 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<int?>("KitId")
                         .HasColumnType("int");
 
+                    b.Property<string>("OnSiteContactEmail")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("OnSiteContactName")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("OnSiteContactPhone")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
                     b.Property<int?>("ProgramId")
                         .HasColumnType("int");
 
@@ -2426,7 +2432,7 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<DateTime>("SelectedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("UpdatedByUserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -2435,13 +2441,11 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.HasIndex("BranchId");
 
-                    b.HasIndex("CreatedBy");
-
                     b.HasIndex("KitId");
 
                     b.HasIndex("ProgramId");
 
-                    b.HasIndex("UpdatedByUserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("PsBranchSelections");
                 });
@@ -4884,12 +4888,6 @@ namespace GRA.Data.SqlServer.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("GRA.Data.Model.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("GRA.Data.Model.PsKit", "Kit")
                         .WithMany()
                         .HasForeignKey("KitId")
@@ -4900,22 +4898,21 @@ namespace GRA.Data.SqlServer.Migrations
                         .HasForeignKey("ProgramId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("GRA.Data.Model.User", "UpdatedByUser")
+                    b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
-                        .HasForeignKey("UpdatedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("AgeGroup");
 
                     b.Navigation("Branch");
 
-                    b.Navigation("CreatedByUser");
-
                     b.Navigation("Kit");
 
                     b.Navigation("Program");
 
-                    b.Navigation("UpdatedByUser");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsExcludeBranch", b =>

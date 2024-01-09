@@ -13,7 +13,14 @@
                     <span class="lead">@ViewData[ViewDataKey.Title]</span>
                 </div>
                 <div class="panel-body">
-                    @await Html.PartialAsync("_MultiStepPartial")
+                    @if (TempData.ContainsKey("TwoStepSignUp"))
+                    {
+                        <partial name="_TwoStepPartial" />
+                        TempData.Keep("TwoStepSignUp");
+                    } else 
+                    {
+                        <partial name="_MultiStepPartial" />
+                    }
 
                     <div class="row row-spacing">
                         <div class="col-xs-12">
@@ -59,15 +66,22 @@
                         <input asp-for="SystemId" type="hidden" />
                     }
 
-                    <div class="row row-spacing">
-                        <div class="col-xs-12">
-                            <label asp-for="BranchId" class="control-label"></label>
-                            <select asp-for="BranchId" asp-items="Model.BranchList" class="form-control">
-                                <option></option>
-                            </select>
-                            <span asp-validation-for="BranchId" class="text-danger"></span>
+                    @if (Model.BranchList != null && Model.BranchList.Count() < 1)
+                    {
+                        <input asp-for="BranchId" type="hidden" />
+                    }
+                    else
+                    {
+                        <div class="row row-spacing">
+                            <div class="col-xs-12">
+                                <label asp-for="BranchId" class="control-label"></label>
+                                <select asp-for="BranchId"
+                                        asp-items="Model.BranchList"
+                                        class="form-control"></select>
+                                <span asp-validation-for="BranchId" class="text-danger"></span>
+                            </div>
                         </div>
-                    </div>
+                    }
                 </div>
                 <div class="panel-footer clearfix">
                     <div class="pull-right">

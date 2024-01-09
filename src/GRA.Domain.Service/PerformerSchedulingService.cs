@@ -228,6 +228,10 @@ namespace GRA.Domain.Service
                     + program.BackToBackMinutes;
             }
 
+            branchSelection.OnSiteContactName = branchSelection.OnSiteContactName.Trim();
+            branchSelection.OnSiteContactEmail = branchSelection.OnSiteContactEmail.Trim();
+            branchSelection.OnSiteContactPhone = branchSelection.OnSiteContactPhone.Trim();
+
             return await _psBranchSelectionRepository.AddSaveAsync(authId,
                 branchSelection);
         }
@@ -673,6 +677,11 @@ namespace GRA.Domain.Service
         public async Task<PsBranchSelection> GetBranchProgramSelectionByIdAsync(int id)
         {
             return await _psBranchSelectionRepository.GetByIdAsync(id);
+        }
+
+        public async Task<ICollection<PsBranchSelection>> GetBranchProgramSelectionsByPerformerAsync(int performerId)
+        {
+            return await _psBranchSelectionRepository.GetByPerformerIdAsync(performerId);
         }
 
         public async Task<ICollection<int>> GetExcludedBranchIdsAsync()
@@ -1541,6 +1550,33 @@ namespace GRA.Domain.Service
             currentBranchSelection.AgeGroupId = branchSelection.AgeGroupId;
             currentBranchSelection.KitId = branchSelection.KitId;
             currentBranchSelection.UpdatedByUserId = GetClaimId(ClaimType.UserId);
+
+            await _psBranchSelectionRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
+                currentBranchSelection);
+        }
+
+        public async Task UpdateBranchProgramContactAsync(PsBranchSelection branchSelection)
+        {
+            var currentBranchSelection = await _psBranchSelectionRepository.GetByIdAsync(
+                branchSelection.Id);
+
+            if (currentBranchSelection == null)
+            {
+                throw new GraException("Selection does not exist.");
+            }
+            else if (!currentBranchSelection.ProgramId.HasValue)
+            {
+                throw new GraException("Selection is not a program selection.");
+            }
+
+            if (GetActiveUserId() != currentBranchSelection.CreatedBy)
+            {
+                VerifyManagementPermission();
+            }
+
+            currentBranchSelection.OnSiteContactName = branchSelection.OnSiteContactName.Trim();
+            currentBranchSelection.OnSiteContactEmail = branchSelection.OnSiteContactEmail.Trim();
+            currentBranchSelection.OnSiteContactPhone = branchSelection.OnSiteContactPhone.Trim();
 
             await _psBranchSelectionRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
                 currentBranchSelection);

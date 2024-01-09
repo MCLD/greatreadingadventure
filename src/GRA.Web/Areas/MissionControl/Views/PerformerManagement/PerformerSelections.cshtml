@@ -94,17 +94,11 @@
                     <thead>
                         <tr>
                             <th width="170px">Total Performer Time</th>
-                            @if (backToBack)
-                            {
-                                <th width="150px">Start Time(s)</th>
-
-                            }
-                            else
-                            {
-                                <th width="90px">Start Time</th>
-                            }
-                            <th width="120px">Age Group</th>
-                            <th>Program</th>
+                            <th>
+                                Program/
+                                <br />
+                                Ages
+                            </th>
                             <th>Location</th>
                             <th width="400px">Secret Code</th>
                             <th class="hidden-print" width="36px">&nbsp;</th>
@@ -115,15 +109,21 @@
                         @foreach (var branchSelection in branchSelectionDate)
                         {
                             <tr>
-                                <td>@branchSelection.ScheduleStartTime.ToShortTimeString() &ndash; @branchSelection.ScheduleStartTime.AddMinutes(branchSelection.ScheduleDuration).ToShortTimeString()</td>
-                                <td>
-                                    @branchSelection.RequestedStartTime.ToShortTimeString()@(branchSelection.BackToBackProgram ? $", {branchSelection.RequestedStartTime.AddMinutes(branchSelection.Program.ProgramLengthMinutes + branchSelection.Program.BackToBackMinutes).ToShortTimeString()}" : "")
+                                <td style="white-space:nowrap">
+                                    @branchSelection.ScheduleStartTime.ToShortTimeString() &ndash; @branchSelection.ScheduleStartTime.AddMinutes(branchSelection.ScheduleDuration).ToShortTimeString()
+                                    <div>
+                                        (@branchSelection.RequestedStartTime.ToShortTimeString()@(branchSelection.BackToBackProgram ? $", {branchSelection.RequestedStartTime.AddMinutes(branchSelection.Program.ProgramLengthMinutes + branchSelection.Program.BackToBackMinutes).ToShortTimeString()}" : "") start time)
+                                    </div>
                                 </td>
-                                <td>@branchSelection.AgeGroup.Name</td>
                                 <td>
-                                    <a asp-action="Program"
-                                       asp-route-id="@branchSelection.ProgramId"
-                                       target="_blank">@branchSelection.Program.Title</a>
+                                    <div>
+                                        <a asp-action="Program"
+                                           asp-route-id="@branchSelection.ProgramId"
+                                           target="_blank">@branchSelection.Program.Title</a>
+                                    </div>
+                                    <div>
+                                        @branchSelection.AgeGroup.Name
+                                    </div> 
                                 </td>
                                 <td>
                                     @branchSelection.Branch.SystemName:
@@ -139,6 +139,15 @@
                                             (@branchSelection.Branch.Address)
                                         </span>
                                     </span>
+                                    <div style="margin-top:0.5rem">
+                                        <strong>Contact:</strong> @branchSelection.OnSiteContactName
+                                        <div>
+                                            @branchSelection.OnSiteContactEmail
+                                        </div>
+                                        <div>
+                                            @branchSelection.OnSiteContactPhone
+                                        </div>
+                                    </div>
                                 </td>
                                 <td>
                                     <table style="width:100%;">
@@ -149,13 +158,13 @@
                                                        value="@branchSelection.SecretCode"
                                                        autocomplete="off" />
                                             </td>
-                                            <td style="padding-left:3px; text-align:center; width:30px;">
+                                            <td class="hidden-print" style="padding-left:3px; text-align:center; width:30px;">
                                                 <span class="icon fas fa-lg colored-icon @(!string.IsNullOrWhiteSpace(branchSelection.SecretCode) ? "fa-check" : "hidden")"></span>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td colspan="2">
-                                                <div class="errorMessage text-danger"></div>
+                                                <div class="errorMessage text-danger hidden-print"></div>
                                             </td>
                                         </tr>
                                     </table>

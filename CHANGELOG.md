@@ -8,20 +8,24 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## Added
 
+- Coversheet generation for performer invoices
 - System setting for performer livestreaming question
 - System setting for performer liability insurance question
 - System setting to configure acceptable back-to-back intervals
 - Last update information on performer scheduling selections
+- Require day of event contact information when scheduling performer
 - End date to streaming program list on dashboard and streaming page
 - Filters applied to challenge list are retained in session cookie
 - Scheduled task execution capability
 - Welcome email capability
+- Streamlined sign up options with authorization codes
 
 ## Changed
 
 - Improved release prep and publish scripts
 - Back-to-back interval now selectable from a list
 - Overall goal to "Community Reading Goal" so it works for all seasons
+- Changed display of "Program" on the participant side to "Age Group"
 
 ## Fixed
 
