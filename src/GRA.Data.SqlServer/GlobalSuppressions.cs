@@ -25,3 +25,8 @@ using System.Diagnostics.CodeAnalysis;
     Justification = "Generated EF Code",
     Scope = "namespaceanddescendants",
     Target = "~N:GRA.Data.SqlServer.Migrations")]
+[assembly: SuppressMessage("Roslynator",
+    "RCS1021:Convert lambda expression body to expression body",
+    Justification = "Generated EF Code",
+    Scope = "namespaceanddescendants",
+    Target = "~N:GRA.Data.SqlServer.Migrations")]
