@@ -47,11 +47,22 @@
         }
         else if (Model.SchedulingStage >= GRA.Domain.Model.PsSchedulingStage.SchedulingOpen && Model.Performer.IsApproved)
         {
-            <a asp-action="PerformerSelections"
-               asp-route-id="@Model.Performer.Id"
-               class="btn btn-lg btn-default pull-right">
-                View Selections
-            </a>
+            <div class="pull-right text-right">
+                <div class="row-spacing">
+                    <a asp-action="PerformerSelections"
+                       asp-route-id="@Model.Performer.Id"
+                       class="btn btn-lg btn-default">
+                        View Selections
+                    </a>
+                </div class="row-spacing">
+                <div>
+                    <a asp-action="PrepCoverSheet"
+                       asp-route-id="@Model.Performer.Id"
+                       class="btn btn-lg btn-default">
+                        Cover Sheet
+                    </a>
+                </div>
+            </div>
         }
 
     </div>
@@ -221,7 +232,9 @@
         </h2>
     </div>
     <div class="col-xs-12">
-        @{int count = 0;}
+        @{
+            int count = 0;
+        }
         @for (var calendarMonth = new DateTime(Model.Settings.ScheduleStartDate.Value.Year, Model.Settings.ScheduleStartDate.Value.Month, 1); calendarMonth <= Model.Settings.ScheduleEndDate.Value; calendarMonth = calendarMonth.AddMonths(1))
         {
             @if (count % 3 == 0)
@@ -243,7 +256,9 @@
                                     @day.ToShortDateString() @day.Date.DayOfWeek
                                 </td>
                                 <td>
-                                    @{var blackoutDate = Model.BlackoutDates.FirstOrDefault(_ => _.Date == day.Date); }
+                                    @{
+                                        var blackoutDate = Model.BlackoutDates.FirstOrDefault(_ => _.Date == day.Date);
+                                    }
                                     @if (blackoutDate != null)
                                     {
                                         <div class="blackout-text">@blackoutDate.Reason</div>

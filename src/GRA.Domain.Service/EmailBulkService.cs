@@ -160,7 +160,8 @@ namespace GRA.Domain.Service
                         foreach (var user in users)
                         {
                             if (!problemUsers.Contains(user.Id)
-                                && !alreadyReceived.Contains(user.Email))
+                                && !alreadyReceived.Contains(user.Email,
+                                    StringComparer.OrdinalIgnoreCase))
                             {
                                 // do the email send
                                 emailDetails.ToUserId = user.Id;

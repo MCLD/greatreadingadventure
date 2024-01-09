@@ -1,0 +1,156 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.PerformerCoversheetViewModel
+
+@section styles {
+    <link rel="stylesheet" href="/css/performercoversheet.min.css" />
+}
+
+<div class="performer-coversheet-container">
+    <div class="row">
+        <div class="col-xs-12 text-center text-muted">
+            <div class="text-danger hidden-print">
+                <h4>
+                    Please make sure to turn off printing web page header and footer in the print
+                    settings before outputting to PDF
+                </h4>
+            </div>
+            <h2>Services Team Program Cover Sheet</h2>
+            <div>Include an invoice if requesting funds</div>
+            <div class="row-spacing"><strong>@(DateTime.Today.ToLongDateString())</strong></div>
+        </div>
+    </div>
+    <div class="row">
+        <table class="col-xs-12">
+            <tr>
+                <th class="col-xs-3 text-right" style="vertical-align: middle;">
+                    Library Branch:
+                </th>
+                <td class="col-xs-9">
+                    @Model.LibraryBranch
+                </td>
+            </tr>
+            <tr>
+                <th class="col-xs-3 text-right" style="vertical-align: middle;">
+                    Staff Contact:
+                </th>
+                <td class="col-xs-9">
+                    @Model.StaffContact
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="row coversheet-row-spacing">
+        <div class="col-xs-3 text-right" style="vertical-align: middle;">
+            <strong>Funding Source:</strong>
+        </div>
+        <div class="col-xs-9">
+            <input type="checkbox" checked /> Summer Reading Program Budget
+        </div>
+    </div>
+
+    <div class="row">
+        <table class="col-xs-12">
+            <tr>
+                <th class="col-xs-3 text-right"></th>
+                <td class="col-xs-9 coversheet-table-subheading" colspan="3">
+                    Program Info
+                </td>
+            </tr>
+            <tr>
+                <th class="col-xs-3 text-right">
+                    Description:
+                </th>
+                <td class="col-xs-9 pre-wrap" colspan="3">@Model.Description</td>
+            </tr>
+            <tr>
+                <th class="col-xs-3 text-right" style="vertical-align: middle;">
+                    Cost:
+                </th>
+                <td class="col-xs-4" colspan="3">
+                    @Model.Cost.ToString("C")
+                </td>
+            </tr>
+            <tr>
+                <th class="col-xs-3 text-right" style="vertical-align: middle;">
+                    Vendor #:
+                </th>
+                <td class="col-xs-4">
+                    @Model.VendorId
+                </td>
+                <td class="col-xs-2 text-right" style="vertical-align: middle;">
+                    <strong>Invoice #:</strong>
+                </td>
+                <td class="col-xs-3">
+                    @Model.InvoiceNumber
+                </td>
+            </tr>
+            <tr>
+                <th class="col-xs-3 text-right">
+                    Payable To:
+                </th>
+                @* Don't reformat this line, set to white-space:pre-wrap *@
+                <td class="col-xs-9 pre-wrap" colspan="3">@Model.PayToName<br />@Model.PayToAddress</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="row coversheet-row-spacing">
+        <div class="col-xs-3 text-right" style="vertical-align: middle;">
+            <strong>Payment Method:</strong>
+        </div>
+        <span class="coversheet-radio-button">
+            <input type="radio" name="payMethod" />&nbsp;<label>Mail Check</label>
+        </span>
+        <span class="coversheet-radio-button">
+            <input type="radio" name="payMethod" />&nbsp;<label>eCheck</label>
+        </span>
+    </div>
+
+    <div class="row form-group">
+        <table class="col-xs-12">
+            <tr>
+                <th class="col-xs-3 text-right"></th>
+                <td class="col-xs-9 coversheet-table-subheading" colspan="3">
+                    Signatures of Approval
+                </td>
+            </tr>
+            <tr>
+                <th class="col-xs-3 text-right" style="vertical-align: middle;">
+                    Services Team
+                </th>
+                <td class="col-xs-9" colspan="3">
+                    &nbsp;
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="row hidden-print coversheet-row-spacing">
+        <div class="text-center coversheet-row-spacing">
+            <a class="link-unstyled" asp-controller="PerformerManagement" asp-action="Performers">
+                <button class="btn btn-secondary">Back to Performers</button>
+            </a>
+            <button id="print-button" class="btn btn-primary coversheet-print-button">Print</button>
+        </div>
+    </div>
+
+    <div class="visible-print coversheet-footer">
+        <strong>Questions?</strong> Contact the Services Team
+        (<strong>ServicesTeam@mcldaz.org</strong>)
+    </div>
+</div>
+
+<script type="text/javascript">
+    function hideHeaderFooter() {
+        document.querySelector(".mc-page-title").classList.add("hidden-print");
+        document.querySelector("footer").classList.add("hidden-print");
+        document.querySelector("#print-button").addEventListener("click", handlePrint);
+    }
+
+    function handlePrint() {
+        hideHeaderFooter();
+        window.print();
+    };
+
+    window.onload = hideHeaderFooter;
+</script>

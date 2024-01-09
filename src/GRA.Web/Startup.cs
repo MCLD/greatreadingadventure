@@ -416,6 +416,8 @@ namespace GRA.Web
                     "Styles/missioncontrol.css").UseContentRoot();
                 _.AddCssBundle("/css/performerregistration.min.css",
                     "Styles/performerregistration.css").UseContentRoot();
+                _.AddCssBundle("/css/performercoversheet.min.css",
+                    "Styles/performercoversheet.css").UseContentRoot();
                 _.AddCssBundle("/css/markdown.min.css",
                     "Styles/WMD.css").UseContentRoot();
                 _.AddCssBundle("/css/slick.min.css",

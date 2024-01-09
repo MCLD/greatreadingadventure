@@ -1,0 +1,65 @@
+﻿.performer-coversheet-container {
+    margin: 2rem 0;
+}
+
+.performer-coversheet-container h1 {
+    margin-bottom: 2.5rem;
+}
+
+.performer-coversheet-container th {
+  vertical-align: top;
+}
+
+.performer-coversheet-container td {
+    height: 4rem;
+    line-height: 2.5rem;
+    border: 1px solid black;
+}
+
+.coversheet-radio-button {
+    margin-left: 1.5rem;
+}
+
+.coversheet-row-spacing {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.performer-coversheet-container .coversheet-table-subheading {
+    font-weight: bold;
+    font-style: italic;
+    text-align: center;
+    background: lightgray !important;
+    line-height: 2.2rem;
+}
+
+.link-unstyled, .link-unstyled:hover {
+    color: inherit;
+    text-decoration: none;
+}
+
+.coversheet-print-button {
+    padding-left: 3rem;
+    padding-right: 3rem;
+    margin-left: 1.5rem;
+}
+
+.coversheet-footer {
+    position: fixed;
+    bottom: 1rem;
+    font-size: 1.2rem;
+    left: 50%;
+    transform: translate(-50%);
+    white-space: nowrap;
+}
+
+.pre-wrap {
+    white-space: pre-wrap;
+}
+
+@media print {
+    .performer-coversheet-container .coversheet-table-subheading {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+}

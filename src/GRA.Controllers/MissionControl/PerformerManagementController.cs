@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.PerformerManagement;
@@ -710,6 +712,111 @@ namespace GRA.Controllers.MissionControl
                 new { id = model.Performer.Id });
         }
 
+        public async Task<IActionResult> PrepCoverSheet(int id)
+        {
+            PsPerformer performer;
+            try
+            {
+                performer = await _performerSchedulingService
+                    .GetPerformerByIdAsync(id, false, false, true);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to view performer: ", gex);
+                return RedirectToAction(nameof(Performers));
+            }
+
+            var selections = await _performerSchedulingService
+                .GetBranchProgramSelectionsByPerformerAsync(performer.Id);
+
+            if (!selections.Any())
+            {
+                ShowAlertInfo("No performances found for selected performer.");
+                return RedirectToAction(nameof(Performers));
+            }
+
+            var months = selections
+                .OrderBy(s => s.ScheduleStartTime.Month)
+                .GroupBy(s => s.ScheduleStartTime.Month).Select(_ => new SelectListItem
+            {
+                Value = _.First().ScheduleStartTime.Month.ToString(CultureInfo.CurrentCulture),
+                Text = _.First().ScheduleStartTime.ToString("MMMM", CultureInfo.CurrentCulture)
+            });
+
+            var monthSelection = new SelectList(months, "Value", "Text");
+
+            var viewModel = new PerformerCoversheetViewModel
+            {
+                Months = monthSelection,
+                PerformerId = performer.Id,
+                PerformerName = performer.Name
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PrintCoverSheet(int id, int month, string invoiceNumber)
+        {
+            PsPerformer performer;
+            try
+            {
+                performer = await _performerSchedulingService
+                    .GetPerformerByIdAsync(id, false, false, true);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to view performer: ", gex);
+                return RedirectToAction(nameof(Performers));
+            }
+
+            var allSelections = await _performerSchedulingService
+                .GetBranchProgramSelectionsByPerformerAsync(performer.Id);
+
+            var selections = allSelections
+                .Where(selection => selection.ScheduleStartTime.Month == month);
+
+            if (!selections.Any())
+            {
+                ShowAlertInfo("No performances found for selected performer and month.");
+                return RedirectToAction(nameof(Performers));
+            }
+
+            decimal costSum = 0;
+            var description = new StringBuilder();
+
+            foreach (var selection in selections)
+            {
+                var program = performer.Programs.FirstOrDefault(_ => _.Id == selection.ProgramId);
+                costSum += program.Cost;
+                description.Append(program.Title)
+                    .Append(": ")
+                    .Append(selection.ScheduleStartTime.ToShortDateString())
+                    .Append(' ')
+                    .AppendLine(program.Cost.ToString("C", CultureInfo.CurrentCulture));
+            }
+
+            var viewModel = new PerformerCoversheetViewModel
+            {
+                Description = description.ToString(),
+                Cost = costSum,
+                ProgramDate = selections.FirstOrDefault().ScheduleStartTime,
+                VendorId = performer.VendorId,
+                PayToName = performer.Name,
+                PayToAddress = performer.BillingAddress,
+                InvoiceNumber = invoiceNumber
+            };
+
+            PageTitle = "Coversheet - "
+                + performer.Name
+                + " - "
+                + CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month)
+                + " "
+                + DateTime.Today.Year.ToString(CultureInfo.CurrentCulture);
+
+            return View(viewModel);
+        }
+
         public async Task<IActionResult> Program(int id)
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();
@@ -781,7 +888,7 @@ namespace GRA.Controllers.MissionControl
                 PerformerName = performer.Name,
                 MaxUploadMB = MaxUploadMB,
                 SetupSupplementalText = settings.SetupSupplementalText,
-                BackToBackSelection = new SelectList(new[] { GRA.Defaults.BackToBackInterval } )
+                BackToBackSelection = new SelectList(new[] { GRA.Defaults.BackToBackInterval })
             };
 
             var (hasIntervalString, intervalString) = await GetSiteSettingStringAsync(SiteSettingKey.Performer.BackToBackInterval);
@@ -849,7 +956,7 @@ namespace GRA.Controllers.MissionControl
                 AgeSelection = program.AgeGroups.Select(_ => _.Id).ToList(),
                 Program = program,
                 SetupSupplementalText = settings.SetupSupplementalText,
-                BackToBackSelection = new SelectList(new[] { GRA.Defaults.BackToBackInterval } )
+                BackToBackSelection = new SelectList(new[] { GRA.Defaults.BackToBackInterval })
             };
 
             var (hasIntervalString, intervalString) = await GetSiteSettingStringAsync(SiteSettingKey.Performer.BackToBackInterval);
