@@ -1209,6 +1209,41 @@ namespace GRA.Controllers.MissionControl
             });
         }
 
+        //TODO Find a way to consolidate duplicate action in PerformerSchedulingController.
+        [HttpPost]
+        public async Task<JsonResult> EditBranchProgramContact([FromBody] PsBranchSelection branchSelection)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage < PsSchedulingStage.SchedulingOpen)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Program selection has not yet started."
+                });
+            }
+
+            try
+            {
+                await _performerSchedulingService.UpdateBranchProgramContactAsync(branchSelection);
+            }
+            catch (GraException gex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = gex.Message
+                });
+            }
+
+            _logger.LogInformation("Contact info {BranchSelectionId} edited", branchSelection.Id);
+            return Json(new
+            {
+                success = true
+            });
+        }
+
         [HttpPost]
         public async Task<JsonResult> EditBranchProgramSelection(PsBranchSelection branchSelection)
         {

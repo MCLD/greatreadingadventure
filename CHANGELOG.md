@@ -13,7 +13,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - System setting for performer liability insurance question
 - System setting to configure acceptable back-to-back intervals
 - Last update information on performer scheduling selections
+- Require day of event contact information when scheduling performer
 - End date to streaming program list on dashboard and streaming page
+- Filters applied to challenge list are retained in session cookie
 - Scheduled task execution capability
 - Welcome email capability
 - Streamlined sign up options with authorization codes

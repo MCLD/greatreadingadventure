@@ -200,49 +200,48 @@
                                 </div>
                             </div>
                         }
+                        @if (Model.IsFiltered)
+                        {
+                            <div class="row row-spacing">
+                                <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+                                    <div class="alert-success" style="padding:1rem;border-radius:4px;text-align:center">
+                                        @(Model.PaginateModel.ItemCount == 1 ?
+                                            SharedLocalizer[GRA.Annotations.Info.SearchResultsMatchesSingular]
+                                            :
+                                            SharedLocalizer[GRA.Annotations.Info.SearchResultsMatchesPlural, Model.PaginateModel.ItemCount]
+                                        )  
+                                    </div>
+                                </div>
+                            </div>
+                        }
                         <div class="row">
-                            @if (Model.IsLoggedIn)
-                            {
-                                <div class="col-xs-12 col-sm-4 col-md-3 row-spacing">
+                                <div class="col-xs-12 col-sm-4 col-md-3 @(Model.IsLoggedIn ? "row-spacing" : "")">
+                                @if (Model.IsLoggedIn)
+                                {
                                     <a asp-action="Index"
-                               asp-route-Search="@Model.Search"
-                               asp-route-Program="@Model.Program"
-                               asp-route-Categories="@Model.Categories"
-                               asp-route-Status="@Model.Status"
-                               asp-route-Favorites="@(Model.Favorites == true ? null : "True")"
-                               class="btn btn-block @(Model.Favorites == true ? "btn-success" : "btn-default")">
+                                    asp-route-Search="@Model.Search"
+                                    asp-route-Program="@Model.Program"
+                                    asp-route-Categories="@Model.Categories"
+                                    asp-route-Status="@Model.Status"
+                                    asp-route-Favorites="@(Model.Favorites == true ? null : "True")"
+                                    class="btn btn-block @(Model.Favorites == true ? "btn-success" : "btn-default")">
                                         <span class="@(Model.Favorites == true ? "fas" : "far") fa-star"></span>
                                         @SharedLocalizer[GRA.Annotations.Interface.MyFavorites]
                                     </a>
+                                }
                                 </div>
                                 <div class="col-xs-6 col-sm-2 col-sm-offset-4 col-md-offset-5 row-spacing">
-                                    <a asp-action="Index" class="btn btn-default btn-block">
-                                        <span class="hidden-sm fas fa-minus-circle"></span>
-                                        @SharedLocalizer[GRA.Annotations.Interface.Clear]
-                                    </a>
-                                </div>
-                                <div class="col-xs-6 col-sm-2 row-spacing">
-                                    <button type="submit" class="btn btn-primary btn-block">
-                                        <span class="hidden-sm fas fa-search"></span>
-                                        @SharedLocalizer[GRA.Annotations.Interface.Find]
-                                    </button>
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="col-xs-6 col-sm-2 col-sm-offset-8 col-md-offset-8 row-spacing">
-                                    <a asp-action="Index" class="btn btn-default btn-block">
-                                        <span class="hidden-sm fas fa-minus-circle"></span>
-                                        @SharedLocalizer[GRA.Annotations.Interface.Clear]
-                                    </a>
-                                </div>
-                                <div class="col-xs-6 col-sm-2 row-spacing">
-                                    <button type="submit" class="btn btn-primary btn-block">
-                                        <span class="hidden-sm fas fa-search"></span>
-                                        @SharedLocalizer[GRA.Annotations.Interface.Find]
-                                    </button>
-                                </div>
-                            }
+                                <a asp-action="Index" asp-route-ClearSearch="true" class="btn btn-default btn-block">
+                                    <span class="hidden-sm fas fa-minus-circle"></span>
+                                    @SharedLocalizer[GRA.Annotations.Interface.Clear]
+                                </a>
+                            </div>
+                            <div class="col-xs-6 col-sm-2 row-spacing">
+                                <button type="submit" class="btn btn-primary btn-block">
+                                    <span class="hidden-sm fas fa-search"></span>
+                                    @SharedLocalizer[GRA.Annotations.Interface.Find]
+                                </button>
+                            </div>
 
                         </div>
                     </form>

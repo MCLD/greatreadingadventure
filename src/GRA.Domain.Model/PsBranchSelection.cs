@@ -42,5 +42,8 @@ namespace GRA.Domain.Model
         public string Summary { get; set; }
         public User? UpdatedByUser { get; set; }
         public int? UpdatedByUserId { get; set; }
+        public string OnSiteContactName { get; set; }
+        public string OnSiteContactPhone { get; set; }
+        public string OnSiteContactEmail { get; set; }
     }
 }
