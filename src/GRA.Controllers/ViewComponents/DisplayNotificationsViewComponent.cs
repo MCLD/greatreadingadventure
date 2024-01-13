@@ -16,8 +16,8 @@ namespace GRA.Controllers.ViewComponents
         private const int MaxNotifications = 3;
 
         private readonly IPathResolver _pathResolver;
-        private readonly IStringLocalizer<Resources.Shared> _sharedLocalizer;
         private readonly IHtmlLocalizer<GRA.Resources.Shared> _sharedHtmlLocalizer;
+        private readonly IStringLocalizer<Resources.Shared> _sharedLocalizer;
 
         public DisplayNotificationsViewComponent(IPathResolver pathResolver,
             IStringLocalizer<Resources.Shared> sharedLocalizer,
@@ -77,10 +77,6 @@ namespace GRA.Controllers.ViewComponents
                         notification.AttachmentFilename
                             = _pathResolver.ResolveContentPath(notification.AttachmentFilename);
                     }
-                    if (HttpContext.Items[ItemKey.AskToAddFamilyMember].ToString() == "True")
-                    {
-                        notification.SupplementalText = $"Would you like to <a href='{Url.Action(nameof(ProfileController.AddHouseholdMember), ProfileController.Name)}'>add a family member?</a>";
-                    }
                     notification.LocalizedText
                         = _sharedHtmlLocalizer[Annotations.Info.SuccessfullyJoined,
                             HttpContext.Items[ItemKey.SiteName]];
@@ -118,7 +114,6 @@ namespace GRA.Controllers.ViewComponents
                 }
                 notifications.Remove(notification);
             }
-
 
             foreach (var notification in notifications
                 .Where(m => !string.IsNullOrWhiteSpace(m.BadgeFilename))

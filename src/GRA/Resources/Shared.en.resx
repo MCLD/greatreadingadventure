@@ -1669,4 +1669,8 @@
     <value>Hay 1 resultado que coincide con su búsqueda.</value>
     <comment>Show a message incidating a single search result was found.</comment>
   </data>
+  <data name="Would you like to &lt;a href=&quot;{0}&quot;&gt;add a family member&lt;/a&gt;?" xml:space="preserve">
+    <value>Would you like to &lt;a href="{0}"&gt;add a family member&lt;/a&gt;?</value>
+    <comment>Prompt for if a new sign up wishes to add additional family members</comment>
+  </data>
 </root>

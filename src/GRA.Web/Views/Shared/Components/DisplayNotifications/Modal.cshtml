@@ -7,10 +7,11 @@
             {
                 @Html.Raw(notification.Text.Replace("and a badge", $"<a href=\"{Url.Action("History", "Profile")}\">and a badge</a>"))
                 <br />
-                @if(notification.SupplementalText != null)
+                @if (notification.IsJoiner && Context.Items.ContainsKey(ItemKey.AskToAddFamilyMember))
                 {
                     <br />
-                    @Html.Raw(notification.SupplementalText)
+                    @SharedHtmlLocalizer[ItemKey.AskToAddFamilyMember, Url.Action(nameof(ProfileController.AddHouseholdMember), ProfileController.Name)]
+                    <br />
                 }
             }
             @if (!string.IsNullOrWhiteSpace(Model.SummaryText))
@@ -59,28 +60,28 @@
                                         @if (!string.IsNullOrEmpty(notification.BadgeFilename))
                                         {
                                             <img class="img-thumbnail badge-sm pull-right"
-                                         src="~/@notification.BadgeFilename"
-                                         asp-append-version="true"
-                                         alt="@notification.AltText" />
+                                                 src="~/@notification.BadgeFilename"
+                                                 asp-append-version="true"
+                                                 alt="@notification.AltText" />
                                         }
                                     </div>
                                 </td>
                             </tr>
-                        @if (!string.IsNullOrEmpty(notification.AttachmentFilename))
-                        {
-                            <tr>
-                                <td>
-                                    <div class="col-xs-12">
-                                        <span>@SharedLocalizer[GRA.Annotations.Info.ReceivedCertificate]</span>
-                                        <a href="~/@notification.AttachmentFilename" target="_blank">
-                                            <img src="~/images/certificate.png"
-                                            alt="@SharedLocalizer[GRA.Annotations.Title.Certificate]" />
-                                            @SharedLocalizer[GRA.Annotations.Interface.ViewCertificate]
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
+                            @if (!string.IsNullOrEmpty(notification.AttachmentFilename))
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="col-xs-12">
+                                            <span>@SharedLocalizer[GRA.Annotations.Info.ReceivedCertificate]</span>
+                                            <a href="~/@notification.AttachmentFilename" target="_blank">
+                                                <img src="~/images/certificate.png"
+                                                     alt="@SharedLocalizer[GRA.Annotations.Title.Certificate]" />
+                                                @SharedLocalizer[GRA.Annotations.Interface.ViewCertificate]
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
                         }
                         <tr>
                             <td>
