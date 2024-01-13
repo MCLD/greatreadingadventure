@@ -4,12 +4,12 @@
 			{
 				"name": "mcr.microsoft.com/dotnet/sdk",
 				"tag": "7.0",
-				"digest": "39369658d8e47b8d6d19537dd086a0fd2e93cb125e1f4ad701bf77da339b3657"
+				"digest": "6b9c857a60b67f968fd5bae373e414690947b8b58e7951b3228fd712b82938e8"
 			},
 			{
 				"name": "mcr.microsoft.com/dotnet/aspnet",
 				"tag": "7.0",
-				"digest": "33a228a13173c6915729e8f0359fd9ef35b1aac39835edc4665fc943e927ed8d"
+				"digest": "9658a001bc235f15d2d7f3a68f90cb1897f2fdc3e2e74161605c076d3472e39c"
 			}
 		]
 	}

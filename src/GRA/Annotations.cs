@@ -73,6 +73,8 @@
             public const string ProgramEnded = "{0} has ended, please join us next time!";
             public const string ReceivedCertificate = "You've received a certificate!";
             public const string RegistrationNotOpenYet = "Registration for {0} is not open yet.";
+            public const string SearchResultsMatchesPlural = "There are {0} results matching your search.";
+            public const string SearchResultsMatchesSingular = "There is 1 result matching your search.";
             public const string SiteGoalHeader = "Community Reading Goal";
             public const string StatusSaved = "Your status has been saved!";
             public const string StatusSavedPercentage = "Your status has been saved. You have completed {0}% of the required tasks for the challenge: {1}!";

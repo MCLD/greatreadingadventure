@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using GRA.Controllers.ViewModel.Challenges;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
@@ -25,6 +26,7 @@ namespace GRA.Controllers
         private readonly ActivityService _activityService;
         private readonly CategoryService _categoryService;
         private readonly ChallengeService _challengeService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogger<ChallengesController> _logger;
         private readonly AutoMapper.IMapper _mapper;
         private readonly SiteService _siteService;
@@ -34,6 +36,7 @@ namespace GRA.Controllers
             ActivityService activityService,
             CategoryService categoryService,
             ChallengeService challengeService,
+            IHttpContextAccessor httpContextAccessor,
             SiteService siteService) : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -44,6 +47,8 @@ namespace GRA.Controllers
                 ?? throw new ArgumentNullException(nameof(categoryService));
             _challengeService = challengeService
                 ?? throw new ArgumentNullException(nameof(challengeService));
+            _httpContextAccessor = httpContextAccessor
+                ?? throw new ArgumentNullException(nameof(httpContextAccessor));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             PageTitle = _sharedLocalizer[Annotations.Title.Challenges];
         }
@@ -160,10 +165,55 @@ namespace GRA.Controllers
             string Group = null,
             bool Favorites = false,
             string Status = null,
+            bool ClearSearch = false,
             int page = 1,
             ChallengeFilter.OrderingOption ordering = ChallengeFilter.OrderingOption.MostPopular,
             System.Net.HttpStatusCode httpStatus = System.Net.HttpStatusCode.OK)
         {
+            if (ClearSearch)
+            {
+                _httpContextAccessor
+                    .HttpContext
+                    .Session
+                    .Remove(Defaults.ChallengesFilterSessionKey);
+            }
+            else if (string.IsNullOrEmpty(Request.QueryString.Value))
+            {
+                var saved = _httpContextAccessor
+                    .HttpContext
+                    .Session
+                    .GetString(Defaults.ChallengesFilterSessionKey);
+
+                if (saved != null)
+                {
+                    var queryParams = HttpUtility.ParseQueryString(saved);
+
+                    Search = queryParams?[nameof(Search)];
+                    Status = queryParams?[nameof(Status)];
+                    Group = queryParams?[nameof(Group)];
+                    Categories = queryParams?[nameof(Categories)];
+                    if (Enum.TryParse(queryParams?[nameof(ordering)], out ChallengeFilter.OrderingOption option))
+                    {
+                        ordering = option;
+                    }
+                    if (bool.TryParse(queryParams?[nameof(Favorites)], out bool favorites))
+                    {
+                        Favorites = favorites;
+                    }
+                    if (int.TryParse(queryParams?[nameof(Program)], out int program))
+                    {
+                        Program = program;
+                    }
+                }
+            }
+            else
+            {
+                _httpContextAccessor
+                    .HttpContext
+                    .Session
+                    .SetString(Defaults.ChallengesFilterSessionKey, Request.QueryString.Value);
+            }
+
             var filter = new ChallengeFilter(page)
             {
                 Ordering = ordering
@@ -216,6 +266,7 @@ namespace GRA.Controllers
             }
 
             var challengeList = await _challengeService.GetPaginatedChallengeListAsync(filter);
+            var isFiltered = challengeList.Count < (await _challengeService.GetPaginatedChallengeListAsync(new ChallengeFilter { SiteId = GetCurrentSiteId() })).Count;
 
             var paginateModel = new PaginateViewModel
             {
@@ -272,7 +323,8 @@ namespace GRA.Controllers
                 Program = Program,
                 ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
                 Search = Search,
-                Status = Status
+                Status = Status,
+                IsFiltered = isFiltered
             };
             if (!string.IsNullOrWhiteSpace(Search))
             {
@@ -341,8 +393,7 @@ namespace GRA.Controllers
             {
                 var challengeList = new List<Challenge>
                 {
-                    new Challenge
-                    {
+                    new() {
                         Id = challengeId,
                         IsFavorited = favorite
                     }
