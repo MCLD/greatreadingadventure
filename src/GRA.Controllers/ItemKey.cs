@@ -2,6 +2,7 @@
 {
     public static class ItemKey
     {
+        public static readonly string AskToAddFamilyMember = "AskToAddFamilyMember";
         public static readonly string BackgroundColor = "BackgroundColor";
         public static readonly string ExternalEventListUrl = "ExternalEventListUrl";
         public static readonly string GoogleAnalytics = "GoogleAnalytics";
@@ -28,6 +29,5 @@
         public static readonly string SiteStage = "SiteStage";
         public static readonly string UnreadCount = "UnreadCount";
         public static readonly string WebScheme = "WebScheme";
-        public static readonly string AskToAddFamilyMember = "AskToAddFamilyMember";
     }
 }

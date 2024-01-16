@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using GRA.Abstract;
@@ -104,7 +105,8 @@ namespace GRA.Controllers.ViewComponents
                     }
                     notification.DisplayIcon = "far fa-thumbs-up";
                     notification.Text = new StringBuilder(notification.Text)
-                        .AppendFormat(" <a href=\"{0}\">Check out your new avatar options!</a>",
+                        .AppendFormat(CultureInfo.InvariantCulture,
+                            " <a href=\"{0}\">Check out your new avatar options!</a>",
                             Url.Action(nameof(AvatarController.Index),
                                 AvatarController.Name,
                                 new { bundle = notification.AvatarBundleId }))
@@ -155,7 +157,8 @@ namespace GRA.Controllers.ViewComponents
             string summaryText = "";
             if (notificationDisplayList.Count > 1 && totalNotifications > MaxNotifications)
             {
-                summaryText = string.Format("<a href=\"{0}\">{1}</a>",
+                summaryText = string.Format(CultureInfo.InvariantCulture,
+                    "<a href=\"{0}\">{1}</a>",
                     Url.Action(nameof(ProfileController.History), ProfileController.Name),
                     _sharedLocalizer[Annotations.Interface.AndOtherActivities]);
             }

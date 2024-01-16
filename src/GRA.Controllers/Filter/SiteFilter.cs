@@ -33,6 +33,9 @@ namespace GRA.Controllers.Filter
         private readonly IUserContextProvider _userContextProvider;
         private readonly UserService _userService;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
+            "CA1019:Define accessors for attribute arguments",
+            Justification = "Site Filter attributes do not require external access.")]
         public SiteFilterAttribute(ILogger<SiteFilterAttribute> logger,
             IGraCache cache,
             IConfiguration config,
@@ -54,9 +57,14 @@ namespace GRA.Controllers.Filter
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
+            "CA1031:Do not catch general exception types",
+            Justification = "Do not fail in a filter due to software issue")]
         public async Task OnResourceExecutionAsync(ResourceExecutingContext context,
             ResourceExecutionDelegate next)
         {
+            ArgumentNullException.ThrowIfNull(context);
+
             Site site = null;
             await context.HttpContext.Session.LoadAsync();
             // if we've already fetched it on this request it's present in Items
@@ -90,20 +98,12 @@ namespace GRA.Controllers.Filter
                     }
                 }
                 // if not check if they already have one in their session
-                if (siteId == null)
-                {
-                    siteId = context.HttpContext.Session.GetInt32(SessionKey.SiteId);
-                }
+                siteId ??= context.HttpContext.Session.GetInt32(SessionKey.SiteId);
+
                 // if not then resort to the default
-                if (siteId == null)
-                {
-                    siteId = await _siteLookupService.GetDefaultSiteIdAsync();
-                }
+                siteId ??= await _siteLookupService.GetDefaultSiteIdAsync();
             }
-            if (site == null)
-            {
-                site = await _siteLookupService.GetByIdAsync((int)siteId);
-            }
+            site ??= await _siteLookupService.GetByIdAsync((int)siteId);
 
             var siteStage = _siteLookupService.GetSiteStage(site);
 
@@ -312,11 +312,11 @@ namespace GRA.Controllers.Filter
                         ? culture.Parent.NativeName
                         : culture.NativeName;
                     cultureList.Add(new SelectListItem(text, culture.Name));
-                    if (!cultureHrefLang.Keys.Contains(culture.Name))
+                    if (!cultureHrefLang.ContainsKey(culture.Name))
                     {
                         cultureHrefLang.Add(culture.Name, culture.Name);
                         if (culture.Parent != null
-                            && !cultureHrefLang.Keys.Contains(culture.Parent.Name))
+                            && !cultureHrefLang.ContainsKey(culture.Parent.Name))
                         {
                             cultureHrefLang.Add(culture.Parent.Name, culture.Parent.Name);
                         }
@@ -339,7 +339,10 @@ namespace GRA.Controllers.Filter
                 context.RouteData?.Values["id"]))
             using (LogContext.PushProperty(LoggingEnrichment.SiteStage, siteStage))
             {
-                await next();
+                if (next != null)
+                {
+                    await next();
+                }
             }
         }
 
