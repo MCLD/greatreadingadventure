@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Scheduled task execution capability
 - Welcome email capability
 - Streamlined sign up options with authorization codes
+- Site setting to prompt new registrants to add a family member
 
 ## Changed
 

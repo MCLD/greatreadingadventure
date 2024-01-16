@@ -99,6 +99,7 @@
             public const string AddBookNotYet = "You will be able to add books once the program starts.";
             public const string AddedParticipantGroupFamily = "Added {0} to your {1}!";
             public const string AddExistingExplanation = "Add an existing participant into your {0}, if that participant is the head of a {0} their {0} members will be moved into your {0} as well.";
+            public const string AddFamilyMember = "Would you like to <a href=\"{0}\">add a family member</a>?";
             public const string AddUsername = "Add username";
             public const string AllParticipatingLibraries = "All Participating Libraries";
             public const string AllPrograms = "All Age Groups";

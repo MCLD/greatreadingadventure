@@ -2,6 +2,7 @@
 {
     public static class ItemKey
     {
+        public static readonly string AskToAddFamilyMember = "AskToAddFamilyMember";
         public static readonly string BackgroundColor = "BackgroundColor";
         public static readonly string ExternalEventListUrl = "ExternalEventListUrl";
         public static readonly string GoogleAnalytics = "GoogleAnalytics";
