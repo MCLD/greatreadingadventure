@@ -19,6 +19,12 @@
                     @Html.Raw(notification.Text)
                     <br />
                 }
+                @if (notification.IsJoiner && Context.Items.ContainsKey(ItemKey.AskToAddFamilyMember))
+                {
+                    <br />
+                    @SharedHtmlLocalizer[GRA.Annotations.Interface.AddFamilyMember, Url.Action(nameof(ProfileController.AddHouseholdMember), ProfileController.Name)]
+                    <br />
+                }
             }
             @if (!string.IsNullOrWhiteSpace(Model.SummaryText))
             {

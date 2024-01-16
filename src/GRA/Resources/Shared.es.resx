@@ -1661,4 +1661,16 @@
     <value>La transmisión finaliza: {0}</value>
     <comment>Tell a participant when a streaming program will no longer be available, {0} is replaced with a short date representation</comment>
   </data>
+  <data name="There are {0} results matching your search." xml:space="preserve">
+    <value>There are {0} results matching your search.</value>
+    <comment>Show a message indicating how many search results were found.</comment>
+  </data>
+  <data name="There is 1 result matching your search." xml:space="preserve">
+    <value>There is 1 result matching your search.</value>
+    <comment>Show a message incidating a single search result was found.</comment>
+  </data>
+  <data name="Would you like to &lt;a href=&quot;{0}&quot;&gt;add a family member&lt;/a&gt;?" xml:space="preserve">
+    <value>¿Le gustaría &lt;a href="{0}"&gt;agregar un miembro de la familia&lt;/a&gt;?</value>
+    <comment>Prompt for if a new sign up wishes to add additional family members</comment>
+  </data>
 </root>

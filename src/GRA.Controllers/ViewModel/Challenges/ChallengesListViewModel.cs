@@ -17,6 +17,7 @@ namespace GRA.Controllers.ViewModel.Challenges
         public IEnumerable<DisplayChallengeGroup> FeaturedChallengeGroups { get; set; }
         public bool IsActive { get; set; }
         public bool IsLoggedIn { get; set; }
+        public bool IsFiltered { get; set; }
         public OrderingOption Ordering { get; set; }
         public PaginateViewModel PaginateModel { get; set; }
         public int? Program { get; set; }

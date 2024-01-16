@@ -30,5 +30,12 @@ namespace GRA.Data.Model
         public DateTime SelectedAt { get; set; }
         public User? UpdatedByUser { get; set; }
         public int? UpdatedByUserId { get; set; }
+
+        [MaxLength(255)]
+        public string OnSiteContactName { get; set; }
+        [MaxLength(255)]
+        public string OnSiteContactPhone { get; set; }
+        [MaxLength(255)]
+        public string OnSiteContactEmail { get; set; }
     }
 }
