@@ -257,6 +257,20 @@ namespace GRA.Data.Repository
                         {
                             userLog.Description = $"{translation.TranslationDescriptionPastTense} {translation.ActivityDescription}";
                         }
+
+                        if (userLog.BookId != null) 
+                        {
+                            var book = _context.Books
+                                .AsNoTracking()
+                                .Where(_ => _.Id == userLog.BookId) 
+                                .SingleOrDefault();
+
+                            if (book != null)
+                            {
+                                userLog.Description += " - " + book.Title + (book.Author != null ? " (" + book.Author + ")" : "");
+                            }
+                        }
+
                         userLog.Description =
                             userLog.Description.Substring(0, 1).ToUpper()
                             + userLog.Description.Substring(1);

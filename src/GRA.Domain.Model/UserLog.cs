@@ -25,6 +25,8 @@ namespace GRA.Domain.Model
 
         public int? BadgeId { get; set; }
 
+        public int? BookId { get; set; }
+
         public int? ChallengeId { get; set; }
 
         public int? DeletedBy { get; set; }
