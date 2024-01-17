@@ -50,7 +50,7 @@
                             }
                             @if (Model.SchedulingStage < GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
                             {
-                                <td class="on-top">
+                                <td class="on-top text-nowrap">
                                     <button type="button"
                                             class="btn btn-danger btn-xs"
                                             data-toggle="modal"
@@ -59,28 +59,33 @@
                                             data-name="@performer.Name">
                                         <span class="fas fa-times" aria-hidden="true"></span>
                                     </button>
-                                    <a asp-action="PrepCoverSheet" asp-route-id="@performer.Id">
-                                        <span class="fas fa-file-alt fa-lg wide-tooltip pull-right"
-                                              title="Performer coversheet"
-                                              data-toggle="tooltip"
-                                              data-placement="top"></span>
-                                    </a>
                                 </td>
                             }
                             else
                             {
-                                <td>@performer.SelectionsCount</td>
-                                <td class="on-top">
-                                    @if (performer.IsApproved)
+                                <td>
+                                    @performer.SelectionsCount
+                                </td>
+                                <td class="on-top text-nowrap">
+                                    @if (performer?.IsApproved == true && performer?.SelectionsCount > 0)
                                     {
-                                        <a asp-action="PerformerSelections" asp-route-id="@performer.Id" class="btn btn-xs btn-default">View Selections</a>
+                                        <a asp-action="PerformerSelections"
+                                           asp-route-id="@performer.Id"
+                                           class="btn btn-xs btn-default">Selections</a>
+
+                                        <a asp-action="PrepCoverSheet"
+                                           asp-route-id="@performer.Id"
+                                           class="btn btn-info btn-xs">
+                                            <span class="fas fa-file-alt"
+                                                  title="Performer coversheet"
+                                                  data-toggle="tooltip"
+                                                  data-placement="top"></span>
+                                        </a>
                                     }
-                                    <a asp-action="PrepCoverSheet" asp-route-id="@performer.Id">
-                                        <span class="fas fa-file-alt fa-lg wide-tooltip pull-right"
-                                              title="Performer coversheet"
-                                              data-toggle="tooltip"
-                                              data-placement="top"></span>
-                                    </a>
+                                    else
+                                    {
+                                        @:&nbsp;
+                                    }
                                 </td>
                             }
                         </tr>
