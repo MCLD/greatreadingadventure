@@ -43,7 +43,7 @@ namespace GRA.Domain.Report
             CancellationToken token,
             IProgress<JobStatus> progress = null)
         {
-            var pointValues = new long[] { 250, 500, 750, 1000 };
+            var pointValues = new long[] { 250, 500, 750, 1000, 1500, 2000 };
 
             #region Reporting initialization
             request = await StartRequestAsync(request);
