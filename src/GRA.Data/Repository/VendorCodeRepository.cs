@@ -311,7 +311,17 @@ namespace GRA.Data.Repository
                     _.Id,
                     _.IsDeleted,
                     _.FirstName,
-                    _.LastName
+                    _.LastName,
+                    _.Program
+                });
+
+            var groups = _context
+                .GroupInfos
+                .AsNoTracking()
+                .Select(_ => new
+                {
+                    _.UserId,
+                    _.Name
                 });
 
             foreach (var code in codes.Where(_ => _.UserId.HasValue))
@@ -326,6 +336,11 @@ namespace GRA.Data.Repository
                     code.IsUserValid = !user.IsDeleted;
                     code.FirstName = user.FirstName;
                     code.LastName = user.LastName;
+                    code.ProgramName = user.Program.Name;
+                    code.GroupName = groups
+                        .Where(_ => _.UserId == code.UserId)
+                        .FirstOrDefault()
+                        ?.Name;
                 }
             }
 

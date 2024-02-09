@@ -29,14 +29,15 @@ namespace GRA.Domain.Report
             IUserRepository userRepository,
             IUserLogRepository userLogRepository) : base(logger, serviceFacade)
         {
-            _branchRepository = branchRepository
-                ?? throw new ArgumentNullException(nameof(branchRepository));
-            _programRepository = programRepository
-                ?? throw new ArgumentNullException(nameof(programRepository));
-            _userRepository = userRepository
-                ?? throw new ArgumentNullException(nameof(userRepository));
-            _userLogRepository = userLogRepository
-                ?? throw new ArgumentNullException(nameof(userLogRepository));
+            ArgumentNullException.ThrowIfNull(branchRepository);
+            ArgumentNullException.ThrowIfNull(programRepository);
+            ArgumentNullException.ThrowIfNull(userRepository);
+            ArgumentNullException.ThrowIfNull(userLogRepository);
+
+            _branchRepository = branchRepository;
+            _programRepository = programRepository;
+            _userRepository = userRepository;
+            _userLogRepository = userLogRepository;
         }
 
         public override async Task ExecuteAsync(ReportRequest request,

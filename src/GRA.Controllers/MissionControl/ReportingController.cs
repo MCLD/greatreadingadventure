@@ -44,18 +44,23 @@ namespace GRA.Controllers.MissionControl
             UserService userService,
             VendorCodeService vendorCodeService) : base(context)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
-            _reportService = reportService
-                ?? throw new ArgumentNullException(nameof(reportService));
-            _schoolService = schoolService
-                ?? throw new ArgumentNullException(nameof(schoolService));
-            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
-            _triggerService = triggerService
-                ?? throw new ArgumentNullException(nameof(triggerService));
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-            _vendorCodeService = vendorCodeService
-                ?? throw new ArgumentNullException(nameof(vendorCodeService));
+            ArgumentNullException.ThrowIfNull(logger);
+            ArgumentNullException.ThrowIfNull(jobService);
+            ArgumentNullException.ThrowIfNull(reportService);
+            ArgumentNullException.ThrowIfNull(schoolService);
+            ArgumentNullException.ThrowIfNull(siteService);
+            ArgumentNullException.ThrowIfNull(triggerService);
+            ArgumentNullException.ThrowIfNull(userService);
+            ArgumentNullException.ThrowIfNull(vendorCodeService);
+
+            _logger = logger;
+            _jobService = jobService;
+            _reportService = reportService;
+            _schoolService = schoolService;
+            _siteService = siteService;
+            _triggerService = triggerService;
+            _userService = userService;
+            _vendorCodeService = vendorCodeService;
             PageTitle = "Reporting";
         }
 
