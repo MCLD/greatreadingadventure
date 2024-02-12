@@ -20,6 +20,13 @@
             display: none;
         }
 
+        .group-info {
+            position: absolute;
+            right: 15px;
+            bottom: 0;
+            font-weight: bold;
+        }
+
         .hold-slip {
             break-inside: avoid;
             height: 12rem;
@@ -90,6 +97,20 @@
             </div>
             <div class="reading-program">
                 @Model.ProgramInfo
+            </div>
+            <div class="group-info">
+                @if (!string.IsNullOrEmpty(vendorCode.GroupName))
+                {
+                    <div>
+                        Group: @vendorCode.GroupName
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(vendorCode.ProgramName))
+                {
+                    <div>
+                        Program: @vendorCode.ProgramName
+                    </div>
+                }
             </div>
         </div>
     </div>

@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Streamlined sign up options with authorization codes
 - Site setting to prompt new registrants to add a family member
 - 1,500 and 2,000 point values to the Participant Progress Report
+- Age group and group name to vendor-generated hold slips
 
 ## Changed
 

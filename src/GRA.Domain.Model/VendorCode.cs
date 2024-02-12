@@ -24,6 +24,7 @@ namespace GRA.Domain.Model
         public DateTime? EmailSentAt { get; set; }
         public DateTime? ExpirationDate { get; set; }
         public string FirstName { get; set; }
+        public string GroupName { get; set; }
         public bool IsAssigned { get; set; }
         public bool? IsDamaged { get; set; }
         public bool? IsDonated { get; set; }
@@ -39,6 +40,7 @@ namespace GRA.Domain.Model
         public string PackingSlip { get; set; }
 
         public string ParticipantName { get; set; }
+        public string ProgramName { get; set; }
         public string ReasonForReassignment { get; set; }
         public DateTime? ReassignedAt { get; set; }
         public int? ReassignedByUserId { get; set; }

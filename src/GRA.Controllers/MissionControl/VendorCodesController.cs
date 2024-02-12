@@ -50,19 +50,22 @@ namespace GRA.Controllers.MissionControl
             VendorCodeService vendorCodeService)
             : base(context)
         {
-            _emailManagementService = emailManagementService
-                ?? throw new ArgumentNullException(nameof(emailManagementService));
-            _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
-            _languageService = languageService
-                ?? throw new ArgumentNullException(nameof(languageService));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _messageTemplateService = messageTemplateService
-                ?? throw new ArgumentNullException(nameof(messageTemplateService));
-            _segmentService = segmentService
-                ?? throw new ArgumentNullException(nameof(segmentService));
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-            _vendorCodeService = vendorCodeService
-                ?? throw new ArgumentNullException(nameof(vendorCodeService));
+            ArgumentNullException.ThrowIfNull(emailManagementService);
+            ArgumentNullException.ThrowIfNull(jobService);
+            ArgumentNullException.ThrowIfNull(languageService);
+            ArgumentNullException.ThrowIfNull(messageTemplateService);
+            ArgumentNullException.ThrowIfNull(segmentService);
+            ArgumentNullException.ThrowIfNull(userService);
+            ArgumentNullException.ThrowIfNull(vendorCodeService);
+
+            _emailManagementService = emailManagementService;
+            _jobService = jobService;
+            _languageService = languageService;
+            _logger = logger;
+            _messageTemplateService = messageTemplateService;
+            _segmentService = segmentService;
+            _userService = userService;
+            _vendorCodeService = vendorCodeService;
 
             PageTitle = "Vendor code management";
         }
