@@ -19,8 +19,8 @@ namespace GRA.Domain.Report
     {
         private readonly IBranchRepository _branchRepository;
         private readonly IProgramRepository _programRepository;
-        private readonly IUserRepository _userRepository;
         private readonly IUserLogRepository _userLogRepository;
+        private readonly IUserRepository _userRepository;
 
         public ParticipantProgressReport(ILogger<ParticipantProgressReport> logger,
             ServiceFacade.Report serviceFacade,
@@ -47,6 +47,7 @@ namespace GRA.Domain.Report
             var pointValues = new long[] { 250, 500, 750, 1000, 1500, 2000 };
 
             #region Reporting initialization
+
             request = await StartRequestAsync(request);
 
             var criterion
@@ -64,9 +65,11 @@ namespace GRA.Domain.Report
                 AsOf = _serviceFacade.DateTimeProvider.Now
             };
             var reportData = new List<object[]>();
+
             #endregion Reporting initialization
 
             #region Adjust report criteria as needed
+
             if (criterion.StartDate == null)
             {
                 criterion.StartDate = DateTime.MinValue;
@@ -75,9 +78,11 @@ namespace GRA.Domain.Report
             {
                 criterion.EndDate = DateTime.MaxValue;
             }
+
             #endregion Adjust report criteria as needed
 
             #region Collect data
+
             UpdateProgress(progress, 1, "Getting total user count...", request.Name);
 
             var totalCheck = new Dictionary<long, long>();
@@ -227,14 +232,17 @@ namespace GRA.Domain.Report
                 row.Add(totalCheck[pointValue]);
             }
             report.FooterRow = row.ToArray();
+
             #endregion Collect data
 
             #region Finish up reporting
+
             if (!token.IsCancellationRequested)
             {
                 ReportSet.Reports.Add(report);
             }
             await FinishRequestAsync(request, !token.IsCancellationRequested);
+
             #endregion Finish up reporting
         }
     }

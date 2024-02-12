@@ -20,13 +20,12 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ViewAllReporting)]
     public class ReportingController : Base.MCController
     {
-        private const string ExcelMimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
         private const string ExcelFileExtension = "xlsx";
-        private const int ExcelStyleIndexBold = 1;
+        private const string ExcelMimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
         private const int ExcelPaddingCharacters = 1;
-
-        private readonly ILogger<ReportingController> _logger;
+        private const int ExcelStyleIndexBold = 1;
         private readonly JobService _jobService;
+        private readonly ILogger<ReportingController> _logger;
         private readonly ReportService _reportService;
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
@@ -62,18 +61,6 @@ namespace GRA.Controllers.MissionControl
             _userService = userService;
             _vendorCodeService = vendorCodeService;
             PageTitle = "Reporting";
-        }
-
-        [HttpGet]
-        public IActionResult Index()
-        {
-            PageTitle = "Select a Report";
-            var viewModel = new ReportIndexViewModel
-            {
-                Reports = _reportService.GetReportList()
-            };
-
-            return View(viewModel);
         }
 
         [HttpGet]
@@ -121,175 +108,6 @@ namespace GRA.Controllers.MissionControl
                 VendorCodeTypeList = new SelectList(vendorCodeTypeList, "Id", "Description"),
                 PrizeList = new SelectList(triggerList, "Id", "AwardPrizeName")
             });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Run(ReportCriteriaViewModel viewModel)
-        {
-            PageTitle = "Run the report";
-
-            var siteId = GetCurrentSiteId();
-
-            var criterion = new ReportCriterion
-            {
-                SiteId = siteId,
-                EndDate = viewModel.EndDate,
-                StartDate = viewModel.StartDate,
-                SystemId = viewModel.SystemId,
-                BranchId = viewModel.BranchId,
-                ProgramId = viewModel.ProgramId,
-                SchoolDistrictId = viewModel.SchoolDistrictId,
-                SchoolId = viewModel.SchoolId,
-                GroupInfoId = viewModel.GroupInfoId,
-                VendorCodeTypeId = viewModel.VendorCodeTypeId,
-                BadgeRequiredList = viewModel.BadgeRequiredList,
-                ChallengeRequiredList = viewModel.ChallengeRequiredList
-            };
-
-            if (viewModel.TriggerList?.Count > 0)
-            {
-                criterion.TriggerList = string.Join(",", viewModel.TriggerList);
-            }
-
-            var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingIntAsync(siteId,
-                SiteSettingKey.Users.MaximumActivityPermitted);
-
-            if (IsSet)
-            {
-                criterion.MaximumAllowableActivity = SetValue;
-            }
-
-            int reportRequestId = await _reportService
-                .RequestReport(criterion, viewModel.ReportId);
-
-            var jobToken = await _jobService.CreateJobAsync(new Job
-            {
-                JobType = JobType.RunReport,
-                SerializedParameters = JsonConvert.SerializeObject(new JobDetailsRunReport
-                {
-                    ReportRequestId = reportRequestId
-                })
-            });
-
-            return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
-            {
-                CancelUrl = Url.Action(nameof(Index)),
-                JobToken = jobToken.ToString(),
-                PingSeconds = 2,
-                SuccessRedirectUrl = Url.Action(nameof(View), new { id = reportRequestId }),
-                SuccessUrl = "",
-                Title = "Loading report..."
-            });
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> View(int id)
-        {
-            try
-            {
-                var (request, criterion) = await _reportService.GetReportResultsAsync(id);
-
-                PageTitle = request.Name ?? "Report Results";
-
-                var viewModel = new ReportResultsViewModel
-                {
-                    Title = PageTitle,
-                    ReportResultId = id
-                };
-
-                if (criterion.StartDate.HasValue)
-                {
-                    viewModel.StartDate = criterion.StartDate;
-                }
-                if (criterion.EndDate.HasValue)
-                {
-                    viewModel.EndDate = criterion.EndDate;
-                }
-                if (criterion.SystemId.HasValue)
-                {
-                    viewModel.SystemName = (await _siteService
-                        .GetSystemByIdAsync(criterion.SystemId.Value)).Name;
-                }
-                if (criterion.BranchId.HasValue)
-                {
-                    viewModel.BranchName = await _siteService
-                        .GetBranchName(criterion.BranchId.Value);
-                }
-                if (criterion.ProgramId.HasValue)
-                {
-                    viewModel.ProgramName = (await _siteService
-                        .GetProgramByIdAsync(criterion.ProgramId.Value)).Name;
-                }
-                if (criterion.GroupInfoId.HasValue)
-                {
-                    viewModel.GroupName = (await _userService
-                        .GetGroupInfoByIdAsync(criterion.GroupInfoId.Value)).Name;
-                }
-                if (criterion.SchoolDistrictId.HasValue)
-                {
-                    viewModel.SchoolDistrictName = (await _schoolService
-                        .GetDistrictByIdAsync(criterion.SchoolDistrictId.Value)).Name;
-                }
-                if (criterion.SchoolId.HasValue)
-                {
-                    viewModel.SchoolName = (await _schoolService
-                        .GetByIdAsync(criterion.SchoolId.Value)).Name;
-                }
-                if (criterion.VendorCodeTypeId.HasValue)
-                {
-                    viewModel.VendorCodeName = (await _vendorCodeService
-                        .GetTypeById(criterion.VendorCodeTypeId.Value)).Description;
-                }
-
-                viewModel.ReportSet = JsonConvert
-                    .DeserializeObject<StoredReportSet>(request.ResultJson);
-
-                foreach (var report in viewModel.ReportSet.Reports)
-                {
-                    int count = 0;
-                    var displayRows = new List<List<string>>();
-
-                    if (report.HeaderRow != null)
-                    {
-                        var display = new List<string>();
-                        foreach (var dataItem in report.HeaderRow)
-                        {
-                            display.Add(FormatDataItem(dataItem));
-                        }
-                        report.HeaderRow = display;
-                    }
-
-                    foreach (var resultRow in report.Data)
-                    {
-                        var displayRow = new List<string>();
-
-                        foreach (var resultItem in resultRow)
-                        {
-                            displayRow.Add(FormatDataItem(resultItem));
-                        }
-                        displayRows.Add(displayRow);
-                        count++;
-                    }
-                    report.Data = displayRows;
-
-                    if (report.FooterRow != null)
-                    {
-                        var display = new List<string>();
-                        foreach (var dataItem in report.FooterRow)
-                        {
-                            display.Add(FormatDataItem(dataItem));
-                        }
-                        report.FooterRow = display;
-                    }
-                }
-
-                return View(viewModel);
-            }
-            catch (GraException gex)
-            {
-                AlertDanger = gex.Message;
-                return RedirectToAction("Index");
-            }
         }
 
         [HttpGet]
@@ -631,18 +449,184 @@ namespace GRA.Controllers.MissionControl
             }
         }
 
-        private string FormatDataItem(object dataItem)
+        [HttpGet]
+        public IActionResult Index()
         {
-            switch (dataItem)
+            PageTitle = "Select a Report";
+            var viewModel = new ReportIndexViewModel
             {
-                case int i:
-                    return i.ToString("N0");
-                case long l:
-                    return l.ToString("N0");
-                default:
-                    return WebUtility.HtmlEncode(dataItem.ToString());
-                case null:
-                    return string.Empty;
+                Reports = _reportService.GetReportList()
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Run(ReportCriteriaViewModel viewModel)
+        {
+            PageTitle = "Run the report";
+
+            var siteId = GetCurrentSiteId();
+
+            var criterion = new ReportCriterion
+            {
+                SiteId = siteId,
+                EndDate = viewModel.EndDate,
+                StartDate = viewModel.StartDate,
+                SystemId = viewModel.SystemId,
+                BranchId = viewModel.BranchId,
+                ProgramId = viewModel.ProgramId,
+                SchoolDistrictId = viewModel.SchoolDistrictId,
+                SchoolId = viewModel.SchoolId,
+                GroupInfoId = viewModel.GroupInfoId,
+                VendorCodeTypeId = viewModel.VendorCodeTypeId,
+                BadgeRequiredList = viewModel.BadgeRequiredList,
+                ChallengeRequiredList = viewModel.ChallengeRequiredList
+            };
+
+            if (viewModel.TriggerList?.Count > 0)
+            {
+                criterion.TriggerList = string.Join(",", viewModel.TriggerList);
+            }
+
+            var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingIntAsync(siteId,
+                SiteSettingKey.Users.MaximumActivityPermitted);
+
+            if (IsSet)
+            {
+                criterion.MaximumAllowableActivity = SetValue;
+            }
+
+            int reportRequestId = await _reportService
+                .RequestReport(criterion, viewModel.ReportId);
+
+            var jobToken = await _jobService.CreateJobAsync(new Job
+            {
+                JobType = JobType.RunReport,
+                SerializedParameters = JsonConvert.SerializeObject(new JobDetailsRunReport
+                {
+                    ReportRequestId = reportRequestId
+                })
+            });
+
+            return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
+            {
+                CancelUrl = Url.Action(nameof(Index)),
+                JobToken = jobToken.ToString(),
+                PingSeconds = 2,
+                SuccessRedirectUrl = Url.Action(nameof(View), new { id = reportRequestId }),
+                SuccessUrl = "",
+                Title = "Loading report..."
+            });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> View(int id)
+        {
+            try
+            {
+                var (request, criterion) = await _reportService.GetReportResultsAsync(id);
+
+                PageTitle = request.Name ?? "Report Results";
+
+                var viewModel = new ReportResultsViewModel
+                {
+                    Title = PageTitle,
+                    ReportResultId = id
+                };
+
+                if (criterion.StartDate.HasValue)
+                {
+                    viewModel.StartDate = criterion.StartDate;
+                }
+                if (criterion.EndDate.HasValue)
+                {
+                    viewModel.EndDate = criterion.EndDate;
+                }
+                if (criterion.SystemId.HasValue)
+                {
+                    viewModel.SystemName = (await _siteService
+                        .GetSystemByIdAsync(criterion.SystemId.Value)).Name;
+                }
+                if (criterion.BranchId.HasValue)
+                {
+                    viewModel.BranchName = await _siteService
+                        .GetBranchName(criterion.BranchId.Value);
+                }
+                if (criterion.ProgramId.HasValue)
+                {
+                    viewModel.ProgramName = (await _siteService
+                        .GetProgramByIdAsync(criterion.ProgramId.Value)).Name;
+                }
+                if (criterion.GroupInfoId.HasValue)
+                {
+                    viewModel.GroupName = (await _userService
+                        .GetGroupInfoByIdAsync(criterion.GroupInfoId.Value)).Name;
+                }
+                if (criterion.SchoolDistrictId.HasValue)
+                {
+                    viewModel.SchoolDistrictName = (await _schoolService
+                        .GetDistrictByIdAsync(criterion.SchoolDistrictId.Value)).Name;
+                }
+                if (criterion.SchoolId.HasValue)
+                {
+                    viewModel.SchoolName = (await _schoolService
+                        .GetByIdAsync(criterion.SchoolId.Value)).Name;
+                }
+                if (criterion.VendorCodeTypeId.HasValue)
+                {
+                    viewModel.VendorCodeName = (await _vendorCodeService
+                        .GetTypeById(criterion.VendorCodeTypeId.Value)).Description;
+                }
+
+                viewModel.ReportSet = JsonConvert
+                    .DeserializeObject<StoredReportSet>(request.ResultJson);
+
+                foreach (var report in viewModel.ReportSet.Reports)
+                {
+                    int count = 0;
+                    var displayRows = new List<List<string>>();
+
+                    if (report.HeaderRow != null)
+                    {
+                        var display = new List<string>();
+                        foreach (var dataItem in report.HeaderRow)
+                        {
+                            display.Add(FormatDataItem(dataItem));
+                        }
+                        report.HeaderRow = display;
+                    }
+
+                    foreach (var resultRow in report.Data)
+                    {
+                        var displayRow = new List<string>();
+
+                        foreach (var resultItem in resultRow)
+                        {
+                            displayRow.Add(FormatDataItem(resultItem));
+                        }
+                        displayRows.Add(displayRow);
+                        count++;
+                    }
+                    report.Data = displayRows;
+
+                    if (report.FooterRow != null)
+                    {
+                        var display = new List<string>();
+                        foreach (var dataItem in report.FooterRow)
+                        {
+                            display.Add(FormatDataItem(dataItem));
+                        }
+                        report.FooterRow = display;
+                    }
+                }
+
+                return View(viewModel);
+            }
+            catch (GraException gex)
+            {
+                AlertDanger = gex.Message;
+                return RedirectToAction("Index");
             }
         }
 
@@ -659,15 +643,35 @@ namespace GRA.Controllers.MissionControl
                 case long _:
                     addCell.DataType = CellValues.Number;
                     break;
+
                 case DateTime _:
                     addCell.DataType = CellValues.Date;
                     break;
+
                 default:
                     addCell.DataType = CellValues.String;
                     break;
             }
 
             return (addCell, dataItem.ToString().Length);
+        }
+
+        private string FormatDataItem(object dataItem)
+        {
+            switch (dataItem)
+            {
+                case int i:
+                    return i.ToString("N0");
+
+                case long l:
+                    return l.ToString("N0");
+
+                default:
+                    return WebUtility.HtmlEncode(dataItem.ToString());
+
+                case null:
+                    return string.Empty;
+            }
         }
 
         private Stylesheet GetStylesheet()

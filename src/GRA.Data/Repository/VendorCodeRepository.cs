@@ -312,21 +312,22 @@ namespace GRA.Data.Repository
                     _.IsDeleted,
                     _.FirstName,
                     _.LastName,
-                    _.Program
+                    _.ProgramId
                 });
 
-            var groups = _context
+            var groups = await _context
                 .GroupInfos
                 .AsNoTracking()
-                .Select(_ => new
-                {
-                    _.UserId,
-                    _.Name
-                });
+                .ToDictionaryAsync(k => k.UserId, v => v.Name);
+
+            var programs = await _context
+                .Programs
+                .AsNoTracking()
+                .ToDictionaryAsync(k => k.Id, v => v.Name);
 
             foreach (var code in codes.Where(_ => _.UserId.HasValue))
             {
-                var user = users.SingleOrDefault(_ => _.Id == code.UserId);
+                var user = await users.SingleOrDefaultAsync(_ => _.Id == code.UserId);
                 if (user == null)
                 {
                     code.IsUserValid = false;
@@ -336,11 +337,12 @@ namespace GRA.Data.Repository
                     code.IsUserValid = !user.IsDeleted;
                     code.FirstName = user.FirstName;
                     code.LastName = user.LastName;
-                    code.ProgramName = user.Program.Name;
-                    code.GroupName = groups
-                        .Where(_ => _.UserId == code.UserId)
-                        .FirstOrDefault()
-                        ?.Name;
+                    code.ProgramName = programs.TryGetValue(user.ProgramId, out string programValue)
+                        ? programValue
+                        : null;
+                    code.GroupName = groups.TryGetValue(user.Id, out string groupValue)
+                        ? groupValue
+                        : null;
                 }
             }
 

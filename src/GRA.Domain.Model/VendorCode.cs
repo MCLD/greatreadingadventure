@@ -24,7 +24,7 @@ namespace GRA.Domain.Model
         public DateTime? EmailSentAt { get; set; }
         public DateTime? ExpirationDate { get; set; }
         public string FirstName { get; set; }
-        public string GroupName {  get; set; }
+        public string GroupName { get; set; }
         public bool IsAssigned { get; set; }
         public bool? IsDamaged { get; set; }
         public bool? IsDonated { get; set; }

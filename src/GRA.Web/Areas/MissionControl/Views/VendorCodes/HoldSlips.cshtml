@@ -99,15 +99,18 @@
                 @Model.ProgramInfo
             </div>
             <div class="group-info">
-                @if (vendorCode.GroupName != null)
+                @if (!string.IsNullOrEmpty(vendorCode.GroupName))
                 {
                     <div>
                         Group: @vendorCode.GroupName
                     </div>
                 }
-                <div>
-                    Program: @vendorCode.ProgramName
-                </div>
+                @if (!string.IsNullOrEmpty(vendorCode.ProgramName))
+                {
+                    <div>
+                        Program: @vendorCode.ProgramName
+                    </div>
+                }
             </div>
         </div>
     </div>
