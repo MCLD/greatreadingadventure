@@ -6,8 +6,6 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Spreadsheet;
 using GRA.Controllers.ViewModel.MissionControl.VendorCodes;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
@@ -24,10 +22,6 @@ namespace GRA.Controllers.MissionControl
     [Area("MissionControl")]
     public class VendorCodesController : Base.MCController
     {
-        private const string ExcelFileExtension = "xlsx";
-        private const string ExcelMimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-        private const int ExcelPaddingCharacters = 1;
-        private const int ExcelStyleIndexBold = 1;
         private const string NoAccess = "You do not have access to vendor codes.";
 
         private readonly EmailManagementService _emailManagementService;
@@ -191,158 +185,32 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.ManageVendorCodes)]
         public async Task<IActionResult> DownloadUnreportedEmailAddresses(int vendorCodeTypeId)
         {
-            var unreportedEmailAddresses = await _vendorCodeService
-                .GetUnreportedEmailAwardCodes(vendorCodeTypeId);
-
-            var processed = _dateTimeProvider.Now;
-
+            ICollection<VendorCodeEmailAward> unreportedEmailAddresses = null;
             try
             {
-                // this will be disposed by FileStreamResult
-                var ms = new MemoryStream();
+                unreportedEmailAddresses = await _vendorCodeService
+                    .GetUnreportedEmailAwardCodes(vendorCodeTypeId);
 
-                using var workbook = SpreadsheetDocument.Create(ms,
-                    DocumentFormat.OpenXml.SpreadsheetDocumentType.Workbook);
-                workbook.AddWorkbookPart();
-                workbook.WorkbookPart.Workbook = new Workbook
+                var report = new StoredReport
                 {
-                    Sheets = new Sheets()
+                    AsOf = _dateTimeProvider.Now,
+                    Data = unreportedEmailAddresses
+                    .Select(_ => new object[]
+                    {
+                        _.UserId,
+                        _.Name,
+                        _.Email
+                    }),
+                    HeaderRow = new string[] { "User Id", "Name", "Email Address" },
+                    Title = "Email Award Addresses"
                 };
 
-                var stylesPart = workbook.WorkbookPart.AddNewPart<WorkbookStylesPart>();
-                stylesPart.Stylesheet = GetStylesheet();
-                stylesPart.Stylesheet.Save();
+                var ms = ExcelExport.GenerateWorkbook(new List<StoredReport> { report });
 
-                var sheetPart = workbook.WorkbookPart.AddNewPart<WorksheetPart>();
-                var sheetData = new SheetData();
-                sheetPart.Worksheet = new Worksheet(sheetData);
-
-                var sheets = workbook.WorkbookPart.Workbook.GetFirstChild<Sheets>();
-                var relationshipId = workbook.WorkbookPart.GetIdOfPart(sheetPart);
-
-                var sheet = new Sheet
-                {
-                    Id = relationshipId,
-                    SheetId = 1,
-                    Name = "Email Award Addresses"
-                };
-                sheets.Append(sheet);
-
-                var maximumColumnWidth = new Dictionary<int, int>();
-
-                var headerColumns = new string[] {
-                            "User Id",
-                            "Name",
-                            "Email Address"
-                        };
-
-                var headerRow = new Row();
-                int columnNumber = 0;
-                foreach (var dataItem in headerColumns)
-                {
-                    (var cell, var length) = CreateCell(dataItem);
-                    cell.StyleIndex = ExcelStyleIndexBold;
-                    headerRow.AppendChild(cell);
-                    if (maximumColumnWidth.TryGetValue(columnNumber, out int value))
-                    {
-                        maximumColumnWidth[columnNumber]
-                            = Math.Max(value, length);
-                    }
-                    else
-                    {
-                        maximumColumnWidth.Add(columnNumber, length);
-                    }
-                    columnNumber++;
-                }
-                sheetData.Append(headerRow);
-
-                foreach (var emailAddress in unreportedEmailAddresses)
-                {
-                    var row = new Row();
-                    int rowColumnNumber = 0;
-
-                    var rowValues = new object[]
-                    {
-                                emailAddress.UserId,
-                                emailAddress.Name,
-                                emailAddress.Email
-                    };
-
-                    foreach (var resultItem in rowValues)
-                    {
-                        (var cell, var length) = CreateCell(resultItem ?? string.Empty);
-                        row.AppendChild(cell);
-                        if (maximumColumnWidth.TryGetValue(rowColumnNumber, out int value))
-                        {
-                            maximumColumnWidth[rowColumnNumber]
-                                = Math.Max(value, length);
-                        }
-                        else
-                        {
-                            maximumColumnWidth.Add(rowColumnNumber, length);
-                        }
-                        rowColumnNumber++;
-                    }
-                    sheetData.Append(row);
-
-                    await _vendorCodeService
-                        .UpdateEmailReportedAsync(GetActiveUserId(),
-                        processed,
-                        emailAddress.VendorCodeId);
-                }
-
-                await _vendorCodeService.SaveAsync();
-
-                foreach (var value in maximumColumnWidth.Keys.OrderByDescending(_ => _))
-                {
-                    var columnId = value + 1;
-                    var width = maximumColumnWidth[value] + ExcelPaddingCharacters;
-                    Columns cs = sheet.GetFirstChild<Columns>();
-                    if (cs != null)
-                    {
-                        var columnElements = cs.Elements<Column>()
-                            .Where(_ => _.Min == columnId && _.Max == columnId);
-                        if (columnElements.Any())
-                        {
-                            var column = columnElements.First();
-                            column.Width = width;
-                            column.CustomWidth = true;
-                        }
-                        else
-                        {
-                            var column = new Column
-                            {
-                                Min = (uint)columnId,
-                                Max = (uint)columnId,
-                                Width = width,
-                                CustomWidth = true
-                            };
-                            cs.Append(column);
-                        }
-                    }
-                    else
-                    {
-                        cs = new Columns();
-                        cs.Append(new Column
-                        {
-                            Min = (uint)columnId,
-                            Max = (uint)columnId,
-                            Width = width,
-                            CustomWidth = true
-                        });
-                        sheetPart.Worksheet.InsertAfter(cs,
-                            sheetPart.Worksheet.GetFirstChild<SheetFormatProperties>());
-                    }
-                }
-
-                workbook.Save();
-                workbook.Dispose();
-                ms.Seek(0, SeekOrigin.Begin);
-
-                return new FileStreamResult(ms, ExcelMimeType)
+                return new FileStreamResult(ms, ExcelExport.ExcelMimeType)
                 {
                     FileDownloadName = FileUtility
-                        .EnsureValidFilename($"EmailAwards.{ExcelFileExtension}")
+                        .EnsureValidFilename($"EmailAwards.{ExcelExport.ExcelFileExtension}")
                 };
             }
             catch (Exception ex)
@@ -1151,64 +1019,5 @@ namespace GRA.Controllers.MissionControl
 
             return View("Configure", viewModel);
         }
-
-        #region Spreadsheet utility methods
-
-        private static (Cell cell, int length) CreateCell(object dataItem)
-        {
-            var addCell = new Cell
-            {
-                CellValue = new CellValue(dataItem.ToString()),
-                DataType = dataItem switch
-                {
-                    int _ or long _ => CellValues.Number,
-                    DateTime _ => CellValues.Date,
-                    _ => CellValues.String,
-                }
-            };
-            return (addCell, dataItem.ToString().Length);
-        }
-
-        private static Stylesheet GetStylesheet()
-        {
-            var stylesheet = new Stylesheet();
-
-            var font = new Font();
-            var boldFont = new Font();
-            boldFont.Append(new Bold());
-
-            var fonts = new Fonts();
-            fonts.Append(font);
-            fonts.Append(boldFont);
-
-            var fill = new Fill();
-            var fills = new Fills();
-            fills.Append(fill);
-
-            var border = new Border();
-            var borders = new Borders();
-            borders.Append(border);
-
-            var regularFormat = new CellFormat
-            {
-                FontId = 0
-            };
-            var boldFormat = new CellFormat
-            {
-                FontId = 1
-            };
-            var cellFormats = new CellFormats();
-            cellFormats.Append(regularFormat);
-            cellFormats.Append(boldFormat);
-
-            stylesheet.Append(fonts);
-            stylesheet.Append(fills);
-            stylesheet.Append(borders);
-            stylesheet.Append(cellFormats);
-
-            return stylesheet;
-        }
-
-        #endregion Spreadsheet utility methods
     }
 }
