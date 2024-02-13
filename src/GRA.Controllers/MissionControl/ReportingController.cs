@@ -121,51 +121,51 @@ namespace GRA.Controllers.MissionControl
                 Title = PageTitle
             };
 
-            var criteriaDictionnary = new Dictionary<string, object>();
+            var criteriaDictionary = new Dictionary<string, object>();
 
             if (criterion.StartDate.HasValue)
             {
-                criteriaDictionnary.Add("Start Date",
+                criteriaDictionary.Add("Start Date",
                     criterion.StartDate.Value.ToString(CultureInfo.CurrentCulture));
             }
             if (criterion.EndDate.HasValue)
             {
-                criteriaDictionnary.Add("End Date",
+                criteriaDictionary.Add("End Date",
                     criterion.EndDate.Value.ToString(CultureInfo.CurrentCulture));
             }
             if (criterion.SystemId.HasValue)
             {
-                criteriaDictionnary.Add("System", (await _siteService
+                criteriaDictionary.Add("System", (await _siteService
                     .GetSystemByIdAsync(criterion.SystemId.Value)).Name);
             }
             if (criterion.BranchId.HasValue)
             {
-                criteriaDictionnary.Add("Branch", await _siteService
+                criteriaDictionary.Add("Branch", await _siteService
                     .GetBranchName(criterion.BranchId.Value));
             }
             if (criterion.ProgramId.HasValue)
             {
-                criteriaDictionnary.Add("Program", (await _siteService
+                criteriaDictionary.Add("Program", (await _siteService
                     .GetProgramByIdAsync(criterion.ProgramId.Value)).Name);
             }
             if (criterion.GroupInfoId.HasValue)
             {
-                criteriaDictionnary.Add("Group", (await _userService
+                criteriaDictionary.Add("Group", (await _userService
                     .GetGroupInfoByIdAsync(criterion.GroupInfoId.Value)).Name);
             }
             if (criterion.SchoolDistrictId.HasValue)
             {
-                criteriaDictionnary.Add("School District", (await _schoolService
+                criteriaDictionary.Add("School District", (await _schoolService
                     .GetDistrictByIdAsync(criterion.SchoolDistrictId.Value)).Name);
             }
             if (criterion.SchoolId.HasValue)
             {
-                criteriaDictionnary.Add("Program", (await _schoolService
+                criteriaDictionary.Add("Program", (await _schoolService
                     .GetByIdAsync(criterion.SchoolId.Value)).Name);
             }
             if (criterion.VendorCodeTypeId.HasValue)
             {
-                criteriaDictionnary.Add("Program", (await _vendorCodeService
+                criteriaDictionary.Add("Program", (await _vendorCodeService
                     .GetTypeById(criterion.VendorCodeTypeId.Value)).Description);
             }
 
@@ -174,12 +174,12 @@ namespace GRA.Controllers.MissionControl
 
             if (viewModel.ReportSet.Reports?.FirstOrDefault()?.AsOf != null)
             {
-                criteriaDictionnary.Add("Report Run At",
+                criteriaDictionary.Add("Report Run At",
                     viewModel.ReportSet.Reports.First().AsOf.ToString(CultureInfo.CurrentCulture));
             }
 
             var ms = ExcelExport.GenerateWorkbook(viewModel.ReportSet.Reports,
-                criteriaDictionnary,
+                criteriaDictionary,
                 "Report Criteria");
 
             return new FileStreamResult(ms, ExcelExport.ExcelMimeType)
