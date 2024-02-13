@@ -136,7 +136,7 @@ namespace GRA.Controllers.MissionControl
                     textFile.FileName,
                     tempFile);
 
-                using var fileStream = new FileStream(tempFile, FileMode.Create);
+                await using var fileStream = new FileStream(tempFile, FileMode.Create);
                 await textFile.CopyToAsync(fileStream);
 
                 string file = WebUtility.UrlEncode(Path.GetFileName(tempFile));
@@ -243,10 +243,10 @@ namespace GRA.Controllers.MissionControl
                     (var cell, var length) = CreateCell(dataItem);
                     cell.StyleIndex = ExcelStyleIndexBold;
                     headerRow.AppendChild(cell);
-                    if (maximumColumnWidth.ContainsKey(columnNumber))
+                    if (maximumColumnWidth.TryGetValue(columnNumber, out int value))
                     {
                         maximumColumnWidth[columnNumber]
-                            = Math.Max(maximumColumnWidth[columnNumber], length);
+                            = Math.Max(value, length);
                     }
                     else
                     {
@@ -272,10 +272,10 @@ namespace GRA.Controllers.MissionControl
                     {
                         (var cell, var length) = CreateCell(resultItem ?? string.Empty);
                         row.AppendChild(cell);
-                        if (maximumColumnWidth.ContainsKey(rowColumnNumber))
+                        if (maximumColumnWidth.TryGetValue(rowColumnNumber, out int value))
                         {
                             maximumColumnWidth[rowColumnNumber]
-                                = Math.Max(maximumColumnWidth[rowColumnNumber], length);
+                                = Math.Max(value, length);
                         }
                         else
                         {
@@ -336,7 +336,7 @@ namespace GRA.Controllers.MissionControl
                 }
 
                 workbook.Save();
-                workbook.Close();
+                workbook.Dispose();
                 ms.Seek(0, SeekOrigin.Begin);
 
                 return new FileStreamResult(ms, ExcelMimeType)
@@ -398,7 +398,7 @@ namespace GRA.Controllers.MissionControl
                     excelFile.FileName,
                     tempFile);
 
-                using (var fileStream = new FileStream(tempFile, FileMode.Create))
+                await using (var fileStream = new FileStream(tempFile, FileMode.Create))
                 {
                     await excelFile.CopyToAsync(fileStream);
                 }
@@ -610,7 +610,7 @@ namespace GRA.Controllers.MissionControl
                     excelFile.FileName,
                     tempFile);
 
-                using (var fileStream = new FileStream(tempFile, FileMode.Create))
+                await using (var fileStream = new FileStream(tempFile, FileMode.Create))
                 {
                     await excelFile.CopyToAsync(fileStream);
                 }

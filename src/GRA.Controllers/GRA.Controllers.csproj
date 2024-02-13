@@ -42,7 +42,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="CommonMark.NET" Version="0.15.1" />
-    <PackageReference Include="DocumentFormat.OpenXml" Version="2.20.0" />
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Serilog" Version="3.1.1" />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.2" />

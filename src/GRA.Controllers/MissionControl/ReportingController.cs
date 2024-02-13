@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -74,10 +75,12 @@ namespace GRA.Controllers.MissionControl
             }
             PageTitle = $"Configure {report.Name}";
 
-            string viewName = report.Name.Replace(" ", string.Empty);
+            string viewName = report.Name.Replace(" ",
+                string.Empty,
+                StringComparison.OrdinalIgnoreCase);
             if (viewName.EndsWith("Report"))
             {
-                viewName = viewName.Substring(0, viewName.Length - 6);
+                viewName = viewName[..^6];
             }
 
             var systemList = await _siteService.GetSystemList(true);
@@ -125,11 +128,13 @@ namespace GRA.Controllers.MissionControl
             var criteriaDictionnary = new Dictionary<string, object>();
             if (storedReport.criterion.StartDate.HasValue)
             {
-                criteriaDictionnary.Add("Start Date", storedReport.criterion.StartDate.Value.ToString());
+                criteriaDictionnary.Add("Start Date",
+                    storedReport.criterion.StartDate.Value.ToString(CultureInfo.CurrentCulture));
             }
             if (storedReport.criterion.EndDate.HasValue)
             {
-                criteriaDictionnary.Add("End Date", storedReport.criterion.EndDate.Value.ToString());
+                criteriaDictionnary.Add("End Date",
+                    storedReport.criterion.EndDate.Value.ToString(CultureInfo.CurrentCulture));
             }
             if (storedReport.criterion.SystemId.HasValue)
             {
@@ -171,9 +176,8 @@ namespace GRA.Controllers.MissionControl
                 .DeserializeObject<StoredReportSet>(storedReport.request.ResultJson);
 
             var ms = new System.IO.MemoryStream();
-
             using (var workbook = SpreadsheetDocument.Create(ms,
-                DocumentFormat.OpenXml.SpreadsheetDocumentType.Workbook))
+                DocumentFormat.OpenXml.SpreadsheetDocumentType.Workbook, false))
             {
                 workbook.AddWorkbookPart();
                 workbook.WorkbookPart.Workbook = new Workbook
@@ -204,7 +208,7 @@ namespace GRA.Controllers.MissionControl
                     string sheetName = report.Title ?? PageTitle ?? "Report Results";
                     if (sheetName.Length > 31)
                     {
-                        sheetName = sheetName.Substring(0, 31);
+                        sheetName = sheetName[..31];
                     }
 
                     var sheet = new Sheet
@@ -226,10 +230,10 @@ namespace GRA.Controllers.MissionControl
                             (var cell, var length) = CreateCell(dataItem);
                             cell.StyleIndex = ExcelStyleIndexBold;
                             headerRow.AppendChild(cell);
-                            if (maximumColumnWidth.ContainsKey(columnNumber))
+                            if (maximumColumnWidth.TryGetValue(columnNumber, out int value))
                             {
                                 maximumColumnWidth[columnNumber]
-                                    = Math.Max(maximumColumnWidth[columnNumber], length);
+                                    = Math.Max(value, length);
                             }
                             else
                             {
@@ -248,10 +252,10 @@ namespace GRA.Controllers.MissionControl
                         {
                             (var cell, var length) = CreateCell(resultItem ?? string.Empty);
                             row.AppendChild(cell);
-                            if (maximumColumnWidth.ContainsKey(columnNumber))
+                            if (maximumColumnWidth.TryGetValue(columnNumber, out int value))
                             {
                                 maximumColumnWidth[columnNumber]
-                                    = Math.Max(maximumColumnWidth[columnNumber], length);
+                                    = Math.Max(value, length);
                             }
                             else
                             {
@@ -271,10 +275,9 @@ namespace GRA.Controllers.MissionControl
                             (var cell, var length) = CreateCell(dataItem);
                             cell.StyleIndex = ExcelStyleIndexBold;
                             footerRow.AppendChild(cell);
-                            if (maximumColumnWidth.ContainsKey(columnNumber))
+                            if (maximumColumnWidth.TryGetValue(columnNumber, out int value))
                             {
-                                maximumColumnWidth[columnNumber]
-                                    = Math.Max(maximumColumnWidth[columnNumber], length);
+                                maximumColumnWidth[columnNumber] = Math.Max(value, length);
                             }
                             else
                             {
@@ -371,10 +374,10 @@ namespace GRA.Controllers.MissionControl
 
                     (var nameCell, var nameLength) = CreateCell(criterion.Key);
                     row.AppendChild(nameCell);
-                    if (criteriaMaximumColumnWidth.ContainsKey(0))
+                    if (criteriaMaximumColumnWidth.TryGetValue(0, out int firstColumnWidth))
                     {
                         criteriaMaximumColumnWidth[0]
-                            = Math.Max(criteriaMaximumColumnWidth[0], nameLength);
+                            = Math.Max(firstColumnWidth, nameLength);
                     }
                     else
                     {
@@ -383,10 +386,10 @@ namespace GRA.Controllers.MissionControl
 
                     (var dataCell, var dataLength) = CreateCell(criterion.Value);
                     row.AppendChild(dataCell);
-                    if (criteriaMaximumColumnWidth.ContainsKey(1))
+                    if (criteriaMaximumColumnWidth.TryGetValue(1, out int columnWidth))
                     {
                         criteriaMaximumColumnWidth[1]
-                            = Math.Max(criteriaMaximumColumnWidth[1], dataLength);
+                            = Math.Max(columnWidth, dataLength);
                     }
                     else
                     {
@@ -437,16 +440,13 @@ namespace GRA.Controllers.MissionControl
                             criteriaSheetPart.Worksheet.GetFirstChild<SheetFormatProperties>());
                     }
                 }
-
                 workbook.Save();
-                workbook.Close();
-                ms.Seek(0, System.IO.SeekOrigin.Begin);
-                var fileOutput = new FileStreamResult(ms, ExcelMimeType)
-                {
-                    FileDownloadName = $"{PageTitle}.{ExcelFileExtension}"
-                };
-                return fileOutput;
             }
+            ms.Seek(0, System.IO.SeekOrigin.Begin);
+            return new FileStreamResult(ms, ExcelMimeType)
+            {
+                FileDownloadName = $"{PageTitle}.{ExcelFileExtension}"
+            };
         }
 
         [HttpGet]
@@ -464,6 +464,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Run(ReportCriteriaViewModel viewModel)
         {
+            ArgumentNullException.ThrowIfNull(viewModel);
+
             PageTitle = "Run the report";
 
             var siteId = GetCurrentSiteId();
@@ -630,51 +632,33 @@ namespace GRA.Controllers.MissionControl
             }
         }
 
-        private (Cell cell, int length) CreateCell(object dataItem)
+        private static (Cell cell, int length) CreateCell(object dataItem)
         {
             var addCell = new Cell
             {
-                CellValue = new CellValue(dataItem.ToString())
+                CellValue = new CellValue(dataItem.ToString()),
+                DataType = dataItem switch
+                {
+                    int _ or long _ => (DocumentFormat.OpenXml.EnumValue<CellValues>)CellValues.Number,
+                    DateTime _ => (DocumentFormat.OpenXml.EnumValue<CellValues>)CellValues.Date,
+                    _ => (DocumentFormat.OpenXml.EnumValue<CellValues>)CellValues.String,
+                }
             };
-
-            switch (dataItem)
-            {
-                case int _:
-                case long _:
-                    addCell.DataType = CellValues.Number;
-                    break;
-
-                case DateTime _:
-                    addCell.DataType = CellValues.Date;
-                    break;
-
-                default:
-                    addCell.DataType = CellValues.String;
-                    break;
-            }
-
             return (addCell, dataItem.ToString().Length);
         }
 
-        private string FormatDataItem(object dataItem)
+        private static string FormatDataItem(object dataItem)
         {
-            switch (dataItem)
+            return dataItem switch
             {
-                case int i:
-                    return i.ToString("N0");
-
-                case long l:
-                    return l.ToString("N0");
-
-                default:
-                    return WebUtility.HtmlEncode(dataItem.ToString());
-
-                case null:
-                    return string.Empty;
-            }
+                int i => i.ToString("N0", CultureInfo.InvariantCulture),
+                long l => l.ToString("N0", CultureInfo.InvariantCulture),
+                null => string.Empty,
+                _ => WebUtility.HtmlEncode(dataItem.ToString()),
+            };
         }
 
-        private Stylesheet GetStylesheet()
+        private static Stylesheet GetStylesheet()
         {
             var stylesheet = new Stylesheet();
 
