@@ -265,7 +265,7 @@
         var programBaseLink = '@Url.Action(nameof(PerformerSchedulingController.Program))'
         var kitBaseLink = '@Url.Action(nameof(PerformerSchedulingController.Kit))'
         var contactUpdateLink = '@Url.Action(nameof(PerformerManagementController.EditBranchProgramContact))'
-        
+
         var prevContactInfo = {};
         var branchSelectionId;
         var contactInfoUpdated = false;
@@ -317,7 +317,7 @@
             checkAlert.classList.add(alertType);
             checkAlert.innerText = message;
             checkAlert.classList.remove('hidden');
-            setTimeout(function() {
+            setTimeout(function () {
                 checkAlert.classList.add('hidden');
                 checkAlert.classList.remove(alertType);
                 checkAlert.innerText = '';
@@ -425,7 +425,7 @@
                         OnSiteContactEmail,
                         OnSiteContactPhone
                     })
-                }).then(function() {
+                }).then(function () {
                     setAlert('alert-success', "Update successful!");
                     contactInfoUpdated = true;
                     hideEditContactInfo();

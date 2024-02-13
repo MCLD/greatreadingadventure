@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Spreadsheet;
 using GRA.Controllers.ViewModel.MissionControl.Reporting;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
+using GRA.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -20,11 +20,8 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ViewAllReporting)]
     public class ReportingController : Base.MCController
     {
-        private const string ExcelFileExtension = "xlsx";
-        private const string ExcelMimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-        private const int ExcelPaddingCharacters = 1;
-        private const int ExcelStyleIndexBold = 1;
         private readonly JobService _jobService;
+
         private readonly ILogger<ReportingController> _logger;
         private readonly ReportService _reportService;
         private readonly SchoolService _schoolService;
@@ -74,10 +71,12 @@ namespace GRA.Controllers.MissionControl
             }
             PageTitle = $"Configure {report.Name}";
 
-            string viewName = report.Name.Replace(" ", string.Empty);
+            string viewName = report.Name.Replace(" ",
+                string.Empty,
+                StringComparison.OrdinalIgnoreCase);
             if (viewName.EndsWith("Report"))
             {
-                viewName = viewName.Substring(0, viewName.Length - 6);
+                viewName = viewName[..^6];
             }
 
             var systemList = await _siteService.GetSystemList(true);
@@ -113,340 +112,80 @@ namespace GRA.Controllers.MissionControl
         [HttpGet]
         public async Task<FileStreamResult> Download(int id)
         {
-            var storedReport = await _reportService.GetReportResultsAsync(id);
+            var (request, criterion) = await _reportService.GetReportResultsAsync(id);
 
-            PageTitle = storedReport.request.Name ?? "Report Results";
+            PageTitle = request.Name ?? "Report Results";
 
             var viewModel = new ReportResultsViewModel
             {
                 Title = PageTitle
             };
 
-            var criteriaDictionnary = new Dictionary<string, object>();
-            if (storedReport.criterion.StartDate.HasValue)
+            var criteriaDictionary = new Dictionary<string, object>();
+
+            if (criterion.StartDate.HasValue)
             {
-                criteriaDictionnary.Add("Start Date", storedReport.criterion.StartDate.Value.ToString());
+                criteriaDictionary.Add("Start Date",
+                    criterion.StartDate.Value.ToString(CultureInfo.CurrentCulture));
             }
-            if (storedReport.criterion.EndDate.HasValue)
+            if (criterion.EndDate.HasValue)
             {
-                criteriaDictionnary.Add("End Date", storedReport.criterion.EndDate.Value.ToString());
+                criteriaDictionary.Add("End Date",
+                    criterion.EndDate.Value.ToString(CultureInfo.CurrentCulture));
             }
-            if (storedReport.criterion.SystemId.HasValue)
+            if (criterion.SystemId.HasValue)
             {
-                criteriaDictionnary.Add("System", (await _siteService
-                    .GetSystemByIdAsync(storedReport.criterion.SystemId.Value)).Name);
+                criteriaDictionary.Add("System", (await _siteService
+                    .GetSystemByIdAsync(criterion.SystemId.Value)).Name);
             }
-            if (storedReport.criterion.BranchId.HasValue)
+            if (criterion.BranchId.HasValue)
             {
-                criteriaDictionnary.Add("Branch", await _siteService
-                    .GetBranchName(storedReport.criterion.BranchId.Value));
+                criteriaDictionary.Add("Branch", await _siteService
+                    .GetBranchName(criterion.BranchId.Value));
             }
-            if (storedReport.criterion.ProgramId.HasValue)
+            if (criterion.ProgramId.HasValue)
             {
-                criteriaDictionnary.Add("Program", (await _siteService
-                    .GetProgramByIdAsync(storedReport.criterion.ProgramId.Value)).Name);
+                criteriaDictionary.Add("Program", (await _siteService
+                    .GetProgramByIdAsync(criterion.ProgramId.Value)).Name);
             }
-            if (storedReport.criterion.GroupInfoId.HasValue)
+            if (criterion.GroupInfoId.HasValue)
             {
-                criteriaDictionnary.Add("Group", (await _userService
-                    .GetGroupInfoByIdAsync(storedReport.criterion.GroupInfoId.Value)).Name);
+                criteriaDictionary.Add("Group", (await _userService
+                    .GetGroupInfoByIdAsync(criterion.GroupInfoId.Value)).Name);
             }
-            if (storedReport.criterion.SchoolDistrictId.HasValue)
+            if (criterion.SchoolDistrictId.HasValue)
             {
-                criteriaDictionnary.Add("School District", (await _schoolService
-                    .GetDistrictByIdAsync(storedReport.criterion.SchoolDistrictId.Value)).Name);
+                criteriaDictionary.Add("School District", (await _schoolService
+                    .GetDistrictByIdAsync(criterion.SchoolDistrictId.Value)).Name);
             }
-            if (storedReport.criterion.SchoolId.HasValue)
+            if (criterion.SchoolId.HasValue)
             {
-                criteriaDictionnary.Add("Program", (await _schoolService
-                    .GetByIdAsync(storedReport.criterion.SchoolId.Value)).Name);
+                criteriaDictionary.Add("Program", (await _schoolService
+                    .GetByIdAsync(criterion.SchoolId.Value)).Name);
             }
-            if (storedReport.criterion.VendorCodeTypeId.HasValue)
+            if (criterion.VendorCodeTypeId.HasValue)
             {
-                criteriaDictionnary.Add("Program", (await _vendorCodeService
-                    .GetTypeById(storedReport.criterion.VendorCodeTypeId.Value)).Description);
+                criteriaDictionary.Add("Program", (await _vendorCodeService
+                    .GetTypeById(criterion.VendorCodeTypeId.Value)).Description);
             }
 
             viewModel.ReportSet = JsonConvert
-                .DeserializeObject<StoredReportSet>(storedReport.request.ResultJson);
+                .DeserializeObject<StoredReportSet>(request.ResultJson);
 
-            var ms = new System.IO.MemoryStream();
-
-            using (var workbook = SpreadsheetDocument.Create(ms,
-                DocumentFormat.OpenXml.SpreadsheetDocumentType.Workbook))
+            if (viewModel.ReportSet.Reports?.FirstOrDefault()?.AsOf != null)
             {
-                workbook.AddWorkbookPart();
-                workbook.WorkbookPart.Workbook = new Workbook
-                {
-                    Sheets = new Sheets()
-                };
-
-                var stylesPart = workbook.WorkbookPart.AddNewPart<WorkbookStylesPart>();
-                stylesPart.Stylesheet = GetStylesheet();
-                stylesPart.Stylesheet.Save();
-
-                foreach (var report in viewModel.ReportSet.Reports)
-                {
-                    var sheetPart = workbook.WorkbookPart.AddNewPart<WorksheetPart>();
-                    var sheetData = new SheetData();
-                    sheetPart.Worksheet = new Worksheet(sheetData);
-
-                    var sheets = workbook.WorkbookPart.Workbook.GetFirstChild<Sheets>();
-                    var relationshipId = workbook.WorkbookPart.GetIdOfPart(sheetPart);
-
-                    uint sheetId = 1;
-                    if (sheets.Elements<Sheet>().Any())
-                    {
-                        sheetId = sheets.Elements<Sheet>()
-                            .Max(_ => _.SheetId.Value) + 1;
-                    }
-
-                    string sheetName = report.Title ?? PageTitle ?? "Report Results";
-                    if (sheetName.Length > 31)
-                    {
-                        sheetName = sheetName.Substring(0, 31);
-                    }
-
-                    var sheet = new Sheet
-                    {
-                        Id = relationshipId,
-                        SheetId = sheetId,
-                        Name = sheetName
-                    };
-                    sheets.Append(sheet);
-
-                    var maximumColumnWidth = new Dictionary<int, int>();
-
-                    if (report.HeaderRow != null)
-                    {
-                        var headerRow = new Row();
-                        int columnNumber = 0;
-                        foreach (var dataItem in report.HeaderRow)
-                        {
-                            (var cell, var length) = CreateCell(dataItem);
-                            cell.StyleIndex = ExcelStyleIndexBold;
-                            headerRow.AppendChild(cell);
-                            if (maximumColumnWidth.ContainsKey(columnNumber))
-                            {
-                                maximumColumnWidth[columnNumber]
-                                    = Math.Max(maximumColumnWidth[columnNumber], length);
-                            }
-                            else
-                            {
-                                maximumColumnWidth.Add(columnNumber, length);
-                            }
-                            columnNumber++;
-                        }
-                        sheetData.Append(headerRow);
-                    }
-
-                    foreach (var resultRow in report.Data)
-                    {
-                        var row = new Row();
-                        int columnNumber = 0;
-                        foreach (var resultItem in resultRow)
-                        {
-                            (var cell, var length) = CreateCell(resultItem ?? string.Empty);
-                            row.AppendChild(cell);
-                            if (maximumColumnWidth.ContainsKey(columnNumber))
-                            {
-                                maximumColumnWidth[columnNumber]
-                                    = Math.Max(maximumColumnWidth[columnNumber], length);
-                            }
-                            else
-                            {
-                                maximumColumnWidth.Add(columnNumber, length);
-                            }
-                            columnNumber++;
-                        }
-                        sheetData.Append(row);
-                    }
-
-                    if (report.FooterRow != null)
-                    {
-                        var footerRow = new Row();
-                        int columnNumber = 0;
-                        foreach (var dataItem in report.FooterRow)
-                        {
-                            (var cell, var length) = CreateCell(dataItem);
-                            cell.StyleIndex = ExcelStyleIndexBold;
-                            footerRow.AppendChild(cell);
-                            if (maximumColumnWidth.ContainsKey(columnNumber))
-                            {
-                                maximumColumnWidth[columnNumber]
-                                    = Math.Max(maximumColumnWidth[columnNumber], length);
-                            }
-                            else
-                            {
-                                maximumColumnWidth.Add(columnNumber, length);
-                            }
-                            columnNumber++;
-                        }
-                        sheetData.Append(footerRow);
-                    }
-
-                    if (report.FooterText != null)
-                    {
-                        foreach (var dataItem in report.FooterText)
-                        {
-                            var footerTextRow = new Row();
-                            (var cell, var length) = CreateCell(dataItem);
-                            footerTextRow.AppendChild(cell);
-                            sheetData.Append(footerTextRow);
-                        }
-                    }
-
-                    foreach (var value in maximumColumnWidth.Keys.OrderByDescending(_ => _))
-                    {
-                        var columnId = value + 1;
-                        var width = maximumColumnWidth[value] + ExcelPaddingCharacters;
-                        Columns cs = sheet.GetFirstChild<Columns>();
-                        if (cs != null)
-                        {
-                            var columnElements = cs.Elements<Column>()
-                                .Where(_ => _.Min == columnId && _.Max == columnId);
-                            if (columnElements.Any())
-                            {
-                                var column = columnElements.First();
-                                column.Width = width;
-                                column.CustomWidth = true;
-                            }
-                            else
-                            {
-                                var column = new Column
-                                {
-                                    Min = (uint)columnId,
-                                    Max = (uint)columnId,
-                                    Width = width,
-                                    CustomWidth = true
-                                };
-                                cs.Append(column);
-                            }
-                        }
-                        else
-                        {
-                            cs = new Columns();
-                            cs.Append(new Column
-                            {
-                                Min = (uint)columnId,
-                                Max = (uint)columnId,
-                                Width = width,
-                                CustomWidth = true
-                            });
-                            sheetPart.Worksheet.InsertAfter(cs,
-                                sheetPart.Worksheet.GetFirstChild<SheetFormatProperties>());
-                        }
-                    }
-                }
-
-                var criteriaSheetPart = workbook.WorkbookPart.AddNewPart<WorksheetPart>();
-                var criteriaSheetData = new SheetData();
-                criteriaSheetPart.Worksheet = new Worksheet(criteriaSheetData);
-
-                var criteriaSheets = workbook.WorkbookPart.Workbook.GetFirstChild<Sheets>();
-                var criteriaRelationshipId = workbook.WorkbookPart.GetIdOfPart(criteriaSheetPart);
-
-                uint criteriaSheetId = 1;
-                if (criteriaSheets.Elements<Sheet>().Any())
-                {
-                    criteriaSheetId = criteriaSheets.Elements<Sheet>()
-                        .Max(_ => _.SheetId.Value) + 1;
-                }
-
-                const string criteriaSheetName = "Report Criteria";
-
-                var criteriaSheet = new Sheet
-                {
-                    Id = criteriaRelationshipId,
-                    SheetId = criteriaSheetId,
-                    Name = criteriaSheetName
-                };
-                criteriaSheets.Append(criteriaSheet);
-
-                var criteriaMaximumColumnWidth = new Dictionary<int, int>();
-
-                foreach (var criterion in criteriaDictionnary)
-                {
-                    var row = new Row();
-
-                    (var nameCell, var nameLength) = CreateCell(criterion.Key);
-                    row.AppendChild(nameCell);
-                    if (criteriaMaximumColumnWidth.ContainsKey(0))
-                    {
-                        criteriaMaximumColumnWidth[0]
-                            = Math.Max(criteriaMaximumColumnWidth[0], nameLength);
-                    }
-                    else
-                    {
-                        criteriaMaximumColumnWidth.Add(0, nameLength);
-                    }
-
-                    (var dataCell, var dataLength) = CreateCell(criterion.Value);
-                    row.AppendChild(dataCell);
-                    if (criteriaMaximumColumnWidth.ContainsKey(1))
-                    {
-                        criteriaMaximumColumnWidth[1]
-                            = Math.Max(criteriaMaximumColumnWidth[1], dataLength);
-                    }
-                    else
-                    {
-                        criteriaMaximumColumnWidth.Add(1, dataLength);
-                    }
-
-                    criteriaSheetData.Append(row);
-                }
-
-                foreach (var value in criteriaMaximumColumnWidth.Keys.OrderByDescending(_ => _))
-                {
-                    var columnId = value + 1;
-                    var width = criteriaMaximumColumnWidth[value] + ExcelPaddingCharacters;
-                    Columns cs = criteriaSheet.GetFirstChild<Columns>();
-                    if (cs != null)
-                    {
-                        var columnElements = cs.Elements<Column>()
-                            .Where(_ => _.Min == columnId && _.Max == columnId);
-                        if (columnElements.Any())
-                        {
-                            var column = columnElements.First();
-                            column.Width = width;
-                            column.CustomWidth = true;
-                        }
-                        else
-                        {
-                            var column = new Column
-                            {
-                                Min = (uint)columnId,
-                                Max = (uint)columnId,
-                                Width = width,
-                                CustomWidth = true
-                            };
-                            cs.Append(column);
-                        }
-                    }
-                    else
-                    {
-                        cs = new Columns();
-                        cs.Append(new Column
-                        {
-                            Min = (uint)columnId,
-                            Max = (uint)columnId,
-                            Width = width,
-                            CustomWidth = true
-                        });
-                        criteriaSheetPart.Worksheet.InsertAfter(cs,
-                            criteriaSheetPart.Worksheet.GetFirstChild<SheetFormatProperties>());
-                    }
-                }
-
-                workbook.Save();
-                workbook.Close();
-                ms.Seek(0, System.IO.SeekOrigin.Begin);
-                var fileOutput = new FileStreamResult(ms, ExcelMimeType)
-                {
-                    FileDownloadName = $"{PageTitle}.{ExcelFileExtension}"
-                };
-                return fileOutput;
+                criteriaDictionary.Add("Report Run At",
+                    viewModel.ReportSet.Reports.First().AsOf.ToString(CultureInfo.CurrentCulture));
             }
+
+            var ms = ExcelExport.GenerateWorkbook(viewModel.ReportSet.Reports,
+                criteriaDictionary,
+                "Report Criteria");
+
+            return new FileStreamResult(ms, ExcelExport.ExcelMimeType)
+            {
+                FileDownloadName = $"{PageTitle}.{ExcelExport.ExcelFileExtension}"
+            };
         }
 
         [HttpGet]
@@ -464,6 +203,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Run(ReportCriteriaViewModel viewModel)
         {
+            ArgumentNullException.ThrowIfNull(viewModel);
+
             PageTitle = "Run the report";
 
             var siteId = GetCurrentSiteId();
@@ -630,88 +371,15 @@ namespace GRA.Controllers.MissionControl
             }
         }
 
-        private (Cell cell, int length) CreateCell(object dataItem)
+        private static string FormatDataItem(object dataItem)
         {
-            var addCell = new Cell
+            return dataItem switch
             {
-                CellValue = new CellValue(dataItem.ToString())
+                int i => i.ToString("N0", CultureInfo.InvariantCulture),
+                long l => l.ToString("N0", CultureInfo.InvariantCulture),
+                null => string.Empty,
+                _ => WebUtility.HtmlEncode(dataItem.ToString()),
             };
-
-            switch (dataItem)
-            {
-                case int _:
-                case long _:
-                    addCell.DataType = CellValues.Number;
-                    break;
-
-                case DateTime _:
-                    addCell.DataType = CellValues.Date;
-                    break;
-
-                default:
-                    addCell.DataType = CellValues.String;
-                    break;
-            }
-
-            return (addCell, dataItem.ToString().Length);
-        }
-
-        private string FormatDataItem(object dataItem)
-        {
-            switch (dataItem)
-            {
-                case int i:
-                    return i.ToString("N0");
-
-                case long l:
-                    return l.ToString("N0");
-
-                default:
-                    return WebUtility.HtmlEncode(dataItem.ToString());
-
-                case null:
-                    return string.Empty;
-            }
-        }
-
-        private Stylesheet GetStylesheet()
-        {
-            var stylesheet = new Stylesheet();
-
-            var font = new Font();
-            var boldFont = new Font();
-            boldFont.Append(new Bold());
-
-            var fonts = new Fonts();
-            fonts.Append(font);
-            fonts.Append(boldFont);
-
-            var fill = new Fill();
-            var fills = new Fills();
-            fills.Append(fill);
-
-            var border = new Border();
-            var borders = new Borders();
-            borders.Append(border);
-
-            var regularFormat = new CellFormat
-            {
-                FontId = 0
-            };
-            var boldFormat = new CellFormat
-            {
-                FontId = 1
-            };
-            var cellFormats = new CellFormats();
-            cellFormats.Append(regularFormat);
-            cellFormats.Append(boldFormat);
-
-            stylesheet.Append(fonts);
-            stylesheet.Append(fills);
-            stylesheet.Append(borders);
-            stylesheet.Append(cellFormats);
-
-            return stylesheet;
         }
     }
 }

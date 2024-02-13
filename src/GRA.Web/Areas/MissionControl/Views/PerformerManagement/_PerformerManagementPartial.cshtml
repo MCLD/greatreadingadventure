@@ -12,6 +12,10 @@
                 <li ActiveBy routeKey="Action" value="@nameof(PerformerManagementController.BlackoutDates)"><a asp-action="@nameof(PerformerManagementController.BlackoutDates)">Blackout Dates</a></li>
                 <li ActiveBy routeKey="Action" value="@nameof(PerformerManagementController.ExcludedBranches)"><a asp-action="@nameof(PerformerManagementController.ExcludedBranches)">Excluded Branches</a></li>
                 <li ActiveBy routeKey="Action" value="@nameof(PerformerManagementController.Settings)"><a asp-action="@nameof(PerformerManagementController.Settings)">Settings</a></li>
+                <li>
+                    <a asp-action="@nameof(PerformerManagementController.ScheduleExport)"
+                       asp-controller="@PerformerManagementController.Name">Export .xlsx</a>
+                </li>
             </ul>
         </div>
     </div>

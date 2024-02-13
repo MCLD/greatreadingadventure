@@ -11,6 +11,7 @@ using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
+using GRA.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -165,6 +166,93 @@ namespace GRA.Controllers.MissionControl
             public int ProgramCount { get; set; }
             public string SchedulingStage { get; set; }
         }
+
+        #region ScheduleExport
+
+        [HttpGet]
+        public async Task<IActionResult> ScheduleExport()
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+
+            var storedReport = new StoredReport
+            {
+                AsOf = _dateTimeProvider.Now,
+                Title = "Scheduled Programs",
+                HeaderRow = new[]
+                {
+                    "Performer Name",
+                    "Program Title",
+                    "System",
+                    "Branch",
+                    "Branch Address",
+                    "Branch Telephone",
+                    "Start Time",
+                    "Scheduled By",
+                    "Scheduled By Email",
+                    "Scheduled By Phone",
+                    "On-site Contact Name",
+                    "On-site Contact Email",
+                    "On-site Contact Phone"
+                }
+            };
+
+            var stage = _performerSchedulingService.GetSchedulingStage(settings);
+
+            var criteriaDictionary = new Dictionary<string, object>
+            {
+                { "As Of", storedReport.AsOf.ToString(CultureInfo.CurrentCulture) },
+                { "Scheduling Stage", stage.ToString() }
+            };
+
+            var systems = await _performerSchedulingService
+                .GetSystemListWithoutExcludedBranchesAsync();
+
+            var selections = new List<PsBranchSelection>();
+
+            foreach (var system in systems)
+            {
+                foreach (var branch in system.Branches)
+                {
+                    selections.AddRange(await _performerSchedulingService
+                        .GetSelectionsByBranchIdAsync(branch.Id));
+                }
+            }
+
+            storedReport.Data = selections
+                .Where(_ => _.Program != null)
+                .OrderBy(_ => _.Program?.PerformerName)
+                .ThenBy(_ => _.Program?.Title)
+                .ThenBy(_ => _.Branch.Name)
+                .Select(_ => new object[]
+                {
+                    _.Program?.PerformerName ?? "Unknown",
+                    _.Program?.Title ?? "Unknown",
+                    _.Branch?.SystemName ?? "Unknown",
+                    _.Branch?.Name ?? "Unknown",
+                    _.Branch?.Address ?? string.Empty,
+                    _.Branch?.Telephone ?? string.Empty,
+                    _.ScheduleStartTime.ToString(CultureInfo.CurrentCulture),
+                    _.CreatedByUser.FullName ?? string.Empty,
+                    _.CreatedByUser.Email ?? string.Empty,
+                    _.CreatedByUser.PhoneNumber ?? string.Empty,
+                    _.OnSiteContactName ?? string.Empty,
+                    _.OnSiteContactEmail ?? string.Empty,
+                    _.OnSiteContactPhone ?? string.Empty
+                });
+
+            var memoryStream = ExcelExport.GenerateWorkbook(new[] { storedReport },
+                criteriaDictionary,
+                "As Of");
+
+            var scheduleName = $"{storedReport.AsOf:yyyyMMdd}-PerformerSchedule";
+
+            return new FileStreamResult(memoryStream, ExcelExport.ExcelMimeType)
+            {
+                FileDownloadName = $"{scheduleName}.{ExcelExport.ExcelFileExtension}"
+            };
+        }
+
+        #endregion ScheduleExport
 
         #region Performers
 
@@ -738,10 +826,10 @@ namespace GRA.Controllers.MissionControl
             var months = selections
                 .OrderBy(s => s.ScheduleStartTime.Month)
                 .GroupBy(s => s.ScheduleStartTime.Month).Select(_ => new SelectListItem
-            {
-                Value = _.First().ScheduleStartTime.Month.ToString(CultureInfo.CurrentCulture),
-                Text = _.First().ScheduleStartTime.ToString("MMMM", CultureInfo.CurrentCulture)
-            });
+                {
+                    Value = _.First().ScheduleStartTime.Month.ToString(CultureInfo.CurrentCulture),
+                    Text = _.First().ScheduleStartTime.ToString("MMMM", CultureInfo.CurrentCulture)
+                });
 
             var monthSelection = new SelectList(months, "Value", "Text");
 
