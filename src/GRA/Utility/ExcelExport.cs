@@ -12,8 +12,11 @@ namespace GRA.Utility
     /// </summary>
     public static class ExcelExport
     {
-        public const string ExcelFileExtension = "xlsx";
-        public const string ExcelMimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        public static readonly string ExcelFileExtension = "xlsx";
+
+        public static readonly string ExcelMimeType
+            = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
         private const int ExcelPaddingCharacters = 1;
         private const int ExcelStyleIndexBold = 1;
 

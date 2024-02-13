@@ -174,7 +174,7 @@ namespace GRA.Controllers.MissionControl
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();
 
-            var storedReport = new StoredReport()
+            var storedReport = new StoredReport
             {
                 AsOf = _dateTimeProvider.Now,
                 Title = "Scheduled Programs",

@@ -201,7 +201,7 @@ namespace GRA.Controllers.MissionControl
                         _.Name,
                         _.Email
                     }),
-                    HeaderRow = new string[] { "User Id", "Name", "Email Address" },
+                    HeaderRow = new[] { "User Id", "Name", "Email Address" },
                     Title = "Email Award Addresses"
                 };
 
