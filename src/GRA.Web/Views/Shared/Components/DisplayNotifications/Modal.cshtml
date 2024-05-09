@@ -10,7 +10,7 @@
                 @if (notification.IsJoiner && Context.Items.ContainsKey(ItemKey.AskToAddFamilyMember))
                 {
                     <br />
-                    @SharedHtmlLocalizer[ItemKey.AskToAddFamilyMember, Url.Action(nameof(ProfileController.AddHouseholdMember), ProfileController.Name)]
+                    @SharedHtmlLocalizer[GRA.Annotations.Interface.AddFamilyMember, Url.Action(nameof(ProfileController.AddHouseholdMember), ProfileController.Name)]
                     <br />
                 }
             }
