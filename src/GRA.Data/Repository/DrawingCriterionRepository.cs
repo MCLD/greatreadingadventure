@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
@@ -20,82 +21,17 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<IEnumerable<DrawingCriterion>> PageAllAsync(BaseFilter filter)
-        {
-            return await ApplyFilters(filter)
-                .OrderBy(_ => _.Name)
-                .ThenBy(_ => _.Id)
-                .ApplyPagination(filter)
-                .ProjectTo<DrawingCriterion>(_mapper.ConfigurationProvider)
-                .ToListAsync();
-        }
-
-        public async Task<int> GetCountAsync(BaseFilter filter)
-        {
-            return await ApplyFilters(filter)
-                .CountAsync();
-        }
-
-        private IQueryable<Model.DrawingCriterion> ApplyFilters(BaseFilter filter)
-        {
-            var criterionList = DbSet
-                .AsNoTracking()
-                .Where(_ => _.SiteId == filter.SiteId);
-
-            if (filter.SystemIds?.Any() == true)
-            {
-                criterionList = criterionList
-                    .Where(_ => filter.SystemIds.Contains(_.RelatedSystemId));
-            }
-
-            if (filter.BranchIds?.Any() == true)
-            {
-                criterionList = criterionList
-                    .Where(_ => filter.BranchIds.Contains(_.RelatedBranchId));
-            }
-
-            if (filter.UserIds?.Any() == true)
-            {
-                criterionList = criterionList.Where(_ => filter.UserIds.Contains(_.CreatedBy));
-            }
-
-            if (filter.ProgramIds?.Any() == true)
-            {
-                criterionList = criterionList
-                    .Where(_ => filter.ProgramIds.Where(p => p.HasValue).Cast<int>()
-                        .Any(p => p == _.ProgramId || _.CriterionPrograms.Select(c => c.ProgramId).Contains(p))
-                    || (_.CriterionPrograms.Count == 0 && !_.ProgramId.HasValue
-                        && filter.ProgramIds.Any(p => !p.HasValue)));
-            }
-
-
-            if (!string.IsNullOrWhiteSpace(filter.Search))
-            {
-                criterionList = criterionList.Where(_ => _.Name.Contains(filter.Search))
-                    .Union(criterionList.Where(_ => _.System.Name.Contains(filter.Search)))
-                    .Union(criterionList.Where(_ => _.Branch.Name.Contains(filter.Search)));
-            }
-
-            return criterionList;
-        }
-
-        public override async Task<DrawingCriterion> GetByIdAsync(int id)
-        {
-            return await DbSet.AsNoTracking()
-                .Where(_ => _.Id == id)
-                .ProjectTo<DrawingCriterion>(_mapper.ConfigurationProvider)
-                .SingleOrDefaultAsync();
-        }
-
         public override async Task<DrawingCriterion> AddSaveAsync(int userId,
-            DrawingCriterion criterion)
+            DrawingCriterion domainEntity)
         {
-            var newCriterion = await base.AddSaveAsync(userId, criterion);
+            ArgumentNullException.ThrowIfNull(domainEntity);
 
-            if (criterion.ProgramIds != null)
+            var newCriterion = await base.AddSaveAsync(userId, domainEntity);
+
+            if (domainEntity.ProgramIds != null)
             {
                 var criterionProgramList = new List<Model.DrawingCriterionProgram>();
-                foreach (var programId in criterion.ProgramIds)
+                foreach (var programId in domainEntity.ProgramIds)
                 {
                     criterionProgramList.Add(new Model.DrawingCriterionProgram()
                     {
@@ -110,33 +46,18 @@ namespace GRA.Data.Repository
             return newCriterion;
         }
 
-        public override async Task<DrawingCriterion> UpdateSaveAsync(int userId,
-            DrawingCriterion criterion)
+        public override async Task<DrawingCriterion> GetByIdAsync(int id)
         {
-            var updatedCriterion = await base.UpdateSaveAsync(userId, criterion);
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.Id == id)
+                .ProjectTo<DrawingCriterion>(_mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync();
+        }
 
-            var thisCriterionPrograms = _context.DrawingCriterionPrograms.AsNoTracking()
-                .Where(_ => _.DrawingCriterionId == updatedCriterion.Id);
-
-            if (criterion.ProgramIds != null)
-            {
-                var programsToAdd = criterion.ProgramIds
-                    .Except(thisCriterionPrograms.Select(_ => _.ProgramId))
-                    .Select(_ => new Model.DrawingCriterionProgram()
-                    {
-                        DrawingCriterionId = updatedCriterion.Id,
-                        ProgramId = _
-                    });
-                await _context.DrawingCriterionPrograms.AddRangeAsync(programsToAdd);
-            }
-
-            var programsToRemove = thisCriterionPrograms
-                .Where(_ => !criterion.ProgramIds.Contains(_.ProgramId));
-            _context.DrawingCriterionPrograms.RemoveRange(programsToRemove);
-
-            await _context.SaveChangesAsync();
-
-            return updatedCriterion;
+        public async Task<int> GetCountAsync(BaseFilter filter)
+        {
+            ArgumentNullException.ThrowIfNull(filter);
+            return await ApplyFilters(filter).CountAsync();
         }
 
         public async Task<int> GetEligibleUserCountAsync(int criterionId)
@@ -149,6 +70,49 @@ namespace GRA.Data.Repository
         {
             var criterion = await GetByIdAsync(criterionId);
             return await ApplyCriterion(criterion).ToListAsync();
+        }
+
+        public async Task<IEnumerable<DrawingCriterion>> PageAllAsync(BaseFilter filter)
+        {
+            ArgumentNullException.ThrowIfNull(filter);
+
+            return await ApplyFilters(filter)
+                .OrderBy(_ => _.Name)
+                .ThenBy(_ => _.Id)
+                .ApplyPagination(filter)
+                .ProjectTo<DrawingCriterion>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
+        public override async Task<DrawingCriterion> UpdateSaveAsync(int userId,
+            DrawingCriterion domainEntity)
+        {
+            ArgumentNullException.ThrowIfNull(domainEntity);
+
+            var updatedCriterion = await base.UpdateSaveAsync(userId, domainEntity);
+
+            var thisCriterionPrograms = _context.DrawingCriterionPrograms.AsNoTracking()
+                .Where(_ => _.DrawingCriterionId == updatedCriterion.Id);
+
+            if (domainEntity.ProgramIds != null)
+            {
+                var programsToAdd = domainEntity.ProgramIds
+                    .Except(thisCriterionPrograms.Select(_ => _.ProgramId))
+                    .Select(_ => new Model.DrawingCriterionProgram()
+                    {
+                        DrawingCriterionId = updatedCriterion.Id,
+                        ProgramId = _
+                    });
+                await _context.DrawingCriterionPrograms.AddRangeAsync(programsToAdd);
+            }
+
+            var programsToRemove = thisCriterionPrograms
+                .Where(_ => !domainEntity.ProgramIds.Contains(_.ProgramId));
+            _context.DrawingCriterionPrograms.RemoveRange(programsToRemove);
+
+            await _context.SaveChangesAsync();
+
+            return updatedCriterion;
         }
 
         private IQueryable<int> ApplyCriterion(DrawingCriterion criterion)
@@ -217,9 +181,7 @@ namespace GRA.Data.Repository
 
             if (criterion.PointsMinimum != null || criterion.PointsMinimum != null)
             {
-                IQueryable<int> pointUserStart = activityUsers != null
-                    ? activityUsers
-                    : userIds;
+                IQueryable<int> pointUserStart = activityUsers ?? userIds;
 
                 var userLog = _context.UserLogs
                     .AsNoTracking()
@@ -254,15 +216,61 @@ namespace GRA.Data.Repository
                 pointUsers = pointSum.Select(_ => _.UserId);
             }
 
-            if (pointUsers != null)
+            return pointUsers ?? (activityUsers ?? userIds);
+        }
+
+        private IQueryable<Model.DrawingCriterion> ApplyFilters(BaseFilter filter)
+        {
+            var criterionList = DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == filter.SiteId);
+
+            if (filter.SystemIds?.Any() == true)
             {
-                return pointUsers;
+                criterionList = criterionList
+                    .Where(_ => filter.SystemIds.Contains(_.RelatedSystemId));
             }
-            if (activityUsers != null)
+
+            if (filter.BranchIds?.Any() == true)
             {
-                return activityUsers;
+                criterionList = criterionList
+                    .Where(_ => filter.BranchIds.Contains(_.RelatedBranchId));
             }
-            return userIds;
+
+            if (filter.UserIds?.Any() == true)
+            {
+                criterionList = criterionList.Where(_ => filter.UserIds.Contains(_.CreatedBy));
+            }
+
+            if (filter.ProgramIds?.Any() == true)
+            {
+                // list of non-null ints to filter by
+                var programIds = filter.ProgramIds.Where(_ => _.HasValue).Cast<int>().ToList();
+
+                if (programIds.Count == 0)
+                {
+                    // filter by no programs
+                    criterionList = criterionList
+                        .Where(_ => _.CriterionPrograms.Count == 0 && !_.ProgramId.HasValue);
+                }
+                else
+                {
+                    // filter by programs in list
+                    criterionList = criterionList
+                        .Where(_ => filter.ProgramIds.Contains(_.ProgramId)
+                            || _.CriterionPrograms
+                                .Any(c => filter.ProgramIds.Contains(c.ProgramId)));
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+            {
+                criterionList = criterionList.Where(_ => _.Name.Contains(filter.Search))
+                    .Union(criterionList.Where(_ => _.System.Name.Contains(filter.Search)))
+                    .Union(criterionList.Where(_ => _.Branch.Name.Contains(filter.Search)));
+            }
+
+            return criterionList;
         }
     }
 }
