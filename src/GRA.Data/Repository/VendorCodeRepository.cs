@@ -308,9 +308,10 @@ namespace GRA.Data.Repository
                 .Where(_ => codes.Select(_ => _.UserId).Contains(_.Id))
                 .Select(_ => new
                 {
+                    _.FirstName,
+                    _.HouseholdHeadUserId,
                     _.Id,
                     _.IsDeleted,
-                    _.FirstName,
                     _.LastName,
                     _.ProgramId
                 });
@@ -343,6 +344,13 @@ namespace GRA.Data.Repository
                     code.GroupName = groups.TryGetValue(user.Id, out string groupValue)
                         ? groupValue
                         : null;
+                    if (code.GroupName == null && user.HouseholdHeadUserId.HasValue)
+                    {
+                        code.GroupName = groups.TryGetValue(user.HouseholdHeadUserId.Value,
+                            out string headUserGroup)
+                           ? headUserGroup
+                           : null;
+                    }
                 }
             }
 
