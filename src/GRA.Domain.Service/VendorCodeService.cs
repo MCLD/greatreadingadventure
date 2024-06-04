@@ -2217,13 +2217,18 @@ namespace GRA.Domain.Service
                 catch (InvalidCastException)
                 {
                     string dateString = excelReader.GetString(columnId);
-                    if (DateTime.TryParse(dateString, out var orderDateConversion))
+                    if (string.IsNullOrEmpty(dateString))
                     {
-                        return orderDateConversion;
+                        return null;
+                    }
+
+                    if (DateTime.TryParse(dateString, out var dateConversion))
+                    {
+                        return dateConversion;
                     }
                     else
                     {
-                        _logger.LogError(ErrorUnableToParse, "order date", row, dateString);
+                        _logger.LogError(ErrorUnableToParse, columnName, row, dateString);
                         throw new GraException($"Issue reading {columnName} on row {row}: {dateString}");
                     }
                 }
