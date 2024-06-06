@@ -5,8 +5,8 @@ namespace GRA
 {
     public static class SiteSettingDefinitions
     {
-        public static Dictionary<string, SiteSettingDefinition> DefinitionDictionary
-            = new Dictionary<string, SiteSettingDefinition>()
+        public static readonly Dictionary<string, SiteSettingDefinition> DefinitionDictionary
+            = new()
             {
                 [SiteSettingKey.SecretCode.Disable] = new SiteSettingDefinition
                 {
@@ -27,6 +27,13 @@ namespace GRA
                     Name = "Maximum points per challenge task",
                     Info = "A number representing the maximum amount of points permitted per challenge task (it may be able to be overidden from Mission Control).",
                     Category = typeof(SiteSettingKey.Challenges).Name,
+                    Format = SiteSettingFormat.Integer
+                },
+                [SiteSettingKey.Email.MaximumWelcomeEmailSendBlock] = new SiteSettingDefinition
+                {
+                    Name = "Welcome email maximum sending block",
+                    Info = "The number of welcome emails to send in one block, sending occurs every time the job runner executes - defaults to 20",
+                    Category = typeof(SiteSettingKey.Email).Name,
                     Format = SiteSettingFormat.Integer
                 },
                 [SiteSettingKey.Email.WelcomeDelayHours] = new SiteSettingDefinition

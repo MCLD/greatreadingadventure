@@ -92,6 +92,7 @@ namespace GRA.Data.Repository
 
         public async Task<int> GetAchieverCountAsync(ReportCriterion request)
         {
+            ArgumentNullException.ThrowIfNull(request);
             return await ApplyUserFilter(request)
                 .Where(_ => _.AchievedAt.HasValue)
                 .CountAsync();
@@ -151,11 +152,13 @@ namespace GRA.Data.Repository
 
         public async Task<int> GetCountAsync(ReportCriterion request)
         {
+            ArgumentNullException.ThrowIfNull(request);
             return await ApplyUserFilter(request).CountAsync();
         }
 
         public async Task<int> GetCountAsync(UserFilter filter)
         {
+            ArgumentNullException.ThrowIfNull(filter);
             return await ApplyUserFilter(filter)
                 .CountAsync();
         }
@@ -171,6 +174,7 @@ namespace GRA.Data.Repository
 
         public async Task<int> GetFirstTimeCountAsync(ReportCriterion request)
         {
+            ArgumentNullException.ThrowIfNull(request);
             var users = ApplyUserFilter(request);
             return await users.Where(_ => _.IsFirstTime).CountAsync();
         }
@@ -310,6 +314,7 @@ namespace GRA.Data.Repository
         public async Task<IEnumerable<User>> GetTopScoresAsync(ReportCriterion criterion,
             int scoresToReturn)
         {
+            ArgumentNullException.ThrowIfNull(criterion);
             return await ApplyUserFilter(criterion)
                 .OrderByDescending(_ => _.PointsEarned)
                 .Take(scoresToReturn)
@@ -364,6 +369,7 @@ namespace GRA.Data.Repository
 
         public async Task<IEnumerable<User>> GetUsersByCriterionAsync(ReportCriterion criterion)
         {
+            ArgumentNullException.ThrowIfNull(criterion);
             return await ApplyUserFilter(criterion)
                 .ProjectTo<User>(_mapper.ConfigurationProvider)
                 .ToListAsync();
@@ -431,6 +437,16 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
+        public async Task<int> GetWelcomeRecipientsCountAsync()
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => !_.IsDeleted
+                    && _.IsEmailSubscribed
+                    && !string.IsNullOrEmpty(_.Email))
+                .CountAsync();
+        }
+
         public async Task<bool> IsAnyoneSubscribedAsync()
         {
             return await DbSet
@@ -449,6 +465,7 @@ namespace GRA.Data.Repository
 
         public async Task<IEnumerable<User>> PageAllAsync(UserFilter filter)
         {
+            ArgumentNullException.ThrowIfNull(filter);
             var userList = ApplyUserFilter(filter);
 
             switch (filter.SortBy)

@@ -1,4 +1,5 @@
-﻿@model GRA.Controllers.ViewModel.MissionControl.EmailManagement.EmailIndexViewModel
+﻿@using GRA.Controllers.ViewModel.MissionControl.EmailManagement
+@model EmailIndexViewModel
 
 @section Styles {
     <style>
@@ -55,7 +56,7 @@
                     <thead>
                         <tr>
                             <th>Description</th>
-                            <th>Emails Sent</th>
+                            <th>Emails Sent/Pending</th>
                             <th>Editable</th>
                             <th>System email</th>
                             <th>Edit</th>
@@ -78,6 +79,12 @@
                                 </td>
                                 <td style="vertical-align: middle;">
                                     @template.EmailsSent
+                                    @if (template.Id == Model.WelcomeEmailTemplateId)
+                                    {
+                                        @:/
+                                        @Model.WelcomeEmailsTotal
+                                        @EmailIndexViewModel.DisplayPercent(template.EmailsSent, Model.WelcomeEmailsTotal)
+                                    }
                                 </td>
                                 <td style="vertical-align: middle;">
                                     @if (template.IsSystem || !template.IsBulkSent)
