@@ -413,8 +413,29 @@ namespace GRA.Data.Repository
             };
         }
 
+        public async Task<int> GetWelcomePendingCountAsync(int welcomeEmailId,
+            int memberLongerThanHours)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Join(_context.DirectEmailHistories,
+                    u => u.Email,
+                    deh => deh.ToEmailAddress,
+                    (u, deh) => new
+                    {
+                        User = u,
+                        DirectEmailAddress = deh.ToEmailAddress
+                    })
+                .Where(_ => !_.User.IsDeleted
+                    && !string.IsNullOrEmpty(_.User.Email)
+                    && _.User.IsEmailSubscribed
+                    && string.IsNullOrEmpty(_.DirectEmailAddress)
+                    && _.User.CreatedAt.AddHours(memberLongerThanHours) <= _dateTimeProvider.Now)
+                .CountAsync();
+        }
+
         public async Task<IEnumerable<User>> GetWelcomeRecipientsAsync(int skip,
-            int take,
+                    int take,
             int memberLongerThanHours)
         {
             return await DbSet
@@ -435,16 +456,6 @@ namespace GRA.Data.Repository
                     UnsubscribeToken = _.UnsubscribeToken
                 })
                 .ToListAsync();
-        }
-
-        public async Task<int> GetWelcomeRecipientsCountAsync()
-        {
-            return await DbSet
-                .AsNoTracking()
-                .Where(_ => !_.IsDeleted
-                    && _.IsEmailSubscribed
-                    && !string.IsNullOrEmpty(_.Email))
-                .CountAsync();
         }
 
         public async Task<bool> IsAnyoneSubscribedAsync()

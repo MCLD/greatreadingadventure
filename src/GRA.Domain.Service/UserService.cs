@@ -1067,7 +1067,22 @@ namespace GRA.Domain.Service
 
         public async Task<int> GetWelcomeRecipientsCountAsync()
         {
-            return await _userRepository.GetWelcomeRecipientsCountAsync();
+            var siteId = GetCurrentSiteId();
+
+            var (emailIdSet, welcomeEmailId) = await _siteLookupService
+                        .GetSiteSettingIntAsync(siteId, SiteSettingKey.Email.WelcomeTemplateId);
+
+            if (!emailIdSet || welcomeEmailId == 0)
+            {
+                // abort if no welcome email is set
+                return 0;
+            }
+
+            var (_, memberLongerThanHours) = await _siteLookupService
+                .GetSiteSettingIntAsync(siteId, SiteSettingKey.Email.WelcomeDelayHours);
+
+            return await _userRepository.GetWelcomePendingCountAsync(welcomeEmailId,
+                memberLongerThanHours);
         }
 
         public async Task<JobStatus> ImportHouseholdMembersAsync(int jobId,
