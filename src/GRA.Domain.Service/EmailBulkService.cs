@@ -54,6 +54,8 @@ namespace GRA.Domain.Service
             CancellationToken token,
             IProgress<JobStatus> progress)
         {
+            ArgumentNullException.ThrowIfNull(progress);
+
             if (HasPermission(Permission.SendBulkEmails))
             {
                 var job = await _jobRepository.GetByIdAsync(jobId);
@@ -106,7 +108,7 @@ namespace GRA.Domain.Service
         public async Task<bool> SendWelcomeScheduledTask()
         {
             int sentMails = 0;
-            const int maximumSend = 20;
+            const int defaultMaximumSend = 20;
             int skip = 0;
             const int take = 1000;
 
@@ -154,6 +156,14 @@ namespace GRA.Domain.Service
 
                     var alreadyReceived = await _directEmailHistoryRepository
                         .GetSentEmailByTemplateIdAsync(welcomeEmailId);
+
+                    var (maximumSendSet, maximumSendSetting) = await _siteLookupService
+                        .GetSiteSettingIntAsync(site.Id,
+                            SiteSettingKey.Email.MaximumWelcomeEmailSendBlock);
+
+                    var maximumSend = maximumSendSet
+                        ? maximumSendSetting
+                        : defaultMaximumSend;
 
                     while (sentMails <= maximumSend && users.Any())
                     {

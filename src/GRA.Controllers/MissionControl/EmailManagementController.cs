@@ -1228,10 +1228,13 @@ namespace GRA.Controllers.MissionControl
 
             var isAnyoneSubscribed = await _emailManagementService.IsAnyoneSubscribedAsync();
 
-            viewModel.EmailTemplates = templateList.Data;
+            ((List<EmailTemplateListItem>)viewModel.EmailTemplates).AddRange(templateList.Data);
             viewModel.IsAdmin = currentUser?.IsAdmin == true;
             viewModel.IsAnyoneSubscribed = isAnyoneSubscribed;
-            viewModel.LanguageNames = await _languageService.GetIdDescriptionDictionaryAsync();
+            foreach(var ln in await _languageService.GetIdDescriptionDictionaryAsync())
+            {
+                viewModel.LanguageNames.Add(ln);
+            }
 
             var (isSet, welcomeEmailTemplateId) = await _siteLookupService
                 .GetSiteSettingIntAsync(GetCurrentSiteId(), SiteSettingKey.Email.WelcomeTemplateId);
@@ -1239,6 +1242,7 @@ namespace GRA.Controllers.MissionControl
             if (isSet && welcomeEmailTemplateId > 0)
             {
                 viewModel.WelcomeEmailTemplateId = welcomeEmailTemplateId;
+                viewModel.WelcomeEmailsTotal = await _userService.GetWelcomeRecipientsCountAsync();
             }
 
             if (!isAnyoneSubscribed)

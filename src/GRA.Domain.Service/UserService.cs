@@ -198,10 +198,13 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(vendorCodeService));
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization",
+            "CA1308:Normalize strings to uppercase",
+            Justification = "Normalize authorization codes to lowercase")]
         public async Task<string>
             ActivateAuthorizationCode(string authorizationCode, int? joiningUserId = null)
         {
-            string fixedCode = authorizationCode.Trim().ToLower(CultureInfo.InvariantCulture);
+            string fixedCode = authorizationCode?.Trim()?.ToLower(CultureInfo.InvariantCulture);
             int siteId = GetCurrentSiteId();
             var authCode
                 = await _authorizationCodeRepository.GetByCodeAsync(siteId, fixedCode);
@@ -267,6 +270,8 @@ namespace GRA.Domain.Service
             {
                 VerifyCanHouseholdAction();
             }
+
+            ArgumentNullException.ThrowIfNull(memberToAdd);
 
             var siteId = GetCurrentSiteId();
             int authUserId = GetClaimId(ClaimType.UserId);
@@ -421,7 +426,7 @@ namespace GRA.Domain.Service
                 throw new GraException("Only a family or group manager can add members");
             }
 
-            string trimmedUsername = username.Trim();
+            string trimmedUsername = username?.Trim();
             var authenticationResult = await _userRepository.AuthenticateUserAsync(
                 trimmedUsername,
                 password,
@@ -460,6 +465,7 @@ namespace GRA.Domain.Service
         public async Task<(int totalAddCount, int addUserId)>
             CountParticipantsToAdd(string username, string password)
         {
+            ArgumentNullException.ThrowIfNull(username);
             string trimmedUsername = username.Trim();
             VerifyCanHouseholdAction();
 
@@ -502,6 +508,8 @@ namespace GRA.Domain.Service
         public async Task<GroupInfo> CreateGroup(int currentUserId,
             GroupInfo groupInfo)
         {
+            ArgumentNullException.ThrowIfNull(groupInfo);
+
             if (currentUserId != groupInfo.UserId
                 && !HasPermission(Permission.EditParticipants))
             {
@@ -875,6 +883,7 @@ namespace GRA.Domain.Service
             GroupFilter filter)
         {
             VerifyPermission(Permission.ViewParticipantDetails);
+            ArgumentNullException.ThrowIfNull(filter);
 
             filter.SiteId = GetCurrentSiteId();
 
@@ -882,8 +891,10 @@ namespace GRA.Domain.Service
         }
 
         public async Task<DataWithCount<ICollection<Book>>>
-                    GetPaginatedUserBookListAsync(int userId, BookFilter filter)
+            GetPaginatedUserBookListAsync(int userId, BookFilter filter)
         {
+            ArgumentNullException.ThrowIfNull(filter);
+
             int requestedByUserId = GetActiveUserId();
             if (requestedByUserId == userId
                || HasPermission(Permission.ViewParticipantDetails))
@@ -903,6 +914,7 @@ namespace GRA.Domain.Service
         public async Task<DataWithCount<ICollection<UserLog>>>
             GetPaginatedUserHistoryAsync(int userId, UserLogFilter filter)
         {
+            ArgumentNullException.ThrowIfNull(filter);
             int requestedByUserId = GetActiveUserId();
             if (requestedByUserId == userId
                || HasPermission(Permission.ViewParticipantDetails))
@@ -922,6 +934,7 @@ namespace GRA.Domain.Service
         public async Task<DataWithCount<IEnumerable<User>>> GetPaginatedUserListAsync(
             UserFilter filter)
         {
+            ArgumentNullException.ThrowIfNull(filter);
             if (HasPermission(Permission.ViewParticipantList))
             {
                 if (!filter.CanAddToHousehold && !string.IsNullOrEmpty(filter.Search))
@@ -1052,6 +1065,11 @@ namespace GRA.Domain.Service
                 .GetWelcomeRecipientsAsync(skip, take, memberLongerThanHours);
         }
 
+        public async Task<int> GetWelcomeRecipientsCountAsync()
+        {
+            return await _userRepository.GetWelcomeRecipientsCountAsync();
+        }
+
         public async Task<JobStatus> ImportHouseholdMembersAsync(int jobId,
                             CancellationToken token,
             IProgress<JobStatus> progress = null)
@@ -1180,12 +1198,13 @@ namespace GRA.Domain.Service
 
                 string callIt = groupInfo == null ? "Household" : "Group";
 
-                progress.Report(new JobStatus
+                progress?.Report(new JobStatus
                 {
                     PercentComplete = currentUser * 100 / userCount,
                     Status = $"Adding {callIt} members ({currentUser}/{userCount})...",
                     Error = false
                 });
+
                 var lastUpdateSent = (int)sw.Elapsed.TotalSeconds;
 
                 foreach (var importUser in userImportResult.Users)
@@ -1289,6 +1308,7 @@ namespace GRA.Domain.Service
 
         public async Task<User> MCUpdate(User userToUpdate)
         {
+            ArgumentNullException.ThrowIfNull(userToUpdate);
             int requestedByUserId = GetClaimId(ClaimType.UserId);
 
             if (HasPermission(Permission.EditParticipants))
@@ -1454,6 +1474,8 @@ namespace GRA.Domain.Service
         public async Task RegisterHouseholdMemberAsync(User memberToRegister, string password)
         {
             VerifyCanRegister();
+            ArgumentNullException.ThrowIfNull(memberToRegister);
+
             int authUserId = GetClaimId(ClaimType.UserId);
 
             if (authUserId == (int)memberToRegister.HouseholdHeadUserId
@@ -1490,7 +1512,7 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<User> RegisterUserAsync(User user, string password, 
+        public async Task<User> RegisterUserAsync(User user, string password,
             bool MCRegistration = false, bool allowDuringCloseProgram = false)
         {
             var siteId = GetCurrentSiteId();
@@ -1499,6 +1521,8 @@ namespace GRA.Domain.Service
             {
                 VerifyCanRegister();
             }
+
+            ArgumentNullException.ThrowIfNull(user);
 
             var existingUser = await _userRepository.GetByUsernameAsync(user.Username);
             if (existingUser != null)
@@ -1654,6 +1678,7 @@ namespace GRA.Domain.Service
 
         public async Task<User> Update(User userToUpdate)
         {
+            ArgumentNullException.ThrowIfNull(userToUpdate);
             int requestingUserId = GetActiveUserId();
 
             if (requestingUserId == userToUpdate.Id)
@@ -1741,7 +1766,7 @@ namespace GRA.Domain.Service
                     userId);
                 throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
-
+            ArgumentNullException.ThrowIfNull(groupInfo);
             var currentGroup = await _groupInfoRepository.GetByUserIdAsync(groupInfo.UserId);
             currentGroup.Name = groupInfo.Name;
             currentGroup.GroupTypeId = groupInfo.GroupTypeId;
@@ -1752,6 +1777,7 @@ namespace GRA.Domain.Service
 
         public async Task<GroupInfo> UpdateGroupName(int currentUserId, GroupInfo groupInfo)
         {
+            ArgumentNullException.ThrowIfNull(groupInfo);
             if (currentUserId != groupInfo.UserId && !HasPermission(Permission.EditParticipants))
             {
                 int userId = GetClaimId(ClaimType.UserId);

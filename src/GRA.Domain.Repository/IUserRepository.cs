@@ -69,6 +69,8 @@ namespace GRA.Domain.Repository
             int take,
             int memberLongerThanHours);
 
+        Task<int> GetWelcomeRecipientsCountAsync();
+
         Task<bool> IsAnyoneSubscribedAsync();
 
         Task<bool> IsEmailSubscribedAsync(string email);

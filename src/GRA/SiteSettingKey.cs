@@ -1,209 +1,130 @@
-﻿using System;
-
-namespace GRA
+﻿namespace GRA.SiteSettingKey
 {
-    public struct SiteSettingKey : IEquatable<SiteSettingKey>
+    public static class Avatars
     {
-        public readonly bool Equals(SiteSettingKey other)
-        {
-            return true;
-        }
+        public static readonly string DisableSharing = "Avatars.DisableSharing";
+    }
 
-        public readonly struct Avatars : IEquatable<Avatars>
-        {
-            public static readonly string DisableSharing = "Avatars.DisableSharing";
+    public static class Badges
+    {
+        public static readonly string EnableBadgeMaker = "Badges.EnableMaker";
+        public static readonly string MaxDimension = "Badges.MaxDimension";
+        public static readonly string MaxFileSize = "Badges.MaxFileSize";
+    }
 
-            public bool Equals(Avatars other)
-            {
-                return true;
-            }
-        }
+    public static class Challenges
+    {
+        public static readonly string HideUntilRegistrationOpen
+            = "Challenges.HideUntilRegistrationOpen";
 
-        public readonly struct Badges : IEquatable<Badges>
-        {
-            public static readonly string EnableBadgeMaker = "Badges.EnableMaker";
-            public static readonly string MaxDimension = "Badges.MaxDimension";
-            public static readonly string MaxFileSize = "Badges.MaxFileSize";
+        public static readonly string MaxPointsPerChallengeTask
+            = "Challenges.MaxPointsPerChallengeTask";
+    }
 
-            public bool Equals(Badges other)
-            {
-                return true;
-            }
-        }
+    public static class Email
+    {
+        public static readonly string MaximumWelcomeEmailSendBlock = "Email.MaximumWelcomeEmailSendBlock";
+        public static readonly string UnsubscribeBase = "Email.UnsubscribeBase";
+        public static readonly string WelcomeDelayHours = "Email.WelcomeEmailDelayHours";
+        public static readonly string WelcomeTemplateId = "Email.WelcomeEmailId";
+    }
 
-        public readonly struct Challenges : IEquatable<Challenges>
-        {
-            public static readonly string HideUntilRegistrationOpen
-                = "Challenges.HideUntilRegistrationOpen";
+    public static class Events
+    {
+        public static readonly string CommunityExperienceDescription
+            = "Events.CommunityExperienceDescription";
 
-            public static readonly string MaxPointsPerChallengeTask
-                = "Challenges.MaxPointsPerChallengeTask";
+        public static readonly string GoogleMapsAPIKey = "Events.GoogleMapsAPIKey";
 
-            public bool Equals(Challenges other)
-            {
-                return true;
-            }
-        }
+        public static readonly string HideUntilProgramOpen
+            = "Events.HideUntilProgramOpen";
 
-        public readonly struct Email : IEquatable<Events>
-        {
-            public static readonly string UnsubscribeBase = "Email.UnsubscribeBase";
-            public static readonly string WelcomeDelayHours = "Email.WelcomeEmailDelayHours";
-            public static readonly string WelcomeTemplateId = "Email.WelcomeEmailId";
+        public static readonly string HideUntilRegistrationOpen
+                        = "Events.HideUntilRegistrationOpen";
 
-            public bool Equals(Events other)
-            {
-                return true;
-            }
-        }
+        public static readonly string RequireBadge = "Events.RequireBadge";
 
-        public readonly struct Events : IEquatable<Events>
-        {
-            public static readonly string CommunityExperienceDescription
-                = "Events.CommunityExperienceDescription";
+        public static readonly string StreamingShowCode = "Events.StreamingShowCode";
+    }
 
-            public static readonly string GoogleMapsAPIKey = "Events.GoogleMapsAPIKey";
+    public static class Mail
+    {
+        public static readonly string Disable = "Mail.Enabled";
+    }
 
-            public static readonly string HideUntilProgramOpen
-                = "Events.HideUntilProgramOpen";
+    public static class Performer
+    {
+        public static readonly string BackToBackInterval = "Performers.PerformerBackToBackInterval";
+        public static readonly string EnableInsuranceQuestion = "Performer.EnableInsuranceQuestion";
+        public static readonly string EnableLivestreamQuestions = "Performer.EnableLivestreamQuestions";
+    }
 
-            public static readonly string HideUntilRegistrationOpen
-                            = "Events.HideUntilRegistrationOpen";
+    public static class Points
+    {
+        public static readonly string MaximumPermitted = "Points.MaximumPermitted";
+    }
 
-            public static readonly string RequireBadge = "Events.RequireBadge";
+    public static class SecretCode
+    {
+        // TODO make this truly disable secret codes for the site
+        public static readonly string Disable = "SecretCode.Disable";
+    }
 
-            public static readonly string StreamingShowCode = "Events.StreamingShowCode";
+    public static class Site
+    {
+        public static readonly string AskToAddFamilyMembers = "Site.AskToAddFamilyMembers";
+        public static readonly string BackgroundColor = "Site.BackgroundColor";
+        public static readonly string ReadingGoalInMinutes = "Site.ReadingGoalInMinutes";
+    }
 
-            public bool Equals(Events other)
-            {
-                return true;
-            }
-        }
+    public static class Triggers
+    {
+        public static readonly string MaxPointsPerTrigger = "Triggers.MaxPointsPerTrigger";
+    }
 
-        public readonly struct Mail : IEquatable<Mail>
-        {
-            public static readonly string Disable = "Mail.Enabled";
+    public static class Users
+    {
+        public static readonly string AskEmailSubPermission = "Users.AskEmailSubPermission";
 
-            public bool Equals(Mail other)
-            {
-                return true;
-            }
-        }
+        public static readonly string AskIfFirstTime = "Users.AskIfFirstTime";
 
-        public readonly struct Performer : IEquatable<Performer>
-        {
-            public static readonly string BackToBackInterval = "Performers.PerformerBackToBackInterval";
-            public static readonly string EnableInsuranceQuestion = "Performer.EnableInsuranceQuestion";
-            public static readonly string EnableLivestreamQuestions = "Performer.EnableLivestreamQuestions";
+        public static readonly string CollectAccessClosedEmails
+            = "Users.CollectAccessClosedEmails";
 
-            public bool Equals(Performer other)
-            {
-                return true;
-            }
-        }
+        public static readonly string CollectPreregistrationEmails
+            = "User.CollectPreregistrationEmails";
 
-        public readonly struct Points : IEquatable<Points>
-        {
-            public static readonly string MaximumPermitted = "Points.MaximumPermitted";
+        public static readonly string DefaultDailyPersonalGoal
+            = "Users.DefaultDailyPersonalGoal";
 
-            public bool Equals(Points other)
-            {
-                return true;
-            }
-        }
+        public static readonly string FirstTimeSurveyUrl = "Users.FirstTimeSurveyUrl";
 
-        public readonly struct SecretCode : IEquatable<SecretCode>
-        {
-            // TODO make this truly disable secret codes for the site
-            public static readonly string Disable = "SecretCode.Disable";
+        public static readonly string MaximumActivityPermitted
+            = "Users.MaximumActivityPermitted";
 
-            public bool Equals(SecretCode other)
-            {
-                return true;
-            }
-        }
+        public static readonly string MaximumHouseholdSizeBeforeGroup
+            = "Users.MaximumHouseholdSizeBeforeGroup";
 
-        public readonly struct Site : IEquatable<Site>
-        {
-            public static readonly string BackgroundColor = "Site.BackgroundColor";
-            public static readonly string ReadingGoalInMinutes = "Site.ReadingGoalInMinutes";
-            public static readonly string AskToAddFamilyMembers = "Site.AskToAddFamilyMembers";
+        public static readonly string RestrictChangingSystemBranch
+            = "Users.RestrictChangingSystemBranch";
 
-            public bool Equals(Site other)
-            {
-                return true;
-            }
-        }
+        public static readonly string ShowLinkToParticipantsLibrary
+            = "Users.ShowLinkToParticipantsLibrary";
 
-        public readonly struct Triggers : IEquatable<Triggers>
-        {
-            public static readonly string MaxPointsPerTrigger = "Triggers.MaxPointsPerTrigger";
+        public static readonly string ShowLinkToParticipatingLibraries
+            = "Users.ShowLinkToParticipatingLibraries";
 
-            public bool Equals(Triggers other)
-            {
-                return true;
-            }
-        }
+        public static readonly string SurveyUrl = "Users.SurveyUrl";
+    }
 
-        public readonly struct Users : IEquatable<Users>
-        {
-            public static readonly string AskEmailSubPermission = "Users.AskEmailSubPermission";
+    public static class VendorCodes
+    {
+        public static readonly string ShowPackingSlip = "VendorCodes.ShowPackingSlip";
+    }
 
-            public static readonly string AskIfFirstTime = "Users.AskIfFirstTime";
-
-            public static readonly string CollectAccessClosedEmails
-                = "Users.CollectAccessClosedEmails";
-
-            public static readonly string CollectPreregistrationEmails
-                = "User.CollectPreregistrationEmails";
-
-            public static readonly string DefaultDailyPersonalGoal
-                = "Users.DefaultDailyPersonalGoal";
-
-            public static readonly string FirstTimeSurveyUrl = "Users.FirstTimeSurveyUrl";
-
-            public static readonly string MaximumActivityPermitted
-                = "Users.MaximumActivityPermitted";
-
-            public static readonly string MaximumHouseholdSizeBeforeGroup
-                = "Users.MaximumHouseholdSizeBeforeGroup";
-
-            public static readonly string RestrictChangingSystemBranch
-                = "Users.RestrictChangingSystemBranch";
-
-            public static readonly string ShowLinkToParticipantsLibrary
-                = "Users.ShowLinkToParticipantsLibrary";
-
-            public static readonly string ShowLinkToParticipatingLibraries
-                = "Users.ShowLinkToParticipatingLibraries";
-
-            public static readonly string SurveyUrl = "Users.SurveyUrl";
-
-            public bool Equals(Users other)
-            {
-                return true;
-            }
-        }
-
-        public readonly struct VendorCodes : IEquatable<VendorCodes>
-        {
-            public static readonly string ShowPackingSlip = "VendorCodes.ShowPackingSlip";
-
-            public bool Equals(VendorCodes other)
-            {
-                return true;
-            }
-        }
-
-        public readonly struct Web : IEquatable<Web>
-        {
-            public static readonly string CacheSiteCustomizationsMinutes
-                = "Web.CacheSiteCustomizationsMinutes";
-
-            public bool Equals(Web other)
-            {
-                return true;
-            }
-        }
+    public static class Web
+    {
+        public static readonly string CacheSiteCustomizationsMinutes
+            = "Web.CacheSiteCustomizationsMinutes";
     }
 }

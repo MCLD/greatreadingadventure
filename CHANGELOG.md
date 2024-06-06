@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - 1,500 and 2,000 point values to the Participant Progress Report
 - Age group and group name to vendor-generated hold slips
 - Spreadsheet export of scheduled performers
+- Configuraton for amount of welcome emails to send per job run
 
 ## Changed
 
