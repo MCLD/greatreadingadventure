@@ -107,15 +107,19 @@ namespace GRA.Controllers
             return View();
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
+            "CA1054:URI-like parameters should not be strings",
+            Justification = "This variable name is dictated by the framework.")]
         public async Task<IActionResult> Index(string ReturnUrl = null)
         {
             var site = await GetCurrentSiteAsync();
             PageTitle = _sharedLocalizer[Annotations.Title.SignInTo, site.Name];
 
             string sendTo = ReturnUrl;
-            if (string.IsNullOrEmpty(sendTo) && TempData.ContainsKey(TempDataKey.ReturnUrl))
+            if (string.IsNullOrEmpty(sendTo)
+                && TempData.TryGetValue(TempDataKey.ReturnUrl, out object value))
             {
-                sendTo = TempData[TempDataKey.ReturnUrl].ToString();
+                sendTo = value.ToString();
                 TempData.Remove(TempDataKey.ReturnUrl);
             }
 
@@ -125,7 +129,7 @@ namespace GRA.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(SignInViewModel model)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && model != null)
             {
                 var loginTimer = new System.Diagnostics.Stopwatch();
                 try
@@ -142,7 +146,7 @@ namespace GRA.Controllers
                             loginAttempt.User.Id);
                         await LoginUserAsync(loginAttempt);
 
-                        _mailService.ClearCachedUserMailCountAsync(loginAttempt.User.Id);
+                        await _mailService.ClearCachedUserMailCountAsync(loginAttempt.User.Id);
 
                         _logger.LogTrace("Awarding triggers for {Username} ({UserId})",
                             loginAttempt.User.Id,
@@ -293,7 +297,7 @@ namespace GRA.Controllers
         [HttpPost]
         public async Task<IActionResult> PasswordRecovery(PasswordRecoveryViewModel model)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && model != null)
             {
                 try
                 {

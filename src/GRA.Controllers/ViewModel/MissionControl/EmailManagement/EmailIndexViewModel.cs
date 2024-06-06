@@ -19,12 +19,5 @@ namespace GRA.Controllers.ViewModel.MissionControl.EmailManagement
         public IDictionary<int, string> LanguageNames { get; }
         public int WelcomeEmailsTotal { get; set; }
         public int WelcomeEmailTemplateId { get; set; }
-
-        public static string DisplayPercent(int first, int second)
-        {
-            return second > 0
-                ? $" ({first * 100 / second}%)"
-                : null;
-        }
     }
 }
