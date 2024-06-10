@@ -143,8 +143,8 @@ namespace GRA.Domain.Service
             VerifyManagementPermission();
             var codes = await _vendorCodeRepository.GetAllCodesAsync(vendorCodeTypeId);
 
-            using var memoryStream = new MemoryStream();
-            using var writer = new StreamWriter(memoryStream);
+            await using var memoryStream = new MemoryStream();
+            await using var writer = new StreamWriter(memoryStream);
             foreach (var code in codes)
             {
                 await writer.WriteLineAsync(code);
@@ -426,63 +426,21 @@ namespace GRA.Domain.Service
 
         public async Task<VendorCode> GetUserVendorCodeAsync(int userId)
         {
-            var authorized = false;
-            var authId = GetClaimId(ClaimType.UserId);
-            if (userId == authId
-                || userId == GetActiveUserId()
-                || HasPermission(Permission.ViewParticipantDetails))
-            {
-                authorized = true;
-            }
-
-            if (!authorized)
-            {
-                var user = await _userRepository.GetByIdAsync(userId);
-                authorized = user.HouseholdHeadUserId == authId;
-            }
-
-            if (authorized)
-            {
-                var vendorCode = await _vendorCodeRepository.GetUserVendorCode(userId);
-                if (vendorCode != null)
-                {
-                    var codeType = await _vendorCodeTypeRepository
-                        .GetByIdAsync(vendorCode.VendorCodeTypeId);
-                    vendorCode.CanBeDonated = codeType.DonationMessageTemplateId.HasValue;
-                    vendorCode.CanBeEmailAward = codeType.EmailAwardMessageTemplateId.HasValue;
-                    vendorCode.ExpirationDate = codeType.ExpirationDate;
-                    if (!string.IsNullOrEmpty(codeType.Url))
-                    {
-                        var markedUpToken = "{{" + TemplateToken.VendorCodeToken + "}}";
-                        vendorCode.Url = codeType.Url.Contains(markedUpToken,
-                            StringComparison.OrdinalIgnoreCase)
-                            ? codeType.Url.Replace(markedUpToken,
-                                vendorCode.Code,
-                                StringComparison.OrdinalIgnoreCase)
-                            : codeType.Url;
-                    }
-                    return vendorCode;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                _logger.LogError("User {AuthId} doesn't have permission to view details for {UserId}.",
-                    authId,
-                    userId);
-                throw new GraException("Permission denied.");
-            }
+            var codes = await GetUserVendorCodesAsync(userId, false);
+            return codes.FirstOrDefault();
         }
 
-        public async Task<VendorCodeInfo> GetUserVendorCodeInfoAsync(int userId)
+        public async Task<IEnumerable<VendorCodeInfo>> GetUserVendorCodesInfoAsync(int userId)
         {
-            var vendorCode = await GetUserVendorCodeAsync(userId);
-            if (vendorCode != null)
+            var vendorCodes = await GetUserVendorCodesAsync(userId, true);
+            if (vendorCodes?.Count() > 0)
             {
-                return await GetVendorCodeInfoAsync(vendorCode);
+                var vendorCodeInfos = new List<VendorCodeInfo>();
+                foreach (var vendorCode in vendorCodes)
+                {
+                    vendorCodeInfos.Add(await GetVendorCodeInfoAsync(vendorCode));
+                }
+                return vendorCodeInfos;
             }
             return null;
         }
@@ -896,7 +854,7 @@ namespace GRA.Domain.Service
 
                 try
                 {
-                    using var stream = new FileStream(fullPath, FileMode.Open);
+                    await using var stream = new FileStream(fullPath, FileMode.Open);
                     int emailAddressColumnId = 0;
                     int sentDateColumnId = 0;
                     int userIdColumnId = 0;
@@ -1192,7 +1150,7 @@ namespace GRA.Domain.Service
 
                     try
                     {
-                        using var stream = new FileStream(fullPath, FileMode.Open);
+                        await using var stream = new FileStream(fullPath, FileMode.Open);
                         int branchColumnId = 0;
                         int couponColumnId = 0;
                         int detailsColumnId = 0;
@@ -1831,6 +1789,60 @@ namespace GRA.Domain.Service
                     ? $"was received on {ps.CreatedAt:d}"
                     : "has not been received");
                 return ps;
+            }
+        }
+
+        private async Task<IEnumerable<VendorCode>> GetUserVendorCodesAsync(int userId,
+                                                                                                                                                                            bool multiple)
+        {
+            var authorized = false;
+            var authId = GetClaimId(ClaimType.UserId);
+            if (userId == authId
+                || userId == GetActiveUserId()
+                || HasPermission(Permission.ViewParticipantDetails))
+            {
+                authorized = true;
+            }
+
+            if (!authorized)
+            {
+                var user = await _userRepository.GetByIdAsync(userId);
+                authorized = user.HouseholdHeadUserId == authId;
+            }
+
+            if (authorized)
+            {
+                var vendorCodes = await _vendorCodeRepository.GetUserVendorCodes(userId);
+                foreach (var vendorCode in vendorCodes.Where(_ => _ != null))
+                {
+                    var codeType = await _vendorCodeTypeRepository
+                        .GetByIdAsync(vendorCode.VendorCodeTypeId);
+                    vendorCode.CanBeDonated = codeType.DonationMessageTemplateId.HasValue;
+                    vendorCode.CanBeEmailAward = codeType.EmailAwardMessageTemplateId.HasValue;
+                    vendorCode.ExpirationDate = codeType.ExpirationDate;
+                    if (!string.IsNullOrEmpty(codeType.Url))
+                    {
+                        var markedUpToken = "{{" + TemplateToken.VendorCodeToken + "}}";
+                        vendorCode.Url = codeType.Url.Contains(markedUpToken,
+                            StringComparison.OrdinalIgnoreCase)
+                            ? codeType.Url.Replace(markedUpToken,
+                                vendorCode.Code,
+                                StringComparison.OrdinalIgnoreCase)
+                            : codeType.Url;
+                    }
+                    if (!multiple)
+                    {
+                        break;
+                    }
+                }
+                return vendorCodes;
+            }
+            else
+            {
+                _logger.LogError("User {AuthId} doesn't have permission to view details for {UserId}.",
+                    authId,
+                    userId);
+                throw new GraException("Permission denied.");
             }
         }
 

@@ -1,26 +1,25 @@
-﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.VendorCodeViewModel
-
-@using GRA.Controllers.ViewModel.MissionControl.Participants
+﻿@using GRA.Controllers.ViewModel.MissionControl.Participants
+@model VendorCodeViewModel
 
 @await Html.PartialAsync("_ParticipantPartial")
 
 <div class="row hidden-print" style="margin-bottom: 2rem;">
     <div class="col-xs-12">
-        @if (Model.CurrentCode != null)
+        @if (Model.CurrentCodes?.Count() > 0)
         {
             <button type="button"
-                class="btn btn-danger"
-                data-toggle="modal"
-                data-target="#areYouSureModal">
+                    class="btn btn-danger"
+                    data-toggle="modal"
+                    data-target="#areYouSureModal">
                 Assign new code
             </button>
         }
         @if (Model.CurrentUser)
         {
             <button type="button"
-                class="btn btn-primary"
-                data-toggle="modal"
-                data-target="#spareCodeModal">
+                    class="btn btn-primary"
+                    data-toggle="modal"
+                    data-target="#spareCodeModal">
                 Assign spare code
             </button>
         }
@@ -36,16 +35,38 @@
                 <th>Status</th>
                 <th>Dates</th>
                 <th>Notes</th>
+                @if (Model?.CurrentCodes?.Count() > 1)
+                {
+                    <th>Actions</th>
+                }
             </tr>
-            @if (Model?.CurrentCode?.VendorCode != null)
+            @if (Model?.CurrentCodes?.Count() > 0)
             {
-                <tr class="success">
-                    <td>@Model.CurrentCode.VendorCode.Code</td>
-                    <td>@Model.CurrentCode.VendorCode.Details</td>
-                    <td>@(Model.CurrentCode.IsDonated == true ? "Donated" : Model.CurrentCode.OrderStatus)</td>
-                    <td>@Html.Raw(VendorCodeViewModel.GetFormattedDates(Model.CurrentCode))</td>
-                    <td>@Html.Raw(VendorCodeViewModel.GetFormattedNotes(Model.CurrentCode))</td>
-                </tr>
+                @foreach (var currentCode in Model?.CurrentCodes)
+                {
+                    @if (currentCode?.VendorCode != null)
+                    {
+                        <tr class="@VendorCodeViewModel.CurrentCodeClass(Model?.CurrentCodes?.Count())">
+                            <td>@currentCode.VendorCode.Code</td>
+                            <td>@currentCode.VendorCode.Details</td>
+                            <td>@(currentCode.IsDonated == true ? "Donated" : currentCode.OrderStatus)</td>
+                            <td>@Html.Raw(VendorCodeViewModel.GetFormattedDates(currentCode))</td>
+                            <td>@Html.Raw(VendorCodeViewModel.GetFormattedNotes(currentCode))</td>
+                            @if (Model?.CurrentCodes?.Count() > 1)
+                            {
+                                <td>
+                                    <button type="button"
+                                            class="btn btn-warning btn-sm"
+                                            data-toggle="modal"
+                                            data-target="#demoteCodeModal"
+                                            data-demotecodeid="@currentCode.VendorCode.Id">
+                                        Demote code
+                                    </button>
+                                </td>
+                            }
+                        </tr>
+                    }
+                }
             }
             @if (Model?.AssociatedCodes?.Count() > 0)
             {
@@ -63,7 +84,7 @@
                     </tr>
                 }
             }
-            @if (Model?.CurrentCode?.VendorCode == null && Model?.AssociatedCodes?.Any() != true)
+            @if ((Model?.CurrentCodes == null || Model?.CurrentCodes?.Count() == 0) && Model?.AssociatedCodes?.Any() != true)
             {
                 <tr class="warning">
                     <td colspan="5">No earned or assigned codes.</td>
@@ -126,6 +147,73 @@
     </div>
 </form>
 
+<form method="post" asp-action="@nameof(ParticipantsController.DemoteCode)">
+    <input type="hidden" name="userId" value="@Model.Id" />
+    <input type="hidden" name="demoteCodeId" id="demoteCodeId" />
+    <div class="modal" id="demoteCodeModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Demote code</h4>
+                </div>
+                <div class="modal-body">
+                    <p>You are demoting a code for a user who has multiple primary codes.</p>
+                    <ul>
+                        <li>
+                            This code will still exist in the system.
+                        </li>
+                        <li>
+                            The participant may have seen this code already and placed a second
+                            vendor order with it.
+                        </li>
+                        <li>
+                            The vendor will still believe this code to be active unless you notify
+                            them that it is no longer valid.
+                        </li>
+                        <li>
+                            The participant will not see the demoted code in their profile or on
+                            their Dashboard.
+                        </li>
+                        <li>
+                            The primary view for this participant will be of the top non-demoted
+                            code - that's what they will see in their profile and on the Dashboard.
+                        </li>
+                        <li>
+                            The demoted code will remain visible on this page and associated with
+                            this user.
+                        </li>
+                        <li>
+                            You should probably be in contact with the participant before taking
+                            this action so they are not confused.
+                        </li>
+                    </ul>
+                    <div class="form-group">
+                        <label for="reason">Please give a brief (255 or fewer characters) reason:</label>
+                        <input type="text"
+                               class="form-control"
+                               id="reason"
+                               name="reason"
+                               placeholder="Reason for demoting this code">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-danger">Demote code</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
 @if (Model.CurrentUser)
 {
     <form method="post" asp-action="@nameof(ParticipantsController.AssignSpareCode)">
@@ -152,23 +240,23 @@
                         <div class="form-group">
                             <label for="reason">Please give a brief (255 or fewer characters) explanation:</label>
                             <input type="text"
-                               class="form-control"
-                               id="reason"
-                               name="reason"
-                               placeholder="Reason for assigning a spare code">
+                                   class="form-control"
+                                   id="reason"
+                                   name="reason"
+                                   placeholder="Reason for assigning a spare code">
                         </div>
                         <div class="form-group">
                             <label for="vendorCodeTypeId">Select type of code to assign</label>
                             <select name="vendorCodeTypeId"
-                                id="vendorCodeTypeId"
-                                asp-items="Model.VendorCodeTypeList"
-                                class="form-control"></select>
+                                    id="vendorCodeTypeId"
+                                    asp-items="Model.VendorCodeTypeList"
+                                    class="form-control"></select>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                            class="btn btn-secondary"
-                            data-dismiss="modal">
+                                class="btn btn-secondary"
+                                data-dismiss="modal">
                             Cancel
                         </button>
                         <button type="submit" class="btn btn-primary">Assign spare code</button>
@@ -177,4 +265,12 @@
             </div>
         </div>
     </form>
+}
+
+@section scripts {
+    <script>
+        $('#demoteCodeModal').on('show.bs.modal', function (e) {
+            $("#demoteCodeId").val(e.relatedTarget.dataset.demotecodeid);
+        })
+    </script>
 }

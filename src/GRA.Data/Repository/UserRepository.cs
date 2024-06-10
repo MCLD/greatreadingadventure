@@ -697,6 +697,18 @@ namespace GRA.Data.Repository
                 userList = userList.Where(_ => _.IsEmailSubscribed == filter.IsSubscribed);
             }
 
+            if (filter.HasMultiplePrimaryVendorCodes == true)
+            {
+                var userIdsMultiplePrimaryVendorCodes = _context.VendorCodes
+                    .AsNoTracking()
+                    .Where(_ => _.UserId.HasValue)
+                    .GroupBy(_ => _.UserId)
+                    .Where(_ => _.Count() > 1)
+                    .Select(_ => _.Key);
+
+                userList = userList.Where(_ => userIdsMultiplePrimaryVendorCodes.Contains(_.Id));
+            }
+
             return userList;
         }
 
