@@ -10,6 +10,7 @@ using GRA.Domain.Model;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using GRA.Domain.Service.Models;
+using GRA.SiteSettingKey;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -603,12 +604,12 @@ namespace GRA.Domain.Service
 
                     await _notificationRepository.AddSaveAsync(authUserId, maxNotification);
                 }
-            } 
+            }
 
             return activityLogResult;
         }
 
-        public async Task LogHouseholdActivityAsync(List<int> userIds, int activityAmount)
+        public async Task LogHouseholdActivityAsync(ICollection<int> userIds, int activityAmount)
         {
             VerifyCanLog();
 
@@ -649,7 +650,8 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<bool> LogHouseholdSecretCodeAsync(List<int> userIds, string secretCode)
+        public async Task<bool> LogHouseholdSecretCodeAsync(ICollection<int> userIds,
+            string secretCode)
         {
             VerifyCanLog();
 
@@ -818,7 +820,17 @@ namespace GRA.Domain.Service
             await _userLogRepository.AddSaveAsync(authUserId, userLog);
 
             // award any vendor code that is necessary
-            await AwardVendorCodeAsync(userIdToLog, trigger.AwardVendorCodeTypeId);
+            var assignedCode = await AwardVendorCodeAsync(userIdToLog,
+                trigger.AwardVendorCodeTypeId);
+
+            if (assignedCode != null)
+            {
+                _logger.LogInformation("Trigger based on code {SecretCode} (trigger id {TriggerId}) assigned vendor code {Code} to user {UserId}",
+                    secretCode,
+                    trigger?.Id,
+                    assignedCode.Code,
+                    userIdToLog);
+            }
 
             // award any avatar bundle that is necessary
             if (trigger.AwardAvatarBundleId.HasValue)
@@ -857,7 +869,15 @@ namespace GRA.Domain.Service
                 throw new GraException("Permission denied.");
             }
 
-            await AwardVendorCodeAsync(userId, vendorCodeTypeId);
+            var assignedCode = await AwardVendorCodeAsync(userId, vendorCodeTypeId);
+
+            if (assignedCode != null)
+            {
+                _logger.LogInformation("Mission control user id {AuthUserId} assigned vendor code {Code} to user {UserId}",
+                    authUserId,
+                    assignedCode.Code,
+                    userId);
+            }
         }
 
         public async Task<User> RemoveActivityAsync(int userIdToLog,
@@ -1474,7 +1494,18 @@ namespace GRA.Domain.Service
                 });
 
                 // award any vendor code that is necessary
-                await AwardVendorCodeAsync(userId, trigger.AwardVendorCodeTypeId, siteId);
+                var assignedCode = await AwardVendorCodeAsync(userId,
+                    trigger.AwardVendorCodeTypeId,
+                    siteId);
+
+                if (assignedCode != null)
+                {
+                    _logger.LogInformation("Trigger {TriggerName} (id {TriggerId}) assigned vendor code {Code} to user {UserId}",
+                        trigger.Name,
+                        trigger?.Id,
+                        assignedCode.Code,
+                        userId);
+                }
 
                 if (trigger.AwardAvatarBundleId.HasValue)
                 {
@@ -1546,15 +1577,28 @@ namespace GRA.Domain.Service
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
             "CA1031:Do not catch general exception types",
             Justification = "Any exception here is a critical error and should send an email.")]
-        private async Task AwardVendorCodeAsync(int userId, int? vendorCodeTypeId, int? siteId = null)
+        private async Task<VendorCode> AwardVendorCodeAsync(int userId, int? vendorCodeTypeId, int? siteId = null)
         {
+            VendorCode assignedCode = null;
+
             if (vendorCodeTypeId != null)
             {
                 var codeType = await _vendorCodeTypeRepository.GetByIdAsync((int)vendorCodeTypeId);
 
+                var alreadyAssigned = await _vendorCodeRepository.GetUserVendorCode(userId);
+
+                if (alreadyAssigned != null)
+                {
+                    _logger.LogError("Asked to assign vendor code {CodeTypeDescription} to user {UserId} but user already has a primary code, aborting.",
+                        codeType.Description,
+                        userId);
+                    return null;
+                }
+
                 try
                 {
-                    await _vendorCodeRepository.AssignCodeAsync((int)vendorCodeTypeId, userId);
+                    assignedCode = await _vendorCodeRepository
+                        .AssignCodeAsync((int)vendorCodeTypeId, userId);
 
                     // if there are no award options then send the email with the code
                     if (!codeType.OptionMessageTemplateId.HasValue)
@@ -1582,7 +1626,7 @@ namespace GRA.Domain.Service
                                 StringComparison.OrdinalIgnoreCase)
                             : codeType.Url;
 
-                        await _mailService.SendSystemMailAsync(new Mail
+                        await _mailService.SendSystemMailAsync(new Model.Mail
                         {
                             Body = message.Body,
                             CanParticipantDelete = false,
@@ -1598,7 +1642,7 @@ namespace GRA.Domain.Service
                 }
                 catch (Exception ex)
                 {
-                    await _mailService.SendSystemMailAsync(new Mail
+                    await _mailService.SendSystemMailAsync(new Model.Mail
                     {
                         Body = $"There was a difficulty assigning a {codeType.Description}, please contact us.",
                         CanParticipantDelete = true,
@@ -1612,6 +1656,8 @@ namespace GRA.Domain.Service
                         ex.Message);
                 }
             }
+
+            return assignedCode;
         }
 
         private async Task<int> GetMaximumAllowedActivityAsync(int siteId)
@@ -1660,7 +1706,7 @@ namespace GRA.Domain.Service
             if (!string.IsNullOrEmpty(trigger.AwardMailSubject)
                 && !string.IsNullOrEmpty(trigger.AwardMail))
             {
-                var mail = await _mailService.SendSystemMailAsync(new Mail
+                var mail = await _mailService.SendSystemMailAsync(new Model.Mail
                 {
                     Body = trigger.AwardMail,
                     Subject = trigger.AwardMailSubject,

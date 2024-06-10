@@ -19,6 +19,9 @@ namespace GRA.Data.Repository
         {
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
+            "CA1031:Do not catch general exception types",
+            Justification = "Catch any exception related to locking/contention here")]
         public async Task<VendorCode> AssignCodeAsync(int vendorCodeTypeId, int userId)
         {
             var user = await _context.Users
@@ -50,6 +53,7 @@ namespace GRA.Data.Repository
 
                 unusedCode.UserId = userId;
                 unusedCode.IsAssigned = true;
+                unusedCode.DateUsed = _dateTimeProvider.Now;
 
                 tries++;
                 try
@@ -81,6 +85,9 @@ namespace GRA.Data.Repository
             return await GetByIdAsync(unusedCode.Id);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
+            "CA1031:Do not catch general exception types",
+            Justification = "Catch any exception related to locking/contention here")]
         public async Task<VendorCode> AssociateCodeAsync(int vendorCodeTypeId,
             int userId,
             string reason,
@@ -258,7 +265,7 @@ namespace GRA.Data.Repository
 
         public async Task<ICollection<VendorCode>> GetEarnedCodesAsync(ReportCriterion criterion)
         {
-            System.ArgumentNullException.ThrowIfNull(criterion);
+            ArgumentNullException.ThrowIfNull(criterion);
 
             // Includes deleted users
             var validUsers = _context.Users.AsNoTracking()
@@ -493,6 +500,15 @@ namespace GRA.Data.Repository
                 .OrderByDescending(_ => _.CreatedAt)
                 .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<VendorCode>> GetUserVendorCodes(int userId)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.UserId == userId)
+                .OrderByDescending(_ => _.CreatedAt)
+                .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
+                .ToListAsync();
         }
     }
 }

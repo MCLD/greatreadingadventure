@@ -156,7 +156,9 @@ namespace GRA.Controllers.MissionControl
                 viewModel.DailyPersonalGoal = defaultDailyGoal;
                 var pointTranslation = programList.First().PointTranslation;
                 viewModel.TranslationDescriptionPastTense =
-                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                    pointTranslation
+                        .TranslationDescriptionPastTense
+                        .Replace("{0}", "", StringComparison.OrdinalIgnoreCase).Trim();
                 viewModel.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 
@@ -191,6 +193,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Add(ParticipantsAddViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             var site = await GetCurrentSiteAsync();
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.PostalCode))
             {
@@ -221,7 +225,7 @@ namespace GRA.Controllers.MissionControl
                 }
             }
 
-            var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
+            var (askActivityGoal, _) = await GetSiteSettingIntAsync(
                 SiteSettingKey.Users.DefaultDailyPersonalGoal);
 
             bool askAge = false;
@@ -307,7 +311,7 @@ namespace GRA.Controllers.MissionControl
                 catch (GraException gex)
                 {
                     ShowAlertDanger("Could not create participant account: ", gex);
-                    if (gex.Message.Contains("password"))
+                    if (gex.Message.Contains("password", StringComparison.OrdinalIgnoreCase))
                     {
                         ModelState.AddModelError("Password", "Please correct the issues with the password.");
                     }
@@ -350,7 +354,9 @@ namespace GRA.Controllers.MissionControl
             {
                 var pointTranslation = programList.First().PointTranslation;
                 model.TranslationDescriptionPastTense =
-                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                    pointTranslation
+                        .TranslationDescriptionPastTense
+                        .Replace("{0}", "", StringComparison.OrdinalIgnoreCase).Trim();
                 model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 
@@ -378,9 +384,17 @@ namespace GRA.Controllers.MissionControl
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Index(string search, string sort, string order,
-                                    int? systemId, int? branchId, int? programId, int page = 1)
+        public async Task<IActionResult> Index(string search,
+            string sort,
+            string order,
+            bool hasMultiplePrimaryVendorCodes,
+            int? systemId,
+            int? branchId,
+            int? programId,
+            int page)
         {
+            page = page == 0 ? 1 : page;
+
             var filter = new UserFilter(page);
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -399,6 +413,7 @@ namespace GRA.Controllers.MissionControl
             {
                 filter.ProgramIds = new List<int?> { programId.Value };
             }
+            filter.HasMultiplePrimaryVendorCodes = hasMultiplePrimaryVendorCodes;
 
             bool isDescending = string.Equals(order, "Descending", StringComparison.OrdinalIgnoreCase);
             if (!string.IsNullOrWhiteSpace(sort) && Enum.IsDefined(typeof(SortUsersBy), sort))
@@ -415,6 +430,7 @@ namespace GRA.Controllers.MissionControl
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
+
             if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
@@ -423,24 +439,27 @@ namespace GRA.Controllers.MissionControl
                         page = paginateModel.LastPage ?? 1
                     });
             }
+
             var systemList = (await _siteService.GetSystemList())
                 .OrderByDescending(_ => _.Id == GetId(ClaimType.SystemId)).ThenBy(_ => _.Name);
 
             var viewModel = new ParticipantsListViewModel
             {
-                Users = participantsList.Data,
-                PaginateModel = paginateModel,
-                Search = search,
-                Sort = sort,
-                IsDescending = isDescending,
-                SystemId = systemId,
                 BranchId = branchId,
-                ProgramId = programId,
                 CanRemoveParticipant = UserHasPermission(Permission.DeleteParticipants),
                 CanViewDetails = UserHasPermission(Permission.ViewParticipantDetails),
+                HasMultiplePrimaryVendorCodes = filter.HasMultiplePrimaryVendorCodes ?? false,
+                HasVendorCodeManagement = UserHasPermission(Permission.ManageVendorCodes),
+                IsDescending = isDescending,
+                PaginateModel = paginateModel,
+                ProgramId = programId,
+                ProgramList = await _siteService.GetProgramList(),
+                Search = search,
+                Sort = sort,
                 SortUsers = Enum.GetValues(typeof(SortUsersBy)),
+                SystemId = systemId,
                 SystemList = systemList,
-                ProgramList = await _siteService.GetProgramList()
+                Users = participantsList.Data
             };
 
             if (branchId.HasValue)
@@ -556,7 +575,9 @@ namespace GRA.Controllers.MissionControl
                     var pointTranslation = await _pointTranslationService
                         .GetByProgramIdAsync(user.ProgramId);
                     viewModel.TranslationDescriptionPastTense =
-                        pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                        pointTranslation
+                            .TranslationDescriptionPastTense
+                            .Replace("{0}", "", StringComparison.OrdinalIgnoreCase).Trim();
                     viewModel.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
                 }
 
@@ -573,6 +594,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Detail(ParticipantsDetailViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             var site = await GetCurrentSiteAsync();
             var program = await _siteService.GetProgramByIdAsync(model.User.ProgramId);
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.User.PostalCode))
@@ -602,7 +625,7 @@ namespace GRA.Controllers.MissionControl
                 "To receive email updates please supply an email address to send them to.");
             }
 
-            var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
+            var (askActivityGoal, _) = await GetSiteSettingIntAsync(
                 SiteSettingKey.Users.DefaultDailyPersonalGoal);
 
             if (ModelState.IsValid)
@@ -691,7 +714,9 @@ namespace GRA.Controllers.MissionControl
                 var pointTranslation = await _pointTranslationService
                     .GetByProgramIdAsync(model.User.ProgramId);
                 model.TranslationDescriptionPastTense =
-                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                    pointTranslation
+                        .TranslationDescriptionPastTense
+                        .Replace("{0}", "", StringComparison.OrdinalIgnoreCase).Trim();
                 model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 
@@ -731,6 +756,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> AwardVendorCode(LogActivityViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             if (!model.VendorCodeTypeId.HasValue)
             {
                 TempData[VendorCodeMessage] = "Please select a code to award.";
@@ -771,9 +798,9 @@ namespace GRA.Controllers.MissionControl
                 viewModel.VendorCodeTypeList = new SelectList(
                     await _vendorCodeService.GetTypeAllAsync(), "Id", "Description");
 
-                if (TempData.ContainsKey(VendorCodeMessage))
+                if (TempData.TryGetValue(VendorCodeMessage, out object value))
                 {
-                    ModelState.AddModelError("VendorCodeTypeId", (string)TempData[VendorCodeMessage]);
+                    ModelState.AddModelError("VendorCodeTypeId", (string)value);
                 }
             }
 
@@ -784,6 +811,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> LogActivity(LogActivityViewModel model, bool isSecretCode)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             var user = await _userService.GetDetailsByPermission(model.Id);
             SetPageTitle(user);
             model.PointTranslation = await _pointTranslationService
@@ -913,7 +942,9 @@ namespace GRA.Controllers.MissionControl
                     viewModel.User.DailyPersonalGoal = defaultDailyGoal;
                     var pointTranslation = programList.First().PointTranslation;
                     viewModel.TranslationDescriptionPastTense =
-                        pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                        pointTranslation
+                            .TranslationDescriptionPastTense
+                            .Replace("{0}", "", StringComparison.OrdinalIgnoreCase).Trim();
                     viewModel.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
                 }
 
@@ -930,6 +961,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> AddHouseholdMember(HouseholdAddViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             var site = await GetCurrentSiteAsync();
             var headOfHousehold = await _userService.GetDetailsByPermission(model.Id);
             if (headOfHousehold.HouseholdHeadUserId != null)
@@ -967,7 +1000,7 @@ namespace GRA.Controllers.MissionControl
                 }
             }
 
-            var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
+            var (askActivityGoal, _) = await GetSiteSettingIntAsync(
                 SiteSettingKey.Users.DefaultDailyPersonalGoal);
 
             bool askAge = false;
@@ -1093,7 +1126,9 @@ namespace GRA.Controllers.MissionControl
             {
                 var pointTranslation = programList.First().PointTranslation;
                 model.TranslationDescriptionPastTense =
-                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                    pointTranslation
+                        .TranslationDescriptionPastTense
+                        .Replace("{0}", "", StringComparison.OrdinalIgnoreCase).Trim();
                 model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 
@@ -1187,13 +1222,13 @@ namespace GRA.Controllers.MissionControl
                     viewModel.HouseholdPrizeList = prizeSelectList;
                 }
 
-                if (TempData.ContainsKey(ActivityMessage))
+                if (TempData.TryGetValue(ActivityMessage, out object activityMessageValue))
                 {
-                    viewModel.ActivityMessage = (string)TempData[ActivityMessage];
+                    viewModel.ActivityMessage = (string)activityMessageValue;
                 }
-                if (TempData.ContainsKey(SecretCodeMessage))
+                if (TempData.TryGetValue(SecretCodeMessage, out object secretCodeValue))
                 {
-                    viewModel.SecretCodeMessage = (string)TempData[SecretCodeMessage];
+                    viewModel.SecretCodeMessage = (string)secretCodeValue;
                 }
 
                 var groupInfo
@@ -1255,6 +1290,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> HouseholdApplyActivity(HouseholdListViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             var user = await _userService.GetDetailsByPermission(model.Id);
             model.PointTranslation = await _pointTranslationService
                 .GetByProgramIdAsync(user.ProgramId, true);
@@ -1297,6 +1334,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> HouseholdApplySecretCode(HouseholdListViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             if (string.IsNullOrWhiteSpace(model.SecretCode))
             {
                 TempData[SecretCodeMessage] = Annotations.Required.SecretCode;
@@ -1430,8 +1469,13 @@ namespace GRA.Controllers.MissionControl
 
         [Authorize(Policy = Policy.ImportHouseholdMembers)]
         [HttpPost]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization",
+            "CA1308:Normalize strings to uppercase",
+            Justification = "Normalize file paths to lowercase")]
         public async Task<IActionResult> HouseholdImport(HouseholdImportViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             try
             {
                 _userService.VerifyCanHouseholdAction();
@@ -1476,7 +1520,7 @@ namespace GRA.Controllers.MissionControl
             {
                 var tempFile = _pathResolver.ResolvePrivateTempFilePath();
 
-                using (var fileStream = new FileStream(tempFile, FileMode.Create))
+                await using (var fileStream = new FileStream(tempFile, FileMode.Create))
                 {
                     await model.UserExcelFile.CopyToAsync(fileStream);
                 }
@@ -1579,8 +1623,8 @@ namespace GRA.Controllers.MissionControl
                     ? await _userService.GetDetailsByPermission(user.HouseholdHeadUserId.Value)
                     : user;
 
-                var prizeKey = prize.Substring(0, 1);
-                var prizeValue = prize.Substring(1);
+                var prizeKey = prize[..1];
+                var prizeValue = prize[1..];
 
                 int? drawingId = null;
                 int? triggerId = null;
@@ -1660,6 +1704,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> HouseholdPrize(HouseholdPrizeViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             var user = await _userService.GetDetailsByPermission(model.Id);
             SetPageTitle(user);
 
@@ -1799,6 +1845,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> RegisterHouseholdMember(HouseholdRegisterViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             var user = await _userService.GetDetailsByPermission(model.Id);
             if (!string.IsNullOrWhiteSpace(user.Username))
             {
@@ -1830,6 +1878,7 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> AddBook(BookListViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
             if (ModelState.IsValid)
             {
                 try
@@ -1924,6 +1973,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> EditBook(BookListViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             if (ModelState.IsValid)
             {
                 try
@@ -1953,6 +2004,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> RemoveBook(BookListViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             try
             {
                 await _activityService.RemoveBookAsync(model.Book.Id, model.Id);
@@ -2000,6 +2053,8 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.LogActivityForAny)]
         public async Task<IActionResult> DeleteHistory(string ids, int userId)
         {
+            ArgumentNullException.ThrowIfNull(ids);
+
             try
             {
                 foreach (int numericId in ids.Split(',').Select(int.Parse))
@@ -2073,7 +2128,7 @@ namespace GRA.Controllers.MissionControl
                     var itemModel = new HistoryItemViewModel
                     {
                         Id = item.Id,
-                        CreatedAt = item.CreatedAt.ToString("d"),
+                        CreatedAt = item.CreatedAt.ToString("d", CultureInfo.CurrentCulture),
                         Description = item.Description,
                         ItemName = itemName,
                         PointsEarned = item.PointsEarned,
@@ -2388,6 +2443,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> MailSend(MailSendViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             if (ModelState.IsValid)
             {
                 var mail = new Mail
@@ -2438,6 +2495,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> PasswordReset(PasswordResetViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             var user = await _userService.GetDetailsByPermission(model.Id);
             if (ModelState.IsValid)
             {
@@ -2501,11 +2560,12 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Roles(RolesViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
             try
             {
-                var roleIds = model.Roles?.Split(',').Select(_ => int.Parse(_)) ?? new int[] { };
+                var roleIds = model.Roles?.Split(',').Select(int.Parse) ?? Array.Empty<int>();
                 await _userService.UpdateUserRolesAsync(model.Id, roleIds);
-                ShowAlertSuccess($"Saved user's roles!");
+                ShowAlertSuccess("User roles saved.");
             }
             catch (GraException gex)
             {
@@ -2522,6 +2582,8 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.EditParticipants)]
         public async Task<IActionResult> DonateCode(ParticipantsDetailViewModel viewModel)
         {
+            ArgumentNullException.ThrowIfNull(viewModel);
+
             await _vendorCodeService.ResolveCodeStatusAsync(viewModel.User.Id, true, false);
             return RedirectToAction(viewModel.Action, new { id = viewModel.User.Id });
         }
@@ -2530,6 +2592,8 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.EditParticipants)]
         public async Task<IActionResult> EmailAward(EmailAwardViewModel emailAwardModel)
         {
+            ArgumentNullException.ThrowIfNull(emailAwardModel);
+
             if (!ModelState.IsValid)
             {
                 return View(emailAwardModel);
@@ -2617,6 +2681,8 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.EditParticipants)]
         public async Task<IActionResult> RedeemCode(ParticipantsDetailViewModel viewModel)
         {
+            ArgumentNullException.ThrowIfNull(viewModel);
+
             await _vendorCodeService.ResolveCodeStatusAsync(viewModel.User.Id, false, false);
             return RedirectToAction(viewModel.Action, new { id = viewModel.User.Id });
         }
@@ -2625,6 +2691,8 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.UnDonateVendorCode)]
         public async Task<IActionResult> UndonateCode(ParticipantsDetailViewModel viewModel)
         {
+            ArgumentNullException.ThrowIfNull(viewModel);
+
             try
             {
                 await _vendorCodeService.ResolveCodeStatusAsync(viewModel.User.Id, null, null);
@@ -2656,11 +2724,8 @@ namespace GRA.Controllers.MissionControl
             }
             try
             {
-                var vendorCode = await _vendorCodeService.GetUserVendorCodeAsync(id);
-                if (vendorCode == null)
-                {
-                    throw new GraException("Could not find a vendor code for that user.");
-                }
+                var vendorCode = await _vendorCodeService.GetUserVendorCodeAsync(id)
+                    ?? throw new GraException("Could not find a vendor code for that user.");
                 var prizeWinner = await _prizeWinnerService
                     .GetPrizeForVendorCodeAsync(vendorCode.Id);
 
@@ -2708,19 +2773,22 @@ namespace GRA.Controllers.MissionControl
             var viewModel = new VendorCodeViewModel(await GetPopulatedBaseViewModel(user))
             {
                 AssociatedCodes = await _vendorCodeService.GetAssociatedVendorCodeInfoAsync(id),
-                CurrentCode = await _vendorCodeService.GetUserVendorCodeInfoAsync(id),
+                CurrentCodes = await _vendorCodeService.GetUserVendorCodesInfoAsync(id),
                 CurrentUser = id == GetActiveUserId(),
                 VendorCodeTypeList = new SelectList(await _vendorCodeService.GetTypeAllAsync(),
                     "Id",
                     "Description")
             };
 
-            if (!string.IsNullOrEmpty(viewModel.CurrentCode?.VendorCode?.PackingSlip))
+            if (viewModel.CurrentCodes != null)
             {
-                viewModel.CurrentCode.PackingSlipLink
-                    = Url.Action(nameof(VendorCodesController.ViewPackingSlip),
-                        VendorCodesController.Name,
-                        new { id = viewModel.CurrentCode.VendorCode.PackingSlip });
+                foreach (var vendorCode in viewModel.CurrentCodes.Where(_ => _.VendorCode?.PackingSlip?.Length > 0))
+                {
+                    vendorCode.PackingSlipLink
+                        = Url.Action(nameof(VendorCodesController.ViewPackingSlip),
+                            VendorCodesController.Name,
+                            new { id = vendorCode.VendorCode?.PackingSlip });
+                }
             }
 
             foreach (var code in viewModel.AssociatedCodes)
@@ -2750,6 +2818,8 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.EditParticipants)]
         public async Task<IActionResult> CreateGroup(GroupUpgradeViewModel viewModel)
         {
+            ArgumentNullException.ThrowIfNull(viewModel);
+
             if (string.IsNullOrEmpty(viewModel.GroupInfo?.Name?.Trim()))
             {
                 AlertDanger = "You must specify a group name.";
@@ -2762,14 +2832,27 @@ namespace GRA.Controllers.MissionControl
                 viewModel.GroupInfo.UserId = user.HouseholdHeadUserId ?? user.Id;
                 await _userService.CreateGroup(GetActiveUserId(), viewModel.GroupInfo);
             }
-            catch (Exception ex)
+            catch (GraException gex)
             {
-                AlertDanger = $"Couldn't create group: {ex.Message}";
+                AlertDanger = $"Couldn't create group: {gex.Message}";
                 return View("UpgradeToGroup", viewModel);
             }
 
             AlertSuccess = "Group successfully created, now you may add additional members.";
             return RedirectToAction("Household", new { id = viewModel.Id });
+        }
+
+        public async Task<IActionResult> DemoteCode(int userId, int? demoteCodeId, string reason)
+        {
+            if (!demoteCodeId.HasValue || string.IsNullOrEmpty(reason))
+            {
+                ShowAlertDanger("Cannot demote code without a valid code and reason.");
+            }
+            else
+            {
+                await _vendorCodeService.AssociateAsync(demoteCodeId.Value, reason);
+            }
+            return RedirectToAction(nameof(VendorCodes), new { id = userId });
         }
 
         public async Task<IActionResult> Groups(string search, int? type, int page = 1)
@@ -2852,6 +2935,8 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.EditParticipants)]
         public async Task<IActionResult> UpdateGroup(UpdateGroupViewModel viewModel)
         {
+            ArgumentNullException.ThrowIfNull(viewModel);
+
             var groupInfo
                 = await _userService.GetGroupFromHouseholdHeadAsync(viewModel.HouseholdHeadUserId);
 
@@ -2872,6 +2957,9 @@ namespace GRA.Controllers.MissionControl
 
         [HttpPost]
         [Authorize(Policy = Policy.ViewUserPrizes)]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
+            "CA1054:URI-like parameters should not be strings",
+            Justification = "String name is built-in to the framework")]
         public async Task<IActionResult> UpdatePrizes(int id, string returnUrl)
         {
             var user = await _userService.GetDetailsByPermission(id);

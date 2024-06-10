@@ -17,12 +17,15 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
 
         public IEnumerable<VendorCodeInfo> AssociatedCodes { get; set; }
 
-        public VendorCodeInfo CurrentCode { get; set; }
+        public IEnumerable<VendorCodeInfo> CurrentCodes { get; set; }
 
         public bool CurrentUser { get; set; }
-
-        public string ProfileUrl { get; set; }
         public SelectList VendorCodeTypeList { get; set; }
+
+        public static string CurrentCodeClass(int? currentCodeCount)
+        {
+            return currentCodeCount == 1 ? "success" : "danger";
+        }
 
         public static string GetFormattedDates(VendorCodeInfo vendorCodeInfo)
         {

@@ -24,6 +24,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Age group and group name to vendor-generated hold slips
 - Spreadsheet export of scheduled performers
 - Configuraton for amount of welcome emails to send per job run
+- Capability of handling a situation where a participant has multiple primary vendor codes assigned
+- Participant filter for those who have multiple primary vendor codes assigned
 
 ## Changed
 
@@ -42,6 +44,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Remove references to deprecated GetBaseUrl call
 - Automatically direct performers to the performer area if they sign in before the program opens
 - Issue with selecting Drawing Criteria filtered by program
+- Restrict ability to assign two primary vendor codes to a user via trigger
 
 ## [4.4.1] 2023-08-11
 
