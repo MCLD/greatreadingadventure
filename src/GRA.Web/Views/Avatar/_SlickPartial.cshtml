@@ -3,19 +3,17 @@
 @if (Model.LayerItems != null)
 {
     var itemcount = Model.LayerItems.ToList().FindIndex(_ => _.Id == Model.SelectedItemId);
-
     <div id="avatarItemSelectors"
          class="avatar-selector-container"
          data-count="@Model.LayerItems.Count"
          data-index="@( itemcount == -1 ? 0 : itemcount)">
         @foreach (var item in Model.LayerItems)
         {
-
             <div>
                 <img data-item="@item.Id"
                      data-layer="@Model.LayerId"
                      src="/@(Model.ItemPath + "layer" + @Model.LayerId.ToString() + "/item" + item.Id + "/thumbnail.jpg")"
-                     class="avatar-item-selector item@(item.Id) @(Model.SelectedItemId == item.Id ? "selected" : "")"
+                     class="avatar-item-selector item@(item.Id) @(Model.SelectedItemId == item.Id ? "selected" : null)"
                      onclick="SelectItem(this)" />
             </div>
         }
