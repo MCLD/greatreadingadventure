@@ -45,6 +45,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Automatically direct performers to the performer area if they sign in before the program opens
 - Issue with selecting Drawing Criteria filtered by program
 - Restrict ability to assign two primary vendor codes to a user via trigger
+- Bug with scrolling some avatar layers at the mobile responsive level
 
 ## [4.4.1] 2023-08-11
 
