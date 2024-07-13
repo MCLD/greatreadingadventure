@@ -4,7 +4,7 @@
   "license": "MIT",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.1",
-    "bootstrap": "^3.3.7",
+    "bootstrap": "^5.0.0",
     "bootstrap-multiselect": "^0.9.15",
     "bootstrap-select": "^1.13.18",
     "commonmark": "^0.30.0",
