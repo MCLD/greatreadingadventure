@@ -46,6 +46,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Issue with selecting Drawing Criteria filtered by program
 - Restrict ability to assign two primary vendor codes to a user via trigger
 - Bug with scrolling some avatar layers at the mobile responsive level
+- Move cache busting on trigger edit to ViewModel due to occsaional object output weirdness
 
 ## [4.4.1] 2023-08-11
 

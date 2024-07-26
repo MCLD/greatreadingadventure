@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using GRA.Domain.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -9,6 +11,14 @@ namespace GRA.Controllers.ViewModel.MissionControl.Triggers
 {
     public class TriggersDetailViewModel
     {
+        public static string NoCache
+        {
+            get
+            {
+                return DateTime.Now.ToString("yyMMddHHmmss", CultureInfo.InvariantCulture);
+            }
+        }
+
         public string Action { get; set; }
         public IFormFile AttachmentUploadFile { get; set; }
         public bool AwardsAttachment { get; set; }
@@ -42,7 +52,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Triggers
         public ICollection<Event> RelatedEvents { get; set; }
         public bool RemoveAttachment { get; set; }
         public SelectList SystemList { get; set; }
-        public GRA.Domain.Model.Trigger Trigger { get; set; }
+        public Trigger Trigger { get; set; }
 
         [DisplayName("Challenges and triggers the participant must have earned")]
         public ICollection<TriggerRequirement> TriggerRequirements { get; set; }

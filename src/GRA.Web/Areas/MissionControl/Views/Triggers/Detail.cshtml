@@ -1,4 +1,5 @@
-﻿@model GRA.Controllers.ViewModel.MissionControl.Triggers.TriggersDetailViewModel
+﻿@using GRA.Controllers.ViewModel.MissionControl.Triggers
+@model TriggersDetailViewModel
 
 @section styles {
     <style>
@@ -414,7 +415,7 @@
                     {
                         <input asp-for="BadgePath" type="hidden" />
                         <img id="badgeImage" class="img-thumbnail badge-lg"
-                             src="~/@Model.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")"
+                             src="~/@Model.BadgePath?@TriggersDetailViewModel.NoCache"
                              asp-append-version="true" />
                     }
                     else
