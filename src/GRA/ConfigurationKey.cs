@@ -36,6 +36,7 @@
         public static readonly string SeqEndpoint = "GraSeqEndpoint";
         public static readonly string SqlSessionSchemaName = "GraSqlSessionSchemaName";
         public static readonly string SqlSessionTable = "GraSqlSessionTable";
+        public static readonly string SuppressTextLogs = "GraSuppressTextLogs";
         public static readonly string WorkerThreads = "GraWorkerThreads";
     }
 }

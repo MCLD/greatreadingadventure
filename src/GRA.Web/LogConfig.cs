@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
@@ -36,31 +37,44 @@ namespace GRA.Web
                 loggerConfig.Enrich.WithProperty(LoggingEnrichment.Instance, instance);
             }
 
-            loggerConfig.Enrich.FromLogContext()
-                .WriteTo.Console();
+            loggerConfig
+                .Enrich
+                .FromLogContext()
+                .WriteTo
+                .Console(formatProvider: CultureInfo.InvariantCulture);
 
-            string rollingLogLocation
-                = Path.Combine("shared", config[ConfigurationKey.RollingLogPath]);
-            if (!string.IsNullOrEmpty(rollingLogLocation))
+            if (string.IsNullOrEmpty(config[ConfigurationKey.SuppressTextLogs]))
             {
-                string rollingLogFile = !string.IsNullOrEmpty(instance)
-                    ? Path.Combine(rollingLogLocation, $"log-{instance}-{{Date}}.txt")
-                    : Path.Combine(rollingLogLocation, "log-{Date}.txt");
-
-                loggerConfig.WriteTo.Logger(_ => _
-                    .Filter.ByExcluding(Matching.FromSource(ErrorControllerName))
-                    .WriteTo.RollingFile(rollingLogFile));
-
-                string httpErrorFileTag = config[ConfigurationKey.RollingLogHttp];
-                if (!string.IsNullOrEmpty(httpErrorFileTag))
+                string rollingLogLocation
+                    = Path.Combine("shared", config[ConfigurationKey.RollingLogPath]);
+                if (!string.IsNullOrEmpty(rollingLogLocation))
                 {
-                    string httpLogFile = !string.IsNullOrEmpty(instance)
-                        ? Path.Combine(rollingLogLocation, $"{httpErrorFileTag}-{instance}-{{Date}}.txt")
-                        : Path.Combine(rollingLogLocation, $"{httpErrorFileTag}-{{Date}}.txt");
+                    string rollingLogFile = !string.IsNullOrEmpty(instance)
+                        ? Path.Combine(rollingLogLocation, $"log-{instance}-{{Date}}.txt")
+                        : Path.Combine(rollingLogLocation, "log-{Date}.txt");
 
                     loggerConfig.WriteTo.Logger(_ => _
-                        .Filter.ByIncludingOnly(Matching.FromSource(ErrorControllerName))
-                        .WriteTo.RollingFile(httpLogFile));
+                        .Filter
+                        .ByExcluding(Matching.FromSource(ErrorControllerName))
+                        .WriteTo
+                        .RollingFile(rollingLogFile, formatProvider: CultureInfo.InvariantCulture));
+
+                    string httpErrorFileTag = config[ConfigurationKey.RollingLogHttp];
+                    if (!string.IsNullOrEmpty(httpErrorFileTag))
+                    {
+                        string httpLogFile = !string.IsNullOrEmpty(instance)
+                            ? Path.Combine(rollingLogLocation,
+                                $"{httpErrorFileTag}-{instance}-{{Date}}.txt")
+                            : Path.Combine(rollingLogLocation,
+                                $"{httpErrorFileTag}-{{Date}}.txt");
+
+                        loggerConfig.WriteTo.Logger(_ => _
+                            .Filter
+                            .ByIncludingOnly(Matching.FromSource(ErrorControllerName))
+                            .WriteTo
+                            .RollingFile(httpLogFile,
+                                formatProvider: CultureInfo.InvariantCulture));
+                    }
                 }
             }
 
@@ -75,6 +89,7 @@ namespace GRA.Web
                             AutoCreateSqlTable = true
                         },
                         restrictedToMinimumLevel: LogEventLevel.Information,
+                        formatProvider: CultureInfo.InvariantCulture,
                         columnOptions: new ColumnOptions
                         {
                             AdditionalColumns = new[]
