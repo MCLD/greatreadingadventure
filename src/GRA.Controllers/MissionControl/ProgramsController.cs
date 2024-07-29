@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using DocumentFormat.OpenXml.EMMA;
 using GRA.Controllers.ViewModel.MissionControl.Programs;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
