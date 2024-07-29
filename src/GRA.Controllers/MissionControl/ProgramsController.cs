@@ -486,7 +486,7 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> CreatePointTranslation()
         {
-            var viewModel = new PointTranslationDetailViewModel()
+            var viewModel = new PointTranslationDetailViewModel
             {
                 PointTranslation = new PointTranslation(),
                 Action = nameof(CreatePointTranslation),
