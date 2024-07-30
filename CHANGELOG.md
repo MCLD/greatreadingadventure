@@ -26,6 +26,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Configuraton for amount of welcome emails to send per job run
 - Capability of handling a situation where a participant has multiple primary vendor codes assigned
 - Participant filter for those who have multiple primary vendor codes assigned
+- Configuration setting "GraSuppressTextLogs" to suppress writing text file logs
 
 ## Changed
 
