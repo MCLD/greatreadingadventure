@@ -3,13 +3,13 @@
 		"Dockerfile": [
 			{
 				"name": "mcr.microsoft.com/dotnet/sdk",
-				"tag": "7.0",
-				"digest": "d32bd65cf5843f413e81f5d917057c82da99737cb1637e905a1a4bc2e7ec6c8d"
+				"tag": "8.0",
+				"digest": "8c6beed050a602970c3d275756ed3c19065e42ce6ca0809f5a6fcbf5d36fd305"
 			},
 			{
 				"name": "mcr.microsoft.com/dotnet/aspnet",
-				"tag": "7.0",
-				"digest": "c7d9ee6cd01afe9aa80642e577c7cec9f5d87f88e5d70bd36fd61072079bc55b"
+				"tag": "8.0",
+				"digest": "38178966094e8ac38ac3377fa4195cbf63e9aef4030f5e62d2810f8a5df769e4"
 			}
 		]
 	}

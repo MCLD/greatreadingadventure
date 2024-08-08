@@ -249,7 +249,7 @@ namespace GRA.Web
                     name: null,
                     pattern: "{controller}/{action}/{id?}",
                     defaults: new { controller = "Home", action = "Index" });
-                _.MapHealthChecks("/health");
+                _.MapHealthChecks("/healthcheck");
             });
 
             app.UseWebSockets(new WebSocketOptions
