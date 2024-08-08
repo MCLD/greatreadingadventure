@@ -1,5 +1,5 @@
 # Get build image
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
 WORKDIR /app
 
@@ -14,7 +14,7 @@ RUN dotnet restore
 
 # Add SQLite migration
 RUN export PATH="$PATH:/root/.dotnet/tools" && \
-    dotnet tool install --version 7.0.20 --global dotnet-ef && \
+    dotnet tool install --version 8.0.7 --global dotnet-ef && \
     dotnet ef migrations add ${IMAGE_VERSION} --project src/GRA.Data.SQLite/GRA.Data.SQLite.csproj
 
 # Build project and run tests
@@ -28,13 +28,13 @@ RUN dotnet publish -v m /property:WarningLevel=0 -c Release --property:PublishDi
 RUN cp /app/release-publish.bash "/app/publish/"
 
 # Get runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS publish
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS publish
 
 WORKDIR /app
 
 # Install curl for health monitoring
 RUN apt-get update \
-	&& apt-get install --no-install-recommends -y curl=7.74.0-1.3+deb11u12 \
+	&& apt-get install --no-install-recommends -y curl=7.88.1-10+deb12u6 \
 	&& rm -rf /var/lib/apt/lists/*
 
 # Bring in metadata via --build-arg to publish
