@@ -73,7 +73,7 @@ VOLUME ["/app/shared"]
 EXPOSE 80
 
 # Configure health check
-HEALTHCHECK CMD curl --fail http://localhost/health/ || exit
+HEALTHCHECK CMD curl --fail http://localhost:8080/healthcheck || exit
 
 # Set entrypoint
 ENTRYPOINT ["dotnet", "GRA.Web.dll"]
