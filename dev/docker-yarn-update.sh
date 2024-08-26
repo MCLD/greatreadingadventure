@@ -3,10 +3,13 @@
 # How to run this:
 # 1. Find a Linux system (Windows Docker path sharing is a mess)
 # 2. Clone the repository
-# 4. Run the following: docker run -it --rm -v `pwd`:/app node:latest bash /app/dev/docker-yarn-update.sh
+# 4. Run the following: docker run -it --rm -v `pwd`:/app node:alpine /bin/sh /app/dev/docker-yarn-update.sh
 # 5. See what happened with git status
 
-cd /app/src/GRA.Web && yarn install 
+cd /app/src/GRA.Web
+corepack enable
+echo 'Y' |yarn config set --home enableTelemetry 0
+yarn install 
 
 mkdir -p /app/src/GRA.Web/js
 rm -rf /app/src/GRA.Web/js/*.js
@@ -47,4 +50,4 @@ cp /app/src/GRA.Web/node_modules/slick-carousel/slick/fonts/* /app/src/GRA.Web/w
 rm /app/src/GRA.Web/wwwroot/css/ajax-loader.gif
 cp /app/src/GRA.Web/node_modules/slick-carousel/slick/ajax-loader.gif /app/src/GRA.Web/wwwroot/css/
 
-yarn outdated && cd /app && git status
+yarn npm audit && cd /app && git status
