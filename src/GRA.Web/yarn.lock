@@ -2,13 +2,13 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 6
-  cacheKey: 8
+  version: 8
+  cacheKey: 10
 
 "@fortawesome/fontawesome-free@npm:^5.15.4":
   version: 5.15.4
   resolution: "@fortawesome/fontawesome-free@npm:5.15.4"
-  checksum: 32281c3df4075290d9a96dfc22f72fadb3da7055d4117e48d34046b8c98032a55fa260ae351b0af5d6f6fb57a2f5d79a4abe52af456da35195f7cb7dda27b4a2
+  checksum: 10/1ffbe55214d378fc3618f77b50b624a4571f984085318bbef3d81b810f1049451865634a4224f35844b205e6586a0a6473a54ce6e5cd0f0b3be5fbf57ab46901
   languageName: node
   linkType: hard
 
@@ -16,18 +16,18 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "GreatReadingAdventure@workspace:."
   dependencies:
-    "@fortawesome/fontawesome-free": ^5.15.4
-    bootstrap: ^3.4.1
-    bootstrap-multiselect: ^0.9.15
-    bootstrap-select: ^1.13.18
-    commonmark: ^0.31.1
-    eonasdan-bootstrap-datetimepicker: 4.17.49
-    jquery: ^3.7.1
-    jquery-validation: ^1.21.0
-    jquery-validation-unobtrusive: ^4.0.0
-    moment: ^2.30.1
-    moment-timezone: ^0.5.45
-    slick-carousel: ^1.8.1
+    "@fortawesome/fontawesome-free": "npm:^5.15.4"
+    bootstrap: "npm:^3.4.1"
+    bootstrap-multiselect: "npm:^0.9.15"
+    bootstrap-select: "npm:^1.13.18"
+    commonmark: "npm:^0.31.1"
+    eonasdan-bootstrap-datetimepicker: "npm:4.17.49"
+    jquery: "npm:^3.7.1"
+    jquery-validation: "npm:^1.21.0"
+    jquery-validation-unobtrusive: "npm:^4.0.0"
+    moment: "npm:^2.30.1"
+    moment-timezone: "npm:^0.5.45"
+    slick-carousel: "npm:^1.8.1"
   languageName: unknown
   linkType: soft
 
@@ -35,8 +35,8 @@ __metadata:
   version: 0.9.15
   resolution: "bootstrap-multiselect@npm:0.9.15"
   dependencies:
-    jquery: ~2.1.3
-  checksum: 7382c4493a789e9eceffeb6e54852226cc1428934a1eada61853fabfd93afc39ea40d9d44deeb939d204cb22ff67d16a540c5946b18e1afb9bf954dc078676fd
+    jquery: "npm:~2.1.3"
+  checksum: 10/c2c29780594703b5fb2cfaaee82c843716d7b58a55676d28b59a06776ccf9da98f44b331478eb615302f67f32c5b2951d02bc4ab2d46a7e3ad762c818f1ca734
   languageName: node
   linkType: hard
 
@@ -46,14 +46,14 @@ __metadata:
   peerDependencies:
     bootstrap: ">=3.0.0"
     jquery: 1.9.1 - 3
-  checksum: b81e977c3b8837ce7125f0050e15343aa2a59a70b8df3e40c843c35f3bb07000a1977a04f19e56d44d06093106427293433f84c1da6f83e96257f62642137530
+  checksum: 10/660f1fdf826ccd2093ba4597406a664808e95fe34efb0a22ca85171ab6b902d7637fc649577d131c192a9c4dddb480ab1ba2132f8d0941f0d74760391909ec9a
   languageName: node
   linkType: hard
 
 "bootstrap@npm:^3.3, bootstrap@npm:^3.4.1":
   version: 3.4.1
   resolution: "bootstrap@npm:3.4.1"
-  checksum: 5742035e8c541cd525780542771e7d56f63e5d4b2d902427bf182d3383e74a17c9074b6809f50d7f3de0585377e673339628b97cfdcde597ad69ecb1d2b562a6
+  checksum: 10/c46285f9d46f6d7a716fa2d294a68b83d8da5f394b2df80e96e0015055e78899312186ac998474568949545e8edcea5c396d500fb9de71c2c81ad5bac1fb56b6
   languageName: node
   linkType: hard
 
@@ -61,19 +61,19 @@ __metadata:
   version: 0.31.1
   resolution: "commonmark@npm:0.31.1"
   dependencies:
-    entities: ~3.0.1
-    mdurl: ~1.0.1
-    minimist: ~1.2.5
+    entities: "npm:~3.0.1"
+    mdurl: "npm:~1.0.1"
+    minimist: "npm:~1.2.5"
   bin:
     commonmark: bin/commonmark
-  checksum: 7a60602eabc0d10934a0ae18f9da6ef34338c7a7898d7c9fd8047f7cb502d07fb8b38ea68209a4cf9227c0caf034fccc3cca254e6bcd6da80173b3dfbca1d1a9
+  checksum: 10/a5d0a5904512f947ef3caba28edaa082e444a0e2bcb791254645ffa7684f1e3f971f40ad8c18bc842a8c869c6c1db24fadf5889ce44ca723d9939ae0f439c230
   languageName: node
   linkType: hard
 
 "entities@npm:~3.0.1":
   version: 3.0.1
   resolution: "entities@npm:3.0.1"
-  checksum: aaf7f12033f0939be91f5161593f853f2da55866db55ccbf72f45430b8977e2b79dbd58c53d0fdd2d00bd7d313b75b0968d09f038df88e308aa97e39f9456572
+  checksum: 10/3706e0292ea3f3679720b3d3b1ed6290b164aaeb11116691a922a3acea144503871e0de2170b47671c3b735549b8b7f4741d0d3c2987e8f985ccaa0dd3762eba
   languageName: node
   linkType: hard
 
@@ -81,16 +81,16 @@ __metadata:
   version: 4.17.49
   resolution: "eonasdan-bootstrap-datetimepicker@npm:4.17.49"
   dependencies:
-    bootstrap: ^3.3
-    jquery: ^3.5.1
-    moment: ^2.10
-    moment-timezone: ^0.4.0
+    bootstrap: "npm:^3.3"
+    jquery: "npm:^3.5.1"
+    moment: "npm:^2.10"
+    moment-timezone: "npm:^0.4.0"
   peerDependencies:
     bootstrap: ^3.3
     jquery: ^1.8.3 || ^2.0 || ^3.0
     moment: ^2.10
     moment-timezone: ^0.4.0 || ^0.5.0
-  checksum: e7ee859c0ba45fad05e25fad306551a087211824cfb706ee46b08f3fa9201a182a95af0506860e25d78a6a577f099350ec54bc88e1d01df1f29f8cfc353e493f
+  checksum: 10/70a0aff9a9a4203e3a0ab97a29f2aa2397896350925c54b19603435a9d77840257d706b9c46115560614e7127d7ef4f697829acb5f9ecff7a3c413d84fbb699c
   languageName: node
   linkType: hard
 
@@ -98,9 +98,9 @@ __metadata:
   version: 4.0.0
   resolution: "jquery-validation-unobtrusive@npm:4.0.0"
   dependencies:
-    jquery: ^3.6.0
-    jquery-validation: ">=1.19"
-  checksum: a73f7e28c9425cb3d11515eaf4bfc83b2d3cac8179beff754eb3740e05f328408bf8bec56be86d9ecb0eb6b6344d82f90c22304af9c8369d7500aef1f0eb17d7
+    jquery: "npm:^3.6.0"
+    jquery-validation: "npm:>=1.19"
+  checksum: 10/dd75fd20eadfc0c7ba9b1daa4550fc3d6a4e120c9d026c4f7acb7e23b4301ddd571def1f126380a626a92ccde63b7735403f35521c60afb3903ae68757ba6ac2
   languageName: node
   linkType: hard
 
@@ -109,7 +109,7 @@ __metadata:
   resolution: "jquery-validation@npm:1.19.5"
   peerDependencies:
     jquery: ^1.7 || ^2.0 || ^3.1
-  checksum: 75e7a84b2eb5a23720f8ab8c60768c76043e871164cd8c2a6821452133293d891bf81c2b4d0cbbdddd4da9bca3c97c50268e2be873f6719260c3123fc2a6ad91
+  checksum: 10/76a09df348a197c8809e7ec8a35ff9e9c6f7b2f7efb45a83144e2ee44f65a093a7bda9c54aadf81ecac9a8efc1bf939327e17ff169e47840de059ab3979cea8b
   languageName: node
   linkType: hard
 
@@ -118,49 +118,49 @@ __metadata:
   resolution: "jquery-validation@npm:1.21.0"
   peerDependencies:
     jquery: ^1.7 || ^2.0 || ^3.1
-  checksum: 03ad9bb813637403984d50b4bbf1219d11f93e464cd3a860b9a2941fe74709e48d3163bc330f969d17de94a26ec379f14394412a3f2e985b7568d467f8e5ade9
+  checksum: 10/999cc6ca02f0ba4ae647f01d5401b023689a44e10f8b12ef2e990b3762174fcdd818caa7145615a1fc55d4ed3e9959bf7113e11cd9fca2ac58a88bc9dccc13a0
   languageName: node
   linkType: hard
 
 "jquery@npm:^3.5.1":
   version: 3.6.1
   resolution: "jquery@npm:3.6.1"
-  checksum: 6177d866a74f1137cad800f142c7cdbd5ab19cd4282546f8bdb4890c9f933b1d542ab96f2aa15d007e43c98de7315b0513e849ec5359d3ac5640f720892fe547
+  checksum: 10/7916e247c29cf7bf61c26c77307041892b6a4f6c4680084e73a085c5f9a7e5baca1e5d30e3fdf6662ec1e444e95eeece8447100f044c719a264250630dc58885
   languageName: node
   linkType: hard
 
 "jquery@npm:^3.6.0":
   version: 3.6.0
   resolution: "jquery@npm:3.6.0"
-  checksum: 8fd5fef4aa48fd374ec716dd1c1df1af407814a228e15c1260ca140de3a697c2a77c30c54ff1d238b6a3ab4ddc445ddeef9adce6c6d28e4869d85eb9d3951c0e
+  checksum: 10/9785a3a13718ae51a13394e9953cc321fc11fb820e98b92ad1e76bc81086e596b3e7627fd2f23db79f4088cc0862eb2541ad775ea75d3079cc1fec834c28d5ad
   languageName: node
   linkType: hard
 
 "jquery@npm:^3.7.1":
   version: 3.7.1
   resolution: "jquery@npm:3.7.1"
-  checksum: 4370b8139d6ae82867eb6f7f21d1edccf1d1bdf41c0840920ea80d366c2cd5dbe1ceebb110ee9772aa839b04400faa1572c5c560b507c688ed7b61cea26c0e27
+  checksum: 10/17be9929f5fa37697d9848284f0d108c543318ef79ec794e130cd0c49f6c050d60c803a69e8cfa16fa19f5ff7cdb814a6905cceab0831186560c65ed113cd579
   languageName: node
   linkType: hard
 
 "jquery@npm:~2.1.3":
   version: 2.1.4
   resolution: "jquery@npm:2.1.4"
-  checksum: a6ee8f16952297a806f02d08dab6ed899b1a531db1cf9e958018332997633db44cd88f7e86f227d0783af5cb295fe521d2967d692f81858ca5613a1060a225c7
+  checksum: 10/d36b486a0ba1d1c4792cfbd0e9bb45fd190fe2ecc7c3d7a70617a881aec465cb2040ba317bf12189a6797f19464f69cd4ee32e6be83739f19c3ba9c645589a87
   languageName: node
   linkType: hard
 
 "mdurl@npm:~1.0.1":
   version: 1.0.1
   resolution: "mdurl@npm:1.0.1"
-  checksum: 71731ecba943926bfbf9f9b51e28b5945f9411c4eda80894221b47cc105afa43ba2da820732b436f0798fd3edbbffcd1fc1415843c41a87fea08a41cc1e3d02b
+  checksum: 10/ada367d01c9e81d07328101f187d5bd8641b71f33eab075df4caed935a24fa679e625f07108801d8250a5e4a99e5cd4be7679957a11424a3aa3e740d2bb2d5cb
   languageName: node
   linkType: hard
 
 "minimist@npm:~1.2.5":
   version: 1.2.8
   resolution: "minimist@npm:1.2.8"
-  checksum: 75a6d645fb122dad29c06a7597bddea977258957ed88d7a6df59b5cd3fe4a527e253e9bbf2e783e4b73657f9098b96a5fe96ab8a113655d4109108577ecf85b0
+  checksum: 10/908491b6cc15a6c440ba5b22780a0ba89b9810e1aea684e253e43c4e3b8d56ec1dcdd7ea96dde119c29df59c936cde16062159eae4225c691e19c70b432b6e6f
   languageName: node
   linkType: hard
 
@@ -168,8 +168,8 @@ __metadata:
   version: 0.4.1
   resolution: "moment-timezone@npm:0.4.1"
   dependencies:
-    moment: ">= 2.6.0"
-  checksum: 854adeb83be48716f59f4a0ee96863270dd8ff94d319f13c546ecc47408e67c59b35a720aeffaae6c4ad986e8eb7af0a5352621c327cedc1dbee9c6bcc596f94
+    moment: "npm:>= 2.6.0"
+  checksum: 10/3e6cc33f4a08771e7e22bdd5d9494f748c39c9cad4ba1449509ec4668c9224f112aa677ff24b67712dfbd2e4c42b94e82d30f8b48cb22d0b2b27514c4243b23b
   languageName: node
   linkType: hard
 
@@ -177,22 +177,22 @@ __metadata:
   version: 0.5.45
   resolution: "moment-timezone@npm:0.5.45"
   dependencies:
-    moment: ^2.29.4
-  checksum: a22e9f983fbe1a01757ce30685bce92e3f6efa692eb682afd47b82da3ff960b3c8c2c3883ec6715c124bc985a342b57cba1f6ba25a1c8b4c7ad766db3cd5e1d0
+    moment: "npm:^2.29.4"
+  checksum: 10/45e3793d44bea8e826c934a335ebf0b92c6d6dae562fdb59d8c45a16d5c11de4d6692b5fa7eebca969881f06b81b55f8535883bfbc727b597d601709fa5a2bb2
   languageName: node
   linkType: hard
 
 "moment@npm:>= 2.6.0, moment@npm:^2.10, moment@npm:^2.29.4":
   version: 2.29.4
   resolution: "moment@npm:2.29.4"
-  checksum: 0ec3f9c2bcba38dc2451b1daed5daded747f17610b92427bebe1d08d48d8b7bdd8d9197500b072d14e326dd0ccf3e326b9e3d07c5895d3d49e39b6803b76e80e
+  checksum: 10/157c5af5a0ba8196e577bc67feb583303191d21ba1f7f2af30b3b40d4c63a64d505ba402be2a1454832082fac6be69db1e0d186c3279dae191e6634b0c33705c
   languageName: node
   linkType: hard
 
 "moment@npm:^2.30.1":
   version: 2.30.1
   resolution: "moment@npm:2.30.1"
-  checksum: 859236bab1e88c3e5802afcf797fc801acdbd0ee509d34ea3df6eea21eb6bcc2abd4ae4e4e64aa7c986aa6cba563c6e62806218e6412a765010712e5fa121ba6
+  checksum: 10/ae42d876d4ec831ef66110bdc302c0657c664991e45cf2afffc4b0f6cd6d251dde11375c982a5c0564ccc0fa593fc564576ddceb8c8845e87c15f58aa6baca69
   languageName: node
   linkType: hard
 
@@ -201,6 +201,6 @@ __metadata:
   resolution: "slick-carousel@npm:1.8.1"
   peerDependencies:
     jquery: ">=1.8.0"
-  checksum: acaad391e4d8bc1c7fdb8d361faa1f1d60829b31d618b54bc38c0550a59b26de36537e0ab4bc0364176ec11d1a61d0cf11e99d8d5b1285d656673c9a1a719257
+  checksum: 10/b383e6f96b3bec573522467cfeeac1fce22d1cd53a68f5699cd3d62f0167777116b925dc48fbe64979a7a830777e4440036b8a7d4575c9ff8d18c3dd141b1ea2
   languageName: node
   linkType: hard

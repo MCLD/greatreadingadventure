@@ -9,7 +9,7 @@
 cd /app/src/GRA.Web
 corepack enable
 echo 'Y' |yarn config set --home enableTelemetry 0
-yarn install 
+yarn install
 
 mkdir -p /app/src/GRA.Web/js
 rm -rf /app/src/GRA.Web/js/*.js
