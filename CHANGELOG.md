@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## Unreleased
 
+## [4.4.2] 2024-08-28
+
 ## Added
 
 - Coversheet generation for performer invoices
@@ -482,6 +484,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Everything! First release of 4.0.
 
+[4.4.2]: https://github.com/mcld/greatreadingadventure/tree/v4.4.2
 [4.4.1]: https://github.com/mcld/greatreadingadventure/tree/v4.4.1
 [4.4.0]: https://github.com/mcld/greatreadingadventure/tree/v4.4.0
 [4.3.17]: https://github.com/mcld/greatreadingadventure/tree/v4.3.17
