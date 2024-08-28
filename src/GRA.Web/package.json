@@ -3,18 +3,18 @@
   "version": "4.1.2",
   "license": "MIT",
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.15.1",
-    "bootstrap": "^3.3.7",
+    "@fortawesome/fontawesome-free": "^5.15.4",
+    "bootstrap": "^3.4.1",
     "bootstrap-multiselect": "^0.9.15",
     "bootstrap-select": "^1.13.18",
-    "commonmark": "^0.30.0",
+    "commonmark": "^0.31.1",
     "eonasdan-bootstrap-datetimepicker": "4.17.49",
-    "jquery": "^3.5.1",
-    "jquery-validation": "^1.19.5",
+    "jquery": "^3.7.1",
+    "jquery-validation": "^1.21.0",
     "jquery-validation-unobtrusive": "^4.0.0",
-    "moment": "^2.29.4",
-    "moment-timezone": "^0.5.35",
+    "moment": "^2.30.1",
+    "moment-timezone": "^0.5.45",
     "slick-carousel": "^1.8.1"
   },
-  "packageManager": "yarn@3.2.1"
+  "packageManager": "yarn@4.4.1"
 }
