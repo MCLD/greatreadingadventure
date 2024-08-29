@@ -4,7 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
-## Unreleased
+## [4.5.0] 2024-08-29
+
+## Changed
+
+- Update to ASP.NET Core 8.0
 
 ## [4.4.2] 2024-08-28
 

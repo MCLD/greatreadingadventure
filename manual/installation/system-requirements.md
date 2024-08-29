@@ -12,11 +12,11 @@ Version 4 of the GRA runs in the [Microsoft .NET](https://dotnet.microsoft.com/d
 - Linux
 - Windows
 
-To host in a Windows environment you'll need the [ASP.NET Core Hosting Bundle](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/?view=aspnetcore-7.0), for other environments you will need to install the appropriate runtime.
+To host in a Windows environment you'll need the [ASP.NET Core Hosting Bundle](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/?view=aspnetcore-8.0), for other environments you will need to install the appropriate runtime.
 
-ASP.NET Core applications can be run behind a reverse proxy or directly connected to the Internet using the built-in ASP.NET Core [Kestrel Web server](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel?view=aspnetcore-7.0).
+ASP.NET Core applications can be run behind a reverse proxy or directly connected to the Internet using the built-in ASP.NET Core [Kestrel Web server](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel?view=aspnetcore-8.0).
 
-- To host with IIS, [Windows Server 2012 R2 or later is supported](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/?view=aspnetcore-7.0). Note that currently GRA reporting utilizes Web Sockets and in a Windows environment that requires IIS 8 and Windows Server 2012. To host with [Apache](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/linux-apache?view=aspnetcore-7.0) or [Nginx](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/linux-nginx?view=aspnetcore-7.0), a version of Linux which supports .NET 7.0 should be selected.
+- To host with IIS, [Windows Server 2012 R2 or later is supported](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/?view=aspnetcore-8.0). Note that currently GRA reporting utilizes Web Sockets and in a Windows environment that requires IIS 8 and Windows Server 2012. To host with [Apache](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/linux-apache?view=aspnetcore-8.0) or [Nginx](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/linux-nginx?view=aspnetcore-8.0), a version of Linux which supports .NET 8.0 should be selected.
 
 ### Docker server requirements
 
