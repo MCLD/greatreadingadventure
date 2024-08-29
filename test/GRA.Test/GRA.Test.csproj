@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <IsPackable>false</IsPackable>
-    <Version>4.4.1</Version>
+    <Version>4.4.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
