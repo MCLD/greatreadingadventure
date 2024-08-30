@@ -15,7 +15,8 @@ mkdir -p /app/src/GRA.Web/js
 rm -rf /app/src/GRA.Web/js/*.js
 
 cp /app/src/GRA.Web/node_modules/@eonasdan/tempus-dominus/dist/js/tempus-dominus.js /app/src/GRA.Web/js
-cp /app/src/GRA.Web/node_modules/bootstrap/dist/js/bootstrap.bundle.js /app/src/GRA.Web/js
+cp /app/src/GRA.Web/node_modules/@popperjs/core/dist/umd/popper.js /app/src/GRA.Web/js
+cp /app/src/GRA.Web/node_modules/bootstrap/dist/js/bootstrap.js /app/src/GRA.Web/js
 cp /app/src/GRA.Web/node_modules/bootstrap-multiselect/dist/js/bootstrap-multiselect.js /app/src/GRA.Web/js
 cp /app/src/GRA.Web/node_modules/bootstrap-select/dist/js/bootstrap-select.js /app/src/GRA.Web/js
 cp /app/src/GRA.Web/node_modules/commonmark/dist/commonmark.js /app/src/GRA.Web/js
@@ -50,4 +51,5 @@ cp /app/src/GRA.Web/node_modules/slick-carousel/slick/fonts/* /app/src/GRA.Web/w
 rm /app/src/GRA.Web/wwwroot/css/ajax-loader.gif
 cp /app/src/GRA.Web/node_modules/slick-carousel/slick/ajax-loader.gif /app/src/GRA.Web/wwwroot/css/
 
-yarn npm audit && cd /app && git status
+yarn npm audit
+
