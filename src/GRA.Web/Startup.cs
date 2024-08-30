@@ -385,12 +385,12 @@ namespace GRA.Web
                     "js/jquery.js",
                     "js/jquery.validate.js",
                     "js/jquery.validate.unobtrusive.js",
-                    "js/bootstrap.js",
+                    "js/bootstrap.bundle.js",
                     "js/moment.min.js",
                     "js/moment-timezone.min.js",
-                    "js/bootstrap-datetimepicker.min.js",
                     "js/bootstrap-multiselect.js",
                     "js/bootstrap-select.js",
+                    "js/tempus-dominus.js",
                     "Scripts/gra.js").UseContentRoot();
                 _.AddJavaScriptBundle("/js/performerregistration.min.js",
                     "Scripts/performerregistration.js").UseContentRoot();
@@ -411,6 +411,7 @@ namespace GRA.Web
                     "css/bootstrap-datetimepicker.css",
                     "css/bootstrap-multiselect.css",
                     "css/bootstrap-select.css",
+                    "css/tempus-dominus.css",
                     "Styles/gra.css").UseContentRoot();
                 _.AddCssBundle("/css/missioncontrol.min.css",
                     "Styles/missioncontrol.css").UseContentRoot();
