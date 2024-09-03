@@ -5,7 +5,7 @@
 
     <div class="form-group">
         <div class="col-xs-12">
-            <label asp-for="SystemId" class="control-label"></label>
+            <badge asp-for="SystemId" class="col-form-label"></badge>
             <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control">
                 <option value="">All Systems</option>
             </select>
@@ -14,7 +14,7 @@
 
     <div class="form-group">
         <div class="col-xs-12">
-            <label asp-for="BranchId" class="control-label"></label>
+            <badge asp-for="BranchId" class="col-form-label"></badge>
             <select asp-for="BranchId" asp-items="Model.BranchList" class="form-control">
                 <option>All Branches</option>
             </select>

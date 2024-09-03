@@ -19,7 +19,7 @@
         }
         else
         {
-            <table class="table table-condensed table-bordered table-striped">
+            <table class="table table-sm table-bordered table-striped">
                 <thead>
                     <tr>
                         <th><a sort asp-route-Sort="@Model.SortBooks.GetValue(0)" asp-route-Order="@(Model.Sort == Model.SortBooks.GetValue(0).ToString() && !Model.IsDescending ? "Descending" : "Ascending")">Date</a></th>
@@ -74,7 +74,7 @@
 </div>
 
 <div class="form-group">
-    <a asp-action="Index" class="btn btn-default">Return to Participants</a>
+    <a asp-action="Index" class="btn btn-secondary">Return to Participants</a>
     @if (!Model.HasPendingQuestionnaire)
     {
         <button type="button" data-toggle="modal" data-target="#addModal" class="btn btn-primary">Add Book</button>
@@ -110,20 +110,20 @@
                         </div>
                         <div class="modal-body">
                             <div class="form-group">
-                                <label asp-for="Book.Title" class="control-label"></label>
+                                <badge asp-for="Book.Title" class="col-form-label"></badge>
                                 <input asp-for="Book.Title" class="form-control" />
                                 <span asp-validation-for="Book.Title" class="text-danger"></span>
                             </div>
 
                             <div class="form-group">
-                                <label asp-for="Book.Author" class="control-label"></label>
+                                <badge asp-for="Book.Author" class="col-form-label"></badge>
                                 <input asp-for="Book.Author" class="form-control" />
                                 <span asp-validation-for="Book.Author" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button"
-                                    class="btn btn-default"
+                                    class="btn btn-secondary"
                                     data-dismiss="modal"
                                     style="margin-right: 1em;">
                                 Cancel
@@ -170,20 +170,20 @@
                         </div>
                         <div class="modal-body">
                             <div class="form-group">
-                                <label asp-for="Book.Title" class="control-label"></label>
+                                <badge asp-for="Book.Title" class="col-form-label"></badge>
                                 <input asp-for="Book.Title" class="form-control" />
                                 <span asp-validation-for="Book.Title" class="text-danger"></span>
                             </div>
 
                             <div class="form-group">
-                                <label asp-for="Book.Author" class="control-label"></label>
+                                <badge asp-for="Book.Author" class="col-form-label"></badge>
                                 <input asp-for="Book.Author" class="form-control" />
                                 <span asp-validation-for="Book.Author" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button"
-                                    class="btn btn-default"
+                                    class="btn btn-secondary"
                                     data-dismiss="modal"
                                     style="margin-right: 1em;">
                                 Cancel
@@ -222,7 +222,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-default"
+                                class="btn btn-secondary"
                                 data-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel

@@ -10,7 +10,7 @@
         else
         {
             <div>
-                <table class="table table-condensed table-bordered table-striped">
+                <table class="table table-sm table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>System Name</th>
@@ -32,7 +32,7 @@
                                     @if (Model.SystemBadgeCount[system] > 0)
                                     {
                                         <a title="Download ZIP"
-                                           class="btn btn-default btn-xs"
+                                           class="btn btn-secondary btn-xs"
                                asp-action="@nameof(DownloadsController.GetBadgeZipForSystem)"
                                asp-route-id="@system.Id">
                                             <span class="fas fa-file-download" aria-hidden="true"></span>

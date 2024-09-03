@@ -21,7 +21,7 @@
 
     <div class="row" style="padding: 10px 0;">
         <div class="col-xs-12">
-            <label asp-for="Criterion.Name" class="control-label"></label>
+            <badge asp-for="Criterion.Name" class="col-form-label"></badge>
             <input asp-for="Criterion.Name" class="form-control" />
             <span asp-validation-for="Criterion.Name" class="text-danger"></span>
         </div>
@@ -29,7 +29,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Criterion.SystemId" class="control-label"></label>
+            <badge asp-for="Criterion.SystemId" class="col-form-label"></badge>
             <select asp-for="Criterion.SystemId" asp-items="Model.SystemList" class="form-control">
                 <option></option>
             </select>
@@ -39,7 +39,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Criterion.BranchId" class="control-label"></label>
+            <badge asp-for="Criterion.BranchId" class="col-form-label"></badge>
             <select asp-for="Criterion.BranchId" asp-items="Model.BranchList" class="form-control">
                 <option></option>
             </select>
@@ -49,7 +49,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Criterion.ProgramId" class="control-label"></label>
+            <badge asp-for="Criterion.ProgramId" class="col-form-label"></badge>
             <input asp-for="ProgramPlaceholder" class="form-control" />
             <select asp-for="Criterion.ProgramIds" asp-items="Model.ProgramList" class="form-control hidden" multiple="multiple"></select>
             <span asp-validation-for="Criterion.ProgramId" class="text-danger"></span>
@@ -58,13 +58,13 @@
 
     <div class="row row-spacing">
         <div class="col-xs-6">
-            <label asp-for="Criterion.PointsMinimum" class="control-label"></label>
+            <badge asp-for="Criterion.PointsMinimum" class="col-form-label"></badge>
             <input asp-for="Criterion.PointsMinimum" type="number" min="0" class="form-control" />
             <span asp-validation-for="Criterion.PointsMinimum" class="text-danger"></span>
         </div>
 
         <div class="col-xs-6">
-            <label asp-for="Criterion.PointsMaximum" class="control-label"></label>
+            <badge asp-for="Criterion.PointsMaximum" class="col-form-label"></badge>
             <input asp-for="Criterion.PointsMaximum" type="number" min="0" class="form-control" />
             <span asp-validation-for="Criterion.PointsMaximum" class="text-danger"></span>
         </div>
@@ -72,7 +72,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-6">
-            <label asp-for="Criterion.StartOfPeriod" class="control-label"></label>
+            <badge asp-for="Criterion.StartOfPeriod" class="col-form-label"></badge>
             <div class="input-group date" id="pickerStart">
                 <span class="input-group-addon">
                     <span class="fas fa-calendar-alt"></span>
@@ -83,7 +83,7 @@
         </div>
 
         <div class="col-xs-6">
-            <label asp-for="Criterion.EndOfPeriod" class="control-label"></label>
+            <badge asp-for="Criterion.EndOfPeriod" class="col-form-label"></badge>
             <div class="input-group date" id="pickerEnd">
                 <span class="input-group-addon">
                     <span class="fas fa-calendar-alt"></span>
@@ -96,7 +96,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Criterion.ReadABook" class="control-label"></label>
+            <badge asp-for="Criterion.ReadABook" class="col-form-label"></badge>
             <select asp-for="Criterion.ReadABook" class="form-control">
                 <option value="false">No</option>
                 <option value="true">Yes</option>
@@ -107,7 +107,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Criterion.ExcludePreviousWinners" class="control-label"></label>
+            <badge asp-for="Criterion.ExcludePreviousWinners" class="col-form-label"></badge>
             <select asp-for="Criterion.ExcludePreviousWinners" class="form-control">
                 <option value="false">No</option>
                 <option value="true">Yes</option>
@@ -118,7 +118,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Criterion.IncludeAdmin" class="control-label"></label>
+            <badge asp-for="Criterion.IncludeAdmin" class="col-form-label"></badge>
             <select asp-for="Criterion.IncludeAdmin" class="form-control">
                 <option value="false">No</option>
                 <option value="true">Yes</option>
@@ -129,13 +129,13 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label class="control-label">Eligible Participants (Click save to update)</label>
+            <badge class="col-form-label">Eligible Participants (Click save to update)</badge>
             <input asp-for="EligibleCount" type="text" class="form-control" readonly />
         </div>
     </div>
 
     <div class="form-group">
-        <a asp-action="Criteria" class="btn btn-default">Return to Criteria List</a>
+        <a asp-action="Criteria" class="btn btn-secondary">Return to Criteria List</a>
         <button type="submit"
                 id="Submit"
                 name="Submit"

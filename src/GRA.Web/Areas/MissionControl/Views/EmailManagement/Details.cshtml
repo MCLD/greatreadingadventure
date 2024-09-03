@@ -47,14 +47,14 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="form-group">
-                <label asp-for="TemplateDescription" class="control-label"></label>
+                <badge asp-for="TemplateDescription" class="col-form-label"></badge>
                 <description gra-description-for="TemplateDescription"></description>
                 <input asp-for="TemplateDescription" class="form-control" />
                 <span asp-validation-for="TemplateDescription" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="EmailBaseId" class="control-label"></label>
+                <badge asp-for="EmailBaseId" class="col-form-label"></badge>
                 <description gra-description-for="EmailBaseId"></description>
                 <select class="form-control" asp-for="EmailBaseId">
                     @foreach (var emailBase in Model.EmailBases.Where(_ => !_.Disabled))
@@ -68,7 +68,7 @@
             @if (Model.Languages.Count() > 1)
             {
                 <div class="form-group">
-                    <label asp-for="LanguageId" class="control-label"></label><br>
+                    <badge asp-for="LanguageId" class="col-form-label"></badge><br>
                     <description gra-description-for="LanguageId"></description><br>
                     @foreach (var item in Model.Languages)
                     {
@@ -76,7 +76,7 @@
                         {
                             <button disabled
                                     title="You must first create the template in the default language"
-                                    class="btn btn-sm btn-default mt-1">
+                                    class="btn btn-sm btn-secondary mt-1">
                                 @item.Text
                             </button>
                         }
@@ -85,13 +85,13 @@
                             if (Model.Action == nameof(EmailManagementController.EditTemplate))
                             {
                                 <a href="@Url.Action(Model.Action, new { templateId = Model.EmailTemplateId, languageId = item.Value })"
-                                   class="btn btn-sm btn-default mt-1 @(item.Selected ? "active" : null)">@item.Text</a>
+                                   class="btn btn-sm btn-secondary mt-1 @(item.Selected ? "active" : null)">@item.Text</a>
                             }
                             else
                             {
                                 <button disabled
                                         title="You must first create the template in the default language"
-                                        class="btn btn-sm btn-default mt-1 @(item.Selected ? "active" : null)">
+                                        class="btn btn-sm btn-secondary mt-1 @(item.Selected ? "active" : null)">
                                     @item.Text
                                 </button>
                             }
@@ -111,26 +111,26 @@
             <hr />
 
             <div class="form-group">
-                <label asp-for="Subject" class="control-label"></label>
+                <badge asp-for="Subject" class="col-form-label"></badge>
                 <description gra-description-for="Subject"></description>
                 <input asp-for="Subject" class="form-control" />
                 <span asp-validation-for="Subject" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Preview" class="control-label"></label>
+                <badge asp-for="Preview" class="col-form-label"></badge>
                 <description gra-description-for="Preview"></description>
                 <input asp-for="Preview" class="form-control" />
                 <span asp-validation-for="Preview" class="text-danger"></span>
             </div>
             <hr />
             <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
+                <badge asp-for="Title" class="col-form-label"></badge>
                 <description gra-description-for="Title"></description>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="BodyCommonMark" class="control-label"></label>
+                <badge asp-for="BodyCommonMark" class="col-form-label"></badge>
                 <description gra-description-for="BodyCommonMark"></description>
                 <textarea asp-for="BodyCommonMark"
                           rows="8"
@@ -138,7 +138,7 @@
                 <span asp-validation-for="BodyCommonMark" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Footer" class="control-label"></label>
+                <badge asp-for="Footer" class="col-form-label"></badge>
                 <description gra-description-for="Footer"></description>
                 <textarea asp-for="Footer"
                           rows="8"
@@ -152,12 +152,12 @@
                     <button type="button"
                             data-toggle="modal"
                             data-target="#importModal"
-                            class="btn btn-default">
+                            class="btn btn-secondary">
                         <span class="fas fa-file-upload"></span>
                         Import
                     </button>
                     <a asp-action="@nameof(EmailManagementController.ExportTemplateText)"
-                       class="btn btn-default"
+                       class="btn btn-secondary"
                    asp-route-emailTemplateId="@Model.EmailTemplateId"
                    asp-route-languageId="@Model.LanguageId">
                         <span class="fas fa-file-download"></span>
@@ -167,7 +167,7 @@
             }
 
             <div class="form-group">
-                <a asp-action="Index" class="btn btn-default">Return to List</a>
+                <a asp-action="Index" class="btn btn-secondary">Return to List</a>
                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.SendBulkEmails.ToString()))
                 {
                     @if (Model.Action == nameof(EmailManagementController.EditTemplate))
@@ -224,8 +224,8 @@
                     <div class="modal-body">
                         <p>Upload a .json file to replace the content of the selected template and language.</p>
                         <div class="input-group">
-                            <label class="input-group-btn">
-                                <span class="btn btn-default btn-file">
+                            <badge class="input-group-btn">
+                                <span class="btn btn-secondary btn-file">
                                     <span class="far fa-file-image"></span>
                                     Select a .json file
                                     <input type="file"
@@ -234,7 +234,7 @@
                                            accept=".json"
                                            style="display: none;" />
                                 </span>
-                            </label>
+                            </badge>
                             <input type="text"
                                    class="form-control"
                                    readonly
@@ -244,7 +244,7 @@
                         <span asp-validation-for="UploadedFile" class="text-danger"></span>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-default"
+                        <button class="btn btn-secondary"
                                 type="button"
                                 data-dismiss="modal"
                                 style="margin-right: 1em;">
@@ -286,7 +286,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label asp-for="SendTestRecipients" class="control-label"></label>
+                            <badge asp-for="SendTestRecipients" class="col-form-label"></badge>
                             <input asp-for="SendTestRecipients"
                                    class="form-control"
                                value="@Model.DefaultTestEmail"
@@ -295,7 +295,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-default"
+                                class="btn btn-secondary"
                                 data-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel
@@ -331,7 +331,7 @@
 
                     if (input.length) {
                         input.val(log);
-                        $('.btn-file').removeClass('btn-default');
+                        $('.btn-file').removeClass('btn-secondary');
                         $('.btn-file').addClass('btn-success');
                         $("#badgeImage").removeAttr("src");
                         $("#badgeImage").height(200);
@@ -339,7 +339,7 @@
                     }
                     else {
                         input.val('');
-                        $('.btn-file').addClass('btn-default');
+                        $('.btn-file').addClass('btn-secondary');
                         $('.btn-file').removeClass('btn-success');
                     }
                 });

@@ -5,7 +5,7 @@
 }
 
 <div class="row" style="margin: 1rem 0;">
-    <a asp-action="Index" class="btn btn-default">
+    <a asp-action="Index" class="btn btn-secondary">
         <span class="fas fa-envelope-open-text"></span>
         Back to Email Management
     </a>
@@ -15,7 +15,7 @@
 <form asp-action="@nameof(EmailManagementController.ExportAddresses)" method="get">
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="SignUpSource" class="control-label">Mailing list</label>
+            <badge asp-for="SignUpSource" class="col-form-label">Mailing list</badge>
             <select asp-for="SignUpSource"
                     asp-items="@Model.SignUpSources"
                     class="form-control">
@@ -41,10 +41,10 @@
       enctype="multipart/form-data">
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label for="selectedFile">Select a .json file:</label>
+            <badge for="selectedFile">Select a .json file:</badge>
             <div class="input-group">
-                <label class="input-group-btn">
-                    <span class="btn btn-default btn-file">
+                <badge class="input-group-btn">
+                    <span class="btn btn-secondary btn-file">
                         <span class="far fa-file-image"></span>
                         Select a .json file
                         <input type="file"
@@ -53,7 +53,7 @@
                                accept=".json"
                                style="display: none;" />
                     </span>
-                </label>
+                </badge>
                 <input type="text"
                        class="form-control"
                        readonly
@@ -65,7 +65,7 @@
     </div>
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="SignUpSource" class="control-label">Mailing list</label>
+            <badge asp-for="SignUpSource" class="col-form-label">Mailing list</badge>
             <select asp-for="SignUpSource"
                     asp-items="@GRA.Controllers.ViewModel.MissionControl.EmailManagement.EmailAddressesViewModel.AllSources"
                     class="form-control">
@@ -89,7 +89,7 @@
 
         if (input.length) {
             input.val(log);
-            $('.btn-file').removeClass('btn-default');
+            $('.btn-file').removeClass('btn-secondary');
             $('.btn-file').addClass('btn-success');
             $("#badgeImage").removeAttr("src");
             $("#badgeImage").height(200);
@@ -97,7 +97,7 @@
         }
         else {
             input.val('');
-            $('.btn-file').addClass('btn-default');
+            $('.btn-file').addClass('btn-secondary');
             $('.btn-file').removeClass('btn-success');
         }
     });

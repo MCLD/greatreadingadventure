@@ -11,7 +11,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="form-group">
-                <label asp-for="Role.Name" class="control-label"></label>
+                <badge asp-for="Role.Name" class="col-form-label"></badge>
                 <input asp-for="Role.Name" class="form-control" />
                 <span asp-validation-for="Role.Name" class="text-danger"></span>
             </div>
@@ -20,11 +20,11 @@
             {
                 <a asp-action="@nameof(RolesController.UsersInRole)"
                    asp-route-id="@Model.Role.Id"
-                   class="btn btn-default">See users in this role (@Model.UsersInRole)</a>
+                   class="btn btn-secondary">See users in this role (@Model.UsersInRole)</a>
             }
             else
             {
-                <button class="btn btn-default" disabled>No users in this role</button>
+                <button class="btn btn-secondary" disabled>No users in this role</button>
             }
 
             <div class="row">
@@ -35,7 +35,7 @@
                         {
                             <li class="list-group-item" data-name="@permission">
                                 @permission
-                                <button type="button" class="btn btn-default btn-xs move-right"><span class="fas fa-angle-double-right"></span></button>
+                                <button type="button" class="btn btn-secondary btn-xs move-right"><span class="fas fa-angle-double-right"></span></button>
                             </li>
                         }
                     </ul>
@@ -52,7 +52,7 @@
                                     @permission
                                     @if (Model.Role.IsAdmin == false)
                                     {
-                                        <button type="button" class="btn btn-default btn-xs move-left"><span class="fas fa-angle-double-left"></span></button>
+                                        <button type="button" class="btn btn-secondary btn-xs move-left"><span class="fas fa-angle-double-left"></span></button>
                                     }
                                 </li>
                             }
@@ -64,7 +64,7 @@
             <hr />
 
             <div class="form-group">
-                <a asp-action="Index" class="btn btn-default">Return to List</a>
+                <a asp-action="Index" class="btn btn-secondary">Return to List</a>
                 <button type="submit"
                         id="Submit"
                         name="Submit"

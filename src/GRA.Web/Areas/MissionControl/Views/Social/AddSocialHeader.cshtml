@@ -23,13 +23,13 @@
     <div class="row" style="margin-top: 2rem; margin-bottom: 2rem;">
         <div class="col-xs-12">
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>*
+                <badge asp-for="Name" class="col-form-label"></badge>*
                 <description gra-description-for="Name"></description>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="StartDate" class="control-label"></label>*
+                <badge asp-for="StartDate" class="col-form-label"></badge>*
                 <description gra-description-for="StartDate"></description>
                 <div class="input-group date datetimepicker">
                     <span class="input-group-addon">
@@ -40,7 +40,7 @@
                 <span asp-validation-for="StartDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="LanguageId" class="control-label"></label>*
+                <badge asp-for="LanguageId" class="col-form-label"></badge>*
                 <description gra-description-for="LanguageId"></description>
                 <select asp-for="LanguageId"
                         asp-items="Model.LanguageList"
@@ -48,37 +48,37 @@
                 <span asp-validation-for="LanguageId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>*
+                <badge asp-for="Title" class="col-form-label"></badge>*
                 <description gra-description-for="Title"></description>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>*
+                <badge asp-for="Description" class="col-form-label"></badge>*
                 <description gra-description-for="Description"></description>
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="ImageAlt" class="control-label"></label>*
+                <badge asp-for="ImageAlt" class="col-form-label"></badge>*
                 <description gra-description-for="ImageAlt"></description>
                 <input asp-for="ImageAlt" class="form-control" />
                 <span asp-validation-for="ImageAlt" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="TwitterUsername" class="control-label"></label>
+                <badge asp-for="TwitterUsername" class="col-form-label"></badge>
                 <description gra-description-for="TwitterUsername"></description>
                 <input asp-for="TwitterUsername" class="form-control" />
                 <span asp-validation-for="TwitterUsername" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="UploadedImage" class="control-label"></label>*
+                <badge asp-for="UploadedImage" class="col-form-label"></badge>*
                 <description gra-description-for="UploadedImage"></description>
                 <div class="input-group @SocialItemViewModel.ValidationClass(ViewData, "UploadedImage")">
-                    <label class="input-group-btn">
-                        <span class="btn btn-default btn-file">
+                    <badge class="input-group-btn">
+                        <span class="btn btn-secondary btn-file">
                             <span class="far fa-file-image"></span>
                             Image file
                             <input type="file"
@@ -87,7 +87,7 @@
                                    accept=".jpg,.png"
                                    style="display: none;" />
                         </span>
-                    </label>
+                    </badge>
                     <input type="text"
                            class="form-control"
                            readonly
@@ -127,11 +127,11 @@
 
             if (input.length) {
                 input.val(log);
-                $('.btn-file').removeClass('btn-default').addClass('btn-success');
+                $('.btn-file').removeClass('btn-secondary').addClass('btn-success');
             }
             else {
                 input.val('');
-                $('.btn-file').addClass('btn-default').removeClass('btn-success');
+                $('.btn-file').addClass('btn-secondary').removeClass('btn-success');
             }
         });
 

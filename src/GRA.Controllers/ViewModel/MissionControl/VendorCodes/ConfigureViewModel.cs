@@ -28,7 +28,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.VendorCodes
         public string LanguageMessageClass(int? messageTemplateId, int languageId)
         {
             return !messageTemplateId.HasValue
-                ? "btn-default"
+                ? "btn-secondary"
                 : MessageTemplateLanguageIds.TryGetValue(messageTemplateId.Value, out int[] value)
                     && value.Contains(languageId)
                     ? "btn-success"
@@ -38,7 +38,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.VendorCodes
         public string LanguageSegmentClass(int? segmentId, int languageId)
         {
             return !segmentId.HasValue
-                ? "btn-default"
+                ? "btn-secondary"
                 : SegmentLanguageIds.TryGetValue(segmentId.Value, out int[] value)
                     && value.Contains(languageId)
                     ? "btn-success"

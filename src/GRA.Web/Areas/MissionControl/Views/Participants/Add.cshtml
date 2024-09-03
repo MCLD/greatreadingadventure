@@ -6,7 +6,7 @@
 
             <div class="row row-spacing">
                 <div class="col-xs-12">
-                    <label asp-for="Username" class="control-label"></label>
+                    <badge asp-for="Username" class="col-form-label"></badge>
                     <span id="Username-Icon" class="fa colored-icon hide"></span>
                     <input asp-for="Username" class="form-control" autofocus />
                     <span id="Username-Validation" asp-validation-for="Username" class="text-success"></span>
@@ -15,7 +15,7 @@
 
             <div class="row row-spacing">
                 <div class="col-xs-12">
-                    <label asp-for="Password" class="control-label"></label>
+                    <badge asp-for="Password" class="col-form-label"></badge>
                     <input asp-for="Password" type="password" class="form-control" />
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
@@ -25,7 +25,7 @@
 
             <div class="row row-spacing">
                 <div class="col-xs-12">
-                    <label asp-for="FirstName" class="control-label"></label>
+                    <badge asp-for="FirstName" class="col-form-label"></badge>
                     <input asp-for="FirstName" class="form-control" />
                     <span asp-validation-for="FirstName" class="text-danger"></span>
                 </div>
@@ -33,7 +33,7 @@
 
             <div class="row row-spacing">
                 <div class="col-xs-12">
-                    <label asp-for="LastName" class="control-label"></label>
+                    <badge asp-for="LastName" class="col-form-label"></badge>
                     <input asp-for="LastName" class="form-control" />
                     <span asp-validation-for="LastName" class="text-danger"></span>
                 </div>
@@ -43,7 +43,7 @@
             {
                 <div class="row row-spacing">
                     <div class="col-xs-12">
-                        <label asp-for="PostalCode" class="control-label"></label>
+                        <badge asp-for="PostalCode" class="col-form-label"></badge>
                         <input asp-for="PostalCode" class="form-control" />
                         <span asp-validation-for="PostalCode" class="text-danger"></span>
                     </div>
@@ -54,7 +54,7 @@
             {
                 <div class="row row-spacing">
                     <div class="col-xs-12">
-                        <label asp-for="SystemId" class="control-label"></label>
+                        <badge asp-for="SystemId" class="col-form-label"></badge>
                         <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control">
                             <option></option>
                         </select>
@@ -69,7 +69,7 @@
 
             <div class="row row-spacing">
                 <div class="col-xs-12">
-                    <label asp-for="BranchId" class="control-label"></label>
+                    <badge asp-for="BranchId" class="col-form-label"></badge>
                     <select asp-for="BranchId" asp-items="Model.BranchList" class="form-control"></select>
                     <span asp-validation-for="BranchId" class="text-danger"></span>
                 </div>
@@ -79,7 +79,7 @@
             {
                 <div class="row row-spacing">
                     <div class="col-xs-12">
-                        <label asp-for="ProgramId" class="control-label"></label>
+                        <badge asp-for="ProgramId" class="col-form-label"></badge>
                         <select asp-for="ProgramId" asp-items="Model.ProgramList" class="form-control">
                             <option></option>
                         </select>
@@ -94,7 +94,7 @@
 
             <div id="ageField" class="row row-spacing @(Model.ShowAge ? "": "hide")">
                 <div class="col-xs-12">
-                    <label asp-for="Age" class="control-label"></label>
+                    <badge asp-for="Age" class="col-form-label"></badge>
                     <input asp-for="Age" class="form-control" type="text" />
                     <span id="ageMessage" asp-validation-for="Age" class="text-danger"></span>
                 </div>
@@ -116,7 +116,7 @@
 
             <div class="row row-spacing">
                 <div class="col-xs-12">
-                    <label asp-for="Email" class="control-label"></label>
+                    <badge asp-for="Email" class="col-form-label"></badge>
                     <input asp-for="Email" class="form-control" type="email" />
                     <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
@@ -124,7 +124,7 @@
 
             <div class="row row-spacing">
                 <div class="col-xs-12">
-                    <label asp-for="PhoneNumber" class="control-label"></label>
+                    <badge asp-for="PhoneNumber" class="col-form-label"></badge>
                     <input asp-for="PhoneNumber" class="form-control" type="tel" />
                     <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                 </div>
@@ -134,7 +134,7 @@
             {
                 <div class="row row-spacing">
                     <div class="col-xs-12">
-                        <label asp-for="IsFirstTime" class="control-label"></label>
+                        <badge asp-for="IsFirstTime" class="col-form-label"></badge>
                         <select asp-for="IsFirstTime"
                                 asp-items="Model.AskFirstTime"
                                 class="form-control"></select>
@@ -147,7 +147,7 @@
             {
                 <div class="row row-spacing">
                     <div class="col-xs-12">
-                        <label asp-for="EmailSubscriptionRequested" class="control-label">@Model.AskEmailSubscriptionText</label>
+                        <badge asp-for="EmailSubscriptionRequested" class="col-form-label">@Model.AskEmailSubscriptionText</badge>
                         <select asp-for="EmailSubscriptionRequested"
                                 asp-items="Model.AskEmailSubscription"
                                 class="form-control"></select>
@@ -160,7 +160,7 @@
             {
                 <div class="row row-spacing">
                     <div class="col-xs-12">
-                        <label asp-for="DailyPersonalGoal" class="control-label"></label>
+                        <badge asp-for="DailyPersonalGoal" class="col-form-label"></badge>
                         <div>
                             I will @Model.TranslationDescriptionPastTense
                             <input asp-for="DailyPersonalGoal" class="form-control" style="display:inline-block; width:75px;" />

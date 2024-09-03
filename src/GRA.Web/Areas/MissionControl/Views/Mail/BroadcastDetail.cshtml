@@ -10,7 +10,7 @@
 
     <div class="row" style="padding: 10px 0;">
         <div class="col-xs-12">
-            <label asp-for="Broadcast.Subject" class="control-label"></label>
+            <badge asp-for="Broadcast.Subject" class="col-form-label"></badge>
             <input asp-for="Broadcast.Subject" class="form-control" disabled="@(Model.Sent == true ? "disabled" : null)" />
             <span asp-validation-for="Broadcast.Subject" class="text-danger"></span>
         </div>
@@ -18,7 +18,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Broadcast.Body" class="control-label"></label>
+            <badge asp-for="Broadcast.Body" class="col-form-label"></badge>
             <textarea asp-for="Broadcast.Body" class="form-control" rows="5" disabled="@(Model.Sent == true ? "disabled" : null)"></textarea>
             <span asp-validation-for="Broadcast.Body" class="text-danger"></span>
         </div>
@@ -28,7 +28,7 @@
         <div class="col-xs-12">
             @if (Model.Sent)
             {
-            <label asp-for="Broadcast.SendAt " class="control-label">Sent at</label>
+            <badge asp-for="Broadcast.SendAt " class="col-form-label">Sent at</badge>
             <div class="input-group date" id="pickerSend">
                 <span class="input-group-addon">
                     <span class="fas fa-calendar-alt"></span>
@@ -40,7 +40,7 @@
             }
             else
             {
-            <label class="control-label">Send at</label>
+            <badge class="col-form-label">Send at</badge>
             <table>
                 <tr>
                     <td style="padding:8px 8px 10px 0;" valign="top">
@@ -71,14 +71,14 @@
 
     <div class="row" style="padding-bottom:20px;">
         <div class="col-xs-12">
-            <label asp-for="Broadcast.SendToNewUsers" class="control-label"></label>
+            <badge asp-for="Broadcast.SendToNewUsers" class="col-form-label"></badge>
             <input asp-for="Broadcast.SendToNewUsers" style="display:block;" disabled="@(Model.Sent == true ? "disabled" : null)" />
             <span asp-validation-for="Broadcast.SendToNewUsers" class="text-danger"></span>
         </div>
     </div>
 
     <div class="form-group">
-        <a asp-action="Broadcasts" asp-route-Upcoming="@(Model.Sent ? "False" : null)" class="btn btn-default">Return to List</a>
+        <a asp-action="Broadcasts" asp-route-Upcoming="@(Model.Sent ? "False" : null)" class="btn btn-secondary">Return to List</a>
         @if (Model.Sent != true)
         {
         <button type="submit" class="btn btn-primary" button-spinner>

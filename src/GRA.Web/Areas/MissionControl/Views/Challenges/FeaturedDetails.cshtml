@@ -17,13 +17,13 @@
         <div class="col-xs-12">
 
             <div class="form-group">
-                <label asp-for="FeaturedGroup.Name" class="control-label"></label>
+                <badge asp-for="FeaturedGroup.Name" class="col-form-label"></badge>
                 <input asp-for="FeaturedGroup.Name" class="form-control" />
                 <span asp-validation-for="FeaturedGroup.Name" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="FeaturedGroup.ChallengeGroupId" class="control-label"></label>
+                <badge asp-for="FeaturedGroup.ChallengeGroupId" class="col-form-label"></badge>
                 <select asp-for="FeaturedGroup.ChallengeGroupId" asp-items="Model.ChallengeGroupList" class="form-control">
                     <option></option>
                 </select>
@@ -32,7 +32,7 @@
 
             <div class="row">
                 <div class="col-xs-12 col-sm-6 row-spacing">
-                    <label asp-for="FeaturedGroup.StartDate" class="control-label"></label>
+                    <badge asp-for="FeaturedGroup.StartDate" class="col-form-label"></badge>
                     <div class="input-group date datetimePicker">
                         <span class="input-group-addon">
                             <span class="fas fa-calendar-alt"></span>
@@ -43,7 +43,7 @@
                 </div>
 
                 <div class="col-xs-12 col-sm-6 row-spacing">
-                    <label asp-for="FeaturedGroup.EndDate" class="control-label"></label>
+                    <badge asp-for="FeaturedGroup.EndDate" class="col-form-label"></badge>
                     <div class="input-group date datetimePicker">
                         <span class="input-group-addon">
                             <span class="fas fa-calendar-alt"></span>
@@ -57,10 +57,10 @@
             @if (Model.NewFeaturedGroup)
             {
                 <div class="form-group">
-                    <label asp-for="UploadedImage" class="control-label"></label>
+                    <badge asp-for="UploadedImage" class="col-form-label"></badge>
                     <div class="input-group">
-                        <label class="input-group-btn">
-                            <span class="btn btn-default btn-file">
+                        <badge class="input-group-btn">
+                            <span class="btn btn-secondary btn-file">
                                 <span class="far fa-file-image"></span>
                                 Image file
                                 <input type="file"
@@ -69,7 +69,7 @@
                                        accept=".jpg,.png"
                                        style="display: none;" />
                             </span>
-                        </label>
+                        </badge>
                         <input type="text"
                                class="form-control"
                                readonly
@@ -80,7 +80,7 @@
             }
 
             <div class="form-group">
-                <label asp-for="FeaturedGroupText.AltText" class="control-label"></label>
+                <badge asp-for="FeaturedGroupText.AltText" class="col-form-label"></badge>
                 <span class="fas fa-info-circle wide-tooltip"
                       title="How should this image be described to someone who can't see it?"
                       data-toggle="tooltip"
@@ -98,7 +98,7 @@
                            target="_blank">
                             <img src="/@Model.FeaturedGroupText.ImagePath"
                                  style="border: 1px solid #ccc;"
-                                 class="img img-responsive" />
+                                 class="img img-fluid" />
 
                         </a>
                     </div>
@@ -117,7 +117,7 @@
 
             <div class="row" style="margin-top: 2rem;">
                 <div class="col-xs-12">
-                    <a asp-action="@nameof(ChallengesController.FeaturedGroups)" class="btn btn-default">Return to List</a>
+                    <a asp-action="@nameof(ChallengesController.FeaturedGroups)" class="btn btn-secondary">Return to List</a>
                     <button class="btn btn-primary btn-spinner" type="submit" button-spinner>
                         <span class="fas fa-file-upload"></span>
                         @if (Model.NewFeaturedGroup)
@@ -160,15 +160,15 @@
                             <h4 class="modal-title" id="modalReplaceImageLabel">Replace image</h4>
                         </div>
                         <div class="modal-body">
-                            <img src="/@Model.FeaturedGroupText.ImagePath" class="img img-responsive" />
+                            <img src="/@Model.FeaturedGroupText.ImagePath" class="img img-fluid" />
                         </div>
                         <div class="modal-footer" style="text-align: left;">
                             <div class="form-group">
-                                <label asp-for="UploadedImage" class="control-label"></label>
+                                <badge asp-for="UploadedImage" class="col-form-label"></badge>
                                 <description gra-description-for="UploadedImage"></description>
                                 <div class="input-group">
-                                    <label class="input-group-btn">
-                                        <span class="btn btn-default btn-file">
+                                    <badge class="input-group-btn">
+                                        <span class="btn btn-secondary btn-file">
                                             <span class="far fa-file-image"></span>
                                             Image file
                                             <input type="file"
@@ -177,7 +177,7 @@
                                                    accept=".jpg,.png"
                                                    style="display: none;" />
                                         </span>
-                                    </label>
+                                    </badge>
                                     <input type="text"
                                            class="form-control"
                                            readonly
@@ -186,7 +186,7 @@
                                 <span asp-validation-for="UploadedImage" class="text-danger"></span>
                             </div>
                             <div style="text-align: right;">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                 <button type="submit" class="btn btn-primary">
                                     Update Image
                                 </button>
@@ -221,11 +221,11 @@
 
             if (input.length) {
                 input.val(log);
-                $('.btn-file').removeClass('btn-default').addClass('btn-success');
+                $('.btn-file').removeClass('btn-secondary').addClass('btn-success');
             }
             else {
                 input.val('');
-                $('.btn-file').addClass('btn-default').removeClass('btn-success');
+                $('.btn-file').addClass('btn-secondary').removeClass('btn-success');
             }
         });
 

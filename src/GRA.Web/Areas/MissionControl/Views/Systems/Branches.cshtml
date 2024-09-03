@@ -7,11 +7,11 @@
             <li ActiveBy routeKey="Action" value="Branches"><a asp-action="Branches">Branches</a></li>
             <li class="pull-right">
                 <div>
-                    <a asp-action="Import" class="btn btn-sm btn-default">
+                    <a asp-action="Import" class="btn btn-sm btn-secondary">
                         <span class="fas fa-file-upload"></span>
                         Import
                     </a>
-                    <a asp-action="Export" class="btn btn-sm btn-default">
+                    <a asp-action="Export" class="btn btn-sm btn-secondary">
                         <span class="fas fa-file-download"></span>
                         Export
                     </a>
@@ -27,15 +27,15 @@
             <input asp-for="Search" class="form-control" />
         </div>
         <div class="col-xs-4">
-            <input type="submit" value="Search" class="btn btn-default" style="margin-right: 8px;" />
-            <a asp-action="Branches" class="btn btn-default">Clear</a>
+            <input type="submit" value="Search" class="btn btn-secondary" style="margin-right: 8px;" />
+            <a asp-action="Branches" class="btn btn-secondary">Clear</a>
         </div>
     </div>
 </form>
 
 <div class="row" style="padding: 10px 0;">
     <div class="col-xs-12">
-        <a class="btn btn-default"
+        <a class="btn btn-secondary"
            data-toggle="modal"
            data-target="#addModal">Add a Branch</a>
     </div>
@@ -50,7 +50,7 @@
         else
         {
             <div>
-                <table class="table table-condensed table-bordered table-striped">
+                <table class="table table-sm table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -148,12 +148,12 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label asp-for="Branch.Name" class="control-label"></label>
+                            <badge asp-for="Branch.Name" class="col-form-label"></badge>
                             <input asp-for="Branch.Name" class="form-control" />
                             <span asp-validation-for="Branch.Name" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Branch.SystemId" class="control-label"></label>
+                            <badge asp-for="Branch.SystemId" class="col-form-label"></badge>
                             <select asp-for="Branch.SystemId"
                                     asp-items="Model.SystemList"
                                     class="form-control">
@@ -162,9 +162,9 @@
                             <span asp-validation-for="Branch.SystemId" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Branch.Address" class="control-label">
+                            <badge asp-for="Branch.Address" class="col-form-label">
                                 Address (include city, state and zip)
-                            </label>
+                            </badge>
                             <input asp-for="Branch.Address" class="form-control addressInput" />
                             <span asp-validation-for="Branch.Address" class="text-danger"></span>
                         </div>
@@ -178,19 +178,19 @@
                             </div>
                         }
                         <div class="form-group">
-                            <label asp-for="Branch.Url" class="control-label"></label>
+                            <badge asp-for="Branch.Url" class="col-form-label"></badge>
                             <input asp-for="Branch.Url" class="form-control" />
                             <span asp-validation-for="Branch.Url" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Branch.Telephone" class="control-label"></label>
+                            <badge asp-for="Branch.Telephone" class="col-form-label"></badge>
                             <input asp-for="Branch.Telephone" class="form-control" />
                             <span asp-validation-for="Branch.Telephone" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-default"
+                                class="btn btn-secondary"
                                 data-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel
@@ -234,14 +234,14 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label asp-for="Branch.Name" class="control-label"></label>
+                            <badge asp-for="Branch.Name" class="col-form-label"></badge>
                             <input asp-for="Branch.Name" class="form-control" />
                             <span asp-validation-for="Branch.Name" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Branch.Address" class="control-label">
+                            <badge asp-for="Branch.Address" class="col-form-label">
                                 Address (include city, state and zip)
-                            </label>
+                            </badge>
                             <input asp-for="Branch.Address" class="form-control addressInput" />
                             <span asp-validation-for="Branch.Address" class="text-danger"></span>
                         </div>
@@ -255,19 +255,19 @@
                             </div>
                         }
                         <div class="form-group">
-                            <label asp-for="Branch.Url" class="control-label"></label>
+                            <badge asp-for="Branch.Url" class="col-form-label"></badge>
                             <input asp-for="Branch.Url" class="form-control" />
                             <span asp-validation-for="Branch.Url" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Branch.Telephone" class="control-label"></label>
+                            <badge asp-for="Branch.Telephone" class="col-form-label"></badge>
                             <input asp-for="Branch.Telephone" class="form-control" />
                             <span asp-validation-for="Branch.Telephone" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-default"
+                                class="btn btn-secondary"
                                 data-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel

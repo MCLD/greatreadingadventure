@@ -76,7 +76,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
                         else
                         {
                             <img src="~/content/no_avatar.png"
-                                 class="img img-responsive center-block"
+                                 class="img img-fluid center-block"
                                  style="width:200px;"
                                  asp-append-version="true" />
 
@@ -185,7 +185,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
                         <form asp-controller="Home" asp-action="LogActivity" method="post" role="form">
                             <input asp-for="SingleEvent" type="hidden" />
                             <div class="row row-spacing">
-                                <label asp-for="Title" class="control-label col-sm-3 col-md-2"></label>
+                                <badge asp-for="Title" class="col-form-label col-sm-3 col-md-2"></badge>
                                 <div class="col-sm-9 col-md-10">
                                     <input asp-for="Title" class="form-control" />
                                     <span asp-validation-for="Title" class="text-danger"></span>
@@ -193,7 +193,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
                             </div>
 
                             <div class="row row-spacing">
-                                <label asp-for="Author" class="control-label col-sm-3 col-md-2"></label>
+                                <badge asp-for="Author" class="col-form-label col-sm-3 col-md-2"></badge>
                                 <div class="col-sm-9 col-md-10">
                                     <input asp-for="Author" class="form-control" />
                                     <span asp-validation-for="Author" class="text-danger"></span>
@@ -215,7 +215,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
                     <div class="panel-body">
                         <form asp-controller="Home" asp-action="LogActivity" method="post" role="form" class="form-horizontal">
                             <div class="row row-spacing">
-                                <label class="control-label col-sm-7 col-md-5 col-lg-4">@SharedLocalizer["Enter {0} read", SharedLocalizer[Model.ActivityDescriptionPlural]]</label>
+                                <badge class="col-form-label col-sm-7 col-md-5 col-lg-4">@SharedLocalizer["Enter {0} read", SharedLocalizer[Model.ActivityDescriptionPlural]]</badge>
                                 <div class="col-sm-5 col-md-7 col-lg-8">
                                     <input asp-for="ActivityAmount" type="text" value="@Model.ActivityAmount" class="form-control" />
                                     <span asp-validation-for="ActivityAmount" class="text-danger"></span>
@@ -233,7 +233,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
                             </div>
 
                             <div class="row row-spacing">
-                                <label asp-for="Title" class="control-label col-sm-3 col-md-2"></label>
+                                <badge asp-for="Title" class="col-form-label col-sm-3 col-md-2"></badge>
                                 <div class="col-sm-9 col-md-10">
                                     <input asp-for="Title" class="form-control" />
                                     <span asp-validation-for="Title" class="text-danger"></span>
@@ -241,7 +241,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
                             </div>
 
                             <div class="row row-spacing">
-                                <label asp-for="Author" class="control-label col-sm-3 col-md-2"></label>
+                                <badge asp-for="Author" class="col-form-label col-sm-3 col-md-2"></badge>
                                 <div class="col-sm-9 col-md-10">
                                     <input asp-for="Author" class="form-control" />
                                     <span asp-validation-for="Author" class="text-danger"></span>
@@ -271,7 +271,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
                             </div>
 
                             <div class="row row-spacing">
-                                <label asp-for="SecretCode" class="control-label col-sm-5 col-md-4 col-lg-3"></label>
+                                <badge asp-for="SecretCode" class="col-form-label col-sm-5 col-md-4 col-lg-3"></badge>
                                 <div class="col-sm-7 col-md-8 col-lg-9">
                                     <input asp-for="SecretCode" class="form-control" />
                                 </div>
@@ -536,7 +536,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
                         <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
                     </span>
                     <div style="padding: 25px;">
-                        <img class="img img-responsive daily-image" />
+                        <img class="img img-fluid daily-image" />
                     </div>
                 </div>
             </div>
@@ -567,7 +567,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                            class="btn btn-default"
+                            class="btn btn-secondary"
                             data-dismiss="modal">
                         @SharedLocalizer[GRA.Annotations.Interface.Back]
                     </button>

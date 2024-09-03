@@ -29,10 +29,10 @@
                         begins on @Model.Settings.SchedulingOpen.Value.ToLongDateString() at @Model.Settings.SchedulingOpen.Value.ToLongTimeString().
                     </p>
                     <div class="col-sm-6">
-                        <a asp-action="Performers" class="btn btn-lg btn-default btn-block">Preview Performers</a>
+                        <a asp-action="Performers" class="btn btn-lg btn-secondary btn-block">Preview Performers</a>
                     </div>
                     <div class="col-sm-6">
-                        <a asp-action="Kits" class="btn btn-lg btn-default btn-block">Preview Kits</a>
+                        <a asp-action="Kits" class="btn btn-lg btn-secondary btn-block">Preview Kits</a>
                     </div>
                 }
                 else if (Model.SchedulingStage == GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
@@ -55,10 +55,10 @@
                             Scheduling has begun! Selections need to be compeleted by @Model.Settings.SchedulingClosed.Value.ToLongDateString() at @Model.Settings.SchedulingClosed.Value.ToLongTimeString().
                         </p>
                         <div class="col-sm-6">
-                            <a asp-action="Performers" class="btn btn-lg btn-default btn-block">View Performers</a>
+                            <a asp-action="Performers" class="btn btn-lg btn-secondary btn-block">View Performers</a>
                         </div>
                         <div class="col-sm-6">
-                            <a asp-action="Kits" class="btn btn-lg btn-default btn-block">View Kits</a>
+                            <a asp-action="Kits" class="btn btn-lg btn-secondary btn-block">View Kits</a>
                         </div>
                     }
                 }
@@ -68,10 +68,10 @@
                         Scheduling has closed, the finalized schedule will be posted on @Model.Settings.SchedulePosted.Value.ToLongDateString() at @Model.Settings.SchedulePosted.Value.ToLongTimeString(). If you have any questions please contact <a href="@($"mailto:{Model.Settings.ContactEmail}")">@Model.Settings.ContactEmail</a>
                     </p>
                     <div class="col-sm-6">
-                        <a asp-action="Performers" class="btn btn-lg btn-default btn-block">View Performers</a>
+                        <a asp-action="Performers" class="btn btn-lg btn-secondary btn-block">View Performers</a>
                     </div>
                     <div class="col-sm-6">
-                        <a asp-action="Kits" class="btn btn-lg btn-default btn-block">View Kits</a>
+                        <a asp-action="Kits" class="btn btn-lg btn-secondary btn-block">View Kits</a>
                     </div>
                 }
                 else if (Model.SchedulingStage >= GRA.Domain.Model.PsSchedulingStage.SchedulePosted)
@@ -94,10 +94,10 @@
                         If you have any questions please contact <a href="@($"mailto:{Model.Settings.ContactEmail}")">@Model.Settings.ContactEmail</a>
                     </p>
                     <div class="col-sm-6">
-                        <a asp-action="Performers" class="btn btn-lg btn-default btn-block">View Performers</a>
+                        <a asp-action="Performers" class="btn btn-lg btn-secondary btn-block">View Performers</a>
                     </div>
                     <div class="col-sm-6">
-                        <a asp-action="Kits" class="btn btn-lg btn-default btn-block">View Kits</a>
+                        <a asp-action="Kits" class="btn btn-lg btn-secondary btn-block">View Kits</a>
                     </div>
                 }
 
@@ -105,7 +105,7 @@
                 {
                     <div class="clearfix" style="margin-bottom: 3rem;"></div>
                     <p class="lead"><strong>@Model.SystemName status</strong></p>
-                    <table class="table table-striped table-hover table-condensed"
+                    <table class="table table-striped table-hover table-sm"
                            style="width: 70%;">
                         <tr>
                             <th>Branch</th>
@@ -227,7 +227,7 @@
                 <h4 id="selectionDetailsLabel">Selection details</h4>
             </div>
             <div class="modal-body">
-                <table class="table table-striped table-condensed">
+                <table class="table table-striped table-sm">
                     <tr id="performerrow">
                         <th>Performer:</th>
                         <td><a href="#" target="_blank" id="performerlink"><span id="performername"></span> <span class="fas fa-external-link-alt"></span></a></td>
@@ -279,21 +279,21 @@
                         <td>
                             <span id="editcontactinfo" class="on-site-contact-button on-site-contact-edit fas fa-edit"></span>
                             <div>
-                                <label class="on-site-contact-label" for="onsitecontactname">Name:</label>
+                                <badge class="on-site-contact-label" for="onsitecontactname">Name:</badge>
                                 <span class="input-with-validation">
                                     <input class="on-site-contact-input disabled" type="text" id="onsitecontactname" name="onsitecontactname" disabled required />
                                     <span class="validation"></span>
                                 </span>
                             </div>
                             <div>
-                                <label class="on-site-contact-label" for="onsitecontactemail">Email:</label>
+                                <badge class="on-site-contact-label" for="onsitecontactemail">Email:</badge>
                                 <span class="input-with-validation">
                                     <input class="on-site-contact-input disabled" type="email" pattern=".+@@.+\..+" id="onsitecontactemail" name="onsitecontactemail" disabled required />
                                     <span class="validation"></span>
                                 </span>
                             </div>
                             <div>
-                                <label class="on-site-contact-label" for="onsitecontactphone">Phone:</label>
+                                <badge class="on-site-contact-label" for="onsitecontactphone">Phone:</badge>
                                 <span class="input-with-validation">
                                     <input class="on-site-contact-input disabled" type="tel" pattern="[0-9]{10}" id="onsitecontactphone" name="onsitecontactphone" disabled required />
                                     <span class="validation"></span>
@@ -307,7 +307,7 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

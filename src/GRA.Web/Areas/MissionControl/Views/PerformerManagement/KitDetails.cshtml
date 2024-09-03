@@ -27,7 +27,7 @@
         }
 
         <div class="form-group">
-            <label asp-for="Kit.Name" class="col-sm-3 control-label required-field"></label>
+            <badge asp-for="Kit.Name" class="col-sm-3 col-form-label required-field"></badge>
             <div class="col-sm-9">
                 <input asp-for="Kit.Name" class="form-control" placeholder="" />
                 <span asp-validation-for="Kit.Name" class="text-danger"></span>
@@ -45,11 +45,11 @@
             </div>
 
             <div class="form-group">
-                <label class="col-sm-3 control-label required-field">Upload photos</label>
+                <badge class="col-sm-3 col-form-label required-field">Upload photos</badge>
                 <div class="col-sm-9">
                     <div class="input-group">
-                        <label class="input-group-btn">
-                            <span class="btn btn-default btn-file">
+                        <badge class="input-group-btn">
+                            <span class="btn btn-secondary btn-file">
                                 <span class="far fa-file-image"></span> Select file(s)...
                                 <input type="file"
                                        multiple="multiple"
@@ -57,7 +57,7 @@
                                        accept=".png,.jpg,.jpeg"
                                        style="display: none;" />
                             </span>
-                        </label>
+                        </badge>
                         <input type="text" class="form-control @(ViewData.ModelState.GetValidationState("Images") == invalid ? "input-validation-error" : "")" readonly />
                     </div>
                     <span asp-validation-for="Images" class="text-danger"></span>
@@ -66,7 +66,7 @@
         }
 
         <div class="form-group">
-            <label asp-for="Kit.Website" class="col-sm-3 control-label"></label>
+            <badge asp-for="Kit.Website" class="col-sm-3 col-form-label"></badge>
             <div class="col-sm-9">
                 <input asp-for="Kit.Website" class="form-control" placeholder="" />
                 <span asp-validation-for="Kit.Website" class="text-danger"></span>
@@ -74,7 +74,7 @@
         </div>
 
         <div class="form-group">
-            <label asp-for="Kit.Description" class="col-sm-3 control-label required-field"></label>
+            <badge asp-for="Kit.Description" class="col-sm-3 col-form-label required-field"></badge>
             <div class="col-sm-9">
                 <textarea asp-for="Kit.Description" class="form-control" rows="6"></textarea>
                 <span asp-validation-for="Kit.Description" class="text-danger"></span>
@@ -87,7 +87,7 @@
                     Please select which age groups the kit is suited for.
                 </p>
             </div>
-            <label class="col-sm-3 control-label required-field">Age(s)</label>
+            <badge class="col-sm-3 col-form-label required-field">Age(s)</badge>
             <div class="col-sm-9">
                 <input id="agePlaceholder" class="form-control" />
                 <select asp-for="AgeSelection" asp-items="Model.AgeList" class="form-control hidden" type="text" multiple="multiple"></select>
@@ -105,11 +105,11 @@
                 </button>
                 @if (Model.NewKit == false)
                 {
-                    <a asp-action="Kit" asp-route-id="@Model.Kit.Id" class="btn btn-lg btn-default pull-left" style="margin-right: 10px;">Return to Kit</a>
+                    <a asp-action="Kit" asp-route-id="@Model.Kit.Id" class="btn btn-lg btn-secondary pull-left" style="margin-right: 10px;">Return to Kit</a>
                 }
                 else
                 {
-                    <a asp-action="Kits" class="btn btn-lg btn-default pull-left" style="margin-right: 10px;">Return to List</a>
+                    <a asp-action="Kits" class="btn btn-lg btn-secondary pull-left" style="margin-right: 10px;">Return to List</a>
                 }
             </div>
         </div>

@@ -7,13 +7,13 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12 col-sm-6">
-            <label asp-for="TwitterAvatarMessage" class="control-label"></label>
+            <badge asp-for="TwitterAvatarMessage" class="col-form-label"></badge>
             <span class="far fa-question-circle wide-tooltip" title="Default text for when a participant shares their avatar on Twitter" data-toggle="tooltip" data-placement="top"></span>
             <input asp-for="TwitterAvatarMessage" type="text" class="form-control" />
             <span asp-validation-for="TwitterAvatarMessage" class="text-danger"></span>
         </div>
         <div class="col-xs-12 col-sm-6">
-            <label asp-for="TwitterAvatarHashtags" class="control-label"></label>
+            <badge asp-for="TwitterAvatarHashtags" class="col-form-label"></badge>
             <span class="far fa-question-circle wide-tooltip" title="Hashtag to include when a participant shares their avatar on Twitter" data-toggle="tooltip" data-placement="top"></span>
             <input asp-for="TwitterAvatarHashtags" type="text" class="form-control" />
             <span asp-validation-for="TwitterAvatarHashtags" class="text-danger"></span>
@@ -22,7 +22,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="AvatarCardDescription" class="control-label"></label>
+            <badge asp-for="AvatarCardDescription" class="col-form-label"></badge>
             <span class="far fa-question-circle wide-tooltip" title="Default text for when a participant shares their avatar on an Open Graph site such as Facebook" data-toggle="tooltip" data-placement="top"></span>
             <input asp-for="AvatarCardDescription" type="text" class="form-control" />
             <span asp-validation-for="AvatarCardDescription" class="text-danger"></span>
@@ -30,7 +30,7 @@
     </div>
 
     <div class="form-group">
-        <a asp-action="Index" class="btn btn-default">Return to List</a>
+        <a asp-action="Index" class="btn btn-secondary">Return to List</a>
         <button type="submit"
                 id="Submit"
                 name="Submit"

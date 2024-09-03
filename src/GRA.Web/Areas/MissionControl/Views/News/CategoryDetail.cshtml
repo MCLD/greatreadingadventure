@@ -10,13 +10,13 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="form-group">
-                <label asp-for="Category.Name" class="control-label"></label>
+                <badge asp-for="Category.Name" class="col-form-label"></badge>
                 <input asp-for="Category.Name" class="form-control" />
                 <span asp-validation-for="Category.Name" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <a asp-action="Categories" class="btn btn-default">Return to List</a>
+                <a asp-action="Categories" class="btn btn-secondary">Return to List</a>
                 <button type="submit" class="btn btn-primary btn-spinner" button-spinner>
                     <span class="buttonText">Save Category</span>
                 </button>

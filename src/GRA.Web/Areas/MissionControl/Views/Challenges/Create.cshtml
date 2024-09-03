@@ -13,7 +13,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Challenge.Name" class="control-label"></label>
+            <badge asp-for="Challenge.Name" class="col-form-label"></badge>
             <input asp-for="Challenge.Name" class="form-control" />
             <span asp-validation-for="Challenge.Name" class="text-danger"></span>
         </div>
@@ -21,7 +21,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Challenge.Description" class="control-label"></label>
+            <badge asp-for="Challenge.Description" class="col-form-label"></badge>
             <textarea asp-for="Challenge.Description" class="form-control"> </textarea>
             <span asp-validation-for="Challenge.Description" class="text-danger"></span>
         </div>
@@ -29,14 +29,14 @@
 
     <div class="row">
         <div class="col-xs-12 col-sm-6 row-spacing">
-            <label asp-for="Challenge.PointsAwarded" class="control-label"></label>
-            <label style="font-size: 12px;">@Model.MaxPointsMessage</label>
+            <badge asp-for="Challenge.PointsAwarded" class="col-form-label"></badge>
+            <badge style="font-size: 12px;">@Model.MaxPointsMessage</badge>
             <input asp-for="Challenge.PointsAwarded" type="number" min="1" class="form-control" />
             <span asp-validation-for="Challenge.PointsAwarded" class="text-danger"></span>
         </div>
 
         <div class="col-xs-12 col-sm-6 row-spacing">
-            <label asp-for="Challenge.TasksToComplete" class="control-label"></label>
+            <badge asp-for="Challenge.TasksToComplete" class="col-form-label"></badge>
             <input asp-for="Challenge.TasksToComplete" type="number" min="1" class="form-control" />
             <span asp-validation-for="Challenge.TasksToComplete" class="text-danger"></span>
         </div>
@@ -44,7 +44,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Challenge.CategoryIds" class="control-label"></label>
+            <badge asp-for="Challenge.CategoryIds" class="col-form-label"></badge>
             <input asp-for="CategoryPlaceholder" class="form-control" />
             <select asp-for="Challenge.CategoryIds" asp-items="Model.CategoryList" class="form-control hidden" multiple="multiple"></select>
             <span asp-validation-for="Challenge.CategoryIds" class="text-danger"></span>
@@ -53,7 +53,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Challenge.LimitToSystemId" class="control-label"></label>
+            <badge asp-for="Challenge.LimitToSystemId" class="col-form-label"></badge>
             <select asp-for="Challenge.LimitToSystemId" asp-items="Model.SystemList" class="form-control">
                 <option value="">No</option>
             </select>
@@ -63,7 +63,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Challenge.LimitToBranchId" class="control-label"></label>
+            <badge asp-for="Challenge.LimitToBranchId" class="col-form-label"></badge>
             <select asp-for="Challenge.LimitToBranchId" asp-items="Model.BranchList" class="form-control">
                 <option value="">No</option>
             </select>
@@ -73,7 +73,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Challenge.AssociatedProgramId" class="control-label"></label>
+            <badge asp-for="Challenge.AssociatedProgramId" class="col-form-label"></badge>
             <select asp-for="Challenge.AssociatedProgramId" asp-items="Model.ProgramList" class="form-control">
                 <option value="">No</option>
             </select>
@@ -85,11 +85,11 @@
         <div class="col-xs-12">
             @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
             {
-                <label class="control-label">Edit badge image</label>
+                <badge class="col-form-label">Edit badge image</badge>
             }
             else
             {
-                <label class="control-label">Add a badge</label>
+                <badge class="col-form-label">Add a badge</badge>
             }
         </div>
 
@@ -124,7 +124,7 @@
 
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.UseBadgeMaker ? "active" : "")" id="badge">
-                    <button id="openMaker" type="button" class="btn btn-default">
+                    <button id="openMaker" type="button" class="btn btn-secondary">
                         <span class="fas fa-certificate"></span> Create a Badge
                     </button>
                 </div>
@@ -132,24 +132,24 @@
                 <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.UseBadgeMaker ? "" : "active")" id="upload">
                     <p>Upload a badge image. Badge images must be square.</p>
                     <div class="input-group">
-                        <label class="input-group-btn">
-                            <span class="btn btn-default btn-file">
+                        <badge class="input-group-btn">
+                            <span class="btn btn-secondary btn-file">
                                 <span class="far fa-file-image"></span> Select an image<input type="file" name="BadgeUploadImage" id="BadgeUploadImage" accept=".png,.jpg,.jpeg" style="display: none;" />
                             </span>
-                        </label>
+                        </badge>
                         <input type="text" class="form-control" readonly id="selectedFile">
                     </div>
                     <div>
                         <span asp-validation-for="BadgeUploadImage" class="text-danger"></span>
                     </div>
-                    <button id="clearFile" class="btn btn-default" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
+                    <button id="clearFile" class="btn btn-secondary" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
                 </div>
             </div>
         </div>
     </div>
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="BadgeAltText" class="control-label"></label>
+            <badge asp-for="BadgeAltText" class="col-form-label"></badge>
             <span class="fas fa-info-circle wide-tooltip"
                   title="How should this badge be described to someone who can't see it?"
                   data-toggle="tooltip"
@@ -161,7 +161,7 @@
     <hr />
 
     <div class="form-group">
-        <a asp-action="Index" class="btn btn-default">Return to List</a>
+        <a asp-action="Index" class="btn btn-secondary">Return to List</a>
         <button type="submit"
                 id="saveChallenge"
                 name="Submit"
@@ -220,7 +220,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                            class="btn btn-default"
+                            class="btn btn-secondary"
                             data-dismiss="modal"
                             style="margin-right: 1em;">
                         Cancel
@@ -256,7 +256,7 @@
                 if (input.length)
                 {
                     input.val(log);
-                    $('.btn-file').removeClass('btn-default');
+                    $('.btn-file').removeClass('btn-secondary');
                     $('.btn-file').addClass('btn-success');
                     $("#badgeImage").removeAttr("src");
                     $("#badgeImage").height(200);
@@ -265,7 +265,7 @@
                 else
                 {
                     input.val('');
-                    $('.btn-file').addClass('btn-default');
+                    $('.btn-file').addClass('btn-secondary');
                     $('.btn-file').removeClass('btn-success');
                 }
             });
@@ -295,7 +295,7 @@
 
             $('#clearFile').on("click", function() {
                 $('#BadgeUploadImage').val('');
-                $('.btn-file').addClass('btn-default');
+                $('.btn-file').addClass('btn-secondary');
                 $('.btn-file').removeClass('btn-success');
                 $('#selectedFile').val('');
             });
@@ -342,7 +342,7 @@
                 $("#badgeImage").height(200);
                 $("#BadgeMakerImage").val(data);
                 $('#BadgeUploadImage').val('');
-                $('.btn-file').addClass('btn-default');
+                $('.btn-file').addClass('btn-secondary');
                 $('.btn-file').removeClass('btn-success');
                 $('#selectedFile').val('');
             });

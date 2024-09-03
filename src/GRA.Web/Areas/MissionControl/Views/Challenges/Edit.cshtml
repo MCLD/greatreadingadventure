@@ -71,63 +71,63 @@
                             <div class="tab-content">
                                 <div role="tabpanel" class="tab-pane gra-tab-pane active" id="action">
                                     <div class="form-group">
-                                        <label asp-for="Task.Title" class="control-label">Description</label>
+                                        <badge asp-for="Task.Title" class="col-form-label">Description</badge>
                                         <div id="wmd-button-bar"></div>
                                         <textarea asp-for="Task.Title" id="wmd-input" class="form-control wmd-input actionTitle" data-val-required="The Description field is required."></textarea>
-                                        <br /><label class="control-label">Preview</label>
+                                        <br /><badge class="col-form-label">Preview</badge>
                                         <div id="preview"></div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label">Add a file</label>
+                                        <badge class="col-form-label">Add a file</badge>
                                         <div class="input-group">
-                                            <label class="input-group-btn">
-                                                <button type="button" class="btn btn-default btn-file taskFileButton">
+                                            <badge class="input-group-btn">
+                                                <button type="button" class="btn btn-secondary btn-file taskFileButton">
                                                     <span class="far fa-file"></span> Select a file
                                                 </button>
-                                            </label>
+                                            </badge>
                                             <input type="text" class="form-control selectedTaskFile" readonly>
                                         </div>
                                         <span asp-validation-for="TaskUploadFile" class="text-danger"></span>
-                                        <button class="btn btn-default clearTaskFile" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
+                                        <button class="btn btn-secondary clearTaskFile" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
                                     </div>
                                 </div>
                                 <div role="tabpanel" class="tab-pane gra-tab-pane" id="book">
                                     <div class="form-group">
-                                        <label asp-for="Task.Title" class="control-label"></label>
+                                        <badge asp-for="Task.Title" class="col-form-label"></badge>
                                         <input asp-for="Task.Title" id="bookTitle" class="form-control" disabled />
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="Task.Author" class="control-label"></label>
+                                        <badge asp-for="Task.Author" class="col-form-label"></badge>
                                         <input asp-for="Task.Author" class="form-control" />
                                         <span asp-validation-for="Task.Author" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="Task.Isbn" class="control-label"></label>
+                                        <badge asp-for="Task.Isbn" class="col-form-label"></badge>
                                         <input asp-for="Task.Isbn" class="form-control" />
                                         <span asp-validation-for="Task.Isbn" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="Task.Url" class="control-label"></label>
+                                        <badge asp-for="Task.Url" class="col-form-label"></badge>
                                         <input asp-for="Task.Url" class="form-control" />
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label">Add a file</label>
+                                        <badge class="col-form-label">Add a file</badge>
                                         <div class="input-group">
-                                            <label class="input-group-btn">
-                                                <button type="button" class="btn btn-default btn-file taskFileButton">
+                                            <badge class="input-group-btn">
+                                                <button type="button" class="btn btn-secondary btn-file taskFileButton">
                                                     <span class="far fa-file"></span> Select a file
                                                 </button>
-                                            </label>
+                                            </badge>
                                             <input type="text" class="form-control selectedTaskFile" readonly>
                                         </div>
                                         <span asp-validation-for="TaskUploadFile" class="text-danger"></span>
-                                        <button class="btn btn-default clearTaskFile" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
+                                        <button class="btn btn-secondary clearTaskFile" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
                             <button type="submit" asp-action="AddTask" class="btn btn-primary pull-right btn-spinner" aria-label="Confirm" button-spinner>
                                 <span class="buttonText">Add</span>
                             </button>
@@ -168,84 +168,84 @@
                             <div class="tab-content">
                                 <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.Task.ChallengeTaskType == ChallengeTaskType.Action ? " active" : "" )" id="action">
                                     <div class="form-group">
-                                        <label asp-for="Task.Title" class="control-label">Description</label>
+                                        <badge asp-for="Task.Title" class="col-form-label">Description</badge>
                                         <div id="wmd-button-bar"></div>
                                         <textarea asp-for="Task.Title" id="wmd-input" class="form-control wmd-input actionTitle" data-val-required="The Description field is required." disabled="@(Model.Task.ChallengeTaskType == ChallengeTaskType.Action ? null : "disabled")"></textarea>
-                                        <br /><label class="control-label">Preview</label>
+                                        <br /><badge class="col-form-label">Preview</badge>
                                         <div id="preview"></div>
                                     </div>
                                     <div class="form-group">
                                         @if (string.IsNullOrWhiteSpace(Model.Task.Filename))
                                         {
-                                            <label class="control-label">Add a file</label>
+                                            <badge class="col-form-label">Add a file</badge>
                                         }
                                         else
                                         {
-                                            <label class="control-label">
+                                            <badge class="col-form-label">
                                                 Edit File &ndash;
                                                 <a aria-label="Link (opens new window)"
                                                    href="@Model.TaskFilePath"
                                                    target="_blank">
                                                     Link
                                                 </a>
-                                            </label>
+                                            </badge>
                                         }
                                         <div class="input-group">
-                                            <label class="input-group-btn">
-                                                <button type="button" class="btn btn-default btn-file taskFileButton">
+                                            <badge class="input-group-btn">
+                                                <button type="button" class="btn btn-secondary btn-file taskFileButton">
                                                     <span class="far fa-file"></span> Select a file
                                                 </button>
-                                            </label>
+                                            </badge>
                                             <input type="text" value="@Model.Task.Filename" class="form-control selectedTaskFile" readonly>
                                         </div>
                                         <span asp-validation-for="TaskUploadFile" class="text-danger"></span>
-                                        <button class="btn btn-default clearTaskFile" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
+                                        <button class="btn btn-secondary clearTaskFile" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
                                     </div>
                                 </div>
                                 <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.Task.ChallengeTaskType == ChallengeTaskType.Book ? " active" : "" )" id="book">
                                     <div class="form-group">
-                                        <label asp-for="Task.Title" class="control-label"></label>
+                                        <badge asp-for="Task.Title" class="col-form-label"></badge>
                                         <input asp-for="Task.Title" id="bookTitle" class="form-control" disabled="@(Model.Task.ChallengeTaskType == ChallengeTaskType.Book ? null : " disabled")" />
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="Task.Author" class="control-label"></label>
+                                        <badge asp-for="Task.Author" class="col-form-label"></badge>
                                         <input asp-for="Task.Author" class="form-control" />
                                         <span asp-validation-for="Task.Author" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="Task.Isbn" class="control-label"></label>
+                                        <badge asp-for="Task.Isbn" class="col-form-label"></badge>
                                         <input asp-for="Task.Isbn" class="form-control" />
                                         <span asp-validation-for="Task.Isbn" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="Task.Url" class="control-label"></label>
+                                        <badge asp-for="Task.Url" class="col-form-label"></badge>
                                         <input asp-for="Task.Url" class="form-control" />
                                     </div>
                                     <div class="form-group">
                                         @if (string.IsNullOrWhiteSpace(Model.Task.Filename))
                                         {
-                                            <label class="control-label">Add a file</label>
+                                            <badge class="col-form-label">Add a file</badge>
                                         }
                                         else
                                         {
-                                            <label class="control-label">Edit file</label>
+                                            <badge class="col-form-label">Edit file</badge>
                                         }
                                         <div class="input-group">
-                                            <label class="input-group-btn">
-                                                <button type="button" class="btn btn-default btn-file taskFileButton">
+                                            <badge class="input-group-btn">
+                                                <button type="button" class="btn btn-secondary btn-file taskFileButton">
                                                     <span class="far fa-file"></span> Select a file
                                                 </button>
-                                            </label>
+                                            </badge>
                                             <input type="text" value="@Model.Task.Filename" class="form-control selectedTaskFile" readonly>
                                         </div>
                                         <span asp-validation-for="TaskUploadFile" class="text-danger"></span>
-                                        <button class="btn btn-default clearTaskFile" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
+                                        <button class="btn btn-secondary clearTaskFile" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
                             <button type="submit" asp-action="ModifyTask" class="btn btn-primary pull-right btn-spinner" aria-label="Confirm" button-spinner>
                                 <span class="buttonText">Save</span>
                             </button>
@@ -269,7 +269,7 @@
                         <span id="modal-text"></span>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
                         <button type="submit"
                                 id="DeleteTask"
                                 asp-action="DeleteTask"
@@ -430,14 +430,14 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label class="control-label">Status</label>
+            <badge class="col-form-label">Status</badge>
             <input class="form-control" value=@(Model.Challenge.IsActive ? "Active" : "Inactive" ) ignore disabled />
         </div>
     </div>
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Challenge.Name" class="control-label"></label>
+            <badge asp-for="Challenge.Name" class="col-form-label"></badge>
             <input asp-for="Challenge.Name"
                    class="form-control ignore"
                    readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
@@ -447,7 +447,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Challenge.Description" class="control-label"></label>
+            <badge asp-for="Challenge.Description" class="col-form-label"></badge>
             <textarea asp-for="Challenge.Description"
                       class="form-control ignore"
                       readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)"> </textarea>
@@ -457,8 +457,8 @@
 
     <div class="row">
         <div class="col-xs-12 col-sm-6 row-spacing">
-            <label asp-for="Challenge.PointsAwarded" class="control-label"></label>
-            <label style="font-size: 12px;">@Model.MaxPointsMessage</label>
+            <badge asp-for="Challenge.PointsAwarded" class="col-form-label"></badge>
+            <badge style="font-size: 12px;">@Model.MaxPointsMessage</badge>
             <input asp-for="Challenge.PointsAwarded"
                    type="number"
                    min="1"
@@ -468,7 +468,7 @@
         </div>
 
         <div class="col-xs-12 col-sm-6 row-spacing">
-            <label asp-for="Challenge.TasksToComplete" class="control-label"></label>
+            <badge asp-for="Challenge.TasksToComplete" class="col-form-label"></badge>
             <input asp-for="Challenge.TasksToComplete"
                    type="number"
                    min="1"
@@ -480,7 +480,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Challenge.CategoryIds" class="control-label"></label>
+            <badge asp-for="Challenge.CategoryIds" class="col-form-label"></badge>
             <input asp-for="CategoryPlaceholder" class="form-control" />
             <select asp-for="Challenge.CategoryIds"
                     asp-items="Model.CategoryList"
@@ -493,7 +493,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Challenge.LimitToSystemId" class="control-label"></label>
+            <badge asp-for="Challenge.LimitToSystemId" class="col-form-label"></badge>
             <select asp-for="Challenge.LimitToSystemId"
                     asp-items="Model.SystemList"
                     class="form-control"
@@ -506,7 +506,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Challenge.LimitToBranchId" class="control-label"></label>
+            <badge asp-for="Challenge.LimitToBranchId" class="col-form-label"></badge>
             <select asp-for="Challenge.LimitToBranchId"
                     asp-items="Model.BranchList"
                     class="form-control"
@@ -519,7 +519,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Challenge.AssociatedProgramId" class="control-label"></label>
+            <badge asp-for="Challenge.AssociatedProgramId" class="col-form-label"></badge>
             <select asp-for="Challenge.AssociatedProgramId"
                     asp-items="Model.ProgramList"
                     class="form-control"
@@ -534,11 +534,11 @@
         <div class="col-xs-12">
             @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
             {
-                <label class="control-label">Edit badge image</label>
+                <badge class="col-form-label">Edit badge image</badge>
             }
             else
             {
-                <label class="control-label">Add a badge</label>
+                <badge class="col-form-label">Add a badge</badge>
             }
         </div>
 
@@ -574,7 +574,7 @@
 
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.UseBadgeMaker ? " active" : "" )" id="badge">
-                    <button id="openMaker" type="button" class="btn btn-default">
+                    <button id="openMaker" type="button" class="btn btn-secondary">
                         <span class="fas fa-certificate"></span> Create a Badge
                     </button>
                     <div>
@@ -585,24 +585,24 @@
                 <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.UseBadgeMaker ? " " : " active")" id="upload">
                     <p>Upload a badge image. Badge images must be square.</p>
                     <div class="input-group">
-                        <label class="input-group-btn">
-                            <span class="btn btn-default badgeFile">
+                        <badge class="input-group-btn">
+                            <span class="btn btn-secondary badgeFile">
                                 <span class="far fa-file-image"></span> Select an image<input type="file" name="BadgeUploadImage" id="BadgeUploadImage" accept=".png,.jpg,.jpeg" style="display: none;" />
                             </span>
-                        </label>
+                        </badge>
                         <input type="text" class="form-control" readonly id="selectedFile">
                     </div>
                     <div>
                         <span asp-validation-for="BadgeUploadImage" class="text-danger"></span>
                     </div>
-                    <button id="clearFile" class="btn btn-default" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
+                    <button id="clearFile" class="btn btn-secondary" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
                 </div>
             </div>
         </div>
     </div>
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="BadgeAltText" class="control-label"></label>
+            <badge asp-for="BadgeAltText" class="col-form-label"></badge>
             <span class="fas fa-info-circle wide-tooltip"
                   title="How should this badge be described to someone who can't see it?"
                   data-toggle="tooltip"
@@ -614,7 +614,7 @@
     <hr />
 
     <div class="form-group">
-        <a asp-action="Index" class="btn btn-default">Return to List</a>
+        <a asp-action="Index" class="btn btn-secondary">Return to List</a>
         @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
         {
             <button id="saveChallenge"
@@ -641,7 +641,7 @@
         Tasks
     </h3>
 
-    <table class="table table-condensed table-bordered link-table">
+    <table class="table table-sm table-bordered link-table">
         <thead>
             <tr>
                 <th>Title</th>
@@ -678,7 +678,7 @@
                                     <a aria-label="View Attachment (Opens new window)"
                                        href="@task.Filename"
                                        target="_blank"
-                                       class="btn btn-xs btn-default on-top"
+                                       class="btn btn-xs btn-secondary on-top"
                                        style="margin-top:5px;">
                                         <span class="far fa-file"></span>
                                         View Attachment
@@ -696,7 +696,7 @@
                                     </div>
                                     @if (!string.IsNullOrWhiteSpace(task.Filename))
                                     {
-                                        <a href="@task.Filename" target="_blank" class="btn btn-xs btn-default on-top" style="margin-top:5px;">
+                                        <a href="@task.Filename" target="_blank" class="btn btn-xs btn-secondary on-top" style="margin-top:5px;">
                                             <span class="far fa-file"></span>
                                             View Attachment
                                         </a>
@@ -713,7 +713,7 @@
                                     <a aria-label="View Attachment (Opens new window)"
                                        href="@task.Filename"
                                        target="_blank"
-                                       class="btn btn-xs btn-default on-top"
+                                       class="btn btn-xs btn-secondary on-top"
                                        style="margin-top:5px;">
                                         <span class="far fa-file"></span>
                                         View Attachment
@@ -726,10 +726,10 @@
                     @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
                     {
                         <td class="on-top" style="white-space:nowrap;">
-                            <button type="button" data-id="@task.Id" class="btn btn-default btn-xs decreaseTaskSort" style="width:25px;" disabled="@(task == Model.Challenge.Tasks.First() ? " disabled" : null)">
+                            <button type="button" data-id="@task.Id" class="btn btn-secondary btn-xs decreaseTaskSort" style="width:25px;" disabled="@(task == Model.Challenge.Tasks.First() ? " disabled" : null)">
                                 <span class="fas fa-arrow-up"></span>
                             </button>
-                            <button type="button" data-id="@task.Id" class="btn btn-default btn-xs increaseTaskSort" style="width:25px;" disabled="@(task == Model.Challenge.Tasks.Last() ? " disabled" : null)">
+                            <button type="button" data-id="@task.Id" class="btn btn-secondary btn-xs increaseTaskSort" style="width:25px;" disabled="@(task == Model.Challenge.Tasks.Last() ? " disabled" : null)">
                                 <span class="fas fa-arrow-down"></span>
                             </button>
                             <button type="button"
@@ -807,34 +807,34 @@
                                      class="tab-pane gra-tab-pane active"
                                      id="action">
                                     <div class="form-group">
-                                        <label asp-for="Task.Title"
-                                               class="control-label">
+                                        <badge asp-for="Task.Title"
+                                               class="col-form-label">
                                             Description
-                                        </label>
+                                        </badge>
                                         <div id="wmd-button-bar"></div>
                                         <textarea asp-for="Task.Title"
                                                   id="wmd-input"
                                                   class="form-control wmd-input actionTitle"
                                                   data-val-required="The Description field is required."></textarea>
-                                        <br /><label class="control-label">Preview</label>
+                                        <br /><badge class="col-form-label">Preview</badge>
                                         <div id="preview"></div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label">Add a file</label>
+                                        <badge class="col-form-label">Add a file</badge>
                                         <div class="input-group">
-                                            <label class="input-group-btn">
+                                            <badge class="input-group-btn">
                                                 <button type="button"
-                                                        class="btn btn-default btn-file taskFileButton">
+                                                        class="btn btn-secondary btn-file taskFileButton">
                                                     <span class="far fa-file"></span> Select a file
                                                 </button>
-                                            </label>
+                                            </badge>
                                             <input type="text"
                                                    class="form-control selectedTaskFile"
                                                    readonly>
                                         </div>
                                         <span asp-validation-for="TaskUploadFile"
                                               class="text-danger"></span>
-                                        <button class="btn btn-default clearTaskFile"
+                                        <button class="btn btn-secondary clearTaskFile"
                                                 type="button"
                                                 style="margin-top: 0.5em;">
                                             <span class="fas fa-ban"></span> Clear file selection
@@ -843,43 +843,43 @@
                                 </div>
                                 <div role="tabpanel" class="tab-pane gra-tab-pane" id="book">
                                     <div class="form-group">
-                                        <label asp-for="Task.Title" class="control-label"></label>
+                                        <badge asp-for="Task.Title" class="col-form-label"></badge>
                                         <input asp-for="Task.Title"
                                                id="bookTitle"
                                                class="form-control" disabled />
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="Task.Author" class="control-label"></label>
+                                        <badge asp-for="Task.Author" class="col-form-label"></badge>
                                         <input asp-for="Task.Author" class="form-control" />
                                         <span asp-validation-for="Task.Author"
                                               class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="Task.Isbn" class="control-label"></label>
+                                        <badge asp-for="Task.Isbn" class="col-form-label"></badge>
                                         <input asp-for="Task.Isbn" class="form-control" />
                                         <span asp-validation-for="Task.Isbn"
                                               class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="Task.Url" class="control-label"></label>
+                                        <badge asp-for="Task.Url" class="col-form-label"></badge>
                                         <input asp-for="Task.Url" class="form-control" />
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label">Add a file</label>
+                                        <badge class="col-form-label">Add a file</badge>
                                         <div class="input-group">
-                                            <label class="input-group-btn">
+                                            <badge class="input-group-btn">
                                                 <button type="button"
-                                                        class="btn btn-default btn-file taskFileButton">
+                                                        class="btn btn-secondary btn-file taskFileButton">
                                                     <span class="far fa-file"></span> Select a file
                                                 </button>
-                                            </label>
+                                            </badge>
                                             <input type="text"
                                                    class="form-control selectedTaskFile"
                                                    readonly>
                                         </div>
                                         <span asp-validation-for="TaskUploadFile"
                                               class="text-danger"></span>
-                                        <button class="btn btn-default clearTaskFile"
+                                        <button class="btn btn-secondary clearTaskFile"
                                                 type="button"
                                                 style="margin-top: 0.5em;">
                                             <span class="fas fa-ban"></span> Clear file selection
@@ -890,7 +890,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button"
-                                    class="btn btn-default"
+                                    class="btn btn-secondary"
                                     data-dismiss="modal"
                                     style="margin-right: 1em;">
                                 Cancel
@@ -965,37 +965,37 @@
                                      class="tab-pane gra-tab-pane @(Model.Task.ChallengeTaskType == ChallengeTaskType.Action ? " active" : "" )"
                                      id="action">
                                     <div class="form-group">
-                                        <label asp-for="Task.Title" class="control-label">Description</label>
+                                        <badge asp-for="Task.Title" class="col-form-label">Description</badge>
                                         <div id="wmd-button-bar"></div>
                                         <textarea asp-for="Task.Title"
                                                   id="wmd-input"
                                                   class="form-control wmd-input actionTitle"
                                                   data-val-required="The Description field is required."
                                                   disabled="@(Model.Task.ChallengeTaskType == ChallengeTaskType.Action ? null : "disabled")"></textarea>
-                                        <br /><label class="control-label">Preview</label>
+                                        <br /><badge class="col-form-label">Preview</badge>
                                         <div id="preview"></div>
                                     </div>
                                     <div class="form-group">
                                         @if (string.IsNullOrWhiteSpace(Model.Task.Filename))
                                         {
-                                            <label class="control-label">Add a file</label>
+                                            <badge class="col-form-label">Add a file</badge>
                                         }
                                         else
                                         {
-                                            <label class="control-label">
+                                            <badge class="col-form-label">
                                                 Edit File &ndash;
                                                 <a aria-label="Link (Opens new window)"
                                                    href="@Model.TaskFilePath"
                                                    target="_blank">Link</a>
-                                            </label>
+                                            </badge>
                                         }
                                         <div class="input-group">
-                                            <label class="input-group-btn">
+                                            <badge class="input-group-btn">
                                                 <button type="button"
-                                                        class="btn btn-default btn-file taskFileButton">
+                                                        class="btn btn-secondary btn-file taskFileButton">
                                                     <span class="far fa-file"></span> Select a file
                                                 </button>
-                                            </label>
+                                            </badge>
                                             <input type="text"
                                                    value="@Model.Task.Filename"
                                                    class="form-control selectedTaskFile"
@@ -1003,7 +1003,7 @@
                                         </div>
                                         <span asp-validation-for="TaskUploadFile"
                                               class="text-danger"></span>
-                                        <button class="btn btn-default clearTaskFile"
+                                        <button class="btn btn-secondary clearTaskFile"
                                                 type="button"
                                                 style="margin-top: 0.5em;">
                                             <span class="fas fa-ban"></span> Clear file selection
@@ -1014,44 +1014,44 @@
                                      class="tab-pane gra-tab-pane @(Model.Task.ChallengeTaskType == ChallengeTaskType.Book ? " active" : "" )"
                                      id="book">
                                     <div class="form-group">
-                                        <label asp-for="Task.Title" class="control-label"></label>
+                                        <badge asp-for="Task.Title" class="col-form-label"></badge>
                                         <input asp-for="Task.Title"
                                                id="bookTitle"
                                                class="form-control"
                                                disabled="@(Model.Task.ChallengeTaskType == ChallengeTaskType.Book ? null : " disabled")" />
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="Task.Author" class="control-label"></label>
+                                        <badge asp-for="Task.Author" class="col-form-label"></badge>
                                         <input asp-for="Task.Author" class="form-control" />
                                         <span asp-validation-for="Task.Author"
                                               class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="Task.Isbn" class="control-label"></label>
+                                        <badge asp-for="Task.Isbn" class="col-form-label"></badge>
                                         <input asp-for="Task.Isbn" class="form-control" />
                                         <span asp-validation-for="Task.Isbn"
                                               class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="Task.Url" class="control-label"></label>
+                                        <badge asp-for="Task.Url" class="col-form-label"></badge>
                                         <input asp-for="Task.Url" class="form-control" />
                                     </div>
                                     <div class="form-group">
                                         @if (string.IsNullOrWhiteSpace(Model.Task.Filename))
                                         {
-                                            <label class="control-label">Add a file</label>
+                                            <badge class="col-form-label">Add a file</badge>
                                         }
                                         else
                                         {
-                                            <label class="control-label">Edit file</label>
+                                            <badge class="col-form-label">Edit file</badge>
                                         }
                                         <div class="input-group">
-                                            <label class="input-group-btn">
+                                            <badge class="input-group-btn">
                                                 <button type="button"
-                                                        class="btn btn-default btn-file taskFileButton">
+                                                        class="btn btn-secondary btn-file taskFileButton">
                                                     <span class="far fa-file"></span> Select a file
                                                 </button>
-                                            </label>
+                                            </badge>
                                             <input type="text"
                                                    value="@Model.Task.Filename"
                                                    class="form-control selectedTaskFile"
@@ -1059,7 +1059,7 @@
                                         </div>
                                         <span asp-validation-for="TaskUploadFile"
                                               class="text-danger"></span>
-                                        <button class="btn btn-default clearTaskFile"
+                                        <button class="btn btn-secondary clearTaskFile"
                                                 type="button"
                                                 style="margin-top: 0.5em;">
                                             <span class="fas fa-ban"></span> Clear file selection
@@ -1069,7 +1069,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default"
+                            <button type="button" class="btn btn-secondary"
                                     data-dismiss="modal"
                                     style="margin-right: 1em;">
                                 Cancel
@@ -1110,7 +1110,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-default"
+                                class="btn btn-secondary"
                                 data-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel
@@ -1158,7 +1158,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                            class="btn btn-default"
+                            class="btn btn-secondary"
                             data-dismiss="modal"
                             style="margin-right: 1em;">
                         Cancel
@@ -1298,7 +1298,7 @@
                 if (input.length)
                 {
                     input.val(log);
-                    $('.badgeFile').removeClass('btn-default');
+                    $('.badgeFile').removeClass('btn-secondary');
                     $('.badgeFile').addClass('btn-success');
                     $("#badgeImage").removeAttr("src");
                     $("#badgeImage").height(200);
@@ -1307,14 +1307,14 @@
                 else
                 {
                     input.val('');
-                    $('.badgeFile').addClass('btn-default');
+                    $('.badgeFile').addClass('btn-secondary');
                     $('.badgeFile').removeClass('btn-success');
                 }
             });
 
             $('#clearFile').on("click", function() {
                 $('#BadgeUploadImage').val('');
-                $('.badgeFile').addClass('btn-default');
+                $('.badgeFile').addClass('btn-secondary');
                 $('.badgeFile').removeClass('btn-success');
                 $('#selectedFile').val('');
             });
@@ -1393,7 +1393,7 @@
             $("#badgeImage").height(200);
             $("#BadgeMakerImage").val(data);
             $('#BadgeUploadImage').val('');
-            $('.btn-file').addClass('btn-default');
+            $('.btn-file').addClass('btn-secondary');
             $('.btn-file').removeClass('btn-success');
             $('#selectedFile').val('');
         });
@@ -1423,12 +1423,12 @@
 
             if (input.length) {
                 input.val(log);
-                $(".taskFileButton").removeClass("btn-default");
+                $(".taskFileButton").removeClass("btn-secondary");
                 $(".taskFileButton").addClass("btn-success");
             }
             else {
                 input.val("");
-                $(".taskFileButton").addClass("btn-default");
+                $(".taskFileButton").addClass("btn-secondary");
                 $(".taskFileButton").removeClass("btn-success");
             }
         });
@@ -1436,7 +1436,7 @@
         $(".clearTaskFile").on("click", function () {
             $("#Task_Filename").val("");
             $("#TaskUploadFile").val("");
-            $(".taskFileButton").addClass("btn-default");
+            $(".taskFileButton").addClass("btn-secondary");
             $(".taskFileButton").removeClass("btn-success");
             $(".selectedTaskFile").val("");
         });

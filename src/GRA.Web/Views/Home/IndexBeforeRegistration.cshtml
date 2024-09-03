@@ -6,7 +6,7 @@
     <div class="col-xs-12">
         <img src="~/images/forest.jpg"
              alt="@SharedLocalizer[GRA.Annotations.Home.BannerAltTag]"
-             class="img-responsive img-rounded"
+             class="img-fluid rounded"
              srcset="@Url.Content("~/images/forest.jpg") 1x, @Url.Content("~/images/forest@2x.jpg") 2x" />
     </div>
 </div>
@@ -34,7 +34,7 @@
               class="form-horizontal">
                 <input asp-for="SignUpSource" type="hidden" />
                 <div class="form-group" style="padding: 0.5em 1em; margin-top: 1rem;">
-                    <label asp-for="Email" class="control-label sr-only">@SharedLocalizer[GRA.Domain.Model.DisplayNames.EmailAddress]</label>
+                    <badge asp-for="Email" class="col-form-label sr-only">@SharedLocalizer[GRA.Domain.Model.DisplayNames.EmailAddress]</badge>
                     <div class="input-group">
                         <input asp-for="Email" class="form-control" type="email" autofocus />
                         <span class="input-group-btn">

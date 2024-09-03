@@ -1,6 +1,6 @@
 ﻿
 <div class="row" style="margin-top: 1rem;">
-    <button class="btn btn-default btn-lg" id="runReport">Run report</button>
+    <button class="btn btn-secondary btn-lg" id="runReport">Run report</button>
 </div>
 
 <div class="modal fade" tabindex="-1" role="dialog" id="reportModal">
@@ -82,7 +82,7 @@
                                 socket.close();
                                 $('#cancelReport').text('Close window');
                                 $('#cancelReport').removeClass('btn-danger');
-                                $('#cancelReport').addClass('btn-default');
+                                $('#cancelReport').addClass('btn-secondary');
                                 $('#reportProgress').removeClass('active');
                                 $('#reportProgress').addClass('progress-bar-success');
                             }

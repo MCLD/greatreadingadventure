@@ -47,19 +47,19 @@
     <div class="row" style="margin-top: 2rem; margin-bottom: 2rem;">
         <div class="col-xs-12">
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>*
+                <badge asp-for="Name" class="col-form-label"></badge>*
                 <description gra-description-for="Name"></description>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Message" class="control-label"></label>*
+                <badge asp-for="Message" class="col-form-label"></badge>*
                 <description gra-description-for="Message"></description>
                 <input asp-for="Message" class="form-control" />
                 <span asp-validation-for="Message" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="IsLarge" class="control-label"></label>*
+                <badge asp-for="IsLarge" class="col-form-label"></badge>*
                 <description gra-description-for="IsLarge"></description>
                 <select asp-for="IsLarge" class="form-control">
                     <option value="True">Yes</option>
@@ -68,10 +68,10 @@
                 <span asp-validation-for="IsLarge" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label for="selectedFile">Select a .zip file:</label>
+                <badge for="selectedFile">Select a .zip file:</badge>
                 <div class="input-group">
-                    <label class="input-group-btn">
-                        <span class="btn btn-default btn-file">
+                    <badge class="input-group-btn">
+                        <span class="btn btn-secondary btn-file">
                             <span class="far fa-file-image"></span>
                             Image .zip file
                             <input type="file"
@@ -80,7 +80,7 @@
                                    accept=".zip"
                                    style="display: none;" />
                         </span>
-                    </label>
+                    </badge>
                     <input type="text"
                            class="form-control"
                            readonly
@@ -107,12 +107,12 @@
 
             if (input.length) {
                 input.val(log);
-                $('.btn-file').removeClass('btn-default');
+                $('.btn-file').removeClass('btn-secondary');
                 $('.btn-file').addClass('btn-success');
             }
             else {
                 input.val('');
-                $('.btn-file').addClass('btn-default');
+                $('.btn-file').addClass('btn-secondary');
                 $('.btn-file').removeClass('btn-success');
             }
         });

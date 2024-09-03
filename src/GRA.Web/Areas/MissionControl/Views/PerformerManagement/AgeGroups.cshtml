@@ -4,7 +4,7 @@
 
 <div class="row" style="padding: 10px 0;">
     <div class="col-xs-12">
-        <a class="btn btn-default"
+        <a class="btn btn-secondary"
            data-toggle="modal"
            data-target="#addModal">Add an Age Group</a>
     </div>
@@ -19,7 +19,7 @@
         else
         {
             <div>
-                <table class="table table-condensed table-bordered table-striped">
+                <table class="table table-sm table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -100,12 +100,12 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label asp-for="AgeGroup.Name" class="control-label"></label>
+                            <badge asp-for="AgeGroup.Name" class="col-form-label"></badge>
                             <input asp-for="AgeGroup.Name" class="form-control" />
                             <span asp-validation-for="AgeGroup.Name" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="AgeGroup.IconColor" class="control-label"></label>
+                            <badge asp-for="AgeGroup.IconColor" class="col-form-label"></badge>
                             <description gra-description-for="AgeGroup.IconColor"></description><br />
                             <input asp-for="AgeGroup.IconColor" type="color" />
                             <span asp-validation-for="AgeGroup.IconColor"
@@ -114,7 +114,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-default"
+                                class="btn btn-secondary"
                                 data-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel
@@ -172,7 +172,7 @@
                                     <input id="@($"branch{branch.Id}")"
                                            class="branchSelector"
                                            data-id="@branch.Id" type="checkbox" />
-                                    <label for="@($"branch{branch.Id}")">@branch.Name</label>
+                                    <badge for="@($"branch{branch.Id}")">@branch.Name</badge>
                                 </div>
                             }
                             <br />
@@ -180,7 +180,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-default"
+                                class="btn btn-secondary"
                                 data-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel
@@ -229,7 +229,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-default"
+                                class="btn btn-secondary"
                                 data-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel

@@ -40,7 +40,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="form-group">
-                <label asp-for="VendorCodeType.Description" class="control-label"></label>*
+                <badge asp-for="VendorCodeType.Description" class="col-form-label"></badge>*
                 <description gra-description-for="VendorCodeType.Description"></description>
                 <input asp-for="VendorCodeType.Description" class="form-control" />
                 <span asp-validation-for="VendorCodeType.Description" class="text-danger"></span>
@@ -53,7 +53,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="form-group">
-                    <label class="control-label" asp-for="VendorCodeType.MessageTemplateId"></label>
+                    <badge class="col-form-label" asp-for="VendorCodeType.MessageTemplateId"></badge>
                     <description gra-description-for="VendorCodeType.MessageTemplateId"></description>
                     <br />
                     @foreach (var item in Model.Languages)
@@ -71,7 +71,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="form-group">
-                <label asp-for="VendorCodeType.Url" class="control-label"></label>
+                <badge asp-for="VendorCodeType.Url" class="col-form-label"></badge>
                 <description gra-description-for="VendorCodeType.Url"></description>
                 <input asp-for="VendorCodeType.Url" class="form-control" />
                 <span asp-validation-for="VendorCodeType.Url" class="text-danger"></span>
@@ -81,7 +81,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="form-group">
-                <label asp-for="VendorCodeType.ExpirationDate" class="control-label"></label>
+                <badge asp-for="VendorCodeType.ExpirationDate" class="col-form-label"></badge>
                 <description gra-description-for="VendorCodeType.ExpirationDate"></description>
                 <input asp-for="VendorCodeType.ExpirationDate"
                        class="form-control"
@@ -93,7 +93,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="form-group">
-                <label asp-for="VendorCodeType.AwardPrizeOnShipDate" class="control-label"></label>
+                <badge asp-for="VendorCodeType.AwardPrizeOnShipDate" class="col-form-label"></badge>
                 <description gra-description-for="VendorCodeType.AwardPrizeOnShipDate"></description>
                 <select asp-for="VendorCodeType.AwardPrizeOnShipDate"
                         asp-items="VendorCodesController.ShipDateOptions"
@@ -106,7 +106,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="form-group">
-                <label asp-for="VendorCodeType.AwardPrizeOnPackingSlip" class="control-label"></label>
+                <badge asp-for="VendorCodeType.AwardPrizeOnPackingSlip" class="col-form-label"></badge>
                 <description gra-description-for="VendorCodeType.AwardPrizeOnPackingSlip"></description>
                 <select asp-for="VendorCodeType.AwardPrizeOnPackingSlip"
                         asp-items="VendorCodesController.PackingSlipOptions"
@@ -123,7 +123,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="form-group">
-                    <label class="control-label" asp-for="VendorCodeType.OptionMessageTemplateId"></label>
+                    <badge class="col-form-label" asp-for="VendorCodeType.OptionMessageTemplateId"></badge>
                     <description gra-description-for="VendorCodeType.OptionMessageTemplateId"></description>
                     <br />
                     @foreach (var item in Model.Languages)
@@ -154,7 +154,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="form-group">
-                        <label asp-for="VendorCodeType.DonationSegmentId" class="control-label"></label><br />
+                        <badge asp-for="VendorCodeType.DonationSegmentId" class="col-form-label"></badge><br />
                         @foreach (var item in Model.Languages)
                         {
                             <a class="btn @Model.LanguageSegmentClass(Model.VendorCodeType.DonationSegmentId, item.Value)"
@@ -170,7 +170,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="form-group">
-                        <label class="control-label" asp-for="VendorCodeType.DonationMessageTemplateId"></label><br />
+                        <badge class="col-form-label" asp-for="VendorCodeType.DonationMessageTemplateId"></badge><br />
                         @foreach (var item in Model.Languages)
                         {
                             <a class="btn @Model.LanguageMessageClass(Model.VendorCodeType.DonationMessageTemplateId, item.Value)"
@@ -198,7 +198,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="form-group">
-                        <label asp-for="VendorCodeType.EmailAwardSegmentId" class="control-label"></label><br />
+                        <badge asp-for="VendorCodeType.EmailAwardSegmentId" class="col-form-label"></badge><br />
                         @foreach (var item in Model.Languages)
                         {
                             <a class="btn @Model.LanguageSegmentClass(Model.VendorCodeType.EmailAwardSegmentId, item.Value)"
@@ -214,7 +214,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="form-group">
-                        <label class="control-label" asp-for="VendorCodeType.EmailAwardMessageTemplateId"></label><br />
+                        <badge class="col-form-label" asp-for="VendorCodeType.EmailAwardMessageTemplateId"></badge><br />
                         @foreach (var item in Model.Languages)
                         {
                             <a class="btn @Model.LanguageMessageClass(Model.VendorCodeType.EmailAwardMessageTemplateId, item.Value)"
@@ -231,7 +231,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="form-group">
-                    <label asp-for="VendorCodeType.ReadyForPickupEmailTemplateId" class="control-label"></label>
+                    <badge asp-for="VendorCodeType.ReadyForPickupEmailTemplateId" class="col-form-label"></badge>
                     <description gra-description-for="VendorCodeType.ReadyForPickupEmailTemplateId"></description>
                     <select asp-for="VendorCodeType.ReadyForPickupEmailTemplateId"
                         asp-items="VendorCodesController.GetSelectList(Model.DirectEmailTemplates)"
@@ -248,13 +248,13 @@
             @if (Model.VendorCodeType.Id > 0)
             {
                 <a asp-action="@nameof(VendorCodesController.Index)"
-                   class="btn btn-default">Back</a>
+                   class="btn btn-secondary">Back</a>
             }
             else
             {
                 <a asp-controller="@HomeController.Name"
                asp-action="@nameof(HomeController.Index)"
-                   class="btn btn-default">Cancel</a>
+                   class="btn btn-secondary">Cancel</a>
             }
             <button type="submit" class="btn btn-primary">Save vendor code</button>
         </div>
@@ -288,7 +288,7 @@
                     </div>
                     <div id="segmentModalContent" style="display: none;">
                         <div class="form-group">
-                            <label>Pop-up text</label>
+                            <badge>Pop-up text</badge>
                             <input type="text"
                                    class="form-control"
                                    id="segmentText"
@@ -303,7 +303,7 @@
                         Remove pop-up message
                     </button>
                     <button type="button"
-                            class="btn btn-default"
+                            class="btn btn-secondary"
                             data-dismiss="modal">
                         Close
                     </button>
@@ -346,14 +346,14 @@
                     </div>
                     <div id="messageModalContent" style="display: none;">
                         <div class="form-group">
-                            <label>Message subject</label>
+                            <badge>Message subject</badge>
                             <input type="text"
                                    class="form-control"
                                    id="messageSubject"
                                    name="subject" />
                         </div>
                         <div class="form-group">
-                            <label>Message text</label>
+                            <badge>Message text</badge>
                             <textarea class="form-control"
                                       rows="4"
                                       id="messageBody"
@@ -368,7 +368,7 @@
                         Remove message
                     </button>
                     <button type="button"
-                            class="btn btn-default"
+                            class="btn btn-secondary"
                             data-dismiss="modal">
                         Close
                     </button>

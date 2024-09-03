@@ -6,7 +6,7 @@
     <div class="col-xs-12" style="margin-bottom: 2rem;">
         <form method="post" asp-action="@nameof(SystemsController.RemoveBranch)">
             <input type="hidden" asp-for="BranchId" value="@Model.BranchId" />
-            <table class="table table-bordered table-condensed table-striped">
+            <table class="table table-bordered table-sm table-striped">
                 <tr>
                     <th>Branch name:</th>
                     <td>@Model.Branch.Name</td>

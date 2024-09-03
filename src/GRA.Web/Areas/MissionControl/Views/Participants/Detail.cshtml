@@ -22,7 +22,7 @@
                 <input asp-for="CanEditUsername" type="hidden" />
                 <div class="row row-spacing">
                     <div class="col-xs-12">
-                        <label asp-for="User.Username" class="control-label"></label>
+                        <badge asp-for="User.Username" class="col-form-label"></badge>
                         <span id="Username-Icon" class="fa colored-icon hide"></span>
                         <input asp-for="User.Username" class="form-control" />
                         <span id="Username-Validation" asp-validation-for="User.Username" class="text-success"></span>
@@ -32,7 +32,7 @@
 
             <div class="row row-spacing">
                 <div class="col-xs-12">
-                    <label asp-for="User.FirstName" class="control-label"></label>
+                    <badge asp-for="User.FirstName" class="col-form-label"></badge>
                     <input asp-for="User.FirstName" class="form-control" />
                     <span asp-validation-for="User.FirstName" class="text-danger"></span>
                 </div>
@@ -40,7 +40,7 @@
 
             <div class="row row-spacing">
                 <div class="col-xs-12">
-                    <label asp-for="User.LastName" class="control-label"></label>
+                    <badge asp-for="User.LastName" class="col-form-label"></badge>
                     <input asp-for="User.LastName" class="form-control" />
                     <span asp-validation-for="User.LastName" class="text-danger"></span>
                 </div>
@@ -50,7 +50,7 @@
             {
                 <div class="row row-spacing">
                     <div class="col-xs-12">
-                        <label asp-for="User.PostalCode" class="control-label"></label>
+                        <badge asp-for="User.PostalCode" class="col-form-label"></badge>
                         <input asp-for="User.PostalCode" class="form-control" />
                         <span asp-validation-for="User.PostalCode" class="text-danger"></span>
                     </div>
@@ -59,7 +59,7 @@
 
             <div class="row row-spacing">
                 <div class="col-xs-12">
-                    <label asp-for="User.Email" class="control-label"></label>
+                    <badge asp-for="User.Email" class="col-form-label"></badge>
                     <input asp-for="User.Email" class="form-control" />
                     <span asp-validation-for="User.Email" class="text-danger"></span>
                 </div>
@@ -67,7 +67,7 @@
 
             <div class="row row-spacing">
                 <div class="col-xs-12">
-                    <label asp-for="User.PhoneNumber" class="control-label"></label>
+                    <badge asp-for="User.PhoneNumber" class="col-form-label"></badge>
                     <input asp-for="User.PhoneNumber" class="form-control" />
                     <span asp-validation-for="User.PhoneNumber" class="text-danger"></span>
                 </div>
@@ -75,7 +75,7 @@
 
             <div class="row row-spacing">
                 <div class="col-xs-12">
-                    <label asp-for="User.SystemId" class="control-label"></label>
+                    <badge asp-for="User.SystemId" class="col-form-label"></badge>
                     <select asp-for="User.SystemId" asp-items="Model.SystemList" class="form-control"></select>
                     <span asp-validation-for="User.SystemId" class="text-danger"></span>
                 </div>
@@ -83,7 +83,7 @@
 
             <div class="row row-spacing">
                 <div class="col-xs-12">
-                    <label asp-for="User.BranchId" class="control-label"></label>
+                    <badge asp-for="User.BranchId" class="col-form-label"></badge>
                     <select asp-for="User.BranchId" asp-items="Model.BranchList" class="form-control"></select>
                     <span asp-validation-for="User.BranchId" class="text-danger"></span>
                 </div>
@@ -91,7 +91,7 @@
 
             <div class="row row-spacing">
                 <div class="col-xs-12">
-                    <label asp-for="User.ProgramId" class="control-label"></label>
+                    <badge asp-for="User.ProgramId" class="col-form-label"></badge>
                     <select asp-for="User.ProgramId" asp-items="Model.ProgramList" class="form-control"></select>
                     <span asp-validation-for="User.ProgramId" class="text-danger"></span>
                 </div>
@@ -99,7 +99,7 @@
 
             <div id="ageField" class="row row-spacing @(Model.ShowAge ? "": "hide")">
                 <div class="col-xs-12">
-                    <label asp-for="User.Age" class="control-label"></label>
+                    <badge asp-for="User.Age" class="col-form-label"></badge>
                     <input asp-for="User.Age" class="form-control" type="text" />
                     <span id="ageMessage" asp-validation-for="User.Age" class="text-danger"></span>
                 </div>
@@ -113,7 +113,7 @@
                 }
                 else if (Model.ShowSchool)
                 {
-                    <label class="control-label">School</label>
+                    <badge class="col-form-label">School</badge>
                     @if (Model.User.IsHomeschooled)
                     {
                         <input class="form-control" type="text" value="Homeschooled" />
@@ -133,7 +133,7 @@
             {
                 <div class="row row-spacing">
                     <div class="col-xs-12">
-                        <label asp-for="User.IsEmailSubscribed" class="control-label">@Model.AskEmailSubscriptionText</label>
+                        <badge asp-for="User.IsEmailSubscribed" class="col-form-label">@Model.AskEmailSubscriptionText</badge>
                         <select asp-for="User.IsEmailSubscribed" class="form-control">
                             <option value="false">No</option>
                             <option value="true">Yes</option>
@@ -147,7 +147,7 @@
             {
                 <div class="row row-spacing">
                     <div class="col-xs-12">
-                        <label asp-for="User.DailyPersonalGoal" class="control-label"></label>
+                        <badge asp-for="User.DailyPersonalGoal" class="col-form-label"></badge>
                         <div>
                             I will @Model.TranslationDescriptionPastTense
                             <input asp-for="User.DailyPersonalGoal" class="form-control" style="display:inline-block; width:75px;" />
@@ -226,7 +226,7 @@
                                 {
                                     if (Model.User.IsDonationLocked)
                                     {
-                                        <button class="btn btn-default disabled"
+                                        <button class="btn btn-secondary disabled"
                                                 style="margin-left: 2rem;"
                                                 asp-is-disabled="true">
                                             <span class="buttonText">Donated through vendor</span>
@@ -269,7 +269,7 @@
     </div>
 
     <div class="form-group">
-        <a asp-action="Index" class="btn btn-default">Return to Participants</a>
+        <a asp-action="Index" class="btn btn-secondary">Return to Participants</a>
         @if (Model.CanEditDetails)
         {
             <input asp-for="Action" value="@nameof(ParticipantsController.Detail)" type="hidden" />
@@ -316,7 +316,7 @@
                     Change that status by clicking below which will email the participant that their item is ready.
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <form asp-action="@nameof(ParticipantsController.MarkVendorItemAsReceived)"
                           style="display: inline;">
                         <input type="hidden" name="id" value="@Model.User.Id">
@@ -355,8 +355,8 @@
                             <p>@Html.Raw(Model.User.EmailAwardInstructions)</p>
                             <div class="row row-spacing">
                                 <div class="col-xs-12">
-                                    <label asp-for="EmailAwardModel.Email"
-                                           class="control-label"></label>
+                                    <badge asp-for="EmailAwardModel.Email"
+                                           class="col-form-label"></badge>
                                     <input asp-for="EmailAwardModel.Email"
                                            class="form-control"
                                            value="@Model.User.Email" />
@@ -367,7 +367,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button"
-                                    class="btn btn-default"
+                                    class="btn btn-secondary"
                                     data-dismiss="modal"
                                     style="margin-right: 1em;">
                                 @GRA.Annotations.Interface.Cancel
