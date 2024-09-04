@@ -8,7 +8,7 @@
     <div class="row">
         <div class="col-xs-12 col-sm-5 pull-right">
             <div class="visible-xs" id="mobile-container">
-                <div class="avatar-container center-block">
+                <div class="avatar-container mx-auto">
                     @foreach (var layer in Model.LayerGroupings.SelectMany(_ => _))
                     {
                         <img src="~/@layer.FilePath"
@@ -23,7 +23,7 @@
                 </button>
             </div>
             <div class="hidden-xs" id="desktop-container">
-                <div class="avatar-container center-block">
+                <div class="avatar-container mx-auto">
                     @foreach (var layer in Model.LayerGroupings.SelectMany(_ => _))
                     {
                         <img src="~/@layer.FilePath"
