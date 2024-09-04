@@ -23,14 +23,14 @@
             <div class="form-group">
                 <badge for="selectedFile">Update email award status:</badge>
                 <div class="input-group">
-                    <badge class="input-group-btn">
+                    <badge class="input-group-append">
                         <span class="btn btn-secondary btn-file">
                             <span class="far fa-file-image"></span>
                             Select an Excel file<input type="file" name="excelFile" accept=".xls" />
                         </span>
                     </badge>
                     <input type="text" class="form-control" readonly id="selectedFile">
-                    <span class="input-group-btn">
+                    <span class="input-group-append">
                         <button type="submit"
                                 asp-action="@nameof(VendorCodesController.EmailAwardStatus)"
                                 formmethod="post"

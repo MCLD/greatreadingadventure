@@ -32,7 +32,7 @@
                                     @if (Model.SystemBadgeCount[system] > 0)
                                     {
                                         <a title="Download ZIP"
-                                           class="btn btn-secondary btn-xs"
+                                           class="btn btn-secondary btn-sm"
                                asp-action="@nameof(DownloadsController.GetBadgeZipForSystem)"
                                asp-route-id="@system.Id">
                                             <span class="fas fa-file-download" aria-hidden="true"></span>

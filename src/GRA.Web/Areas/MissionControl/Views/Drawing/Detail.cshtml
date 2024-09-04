@@ -83,7 +83,7 @@
                             <input id="page" name="page" value="@Model.PaginateModel.CurrentPage" type="hidden" />
                             <button type="submit"
                                     style="margin-left:5px;"
-                                    class="btn btn-secondary btn-xs btn-spinner"
+                                    class="btn btn-secondary btn-sm btn-spinner"
                                     button-spinner>
                                 Undo
                             </button>
@@ -96,7 +96,7 @@
                             <input id="prizeWinnerId" name="prizeWinnerId" value="@winner.Id" type="hidden" />
                             <input id="page" name="page" value="@Model.PaginateModel.CurrentPage" type="hidden" />
                             <button type="submit"
-                                    class="btn btn-success btn-xs btn-spinner"
+                                    class="btn btn-success btn-sm btn-spinner"
                                     button-spinner>
                                 <span class="fas fa-gift"></span>
                                 Available, click to redeem!
@@ -118,7 +118,7 @@
                     @if (!winner.RedeemedAt.HasValue)
                     {
                         <button type="button"
-                                class="btn btn-danger btn-xs"
+                                class="btn btn-danger btn-sm"
                                 data-toggle="modal"
                                 data-target="#deleteModal"
                                 data-id="@winner.Id"

@@ -179,7 +179,7 @@
                                         Book Code
                                         @if (Model.CanRedeemBulkVendorCodes)
                                         {
-                                            <button type="button" class="btn btn-info btn-xs pull-right" data-toggle="modal"
+                                            <button type="button" class="btn btn-info btn-sm pull-right" data-toggle="modal"
                                                     data-target="#bulkRedeemModal">
                                                 <span class="buttonText">Redeem all</span>
                                             </button>
@@ -256,7 +256,7 @@
                                     <td>
                                         @if (Model.Head.NeedsToAnswerVendorCodeQuestion)
                                         {
-                                            <button class="btn btn-info btn-xs btn-spinner btn-on-top"
+                                            <button class="btn btn-info btn-sm btn-spinner btn-on-top"
                                                     name="redeemButton"
                                                     value="@Model.Head.Id"
                                                     asp-action="HandleHouseholdDonation"
@@ -267,7 +267,7 @@
                                             @if (Model.Head.CanDonateVendorCode)
                                             {
                                                 @:or
-                                                <button class="btn btn-success btn-xs btn-spinner btn-on-top"
+                                                <button class="btn btn-success btn-sm btn-spinner btn-on-top"
                                                         name="donateButton"
                                                         value="@Model.Head.Id"
                                                         asp-action="HandleHouseholdDonation"
@@ -279,7 +279,7 @@
                                             @if (Model.Head.CanEmailAwardVendorCode)
                                             {
                                                 @:or
-                                                <button class="btn btn-warning btn-xs btn-on-top emailAwardButton"
+                                                <button class="btn btn-warning btn-sm btn-on-top emailAwardButton"
                                                         asp-action="HandleHouseholdDonation"
                                                         asp-is-disabled="@(!Model.CanEditDetails)"
                                                         data-email="@Model.Head.Email"
@@ -305,7 +305,7 @@
                                             if (@Model.Head.Donated == true
                                             && User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.PerformDrawing.ToString()))
                                             {
-                                                <button class="btn btn-info btn-xs btn-spinner btn-on-top"
+                                                <button class="btn btn-info btn-sm btn-spinner btn-on-top"
                                                         name="undonateButton"
                                                         value="@Model.Head.Id"
                                                         asp-action="HandleHouseholdDonation"
@@ -389,7 +389,7 @@
                                         <div>
                                             @if (Model.CanEditDetails && string.IsNullOrWhiteSpace(user.Username))
                                             {
-                                                <a class="btn btn-secondary btn-xs on-top"
+                                                <a class="btn btn-secondary btn-sm on-top"
                                                    asp-action="RegisterHouseholdMember"
                                                    asp-route-id="@user.Id">
                                                     <span class="fas fa-user-plus"></span>
@@ -408,7 +408,7 @@
                                         <td>
                                             @if (user.NeedsToAnswerVendorCodeQuestion)
                                             {
-                                                <button class="btn btn-info btn-xs btn-spinner btn-on-top"
+                                                <button class="btn btn-info btn-sm btn-spinner btn-on-top"
                                                         name="redeemButton"
                                                         value="@user.Id"
                                                         asp-action="HandleHouseholdDonation"
@@ -419,7 +419,7 @@
                                                 @if (user.CanDonateVendorCode)
                                                 {
                                                     @:or
-                                                    <button class="btn btn-success btn-xs btn-spinner btn-on-top"
+                                                    <button class="btn btn-success btn-sm btn-spinner btn-on-top"
                                                             name="donateButton"
                                                             value="@user.Id"
                                                             asp-action="HandleHouseholdDonation"
@@ -431,7 +431,7 @@
                                                 @if (user.CanEmailAwardVendorCode)
                                                 {
                                                     @:or
-                                                    <button class="btn btn-warning btn-xs btn-on-top emailAwardButton"
+                                                    <button class="btn btn-warning btn-sm btn-on-top emailAwardButton"
                                                             asp-action="HandleHouseholdDonation"
                                                             asp-is-disabled="@(!Model.CanEditDetails)"
                                                             data-email="@user.Email"
@@ -456,7 +456,7 @@
                                                 }
                                                 if (user.Donated == true && User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.PerformDrawing.ToString()))
                                                 {
-                                                    <button class="btn btn-info btn-xs btn-spinner btn-on-top"
+                                                    <button class="btn btn-info btn-sm btn-spinner btn-on-top"
                                                             name="undonateButton"
                                                             value="@user.Id"
                                                             asp-action="HandleHouseholdDonation"
@@ -481,7 +481,7 @@
                                             @if (!string.IsNullOrWhiteSpace(user.Username))
                                             {
                                                 <button type="button"
-                                                        class="btn btn-primary btn-xs"
+                                                        class="btn btn-primary btn-sm"
                                                         style="width:22px;"
                                                         data-toggle="modal"
                                                         data-target="#promoteModal"
@@ -492,7 +492,7 @@
                                                           aria-hidden="true"></span>
                                                 </button>
                                                 <button type="button"
-                                                        class="btn btn-danger btn-xs"
+                                                        class="btn btn-danger btn-sm"
                                                         style="margin-left:16px;width:22px;"
                                                         data-toggle="modal"
                                                         data-target="#removeModal"

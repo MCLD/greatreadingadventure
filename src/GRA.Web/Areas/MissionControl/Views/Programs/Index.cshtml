@@ -46,14 +46,14 @@
                                     </a>
                                 </td>
                                 <td class="on-top gra-mc-icon">
-                                    <button type="button" data-id="@program.Id" class="btn btn-secondary btn-xs decreasePosition" style="width:25px;" disabled="@(Model.PaginateModel.CurrentPage == 1 && program == Model.Programs.First() ? " disabled" : null)">
+                                    <button type="button" data-id="@program.Id" class="btn btn-secondary btn-sm decreasePosition" style="width:25px;" disabled="@(Model.PaginateModel.CurrentPage == 1 && program == Model.Programs.First() ? " disabled" : null)">
                                         <span class="fas fa-arrow-up"></span>
                                     </button>
-                                    <button type="button" data-id="@program.Id" class="btn btn-secondary btn-xs increasePosition" style="width:25px;" disabled="@(Model.PaginateModel.CurrentPage == Model.PaginateModel.MaxPage && program == Model.Programs.Last() ? " disabled" : null)">
+                                    <button type="button" data-id="@program.Id" class="btn btn-secondary btn-sm increasePosition" style="width:25px;" disabled="@(Model.PaginateModel.CurrentPage == Model.PaginateModel.MaxPage && program == Model.Programs.Last() ? " disabled" : null)">
                                         <span class="fas fa-arrow-down"></span>
                                     </button>
                                     <button type="button"
-                                            class="btn btn-danger btn-xs"
+                                            class="btn btn-danger btn-sm"
                                             style="margin-left:16px;"
                                             data-toggle="modal"
                                             data-target="#deleteModal"

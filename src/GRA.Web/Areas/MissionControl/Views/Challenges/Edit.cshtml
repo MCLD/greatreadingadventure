@@ -80,7 +80,7 @@
                                     <div class="form-group">
                                         <badge class="col-form-label">Add a file</badge>
                                         <div class="input-group">
-                                            <badge class="input-group-btn">
+                                            <badge class="input-group-append">
                                                 <button type="button" class="btn btn-secondary btn-file taskFileButton">
                                                     <span class="far fa-file"></span> Select a file
                                                 </button>
@@ -113,7 +113,7 @@
                                     <div class="form-group">
                                         <badge class="col-form-label">Add a file</badge>
                                         <div class="input-group">
-                                            <badge class="input-group-btn">
+                                            <badge class="input-group-append">
                                                 <button type="button" class="btn btn-secondary btn-file taskFileButton">
                                                     <span class="far fa-file"></span> Select a file
                                                 </button>
@@ -191,7 +191,7 @@
                                             </badge>
                                         }
                                         <div class="input-group">
-                                            <badge class="input-group-btn">
+                                            <badge class="input-group-append">
                                                 <button type="button" class="btn btn-secondary btn-file taskFileButton">
                                                     <span class="far fa-file"></span> Select a file
                                                 </button>
@@ -231,7 +231,7 @@
                                             <badge class="col-form-label">Edit file</badge>
                                         }
                                         <div class="input-group">
-                                            <badge class="input-group-btn">
+                                            <badge class="input-group-append">
                                                 <button type="button" class="btn btn-secondary btn-file taskFileButton">
                                                     <span class="far fa-file"></span> Select a file
                                                 </button>
@@ -585,7 +585,7 @@
                 <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.UseBadgeMaker ? " " : " active")" id="upload">
                     <p>Upload a badge image. Badge images must be square.</p>
                     <div class="input-group">
-                        <badge class="input-group-btn">
+                        <badge class="input-group-append">
                             <span class="btn btn-secondary badgeFile">
                                 <span class="far fa-file-image"></span> Select an image<input type="file" name="BadgeUploadImage" id="BadgeUploadImage" accept=".png,.jpg,.jpeg" style="display: none;" />
                             </span>
@@ -678,7 +678,7 @@
                                     <a aria-label="View Attachment (Opens new window)"
                                        href="@task.Filename"
                                        target="_blank"
-                                       class="btn btn-xs btn-secondary on-top"
+                                       class="btn btn-sm btn-secondary on-top"
                                        style="margin-top:5px;">
                                         <span class="far fa-file"></span>
                                         View Attachment
@@ -696,7 +696,7 @@
                                     </div>
                                     @if (!string.IsNullOrWhiteSpace(task.Filename))
                                     {
-                                        <a href="@task.Filename" target="_blank" class="btn btn-xs btn-secondary on-top" style="margin-top:5px;">
+                                        <a href="@task.Filename" target="_blank" class="btn btn-sm btn-secondary on-top" style="margin-top:5px;">
                                             <span class="far fa-file"></span>
                                             View Attachment
                                         </a>
@@ -713,7 +713,7 @@
                                     <a aria-label="View Attachment (Opens new window)"
                                        href="@task.Filename"
                                        target="_blank"
-                                       class="btn btn-xs btn-secondary on-top"
+                                       class="btn btn-sm btn-secondary on-top"
                                        style="margin-top:5px;">
                                         <span class="far fa-file"></span>
                                         View Attachment
@@ -726,14 +726,14 @@
                     @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
                     {
                         <td class="on-top" style="white-space:nowrap;">
-                            <button type="button" data-id="@task.Id" class="btn btn-secondary btn-xs decreaseTaskSort" style="width:25px;" disabled="@(task == Model.Challenge.Tasks.First() ? " disabled" : null)">
+                            <button type="button" data-id="@task.Id" class="btn btn-secondary btn-sm decreaseTaskSort" style="width:25px;" disabled="@(task == Model.Challenge.Tasks.First() ? " disabled" : null)">
                                 <span class="fas fa-arrow-up"></span>
                             </button>
-                            <button type="button" data-id="@task.Id" class="btn btn-secondary btn-xs increaseTaskSort" style="width:25px;" disabled="@(task == Model.Challenge.Tasks.Last() ? " disabled" : null)">
+                            <button type="button" data-id="@task.Id" class="btn btn-secondary btn-sm increaseTaskSort" style="width:25px;" disabled="@(task == Model.Challenge.Tasks.Last() ? " disabled" : null)">
                                 <span class="fas fa-arrow-down"></span>
                             </button>
                             <button type="button"
-                                    class="btn btn-danger btn-xs"
+                                    class="btn btn-danger btn-sm"
                                     style="margin-left:16px;"
                                     data-toggle="modal"
                                     data-target="#deleteModal"
@@ -822,7 +822,7 @@
                                     <div class="form-group">
                                         <badge class="col-form-label">Add a file</badge>
                                         <div class="input-group">
-                                            <badge class="input-group-btn">
+                                            <badge class="input-group-append">
                                                 <button type="button"
                                                         class="btn btn-secondary btn-file taskFileButton">
                                                     <span class="far fa-file"></span> Select a file
@@ -867,7 +867,7 @@
                                     <div class="form-group">
                                         <badge class="col-form-label">Add a file</badge>
                                         <div class="input-group">
-                                            <badge class="input-group-btn">
+                                            <badge class="input-group-append">
                                                 <button type="button"
                                                         class="btn btn-secondary btn-file taskFileButton">
                                                     <span class="far fa-file"></span> Select a file
@@ -990,7 +990,7 @@
                                             </badge>
                                         }
                                         <div class="input-group">
-                                            <badge class="input-group-btn">
+                                            <badge class="input-group-append">
                                                 <button type="button"
                                                         class="btn btn-secondary btn-file taskFileButton">
                                                     <span class="far fa-file"></span> Select a file
@@ -1046,7 +1046,7 @@
                                             <badge class="col-form-label">Edit file</badge>
                                         }
                                         <div class="input-group">
-                                            <badge class="input-group-btn">
+                                            <badge class="input-group-append">
                                                 <button type="button"
                                                         class="btn btn-secondary btn-file taskFileButton">
                                                     <span class="far fa-file"></span> Select a file
