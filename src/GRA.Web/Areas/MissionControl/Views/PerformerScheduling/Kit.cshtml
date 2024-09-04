@@ -35,7 +35,7 @@
         {
             <div class="row" style="padding-bottom:15px;">
                 <div class="col-xs-12">
-                    <img src="~/@Model.ImagePath" class="img-responsive" style="margin: 0 auto;" />
+                    <img src="~/@Model.ImagePath" class="img-fluid" style="margin: 0 auto;" />
                 </div>
             </div>
         }
@@ -49,23 +49,23 @@
         }
         <div class="row" style="padding-bottom:15px;">
             <div class="col-xs-12" style="text-align:center;">
-                <a asp-action="Kits" asp-route-page="@Model.ReturnPage" class="btn btn-default">Return to List</a>
+                <a asp-action="Kits" asp-route-page="@Model.ReturnPage" class="btn btn-secondary">Return to List</a>
             </div>
         </div>
     </div>
     <div class="col-xs-12 col-sm-7 col-md-8">
         <div class="form-group">
-            <label>Name</label>
+            <badge>Name</badge>
             <div>@Model.Kit.Name</div>
         </div>
         <div class="form-group">
-            <label>Description</label>
+            <badge>Description</badge>
             <div>@Model.Kit.Description</div>
         </div>
         @if (!string.IsNullOrWhiteSpace(Model.Kit.Website))
         {
             <div class="form-group">
-                <label>Website</label>
+                <badge>Website</badge>
                 <div>
                     @if (Model.Uri != null)
                     {
@@ -79,7 +79,7 @@
             </div>
         }
         <div class="form-group">
-            <label>Ages</label>
+            <badge>Ages</badge>
             <div>
                 <ul>
                     @foreach (var age in Model.Kit.AgeGroups)
@@ -108,7 +108,7 @@
                 <form asp-action="SelectKit" class="form-horizontal col-xs-12" method="post" role="form">
                     <input asp-for="BranchSelection.KitId" value="@Model.Kit.Id" type="hidden" />
                     <div class="form-group">
-                        <label asp-for="BranchSelection.BranchId" class="col-sm-3 control-label required-field"></label>
+                        <badge asp-for="BranchSelection.BranchId" class="col-sm-3 col-form-label required-field"></badge>
                         <div class="col-sm-9">
                             <select asp-for="BranchSelection.BranchId" asp-items="Model.BranchList" class="form-control">
                                 <option></option>
@@ -117,7 +117,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label asp-for="BranchSelection.AgeGroupId" class="col-sm-3 control-label required-field"></label>
+                        <badge asp-for="BranchSelection.AgeGroupId" class="col-sm-3 col-form-label required-field"></badge>
                         <div class="col-sm-9">
                             <select asp-for="BranchSelection.AgeGroupId" asp-items="Model.AgeGroupList" class="form-control" disabled="disabled">
                                 <option></option>

@@ -31,10 +31,10 @@
     </div>
 
     <div class="col-xs-12" style="padding-bottom:15px;">
-        <a asp-action="KitDetails" asp-route-id="@Model.Kit.Id" class="btn btn-default">Edit Kit</a>
+        <a asp-action="KitDetails" asp-route-id="@Model.Kit.Id" class="btn btn-secondary">Edit Kit</a>
         @if (Model.SchedulingStage >= GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
         {
-            <a asp-action="KitSelections" asp-route-id="@Model.Kit.Id" class="btn btn-lg btn-default pull-right">View Selections</a>
+            <a asp-action="KitSelections" asp-route-id="@Model.Kit.Id" class="btn btn-lg btn-secondary pull-right">View Selections</a>
         }
     </div>
     <div class="col-xs-12 col-sm-5 col-md-4">
@@ -42,7 +42,7 @@
         {
             <div class="row" style="padding-bottom:15px;">
                 <div class="col-xs-12">
-                    <img src="~/@Model.ImagePath" class="img-responsive" style="margin: 0 auto;" />
+                    <img src="~/@Model.ImagePath" class="img-fluid" style="margin: 0 auto;" />
                 </div>
             </div>
         }
@@ -53,21 +53,21 @@
         </div>
         <div class="row" style="padding-bottom:15px;">
             <div class="col-xs-12" style="text-align:center;">
-                <a asp-action="Kits" asp-route-page="@Model.ReturnPage" class="btn btn-default">Return to List</a>
+                <a asp-action="Kits" asp-route-page="@Model.ReturnPage" class="btn btn-secondary">Return to List</a>
             </div>
         </div>
     </div>
     <div class="col-xs-12 col-sm-7 col-md-8">
         <div class="form-group">
-            <label>Name</label>
+            <badge>Name</badge>
             <div>@Model.Kit.Name</div>
         </div>
         <div class="form-group">
-            <label>Description</label>
+            <badge>Description</badge>
             <div>@Model.Kit.Description</div>
         </div>
         <div class="form-group">
-            <label>Website</label>
+            <badge>Website</badge>
             @if (string.IsNullOrWhiteSpace(Model.Kit.Website))
             {
                 <div>n/a</div>
@@ -87,7 +87,7 @@
             }
         </div>
         <div class="form-group">
-            <label>Ages</label>
+            <badge>Ages</badge>
             <div>
                 <ul>
                     @foreach (var ageGroup in Model.Kit.AgeGroups)

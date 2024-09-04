@@ -20,16 +20,16 @@
 
                     <div class="row row-spacing">
                         <div class="col-xs-12">
-                            <label asp-for="Username" class="control-label"></label>
-                            <input asp-for="Username" class="form-control input-lg" autofocus />
+                            <badge asp-for="Username" class="col-form-label"></badge>
+                            <input asp-for="Username" class="form-control form-control-lg" autofocus />
                             <span asp-validation-for="Username" class="text-danger"></span>
                         </div>
                     </div>
 
                     <div class="row row-spacing">
                         <div class="col-xs-12">
-                            <label asp-for="Password" class="control-label"></label>
-                            <input asp-for="Password" type="password" class="form-control input-lg" />
+                            <badge asp-for="Password" class="col-form-label"></badge>
+                            <input asp-for="Password" type="password" class="form-control form-control-lg" />
                             <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
                     </div>

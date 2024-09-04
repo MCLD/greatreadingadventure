@@ -10,20 +10,20 @@
 
 <form asp-controller="PerformerManagement" asp-action="Settings" method="post" role="form">
     <div class="form-group">
-        <label asp-for="Settings.ContactEmail" class="control-label required-field"></label>
+        <badge asp-for="Settings.ContactEmail" class="col-form-label required-field"></badge>
         <input asp-for="Settings.ContactEmail" class="form-control" />
         <span asp-validation-for="Settings.ContactEmail" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Settings.SelectionsPerBranch" class="control-label required-field"></label>
+        <badge asp-for="Settings.SelectionsPerBranch" class="col-form-label required-field"></badge>
         <input asp-for="Settings.SelectionsPerBranch" class="form-control" />
         <span asp-validation-for="Settings.SelectionsPerBranch" class="text-danger"></span>
     </div>
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Settings.RegistrationOpen" class="control-label required-field"></label>
+            <badge asp-for="Settings.RegistrationOpen" class="col-form-label required-field"></badge>
             <div class="input-group date datetimepicker">
                 <span class="input-group-addon">
                     <span class="fas fa-calendar-alt"></span>
@@ -35,7 +35,7 @@
     </div>
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Settings.RegistrationClosed" class="control-label required-field"></label>
+            <badge asp-for="Settings.RegistrationClosed" class="col-form-label required-field"></badge>
             <div class="input-group date datetimepicker">
                 <span class="input-group-addon">
                     <span class="fas fa-calendar-alt"></span>
@@ -47,7 +47,7 @@
     </div>
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Settings.SchedulingPreview" class="control-label required-field"></label>
+            <badge asp-for="Settings.SchedulingPreview" class="col-form-label required-field"></badge>
             <div class="input-group date datetimepicker">
                 <span class="input-group-addon">
                     <span class="fas fa-calendar-alt"></span>
@@ -59,7 +59,7 @@
     </div>
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Settings.SchedulingOpen" class="control-label required-field"></label>
+            <badge asp-for="Settings.SchedulingOpen" class="col-form-label required-field"></badge>
             <div class="input-group date datetimepicker">
                 <span class="input-group-addon">
                     <span class="fas fa-calendar-alt"></span>
@@ -71,7 +71,7 @@
     </div>
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Settings.SchedulingClosed" class="control-label required-field"></label>
+            <badge asp-for="Settings.SchedulingClosed" class="col-form-label required-field"></badge>
             <div class="input-group date datetimepicker">
                 <span class="input-group-addon">
                     <span class="fas fa-calendar-alt"></span>
@@ -83,7 +83,7 @@
     </div>
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Settings.SchedulePosted" class="control-label required-field"></label>
+            <badge asp-for="Settings.SchedulePosted" class="col-form-label required-field"></badge>
             <div class="input-group date datetimepicker">
                 <span class="input-group-addon">
                     <span class="fas fa-calendar-alt"></span>
@@ -96,7 +96,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Settings.ScheduleStartDate" class="control-label required-field"></label>
+            <badge asp-for="Settings.ScheduleStartDate" class="col-form-label required-field"></badge>
             <div class="input-group date datepicker">
                 <span class="input-group-addon">
                     <span class="fas fa-calendar-alt"></span>
@@ -108,7 +108,7 @@
     </div>
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Settings.ScheduleEndDate" class="control-label required-field"></label>
+            <badge asp-for="Settings.ScheduleEndDate" class="col-form-label required-field"></badge>
             <div class="input-group date datepicker">
                 <span class="input-group-addon">
                     <span class="fas fa-calendar-alt"></span>
@@ -120,31 +120,31 @@
     </div>
 
     <div class="form-group">
-        <label asp-for="Settings.VendorIdPrompt" class="control-label"></label>
+        <badge asp-for="Settings.VendorIdPrompt" class="col-form-label"></badge>
         <input asp-for="Settings.VendorIdPrompt" class="form-control" />
         <span asp-validation-for="Settings.VendorIdPrompt" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Settings.VendorCodeFormat" class="control-label"></label>
+        <badge asp-for="Settings.VendorCodeFormat" class="col-form-label"></badge>
         <input asp-for="Settings.VendorCodeFormat" class="form-control" />
         <span asp-validation-for="Settings.VendorCodeFormat" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Settings.BranchAvailabilitySupplementalText" class="control-label"></label>
+        <badge asp-for="Settings.BranchAvailabilitySupplementalText" class="col-form-label"></badge>
         <input asp-for="Settings.BranchAvailabilitySupplementalText" class="form-control" />
         <span asp-validation-for="Settings.BranchAvailabilitySupplementalText" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Settings.SetupSupplementalText" class="control-label"></label>
+        <badge asp-for="Settings.SetupSupplementalText" class="col-form-label"></badge>
         <input asp-for="Settings.SetupSupplementalText" class="form-control" />
         <span asp-validation-for="Settings.SetupSupplementalText" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label class="control-label">Questions</label>
+        <badge class="col-form-label">Questions</badge>
         <div class="form-control-plaintext">Configure questions about livestreaming and insurance in
             <a asp-controller="@GRA.Controllers.MissionControl.SitesController.Name"
                asp-action="@nameof(GRA.Controllers.MissionControl.SitesController.Settings)"

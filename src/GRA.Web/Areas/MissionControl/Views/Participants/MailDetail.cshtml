@@ -2,21 +2,21 @@
 
 <div class="row row-spacing">
     <div class="col-xs-12">
-        <label class="control-label">Sent At</label>
+        <badge class="col-form-label">Sent At</badge>
         <input value="@Model.Mail.CreatedAt.ToString()" class="form-control" readonly />
     </div>
 </div>
 
 <div class="row row-spacing">
     <div class="col-xs-12">
-        <label asp-for="Mail.Subject" class="control-label"></label>
+        <badge asp-for="Mail.Subject" class="col-form-label"></badge>
         <input asp-for="Mail.Subject" class="form-control" readonly />
     </div>
 </div>
 
 <div class="row row-spacing">
     <div class="col-xs-12">
-        <label asp-for="Mail.Body" class="control-label"></label>
+        <badge asp-for="Mail.Body" class="col-form-label"></badge>
         @if (Model.Mail.ToUserId.HasValue)
         {
             <div class="form-control" style="min-height:71px;" readonly>
@@ -32,15 +32,15 @@
 
 <div class="row row-spacing">
     <div class="col-xs-12">
-        <label class="control-label">Unread</label>
+        <badge class="col-form-label">Unread</badge>
         <input value="@(Model.Mail.IsNew ? "Yes" : "No")" class="form-control" readonly />
     </div>
 </div>
 
 
 <div class="form-group">
-    <a asp-action="Index" class="btn btn-default">Return to Participants</a>
-    <a asp-action="Mail" asp-route-id="@Model.Id" class="btn btn-default">Return to Mail List</a>
+    <a asp-action="Index" class="btn btn-secondary">Return to Participants</a>
+    <a asp-action="Mail" asp-route-id="@Model.Id" class="btn btn-secondary">Return to Mail List</a>
     @if (Model.CanRemoveMail)
     {
         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">
@@ -76,7 +76,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-default"
+                                class="btn btn-secondary"
                                 data-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel

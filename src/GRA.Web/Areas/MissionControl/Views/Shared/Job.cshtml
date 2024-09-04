@@ -18,12 +18,12 @@
                 <p id="wsStatus"></p>
             </div>
             <div class="modal-footer">
-                <div class="form-control-static pull-left" style="width: 2rem;">
+                <div class="form-control-plaintext pull-left" style="width: 2rem;">
                     <span class="fas fa-arrow-circle-up"
                           id="sendWs"
                           style="color: steelblue;"></span>
                 </div>
-                <div class="form-control-static pull-left" style="width: 2rem;">
+                <div class="form-control-plaintext pull-left" style="width: 2rem;">
                     <span class="fas fa-arrow-circle-down"
                           id="recvWs"
                           style="color: lightcoral;"></span>
@@ -70,7 +70,7 @@
                         {
                             $('#cancelWs').text(wsCompleteButton);
                             $('#cancelWs').removeClass('btn-danger');
-                            $('#cancelWs').addClass('btn-default');
+                            $('#cancelWs').addClass('btn-secondary');
                             $('#cancelWs').on('click', function () {
                                 window.location.href = wsError ? wsCancelUrl : wsSuccessUrl;
                                 return false;
@@ -168,7 +168,7 @@
                                 console.log("Complete");
                                 $('#cancelWs').text('Close window');
                                 $('#cancelWs').removeClass('btn-danger');
-                                $('#cancelWs').addClass('btn-default');
+                                $('#cancelWs').addClass('btn-secondary');
                                 $('#wsProgress').removeClass('active');
                                 $('#wsProgress').addClass('progress-bar-success');
                             }

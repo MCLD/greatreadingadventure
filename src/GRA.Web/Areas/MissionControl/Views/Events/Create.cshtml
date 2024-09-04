@@ -23,7 +23,7 @@
 
     <div class="row" style="padding: 10px 0;">
         <div class="col-xs-12">
-            <label asp-for="Event.Name" class="control-label"></label>
+            <badge asp-for="Event.Name" class="col-form-label"></badge>
             <input asp-for="Event.Name" class="form-control event-name-field" />
             <span asp-validation-for="Event.Name" class="text-danger"></span>
         </div>
@@ -33,7 +33,7 @@
         <div class="col-xs-8 col-sm-10 ">
             <div class="row">
                 <div class="col-xs-12 col-sm-6 row-spacing">
-                    <label asp-for="Event.StartDate" class="control-label"></label>
+                    <badge asp-for="Event.StartDate" class="col-form-label"></badge>
                     <div class="input-group date" id="pickerStart">
                         <span class="input-group-addon">
                             <span class="fas fa-calendar-alt"></span>
@@ -43,7 +43,7 @@
                     <span asp-validation-for="Event.StartDate" class="text-danger"></span>
                 </div>
                 <div class="col-xs-12 col-sm-6 row-spacing">
-                    <label asp-for="Event.EndDate" class="control-label"></label>
+                    <badge asp-for="Event.EndDate" class="col-form-label"></badge>
                     <div class="input-group date" id="pickerEnd">
                         <span class="input-group-addon">
                             <span class="fas fa-calendar-alt"></span>
@@ -55,7 +55,7 @@
             </div>
         </div>
         <div class="col-xs-4 col-sm-2 row-spacing">
-            <label asp-for="Event.AllDay" class="control-label center-label" style="text-align:center;"></label>
+            <badge asp-for="Event.AllDay" class="col-form-label center-label" style="text-align:center;"></badge>
             <input asp-for="Event.AllDay" class="form-control form-checkbox" />
             <span asp-validation-for="Event.AllDay" class="text-danger"></span>
         </div>
@@ -63,7 +63,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Event.Description" class="control-label"></label>
+            <badge asp-for="Event.Description" class="col-form-label"></badge>
             <textarea asp-for="Event.Description" class="form-control" rows="5"> </textarea>
             <span asp-validation-for="Event.Description" class="text-danger"></span>
         </div>
@@ -71,7 +71,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Event.ExternalLink" class="control-label"></label>
+            <badge asp-for="Event.ExternalLink" class="col-form-label"></badge>
             <input asp-for="Event.ExternalLink" class="form-control" />
             <span asp-validation-for="Event.ExternalLink" class="text-danger"></span>
         </div>
@@ -80,7 +80,7 @@
     <div id="branchGroup" class="@(Model.UseLocation ? "hide" : "" )">
         <div class="row row-spacing">
             <div class="col-xs-12">
-                <label asp-for="SystemId" class="control-label"></label>
+                <badge asp-for="SystemId" class="col-form-label"></badge>
                 <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control"></select>
                 <span asp-validation-for="SystemId" class="text-danger"></span>
             </div>
@@ -88,10 +88,10 @@
 
         <div class="row row-spacing">
             <div class="col-xs-12">
-                <label asp-for="Event.AtBranchId" class="control-label"></label>
-                <label style="font-size: 12px;">
+                <badge asp-for="Event.AtBranchId" class="col-form-label"></badge>
+                <badge style="font-size: 12px;">
                     <a id="viewLocationList" style="text-decoration:none;cursor:pointer">View location list</a>
-                </label>
+                </badge>
                 <select asp-for="Event.AtBranchId" asp-items="Model.BranchList" class="form-control">
                     <option></option>
                 </select>
@@ -103,17 +103,17 @@
 
     <div id="locationGroup" class="row row-spacing @(Model.UseLocation ? "" : "hide" )">
         <div class="col-xs-12">
-            <label asp-for="Event.AtLocationId" class="control-label"></label>
-            <label style="font-size: 12px;">
+            <badge asp-for="Event.AtLocationId" class="col-form-label"></badge>
+            <badge style="font-size: 12px;">
                 <a id="viewBranchList" style="text-decoration:none;cursor:pointer">View library list</a>
-            </label>
+            </badge>
             <div style="display:flex">
                 <select asp-for="Event.AtLocationId" asp-items="Model.LocationList" class="form-control">
                     <option></option>
                 </select>
                 @if (Model.CanManageLocations)
                 {
-                    <button type="button" class="btn btn-primary btn-xs" style="margin-left:8px;"
+                    <button type="button" class="btn btn-primary btn-sm" style="margin-left:8px;"
                             data-toggle="modal" data-target="#addModal">
                         <span class="fas fa-2x fa-plus"></span>
                     </button>
@@ -125,7 +125,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Event.ProgramId" class="control-label"></label>
+            <badge asp-for="Event.ProgramId" class="col-form-label"></badge>
             <select asp-for="Event.ProgramId" asp-items="Model.ProgramList" class="form-control">
                 <option value="">All Programs</option>
             </select>
@@ -140,8 +140,8 @@
         <input asp-for="Event.ChallengeGroupId" type="hidden" />
         <div class="row row-spacing">
             <div class="col-xs-12">
-                <label class="control-label">Related Challenge/Group</label>
-                <table id="challengeTable" class="table table-condensed table-bordered table-striped hide">
+                <badge class="col-form-label">Related Challenge/Group</badge>
+                <table id="challengeTable" class="table table-sm table-bordered table-striped hide">
                     <thead>
                         <tr>
                             <th>Challenge Name</th>
@@ -152,7 +152,7 @@
                     </thead>
                     <tbody id="challengeList"></tbody>
                 </table>
-                <table id="groupTable" class="table table-condensed table-bordered table-striped hide">
+                <table id="groupTable" class="table table-sm table-bordered table-striped hide">
                     <thead>
                         <tr>
                             <th>Group Name</th>
@@ -164,7 +164,7 @@
                     <tbody id="groupList"></tbody>
                 </table>
                 <div id="noRelated" class="alert alert-warning" style="margin-bottom: 10px;">No related challenges or challenge groups.</div>
-                <button type="button" id="addButton" class="btn btn-default" style="display: block"><span class="relatedText">@(Model.Event?.Challenge != null || Model.Event?.ChallengeGroup != null ? "Change" : "Add")</span> Related Challenge</button>
+                <button type="button" id="addButton" class="btn btn-secondary" style="display: block"><span class="relatedText">@(Model.Event?.Challenge != null || Model.Event?.ChallengeGroup != null ? "Change" : "Add")</span> Related Challenge</button>
             </div>
         </div>
     }
@@ -197,7 +197,7 @@
                     <div class="panel-body">
                         <div class="row row-spacing">
                             <div class="col-xs-12">
-                                <label asp-for="SecretCode" class="control-label"></label>
+                                <badge asp-for="SecretCode" class="col-form-label"></badge>
                                 <span id="SecretCode-Icon" class="fa colored-icon hide"></span>
                                 <input asp-for="SecretCode" class="form-control secretCodeField @(Model.IncludeSecretCode ? "" : "ignore")" />
                                 <span id="SecretCode-Validation" asp-validation-for="SecretCode" class="text-danger"></span>
@@ -206,7 +206,7 @@
 
                         <div class="row row-spacing">
                             <div class="col-xs-12">
-                                <label asp-for="AwardMessage" class="control-label"></label>
+                                <badge asp-for="AwardMessage" class="col-form-label"></badge>
                                 <textarea asp-for="AwardMessage" class="form-control secretCodeField @(Model.IncludeSecretCode ? "" : "ignore")"></textarea>
                                 <span asp-validation-for="AwardMessage" class="text-danger"></span>
                             </div>
@@ -214,8 +214,8 @@
 
                         <div class="row row-spacing">
                             <div class="col-xs-12">
-                                <label asp-for="AwardPoints" class="control-label"></label>
-                                <label style="font-size: 12px;">@Model.MaxPointLimitMessage</label>
+                                <badge asp-for="AwardPoints" class="col-form-label"></badge>
+                                <badge style="font-size: 12px;">@Model.MaxPointLimitMessage</badge>
                                 <input asp-for="AwardPoints" min="0" class="form-control secretCodeField @(Model.IncludeSecretCode ? "" : "ignore")" />
                                 <span asp-validation-for="AwardPoints" class="text-danger"></span>
                             </div>
@@ -223,7 +223,7 @@
 
                         <div class="row row-spacing">
                             <div class="col-xs-12">
-                                <label class="control-label">Award Badge</label>
+                                <badge class="col-form-label">Award Badge</badge>
                             </div>
 
                             <div class="col-xs-12 col-sm-4 col-md-3">
@@ -246,18 +246,18 @@
 
                                 <div class="tab-content">
                                     <div role="tabpanel" class="tab-pane @(Model.UseBadgeMaker ? "active" : "")" id="badge">
-                                        <button id="openMaker" type="button" class="btn btn-default">
+                                        <button id="openMaker" type="button" class="btn btn-secondary">
                                             <span class="fas fa-certificate"></span> Create a Badge
                                         </button>
                                     </div>
                                     <div role="tabpanel" class="tab-pane @(Model.UseBadgeMaker ? "" : "active")" id="upload">
                                         <p>Upload a badge image. Badge images must be square.</p>
                                         <div class="input-group">
-                                            <label class="input-group-btn">
-                                                <span class="btn btn-default btn-file">
+                                            <badge class="input-group-append">
+                                                <span class="btn btn-secondary btn-file">
                                                     <span class="far fa-file-image"></span> Select an image<input type="file" asp-for="BadgeUploadImage" accept=".png,.jpg,.jpeg" style="display: none;" />
                                                 </span>
-                                            </label>
+                                            </badge>
                                             <input type="text" class="form-control" readonly id="selectedFile">
                                         </div>
                                         <div>
@@ -269,7 +269,7 @@
                         </div>
                         <div class="row row-spacing">
                             <div class="col-xs-12">
-                                <label asp-for="BadgeAltText" class="control-label"></label>
+                                <badge asp-for="BadgeAltText" class="col-form-label"></badge>
                                 <span class="fas fa-info-circle wide-tooltip"
                                       title="How should this badge be described to someone who can't see it?"
                                       data-toggle="tooltip"
@@ -286,7 +286,7 @@
 
 
     <div class="form-group">
-        <a asp-action="Index" class="btn btn-default">Return to List</a>
+        <a asp-action="Index" class="btn btn-secondary">Return to List</a>
         <button type="submit" class="btn btn-primary" id="saveEvent" button-spinner>
             <span class="buttonText">Create @(Model.NewCommunityExperience ? "Community Experience" : "Event")</span>
         </button>
@@ -320,7 +320,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                            class="btn btn-default"
+                            class="btn btn-secondary"
                             data-dismiss="modal"
                             style="margin-right: 1em;">
                         Cancel
@@ -410,7 +410,7 @@
                                                 <div class="col-xs-6">
                                                     <button type="button"
                                                             id="challengeSearchButton"
-                                                            class="btn btn-default btn-block"
+                                                            class="btn btn-secondary btn-block"
                                                             style="margin-right: 8px;">
                                                         Search
                                                     </button>
@@ -418,7 +418,7 @@
                                                 <div class="col-xs-6">
                                                     <button type="button"
                                                             id="challengeClearButton"
-                                                            class="btn btn-default btn-block">
+                                                            class="btn btn-secondary btn-block">
                                                         Clear
                                                     </button>
                                                 </div>
@@ -447,7 +447,7 @@
                                                 <div class="col-xs-6">
                                                     <button type="button"
                                                             id="groupSearchButton"
-                                                            class="btn btn-default btn-block"
+                                                            class="btn btn-secondary btn-block"
                                                             style="margin-right: 8px;">
                                                         Search
                                                     </button>
@@ -455,7 +455,7 @@
                                                 <div class="col-xs-6">
                                                     <button type="button"
                                                             id="groupClearButton"
-                                                            class="btn btn-default btn-block">
+                                                            class="btn btn-secondary btn-block">
                                                         Clear
                                                     </button>
                                                 </div>
@@ -477,7 +477,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button"
-                                        class="btn btn-default"
+                                        class="btn btn-secondary"
                                         data-dismiss="modal"
                                         style="margin-right: 1em;">
                                     Close
@@ -537,15 +537,15 @@
                         </div>
                         <div class="modal-body">
                             <div class="form-group">
-                                <label asp-for="Location.Name" class="control-label"></label>
+                                <badge asp-for="Location.Name" class="col-form-label"></badge>
                                 <input asp-for="Location.Name" class="form-control" />
                                 <span asp-validation-for="Location.Name"
                                       class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="Location.Address"
-                                       class="control-label">Address (include city, state and zip)
-                                </label>
+                                <badge asp-for="Location.Address"
+                                       class="col-form-label">Address (include city, state and zip)
+                                </badge>
                                 <input asp-for="Location.Address"
                                        class="form-control addressInput" />
                                 <span asp-validation-for="Location.Address"
@@ -561,12 +561,12 @@
                                 </div>
                             }
                             <div class="form-group">
-                                <label asp-for="Location.Url" class="control-label"></label>
+                                <badge asp-for="Location.Url" class="col-form-label"></badge>
                                 <input asp-for="Location.Url" class="form-control" />
                                 <span asp-validation-for="Location.Url" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="Location.Telephone" class="control-label"></label>
+                                <badge asp-for="Location.Telephone" class="col-form-label"></badge>
                                 <input asp-for="Location.Telephone" class="form-control" />
                                 <span asp-validation-for="Location.Telephone"
                                       class="text-danger"></span>
@@ -574,7 +574,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button"
-                                    class="btn btn-default"
+                                    class="btn btn-secondary"
                                     data-dismiss="modal"
                                     style="margin-right: 1em;">
                                 Cancel
@@ -785,7 +785,7 @@
                 if (input.length)
                 {
                     input.val(log);
-                    $('.btn-file').removeClass('btn-default');
+                    $('.btn-file').removeClass('btn-secondary');
                     $('.btn-file').addClass('btn-success');
                     $("#badgeImage").removeAttr("src");
                     $("#badgeImage").height(200);
@@ -794,7 +794,7 @@
                 else
                 {
                     input.val('');
-                    $('.btn-file').addClass('btn-default');
+                    $('.btn-file').addClass('btn-secondary');
                     $('.btn-file').removeClass('btn-success');
                 }
             });
@@ -826,7 +826,7 @@
                 $("#badgeImage").height(200);
                 $("#BadgeMakerImage").val(data);
                 $('#BadgeUploadImage').val('');
-                $('.btn-file').addClass('btn-default');
+                $('.btn-file').addClass('btn-secondary');
                 $('.btn-file').removeClass('btn-success');
                 $('#selectedFile').val('');
             });

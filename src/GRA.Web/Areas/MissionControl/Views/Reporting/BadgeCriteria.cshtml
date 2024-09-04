@@ -7,14 +7,14 @@
 
     <div class="row" style="padding: 10px 0;">
         <div class="col-xs-12">
-            <btn type="button" class="btn btn-default time-selector" data-start="null" data-end="null">Entire program</btn>
-            <btn type="button" class="btn btn-default time-selector" data-start="@DateTime.Now.AddDays(-8).ToString("MM/dd/yyyy")" data-end="@DateTime.Now.AddDays(-1).ToString("MM/dd/yyyy")">Last 7 days</btn>
+            <btn type="button" class="btn btn-secondary time-selector" data-start="null" data-end="null">Entire program</btn>
+            <btn type="button" class="btn btn-secondary time-selector" data-start="@DateTime.Now.AddDays(-8).ToString("MM/dd/yyyy")" data-end="@DateTime.Now.AddDays(-1).ToString("MM/dd/yyyy")">Last 7 days</btn>
         </div>
     </div>
 
     <div class="form-group">
         <div class="col-xs-6">
-            <label asp-for="StartDate" class="control-label"></label>
+            <badge asp-for="StartDate" class="col-form-label"></badge>
             <div class="input-group date" id="pickerStart">
                 <span class="input-group-addon">
                     <span class="fas fa-calendar-alt"></span>
@@ -25,7 +25,7 @@
         </div>
 
         <div class="col-xs-6">
-            <label asp-for="EndDate" class="control-label"></label>
+            <badge asp-for="EndDate" class="col-form-label"></badge>
             <div class="input-group date" id="pickerEnd">
                 <span class="input-group-addon">
                     <span class="fas fa-calendar-alt"></span>
@@ -38,7 +38,7 @@
 
     <div class="form-group">
         <div class="col-xs-12">
-            <label asp-for="SystemId" class="control-label"></label>
+            <badge asp-for="SystemId" class="col-form-label"></badge>
             <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control">
                 <option value="">All systems</option>
             </select>
@@ -52,7 +52,7 @@
             </div>
             <div class="panel-body">
                 <div>
-                    <table class="table table-condensed table-bordered table-striped">
+                    <table class="table table-sm table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -91,7 +91,7 @@
                                         <td>
                                             <button type="button"
                                                     id="removeRequirementButton"
-                                                    class="btn btn-link btn-xs"
+                                                    class="btn btn-link btn-sm"
                                                     data-badgeid="@requirement.BadgeId"
                                                     data-challengeid="@requirement.ChallengeId">
                                                 <span class="fas fa-2x fa-minus-circle text-danger" aria-hidden="true"></span>
@@ -160,7 +160,7 @@
                                     <div class="col-xs-6">
                                         <button type="button"
                                                 id="searchButton"
-                                                class="btn btn-default btn-block"
+                                                class="btn btn-secondary btn-block"
                                                 style="margin-right: 8px;">
                                             Search
                                         </button>
@@ -168,7 +168,7 @@
                                     <div class="col-xs-6">
                                         <button type="button"
                                                 id="clearButton"
-                                                class="btn btn-default btn-block">
+                                                class="btn btn-secondary btn-block">
                                             Clear
                                         </button>
                                     </div>
@@ -188,7 +188,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button"
-                                    class="btn btn-default"
+                                    class="btn btn-secondary"
                                     data-dismiss="modal"
                                     style="margin-right: 1em;">
                                 Close

@@ -10,7 +10,7 @@
 
 <div id="schoolGroup" class="row row-spacing">
     <div class="col-xs-12">
-        <label class="control-label">@SharedLocalizer[GRA.Domain.Model.DisplayNames.School]</label>
+        <badge class="col-form-label">@SharedLocalizer[GRA.Domain.Model.DisplayNames.School]</badge>
         <select asp-for="SchoolId" asp-items="Model.SchoolList" class="selectpicker form-control" data-live-search="true" data-none-selected-text="">
             <option></option>
         </select>
@@ -21,8 +21,8 @@
 <div class="row row-spacing">
     <div class="col-xs-12">
         <input asp-for="IsHomeschooled" class="school-selection-checkbox" />
-        <label asp-for="IsHomeschooled">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Homeschooled]</label>
+        <badge asp-for="IsHomeschooled">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Homeschooled]</badge>
         <input asp-for="SchoolNotListed" class="school-selection-checkbox" />
-        <label asp-for="SchoolNotListed">@SharedLocalizer[GRA.Domain.Model.DisplayNames.SchoolNotListed]</label>
+        <badge asp-for="SchoolNotListed">@SharedLocalizer[GRA.Domain.Model.DisplayNames.SchoolNotListed]</badge>
     </div>
 </div>

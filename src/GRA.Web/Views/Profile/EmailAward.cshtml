@@ -10,7 +10,7 @@
                     <p>@Html.Raw(Model.EmailAwardInstructions)</p>
                     <div class="row row-spacing">
                         <div class="col-xs-12">
-                            <label asp-for="Email" class="control-label"></label>
+                            <badge asp-for="Email" class="col-form-label"></badge>
                             <input asp-for="Email" type="email" class="form-control" required />
                             <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
@@ -18,7 +18,7 @@
                 </div>
                 <div class="panel-footer">
                     <a asp-action="@(Model.UserId.HasValue ? nameof(ProfileController.Household) : nameof(ProfileController.Index))"
-                       class="btn btn-default" 
+                       class="btn btn-secondary" 
                        data-dismiss="modal" 
                        style="margin-right: 1em;">
                         @SharedLocalizer[GRA.Annotations.Interface.Cancel]

@@ -6,7 +6,7 @@
 {
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <a asp-action="@nameof(ChallengesController.FeaturedCreate)" class="btn btn-default">Add Featured Group</a>
+            <a asp-action="@nameof(ChallengesController.FeaturedCreate)" class="btn btn-secondary">Add Featured Group</a>
         </div>
     </div>
 }
@@ -20,7 +20,7 @@
         else
         {
             <div>
-                <table class="table table-condensed table-bordered @(Model.CanManageFeaturedGroups ? "link-table" : "table-striped")">
+                <table class="table table-sm table-bordered @(Model.CanManageFeaturedGroups ? "link-table" : "table-striped")">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -83,7 +83,7 @@
                                             <input type="hidden" name="page" value="@Model.CurrentPage" />
                                             <input type="hidden" name="increase" value="false" />
                                             <button type="submit"
-                                        class="btn btn-default btn-xs btn-spinner"
+                                        class="btn btn-secondary btn-sm btn-spinner"
                                         disabled="@(Model.CurrentPage == 1 && featuredGroup == Model.FeaturedGroups.First() ? " disabled" : null)">
                                                 <span class="fas fa-arrow-up fa-fw"></span>
                                             </button>
@@ -95,13 +95,13 @@
                                             <input type="hidden" name="page" value="@Model.CurrentPage" />
                                             <input type="hidden" name="increase" value="true" />
                                             <button type="submit"
-                                        class="btn btn-default btn-xs btn-spinner"
+                                        class="btn btn-secondary btn-sm btn-spinner"
                                         disabled="@(Model.CurrentPage == Model.MaxPage && featuredGroup == Model.FeaturedGroups.Last() ? " disabled" : null)">
                                                 <span class="fas fa-arrow-down fa-fw"></span>
                                             </button>
                                         </form>
                                         <button type="button"
-                                    class="btn btn-danger btn-xs"
+                                    class="btn btn-danger btn-sm"
                                     data-toggle="modal"
                                     data-target="#deleteModal"
                                     data-id="@featuredGroup.Id"
@@ -153,7 +153,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-default"
+                                class="btn btn-secondary"
                                 data-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel

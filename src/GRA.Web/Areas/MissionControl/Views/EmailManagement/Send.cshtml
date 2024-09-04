@@ -24,8 +24,8 @@
             <input type="hidden" name="templateId" value="@Model.Template.Id">
             <div class="row row-spacing">
                 <div class="col-xs-12">
-                    <label asp-for="SubscriptionLists"
-                   class="control-label">Select a subscriber list:</label>
+                    <badge asp-for="SubscriptionLists"
+                   class="col-form-label">Select a subscriber list:</badge>
                     <select name="listName"
                     asp-items="@Model.SubscriptionLists"
                     placeholder="Select a mailing list"
@@ -38,7 +38,7 @@
 
             <div class="row row-spacing">
                 <div class="col-xs-12">
-                    <a class="btn btn-default"
+                    <a class="btn btn-secondary"
                asp-action="@nameof(EmailManagementController.Index)">Back</a>
                     <button class="btn btn-success">Select this list</button>
                 </div>
@@ -88,7 +88,7 @@
                 <input type="hidden" name="templateId" value="@Model.Template.Id">
                 <div class="row row-spacing">
                     <div class="col-xs-12">
-                        <a class="btn btn-default"
+                        <a class="btn btn-secondary"
                asp-action="@nameof(EmailManagementController.Index)">Back</a>
                         <button class="btn btn-success">Send to participants</button>
                     </div>

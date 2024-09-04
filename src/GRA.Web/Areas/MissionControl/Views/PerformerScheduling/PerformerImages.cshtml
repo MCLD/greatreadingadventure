@@ -8,7 +8,7 @@
     <div class="col-xs-12">
         <h1>
             Images for Performer: @Model.Name
-            <a asp-action="Performer" asp-route-id="@Model.Id" class="btn btn-lg btn-default" style="margin-bottom:10px;">Return to Performer</a>
+            <a asp-action="Performer" asp-route-id="@Model.Id" class="btn btn-lg btn-secondary" style="margin-bottom:10px;">Return to Performer</a>
         </h1>
     </div>
     <div class="col-xs-12">
@@ -26,7 +26,7 @@
                 }
                 <div class="col-xs-12 col-md-4" style="margin-bottom:40px;">
                     <div style="padding:10px;border:1px solid black;">
-                        <img src="~/@Model.Images[i].Filename" class="img-responsive" style="margin: 0 auto;" />
+                        <img src="~/@Model.Images[i].Filename" class="img-fluid" style="margin: 0 auto;" />
                     </div>
                 </div>
                 if (i % 3 == 2)

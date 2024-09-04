@@ -24,7 +24,7 @@
 
                     <div class="row row-spacing">
                         <div class="col-xs-12">
-                            <label asp-for="FirstName" class="control-label"></label>
+                            <badge asp-for="FirstName" class="col-form-label"></badge>
                             <input asp-for="FirstName" class="form-control first-name-field" />
                             <span asp-validation-for="FirstName" class="text-danger"></span>
                         </div>
@@ -32,7 +32,7 @@
 
                     <div class="row row-spacing">
                         <div class="col-xs-12">
-                            <label asp-for="LastName" class="control-label"></label>
+                            <badge asp-for="LastName" class="col-form-label"></badge>
                             <input asp-for="LastName" class="form-control" />
                             <span asp-validation-for="LastName" class="text-danger"></span>
                         </div>
@@ -42,7 +42,7 @@
                     {
                         <div class="row row-spacing">
                             <div class="col-xs-12">
-                                <label asp-for="PostalCode" class="control-label"></label>
+                                <badge asp-for="PostalCode" class="col-form-label"></badge>
                                 <input asp-for="PostalCode" class="form-control" />
                                 <span asp-validation-for="PostalCode" class="text-danger"></span>
                             </div>
@@ -53,7 +53,7 @@
                     {
                         <div class="row row-spacing">
                             <div class="col-xs-12">
-                                <label asp-for="SystemId" class="control-label"></label>
+                                <badge asp-for="SystemId" class="col-form-label"></badge>
                                 <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control">
                                     <option></option>
                                 </select>
@@ -74,7 +74,7 @@
                     {
                         <div class="row row-spacing">
                             <div class="col-xs-12">
-                                <label asp-for="BranchId" class="control-label"></label>
+                                <badge asp-for="BranchId" class="col-form-label"></badge>
                                 <select asp-for="BranchId"
                                         asp-items="Model.BranchList"
                                         class="form-control"></select>

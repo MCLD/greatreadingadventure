@@ -14,12 +14,12 @@
                         Please enter a group name and select the appropriate group type.
                     </p>
                     <div class="form-group">
-                        <label asp-for="GroupInfo.Name" class="control-label"></label>
+                        <badge asp-for="GroupInfo.Name" class="col-form-label"></badge>
                         <input asp-for="GroupInfo.Name" class="form-control" />
                         <span asp-validation-for="GroupInfo.Name" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="GroupInfo.GroupTypeId" class="control-label"></label>
+                        <badge asp-for="GroupInfo.GroupTypeId" class="col-form-label"></badge>
                         <select asp-for="GroupInfo.GroupTypeId"
                                 asp-items="Model.GroupTypes"
                                 class="form-control"></select>

@@ -4,7 +4,7 @@
 
 <div class="row" style="padding: 10px 0;">
     <div class="col-xs-12">
-        <a class="btn btn-default"
+        <a class="btn btn-secondary"
            data-toggle="modal"
            data-target="#addModal">Add Branch Exclusion</a>
     </div>
@@ -19,7 +19,7 @@
         else
         {
             <div>
-                <table class="table table-condensed table-bordered table-striped">
+                <table class="table table-sm table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -39,7 +39,7 @@
                                 </td>
                                 <td>
                                     <button type="button"
-                                            class="btn btn-danger btn-xs"
+                                            class="btn btn-danger btn-sm"
                                             data-toggle="modal"
                                             data-target="#deleteModal"
                                             data-id="@Branch.Id"
@@ -85,7 +85,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label asp-for="BranchId" class="control-label"></label>
+                            <badge asp-for="BranchId" class="col-form-label"></badge>
                             <select asp-for="BranchId"
                                     asp-items="Model.UnexcludedBranches"
                                     class="form-control"></select>
@@ -94,7 +94,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-default"
+                                class="btn btn-secondary"
                                 data-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel
@@ -144,7 +144,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-default"
+                                class="btn btn-secondary"
                                 data-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel

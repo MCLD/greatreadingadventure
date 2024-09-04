@@ -29,7 +29,7 @@
 
     <div class="row row-spacing">
         <div class="col-sm-8 col-sm-offset-2">
-            <label asp-for="Subject" class="control-label"></label>
+            <badge asp-for="Subject" class="col-form-label"></badge>
             <input asp-for="Subject" class="form-control" />
             <span asp-validation-for="Subject" class="text-danger"></span>
         </div>
@@ -37,7 +37,7 @@
 
     <div class="row row-spacing">
         <div class="col-sm-8 col-sm-offset-2">
-            <label asp-for="Body" class="control-label"></label>
+            <badge asp-for="Body" class="col-form-label"></badge>
             <textarea asp-for="Body" class="form-control"></textarea>
             <span asp-validation-for="Body" class="text-danger"></span>
         </div>
@@ -45,8 +45,8 @@
 
     <div class="row">
         <div class="col-sm-8 col-sm-offset-2">
-            <a asp-action="Index" class="btn btn-default">Return to Mail List</a>
-            <a asp-action="Detail" asp-route-id="@Model.InReplyToId" class="btn btn-default">Return to Mail</a>
+            <a asp-action="Index" class="btn btn-secondary">Return to Mail List</a>
+            <a asp-action="Detail" asp-route-id="@Model.InReplyToId" class="btn btn-secondary">Return to Mail</a>
             <button type="submit" class="btn btn-primary">
                 Send Reply
             </button>

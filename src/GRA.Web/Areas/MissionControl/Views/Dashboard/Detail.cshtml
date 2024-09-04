@@ -6,7 +6,7 @@
 
 @if (Model.Action == "Edit")
 {
-    <a asp-action="Preview" asp-route-id="@Model.DashboardContent.Id" class="btn btn-default" style="margin:10px 0;"> Full Preview</a>
+    <a asp-action="Preview" asp-route-id="@Model.DashboardContent.Id" class="btn btn-secondary" style="margin:10px 0;"> Full Preview</a>
 }
 
 <form asp-controller="Dashboard" asp-action="@Model.Action" method="post" role="form">
@@ -18,7 +18,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="DashboardContent.StartTime" class="control-label"></label>
+            <badge asp-for="DashboardContent.StartTime" class="col-form-label"></badge>
             <div class="input-group date" id="pickerStart">
                 <span class="input-group-addon">
                     <span class="fas fa-calendar-alt"></span>
@@ -31,17 +31,17 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="DashboardContent.Content" class="control-label"></label>
+            <badge asp-for="DashboardContent.Content" class="col-form-label"></badge>
             <div id="wmd-button-bar"></div>
             <textarea asp-for="DashboardContent.Content" id="wmd-input" class="form-control wmd-input"> </textarea>
-            <br /><label class="control-label">Preview</label>
+            <br /><badge class="col-form-label">Preview</badge>
             <div id="preview"></div>
             <span asp-validation-for="DashboardContent.Content" class="text-danger"></span>
         </div>
     </div>
 
     <div class="form-group">
-        <a asp-action="Index" class="btn btn-default">Return to List</a>
+        <a asp-action="Index" class="btn btn-secondary">Return to List</a>
         <button type="submit"
                 id="Submit"
                 name="Submit"

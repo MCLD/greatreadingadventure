@@ -29,7 +29,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Questionnaire.Name" class="control-label"></label>
+            <badge asp-for="Questionnaire.Name" class="col-form-label"></badge>
             <input asp-for="Questionnaire.Name" class="form-control" />
             <span asp-validation-for="Questionnaire.Name" class="text-danger"></span>
         </div>
@@ -55,7 +55,7 @@
                         <span class="fas fa-lg fa-minus-circle text-danger removeRow"></span>
                     }
                     <button type="button"
-                            class="btn btn-default pull-right editQuestionButton"
+                            class="btn btn-secondary pull-right editQuestionButton"
                             style="margin-right:10px;"
                             data-id="@question.Id"
                             data-name="@question.Name"
@@ -70,7 +70,7 @@
     @if (!Model.Questionnaire.IsLocked)
     {
         <div class="form-group">
-            <button type="button" id="addQuestionButton" class="btn btn-default">
+            <button type="button" id="addQuestionButton" class="btn btn-secondary">
                 Add Question
             </button>
         </div>
@@ -78,7 +78,7 @@
     <hr />
 
     <div class="form-group">
-        <a asp-action="Index" class="btn btn-default">Return to List</a>
+        <a asp-action="Index" class="btn btn-secondary">Return to List</a>
         @if (!Model.Questionnaire.IsLocked)
         {
             <button type="submit" class="btn btn-primary" button-spinner>
@@ -117,12 +117,12 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label asp-for="Question.Name" class="control-label"></label>
+                            <badge asp-for="Question.Name" class="col-form-label"></badge>
                             <input asp-for="Question.Name" class="form-control" />
                             <span asp-validation-for="Question.Name" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Question.Text" class="control-label"></label>
+                            <badge asp-for="Question.Text" class="col-form-label"></badge>
                             <textarea asp-for="Question.Text" class="form-control"></textarea>
                             <span asp-validation-for="Question.Text" class="text-danger"></span>
                         </div>
@@ -133,7 +133,7 @@
                         </div>
                         @if (!Model.Questionnaire.IsLocked)
                         {
-                            <button type="button" id="addAnswerButton" class="btn btn-default">
+                            <button type="button" id="addAnswerButton" class="btn btn-secondary">
                                 Add Answer
                         </button>
                         }
@@ -143,7 +143,7 @@
                             Question saved!
                         </span>
                         <button type="button"
-                                class="btn btn-default"
+                                class="btn btn-secondary"
                                 data-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel
@@ -299,7 +299,7 @@
                                     }
                                     else {
                                         form.find("#Question_Id").val(response.question.id);
-                                        $("#questionList").append("<div class='orderable-row' id='question_" + response.question.id + "' +> <span class='fas fa-bars' style='margin-right:6px;'></span> <span class='name'>" + response.question.name + "</span><span class='fas fa-lg fa-minus-circle text-danger removeRow'></span><button type='button' class='btn btn-default pull-right editQuestionButton' style='margin-right:10px;' data-id='" + response.question.id + "' data-name='" + response.question.name + "' data-text='" + response.question.text + "' data-correctanswerid='" + response.question.correctAnswerId + "'>Edit</button></div>");
+                                        $("#questionList").append("<div class='orderable-row' id='question_" + response.question.id + "' +> <span class='fas fa-bars' style='margin-right:6px;'></span> <span class='name'>" + response.question.name + "</span><span class='fas fa-lg fa-minus-circle text-danger removeRow'></span><button type='button' class='btn btn-secondary pull-right editQuestionButton' style='margin-right:10px;' data-id='" + response.question.id + "' data-name='" + response.question.name + "' data-text='" + response.question.text + "' data-correctanswerid='" + response.question.correctAnswerId + "'>Edit</button></div>");
                                         $("#QuestionSortOrder").val($("#questionList").sortable("serialize"));
                                     }
                                     $("#modalUpdateText").show().delay(2000).fadeOut("slow");

@@ -6,7 +6,7 @@
     <div class="row row-spacing">
         <div class="col-xs-12">
             <div class="form-group">
-                <label for="vendorCodeTypeId">Vendor code:</label>
+                <badge for="vendorCodeTypeId">Vendor code:</badge>
                 <select id="vendorCodeTypeId" name="vendorCodeTypeId" asp-items="@Model" class="form-control"></select>
             </div>
         </div>
@@ -21,21 +21,21 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="form-group">
-                <label for="selectedFile">Update email award status:</label>
+                <badge for="selectedFile">Update email award status:</badge>
                 <div class="input-group">
-                    <label class="input-group-btn">
-                        <span class="btn btn-default btn-file">
+                    <badge class="input-group-append">
+                        <span class="btn btn-secondary btn-file">
                             <span class="far fa-file-image"></span>
                             Select an Excel file<input type="file" name="excelFile" accept=".xls" />
                         </span>
-                    </label>
+                    </badge>
                     <input type="text" class="form-control" readonly id="selectedFile">
-                    <span class="input-group-btn">
+                    <span class="input-group-append">
                         <button type="submit"
                                 asp-action="@nameof(VendorCodesController.EmailAwardStatus)"
                                 formmethod="post"
                                 formenctype="multipart/form-data"
-                                class="btn btn-default"
+                                class="btn btn-secondary"
                                 data-toggle="modal"
                                 data-target="#importModal">
                             <span class="fas fa-upload"></span>
@@ -78,12 +78,12 @@
 
             if (input.length) {
                 input.val(log);
-                $('.btn-file').removeClass('btn-default');
+                $('.btn-file').removeClass('btn-secondary');
                 $('.btn-file').addClass('btn-success');
             }
             else {
                 input.val('');
-                $('.btn-file').addClass('btn-default');
+                $('.btn-file').addClass('btn-secondary');
                 $('.btn-file').removeClass('btn-success');
             }
         });

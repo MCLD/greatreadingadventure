@@ -16,31 +16,31 @@
                     <div class="panel-body">
                         <div class="row form-group">
                             <div class="col-xs-6">
-                                <label>Branch</label>
+                                <badge>Branch</badge>
                                 <div>@Model.BranchSelection.Branch.Name</div>
                             </div>
                             <div class="col-xs-6">
-                                <label>Age Group</label>
+                                <badge>Age Group</badge>
                                 <div>@Model.BranchSelection.AgeGroup.Name</div>
                             </div>
                         </div>
                         <div class="row form-group">
                             <div class="col-xs-6">
-                                <label>Program</label>
+                                <badge>Program</badge>
                                 <div>@Model.BranchSelection.Program.Title</div>
                             </div>
                             <div class="col-xs-6">
-                                <label>Program Length</label>
+                                <badge>Program Length</badge>
                                 <div>@Model.BranchSelection.Program.ProgramLengthMinutes minutes</div>
                             </div>
                         </div>
                         <div class="row form-group">
                             <div class="col-xs-6">
-                                <label>Set-up Time</label>
+                                <badge>Set-up Time</badge>
                                 <div>@Model.BranchSelection.Program.SetupTimeMinutes minutes</div>
                             </div>
                             <div class="col-xs-6">
-                                <label>Breakdown Time</label>
+                                <badge>Breakdown Time</badge>
                                 <div>@Model.BranchSelection.Program.BreakdownTimeMinutes minutes</div>
                             </div>
                         </div>
@@ -48,11 +48,11 @@
                         {
                             <div class="row form-group">
                                 <div class="col-xs-6">
-                                    <label>Back to Back Program</label>
+                                    <badge>Back to Back Program</badge>
                                     <div>Yes</div>
                                 </div>
                                 <div class="col-xs-6">
-                                    <label>Back to Back Time</label>
+                                    <badge>Back to Back Time</badge>
                                     <div>@Model.BranchSelection.Program.BackToBackMinutes minutes</div>
                                 </div>
                             </div>
@@ -67,10 +67,10 @@
                 <div class=" panel panel-default">
                     <form class="panel-body" id="onSiteContactInfo">
                         <div class="form-group">
-                            <label>Please provide contact information for someone the performer can contact the day of the performance.</label>
+                            <badge>Please provide contact information for someone the performer can contact the day of the performance.</badge>
                         </div>
                         <div class="form-group">
-                            <label for="OnSiteContactName">Name:</label>
+                            <badge for="OnSiteContactName">Name:</badge>
                             <div class="input-with-validation">
                                 <input name="OnSiteContactName" asp-for="BranchSelection.OnSiteContactName" type="text" class="form-control" required>
                                 <div class="validation"></div>
@@ -78,7 +78,7 @@
                             <span class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label for="OnSiteContactEmail">Email:</label>
+                            <badge for="OnSiteContactEmail">Email:</badge>
                             <div class="input-with-validation">
                                 <input name="OnSiteContactEmail" asp-for="BranchSelection.OnSiteContactEmail" type="email" pattern=".+@@.+\..+" class="form-control" required>
                                 <div class="validation"></div>
@@ -86,7 +86,7 @@
                             <span class="text-danger"></span>
                         </div class="form-group">
                         <div>
-                            <label for="OnSiteContactPhone">Phone (please enter numbers only):</label>
+                            <badge for="OnSiteContactPhone">Phone (please enter numbers only):</badge>
                             <div class="input-with-validation">
                                 <input name="OnSiteContactPhone" asp-for="BranchSelection.OnSiteContactPhone" type="tel" pattern="[0-9]{10}" class="form-control" required>
                                 <div class="validation"></div>

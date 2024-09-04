@@ -124,7 +124,7 @@
                                     }
                                     @if (!string.IsNullOrWhiteSpace(Model.Tasks[i].FilePath))
                                     {
-                                        <a href="@Model.Tasks[i].FilePath" target="_blank" class="btn btn-xs btn-default" style="margin-top:5px;">
+                                        <a href="@Model.Tasks[i].FilePath" target="_blank" class="btn btn-sm btn-secondary" style="margin-top:5px;">
                                             <span class="far fa-file"></span>
                                             @SharedLocalizer[GRA.Annotations.Interface.ViewCertificate]
                                         </a>
@@ -136,7 +136,7 @@
                 </table>
                 <div class="panel-footer clearfix hidden-print">
                     <div class="pull-left">
-                        <return asp-action="Index" class="btn btn-default btn-lg">@SharedLocalizer[GRA.Annotations.Interface.BackToChallenges]</return>
+                        <return asp-action="Index" class="btn btn-secondary btn-lg">@SharedLocalizer[GRA.Annotations.Interface.BackToChallenges]</return>
                     </div>
                     @if (Model.Challenge.IsCompleted == true && Model.ShowCompleted)
                     {
@@ -152,7 +152,7 @@
                         <input asp-for="Challenge.Id" type="hidden" />
                         <div class="pull-right">
                             <button type="submit"
-                                    class="btn center-block btn-success btn-lg btn-spinner"
+                                    class="btn mx-auto btn-success btn-lg btn-spinner"
                                     button-spinner>
                                 <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.Save]</span>
                             </button>

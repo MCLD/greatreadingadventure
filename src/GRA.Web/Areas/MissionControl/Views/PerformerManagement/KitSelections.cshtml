@@ -34,17 +34,17 @@
                     <div class="panel-body">
                         <div class="row form-group">
                             <div class="col-xs-6">
-                                <label>Kit</label>
+                                <badge>Kit</badge>
                                 <div>@Model.Kit.Name</div>
                             </div>
                             <div class="col-xs-6">
-                                <label>Kit Selections</label>
+                                <badge>Kit Selections</badge>
                                 <div>@Model.BranchSelections.Count()</div>
                             </div>
                         </div>
                         <div class="row form-group">
                             <div class="col-xs-12">
-                                <a asp-action="Kit" asp-route-id="@Model.Kit.Id" class="btn btn-lg btn-default">View Kit</a>
+                                <a asp-action="Kit" asp-route-id="@Model.Kit.Id" class="btn btn-lg btn-secondary">View Kit</a>
                             </div>
                         </div>
                     </div>
@@ -61,7 +61,7 @@
         }
         else
         {
-            <table class="table table-bordered table-condensed table-striped">
+            <table class="table table-bordered table-sm table-striped">
                 <thead>
                     <tr>
                         <th>System</th>
@@ -80,7 +80,7 @@
                             <td>@branchSelection.AgeGroup.Name</td>
                             <td style="text-align:center;">
                                 <button type="button"
-                                        class="btn btn-xs btn-primary"
+                                        class="btn btn-sm btn-primary"
                                         data-toggle="modal"
                                         data-target="#editModal"
                                         data-id="@branchSelection.Id"
@@ -94,7 +94,7 @@
                             </td>
                             <td class="hidden-print" style="text-align:center;">
                                 <button type="button"
-                                        class="btn btn-xs btn-danger delete-selection"
+                                        class="btn btn-sm btn-danger delete-selection"
                                         data-toggle="modal"
                                         data-target="#deleteModal"
                                         data-selectionid="@branchSelection.Id"
@@ -141,8 +141,8 @@
                         <input name="Id" asp-for="BranchSelection.Id" type="hidden" />
                         <input id="branchId" type="hidden" />
                         <div class="form-group">
-                            <label asp-for="BranchSelection.KitId"
-                                   class="col-sm-3 control-label"></label>
+                            <badge asp-for="BranchSelection.KitId"
+                                   class="col-sm-3 col-form-label"></badge>
                             <div class="col-sm-9">
                                 <select name="KitId"
                                         asp-for="BranchSelection.KitId"
@@ -154,8 +154,8 @@
                                   class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="BranchSelection.AgeGroupId"
-                                   class="col-sm-3 control-label"></label>
+                            <badge asp-for="BranchSelection.AgeGroupId"
+                                   class="col-sm-3 col-form-label"></badge>
                             <div class="col-sm-9">
                                 <select name="AgeGroupId"
                                         asp-for="BranchSelection.AgeGroupId"
@@ -182,7 +182,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                            class="btn btn-default"
+                            class="btn btn-secondary"
                             data-dismiss="modal"
                             style="margin-right: 1em;">
                         Cancel
@@ -219,7 +219,7 @@
                         <input class="hidden" asp-for="Kit.Id" aria-hidden="true" />
                         <input class="hidden" asp-for="BranchSelectionId" aria-hidden="true" />
                         <button type="button"
-                                class="btn btn-default"
+                                class="btn btn-secondary"
                                 data-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel

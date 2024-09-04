@@ -7,7 +7,7 @@
         <div class="col-xs-12">
             <div class="row row-spacing">
                 <div class="col-xs-12">
-                    <label asp-for="SystemId" class="control-label"></label>
+                    <badge asp-for="SystemId" class="col-form-label"></badge>
                     <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control"></select>
                     <span asp-validation-for="SystemId" class="text-danger"></span>
                 </div>
@@ -15,7 +15,7 @@
 
             <div class="row row-spacing">
                 <div class="col-xs-12">
-                    <label asp-for="BranchId" class="control-label"></label>
+                    <badge asp-for="BranchId" class="col-form-label"></badge>
                     <select asp-for="BranchId" asp-items="Model.BranchList" class="form-control"></select>
                     <span asp-validation-for="BranchId" class="text-danger"></span>
                 </div>
@@ -23,7 +23,7 @@
 
             <div class="row row-spacing">
                 <div class="col-xs-12">
-                    <label asp-for="ProgramId" class="control-label"></label>
+                    <badge asp-for="ProgramId" class="col-form-label"></badge>
                     <select asp-for="ProgramId" asp-items="Model.ProgramList" class="form-control">
                         <option></option>
                     </select>
@@ -39,7 +39,7 @@
             {
                 <div class="row row-spacing">
                     <div class="col-xs-12">
-                        <label asp-for="IsFirstTime" class="control-label"></label>
+                        <badge asp-for="IsFirstTime" class="col-form-label"></badge>
                         <select asp-for="IsFirstTime"
                                 asp-items="Model.AskFirstTime"
                                 class="form-control"></select>
@@ -50,14 +50,14 @@
 
             <div class="row row-spacing">
                 <div class="col-xs-12">
-                    <label for="selectedFile">Select Excel file:</label>
+                    <badge for="selectedFile">Select Excel file:</badge>
                     <div class="input-group">
-                        <label class="input-group-btn">
-                            <span class="btn btn-default btn-file">
+                        <badge class="input-group-append">
+                            <span class="btn btn-secondary btn-file">
                                 <span class="far fa-file-image"></span>
                                 Select an Excel file<input type="file" asp-for="UserExcelFile" accept=".xls,.xlsx" />
                             </span>
-                        </label>
+                        </badge>
                         <input type="text" class="form-control" readonly id="selectedFile">
                     </div>
                     <div>
@@ -68,7 +68,7 @@
 
             <div class="row row-spacing">
                 <div class="col-xs-12">
-                    <a asp-action="Household" asp-route-id="@Model.Id" class="btn btn-default">Return to Household</a>
+                    <a asp-action="Household" asp-route-id="@Model.Id" class="btn btn-secondary">Return to Household</a>
                     <button type="submit"
                             id="Submit"
                             name="Submit"
@@ -132,7 +132,7 @@
 
             if (input.length) {
                 input.val(log);
-                $('.btn-file').removeClass('btn-default');
+                $('.btn-file').removeClass('btn-secondary');
                 $('.btn-file').addClass('btn-success');
                 $("#badgeImage").removeAttr("src");
                 $("#badgeImage").height(200);
@@ -140,7 +140,7 @@
             }
             else {
                 input.val('');
-                $('.btn-file').addClass('btn-default');
+                $('.btn-file').addClass('btn-secondary');
                 $('.btn-file').removeClass('btn-success');
             }
         });

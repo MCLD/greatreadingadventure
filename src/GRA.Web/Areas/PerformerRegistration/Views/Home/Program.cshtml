@@ -60,7 +60,7 @@ else
         }
 
         <div class="form-group">
-            <label asp-for="Program.Title" class="col-sm-3 control-label required-field"></label>
+            <badge asp-for="Program.Title" class="col-sm-3 col-form-label required-field"></badge>
             <div class="col-sm-9">
                 <input asp-for="Program.Title" class="form-control" placeholder="" />
                 <span asp-validation-for="Program.Title" class="text-danger"></span>
@@ -78,11 +78,11 @@ else
             </div>
 
             <div class="form-group">
-                <label class="col-sm-3 control-label">Upload photos</label>
+                <badge class="col-sm-3 col-form-label">Upload photos</badge>
                 <div class="col-sm-9">
                     <div class="input-group">
-                        <label class="input-group-btn">
-                            <span class="btn btn-default btn-file">
+                        <badge class="input-group-append">
+                            <span class="btn btn-secondary btn-file">
                                 <span class="far fa-file-image"></span> Select file(s)...
                                 <input type="file"
                                        multiple="multiple"
@@ -90,7 +90,7 @@ else
                                        accept=".png,.jpg,.jpeg"
                                        style="display: none;" />
                             </span>
-                        </label>
+                        </badge>
                         <input type="text" class="form-control @(ViewData.ModelState.GetValidationState("Images") == invalid ? "input-validation-error" : "")" readonly />
                     </div>
                     <span asp-validation-for="Images" class="text-danger"></span>
@@ -99,15 +99,15 @@ else
         }
 
         <div class="form-group">
-            <label asp-for="Program.MinimumCapacity" class="col-sm-2 col-sm-offset-3 control-label required-field"></label>
+            <badge asp-for="Program.MinimumCapacity" class="col-sm-2 col-sm-offset-3 col-form-label required-field"></badge>
             <div class="col-sm-2">
-                <input asp-for="Program.MinimumCapacity" class="form-control input-lg" type="text" placeholder="" />
+                <input asp-for="Program.MinimumCapacity" class="form-control form-control-lg" type="text" placeholder="" />
                 <span asp-validation-for="Program.MinimumCapacity" class="text-danger"></span>
             </div>
             <div class="visible-xs" style="padding-bottom:10px;"></div>
-            <label asp-for="Program.MaximumCapacity" class="col-sm-2 control-label required-field"></label>
+            <badge asp-for="Program.MaximumCapacity" class="col-sm-2 col-form-label required-field"></badge>
             <div class="col-sm-2">
-                <input asp-for="Program.MaximumCapacity" class="form-control input-lg" type="text" placeholder="" />
+                <input asp-for="Program.MaximumCapacity" class="form-control form-control-lg" type="text" placeholder="" />
                 <span asp-validation-for="Program.MaximumCapacity" class="text-danger"></span>
             </div>
         </div>
@@ -118,7 +118,7 @@ else
                     Please select which age groups the program is suited for.
                 </p>
             </div>
-            <label class="col-sm-3 control-label required-field">Age(s)</label>
+            <badge class="col-sm-3 col-form-label required-field">Age(s)</badge>
             <div class="col-sm-9">
                 <input id="agePlaceholder" class="form-control" />
                 <select asp-for="AgeSelection" asp-items="Model.AgeList" class="form-control hidden" type="text" multiple="multiple"></select>
@@ -132,36 +132,36 @@ else
                     Please list all times in minutes.
                 </p>
             </div>
-            <label asp-for="Program.ProgramLengthMinutes" class="col-sm-offset-3 col-sm-2 control-label required-field"></label>
+            <badge asp-for="Program.ProgramLengthMinutes" class="col-sm-offset-3 col-sm-2 col-form-label required-field"></badge>
             <div class="col-sm-2">
-                <input asp-for="Program.ProgramLengthMinutes" class="form-control input-lg" type="text" placeholder="" />
+                <input asp-for="Program.ProgramLengthMinutes" class="form-control form-control-lg" type="text" placeholder="" />
                 <span asp-validation-for="Program.ProgramLengthMinutes" class="text-danger"></span>
             </div>
             <div class="visible-xs" style="padding-bottom:10px;"></div>
-            <label class="col-sm-2 control-label required-field">
+            <badge class="col-sm-2 col-form-label required-field">
                 Set-up Time
                 <span class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="How much time needed before program begins."></span>
-            </label>
+            </badge>
             <div class="col-sm-2">
-                <input asp-for="Program.SetupTimeMinutes" class="form-control input-lg" type="text" placeholder="" />
+                <input asp-for="Program.SetupTimeMinutes" class="form-control form-control-lg" type="text" placeholder="" />
                 <span asp-validation-for="Program.SetupTimeMinutes" class="text-danger"></span>
             </div>
         </div>
 
         <div class="form-group">
-            <label class="col-sm-offset-3 col-sm-2 control-label control-label required-field">
+            <badge class="col-sm-offset-3 col-sm-2 col-form-label col-form-label required-field">
                 Breakdown Time
                 <span class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="How much time needed after program ends."></span>
-            </label>
+            </badge>
             <div class="col-sm-2">
-                <input asp-for="Program.BreakdownTimeMinutes" class="form-control input-lg" type="text" placeholder="" />
+                <input asp-for="Program.BreakdownTimeMinutes" class="form-control form-control-lg" type="text" placeholder="" />
                 <span asp-validation-for="Program.BreakdownTimeMinutes" class="text-danger"></span>
             </div>
             <div class="visible-xs" style="padding-bottom:10px;"></div>
-            <label class="col-sm-2 control-label required-field">
+            <badge class="col-sm-2 col-form-label required-field">
                 Time between back-to-back programs
                 <span class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="If you are requested to do this program twice in a row, how much time do you require between them?"></span>
-            </label>
+            </badge>
             <div class="col-sm-2">
                 <select asp-for="Program.BackToBackMinutes" asp-items="Model.BackToBackSelection" class="form-control" type="text"></select>
                 <span asp-validation-for="Program.BackToBackMinutes" class="text-danger"></span>
@@ -169,10 +169,10 @@ else
         </div>
 
         <div class="form-group">
-            <label class="col-sm-3 control-label required-field">
+            <badge class="col-sm-3 col-form-label required-field">
                 Program description
                 <span class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Limited to 375 characters. Spaces are counted as characters."></span>
-            </label>
+            </badge>
             <div class="col-sm-9">
                 <textarea asp-for="Program.Description" class="form-control" maxlength="375" rows="4"></textarea>
                 <span id="descriptionCounter" class="pull-right">
@@ -183,10 +183,10 @@ else
         </div>
 
         <div class="form-group">
-            <label class="col-sm-3 control-label required-field">
+            <badge class="col-sm-3 col-form-label required-field">
                 Inclusive cost
                 <span class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Includes mileage, supplies, etc."></span>
-            </label>
+            </badge>
 
             <div class="col-sm-9">
                 <div class="input-group">
@@ -200,10 +200,10 @@ else
         <div class="form-group">
             <div class="col-sm-3">
                 <div class="row">
-                    <label asp-for="Program.Setup" class="col-xs-12 control-label required-field"></label>
+                    <badge asp-for="Program.Setup" class="col-xs-12 col-form-label required-field"></badge>
                     @if (!string.IsNullOrWhiteSpace(Model.SetupSupplementalText))
                     {
-                        <label class="col-xs-12 control-label" style="font-size:small;"><em>@Model.SetupSupplementalText</em></label>
+                        <badge class="col-xs-12 col-form-label" style="font-size:small;"><em>@Model.SetupSupplementalText</em></badge>
                     }
                 </div>
             </div>
@@ -258,11 +258,11 @@ else
                 {
                     if (Model.EditingProgram)
                     {
-                        <a asp-action="ProgramDetails" asp-route-id="@Model.Program.Id" class="btn btn-lg btn-default pull-left" style="margin-right: 10px;">Return to Program</a>
+                        <a asp-action="ProgramDetails" asp-route-id="@Model.Program.Id" class="btn btn-lg btn-secondary pull-left" style="margin-right: 10px;">Return to Program</a>
                     }
                     else
                     {
-                        <a asp-action="Dashboard" class="btn btn-lg btn-default pull-left" style="margin-right: 10px;">Return to Dashboard</a>
+                        <a asp-action="Dashboard" class="btn btn-lg btn-secondary pull-left" style="margin-right: 10px;">Return to Dashboard</a>
                     }
                 }
             </div>
