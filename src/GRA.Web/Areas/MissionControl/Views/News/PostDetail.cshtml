@@ -14,31 +14,31 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="form-group">
-                <label asp-for="Post.Title" class="control-label"></label>
+                <badge asp-for="Post.Title" class="col-form-label"></badge>
                 <input asp-for="Post.Title" class="form-control" />
                 <span asp-validation-for="Post.Title" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Post.CategoryId" class="control-label"></label>
+                <badge asp-for="Post.CategoryId" class="col-form-label"></badge>
                 <select asp-for="Post.CategoryId" asp-items="Model.Categories" class="form-control"></select>
                 <span asp-validation-for="Post.CategoryId" class="text-danger"></span>
             </div>
 
             <div class="row row-spacing">
                 <div class="col-xs-12">
-                    <label asp-for="Post.Content" class="control-label"></label>
+                    <badge asp-for="Post.Content" class="col-form-label"></badge>
                     <div id="wmd-button-bar"></div>
                     <textarea asp-for="Post.Content" id="wmd-input" class="form-control wmd-input"> </textarea>
                     <br />
-                    <label class="control-label">Preview</label>
+                    <badge class="col-form-label">Preview</badge>
                     <div id="preview"></div>
                     <span asp-validation-for="Post.Content" class="text-danger"></span>
                 </div>
             </div>
 
             <div class="form-group">
-                <label asp-for="Post.EmailSummary" class="control-label"></label>
+                <badge asp-for="Post.EmailSummary" class="col-form-label"></badge>
                 <textarea asp-for="Post.EmailSummary" class="form-control"></textarea>
                 <span asp-validation-for="Post.EmailSummary" class="text-danger"></span>
             </div>
@@ -47,14 +47,14 @@
             {
                 <div class="row row-spacing">
                     <div class="col-xs-12">
-                        <label asp-for="MarkUpdated" class="control-label"></label>
+                        <badge asp-for="MarkUpdated" class="col-form-label"></badge>
                         <select asp-for="MarkUpdated" asp-items="Model.NoYes" class="form-control"></select>
                     </div>
                 </div>
             }
 
             <div class="form-group">
-                <a asp-action="Index" class="btn btn-default">Return to List</a>
+                <a asp-action="Index" class="btn btn-secondary">Return to List</a>
                 @if (Model.Post?.PublishedAt != null)
                 {
                     <button type="submit" class="btn btn-primary btn-spinner" button-spinner>

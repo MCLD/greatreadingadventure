@@ -2,7 +2,7 @@
 
 <div class="row" style="margin: 1rem 0;">
     <div class="col-xs-12">
-        <a class="btn btn-default"
+        <a class="btn btn-secondary"
            asp-action="@nameof(EmailManagementController.Index)">
             Return to Template List
         </a>
@@ -27,7 +27,7 @@
         else
         {
             <div>
-                <table class="table table-condensed table-bordered table-hover">
+                <table class="table table-sm table-bordered table-hover">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -51,7 +51,7 @@
                                         <a asp-action="@nameof(EmailManagementController.EditBaseTemplate)"
                                asp-route-emailBaseId="@emailBase.Id"
                                asp-route-languageId="@language"
-                               class="btn btn-file btn-default btn-sm gra-button-buffer">@Model.LanguageNames[language]</a>
+                               class="btn btn-file btn-secondary btn-sm gra-button-buffer">@Model.LanguageNames[language]</a>
                                     }
                                 </td>
                             </tr>

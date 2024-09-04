@@ -32,8 +32,8 @@
             <input asp-for="Search" class="form-control" />
         </div>
         <div class="col-xs-4">
-            <input type="submit" value="Search" class="btn btn-default" style="margin-right: 8px;" />
-            <a asp-action="Index" asp-route-Category="@Model.CategoryId" class="btn btn-default">Clear</a>
+            <input type="submit" value="Search" class="btn btn-secondary" style="margin-right: 8px;" />
+            <a asp-action="Index" asp-route-Category="@Model.CategoryId" class="btn btn-secondary">Clear</a>
         </div>
     </div>
 </form>
@@ -49,7 +49,7 @@
 
 <div class="row" style="padding: 10px 0;">
     <div class="col-xs-12">
-        <a asp-action="CreatePost" class="btn btn-default">Add a Post</a>
+        <a asp-action="CreatePost" class="btn btn-secondary">Add a Post</a>
     </div>
 </div>
 
@@ -62,7 +62,7 @@
         else
         {
             <div>
-                <table class="table table-condensed table-bordered link-table">
+                <table class="table table-sm table-bordered link-table">
                     <thead>
                         <tr>
                             <th>Published</th>
@@ -84,7 +84,7 @@
                                 <td>@post.CategoryName</td>
                                 <td class="on-top gra-mc-icon">
                                     <button type="button"
-                                            class="btn btn-danger btn-xs"
+                                            class="btn btn-danger btn-sm"
                                             data-toggle="modal"
                                             data-target="#deleteModal"
                                             data-id="@post.Id"
@@ -135,7 +135,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-default"
+                                class="btn btn-secondary"
                                 data-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel

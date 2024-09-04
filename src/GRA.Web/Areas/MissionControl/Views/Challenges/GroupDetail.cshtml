@@ -49,13 +49,13 @@
         <div class="col-xs-12">
 
             <div class="form-group">
-                <label asp-for="ChallengeGroup.Name" class="control-label"></label>
+                <badge asp-for="ChallengeGroup.Name" class="col-form-label"></badge>
                 <input asp-for="ChallengeGroup.Name" class="form-control" />
                 <span asp-validation-for="ChallengeGroup.Name" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="ChallengeGroup.Stub" class="control-label"></label>
+                <badge asp-for="ChallengeGroup.Stub" class="col-form-label"></badge>
                 <span id="Stub-Icon" class="fa colored-icon hide"></span>
                 <input asp-for="ChallengeGroup.Stub" class="form-control" readonly="@(Model.Action == nameof(ChallengesController.EditGroup) ? "readonly" : null)" />
                 <span id="ChallengeGroup_Stub-Validation" asp-validation-for="ChallengeGroup.Stub" class="text-success"></span>
@@ -65,7 +65,7 @@
             {
                 <div class="row row-spacing">
                     <div class="col-xs-12">
-                        <label class="control-label">Link to group</label>
+                        <badge class="col-form-label">Link to group</badge>
                         <br />
                         <a href="@Model.GroupUrl"
                            target="_blank">
@@ -76,15 +76,15 @@
             }
 
             <div class="form-group">
-                <label asp-for="ChallengeGroup.Description" class="control-label"></label>
+                <badge asp-for="ChallengeGroup.Description" class="col-form-label"></badge>
                 <textarea asp-for="ChallengeGroup.Description" class="form-control"></textarea>
                 <span asp-validation-for="ChallengeGroup.Description" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label class="control-label">Challenges</label>
+                <badge class="col-form-label">Challenges</badge>
                 <div>
-                    <table class="table table-condensed table-bordered table-striped">
+                    <table class="table table-sm table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -128,7 +128,7 @@
                                             }
                                         </td>
                                         <td class="gra-mc-icon">
-                                            <button type="button" class="btn btn-link btn-xs removeChallengeButton">
+                                            <button type="button" class="btn btn-link btn-sm removeChallengeButton">
                                                 <span class="fas fa-2x fa-minus-circle text-danger" aria-hidden="true"></span>
                                             </button>
                                         </td>
@@ -138,11 +138,11 @@
                         </tbody>
                     </table>
                 </div>
-                <button type="button" id="addButton" class="btn btn-default">Add Challenges</button>
+                <button type="button" id="addButton" class="btn btn-secondary">Add Challenges</button>
             </div>
 
             <div class="form-group">
-                <a asp-action="Groups" class="btn btn-default">Return to List</a>
+                <a asp-action="Groups" class="btn btn-secondary">Return to List</a>
                 <button type="submit"
                         id="Submit"
                         name="Submit"
@@ -200,7 +200,7 @@
                                     <div class="col-xs-6">
                                         <button type="button"
                                                 id="searchButton"
-                                                class="btn btn-default btn-block"
+                                                class="btn btn-secondary btn-block"
                                                 style="margin-right: 8px;">
                                             Search
                                         </button>
@@ -208,7 +208,7 @@
                                     <div class="col-xs-6">
                                         <button type="button"
                                                 id="clearButton"
-                                                class="btn btn-default btn-block">
+                                                class="btn btn-secondary btn-block">
                                             Clear
                                         </button>
                                     </div>
@@ -228,7 +228,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button"
-                                    class="btn btn-default"
+                                    class="btn btn-secondary"
                                     data-dismiss="modal"
                                     style="margin-right: 1em;">
                                 Close

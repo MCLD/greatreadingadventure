@@ -16,7 +16,7 @@
 
                             <div class="row row-spacing">
                                 <div class="col-xs-12">
-                                    <label asp-for="Username" class="control-label"></label>
+                                    <badge asp-for="Username" class="col-form-label"></badge>
                                     <span id="Username-Icon" class="fas colored-icon hide"></span>
                                     <input asp-for="Username" class="form-control" autofocus />
                                     <span id="Username-Validation" asp-validation-for="Username" class="text-success"></span>
@@ -25,7 +25,7 @@
 
                             <div class="row row-spacing">
                                 <div class="col-xs-12">
-                                    <label asp-for="Password" class="control-label"></label>
+                                    <badge asp-for="Password" class="col-form-label"></badge>
                                     <input asp-for="Password" type="password" class="form-control" />
                                     <span asp-validation-for="Password" class="text-danger"></span>
                                 </div>
@@ -33,7 +33,7 @@
 
                             <div class="row row-spacing">
                                 <div class="col-xs-12">
-                                    <label asp-for="ConfirmPassword" class="control-label"></label>
+                                    <badge asp-for="ConfirmPassword" class="col-form-label"></badge>
                                     <input asp-for="ConfirmPassword" type="password" class="form-control" />
                                     <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                                 </div>
@@ -42,7 +42,7 @@
                     </div>
 
                     <div class="form-group">
-                        <a asp-action="Household" class="btn btn-default">Return to @Context.Items[GRA.Controllers.ItemKey.HouseholdTitle]</a>
+                        <a asp-action="Household" class="btn btn-secondary">Return to @Context.Items[GRA.Controllers.ItemKey.HouseholdTitle]</a>
                         <button type="submit"
                                 id="Submit"
                                 name="Submit"

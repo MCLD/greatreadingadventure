@@ -23,7 +23,7 @@
             Import Template
         </a>
         <a asp-action="@nameof(EmailManagementController.Addresses)"
-           class="btn btn-default">
+           class="btn btn-secondary">
             <span class="fas fa-list-alt"></span>
             Manage Lists
         </a>
@@ -34,7 +34,7 @@
         </a>
         @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.SendBulkEmails.ToString()))
         {
-            <a class="btn btn-default"
+            <a class="btn btn-secondary"
                style="margin-left: 1rem;"
                asp-action="@nameof(EmailManagementController.SetSpecialEmails)">
                 Set Special Emails
@@ -52,7 +52,7 @@
         else
         {
             <div>
-                <table class="table table-condensed table-bordered table-hover">
+                <table class="table table-sm table-bordered table-hover">
                     <thead>
                         <tr>
                             <th>Description</th>
@@ -104,7 +104,7 @@
                                         <a asp-action="@nameof(EmailManagementController.EditTemplate)"
                                            asp-route-templateId="@template.Id"
                                            asp-route-languageId="@language"
-                                           class="btn btn-file btn-default btn-sm gra-button-buffer">@Model.LanguageNames[language]</a>
+                                           class="btn btn-file btn-secondary btn-sm gra-button-buffer">@Model.LanguageNames[language]</a>
                                     }
                                 </td>
                                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.SendBulkEmails.ToString()))

@@ -39,8 +39,8 @@
             <input asp-for="Search" class="form-control" />
         </div>
         <div class="col-xs-4">
-            <input type="submit" value="Search" class="btn btn-default" style="margin-right: 8px;" />
-            <a asp-action="@nameof(ParticipantsController.Groups)" asp-route-Type="@Model.Type" class="btn btn-default">Clear</a>
+            <input type="submit" value="Search" class="btn btn-secondary" style="margin-right: 8px;" />
+            <a asp-action="@nameof(ParticipantsController.Groups)" asp-route-Type="@Model.Type" class="btn btn-secondary">Clear</a>
         </div>
     </div>
 </form>
@@ -63,7 +63,7 @@
         else
         {
             <div>
-                <table class="table table-condensed table-bordered link-table">
+                <table class="table table-sm table-bordered link-table">
                     <thead>
                         <tr>
                             <th>Name</th>

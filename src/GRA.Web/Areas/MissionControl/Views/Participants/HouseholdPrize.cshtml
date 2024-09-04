@@ -17,7 +17,7 @@
                 Redeem
             </button>
             <div>
-                <table class="table table-condensed table-bordered table-striped">
+                <table class="table table-sm table-bordered table-striped">
                     <thead>
                         <tr>
                             <th style="vertical-align:middle;" width="36px;" class="text-center"><input id="checkAll" type="checkbox" /></th>
@@ -48,8 +48,8 @@
 </div>
 
 <div class="form-group">
-    <a asp-action="@nameof(ParticipantsController.Household)" asp-route-id="@Model.Id" class="btn btn-default">Return to @(string.IsNullOrEmpty(Model.GroupName) ? "Household" : "Group")</a>
-    <a href="#" class="btn btn-default pull-right">Return to Top</a>
+    <a asp-action="@nameof(ParticipantsController.Household)" asp-route-id="@Model.Id" class="btn btn-secondary">Return to @(string.IsNullOrEmpty(Model.GroupName) ? "Household" : "Group")</a>
+    <a href="#" class="btn btn-secondary pull-right">Return to Top</a>
 </div>
 
 @section scripts {

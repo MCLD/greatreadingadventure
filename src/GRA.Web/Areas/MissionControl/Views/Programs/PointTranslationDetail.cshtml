@@ -9,12 +9,12 @@
         <div class="col-xs-12">
 
             <div class="form-group">
-                <label asp-for="PointTranslation.TranslationName" class="control-label"></label>
+                <badge asp-for="PointTranslation.TranslationName" class="col-form-label"></badge>
                 <input asp-for="PointTranslation.TranslationName" class="form-control" />
                 <span asp-validation-for="PointTranslation.TranslationName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PointTranslation.IsSingleEvent" class="control-label"></label>
+                <badge asp-for="PointTranslation.IsSingleEvent" class="col-form-label"></badge>
                 <select asp-for="PointTranslation.IsSingleEvent" class="form-control" disabled="@(Model.HasBeenUsed ? "readonly" : null)">
                     <option value="false">No</option>
                     <option value="true">Yes</option>
@@ -25,14 +25,14 @@
             <div class="row">
                 <div class="col-xs-12 col-sm-6">
                     <div class="form-group">
-                        <label asp-for="PointTranslation.PointsEarned" class="control-label"></label>
+                        <badge asp-for="PointTranslation.PointsEarned" class="col-form-label"></badge>
                         <input asp-for="PointTranslation.PointsEarned" class="form-control" disabled="@(Model.HasBeenUsed ? "readonly" : null)" />
                         <span asp-validation-for="PointTranslation.PointsEarned" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-6">
                     <div class="form-group">
-                        <label asp-for="PointTranslation.ActivityAmount" class="control-label"></label>
+                        <badge asp-for="PointTranslation.ActivityAmount" class="col-form-label"></badge>
                         <input asp-for="PointTranslation.ActivityAmount" class="form-control" disabled="@(Model.HasBeenUsed ? "readonly" : null)" />
                         <span asp-validation-for="PointTranslation.ActivityAmount" class="text-danger"></span>
                     </div>
@@ -42,14 +42,14 @@
             <div class="row">
                 <div class="col-xs-12 col-sm-6">
                     <div class="form-group">
-                        <label asp-for="PointTranslation.ActivityDescription" class="control-label"></label>
+                        <badge asp-for="PointTranslation.ActivityDescription" class="col-form-label"></badge>
                         <input asp-for="PointTranslation.ActivityDescription" class="form-control" />
                         <span asp-validation-for="PointTranslation.ActivityDescription" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-6">
                     <div class="form-group">
-                        <label asp-for="PointTranslation.ActivityDescriptionPlural" class="control-label"></label>
+                        <badge asp-for="PointTranslation.ActivityDescriptionPlural" class="col-form-label"></badge>
                         <input asp-for="PointTranslation.ActivityDescriptionPlural" class="form-control" />
                         <span asp-validation-for="PointTranslation.ActivityDescriptionPlural" class="text-danger"></span>
                     </div>
@@ -59,14 +59,14 @@
             <div class="row">
                 <div class="col-xs-12 col-sm-6">
                     <div class="form-group">
-                        <label asp-for="PointTranslation.TranslationDescriptionPastTense" class="control-label"></label>
+                        <badge asp-for="PointTranslation.TranslationDescriptionPastTense" class="col-form-label"></badge>
                         <input asp-for="PointTranslation.TranslationDescriptionPastTense" class="form-control" />
                         <span asp-validation-for="PointTranslation.TranslationDescriptionPastTense" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-6">
                     <div class="form-group">
-                        <label asp-for="PointTranslation.TranslationDescriptionPresentTense" class="control-label"></label>
+                        <badge asp-for="PointTranslation.TranslationDescriptionPresentTense" class="col-form-label"></badge>
                         <input asp-for="PointTranslation.TranslationDescriptionPresentTense" class="form-control" />
                         <span asp-validation-for="PointTranslation.TranslationDescriptionPresentTense" class="text-danger"></span>
                     </div>
@@ -75,7 +75,7 @@
 
 
             <div class="form-group">
-                <a asp-action="@nameof(ProgramsController.PointTranslations)" class="btn btn-default">Return to List</a>
+                <a asp-action="@nameof(ProgramsController.PointTranslations)" class="btn btn-secondary">Return to List</a>
                 <button type="submit"
                         id="Submit"
                         name="Submit"

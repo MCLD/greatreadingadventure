@@ -9,14 +9,14 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <span class="lead">
-                        <strong><label asp-for="InReplyToSubject"></label></strong>
+                        <strong><badge asp-for="InReplyToSubject"></badge></strong>
                         @Model.InReplyToSubject
                     </span>
                 </div>
                 <div class="panel-body">
                     <div class="row row-spacing">
                         <div class="col-sm-10 col-sm-offset-1">
-                            <label asp-for="Subject" class="control-label"></label>
+                            <badge asp-for="Subject" class="col-form-label"></badge>
                             <input asp-for="Subject" class="form-control" />
                             <span asp-validation-for="Subject" class="text-danger"></span>
                         </div>
@@ -24,7 +24,7 @@
 
                     <div class="row row-spacing">
                         <div class="col-sm-10 col-sm-offset-1">
-                            <label asp-for="Body" class="control-label"></label>
+                            <badge asp-for="Body" class="col-form-label"></badge>
                             <textarea asp-for="Body" class="form-control"></textarea>
                             <span asp-validation-for="Body" class="text-danger"></span>
                         </div>
@@ -32,12 +32,12 @@
 
                     <div class="row">
                         <div class="col-sm-10 col-sm-offset-1">
-                            <a asp-action="Index" class="btn btn-default">
+                            <a asp-action="Index" class="btn btn-secondary">
                                 @SharedLocalizer[GRA.Annotations.Interface.BackToMailbox]
                             </a>
                             <a asp-action="Read"
                                asp-route-id="@Model.InReplyToId"
-                               class="btn btn-default">
+                               class="btn btn-secondary">
                                 @SharedLocalizer[GRA.Annotations.Interface.Back]
                             </a>
                             <button type="submit" class="btn btn-primary">

@@ -62,7 +62,7 @@
                         {
                             if (Model.User.IsDonationLocked)
                             {
-                                <button class="btn btn-default disabled"
+                                <button class="btn btn-secondary disabled"
                                     asp-is-disabled="true">
                                     <span class="buttonText">Donated through vendor</span>
                                 </button>
@@ -105,7 +105,7 @@
         else
         {
             <div>
-                <table class="table table-condensed table-bordered link-table">
+                <table class="table table-sm table-bordered link-table">
                     <thead>
                         <tr>
                             <th>Redeemed?</th>
@@ -130,7 +130,7 @@
                                             <input id="page" name="page" value="@Model.PaginateModel.CurrentPage" type="hidden" />
                                             <button type="submit"
                                                     style="margin-left:5px;"
-                                                    class="btn btn-default btn-xs btn-spinner"
+                                                    class="btn btn-secondary btn-sm btn-spinner"
                                                     button-spinner>
                                                 Undo
                                             </button>
@@ -144,7 +144,7 @@
                                             <input id="page" name="page" value="@Model.PaginateModel.CurrentPage" type="hidden" />
                                             <input id="staffNotes" name="staffNotes" value="@prizeWinner.StaffNotes" class="form-control form-group" placeholder="Redemption notes (optional)" maxlength="255" />
                                             <button type="submit"
-                                                    class="btn btn-success btn-xs btn-spinner"
+                                                    class="btn btn-success btn-sm btn-spinner"
                                                     button-spinner>
                                                 <span class="fas fa-gift"></span>
                                                 Available, click to redeem!
@@ -187,9 +187,9 @@
         {
             <a asp-action="Household" 
                asp-route-id="@(Model.User.HouseholdHeadUserId.HasValue ? Model.User.HouseholdHeadUserId.Value : Model.User.Id)"
-               class="btn btn-default">Return to Family</a>
+               class="btn btn-secondary">Return to Family</a>
         }
-        <a asp-action="Index" class="btn btn-default">Return to All Participants</a>
+        <a asp-action="Index" class="btn btn-secondary">Return to All Participants</a>
     </div>
 </div>
 
@@ -217,8 +217,8 @@
                             <p>@Html.Raw(Model.User.EmailAwardInstructions)</p>
                             <div class="row row-spacing">
                                 <div class="col-xs-12">
-                                    <label asp-for="EmailAwardModel.Email"
-                                           class="control-label"></label>
+                                    <badge asp-for="EmailAwardModel.Email"
+                                           class="col-form-label"></badge>
                                     <input asp-for="EmailAwardModel.Email"
                                            class="form-control"
                                            value="@Model.User.Email" />
@@ -229,7 +229,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button"
-                                    class="btn btn-default"
+                                    class="btn btn-secondary"
                                     data-dismiss="modal"
                                     style="margin-right: 1em;">
                                 @GRA.Annotations.Interface.Cancel

@@ -21,7 +21,7 @@
         {
             <div class="col-sm-2">
                 <a href="@Url.Action("UpdateGroup", new { id=Model.HeadOfHouseholdId ?? Model.Id })"
-                   class="btn btn-block btn-default">Edit Group</a>
+                   class="btn btn-block btn-secondary">Edit Group</a>
             </div>
         }
         <div class="col-sm-10">
@@ -47,19 +47,19 @@
                 {
                     @if (Model.UpgradeToGroup)
                     {
-                        <a asp-action="UpgradeToGroup" asp-route-id="@Model.Id" class="btn btn-default">Upgrade to Group to add more members</a>
+                        <a asp-action="UpgradeToGroup" asp-route-id="@Model.Id" class="btn btn-secondary">Upgrade to Group to add more members</a>
                     }
                     else
                     {
-                        <a asp-action="AddHouseholdMember" asp-route-id="@Model.Id" class="btn btn-default">Register new @(Model.IsGroup ? "Group" : "Family") Member</a>
-                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#listModal">Add Existing Participant to @(Model.IsGroup ? "Group" : "Family")</button>
+                        <a asp-action="AddHouseholdMember" asp-route-id="@Model.Id" class="btn btn-secondary">Register new @(Model.IsGroup ? "Group" : "Family") Member</a>
+                        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#listModal">Add Existing Participant to @(Model.IsGroup ? "Group" : "Family")</button>
                         @if (Model.CanImportNewMembers)
                         {
-                            <a asp-action="@nameof(ParticipantsController.HouseholdImport)" asp-route-id="@(Model.HeadOfHouseholdId ?? Model.Id)" class="btn btn-default">Import new @(Model.IsGroup ? "Group" : "Family") Members</a>
+                            <a asp-action="@nameof(ParticipantsController.HouseholdImport)" asp-route-id="@(Model.HeadOfHouseholdId ?? Model.Id)" class="btn btn-secondary">Import new @(Model.IsGroup ? "Group" : "Family") Members</a>
                         }
                         if (Model.UseGroups && Model.IsGroup == false && Model.HouseholdCount > 0)
                         {
-                            <a asp-action="UpgradeToGroup" asp-route-id="@Model.Id" class="btn btn-default">Upgrade to Group</a>
+                            <a asp-action="UpgradeToGroup" asp-route-id="@Model.Id" class="btn btn-secondary">Upgrade to Group</a>
                         }
                     }
                 }
@@ -156,7 +156,7 @@
                     </div>
                 }
                 <div>
-                    <table class="table table-condensed table-bordered link-table">
+                    <table class="table table-sm table-bordered link-table">
                         <thead>
                             <tr>
                                 @if (Model.CanLogActivity)
@@ -179,7 +179,7 @@
                                         Book Code
                                         @if (Model.CanRedeemBulkVendorCodes)
                                         {
-                                            <button type="button" class="btn btn-info btn-xs pull-right" data-toggle="modal"
+                                            <button type="button" class="btn btn-info btn-sm pull-right" data-toggle="modal"
                                                     data-target="#bulkRedeemModal">
                                                 <span class="buttonText">Redeem all</span>
                                             </button>
@@ -256,7 +256,7 @@
                                     <td>
                                         @if (Model.Head.NeedsToAnswerVendorCodeQuestion)
                                         {
-                                            <button class="btn btn-info btn-xs btn-spinner btn-on-top"
+                                            <button class="btn btn-info btn-sm btn-spinner btn-on-top"
                                                     name="redeemButton"
                                                     value="@Model.Head.Id"
                                                     asp-action="HandleHouseholdDonation"
@@ -267,7 +267,7 @@
                                             @if (Model.Head.CanDonateVendorCode)
                                             {
                                                 @:or
-                                                <button class="btn btn-success btn-xs btn-spinner btn-on-top"
+                                                <button class="btn btn-success btn-sm btn-spinner btn-on-top"
                                                         name="donateButton"
                                                         value="@Model.Head.Id"
                                                         asp-action="HandleHouseholdDonation"
@@ -279,7 +279,7 @@
                                             @if (Model.Head.CanEmailAwardVendorCode)
                                             {
                                                 @:or
-                                                <button class="btn btn-warning btn-xs btn-on-top emailAwardButton"
+                                                <button class="btn btn-warning btn-sm btn-on-top emailAwardButton"
                                                         asp-action="HandleHouseholdDonation"
                                                         asp-is-disabled="@(!Model.CanEditDetails)"
                                                         data-email="@Model.Head.Email"
@@ -305,7 +305,7 @@
                                             if (@Model.Head.Donated == true
                                             && User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.PerformDrawing.ToString()))
                                             {
-                                                <button class="btn btn-info btn-xs btn-spinner btn-on-top"
+                                                <button class="btn btn-info btn-sm btn-spinner btn-on-top"
                                                         name="undonateButton"
                                                         value="@Model.Head.Id"
                                                         asp-action="HandleHouseholdDonation"
@@ -389,7 +389,7 @@
                                         <div>
                                             @if (Model.CanEditDetails && string.IsNullOrWhiteSpace(user.Username))
                                             {
-                                                <a class="btn btn-default btn-xs on-top"
+                                                <a class="btn btn-secondary btn-sm on-top"
                                                    asp-action="RegisterHouseholdMember"
                                                    asp-route-id="@user.Id">
                                                     <span class="fas fa-user-plus"></span>
@@ -408,7 +408,7 @@
                                         <td>
                                             @if (user.NeedsToAnswerVendorCodeQuestion)
                                             {
-                                                <button class="btn btn-info btn-xs btn-spinner btn-on-top"
+                                                <button class="btn btn-info btn-sm btn-spinner btn-on-top"
                                                         name="redeemButton"
                                                         value="@user.Id"
                                                         asp-action="HandleHouseholdDonation"
@@ -419,7 +419,7 @@
                                                 @if (user.CanDonateVendorCode)
                                                 {
                                                     @:or
-                                                    <button class="btn btn-success btn-xs btn-spinner btn-on-top"
+                                                    <button class="btn btn-success btn-sm btn-spinner btn-on-top"
                                                             name="donateButton"
                                                             value="@user.Id"
                                                             asp-action="HandleHouseholdDonation"
@@ -431,7 +431,7 @@
                                                 @if (user.CanEmailAwardVendorCode)
                                                 {
                                                     @:or
-                                                    <button class="btn btn-warning btn-xs btn-on-top emailAwardButton"
+                                                    <button class="btn btn-warning btn-sm btn-on-top emailAwardButton"
                                                             asp-action="HandleHouseholdDonation"
                                                             asp-is-disabled="@(!Model.CanEditDetails)"
                                                             data-email="@user.Email"
@@ -456,7 +456,7 @@
                                                 }
                                                 if (user.Donated == true && User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.PerformDrawing.ToString()))
                                                 {
-                                                    <button class="btn btn-info btn-xs btn-spinner btn-on-top"
+                                                    <button class="btn btn-info btn-sm btn-spinner btn-on-top"
                                                             name="undonateButton"
                                                             value="@user.Id"
                                                             asp-action="HandleHouseholdDonation"
@@ -481,7 +481,7 @@
                                             @if (!string.IsNullOrWhiteSpace(user.Username))
                                             {
                                                 <button type="button"
-                                                        class="btn btn-primary btn-xs"
+                                                        class="btn btn-primary btn-sm"
                                                         style="width:22px;"
                                                         data-toggle="modal"
                                                         data-target="#promoteModal"
@@ -492,7 +492,7 @@
                                                           aria-hidden="true"></span>
                                                 </button>
                                                 <button type="button"
-                                                        class="btn btn-danger btn-xs"
+                                                        class="btn btn-danger btn-sm"
                                                         style="margin-left:16px;width:22px;"
                                                         data-toggle="modal"
                                                         data-target="#removeModal"
@@ -521,10 +521,10 @@
 </div>
 
 <div class="form-group">
-    <a asp-action="Index" class="btn btn-default">Return to Participants</a>
+    <a asp-action="Index" class="btn btn-secondary">Return to Participants</a>
     @if (Model.HouseholdCount > 0)
     {
-        <a href="#" class="btn btn-default pull-right">Return to Top</a>
+        <a href="#" class="btn btn-secondary pull-right">Return to Top</a>
     }
 </div>
 
@@ -624,7 +624,7 @@
                                         <div class="col-xs-6">
                                             <button type="button"
                                                     id="searchButton"
-                                                    class="btn btn-default btn-block"
+                                                    class="btn btn-secondary btn-block"
                                                     style="margin-right: 8px;">
                                                 Search
                                             </button>
@@ -632,7 +632,7 @@
                                         <div class="col-xs-6">
                                             <button type="button"
                                                     id="clearButton"
-                                                    class="btn btn-default btn-block">
+                                                    class="btn btn-secondary btn-block">
                                                 Clear
                                             </button>
                                         </div>
@@ -657,7 +657,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button"
-                                        class="btn btn-default"
+                                        class="btn btn-secondary"
                                         data-dismiss="modal"
                                         style="margin-right: 1em;">
                                     Close
@@ -693,7 +693,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-default"
+                                class="btn btn-secondary"
                                 data-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel
@@ -743,7 +743,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-default"
+                                class="btn btn-secondary"
                                 data-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel
@@ -788,8 +788,8 @@
                             <p>@Html.Raw(Model.Head.EmailAwardInstructions)</p>
                             <div class="row row-spacing">
                                 <div class="col-xs-12">
-                                    <label asp-for="EmailAwardModel.Email"
-                                           class="control-label"></label>
+                                    <badge asp-for="EmailAwardModel.Email"
+                                           class="col-form-label"></badge>
                                     <input asp-for="EmailAwardModel.Email" class="form-control" />
                                     <span asp-validation-for="EmailAwardModel.Email"
                                           class="text-danger"></span>
@@ -798,7 +798,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button"
-                                    class="btn btn-default"
+                                    class="btn btn-secondary"
                                     data-dismiss="modal"
                                     style="margin-right: 1em;">
                                 @GRA.Annotations.Interface.Cancel
@@ -847,9 +847,9 @@
                             </h1>
                         </div>
                         <div class="modal-body">
-                            <label asp-for="Prize" class="control-label">
+                            <badge asp-for="Prize" class="col-form-label">
                                 Select which prize to redeem:
-                            </label>
+                            </badge>
                             <select asp-for="Prize"
                                     asp-items="Model.HouseholdPrizeList"
                                     class="form-control"
@@ -860,7 +860,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button"
-                                    class="btn btn-default"
+                                    class="btn btn-secondary"
                                     data-dismiss="modal"
                                     style="margin-right: 1em;">
                                 Cancel
@@ -915,7 +915,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button"
-                                    class="btn btn-default"
+                                    class="btn btn-secondary"
                                     data-dismiss="modal"
                                     style="margin-right: 1em;"
                                     id="bulkDoNotRedeem">

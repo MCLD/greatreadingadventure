@@ -26,13 +26,13 @@
     }
 
     <div class="form-group">
-        <label asp-for="Carousel.Name" class="control-label"></label>
+        <badge asp-for="Carousel.Name" class="col-form-label"></badge>
         <description gra-description-for="Carousel.Name"></description>
         <input asp-for="Carousel.Name" type="text" class="form-control" />
         <span asp-validation-for="Carousel.Name" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Carousel.StartTime" class="control-label"></label>
+        <badge asp-for="Carousel.StartTime" class="col-form-label"></badge>
         <description gra-description-for="Carousel.StartTime"></description>
         <div class="input-group date" id="pickerStart">
             <span class="input-group-addon">
@@ -43,7 +43,7 @@
         <span asp-validation-for="Carousel.StartTime" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Carousel.Heading" class="control-label"></label>
+        <badge asp-for="Carousel.Heading" class="col-form-label"></badge>
         <description gra-description-for="Carousel.Heading"></description>
         <input asp-for="Carousel.Heading" type="text" class="form-control" />
         <span asp-validation-for="Carousel.Heading" class="text-danger"></span>
@@ -51,7 +51,7 @@
 
 
     <div class="form-group">
-        <a asp-action="Index" class="btn btn-default">Return to List</a>
+        <a asp-action="Index" class="btn btn-secondary">Return to List</a>
         <button type="submit"
                 id="Submit"
                 name="Submit"
@@ -96,7 +96,7 @@
 
                             <a asp-action="AddItem"
                                asp-route-id="@Model.Carousel.Id"
-                               class="btn btn-xs btn-success pull-right">
+                               class="btn btn-sm btn-success pull-right">
                                 <span class="fas fa-plus-circle"></span>
                                 Add item
                             </a>
@@ -119,7 +119,7 @@
                                           method="post"
                                           role="form"
                                           class="form-inline">
-                                        <button type="submit" class="btn btn-xs btn-danger"><span class="far fa-times-circle"></span> Delete</button>
+                                        <button type="submit" class="btn btn-sm btn-danger"><span class="far fa-times-circle"></span> Delete</button>
                                     </form>
                                 </div>
                             }

@@ -16,7 +16,7 @@
 
             <div class="row row-spacing">
                 <div class="col-xs-12">
-                    <label asp-for="SiteSettingGroups[i].SettingInformations[j].SiteSetting.Value">@Model.SiteSettingGroups[i].SettingInformations[j].Definition.Name</label>
+                    <badge asp-for="SiteSettingGroups[i].SettingInformations[j].SiteSetting.Value">@Model.SiteSettingGroups[i].SettingInformations[j].Definition.Name</badge>
                     <span class="far fa-question-circle wide-tooltip" title="@Model.SiteSettingGroups[i].SettingInformations[j].Definition.Info" data-toggle="tooltip" data-placement="top"></span>
                     @if (Model.SiteSettingGroups[i].SettingInformations[j].Definition.Format == GRA.Domain.Model.SiteSettingFormat.Boolean)
                     {
@@ -42,7 +42,7 @@
     }
 
     <div class="form-group">
-        <a asp-action="Index" class="btn btn-default">Return to List</a>
+        <a asp-action="Index" class="btn btn-secondary">Return to List</a>
         <button type="submit"
                 id="Submit"
                 name="Submit"

@@ -162,27 +162,27 @@
                                 <span style="font-size:large;">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Ordering]:</span>
                             </div>
                             <div class="col-xs-12 col-sm-10">
-                                <label class="radio-inline">
+                                <badge class="radio-inline">
                                     <input type="radio"
                                        name="Ordering"
                                        value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.MostPopular"
                                        @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.MostPopular)>
                                     @SharedLocalizer[GRA.Domain.Model.DisplayNames.MostPopular]
-                                </label>
-                                <label class="radio-inline">
+                                </badge>
+                                <badge class="radio-inline">
                                     <input type="radio"
                                        name="Ordering"
                                        value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Name"
                                        @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Name)>
                                     @SharedLocalizer[GRA.Domain.Model.DisplayNames.Name]
-                                </label>
-                                <label class="radio-inline">
+                                </badge>
+                                <badge class="radio-inline">
                                     <input type="radio"
                                        name="Ordering"
                                        value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Recent"
                                        @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Recent)>
                                     @SharedLocalizer[GRA.Domain.Model.DisplayNames.MostRecent]
-                                </label>
+                                </badge>
                             </div>
                         </div>
                         @if (Model.IsLoggedIn)
@@ -224,14 +224,14 @@
                                     asp-route-Categories="@Model.Categories"
                                     asp-route-Status="@Model.Status"
                                     asp-route-Favorites="@(Model.Favorites == true ? null : "True")"
-                                    class="btn btn-block @(Model.Favorites == true ? "btn-success" : "btn-default")">
+                                    class="btn btn-block @(Model.Favorites == true ? "btn-success" : "btn-secondary")">
                                         <span class="@(Model.Favorites == true ? "fas" : "far") fa-star"></span>
                                         @SharedLocalizer[GRA.Annotations.Interface.MyFavorites]
                                     </a>
                                 }
                                 </div>
                                 <div class="col-xs-6 col-sm-2 col-sm-offset-4 col-md-offset-5 row-spacing">
-                                <a asp-action="Index" asp-route-ClearSearch="true" class="btn btn-default btn-block">
+                                <a asp-action="Index" asp-route-ClearSearch="true" class="btn btn-secondary btn-block">
                                     <span class="hidden-sm fas fa-minus-circle"></span>
                                     @SharedLocalizer[GRA.Annotations.Interface.Clear]
                                 </a>
@@ -265,7 +265,7 @@
                                     <input asp-for="PaginateModel.CurrentPage" type="hidden" />
                                 </noscript>
                                 <div>
-                                    <table class="table table-condensed table-bordered table-striped">
+                                    <table class="table table-sm table-bordered table-striped">
                                         <thead>
                                             <tr>
                                                 @if (Model.IsLoggedIn)
@@ -292,7 +292,7 @@
                                                             <noscript>
                                                                 <input asp-for="@Model.Challenges[i].Id" type="hidden" />
                                                                 <input asp-for="@Model.Challenges[i].IsFavorited" class="favorite-checkbox" />
-                                                                <label for="@($"Challenges_{i}__IsFavorited")"></label>
+                                                                <badge for="@($"Challenges_{i}__IsFavorited")"></badge>
                                                             </noscript>
                                                         </td>
                                                     }

@@ -53,7 +53,7 @@ namespace GRA.Domain.Service
             var carousel = await _carouselRepository.GetByIdAsync(carouselId);
             if (carousel != null)
             {
-                carousel.Items = await _carouselItemRepository.GetByCarouselIdAsync(carousel.Id);
+                 carousel.Items = await _carouselItemRepository.GetByCarouselIdAsync(carousel.Id);
             }
             return carousel;
         }

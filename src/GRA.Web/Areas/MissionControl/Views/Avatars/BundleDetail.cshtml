@@ -47,7 +47,7 @@
 
     <div class="row" style="padding: 10px 0;">
         <div class="col-xs-12">
-            <label asp-for="Bundle.Name" class="control-label"></label>
+            <badge asp-for="Bundle.Name" class="col-form-label"></badge>
             <input asp-for="Bundle.Name" class="form-control" disabled="@(Model.Bundle?.HasBeenAwarded == true ? "disabled" : null)" />
             <span asp-validation-for="Bundle.Name" class="text-danger"></span>
         </div>
@@ -55,7 +55,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Bundle.CanBeUnlocked" class="control-label">Bundle Type</label>
+            <badge asp-for="Bundle.CanBeUnlocked" class="col-form-label">Bundle Type</badge>
             <select asp-for="Bundle.CanBeUnlocked" class="form-control" disabled="@(Model.Action == "Edit" ? "disabled" : null)">
                 <option value="True">Unlockable</option>
                 <option value="False">Default</option>
@@ -72,7 +72,7 @@
             <div class="panel-body">
                 <span asp-validation-for="ItemsList" class="text-danger"></span>
                 <div>
-                    <table class="table table-condensed table-bordered table-striped">
+                    <table class="table table-sm table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -116,7 +116,7 @@
                                             <td>
                                                 <button type="button"
                                                         id="removeItemButton"
-                                                        class="btn btn-link btn-xs"
+                                                        class="btn btn-link btn-sm"
                                                         data-itemid="@item.Id">
                                                     <span class="fas fa-2x fa-minus-circle text-danger" aria-hidden="true"></span>
                                                 </button>
@@ -137,7 +137,7 @@
     </div>
 
     <div class="form-group">
-        <a asp-action="Bundles" class="btn btn-default">Return to List</a>
+        <a asp-action="Bundles" class="btn btn-secondary">Return to List</a>
         @if (Model.Bundle?.HasBeenAwarded != true)
         {
             <button type="submit" class="btn btn-primary" button-spinner>
@@ -171,7 +171,7 @@
                             <div class="panel-body">
                                 <div class="row row-spacing">
                                     <div class="col-xs-12">
-                                        <label asp-for="Layers" class="control-label">Layer</label>
+                                        <badge asp-for="Layers" class="col-form-label">Layer</badge>
                                         <select id="layerId"
                                                 asp-items="Model.Layers"
                                                 class="form-control">
@@ -189,7 +189,7 @@
                                         <div class="col-xs-6">
                                             <button type="button"
                                                     id="searchButton"
-                                                    class="btn btn-default btn-block"
+                                                    class="btn btn-secondary btn-block"
                                                     style="margin-right: 8px;">
                                                 Search
                                             </button>
@@ -197,7 +197,7 @@
                                         <div class="col-xs-6">
                                             <button type="button"
                                                     id="clearButton"
-                                                    class="btn btn-default btn-block">
+                                                    class="btn btn-secondary btn-block">
                                                 Clear
                                             </button>
                                         </div>
@@ -217,7 +217,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button"
-                                        class="btn btn-default"
+                                        class="btn btn-secondary"
                                         data-dismiss="modal"
                                         style="margin-right: 1em;">
                                     Close

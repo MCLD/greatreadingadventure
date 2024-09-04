@@ -13,7 +13,7 @@
 
                     <div class="row row-spacing">
                         <div class="col-xs-12">
-                            <label asp-for="ProgramId" class="control-label"></label>
+                            <badge asp-for="ProgramId" class="col-form-label"></badge>
                             <select asp-for="ProgramId" asp-items="Model.ProgramList" class="form-control">
                                 <option></option>
                             </select>
@@ -23,7 +23,7 @@
 
                     <div id="ageField" class="row row-spacing @(Model.ShowAge ? "": "hide")">
                         <div class="col-xs-12">
-                            <label asp-for="Age" class="control-label"></label>
+                            <badge asp-for="Age" class="col-form-label"></badge>
                             <input asp-for="Age" class="form-control" type="text" />
                             <span id="ageMessage" asp-validation-for="Age" class="text-danger"></span>
                         </div>

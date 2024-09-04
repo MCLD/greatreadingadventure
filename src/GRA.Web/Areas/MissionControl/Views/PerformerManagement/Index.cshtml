@@ -75,7 +75,7 @@
                                 </div>
                             </div>
 
-                            <table class="table table-striped table-hover table-condensed table-bordered">
+                            <table class="table table-striped table-hover table-sm table-bordered">
                                 @foreach (var branch in system.Branches)
                                 {
                                     <tr>
@@ -169,7 +169,7 @@
                 <h4 id="selectionDetailsLabel">Selection details</h4>
             </div>
             <div class="modal-body">
-                <table class="table table-striped table-condensed">
+                <table class="table table-striped table-sm">
                     <tr id="performerrow">
                         <th>Performer:</th>
                         <td><a href="#" target="_blank" id="performerlink"><span id="performername"></span> <span class="fas fa-external-link-alt"></span></a></td>
@@ -225,21 +225,21 @@
                         <td>
                             <span id="editcontactinfo" class="on-site-contact-button on-site-contact-edit fas fa-edit"></span>
                             <div>
-                                <label class="on-site-contact-label" for="onsitecontactname">Name:</label>
+                                <badge class="on-site-contact-label" for="onsitecontactname">Name:</badge>
                                 <span class="input-with-validation">
                                     <input class="on-site-contact-input disabled" type="text" id="onsitecontactname" name="onsitecontactname" disabled required />
                                     <span class="validation"></span>
                                 </span>
                             </div>
                             <div>
-                                <label class="on-site-contact-label" for="onsitecontactemail">Email:</label>
+                                <badge class="on-site-contact-label" for="onsitecontactemail">Email:</badge>
                                 <span class="input-with-validation">
                                     <input class="on-site-contact-input disabled" type="email" pattern=".+@@.+\..+" id="onsitecontactemail" name="onsitecontactemail" disabled required />
                                     <span class="validation"></span>
                                 </span>
                             </div>
                             <div>
-                                <label class="on-site-contact-label" for="onsitecontactphone">Phone:</label>
+                                <badge class="on-site-contact-label" for="onsitecontactphone">Phone:</badge>
                                 <span class="input-with-validation">
                                     <input class="on-site-contact-input disabled" type="tel" pattern="[0-9]{10}" id="onsitecontactphone" name="onsitecontactphone" disabled required />
                                     <span class="validation"></span>
@@ -253,7 +253,7 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
