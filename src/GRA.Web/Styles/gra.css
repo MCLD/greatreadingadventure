@@ -45,6 +45,14 @@ a.rowlink {
     margin-bottom: 1rem;
 }
 
+.navbar.bg-light .nav-item.active > a.nav-link {
+    background-color: #66CCFF;
+}
+
+.navbar.bg-dark .nav-item.active > a.nav-link {
+    background-color: #003399;
+}
+
 hr.footer {
     border-top: 1px solid #ccc;
     margin-bottom: 1rem;
@@ -60,30 +68,9 @@ footer p {
     font-size: 0.8em;
 }
 
-.gra-navbar-brand > .gra-pagetitle {
-    color: black;
-}
-
-ul.navbar-nav > li > a {
-    color: black;
-}
-
-ul.navbar-nav li.active {
-    background-color: #eeeeff;
-}
-
 .body-content {
     margin-bottom: 1em;
     margin-top: 1em;
-}
-
-.gra-navbar {
-    background-color: white;
-    border-bottom: 1px solid #eee;
-}
-
-.gra-menu-button {
-    border: 1px solid #ccc;
 }
 
 .alert > ul {

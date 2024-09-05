@@ -92,10 +92,15 @@ namespace GRA.Controllers.Helpers
 
                     var aTag = new TagBuilder("a");
                     aTag.Attributes.Add("href", link);
+                    if(NavPages)
+                    {
+                        aTag.AddCssClass("nav-link");
+                    }
                     aTag.InnerHtml.AppendHtml(NavPages ? page.NavText : page.FooterText);
                     if (NavPages)
                     {
                         outputTag = new TagBuilder("li");
+                        outputTag.AddCssClass("nav-item");
                         outputTag.InnerHtml.AppendHtml(aTag);
                     }
                     else

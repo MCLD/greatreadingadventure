@@ -23,33 +23,33 @@
     }
 </head>
 <body id="mission-control-body">
-    <div class="navbar gra-performer-navbar navbar-static-top">
+    <nav class="navbar navbar-expand-md d-print-none bg-light">
         <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button"
-                        class="navbar-toggle mc-menu-button btn-sm"
-                        data-bs-toggle="collapse"
-                        data-bs-target=".navbar-collapse"
-                        style="color: white;">
-                    <span class="sr-only">Toggle navigation</span>
-                    Menu
-                </button>
-                <a asp-controller="Home"
-                   asp-action="Index"
-                   class="navbar-brand mc-navbar-brand">
-                    <span class="fas fa-theater-masks"></span>
-                    Performer Registration
-                </a>
-            </div>
-            <div class="navbar-collapse navbar-right collapse">
-                <ul class="nav navbar-nav">
-                    <li class="active"><a asp-area="PerformerRegistration" asp-controller="Home" asp-action="Index" title="Performer Registration" data-toggle="tooltip" data-placement="bottom"><span class="fas fa-theater-masks"></span><span class="visible-xs-inline"> Mission Control</span></a></li>
-                    <li><a asp-controller="Home" asp-action="Index" asp-area="" title="Home"><span class="fas fa-home"></span><span class="visible-xs-inline"> Home</span></a></li>
-                    <li><a asp-controller="Home" asp-action="Signout" asp-area="">Sign out</a></li>
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="navbar-brand mc-navbar-brand">
+                <span class="fas fa-theater-masks"></span>
+                Performer Registration
+            </a>
+            <button type="button"
+                    class="navbar-toggler btn-sm"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarContent"
+                    aria-controls="navbarContent"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="sr-only">@GRA.Domain.Model.DisplayNames.ToggleNavigation</span>
+                @GRA.Domain.Model.DisplayNames.Menu
+            </button>
+            <div class="collapse navbar-collapse ms-auto" id="navbarContent">
+                <ul class="navbar-nav ms-auto">
+                    <li class="navbar-nav"><a asp-area="PerformerRegistration" asp-controller="Home" asp-action="Index" class="nav-link" title="Performer Registration" data-toggle="tooltip" data-placement="bottom"><span class="fas fa-theater-masks fa-fw"></span><span class="d-md-none"> Mission Control</span></a></li>
+                    <li class="navbar-nav"><a asp-controller="Home" asp-action="Index" asp-area="" class="nav-link" title="Home"><span class="fas fa-home fa-fw"></span><span class="d-md-none"> Home</span></a></li>
+                    <li class="navbar-nav"><a asp-controller="Home" asp-action="Signout" asp-area="" class="nav-link">Sign out</a></li>
                 </ul>
             </div>
         </div>
-    </div>
+    </nav>
     <div class="container body-content">
         <noscript>
             <div class="row">
