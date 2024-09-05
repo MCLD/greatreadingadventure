@@ -33,19 +33,19 @@
         </div>
     </div>
     <div class="col-xs-12 col-sm-7 col-md-8">
-        <div class="form-group">
+        <div class="mb-3">
             <badge>Name</badge>
             <div>@Model.Program.Title</div>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <badge>Description</badge>
             <div>@Model.Program.Description</div>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <badge>Capacity</badge>
             <div>@Model.Program.MinimumCapacity &ndash; @Model.Program.MaximumCapacity</div>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <badge>Ages</badge>
             <div>
                 <ul>
@@ -56,7 +56,7 @@
                 </ul>
             </div>
         </div>
-        <div class="row form-group">
+        <div class="row mb-3">
             <div class="col-xs-6">
                 <badge>Program Length</badge>
                 <div>@Model.Program.ProgramLengthMinutes minutes</div>
@@ -66,7 +66,7 @@
                 <div>@Model.Program.SetupTimeMinutes minutes</div>
             </div>
         </div>
-        <div class="row form-group">
+        <div class="row mb-3">
             <div class="col-xs-6">
                 <badge>Breakdown Time</badge>
                 <div>@Model.Program.BreakdownTimeMinutes minutes</div>
@@ -76,21 +76,21 @@
                 <div>@Model.Program.BackToBackMinutes minutes</div>
             </div>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <badge>Inclusive Cost</badge>
             <div>$@Model.Program.Cost</div>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <badge>Library Set-up</badge>
             <div>@Model.Program.Setup</div>
         </div>
         @if (Model.EnablePerformerLivestreamQuestions)
         {
-            <div class="form-group">
+            <div class="mb-3">
                 <badge>Willing to allow the library to livestream the program online?</badge>
                 <div>@(Model.Program.AllowStreaming ? "Yes" : "No")</div>
             </div>
-            <div class="form-group">
+            <div class="mb-3">
                 <badge>Willing to allow the library to save and share the archive of event, if livestreamed or recorded?</badge>
                 <div>@(Model.Program.AllowArchiving ? "Yes" : "No")</div>
             </div>

@@ -13,12 +13,12 @@
                         In order to add more people this family must be converted to a group.
                         Please enter a group name and select the appropriate group type.
                     </p>
-                    <div class="form-group">
+                    <div class="mb-3">
                         <badge asp-for="GroupInfo.Name" class="col-form-label"></badge>
                         <input asp-for="GroupInfo.Name" class="form-control" />
                         <span asp-validation-for="GroupInfo.Name" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="mb-3">
                         <badge asp-for="GroupInfo.GroupTypeId" class="col-form-label"></badge>
                         <select asp-for="GroupInfo.GroupTypeId"
                                 asp-items="Model.GroupTypes"

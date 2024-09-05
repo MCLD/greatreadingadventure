@@ -10,14 +10,14 @@
           role="form"
           style="margin: 1rem 0;">
 
-        <div class="form-group">
+        <div class="mb-3">
             <badge asp-for="CarouselItem.Title" class="col-form-label"></badge>
             <description gra-description-for="CarouselItem.Title"></description>
             <input asp-for="CarouselItem.Title" type="text" class="form-control" />
             <span asp-validation-for="CarouselItem.Title" class="text-danger"></span>
         </div>
 
-        <div class="form-group">
+        <div class="mb-3">
             <badge asp-for="CarouselItem.ImageUrl" class="col-form-label"></badge>
             <description gra-description-for="CarouselItem.ImageUrl"></description>
             <input asp-for="CarouselItem.ImageUrl" type="text" class="form-control" />
@@ -36,7 +36,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="mb-3">
             <a asp-action="Edit" asp-route-id="@Model.CarouselId" class="btn btn-secondary">Return to Carousel</a>
             <button type="submit"
                     id="Submit"

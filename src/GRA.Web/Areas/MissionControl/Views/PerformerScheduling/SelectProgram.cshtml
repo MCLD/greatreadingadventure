@@ -14,7 +14,7 @@
             <div class="col-xs-12 col-sm-8 col-sm-offset-2">
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        <div class="row form-group">
+                        <div class="row mb-3">
                             <div class="col-xs-6">
                                 <badge>Branch</badge>
                                 <div>@Model.BranchSelection.Branch.Name</div>
@@ -24,7 +24,7 @@
                                 <div>@Model.BranchSelection.AgeGroup.Name</div>
                             </div>
                         </div>
-                        <div class="row form-group">
+                        <div class="row mb-3">
                             <div class="col-xs-6">
                                 <badge>Program</badge>
                                 <div>@Model.BranchSelection.Program.Title</div>
@@ -34,7 +34,7 @@
                                 <div>@Model.BranchSelection.Program.ProgramLengthMinutes minutes</div>
                             </div>
                         </div>
-                        <div class="row form-group">
+                        <div class="row mb-3">
                             <div class="col-xs-6">
                                 <badge>Set-up Time</badge>
                                 <div>@Model.BranchSelection.Program.SetupTimeMinutes minutes</div>
@@ -46,7 +46,7 @@
                         </div>
                         @if (Model.BranchSelection.BackToBackProgram)
                         {
-                            <div class="row form-group">
+                            <div class="row mb-3">
                                 <div class="col-xs-6">
                                     <badge>Back to Back Program</badge>
                                     <div>Yes</div>
@@ -62,14 +62,14 @@
             </div>
         </div>
 
-        <div class="row form-group">
+        <div class="row mb-3">
             <div class="col-xs-12 col-sm-8 col-sm-offset-2">
                 <div class=" panel panel-default">
                     <form class="panel-body" id="onSiteContactInfo">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <badge>Please provide contact information for someone the performer can contact the day of the performance.</badge>
                         </div>
-                        <div class="form-group">
+                        <div class="mb-3">
                             <badge for="OnSiteContactName">Name:</badge>
                             <div class="input-with-validation">
                                 <input name="OnSiteContactName" asp-for="BranchSelection.OnSiteContactName" type="text" class="form-control" required>
@@ -77,14 +77,14 @@
                             </div>
                             <span class="text-danger"></span>
                         </div>
-                        <div class="form-group">
+                        <div class="mb-3">
                             <badge for="OnSiteContactEmail">Email:</badge>
                             <div class="input-with-validation">
                                 <input name="OnSiteContactEmail" asp-for="BranchSelection.OnSiteContactEmail" type="email" pattern=".+@@.+\..+" class="form-control" required>
                                 <div class="validation"></div>
                             </div>
                             <span class="text-danger"></span>
-                        </div class="form-group">
+                        </div class="mb-3">
                         <div>
                             <badge for="OnSiteContactPhone">Phone (please enter numbers only):</badge>
                             <div class="input-with-validation">
@@ -98,7 +98,7 @@
             </div>
         </div>
 
-        <div class="row form-group"></div>
+        <div class="row mb-3"></div>
 
         @{int count = 0;}
         @for (var calendarMonth = new DateTime(Model.Settings.ScheduleStartDate.Value.Year, Model.Settings.ScheduleStartDate.Value.Month, 1); calendarMonth <= Model.Settings.ScheduleEndDate.Value; calendarMonth = calendarMonth.AddMonths(1))

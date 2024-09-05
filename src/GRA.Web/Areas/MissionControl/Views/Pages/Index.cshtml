@@ -102,14 +102,14 @@
                         <h1 class="modal-title h4" id="addModalLabel">Add page</h1>
                     </div>
                     <div class="modal-body">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <badge asp-for="PageHeader.PageName" class="col-form-label"></badge>
                             <input id="addName" asp-for="PageHeader.PageName"
                                    class="form-control" />
                             <span asp-validation-for="PageHeader.PageName"
                                   class="text-danger"></span>
                         </div>
-                        <div class="form-group">
+                        <div class="mb-3">
                             <badge asp-for="PageHeader.Stub" class="col-form-label"></badge>
                             <input id="addStub" asp-for="PageHeader.Stub" class="form-control" />
                             <span asp-validation-for="PageHeader.Stub" class="text-danger"></span>
@@ -162,7 +162,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="modal-body">
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <badge asp-for="PageHeader.PageName"
                                        class="col-form-label"></badge>
                                 <input id="editName" asp-for="PageHeader.PageName"
@@ -170,7 +170,7 @@
                                 <span asp-validation-for="PageHeader.PageName"
                                       class="text-danger"></span>
                             </div>
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <badge asp-for="PageHeader.Stub" class="col-form-label"></badge>
                                 <input id="editStub" asp-for="PageHeader.Stub"
                                        class="form-control"

@@ -9,18 +9,18 @@
         <div class="col-xs-12">
             <div class="text-center">
                 <h1>Create a Coversheet</h1>
-                <h3 class="form-group">Performer: @Model.PerformerName</h3>
+                <h3 class="mb-3">Performer: @Model.PerformerName</h3>
             </div>
             <form asp-controller="PerformerManagement" asp-action="PrintCoverSheet" method="post">
-                <div class="col-xs-12 col-sm-6 col-sm-offset-3 form-group">
+                <div class="col-xs-12 col-sm-6 col-sm-offset-3 mb-3">
                     <badge for="month">Invoice Month: </badge>
                     <select class="form-control" name="month" asp-items="@Model.Months"></select>
                 </div>
-                <div class="col-xs-12 col-sm-6 col-sm-offset-3 form-group">
+                <div class="col-xs-12 col-sm-6 col-sm-offset-3 mb-3">
                     <badge for="invoiceNumber">Invoice Number: </badge>
                     <input class="form-control" id="invoice-input" name="invoiceNumber" type="text" />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-sm-offset-3 form-group">
+                <div class="col-xs-12 col-sm-6 col-sm-offset-3 mb-3">
                     <input name="id" type="number" value="@Model.PerformerId" hidden />
                     <button type="button" class="btn btn-secondary" asp-controller="PerformerManagement" asp-action="Performers">Cancel</button>
                     <button id="submit-button" type="submit" class="btn btn-primary" disabled>Submit</button>

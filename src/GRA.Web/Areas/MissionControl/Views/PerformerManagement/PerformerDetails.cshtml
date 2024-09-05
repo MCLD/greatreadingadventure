@@ -30,7 +30,7 @@
     <input asp-for="Performer.Id" type="hidden" />
     <input asp-for="BranchAvailabilityString" type="hidden" />
 
-    <div class="form-group">
+    <div class="mb-3">
         <badge asp-for="Performer.Name" class="col-sm-3 col-form-label required-field"></badge>
         <div class="col-sm-9">
             <input asp-for="Performer.Name" class="form-control" placeholder="" />
@@ -47,7 +47,7 @@
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="mb-3">
         <badge class="col-sm-3 col-form-label @(Model.Performer?.RegistrationCompleted != true ? "required-field": "")">Upload PDF</badge>
         <div class="col-sm-9">
             <div class="input-group">
@@ -66,7 +66,7 @@
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="mb-3">
         <badge asp-for="Performer.BillingAddress" class="col-sm-3 col-form-label required-field"></badge>
         <div class="col-sm-9">
             <textarea asp-for="Performer.BillingAddress" class="form-control"></textarea>
@@ -75,7 +75,7 @@
     </div>
 
 
-    <div class="form-group">
+    <div class="mb-3">
         <badge asp-for="Performer.Website" class="col-sm-3 col-form-label"></badge>
         <div class="col-sm-9">
             <input asp-for="Performer.Website" class="form-control" placeholder="" />
@@ -83,7 +83,7 @@
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="mb-3">
         <badge asp-for="Performer.PhonePreferred" class="col-sm-3 col-form-label required-field"></badge>
         <div class="col-sm-9">
             <select asp-for="Performer.PhonePreferred" class="form-control">
@@ -94,7 +94,7 @@
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="mb-3">
         <badge asp-for="Performer.Email" class="col-sm-3 col-form-label">Email</badge>
         <div class="col-sm-9">
             <input asp-for="Performer.Email" class="form-control" />
@@ -102,7 +102,7 @@
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="mb-3">
         <badge asp-for="Performer.Phone" class="col-sm-3 col-form-label required-field"></badge>
         <div class="col-sm-9">
             <input asp-for="Performer.Phone" class="form-control" placeholder="" />
@@ -110,7 +110,7 @@
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="mb-3">
         <badge asp-for="Performer.VendorId" class="col-sm-3 col-form-label required-field">@Model.VendorIdPrompt<span class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Example number: @Model.VendorCodeFormat"></span></badge>
         <div class="col-sm-9">
             <input asp-for="Performer.VendorId" class="form-control" placeholder="" />
@@ -118,7 +118,7 @@
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="mb-3">
         <badge asp-for="Performer.HasFingerprintCard" class="col-sm-3 col-form-label required-field"></badge>
         <div class="col-sm-9">
             <select asp-for="Performer.HasFingerprintCard" class="form-control">
@@ -131,7 +131,7 @@
 
     @if (Model.EnablePerformerInsuranceQuestion)
     {
-        <div class="form-group">
+        <div class="mb-3">
             <badge asp-for="Performer.HasInsurance" class="col-sm-3 col-form-label required-field"></badge>
             <div class="col-sm-9">
                 <select asp-for="Performer.HasInsurance" class="form-control">
@@ -143,7 +143,7 @@
         </div>
     }
 
-    <div class="form-group">
+    <div class="mb-3">
         <div class="col-sm-9 col-sm-offset-3">
             <p>
                 Which locations are they willing to perform at:

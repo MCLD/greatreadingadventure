@@ -101,7 +101,7 @@
                         <h1 class="modal-title h4" id="addModalLabel">Add district</h1>
                     </div>
                     <div class="modal-body">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <badge asp-for="District.Name" class="col-form-label"></badge>
                             <input asp-for="District.Name" class="form-control" />
                             <span asp-validation-for="District.Name" class="text-danger"></span>
@@ -151,7 +151,7 @@
                         <h1 class="modal-title h4" id="editModalLabel">Edit district</h1>
                     </div>
                     <div class="modal-body">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <input id="District_Id" name="District.Id" type="hidden" />
                             <badge asp-for="District.Name" class="col-form-label"></badge>
                             <input asp-for="District.Name" class="form-control" />

@@ -99,12 +99,12 @@
                         <h1 class="modal-title h4" id="addModalLabel">Add Age Group</h1>
                     </div>
                     <div class="modal-body">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <badge asp-for="AgeGroup.Name" class="col-form-label"></badge>
                             <input asp-for="AgeGroup.Name" class="form-control" />
                             <span asp-validation-for="AgeGroup.Name" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
+                        <div class="mb-3">
                             <badge asp-for="AgeGroup.IconColor" class="col-form-label"></badge>
                             <description gra-description-for="AgeGroup.IconColor"></description><br />
                             <input asp-for="AgeGroup.IconColor" type="color" />

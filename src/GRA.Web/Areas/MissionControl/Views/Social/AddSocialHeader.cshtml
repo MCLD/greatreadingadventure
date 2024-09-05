@@ -22,13 +22,13 @@
       enctype="multipart/form-data">
     <div class="row" style="margin-top: 2rem; margin-bottom: 2rem;">
         <div class="col-xs-12">
-            <div class="form-group">
+            <div class="mb-3">
                 <badge asp-for="Name" class="col-form-label"></badge>*
                 <description gra-description-for="Name"></description>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="mb-3">
                 <badge asp-for="StartDate" class="col-form-label"></badge>*
                 <description gra-description-for="StartDate"></description>
                 <div class="input-group date datetimepicker">
@@ -39,7 +39,7 @@
                 </div>
                 <span asp-validation-for="StartDate" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="mb-3">
                 <badge asp-for="LanguageId" class="col-form-label"></badge>*
                 <description gra-description-for="LanguageId"></description>
                 <select asp-for="LanguageId"
@@ -47,33 +47,33 @@
                         class="form-control"></select>
                 <span asp-validation-for="LanguageId" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="mb-3">
                 <badge asp-for="Title" class="col-form-label"></badge>*
                 <description gra-description-for="Title"></description>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="mb-3">
                 <badge asp-for="Description" class="col-form-label"></badge>*
                 <description gra-description-for="Description"></description>
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
+            <div class="mb-3">
                 <badge asp-for="ImageAlt" class="col-form-label"></badge>*
                 <description gra-description-for="ImageAlt"></description>
                 <input asp-for="ImageAlt" class="form-control" />
                 <span asp-validation-for="ImageAlt" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="mb-3">
                 <badge asp-for="TwitterUsername" class="col-form-label"></badge>
                 <description gra-description-for="TwitterUsername"></description>
                 <input asp-for="TwitterUsername" class="form-control" />
                 <span asp-validation-for="TwitterUsername" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
+            <div class="mb-3">
                 <badge asp-for="UploadedImage" class="col-form-label"></badge>*
                 <description gra-description-for="UploadedImage"></description>
                 <div class="input-group @SocialItemViewModel.ValidationClass(ViewData, "UploadedImage")">

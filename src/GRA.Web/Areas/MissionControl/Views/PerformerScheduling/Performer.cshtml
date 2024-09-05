@@ -69,19 +69,19 @@
         </div>
     </div>
     <div class="col-xs-12 col-sm-7 col-md-8">
-        <div class="form-group">
+        <div class="mb-3">
             <badge>Name</badge>
             <div>@Model.Performer.Name</div>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <badge>Email @(Model.Performer.PhonePreferred ? "" : "(preferred)") </badge>
             <div>@Model.Performer.Email</div>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <badge>Phone @(Model.Performer.PhonePreferred ? "(preferred)" : "")</badge>
             <div>@Model.Performer.Phone</div>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <badge>Website</badge>
             @if (string.IsNullOrWhiteSpace(Model.Performer.Website))
             {
@@ -103,7 +103,7 @@
                 </div>
             }
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <badge>Programs available for the age groups</badge>
             <ul>
                 @foreach (var ageGroup in Model.AgeGroups)
@@ -112,7 +112,7 @@
                 }
             </ul>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <badge>Locations</badge>
             <div>
                 Able to perform at

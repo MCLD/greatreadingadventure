@@ -20,14 +20,14 @@
         <input asp-for="LanguageId" type="hidden" />
         <div class="row">
             <div class="col-xs-12">
-                <div class="form-group">
+                <div class="mb-3">
                     <badge asp-for="TemplateDescription" class="col-form-label"></badge>
                     <description gra-description-for="TemplateDescription"></description>
                     <input asp-for="TemplateDescription" class="form-control" />
                     <span asp-validation-for="TemplateDescription" class="text-danger"></span>
                 </div>
 
-                <div class="form-group">
+                <div class="mb-3">
                     <badge asp-for="EmailBaseId" class="col-form-label"></badge>
                     <description gra-description-for="EmailBaseId"></description>
                     <select class="form-control" asp-for="EmailBaseId">
@@ -41,7 +41,7 @@
 
             @if (Model.Languages.Count() > 1)
             {
-                <div class="form-group">
+                <div class="mb-3">
                     <badge asp-for="LanguageId" class="col-form-label"></badge><br>
                     <description gra-description-for="LanguageId"></description><br>
                     @foreach (var item in Model.Languages)
@@ -74,7 +74,7 @@
                 </div>
             }
 
-            <div class="form-group">
+            <div class="mb-3">
                 <badge asp-for="UploadedFile">Upload a .json file with the template content.</badge>
                 <div class="input-group">
                     <badge class="input-group-append">

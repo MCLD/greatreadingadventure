@@ -27,7 +27,7 @@
 
     <div class="row">
         <div class="col-xs-12">
-            <div class="form-group">
+            <div class="mb-3">
                 <badge asp-for="Name" class="col-form-label"></badge>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
@@ -35,7 +35,7 @@
 
             @if (Model.Languages?.Count() > 1)
             {
-                <div class="form-group">
+                <div class="mb-3">
                     <badge asp-for="LanguageId" class="col-form-label"></badge><br>
                     <description gra-description-for="LanguageId"></description><br>
                     @foreach (var item in Model.Languages)
@@ -78,18 +78,18 @@
 
             <hr />
 
-            <div class="form-group">
+            <div class="mb-3">
                 <badge asp-for="TemplateMjml" class="col-form-label"></badge>
                 <description gra-description-for="TemplateMjml"></description>
                 <textarea asp-for="TemplateMjml" class="form-control" rows="8"></textarea>
                 <span asp-validation-for="TemplateMjml" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="mb-3">
                 <badge asp-for="TemplateHtml" class="col-form-label"></badge>
                 <textarea asp-for="TemplateHtml" class="form-control" rows="8"></textarea>
                 <span asp-validation-for="TemplateHtml" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="mb-3">
                 <badge asp-for="TemplateText" class="col-form-label"></badge>
                 <textarea asp-for="TemplateText" class="form-control" rows="8"></textarea>
                 <span asp-validation-for="TemplateText" class="text-danger"></span>
@@ -97,7 +97,7 @@
 
             @if (Model.Action == nameof(EmailManagementController.EditBaseTemplate))
             {
-                <div class="form-group">
+                <div class="mb-3">
                     <button type="button"
                         data-toggle="modal"
                         data-target="#importModal"
@@ -115,7 +115,7 @@
                 </div>
             }
 
-            <div class="form-group">
+            <div class="mb-3">
                 <a asp-action="BaseIndex" class="btn btn-secondary">Return to List</a>
                 <button type="submit"
                         id="Submit"

@@ -14,19 +14,19 @@
     <div class="row">
         <div class="col-xs-12">
 
-            <div class="form-group">
+            <div class="mb-3">
                 <badge asp-for="Program.Name" class="col-form-label"></badge>
                 <input asp-for="Program.Name" class="form-control" />
                 <span asp-validation-for="Program.Name" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
+            <div class="mb-3">
                 <badge asp-for="Program.AchieverPointAmount" class="col-form-label"></badge>
                 <input asp-for="Program.AchieverPointAmount" class="form-control" />
                 <span asp-validation-for="Program.AchieverPointAmount" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
+            <div class="mb-3">
                 <badge class="col-form-label" asp-for="Program.DashboardAlert"></badge>
                 <span class="fas fa-info-circle wide-tooltip"
                       title="Display this text in a banner at the top of the participant dashboard. Only text, no HTML/links."
@@ -37,7 +37,7 @@
                 <textarea asp-for="Program.DashboardAlert" class="form-control"></textarea>
             </div>
 
-            <div class="form-group">
+            <div class="mb-3">
                 <badge class="col-form-label">Ask Age</badge>
                 <select asp-for="AgeValues" class="form-control">
                     <option value="0">Don't Ask</option>
@@ -47,7 +47,7 @@
                 <span asp-validation-for="AgeValues" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
+            <div class="mb-3">
                 <badge class="col-form-label">Ask School</badge>
                 <select asp-for="SchoolValues" class="form-control">
                     <option value="0">Don't Ask</option>
@@ -59,7 +59,7 @@
 
             <div class="row">
                 <div class="col-xs-6">
-                    <div class="form-group">
+                    <div class="mb-3">
                         <badge asp-for="Program.AgeMinimum" class="col-form-label">Minimum Age?</badge>
                         <input asp-for="Program.AgeMinimum" class="form-control" />
                         <span asp-validation-for="Program.AgeMinimum" class="text-danger"></span>
@@ -67,7 +67,7 @@
                 </div>
 
                 <div class="col-xs-6">
-                    <div class="form-group">
+                    <div class="mb-3">
                         <badge asp-for="Program.AgeMaximum" class="col-form-label">Maximum Age?</badge>
                         <input asp-for="Program.AgeMaximum" class="form-control" />
                         <span asp-validation-for="Program.AgeMaximum" class="text-danger"></span>
@@ -75,13 +75,13 @@
                 </div>
             </div>
 
-            <div class="form-group">
+            <div class="mb-3">
                 <badge asp-for="Program.PointTranslationId" class="col-form-label"></badge>
                 <select asp-for="Program.PointTranslationId" asp-items="Model.PointTranslationList" class="form-control" disabled="@(Model.PointTranslationList.Count() == 0 ? "disabled" : null)"></select>
                 <span asp-validation-for="Program.PointTranslationId" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
+            <div class="mb-3">
                 <badge asp-for="Program.DailyLiteracyTipId" class="col-form-label"></badge>
                 <select asp-for="Program.DailyLiteracyTipId" asp-items="Model.DailyLiteracyTipList" class="form-control" disabled="@(Model.DailyLiteracyTipList.Count() == 0 ? "disabled" : null)">
                     <option></option>
@@ -115,7 +115,7 @@
                 </div>
 
                 <div class="col-xs-12 col-sm-8 col-md-9">
-                    <div class="form-group">
+                    <div class="mb-3">
                         <badge asp-for="Program.JoinBadgeName" class="col-form-label"></badge>
                         <input asp-for="Program.JoinBadgeName" class="form-control" />
                         <span asp-validation-for="Program.JoinBadgeName" class="text-danger"></span>
@@ -176,7 +176,7 @@
             </div>
             <hr />
 
-            <div class="form-group">
+            <div class="mb-3">
                 <a asp-action="Index" class="btn btn-secondary">Return to List</a>
                 <button type="submit"
                         id="Submit"

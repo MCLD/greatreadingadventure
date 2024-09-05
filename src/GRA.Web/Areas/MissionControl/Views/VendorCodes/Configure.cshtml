@@ -39,7 +39,7 @@
     <input type="hidden" asp-for="VendorCodeType.SiteId" value="@Model.VendorCodeType.SiteId" />
     <div class="row">
         <div class="col-xs-12">
-            <div class="form-group">
+            <div class="mb-3">
                 <badge asp-for="VendorCodeType.Description" class="col-form-label"></badge>*
                 <description gra-description-for="VendorCodeType.Description"></description>
                 <input asp-for="VendorCodeType.Description" class="form-control" />
@@ -52,7 +52,7 @@
     {
         <div class="row">
             <div class="col-xs-12">
-                <div class="form-group">
+                <div class="mb-3">
                     <badge class="col-form-label" asp-for="VendorCodeType.MessageTemplateId"></badge>
                     <description gra-description-for="VendorCodeType.MessageTemplateId"></description>
                     <br />
@@ -70,7 +70,7 @@
     }
     <div class="row">
         <div class="col-xs-12">
-            <div class="form-group">
+            <div class="mb-3">
                 <badge asp-for="VendorCodeType.Url" class="col-form-label"></badge>
                 <description gra-description-for="VendorCodeType.Url"></description>
                 <input asp-for="VendorCodeType.Url" class="form-control" />
@@ -80,7 +80,7 @@
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <div class="form-group">
+            <div class="mb-3">
                 <badge asp-for="VendorCodeType.ExpirationDate" class="col-form-label"></badge>
                 <description gra-description-for="VendorCodeType.ExpirationDate"></description>
                 <input asp-for="VendorCodeType.ExpirationDate"
@@ -92,7 +92,7 @@
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <div class="form-group">
+            <div class="mb-3">
                 <badge asp-for="VendorCodeType.AwardPrizeOnShipDate" class="col-form-label"></badge>
                 <description gra-description-for="VendorCodeType.AwardPrizeOnShipDate"></description>
                 <select asp-for="VendorCodeType.AwardPrizeOnShipDate"
@@ -105,7 +105,7 @@
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <div class="form-group">
+            <div class="mb-3">
                 <badge asp-for="VendorCodeType.AwardPrizeOnPackingSlip" class="col-form-label"></badge>
                 <description gra-description-for="VendorCodeType.AwardPrizeOnPackingSlip"></description>
                 <select asp-for="VendorCodeType.AwardPrizeOnPackingSlip"
@@ -122,7 +122,7 @@
         <input type="hidden" asp-for="VendorCodeType.OptionMessageTemplateId" value="@Model.VendorCodeType.OptionMessageTemplateId">
         <div class="row">
             <div class="col-xs-12">
-                <div class="form-group">
+                <div class="mb-3">
                     <badge class="col-form-label" asp-for="VendorCodeType.OptionMessageTemplateId"></badge>
                     <description gra-description-for="VendorCodeType.OptionMessageTemplateId"></description>
                     <br />
@@ -153,7 +153,7 @@
             }
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="form-group">
+                    <div class="mb-3">
                         <badge asp-for="VendorCodeType.DonationSegmentId" class="col-form-label"></badge><br />
                         @foreach (var item in Model.Languages)
                         {
@@ -169,7 +169,7 @@
             <input type="hidden" asp-for="VendorCodeType.DonationMessageTemplateId" value="@Model.VendorCodeType.DonationMessageTemplateId">
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="form-group">
+                    <div class="mb-3">
                         <badge class="col-form-label" asp-for="VendorCodeType.DonationMessageTemplateId"></badge><br />
                         @foreach (var item in Model.Languages)
                         {
@@ -197,7 +197,7 @@
 
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="form-group">
+                    <div class="mb-3">
                         <badge asp-for="VendorCodeType.EmailAwardSegmentId" class="col-form-label"></badge><br />
                         @foreach (var item in Model.Languages)
                         {
@@ -213,7 +213,7 @@
             <input type="hidden" asp-for="VendorCodeType.EmailAwardMessageTemplateId" value="@Model.VendorCodeType.EmailAwardMessageTemplateId">
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="form-group">
+                    <div class="mb-3">
                         <badge class="col-form-label" asp-for="VendorCodeType.EmailAwardMessageTemplateId"></badge><br />
                         @foreach (var item in Model.Languages)
                         {
@@ -230,7 +230,7 @@
         <hr />
         <div class="row">
             <div class="col-xs-12">
-                <div class="form-group">
+                <div class="mb-3">
                     <badge asp-for="VendorCodeType.ReadyForPickupEmailTemplateId" class="col-form-label"></badge>
                     <description gra-description-for="VendorCodeType.ReadyForPickupEmailTemplateId"></description>
                     <select asp-for="VendorCodeType.ReadyForPickupEmailTemplateId"
@@ -287,7 +287,7 @@
                         <span class="fa fa-spinner fa-spin" style="font-size: 3rem;"></span>
                     </div>
                     <div id="segmentModalContent" style="display: none;">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <badge>Pop-up text</badge>
                             <input type="text"
                                    class="form-control"
@@ -345,14 +345,14 @@
                         <span class="fa fa-spinner fa-spin" style="font-size: 3rem;"></span>
                     </div>
                     <div id="messageModalContent" style="display: none;">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <badge>Message subject</badge>
                             <input type="text"
                                    class="form-control"
                                    id="messageSubject"
                                    name="subject" />
                         </div>
-                        <div class="form-group">
+                        <div class="mb-3">
                             <badge>Message text</badge>
                             <textarea class="form-control"
                                       rows="4"

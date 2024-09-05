@@ -26,7 +26,7 @@
             <input asp-for="Kit.Id" type="hidden" />
         }
 
-        <div class="form-group">
+        <div class="mb-3">
             <badge asp-for="Kit.Name" class="col-sm-3 col-form-label required-field"></badge>
             <div class="col-sm-9">
                 <input asp-for="Kit.Name" class="form-control" placeholder="" />
@@ -44,7 +44,7 @@
                 </p>
             </div>
 
-            <div class="form-group">
+            <div class="mb-3">
                 <badge class="col-sm-3 col-form-label required-field">Upload photos</badge>
                 <div class="col-sm-9">
                     <div class="input-group">
@@ -65,7 +65,7 @@
             </div>
         }
 
-        <div class="form-group">
+        <div class="mb-3">
             <badge asp-for="Kit.Website" class="col-sm-3 col-form-label"></badge>
             <div class="col-sm-9">
                 <input asp-for="Kit.Website" class="form-control" placeholder="" />
@@ -73,7 +73,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="mb-3">
             <badge asp-for="Kit.Description" class="col-sm-3 col-form-label required-field"></badge>
             <div class="col-sm-9">
                 <textarea asp-for="Kit.Description" class="form-control" rows="6"></textarea>
@@ -81,7 +81,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="mb-3">
             <div class="col-xs-12 col-sm-9 col-sm-offset-3">
                 <p>
                     Please select which age groups the kit is suited for.

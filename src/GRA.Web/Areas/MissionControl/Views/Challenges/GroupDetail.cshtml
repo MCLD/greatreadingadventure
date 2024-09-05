@@ -48,13 +48,13 @@
     <div class="row">
         <div class="col-xs-12">
 
-            <div class="form-group">
+            <div class="mb-3">
                 <badge asp-for="ChallengeGroup.Name" class="col-form-label"></badge>
                 <input asp-for="ChallengeGroup.Name" class="form-control" />
                 <span asp-validation-for="ChallengeGroup.Name" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
+            <div class="mb-3">
                 <badge asp-for="ChallengeGroup.Stub" class="col-form-label"></badge>
                 <span id="Stub-Icon" class="fa colored-icon hide"></span>
                 <input asp-for="ChallengeGroup.Stub" class="form-control" readonly="@(Model.Action == nameof(ChallengesController.EditGroup) ? "readonly" : null)" />
@@ -75,13 +75,13 @@
                 </div>
             }
 
-            <div class="form-group">
+            <div class="mb-3">
                 <badge asp-for="ChallengeGroup.Description" class="col-form-label"></badge>
                 <textarea asp-for="ChallengeGroup.Description" class="form-control"></textarea>
                 <span asp-validation-for="ChallengeGroup.Description" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
+            <div class="mb-3">
                 <badge class="col-form-label">Challenges</badge>
                 <div>
                     <table class="table table-sm table-bordered table-striped">
@@ -141,7 +141,7 @@
                 <button type="button" id="addButton" class="btn btn-secondary">Add Challenges</button>
             </div>
 
-            <div class="form-group">
+            <div class="mb-3">
                 <a asp-action="Groups" class="btn btn-secondary">Return to List</a>
                 <button type="submit"
                         id="Submit"

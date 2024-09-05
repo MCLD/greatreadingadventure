@@ -3,7 +3,7 @@
 <form asp-controller="Reporting" asp-action="Run" method="post" role="form" class="form-horizontal" style="margin-top: 2rem; margin-bottom: 2rem;">
     <input asp-for="ReportId" type="hidden" />
 
-    <div class="form-group">
+    <div class="mb-3">
         <div class="col-xs-12">
             <badge asp-for="SchoolDistrictId" class="col-form-label"></badge>
             <select asp-for="SchoolDistrictId" asp-items="Model.SchoolDistrictList" class="form-control">
@@ -11,7 +11,7 @@
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="mb-3">
         <div class="col-xs-12">
             <badge asp-for="SchoolId" class="col-form-label"></badge>
             <select asp-for="SchoolId" asp-items="Model.SchoolList" class="form-control">
@@ -20,7 +20,7 @@
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="mb-3">
         <div class="col-xs-12">
             <button type="submit" class="btn btn-primary">
                 <span class="fas fa-file-alt"></span>

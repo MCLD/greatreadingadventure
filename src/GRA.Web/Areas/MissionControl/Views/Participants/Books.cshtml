@@ -73,7 +73,7 @@
     </div>
 </div>
 
-<div class="form-group">
+<div class="mb-3">
     <a asp-action="Index" class="btn btn-secondary">Return to Participants</a>
     @if (!Model.HasPendingQuestionnaire)
     {
@@ -109,13 +109,13 @@
                             <h1 class="modal-title h4" id="addModalLabel">Add book</h1>
                         </div>
                         <div class="modal-body">
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <badge asp-for="Book.Title" class="col-form-label"></badge>
                                 <input asp-for="Book.Title" class="form-control" />
                                 <span asp-validation-for="Book.Title" class="text-danger"></span>
                             </div>
 
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <badge asp-for="Book.Author" class="col-form-label"></badge>
                                 <input asp-for="Book.Author" class="form-control" />
                                 <span asp-validation-for="Book.Author" class="text-danger"></span>
@@ -169,13 +169,13 @@
                             <h1 class="modal-title h4" id="editModalLabel">Edit book</h1>
                         </div>
                         <div class="modal-body">
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <badge asp-for="Book.Title" class="col-form-label"></badge>
                                 <input asp-for="Book.Title" class="form-control" />
                                 <span asp-validation-for="Book.Title" class="text-danger"></span>
                             </div>
 
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <badge asp-for="Book.Author" class="col-form-label"></badge>
                                 <input asp-for="Book.Author" class="form-control" />
                                 <span asp-validation-for="Book.Author" class="text-danger"></span>

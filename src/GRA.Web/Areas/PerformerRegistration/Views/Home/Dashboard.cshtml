@@ -54,23 +54,23 @@
         </div>
     </div>
     <div class="col-xs-12 col-sm-7 col-md-8">
-        <div class="form-group">
+        <div class="mb-3">
             <badge>Name</badge>
             <div>@Model.Performer.Name</div>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <badge>Billing Address</badge>
             <div>@Model.Performer.BillingAddress</div>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <badge>Email @(Model.Performer.PhonePreferred ? "" : "(preferred)") </badge>
             <div>@Model.Performer.Email</div>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <badge>Phone @(Model.Performer.PhonePreferred ? "(preferred)" : "")</badge>
             <div>@Model.Performer.Phone</div>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <badge>Website</badge>
             @if (string.IsNullOrWhiteSpace(Model.Performer.Website))
             {
@@ -92,22 +92,22 @@
                 </div>
             }
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <badge>@Model.Settings.VendorIdPrompt</badge>
             <div>@Model.Performer.VendorId</div>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <badge>Has Fingerprint Clearance Card</badge>
             <div>@(Model.Performer.HasFingerprintCard ? "Yes" : "No")</div>
         </div>
         @if (Model.EnablePerformerInsuranceQuestion)
         {
-            <div class="form-group">
+            <div class="mb-3">
                 <badge>Has Liability Insurance</badge>
                 <div>@(Model.Performer.HasInsurance ? "Yes" : "No")</div>
             </div>
         }
-        <div class="form-group">
+        <div class="mb-3">
             <badge>Branches</badge>
             <div>@(Model.Performer.AllBranches ? Model.Systems.SelectMany(_ => _.Branches).Count() : Model.Performer.Branches.Count) of @Model.Systems.SelectMany(_ => _.Branches).Count() Selected</div>
             <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#branchModal">View Selected Libraries</button>
