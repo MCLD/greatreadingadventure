@@ -185,19 +185,19 @@
                                            asp-route-EndDate="@Model.EndDate"
                                            asp-route-Visited="@Model.Visited"
                                            asp-route-Favorites="@(Model.Favorites == true ? null : "True")"
-                                           class="btn btn-block @(Model.Favorites == true ? "btn-success" : "btn-secondary")">
+                                           class="btn  @(Model.Favorites == true ? "btn-success" : "btn-secondary")">
                                             <span class="@(Model.Favorites == true ? "fas" : "far") fa-star"></span>
                                             @SharedLocalizer[GRA.Annotations.Interface.MyFavorites]
                                         </a>
                                     </div>
                                     <div class="col-xs-6 col-sm-2 col-sm-offset-4 col-md-offset-5 row-spacing">
-                                        <a asp-action="CommunityExperiences" class="btn btn-secondary btn-block">
+                                        <a asp-action="CommunityExperiences" class="btn btn-secondary ">
                                             <span class="hidden-sm fas fa-minus-circle"></span>
                                             @SharedLocalizer[GRA.Annotations.Interface.Clear]
                                         </a>
                                     </div>
                                     <div class="col-xs-6 col-sm-2 row-spacing">
-                                        <button type="submit" class="btn btn-primary btn-block">
+                                        <button type="submit" class="btn btn-primary ">
                                             <span class="hidden-sm fas fa-search"></span>
                                             @SharedLocalizer[GRA.Annotations.Interface.Find]
                                         </button>
@@ -208,14 +208,14 @@
                                     <div class="col-xs-6 col-sm-2 col-sm-offset-8 col-md-offset-8 row-spacing">
                                         @if (Model.EventType == GRA.EventType.CommunityExperience)
                                         {
-                                            <a asp-action="CommunityExperiences" class="btn btn-secondary btn-block">
+                                            <a asp-action="CommunityExperiences" class="btn btn-secondary ">
                                                 <span class="hidden-sm fas fa-minus-circle"></span>
                                                 @SharedLocalizer[GRA.Annotations.Interface.Clear]
                                             </a>
                                         }
                                         else
                                         {
-                                            <a asp-action="" class="btn btn-secondary btn-block">
+                                            <a asp-action="" class="btn btn-secondary ">
                                                 <span class="hidden-sm fas fa-minus-circle"></span>
                                                 @SharedLocalizer[GRA.Annotations.Interface.Clear]
                                             </a>
