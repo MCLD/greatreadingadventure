@@ -1,6 +1,6 @@
 ﻿<div class="row" style="margin-top: 1rem;">
     <div class="col-sm-3 col-md-2 row-spacing">
-        <form asp-action="LoadSampleData" method="post" role="form" class="form-inline">
+        <form asp-action="LoadSampleData" method="post" role="form" class="d-flex flex-row align-items-center flex-wrap">
             <button type="submit" class="btn btn-info btn-block">Insert sample data</button>
         </form>
     </div>
@@ -11,23 +11,23 @@
         <a asp-action="@nameof(FlightController.AddQuestionnaire)" class="btn btn-info btn-block">Create questionnaire</a>
     </div>
     <div class="col-sm-4 col-md-3 row-spacing">
-        <form asp-action="@nameof(FlightController.ReloadSiteCache)" method="post" role="form" class="form-inline">
+        <form asp-action="@nameof(FlightController.ReloadSiteCache)" method="post" role="form" class="d-flex flex-row align-items-center flex-wrap">
             <button type="submit" class="btn btn-info btn-block">Reload sites into cache</button>
         </form>
     </div>
     <div class="col-sm-3 col-md-2 row-spacing">
-        <form asp-controller="Flight" asp-action="LogWarning" method="post" role="form" class="form-inline">
+        <form asp-controller="Flight" asp-action="LogWarning" method="post" role="form" class="d-flex flex-row align-items-center flex-wrap">
             <button type="submit" class="btn btn-warning btn-block">Log warning message</button>
         </form>
     </div>
     <div class="col-sm-3 col-md-2 row-spacing">
-        <form asp-controller="Flight" asp-action="LogError" method="post" role="form" class="form-inline">
+        <form asp-controller="Flight" asp-action="LogError" method="post" role="form" class="d-flex flex-row align-items-center flex-wrap">
             <button type="submit" class="btn btn-danger btn-block">Log error message</button>
         </form>
     </div>
 
     <div class="col-xs-12 col-sm-8 col-md-8 row-spacing">
-        <form asp-action="Job" asp-controller="Home" method="post" role="form" class="form-inline">
+        <form asp-action="Job" asp-controller="Home" method="post" role="form" class="d-flex flex-row align-items-center flex-wrap">
             <div class="mb-3">
                 <badge for="id">Run job:</badge>
                 <input name="id" class="form-control" placeholder="<guid>" />
