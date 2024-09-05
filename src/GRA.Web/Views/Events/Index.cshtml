@@ -357,7 +357,7 @@
                                                                 {
                                                                     if (Model.IsAuthenticated)
                                                                     {
-                                                                        <a class="btn btn-success float-right"
+                                                                        <a class="btn btn-success float-end"
                                                                            href="@Url.Action(nameof(EventsController.Stream),
                                                                                 new { id = Model.Events[i].Id })">
                                                                             <span class="far fa-play-circle"></span>
@@ -366,7 +366,7 @@
                                                                     }
                                                                     else
                                                                     {
-                                                                        <a class="btn btn-success float-right"
+                                                                        <a class="btn btn-success float-end"
                                                                            href="@Url.Action(nameof(EventsController.Stream),
                                                                                 new { id = Model.Events[i].Id })">
                                                                             <span class="fas fa-sign-in-alt"></span>
@@ -376,7 +376,7 @@
                                                                 }
                                                                 else
                                                                 {
-                                                                    <button disabled class="btn btn-secondary float-right">
+                                                                    <button disabled class="btn btn-secondary float-end">
                                                                         <span class="far fa-stop-circle"></span>
                                                                         @(Model.Events[i].StartDate >= DateTime.Now
                                                                     ? SharedLocalizer[GRA.Annotations.Interface.NotStreamingYet]

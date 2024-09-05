@@ -103,8 +103,8 @@
 }
 
 .gra-tab-pane {
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
+    border-start: 1px solid #ddd;
+    border-end: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
     border-radius: 0 0 5px 5px;
     padding: 10px;

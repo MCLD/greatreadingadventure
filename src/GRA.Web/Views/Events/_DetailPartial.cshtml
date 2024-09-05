@@ -2,7 +2,7 @@
 
 <div class="modal-header">
     <button type="button"
-            class="close"
+            class="btn-close"
             data-dismiss="modal"
             aria-label="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]">
         <span aria-hidden="true">&times;</span>
@@ -62,7 +62,7 @@
                             }
                             else
                             {
-                                <a class="btn btn-success float-right"
+                                <a class="btn btn-success float-end"
                                    href="@Url.Action(nameof(EventsController.Stream),
                                         new { id = Model.Event.Id })">
                                     <span class="fas fa-sign-in-alt"></span>
