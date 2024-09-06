@@ -10,17 +10,17 @@
 
     @if (Model.TriggersAwardingBundle?.Count > 0)
     {
-        <div class="panel-group" style="padding-top:10px;" id="accordionTriggers" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingTriggers">
-                    <h4 class="panel-title">
+        <div class="card-group" style="padding-top:10px;" id="accordionTriggers" role="tablist" aria-multiselectable="true">
+            <div class="card ">
+                <div class="card-heading" role="tab" id="headingTriggers">
+                    <h4 class="card-title">
                         <a role="button" data-toggle="collapse" data-parent="#accordionTriggers" href="#collapseTriggers" aria-expanded="false" aria-controls="collapseTriggers">
                             Triggers Awarding Bundle
                         </a>
                     </h4>
                 </div>
-                <div id="collapseTriggers" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTriggers">
-                    <div class="panel-body">
+                <div id="collapseTriggers" class="card-collapse collapse" role="tabpanel" aria-labelledby="headingTriggers">
+                    <div class="card-body">
                         The following trigger(s) award this bundle:
                         <ul>
                             @foreach (var trigger in Model.TriggersAwardingBundle)
@@ -65,11 +65,11 @@
     </div>
 
     <div style="margin-top: 2rem;">
-        <div class="panel panel-warning">
-            <div class="panel-heading">
-                <h3 class="panel-title">Items</h3>
+        <div class="card card-warning">
+            <div class="card-heading">
+                <h3 class="card-title">Items</h3>
             </div>
-            <div class="panel-body">
+            <div class="card-body">
                 <span asp-validation-for="ItemsList" class="text-danger"></span>
                 <div>
                     <table class="table table-sm table-bordered table-striped">
@@ -158,8 +158,8 @@
             <div class="modal-dialog modal-lg" role="document">
                 <div class="row">
                     <div class="col-xs-12 col-sm-10 col-sm-offset-1">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
+                        <div class="card ">
+                            <div class="card-heading">
                                 <button type="button"
                                         class="btn-close"
                                         data-dismiss="modal"
@@ -168,7 +168,7 @@
                                 </button>
                                 <h1 class="modal-title h4">Add item</h1>
                             </div>
-                            <div class="panel-body">
+                            <div class="card-body">
                                 <div class="row row-spacing">
                                     <div class="col-xs-12">
                                         <badge asp-for="Layers" class="col-form-label">Layer</badge>

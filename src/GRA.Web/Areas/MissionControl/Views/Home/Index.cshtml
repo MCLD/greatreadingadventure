@@ -115,11 +115,11 @@ else
 {
     <div class="row">
         <div class="col-sm-4 col-md-3 text-center">
-            <div class="panel panel-default">
-                <div class="panel-heading">
+            <div class="card ">
+                <div class="card-heading">
                     Categories
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     <ul class="nav nav-pills nav-stacked">
                         @foreach (var category in Model.NewsCategories.Where(_ => _.PostCount > 0))
                         {
@@ -142,8 +142,8 @@ else
                     </ul>
                 </div>
             </div>
-            <div class="panel panel-default">
-                <div class="panel-body">
+            <div class="card ">
+                <div class="card-body">
                     Subscribe via email
                     <br />
                     <button id="subscribeButton"
@@ -170,19 +170,19 @@ else
             {
                 foreach (var post in Model.NewsPosts)
                 {
-                    <div class="news-post panel panel-default">
-                        <div class="panel-heading">
-                            <div class="panel-title">
+                    <div class="news-post card ">
+                        <div class="card-heading">
+                            <div class="card-title">
                                 <div class="pull-right"><a asp-action="@nameof(HomeController.Post)" asp-route-id="@post.Id"><span class="fas fa-print"></span></a></div>
                                 <strong><a asp-action="@nameof(HomeController.Post)" asp-route-id="@post.Id">@post.Title</a></strong>
                             </div>
                         </div>
-                        <div class="panel-body">
+                        <div class="card-body">
                             <div class="news-post-content">
                                 @Html.Raw(post.Content)
                             </div>
                         </div>
-                        <div class="panel-footer mc-news-panel-footer">
+                        <div class="card-footer mc-news-card-footer">
                             <em>Posted on @post.PublishedAt.Value.ToShortDateString() by <a href="mailto:@(Model.SiteAdministratorEmail)?Subject=Post @(post.Title)" target="_top">@post.CreatedByName</a>
                                 @if(post.UpdatedAt.HasValue)
                                 { 

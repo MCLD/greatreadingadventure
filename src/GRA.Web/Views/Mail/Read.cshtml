@@ -2,14 +2,14 @@
 
 <div class="row">
     <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
-        <div class="panel panel-default">
-            <div class="panel-heading">
+        <div class="card ">
+            <div class="card-heading">
                 <span class="lead">
                     @SharedLocalizer[GRA.Annotations.Interface.SentOn,
                         Model.CreatedAt.ToString("d")]
                 </span>
             </div>
-            <div class="panel-body">
+            <div class="card-body">
                 <div class="row">
                     <div class="col-xs-12">
                         <p style="font-size:large">
@@ -21,7 +21,7 @@
                     </div>
                 </div>
             </div>
-            <div class="panel-footer clearfix hidden-print">
+            <div class="card-footer clearfix hidden-print">
                 <a asp-action="Index" class="btn btn-secondary">
                     @SharedLocalizer[GRA.Annotations.Interface.BackToMailbox]
                 </a>

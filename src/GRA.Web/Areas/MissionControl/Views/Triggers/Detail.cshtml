@@ -69,17 +69,17 @@
 
     @if (Model.DependentTriggers?.Count > 0)
     {
-        <div class="panel-group row-spacing" id="accordionDependent" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingDependent">
-                    <h4 class="panel-title">
+        <div class="card-group row-spacing" id="accordionDependent" role="tablist" aria-multiselectable="true">
+            <div class="card ">
+                <div class="card-heading" role="tab" id="headingDependent">
+                    <h4 class="card-title">
                         <a role="button" data-toggle="collapse" data-parent="#accordionDependent" href="#collapseDependent" aria-expanded="false" aria-controls="collapseDependent">
                             Dependent Triggers
                         </a>
                     </h4>
                 </div>
-                <div id="collapseDependent" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingDependent">
-                    <div class="panel-body">
+                <div id="collapseDependent" class="card-collapse collapse" role="tabpanel" aria-labelledby="headingDependent">
+                    <div class="card-body">
                         The following trigger(s) depend on this trigger:
                         <ul>
                             @foreach (var trigger in Model.DependentTriggers)
@@ -97,17 +97,17 @@
 
     @if (Model.RelatedEvents?.Count > 0)
     {
-        <div class="panel-group row-spacing" id="accordionRelated" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingRelated">
-                    <h4 class="panel-title">
+        <div class="card-group row-spacing" id="accordionRelated" role="tablist" aria-multiselectable="true">
+            <div class="card ">
+                <div class="card-heading" role="tab" id="headingRelated">
+                    <h4 class="card-title">
                         <a role="button" data-toggle="collapse" data-parent="#accordionRelated" href="#collapseRelated" aria-expanded="false" aria-controls="collapseRelated">
                             Related Events
                         </a>
                     </h4>
                 </div>
-                <div id="collapseRelated" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingRelated">
-                    <div class="panel-body">
+                <div id="collapseRelated" class="card-collapse collapse" role="tabpanel" aria-labelledby="headingRelated">
+                    <div class="card-body">
                         The following event(s) relate to this trigger:
                         <ul>
                             @foreach (var graEvent in Model.RelatedEvents)
@@ -225,11 +225,11 @@
             </div>
 
             <div class="col-xs-12 col-sm-10 col-sm-offset-1" style="margin-top: 2rem;">
-                <div class="panel panel-warning">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Require Challenges and Triggers</h3>
+                <div class="card card-warning">
+                    <div class="card-heading">
+                        <h3 class="card-title">Require Challenges and Triggers</h3>
                     </div>
-                    <div class="panel-body">
+                    <div class="card-body">
 
                         <div class="d-flex flex-row align-items-center flex-wrap" style="margin-bottom: 1em;">
                             <p class="form-control-plaintext"><strong>Participant must have earned</strong></p>
@@ -363,11 +363,11 @@
         </div>
     </div>
 
-    <div class="panel panel-primary" style="margin-top: 2rem;">
-        <div class="panel-heading">
-            <h3 class="panel-title">Awards</h3>
+    <div class="card card-primary" style="margin-top: 2rem;">
+        <div class="card-heading">
+            <h3 class="card-title">Awards</h3>
         </div>
-        <div class="panel-body">
+        <div class="card-body">
             <div class="col-xs-12 mb-3">
                 <badge asp-for="Trigger.AwardMessage" class="col-form-label col-sm-3"></badge>
                 <div class="col-sm-9">
@@ -522,18 +522,18 @@
         }
     }
 
-    <div class="panel-group" id="accordionPrize" role="tablist" aria-multiselectable="true">
-        <div class="panel panel-info">
-            <div class="panel-heading" role="tab" id="headingPrize">
-                <h4 class="panel-title">
+    <div class="card-group" id="accordionPrize" role="tablist" aria-multiselectable="true">
+        <div class="card card-info">
+            <div class="card-heading" role="tab" id="headingPrize">
+                <h4 class="card-title">
                     <a role="button" data-toggle="collapse" data-parent="#accordionPrize" href="#collapsePrize" aria-expanded="true" aria-controls="collapsePrize">
                         <span id="prizeIcon" class="fas fa-lg @(Model.AwardsPrize ? "fa-caret-down" : "fa-caret-right")"></span>
                         Award Prize
                     </a>
                 </h4>
             </div>
-            <div id="collapsePrize" class="panel-collapse collapse @(Model.AwardsPrize ? "in" : "")" role="tabpanel" aria-labelledby="headingPrize">
-                <div class="panel-body">
+            <div id="collapsePrize" class="card-collapse collapse @(Model.AwardsPrize ? "in" : "")" role="tabpanel" aria-labelledby="headingPrize">
+                <div class="card-body">
                     <div class="row row-spacing">
                         <div class="col-xs-12">
                             <badge asp-for="Trigger.AwardPrizeName" class="col-form-label"></badge>
@@ -560,10 +560,10 @@
 
     @if (Model.EditMail || Model.AwardsMail)
     {
-        <div class="panel-group" id="accordionMail" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-info">
-                <div class="panel-heading" role="tab" id="headingMail">
-                    <h4 class="panel-title">
+        <div class="card-group" id="accordionMail" role="tablist" aria-multiselectable="true">
+            <div class="card card-info">
+                <div class="card-heading" role="tab" id="headingMail">
+                    <h4 class="card-title">
                         @if (Model.EditMail)
                         {
                             <a role="button" data-toggle="collapse" data-parent="#accordionMail" href="#collapseMail" aria-expanded="true" aria-controls="collapseMail">
@@ -577,8 +577,8 @@
                         }
                     </h4>
                 </div>
-                <div id="collapseMail" class="panel-collapse collapse @(Model.AwardsMail ? "in" : "")" role="tabpanel" aria-labelledby="headingMail">
-                    <div class="panel-body">
+                <div id="collapseMail" class="card-collapse collapse @(Model.AwardsMail ? "in" : "")" role="tabpanel" aria-labelledby="headingMail">
+                    <div class="card-body">
                         <div class="row row-spacing">
                             <div class="col-xs-12">
                                 <badge asp-for="Trigger.AwardMailSubject" class="col-form-label"></badge>
@@ -604,18 +604,18 @@
     }
     @if (Model.EditAttachment || Model.AwardsAttachment)
     {
-        <div class="panel-group" id="accordionAttachment" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-info">
-                <div class="panel-heading" role="tab" id="headingAttachment">
-                    <h4 class="panel-title">
+        <div class="card-group" id="accordionAttachment" role="tablist" aria-multiselectable="true">
+            <div class="card card-info">
+                <div class="card-heading" role="tab" id="headingAttachment">
+                    <h4 class="card-title">
                         <a role="button" data-toggle="collapse" data-parent="#accordionAttachment" href="#collapseAttachment" aria-expanded="true" aria-controls="collapseAttachment">
                             <span id="attachmentIcon" class="fas fa-lg @(Model.AwardsAttachment ? "fa-caret-down" : "fa-caret-right")"></span>
                             Award Attachment
                         </a>
                     </h4>
                 </div>
-                <div id="collapseAttachment" class="panel-collapse collapse @(Model.AwardsAttachment ? "in" : "")" role="tabpanel" aria-labelledby="headingAttachment">                   
-                    <div class="panel-body">
+                <div id="collapseAttachment" class="card-collapse collapse @(Model.AwardsAttachment ? "in" : "")" role="tabpanel" aria-labelledby="headingAttachment">                   
+                    <div class="card-body">
                         <div class="row row-spacing">
                             <div class="col-xs-12" id="uploadAttachmentContainer">
                                 <p id="uploadAttachmentHeader">
@@ -771,11 +771,11 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="row">
                 <div class="col-xs-12 col-sm-10 col-sm-offset-1">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
+                    <div class="card ">
+                        <div class="card-heading">
                             <h1 class="h4 modal-title lead">Add requirement</h1>
                         </div>
-                        <div class="panel-body">
+                        <div class="card-body">
                             <div class="row">
                                 <div class="col-xs-12">
                                     <ul class="nav nav-pills" style="padding: 10px 0;">

@@ -296,17 +296,17 @@
 
     @if (Model.Groups.Count > 0)
     {
-        <div class="panel-group row-spacing" id="accordion" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingGroups">
-                    <h4 class="panel-title">
+        <div class="card-group row-spacing" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="card ">
+                <div class="card-heading" role="tab" id="headingGroups">
+                    <h4 class="card-title">
                         <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseGroups" aria-expanded="false" aria-controls="collapseGroups">
                             Challenge Groups
                         </a>
                     </h4>
                 </div>
-                <div id="collapseGroups" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingGroups">
-                    <div class="panel-body">
+                <div id="collapseGroups" class="card-collapse collapse" role="tabpanel" aria-labelledby="headingGroups">
+                    <div class="card-body">
                         The following group(s) contain this challenge:
                         <ul>
                             @foreach (var group in Model.Groups)
@@ -341,17 +341,17 @@
 
     @if (Model.RelatedEvents.Count > 0)
     {
-        <div class="panel-group row-spacing" id="accordion" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingEvents">
-                    <h4 class="panel-title">
+        <div class="card-group row-spacing" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="card ">
+                <div class="card-heading" role="tab" id="headingEvents">
+                    <h4 class="card-title">
                         <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEvents" aria-expanded="false" aria-controls="collapseEvents">
                             Related Events
                         </a>
                     </h4>
                 </div>
-                <div id="collapseEvents" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEvents">
-                    <div class="panel-body">
+                <div id="collapseEvents" class="card-collapse collapse" role="tabpanel" aria-labelledby="headingEvents">
+                    <div class="card-body">
                         The following event(s) are related to this challenge:
                         <ul>
                             @foreach (var graEvent in Model.RelatedEvents)
@@ -387,17 +387,17 @@
 
     @if (Model.DependentTriggers.Count > 0)
     {
-        <div class="panel-group row-spacing" id="accordion" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingOne">
-                    <h4 class="panel-title">
+        <div class="card-group row-spacing" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="card ">
+                <div class="card-heading" role="tab" id="headingOne">
+                    <h4 class="card-title">
                         <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
                             Dependent Triggers
                         </a>
                     </h4>
                 </div>
-                <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-                    <div class="panel-body">
+                <div id="collapseOne" class="card-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="card-body">
                         The following trigger(s) depend on this challenge:
                         <ul>
                             @foreach (var trigger in Model.DependentTriggers)

@@ -16,11 +16,11 @@
                     {
                         <input asp-for="@Model.Questions[i].Id" type="hidden" />
                         <span asp-validation-for="@Model.Questions[i]" class="text-danger"></span>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
+                        <div class="card ">
+                            <div class="card-heading">
                                 <div class="question">@Html.Raw(Model.Questions[i].Text)</div>
                             </div>
-                            <div class="panel-body">
+                            <div class="card-body">
                                 @foreach (var answer in Model.Questions[i].Answers)
                                 {
                                     <div class="answer-selection">

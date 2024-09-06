@@ -54,18 +54,18 @@
         <form asp-action="AuthorizationCode" method="post">
             <div class="row" style="padding-top: 2rem;">
                 <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
+                    <div class="card ">
+                        <div class="card-heading">
                             <span class="lead"><grasite property="name"></grasite> - Authorization</span>
                         </div>
-                        <div class="panel-body">
+                        <div class="card-body">
                             <div class="mb-3 mb-3-lg">
                                 <badge asp-for="AuthorizationCode" class="h4">Authorization Code for <grasite property="name"></grasite>:</badge>
                                 <input asp-for="AuthorizationCode" class="form-control form-control-lg" type="password" autofocus required>
                                 <span asp-validation-for="AuthorizationCode" class="text-danger"></span>
                             </div>
                         </div>
-                        <div class="panel-footer clearfix">
+                        <div class="card-footer clearfix">
                             <div class="pull-right">
                                 <button class="btn btn-lg btn-primary " type="submit">Validate code</button>
                             </div>

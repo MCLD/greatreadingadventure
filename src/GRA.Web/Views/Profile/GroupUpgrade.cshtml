@@ -3,11 +3,11 @@
     <div class="col-sm-6 col-sm-offset-3">
         <form asp-action="CreateGroup">
             <input asp-for="AddExisting" type="hidden" />
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">@SharedLocalizer[GRA.Annotations.Title.UpgradeToGroup]</h3>
+            <div class="card ">
+                <div class="card-heading">
+                    <h3 class="card-title">@SharedLocalizer[GRA.Annotations.Title.UpgradeToGroup]</h3>
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     <p>
                         @SharedLocalizer[GRA.Annotations.Info.UpgradeToGroupDescription, Model.MaximumHouseholdAllowed]
                     </p>
@@ -24,7 +24,7 @@
                         <span asp-validation-for="GroupInfo.GroupTypeId" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="panel-footer clearfix">
+                <div class="card-footer clearfix">
                     <div class="pull-right">
                         <a class="btn btn-danger" asp-action="CancelGroupUpgrade">
                             <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.Cancel]</span>

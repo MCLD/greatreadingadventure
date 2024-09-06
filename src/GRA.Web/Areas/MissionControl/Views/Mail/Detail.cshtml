@@ -23,7 +23,7 @@
                                 <span class="pull-right">@mail.CreatedAt</span>
                             </div>
                         </a>
-                        <div id="collapse@(mail.Id)" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading@(mail.Id)">
+                        <div id="collapse@(mail.Id)" class="collapse" role="tabpanel" aria-labelledby="heading@(mail.Id)">
                             <div class="mail-thread-body">
                                 <div style="margin-bottom:10px;">
                                     <strong style="padding-bottom:15px;">@mail.Subject</strong>
@@ -68,13 +68,13 @@
                 </p>
             </div>
         </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
+        <div class="card ">
+            <div class="card-heading">
                 <span class="lead">
                     Subject: @Model.Mail.Subject
                 </span>
             </div>
-            <div class="panel-body">
+            <div class="card-body">
                 <div class="row">
                     <div class="col-xs-8 col-sm-9">
                         @if (Model.Mail.ToUserId.HasValue)
@@ -88,7 +88,7 @@
                     </div>
                 </div>
             </div>
-            <div class="panel-footer clearfix hidden-print">
+            <div class="card-footer clearfix hidden-print">
                 <a asp-action="Index" class="btn btn-secondary">Return to Mail List</a>
                 <div class="pull-right">
                     @if (Model.CanDelete)

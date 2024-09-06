@@ -88,10 +88,10 @@
 
         <div class="row gra-js-required" style="margin-top: 4rem;">
             <div class="col-xs-12">
-                <div class="panel panel-default">
+                <div class="card ">
                     @if (!string.IsNullOrEmpty(Model.Carousel.Heading))
                     {
-                        <div class="panel-heading">
+                        <div class="card-heading">
                             @Model.Carousel.Heading
 
                             <a asp-action="AddItem"
@@ -102,7 +102,7 @@
                             </a>
                         </div>
                     }
-                    <div class="panel-body">
+                    <div class="card-body">
                         <div class="gra-carousel text-center">
                             @foreach (var item in Model.Carousel.Items)
                             {

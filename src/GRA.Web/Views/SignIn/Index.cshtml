@@ -4,11 +4,11 @@
     <input asp-for="ReturnUrl" type="hidden" />
     <div class="row">
         <div class="col-xs-12 col-sm-8 col-sm-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">
+            <div class="card ">
+                <div class="card-heading">
                     <span class="lead">@ViewData[ViewDataKey.Title]</span>
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     @if (string.IsNullOrWhiteSpace(Model?.ErrorMessage) != true)
                     {
                         <div class="row row-spacing">
@@ -34,7 +34,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel-footer clearfix">
+                <div class="card-footer clearfix">
                     <div class="pull-left">
                         <table>
                             <tr><td><a asp-action="ForgotPassword">@SharedLocalizer[GRA.Domain.Model.DisplayNames.ForgotPassword]</a></td></tr>

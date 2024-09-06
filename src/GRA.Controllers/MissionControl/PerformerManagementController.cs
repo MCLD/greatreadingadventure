@@ -77,7 +77,7 @@ namespace GRA.Controllers.MissionControl
 
             var completion = new Dictionary<int, string>();
             var percent = new Dictionary<int, string>();
-            var panel = new Dictionary<int, string>();
+            var card = new Dictionary<int, string>();
 
             var totalBranchCount = 0;
             var totalSelectedCount = 0;
@@ -111,15 +111,15 @@ namespace GRA.Controllers.MissionControl
 
                 if (branchPercent < 50)
                 {
-                    panel.Add(system.Id, "panel-danger");
+                    card.Add(system.Id, "card-danger");
                 }
                 else if (branchPercent < 100)
                 {
-                    panel.Add(system.Id, "panel-warning");
+                    card.Add(system.Id, "card-warning");
                 }
                 else
                 {
-                    panel.Add(system.Id, "panel-success");
+                    card.Add(system.Id, "card-success");
                 }
             }
 
@@ -138,7 +138,7 @@ namespace GRA.Controllers.MissionControl
                 SummaryPercent = $"{summaryPercent}%",
                 Percent = percent,
                 Completion = completion,
-                Panel = panel,
+                Panel = card,
                 ProgramCount = performerStatus.ProgramCount,
                 PerformerCount = performerStatus.PerformerCount,
                 KitCount = performerStatus.KitCount,

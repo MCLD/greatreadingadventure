@@ -176,10 +176,10 @@
         <input asp-for="BadgeMakerUrl" type="hidden" />
         <input asp-for="BadgeMakerImage" type="hidden" />
 
-        <div class="panel-group" id="accordionSecretCode" role="tablist" aria-multiselectable="true">
-            <div class="panel @(Model.RequireSecretCode ? "panel-warning" : "panel-info")">
-                <div class="panel-heading" role="tab" id="headingSecretCode">
-                    <h4 class="panel-title">
+        <div class="card-group" id="accordionSecretCode" role="tablist" aria-multiselectable="true">
+            <div class="card @(Model.RequireSecretCode ? "card-warning" : "card-info")">
+                <div class="card-heading" role="tab" id="headingSecretCode">
+                    <h4 class="card-title">
                         @if (Model.RequireSecretCode)
                         {
                             <text>Add Secret Code to this event (required)</text>
@@ -193,8 +193,8 @@
                         }
                     </h4>
                 </div>
-                <div id="collapseSecretCode" class="panel-collapse collapse @(Model.IncludeSecretCode ? "in" : "")" role="tabpanel" aria-labelledby="headingSecretCode">
-                    <div class="panel-body">
+                <div id="collapseSecretCode" class="card-collapse collapse @(Model.IncludeSecretCode ? "in" : "")" role="tabpanel" aria-labelledby="headingSecretCode">
+                    <div class="card-body">
                         <div class="row row-spacing">
                             <div class="col-xs-12">
                                 <badge asp-for="SecretCode" class="col-form-label"></badge>
@@ -349,15 +349,15 @@
             <div class="modal-dialog modal-lg" role="document">
                 <div class="row">
                     <div class="col-xs-12 col-sm-10 col-sm-offset-1">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
+                        <div class="card ">
+                            <div class="card-heading">
                                 <h1 class="h4 modal-title lead">
                                     <span class="relatedText">
                                         @(Model.Event?.Challenge != null || Model.Event?.ChallengeGroup != null ? "Change" : "Add")
                                     </span> challenge/group
                                 </h1>
                             </div>
-                            <div class="panel-body">
+                            <div class="card-body">
                                 <ul class="nav nav-tabs" role="tablist">
                                     <li role="presentation" class="active" )>
                                         <a id="challengeTab"

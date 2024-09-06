@@ -10,17 +10,17 @@
 
     @if (Model.RelatedEvents?.Count > 0)
     {
-        <div class="panel-group row-spacing" id="accordion" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingEvents">
-                    <h4 class="panel-title">
+        <div class="card-group row-spacing" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="card ">
+                <div class="card-heading" role="tab" id="headingEvents">
+                    <h4 class="card-title">
                         <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEvents" aria-expanded="false" aria-controls="collapseEvents">
                             Related Events
                         </a>
                     </h4>
                 </div>
-                <div id="collapseEvents" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEvents">
-                    <div class="panel-body">
+                <div id="collapseEvents" class="card-collapse collapse" role="tabpanel" aria-labelledby="headingEvents">
+                    <div class="card-body">
                         The following event(s) are related to this challenge group:
                         <ul>
                             @foreach (var graEvent in Model.RelatedEvents)
@@ -166,11 +166,11 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="row">
                 <div class="col-xs-12 col-sm-10 col-sm-offset-1">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
+                    <div class="card ">
+                        <div class="card-heading">
                             <h1 class="h4 modal-title lead">Add challenge</h1>
                         </div>
-                        <div class="panel-body">
+                        <div class="card-body">
                             <div class="row">
                                 <div class="col-xs-12">
                                     <ul class="nav nav-pills" style="padding: 10px 0;">

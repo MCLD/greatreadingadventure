@@ -40,8 +40,8 @@
     <div class="row gra-js-required gra-carousel-container" aria-hidden="true">
         <div class="col-xs-12 col-sm-10 col-sm-offset-1">
             <div class="accordion" id="accordionFeatured">
-                <div class="panel panel-default">
-                    <div class="panel-heading" id="headingOne">
+                <div class="card ">
+                    <div class="card-heading" id="headingOne">
                         <a class="btn btn-link collapsed"
                        style="padding: 0;"
                        data-toggle="collapse"
@@ -54,12 +54,12 @@
                         </a>
                     </div>
                     <div id="collapseFeatured"
-                     class="panel-collapse collapse"
+                     class="card-collapse collapse"
                      aria-labelledby="headingOne"
                      role="tabpanel"
                      data-parent="#accordion"
                      aria-expanded="false">
-                        <div class="panel-body">
+                        <div class="card-body">
                             <div class="gra-carousel text-center">
                                 @foreach (var featuredChallenge in Model.FeaturedChallengeGroups)
                                 {
@@ -86,8 +86,8 @@
 
 <div class="row">
     <div class="col-xs-12 col-sm-10 col-sm-offset-1">
-        <div class="panel panel-default">
-            <div class="panel-heading">
+        <div class="card ">
+            <div class="card-heading">
                 <span class="lead">
                     @if (Model.ChallengeGroup != null)
                     {
@@ -100,7 +100,7 @@
                     }
                 </span>
             </div>
-            <div class="panel-body">
+            <div class="card-body">
                 @if (Model.ChallengeGroup != null)
                 {
                     <p class="lead">@Model.ChallengeGroup.Description</p>

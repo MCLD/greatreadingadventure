@@ -10,11 +10,11 @@
 
 <div class="row" style="margin-top: 1rem;">
     <div class="col-sm-8 col-sm-offset-2">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Program Selection</h3>
+        <div class="card ">
+            <div class="card-heading">
+                <h3 class="card-title">Program Selection</h3>
             </div>
-            <div class="panel-body">
+            <div class="card-body">
                 @if (Model.SchedulingStage < GRA.Domain.Model.PsSchedulingStage.SchedulingPreview)
                 {
                     <p style="margin-bottom: auto;">
@@ -318,7 +318,7 @@
         background: #fcfcfc;
     }
 
-    .panel-body p {
+    .card-body p {
         font-size: larger;
         line-height: 3rem;
         margin-bottom: 2rem;

@@ -44,12 +44,12 @@
 
 <div class="row" style="margin-top: 0.5rem;">
     <div class="col-sm-8 col-sm-offset-2">
-        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="card-group" id="accordion" role="tablist" aria-multiselectable="true">
             @foreach (var system in Model.Systems)
             {
-                <div class="panel @Model.Panel[system.Id]">
-                    <div class="panel-heading" role="tab" id="heading-@system.Id">
-                        <h4 class="panel-title">
+                <div class="card @Model.Panel[system.Id]">
+                    <div class="card-heading" role="tab" id="heading-@system.Id">
+                        <h4 class="card-title">
                             <a class="collapsed"
                                role="button"
                                data-toggle="collapse"
@@ -63,10 +63,10 @@
                         </h4>
                     </div>
                     <div id="collapse-@system.Id"
-                         class="panel-collapse @Model.CollapsePanel"
+                         class="card-collapse @Model.CollapsePanel"
                          role="tabpanel"
                          aria-labelledby="heading-@system.Id">
-                        <div class="panel-body">
+                        <div class="card-body">
                             <div class="progress">
                                 <div class="progress-bar"
                                      role="progressbar"
