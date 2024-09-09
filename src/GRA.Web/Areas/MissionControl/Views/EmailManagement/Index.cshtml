@@ -28,14 +28,12 @@
             Manage Lists
         </a>
         <a class="btn btn-info"
-           style="margin-left: 1rem;"
            asp-action="@nameof(EmailManagementController.BaseIndex)">
             Base Templates
         </a>
         @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.SendBulkEmails.ToString()))
         {
             <a class="btn btn-secondary"
-               style="margin-left: 1rem;"
                asp-action="@nameof(EmailManagementController.SetSpecialEmails)">
                 Set Special Emails
             </a>

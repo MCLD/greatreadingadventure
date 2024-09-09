@@ -829,6 +829,10 @@ p.password-note {
     width: 25rem;
 }
 
+.nav-pills > li + li {
+    margin-left: 10px;
+} 
+
 .gra-landing-content {
     font-size: larger;
     margin-bottom: 2rem;

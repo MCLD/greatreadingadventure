@@ -54,10 +54,10 @@
                         <p>
                             Scheduling has begun! Selections need to be compeleted by @Model.Settings.SchedulingClosed.Value.ToLongDateString() at @Model.Settings.SchedulingClosed.Value.ToLongTimeString().
                         </p>
-                        <div class="col-sm-6">
+                        <div class="col-sm-6" style="margin-bottom: 10px;">
                             <a asp-action="Performers" class="btn btn-lg btn-secondary ">View Performers</a>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-6" style="margin-bottom: 10px;">
                             <a asp-action="Kits" class="btn btn-lg btn-secondary ">View Kits</a>
                         </div>
                     }
@@ -84,7 +84,7 @@
                                 <div class="col-xs-9">
                                     <select name="id" asp-items="Model.BranchList" class="form-control"></select>
                                 </div>
-                                <div class="col-xs-3">
+                                <div class="col-xs-3" style="margin-top: 10px;">
                                     <button type="submit" class="btn btn-primary">View</button>
                                 </div>
                             </div>
@@ -93,10 +93,10 @@
                     <p>
                         If you have any questions please contact <a href="@($"mailto:{Model.Settings.ContactEmail}")">@Model.Settings.ContactEmail</a>
                     </p>
-                    <div class="col-sm-6">
+                    <div class="col-sm-6" style="margin-top: 10px;">
                         <a asp-action="Performers" class="btn btn-lg btn-secondary ">View Performers</a>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-6" style="margin-top: 10px;">
                         <a asp-action="Kits" class="btn btn-lg btn-secondary ">View Kits</a>
                     </div>
                 }

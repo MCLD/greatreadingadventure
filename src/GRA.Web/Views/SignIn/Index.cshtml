@@ -3,8 +3,8 @@
 <form asp-controller="SignIn" asp-action="Index" method="post" role="form" novalidate>
     <input asp-for="ReturnUrl" type="hidden" />
     <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-offset-2">
-            <div class="card ">
+        <div class="mx-auto">
+            <div class="card">
                 <div class="card-heading">
                     <span class="lead">@ViewData[ViewDataKey.Title]</span>
                 </div>
@@ -41,7 +41,7 @@
                             <tr><td><a asp-action="ForgotUsername">@SharedLocalizer[GRA.Domain.Model.DisplayNames.ForgotUsername]</a></td></tr>
                         </table>
                     </div>
-                    <div class="pull-right">
+                    <div class="pull-right" style="margin-top: 10px;">
                         <button class="btn btn-success btn-lg btn-spinner" button-spinner>
                             <span class="fas fa-sign-in-alt"></span> 
                             @SharedLocalizer[GRA.Domain.Model.DisplayNames.SignIn]

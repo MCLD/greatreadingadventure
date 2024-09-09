@@ -5,7 +5,7 @@
     <div class="row row-spacing">
         <div class="col-xs-12">
             <ul class="nav nav-pills" style="padding: 10px 0;">
-                <li class="active"><a asp-action="@nameof(ParticipantsController.Index)">Participants</a></li>
+                <li class="active px-5"><a asp-action="@nameof(ParticipantsController.Index)">Participants</a></li>
                 <li><a asp-action="@nameof(ParticipantsController.Groups)">Groups</a></li>
             </ul>
         </div>
@@ -24,10 +24,10 @@
 <div class="row row-spacing">
     <div class="col-xs-12 col-sm-6">
         <span class="dropdown-label">Location:</span>
-        <ul class="nav nav-pills" style="display: inline-table;">
+        <ul class="nav" style="display: inline-table;">
             <li class="@(Model.ActiveNav == "All" ? "active" : "")"><a asp-route-Search="@Model.Search" asp-route-ProgramId="@Model.ProgramId">All</a></li>
             <li class="@(Model.ActiveNav == "System" ? "active" : "")">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     @(Model.SystemName ?? "System") <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
@@ -38,7 +38,7 @@
                 </ul>
             </li>
             <li class="@(Model.ActiveNav == "Branch" ? "active" : "")">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     @(Model.BranchName ?? "Branch") <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
@@ -52,8 +52,8 @@
         <span class="dropdown-label">Program:</span>
         <ul class="nav" style="display: inline-table;">
             <li>
-                <a class="dropdown-toggle" 
-                    data-toggle="dropdown" 
+                <a class="btn btn-secondary dropdown-toggle"
+                   data-bs-toggle="dropdown" 
                     href="#" 
                     role="button" 
                     aria-haspopup="true" 

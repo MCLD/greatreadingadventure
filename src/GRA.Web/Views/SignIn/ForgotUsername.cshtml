@@ -1,6 +1,6 @@
 ﻿<form asp-controller="SignIn" asp-action="ForgotUsername" method="post" role="form">
     <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+        <div class="mx-auto">
             <div class="card ">
                 <div class="card-heading">
                     <span class="lead"><grasite property="name"></grasite> - @SharedLocalizer[GRA.Annotations.Title.UsernameRecovery]</span>
@@ -18,8 +18,8 @@
                     <div class="pull-left">
                         <a asp-action="Index" class="btn btn-secondary btn-lg">@SharedLocalizer[GRA.Domain.Model.DisplayNames.ReturnToSignIn]</a>
                     </div>
-                    <div class="pull-right">
-                        <button class="btn btn-primary btn-lg btn-spinner" button-spinner>
+                    <div class="pull-right" style="margin-top: 10px;">
+                        <button class="btn btn-primary btn-lg btn-spinner" button-spinner style="margin-top: 10px;">
                             @SharedLocalizer[GRA.Domain.Model.DisplayNames.SendRecoveryEmail]
                         </button>
                     </div>

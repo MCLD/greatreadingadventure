@@ -295,7 +295,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
         }
         @if (!string.IsNullOrWhiteSpace(Model.DashboardPageContent))
         {
-            <div class="card  visible-sm visible-md visible-lg">
+            <div class="card visible-sm visible-md visible-lg" style="margin-bottom: 10px;">
                 <div class="dashboard-page-container">
                     @Html.Raw(Model.DashboardPageContent)
                 </div>

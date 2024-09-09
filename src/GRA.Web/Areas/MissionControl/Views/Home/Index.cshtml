@@ -120,7 +120,7 @@ else
                     Categories
                 </div>
                 <div class="card-body">
-                    <ul class="nav nav-pills nav-stacked">
+                    <ul class="nav nav-stacked">
                         @foreach (var category in Model.NewsCategories.Where(_ => _.PostCount > 0))
                         {
                             if (category.IsNew)

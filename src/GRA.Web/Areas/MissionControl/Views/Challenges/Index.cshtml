@@ -15,7 +15,7 @@
             {
                 <li class="@(Model.ActiveNav == "All" ? "active" : "")"><a asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-Program="@Model.Program">All</a></li>
                 <li class="@(Model.ActiveNav == "System" ? "active" : "")">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                         @(Model.SystemName ?? "System") <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
@@ -31,7 +31,7 @@
                 <li class="@(Model.ActiveNav == "System" ? "active" : "")"><a asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-Program="@Model.Program">@Model.SystemName</a></li>
             }
             <li class="@(Model.ActiveNav == "Branch" ? "active" : "")">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     @(Model.BranchName ?? "Branch") <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
@@ -51,7 +51,7 @@
         <span class="dropdown-label">Limited to Program:</span>
         <ul class="nav" style="display: inline-table;">
             <li>
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                <a class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     @(Model.ProgramName ?? "Show All") <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
