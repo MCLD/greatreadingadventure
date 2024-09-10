@@ -3,7 +3,7 @@
 }
 
 .news-post-content p {
-    margin-bottom: 20px;
+    margin-bottom: 1rem;
 }
 
 .news-post-content img {
@@ -94,7 +94,7 @@
     background-color: #f5f5f5;
     border: 1px solid #dddddd;
     border-radius: 3px;
-    margin-bottom: 10px;
+    margin-bottom: 0.5rem;
     cursor: move;
 }
 

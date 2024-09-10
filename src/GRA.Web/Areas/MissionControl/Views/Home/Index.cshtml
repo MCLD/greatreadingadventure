@@ -170,7 +170,7 @@ else
             {
                 foreach (var post in Model.NewsPosts)
                 {
-                    <div class="news-post card ">
+                    <div class="news-post card" style="margin-bottom: 0.5rem">
                         <div class="card-heading">
                             <div class="card-title">
                                 <div class="pull-right"><a asp-action="@nameof(HomeController.Post)" asp-route-id="@post.Id"><span class="fas fa-print"></span></a></div>

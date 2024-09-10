@@ -2,7 +2,7 @@
 
 @if (Model.MailThread.Count > 0)
 {
-    <div class="row" style="margin-bottom: 20px;">
+    <div class="row" style="margin-bottom: 1rem;">
         <div class="col-md-8 col-md-offset-2">
             @foreach (var mail in Model.MailThread)
             {
@@ -25,7 +25,7 @@
                         </a>
                         <div id="collapse@(mail.Id)" class="collapse" role="tabpanel" aria-labelledby="heading@(mail.Id)">
                             <div class="mail-thread-body">
-                                <div style="margin-bottom:10px;">
+                                <div style="margin-bottom: 0.5rem;">
                                     <strong style="padding-bottom:15px;">@mail.Subject</strong>
                                 </div>
 

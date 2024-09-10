@@ -287,7 +287,7 @@
                         }
                     </tbody>
                 </table>
-                <div id="noRelated" class="alert alert-warning @(Model.Event.Challenge != null || Model.Event.ChallengeGroup != null ? "hide" : "")" style="margin-bottom: 10px;">No related challenges or challenge groups.</div>
+                <div id="noRelated" class="alert alert-warning @(Model.Event.Challenge != null || Model.Event.ChallengeGroup != null ? "hide" : "")" style="margin-bottom: 0.5rem;">No related challenges or challenge groups.</div>
                 @if (Model.CanRelateChallenge)
                 {
                     <input asp-for="CanRelateChallenge" type="hidden" />

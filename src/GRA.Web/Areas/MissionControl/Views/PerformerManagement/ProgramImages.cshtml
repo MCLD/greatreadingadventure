@@ -12,7 +12,7 @@
     <div class="col-xs-12">
         <h1>
             Images for Program: @Model.ProgramName
-            <a asp-action="Program" asp-route-id="@Model.ProgramId" class="btn btn-lg btn-secondary" style="margin-bottom:10px;">Return to Program</a>
+            <a asp-action="Program" asp-route-id="@Model.ProgramId" class="btn btn-lg btn-secondary" style="margin-bottom: 0.5rem;">Return to Program</a>
         </h1>
     </div>
     <form asp-action="ProgramImages" class="form-horizontal col-xs-12" method="post" role="form" enctype="multipart/form-data">
@@ -51,11 +51,11 @@
             <div class="col-sm-9 col-sm-offset-3" style="margin-top: 1em;margin-bottom: 1em;">
                 <button type="submit"
                         class="btn btn-lg btn-success btn-spinner"
-                        style="margin-bottom:10px;"
+                        style="margin-bottom: 0.5rem;"
                         button-spinner>
                     Upload Image(s)
                 </button>
-                <button id="deleteButton" type="button" class="btn btn-lg btn-danger" style="margin-bottom:10px;" data-toggle="modal" data-target="#deleteModal" disabled>
+                <button id="deleteButton" type="button" class="btn btn-lg btn-danger" style="margin-bottom: 0.5rem;" data-toggle="modal" data-target="#deleteModal" disabled>
                     Delete Selected Image(s)
                 </button>
             </div>
@@ -74,7 +74,7 @@
                 {
                     @Html.Raw("<div class=\"row\">");
                 }
-                <div class="col-xs-12 col-md-4" style="margin-bottom:40px;">
+                <div class="col-xs-12 col-md-4" style="margin-bottom: 2rem;">
                     <div style="padding:10px;border:1px solid black;">
                         <img src="~/@Model.ProgramImages[i].Filename" class="img-fluid" style="margin: 0 auto;" />
                         <input class="deleteSelection form-control" type="checkbox" data-id="@Model.ProgramImages[i].Id" />
