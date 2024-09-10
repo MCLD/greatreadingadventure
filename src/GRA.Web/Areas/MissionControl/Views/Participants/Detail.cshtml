@@ -303,7 +303,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">Update Free Book Code status</h4>
                 </div>
                 <div class="modal-body">
@@ -316,7 +316,7 @@
                     Change that status by clicking below which will email the participant that their item is ready.
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <form asp-action="@nameof(ParticipantsController.MarkVendorItemAsReceived)"
                           style="display: inline;">
                         <input type="hidden" name="id" value="@Model.User.Id">
@@ -368,7 +368,7 @@
                         <div class="modal-footer">
                             <button type="button"
                                     class="btn btn-secondary"
-                                    data-dismiss="modal"
+                                    data-bs-dismiss="modal"
                                     style="margin-right: 1em;">
                                 @GRA.Annotations.Interface.Cancel
                             </button>

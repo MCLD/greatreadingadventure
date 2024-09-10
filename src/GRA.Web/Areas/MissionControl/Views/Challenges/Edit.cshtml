@@ -53,7 +53,7 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                             <h4 class="modal-title" id="addModalLabel">Add task</h4>
                         </div>
                         <div class="modal-body">
@@ -127,7 +127,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="margin-right: 1em;">Cancel</button>
                             <button type="submit" asp-action="AddTask" class="btn btn-primary pull-right btn-spinner" aria-label="Confirm" button-spinner>
                                 <span class="buttonText">Add</span>
                             </button>
@@ -145,7 +145,7 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                             <h4 class="modal-title" id="editModalLabel">Edit task</h4>
                         </div>
                         <div class="modal-body">
@@ -245,7 +245,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="margin-right: 1em;">Cancel</button>
                             <button type="submit" asp-action="ModifyTask" class="btn btn-primary pull-right btn-spinner" aria-label="Confirm" button-spinner>
                                 <span class="buttonText">Save</span>
                             </button>
@@ -261,7 +261,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         <h4 class="modal-title" id="deleteModalLabel">Delete task</h4>
                     </div>
                     <div class="modal-body">
@@ -269,7 +269,7 @@
                         <span id="modal-text"></span>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="margin-right: 1em;">Cancel</button>
                         <button type="submit"
                                 id="DeleteTask"
                                 asp-action="DeleteTask"
@@ -767,7 +767,7 @@
                         <div class="modal-header">
                             <button type="button"
                                     class="btn-close"
-                                    data-dismiss="modal"
+                                    data-bs-dismiss="modal"
                                     aria-label="Close dialog">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -891,7 +891,7 @@
                         <div class="modal-footer">
                             <button type="button"
                                     class="btn btn-secondary"
-                                    data-dismiss="modal"
+                                    data-bs-dismiss="modal"
                                     style="margin-right: 1em;">
                                 Cancel
                             </button>
@@ -922,7 +922,7 @@
                         <div class="modal-header">
                             <button type="button"
                                     class="btn-close"
-                                    data-dismiss="modal"
+                                    data-bs-dismiss="modal"
                                     aria-label="Close dialog">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -1070,7 +1070,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary"
-                                    data-dismiss="modal"
+                                    data-bs-dismiss="modal"
                                     style="margin-right: 1em;">
                                 Cancel
                             </button>
@@ -1098,7 +1098,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="btn-close"
-                                data-dismiss="modal"
+                                data-bs-dismiss="modal"
                                 aria-label="Close dialog">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -1111,7 +1111,7 @@
                     <div class="modal-footer">
                         <button type="button"
                                 class="btn btn-secondary"
-                                data-dismiss="modal"
+                                data-bs-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel
                         </button>
@@ -1142,7 +1142,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                     <h1 class="h4 modal-title" id="deleteModalLabel">
@@ -1159,14 +1159,14 @@
                 <div class="modal-footer">
                     <button type="button"
                             class="btn btn-secondary"
-                            data-dismiss="modal"
+                            data-bs-dismiss="modal"
                             style="margin-right: 1em;">
                         Cancel
                     </button>
                     <button id="warningSave"
                             type="button"
                             class="btn btn-primary"
-                            data-dismiss="modal"
+                            data-bs-dismiss="modal"
                             style="margin-right: 1em;">
                         Save Challenge
                     </button>
@@ -1185,8 +1185,8 @@
          aria-labelledby="badgeModalLabel">
         <div class="modal-content">
             <div class="modal-body" style="padding: 30px;">
-                <span class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
-                      data-dismiss="modal"
+                <span class="close frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
+                      data-bs-dismiss="modal"
                       alt="Close dialog."
                       role="button">
                     <span class="fas fa-circle fa-stack-2x fa-inverse"></span>

@@ -19,7 +19,7 @@
                 <div class="card-footer">
                     <a asp-action="@(Model.UserId.HasValue ? nameof(ProfileController.Household) : nameof(ProfileController.Index))"
                        class="btn btn-secondary" 
-                       data-dismiss="modal" 
+                       data-bs-dismiss="modal" 
                        style="margin-right: 1em;">
                         @SharedLocalizer[GRA.Annotations.Interface.Cancel]
                     </a>
