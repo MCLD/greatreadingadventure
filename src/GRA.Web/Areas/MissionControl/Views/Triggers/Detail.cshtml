@@ -350,14 +350,12 @@
     <div class="row row-spacing">
         <div class="col-xs-12">
             <badge asp-for="Trigger.ActivationDate" class="col-form-label"></badge>
-            <div class="input-group date" id="activationDatePicker">
-                <span class="input-group-addon">
-                    <span class="fas fa-calendar-alt"></span>
-                </span>
+            <div class="form-group date" id="activationDatePicker">
                 <input asp-for="Trigger.ActivationDate"
-                       type="text"
+                       type="form"
                        class="form-control"
-                       readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
+                       readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" 
+                       name="date"/>
             </div>
             <span asp-validation-for="Trigger.ActivationDate" class="text-danger"></span>
         </div>

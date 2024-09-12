@@ -86,14 +86,9 @@
                     <div class="modal-body">
                         <div class="row mb-3">
                             <div class="col-xs-12">
-                                <badge asp-for="BlackoutDate.Date" class="col-form-label"></badge>
-                                <div class="input-group date datepicker">
-                                    <span class="input-group-addon">
-                                        <span class="fas fa-calendar-alt"></span>
-                                    </span>
-                                    <input asp-for="BlackoutDate.Date"
-                                           type="text"
-                                           class="form-control" />
+                                <badge asp-for="BformlackoutDate.Date" class="col-form-label"></badge>
+                                <div class="input-group date">
+                                    <input asp-for="BlackoutDate.Date" type="date" class="form-control" name="date" />
                                 </div>
                                 <span asp-validation-for="BlackoutDate.Date"
                                       class="text-danger"></span>
