@@ -29,11 +29,8 @@
             @if (Model.Sent)
             {
             <badge asp-for="Broadcast.SendAt " class="col-form-label">Sent at</badge>
-            <div class="input-group date" id="pickerSend">
-                <span class="input-group-addon">
-                    <span class="fas fa-calendar-alt"></span>
-                </span>
-                <input asp-for="Broadcast.SendAt" type="text" class="form-control" disabled="disabled" />
+            <div class="form-group date" id="pickerSend">
+                <input asp-for="Broadcast.SendAt" type="date" class="form-control" name="date" />
             </div>
             <span asp-validation-for="Broadcast.SendAt" class="text-danger"></span>
 
@@ -47,11 +44,11 @@
                         <input asp-for="SendNow" type="radio" value="false" />
                     </td>
                     <td style="padding-bottom:10px;width:300px;">
-                        <div class="input-group date" id="pickerSend">
+                        <div class="form-group date" id="pickerSend">
                             <span class="input-group-addon">
                                 <span class="fas fa-calendar-alt"></span>
                             </span>
-                            <input asp-for="Broadcast.SendAt" type="text" class="form-control" />
+                            <input asp-for="Broadcast.SendAt" type="date" class="form-control" />
                         </div>
                         <span asp-validation-for="Broadcast.SendAt" class="text-danger"></span>
                     </td>
@@ -87,23 +84,3 @@
         }
     </div>
 </form>
-
-@section scripts
-{
-<script>
-    $('[id^=picker]').datetimepicker({
-        format: 'MM/DD/YYYY h:mm a',
-        allowInputToggle: true,
-        sideBySide: true,
-        minDate: moment().add("10", "m"),
-        icons: {
-            time: "far fa-clock",
-            date: "fas fa-calendar-alt",
-            up: "fas fa-arrow-up",
-            down: "fas fa-arrow-down",
-            previous: "fas fa-arrow-left",
-            next: "fas fa-arrow-right"
-        }
-    });
-</script>
-}
