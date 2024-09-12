@@ -24,11 +24,9 @@
     <div class="row row-spacing">
         <div class="col-xs-12">
             <badge asp-for="Settings.RegistrationOpen" class="col-form-label required-field"></badge>
-            <div class="input-group date datetimepicker">
-                <span class="input-group-addon">
-                    <span class="fas fa-calendar-alt"></span>
-                </span>
-                <input asp-for="Settings.RegistrationOpen" type="text" class="form-control" />
+            <div class="form-group date datetimepicker">
+                @* timepicker *@
+                <input asp-for="Settings.RegistrationOpen" type="date" class="form-control" name="date" />
             </div>
             <span asp-validation-for="Settings.RegistrationOpen" class="text-danger"></span>
         </div>
@@ -36,11 +34,9 @@
     <div class="row row-spacing">
         <div class="col-xs-12">
             <badge asp-for="Settings.RegistrationClosed" class="col-form-label required-field"></badge>
-            <div class="input-group date datetimepicker">
-                <span class="input-group-addon">
-                    <span class="fas fa-calendar-alt"></span>
-                </span>
-                <input asp-for="Settings.RegistrationClosed" type="text" class="form-control" />
+            <div class="form-group date datetimepicker">
+                @* timepicker *@
+                <input asp-for="Settings.RegistrationClosed" type="date" class="form-control" name="date" />
             </div>
             <span asp-validation-for="Settings.RegistrationClosed" class="text-danger"></span>
         </div>
@@ -48,11 +44,9 @@
     <div class="row row-spacing">
         <div class="col-xs-12">
             <badge asp-for="Settings.SchedulingPreview" class="col-form-label required-field"></badge>
-            <div class="input-group date datetimepicker">
-                <span class="input-group-addon">
-                    <span class="fas fa-calendar-alt"></span>
-                </span>
-                <input asp-for="Settings.SchedulingPreview" type="text" class="form-control" />
+            <div class="form-group date datetimepicker">
+                @* timepicker *@
+                <input asp-for="Settings.SchedulingPreview" type="date" class="form-control" name="date" />
             </div>
             <span asp-validation-for="Settings.SchedulingPreview" class="text-danger"></span>
         </div>
@@ -60,11 +54,9 @@
     <div class="row row-spacing">
         <div class="col-xs-12">
             <badge asp-for="Settings.SchedulingOpen" class="col-form-label required-field"></badge>
-            <div class="input-group date datetimepicker">
-                <span class="input-group-addon">
-                    <span class="fas fa-calendar-alt"></span>
-                </span>
-                <input asp-for="Settings.SchedulingOpen" type="text" class="form-control" />
+            <div class="form-group date datetimepicker">
+                @* timepicker *@
+                <input asp-for="Settings.SchedulingOpen" type="date" class="form-control" name="date" />
             </div>
             <span asp-validation-for="Settings.SchedulingOpen" class="text-danger"></span>
         </div>
@@ -72,11 +64,9 @@
     <div class="row row-spacing">
         <div class="col-xs-12">
             <badge asp-for="Settings.SchedulingClosed" class="col-form-label required-field"></badge>
-            <div class="input-group date datetimepicker">
-                <span class="input-group-addon">
-                    <span class="fas fa-calendar-alt"></span>
-                </span>
-                <input asp-for="Settings.SchedulingClosed" type="text" class="form-control" />
+            <div class="form-group date datetimepicker">
+                @* timepicker *@
+                <input asp-for="Settings.SchedulingClosed" type="date" class="form-control" name="date" />
             </div>
             <span asp-validation-for="Settings.SchedulingClosed" class="text-danger"></span>
         </div>
@@ -84,11 +74,8 @@
     <div class="row row-spacing">
         <div class="col-xs-12">
             <badge asp-for="Settings.SchedulePosted" class="col-form-label required-field"></badge>
-            <div class="input-group date datetimepicker">
-                <span class="input-group-addon">
-                    <span class="fas fa-calendar-alt"></span>
-                </span>
-                <input asp-for="Settings.SchedulePosted" type="text" class="form-control" />
+            <div class="form-group date datetimepicker"> @* timepicker *@
+                <input asp-for="Settings.SchedulePosted" type="date" class="form-control" name="date" />
             </div>
             <span asp-validation-for="Settings.SchedulePosted" class="text-danger"></span>
         </div>
@@ -97,11 +84,8 @@
     <div class="row row-spacing">
         <div class="col-xs-12">
             <badge asp-for="Settings.ScheduleStartDate" class="col-form-label required-field"></badge>
-            <div class="input-group date datepicker">
-                <span class="input-group-addon">
-                    <span class="fas fa-calendar-alt"></span>
-                </span>
-                <input asp-for="Settings.ScheduleStartDate" type="text" class="form-control" />
+            <div class="form-group date">
+                <input asp-for="Settings.ScheduleStartDate" type="date" class="form-control" name="date" />
             </div>
             <span asp-validation-for="Settings.ScheduleStartDate" class="text-danger"></span>
         </div>
@@ -109,11 +93,8 @@
     <div class="row row-spacing">
         <div class="col-xs-12">
             <badge asp-for="Settings.ScheduleEndDate" class="col-form-label required-field"></badge>
-            <div class="input-group date datepicker">
-                <span class="input-group-addon">
-                    <span class="fas fa-calendar-alt"></span>
-                </span>
-                <input asp-for="Settings.ScheduleEndDate" type="text" class="form-control" />
+            <div class="form-group date">
+                <input asp-for="Settings.ScheduleEndDate" type="date" class="form-control" name="date" />
             </div>
             <span asp-validation-for="Settings.ScheduleEndDate" class="text-danger"></span>
         </div>

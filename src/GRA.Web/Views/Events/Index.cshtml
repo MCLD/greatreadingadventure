@@ -49,21 +49,15 @@
                     <div class="row row-spacing">
                         <div class="col-xs-6">
                             <badge asp-for="StartDate" class="col-form-label"></badge>
-                            <div class="input-group date" id="pickerStart">
-                                <span class="input-group-addon">
-                                    <span class="fas fa-calendar-alt"></span>
-                                </span>
-                                <input asp-for="StartDate" type="text" class="form-control" />
+                            <div class="form-group date" id="pickerStart">
+                                <input asp-for="StartDate" type="date" class="form-control" name="date"/>
                             </div>
                         </div>
 
                         <div class="col-xs-6">
                             <badge asp-for="EndDate" class="col-form-label"></badge>
-                            <div class="input-group date" id="pickerEnd">
-                                <span class="input-group-addon">
-                                    <span class="fas fa-calendar-alt"></span>
-                                </span>
-                                <input asp-for="EndDate" type="text" class="form-control" />
+                            <div class="form-group date" id="pickerEnd">
+                                <input asp-for="EndDate" type="date" class="form-control" name="date"/>
                             </div>
                         </div>
                     </div>

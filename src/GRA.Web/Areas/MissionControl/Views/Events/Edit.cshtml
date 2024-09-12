@@ -71,21 +71,15 @@
             <div class="row">
                 <div class="col-xs-12 col-sm-6 row-spacing">
                     <badge asp-for="Event.StartDate" class="col-form-label"></badge>
-                    <div class="input-group date" id="pickerStart">
-                        <span class="input-group-addon">
-                            <span class="fas fa-calendar-alt"></span>
-                        </span>
-                        <input asp-for="Event.StartDate" type="text" class="form-control" />
+                    <div class="form-group date" id="pickerStart">
+                        <input asp-for="Event.StartDate" type="date" class="form-control" name="date" />
                     </div>
                     <span asp-validation-for="Event.StartDate" class="text-danger"></span>
                 </div>
                 <div class="col-xs-12 col-sm-6 row-spacing">
                     <badge asp-for="Event.EndDate" class="col-form-label"></badge>
-                    <div class="input-group date" id="pickerEnd">
-                        <span class="input-group-addon">
-                            <span class="fas fa-calendar-alt"></span>
-                        </span>
-                        <input asp-for="Event.EndDate" type="text" value="@(Model.Event.AllDay ? Model.Event.EndDate?.ToString() : Model.Event.EndDate?.ToString("t"))" class="form-control" />
+                    <div class="form-group date" id="pickerEnd">
+                        <input asp-for="Event.EndDate" type="date" name="date" value="@(Model.Event.AllDay ? Model.Event.EndDate?.ToString() : Model.Event.EndDate?.ToString("t"))" class="form-control" />
                     </div>
                     <span asp-validation-for="Event.EndDate" class="text-danger"></span>
                 </div>
