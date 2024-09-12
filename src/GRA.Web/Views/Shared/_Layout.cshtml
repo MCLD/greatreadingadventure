@@ -66,7 +66,7 @@
                         if (typeof gtag !== 'undefined')
                         {
                             gtag('event', 'login');
-                        }
+                                                                        }
                 </text>
             }
         </script>
@@ -87,7 +87,7 @@
                     data-bs-toggle="collapse"
                     data-bs-target="#navbarContent"
                     aria-controls="navbarContent"
-                    aria-expanded="false" 
+                    aria-expanded="false"
                     aria-label="Toggle navigation">
                 <span class="sr-only">@SharedLocalizer[GRA.Domain.Model.DisplayNames.ToggleNavigation]</span>
                 @SharedLocalizer[GRA.Domain.Model.DisplayNames.Menu]
@@ -162,17 +162,21 @@
                     {
                         @if (!String.Equals(this.ViewContext.RouteData.Values["controller"].ToString(), "Questionnaire", StringComparison.OrdinalIgnoreCase))
                         {
-                            <li ActiveBy class="nav-item" routeKey="Controller" value="Profile">
-                                @if (Context.Session.Keys.Contains(GRA.Controllers.SessionKey.HeadOfHousehold))
-                                {
+                            @if (Context.Session.Keys.Contains(GRA.Controllers.SessionKey.HeadOfHousehold))
+                            {
+                                <li class="nav-item" add-active asp-controller="Profile" asp-action="Household">
                                     <a add-active asp-controller="Profile" asp-action="Household" class="nav-link"><span class="fas fa-users fa-fw"></span></a>
+                                </li>
+                                <li class="nav-item" add-active asp-controller="Profile" asp-action="Index">
                                     <a add-active asp-controller="Profile" asp-action="Index" class="nav-link">@SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProfile]</a>
-                                }
-                                else
-                                {
+                                </li>
+                            }
+                            else
+                            {
+                                <li ActiveBy class="nav-item" routeKey="Controller" value="Profile">
                                     <a add-active asp-controller="Profile" asp-action="Index" class="nav-link">@SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProfile]</a>
-                                }
-                            </li>
+                                </li>
+                            }
                         }
                         <infolinks navPages="true"></infolinks>
                         <li class="nav-item"><a add-active asp-controller="Home" asp-action="Signout" class="nav-link">@SharedLocalizer[GRA.Domain.Model.DisplayNames.SignOut]</a></li>

@@ -11,13 +11,13 @@
                 @if (Model.VendorCodeExpiration.HasValue)
                 {
                     @SharedHtmlLocalizer[GRA.Annotations.Info.FreeBookRedeemExpirationDashboard,
-            Url.Action(nameof(ProfileController.Index), ProfileController.Name),
-            Model.VendorCodeExpiration.Value.AddMilliseconds(-1).ToString("MMMM dd")]
+                             Url.Action(nameof(ProfileController.Index), ProfileController.Name),
+                             Model.VendorCodeExpiration.Value.AddMilliseconds(-1).ToString("MMMM dd")]
                 }
                 else
                 {
                     @SharedHtmlLocalizer[GRA.Annotations.Info.FreeBookRedeemDashboard,
-            Url.Action(nameof(ProfileController.Index), ProfileController.Name)]
+                             Url.Action(nameof(ProfileController.Index), ProfileController.Name)]
                 }
             </div>
         </div>
@@ -97,8 +97,8 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
                                  aria-valuemax="100"
                                  style="width: @Model.PercentComplete%; min-width: 10%;"
                                  title="@Model.ProgressMessage"
-                                 data-toggle="tooltip"
-                                 data-placement="top">
+                                 data-bs-toggle="tooltip"
+                                 data-bs-placement="top">
                                 @Model.PercentComplete%
                             </div>
                         </div>
@@ -168,8 +168,8 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
                              aria-valuemax="100"
                              style="width: @Model.SiteActivityPercentComplete%; min-width: 10%;"
                              title="@SharedLocalizer[GRA.Annotations.Info.OurGoalInMinutes, @Model.SiteReadingGoal]"
-                             data-toggle="tooltip"
-                             data-placement="top">
+                             data-bs-toggle="tooltip"
+                             data-bs-placement="top">
                             @Model.SiteActivityPercentComplete%
                         </div>
                     </div>
@@ -227,8 +227,8 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
                                     <span class="h4">@SharedLocalizer[GRA.Annotations.Interface.Optional]</span>
                                     <span class="fas fa-info-circle fa-sm wide-tooltip"
                                           title="@SharedLocalizer[GRA.Annotations.Info.DashboardOptionalFields]"
-                                          data-toggle="tooltip"
-                                          data-placement="top"></span>
+                                          data-bs-toggle="tooltip"
+                                          data-bs-placement="top"></span>
                                 </div>
                             </div>
 
@@ -322,8 +322,8 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
                                 {
                                     <div class="col-md-6 col-sm-12 col-xs-4 dashboard-badge">
                                         <a href="#"
-                                           data-toggle="modal"
-                                           data-target="#badgeDetailsModal"
+                                           data-bs-toggle="modal"
+                                           data-bs-target="#badgeDetailsModal"
                                            data-id="@userLog.Id">
                                             <img alt="@userLog.BadgeAltText"
                                                  class="img-thumbnail badge-sm"
@@ -336,8 +336,8 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
                                 {
                                     <div class="col-md-6 col-sm-12 col-xs-4 visible-lg visible-md visible-xs dashboard-badge">
                                         <a href="#"
-                                           data-toggle="modal"
-                                           data-target="#badgeDetailsModal"
+                                           data-bs-toggle="modal"
+                                           data-bs-target="#badgeDetailsModal"
                                            data-id="@userLog.Id">
                                             <img alt="@userLog.BadgeAltText"
                                                  class="img-thumbnail badge-sm"
@@ -377,15 +377,13 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
             {
                 <div class="card ">
                     <div class="card-body text-center">
-                        <div class="row">
-                            <button type="button"
-                                    id="viewDailyImage"
-                                    class="btn btn-primary"
-                                    style="margin:0 8px; white-space: normal; font-size: large;"
-                                    data-src="@Url.Content($"~/{Model.DailyImagePath}")">
-                                @Model.DailyImageMessage
-                            </button>
-                        </div>
+                        <button type="button"
+                                data-bs-toggle="modal"
+                                data-bs-target="#dailyImageModal"
+                                class="btn btn-primary btn-lg"
+                                data-src="@Url.Content($"~/{Model.DailyImagePath}")">
+                            @Model.DailyImageMessage
+                        </button>
                     </div>
                 </div>
             }
@@ -471,6 +469,8 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
                             <div>
                                 <a href="#"
                                    class="gra-carousel-link"
+                                   data-bs-toggle="modal"
+                                   data-bs-target="#graCarouselModal"
                                    data-itemid="@item.Id"
                                    data-title="@item.Title"
                                    data-img="@item.ImageUrl">
@@ -488,28 +488,36 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
 @if (Model.Carousel != null)
 {
     <div class="row">
-        <div class="modal gra-carousel-modal" id="graCarouselModal" tabindex="-1" role="dialog" aria-labelledby="graCarouselModal">
+        <div class="modal fade modal-lg"
+             id="graCarouselModal"
+             tabindex="-1"
+             role="dialog"
+             aria-labelledby="graCarouselModal">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="h4" id="graCarouselModalHeader"></h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
                     <div class="modal-body">
-                        <span class="close frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
-                              data-bs-dismiss="modal"
-                              alt="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]"
-                              role="button">
-                            <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
-                            <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
-                        </span>
                         <div class="row">
-                            <div class="col-xs-12 col-sm-3 ">
+                            <div class="col col-sm-3 mb-2">
                                 <img id="graCarouselModalImage"
-                                     class="mx-auto gra-carousel-modal-image" />
+                                     class="img-fluid mx-auto d-block" />
                             </div>
                             <div class="col-xs-12 col-sm-9">
-                                <p style="font-size: 2rem; font-weight: bold;" id="graCarouselModalHeader"></p>
                                 <p id="graCarouselModalContent" class="gra-carousel-modal-content"></p>
                             </div>
                         </div>
                     </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+                            @SharedLocalizer[GRA.Annotations.Interface.Back]
+                        </button>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -553,15 +561,10 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                     <h1 class="h4 modal-title">
                         @SharedLocalizer[GRA.Annotations.Interface.BadgeDetails]
                     </h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="modal-body">
                 </div>
@@ -580,16 +583,15 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
     @if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))
     {
         <script>
-            $("#viewDailyImage").on("click", function () {
-                let src = $(this).data("src");
+            $("#dailyImageModal").on("show.bs.modal", function(e) {
+                let src = $(e.relatedTarget).data("src");
                 $(".daily-image").attr("src", src);
-                $("#dailyImageModal").modal().show();
                 if (typeof gtag !== 'undefined') {
                     gtag('event', 'view_daily_tip', {
                         'source_page': 'dashboard',
                         'event_category': 'image',
-                        'event_label': @Model.Day
-                                                                        });
+                        'event_label': '@Model.Day'
+                    });
                 }
             });
         </script>
@@ -608,13 +610,13 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
     @if (Model.Carousel != null)
     {
         <script>
-            $(".gra-carousel-link").on("click", function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-                event.stopImmediatePropagation();
+            $("#graCarouselModal").on("show.bs.modal", function  (e) {
                 $("#graCarouselModalContent").html("<div class=\"gra-carousel-spinner\"><span class=\"fas fa-spinner fa-3x fa-spin\"></span></div>");
-                let id = $(this).data("itemid");
-                let title = $(this).data("title");
+                let id = $(e.relatedTarget).data("itemid");
+                let title = $(e.relatedTarget).data("title");
+                let img = $(e.relatedTarget).data("img");
+
+                console.info("Item id: %o title: %o", id, title);
 
                 if (typeof gtag !== 'undefined') {
                     gtag('event', 'select_content', {
@@ -631,10 +633,8 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
                     $("#graCarouselModalContent").html("Could not find details for this item, sorry!");
                 });
 
-                $("#graCarouselModalHeader").text($(this).data("title"));
-                $("#graCarouselModalImage").attr("src", $(this).data("img"));
-
-                $("#graCarouselModal").modal().show();
+                $("#graCarouselModalHeader").text(title);
+                $("#graCarouselModalImage").attr("src", img);
             });
             if (typeof gtag !== 'undefined') {
                 $(".gra-carousel").on("beforeChange", function (e, s, c, n) {

@@ -70,22 +70,7 @@
             <div class="mb-3">
                 <badge for="selectedFile">Select a .zip file:</badge>
                 <div class="input-group">
-                    <badge class="input-group-append">
-                        <span class="btn btn-secondary btn-file">
-                            <span class="far fa-file-image"></span>
-                            Image .zip file
-                            <input type="file"
-                                   asp-for="UploadedFile"
-                                   class="form-control"
-                                   accept=".zip"
-                                   style="display: none;" />
-                        </span>
-                    </badge>
-                    <input type="text"
-                           class="form-control"
-                           readonly
-                           id="selectedFile"
-                           @(ViewData.ModelState.GetValidationState("UploadedFile") == ModelValidationState.Invalid ? "input-validation-error" : "")>
+                    <input type="file" asp-for="UploadedFile" class="form-control" accept=".zip" />
                 </div>
                 <span asp-validation-for="UploadedFile" class="text-danger"></span>
             </div>

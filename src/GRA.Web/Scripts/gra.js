@@ -5,11 +5,11 @@
 function ResetSpinners(target) {
     if (target != null) {
         target.removeClass("disabled");
-        target.children(".fa-spinner").addClass("hidden");
+        target.children(".fa-spinner").addClass("d-none");
     }
     else {
         $(".btn-spinner, .btn-spinner-no-validate").removeClass("disabled");
-        $(".btn-spinner, .btn-spinner-no-validate").children(".fa-spinner").addClass("hidden");
+        $(".btn-spinner, .btn-spinner-no-validate").children(".fa-spinner").addClass("d-none");
     }
 }
 
@@ -30,7 +30,7 @@ $(".btn-spinner").on("click", function (e) {
         }
         else {
             parentForm.find(".btn-spinner").addClass("disabled");
-            $(this).children(".fa-spinner").removeClass("hidden");
+            $(this).children(".fa-spinner").removeClass("d-none");
         }
     }
 });

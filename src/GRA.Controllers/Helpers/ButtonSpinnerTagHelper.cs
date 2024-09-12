@@ -13,7 +13,7 @@ namespace GRA.Controllers.Helper
         private const string classAttribute = "class";
         private const string ignoreValidationAttributeName = "ignore-validation";
         private const string ignoreValidationClass = "spinner-ignore-validation";
-        private const string spanClass = "fas fa-spinner fa-pulse fa-fw hidden";
+        private const string spanClass = "fas fa-spinner fa-pulse fa-fw d-none";
         private const string spanTag = "span";
         private const string spinnerClass = "btn-spinner";
         private const string targetElement = "button";
