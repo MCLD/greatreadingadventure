@@ -8,7 +8,7 @@
     </style>
 }
 
-<div style="margin-top: 0.5rem;">
+<div class="mt-1">
     <em>
         Posted on @Model.Post.PublishedAt.Value.ToShortDateString() by @Model.Post.CreatedByName
         @if (Model.Post.UpdatedAt.HasValue)
@@ -22,11 +22,11 @@
     </em>
 </div>
 
-<div style="margin-top: 2rem;">
+<div class="mt-4">
     @Html.Raw(Model.Post.Content)
 </div>
 
-<div class="hidden-print" style="margin-top: 2rem;">
+<div class="d-print-none mt-4">
     @if (Model.Post.PreviousPostId.HasValue)
     {
         <a asp-action="@nameof(HomeController.Post)"

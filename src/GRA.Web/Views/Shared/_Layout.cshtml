@@ -127,9 +127,7 @@
                                     {
                                         <span class="fas fa-envelope fa-fw text-danger" title="@SharedLocalizer[GRA.Annotations.Interface.NewMail]"></span>
                                         <span class="d-md-none"> @SharedLocalizer[GRA.Domain.Model.DisplayNames.Mail]</span>
-                                        <span class="badge text-bg-danger" style="background-color: #a94442;">
-                                            @Context.Items[GRA.Controllers.ItemKey.UnreadCount]
-                                        </span>
+                                        <span class="badge bg-danger rounded-pill">@Context.Items[GRA.Controllers.ItemKey.UnreadCount]</span>
                                     }
                                     else
                                     {
