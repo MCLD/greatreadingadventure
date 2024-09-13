@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using GRA.Controllers.ViewModel.Shared;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
@@ -18,8 +17,9 @@ namespace GRA.Controllers.Helper
 
         public PaginateTagHelper(IUrlHelperFactory urlHelperFactory)
         {
-            _urlHelperFactory = urlHelperFactory
-                ?? throw new ArgumentNullException(nameof(urlHelperFactory));
+            ArgumentNullException.ThrowIfNull(urlHelperFactory);
+
+            _urlHelperFactory = urlHelperFactory;
         }
 
         [HtmlAttributeName("asButtons")]
@@ -34,136 +34,101 @@ namespace GRA.Controllers.Helper
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            if (output == null)
-            {
-                throw new ArgumentNullException(nameof(output));
-            }
+            ArgumentNullException.ThrowIfNull(context);
+            ArgumentNullException.ThrowIfNull(output);
 
             IUrlHelper url = _urlHelperFactory.GetUrlHelper(ViewContextData);
-            var ulTag = new TagBuilder("ul")
+
+            if (PaginateModel.MaxPage <= 1)
             {
-                TagRenderMode = TagRenderMode.Normal
-            };
-            ulTag.MergeAttribute("class", "pagination");
+                output.SuppressOutput();
+                return;
+            }
+
+            output.TagName = "nav";
+            output.Attributes.Add("class", "btn-group");
+            output.Attributes.Add("role", "group");
+            output.Attributes.Add("aria-label", "Pagination");
 
             var firstPage = PaginateModel.FirstPage == null
                                ? null
                                : QueryBuilder(url, PaginateModel.FirstPage, AsButtons);
-            ulTag.InnerHtml.AppendHtml(PaginatorLi(firstPage, "fast-backward", AsButtons));
+            output.Content.AppendHtml(PaginatorTag(firstPage, "fast-backward", AsButtons));
 
             var previousPage = PaginateModel.PreviousPage == null
                                   ? null
                                   : QueryBuilder(url, PaginateModel.PreviousPage, AsButtons);
-            ulTag.InnerHtml.AppendHtml(PaginatorLi(previousPage, "backward", AsButtons));
+            output.Content.AppendHtml(PaginatorTag(previousPage, "backward", AsButtons));
 
-            ulTag.InnerHtml.AppendHtml(PaginatorLi(PaginateModel
-                .CurrentPage
-                .ToString(CultureInfo.InvariantCulture), AsButtons));
+            output.Content.AppendHtml(
+                PaginatorText($"{PaginateModel.CurrentPage:n0} / {PaginateModel.MaxPage:n0}",
+                    $"{PaginateModel.ItemCount:n0} total items"));
 
             var nextPage = PaginateModel.NextPage == null
                               ? null
                               : QueryBuilder(url, PaginateModel.NextPage, AsButtons);
 
-            ulTag.InnerHtml.AppendHtml(PaginatorLi(nextPage, "forward", AsButtons));
+            output.Content.AppendHtml(PaginatorTag(nextPage, "forward", AsButtons));
 
             var lastPage = PaginateModel.LastPage == null
                               ? null
                               : QueryBuilder(url, PaginateModel.LastPage, AsButtons);
 
-            ulTag.InnerHtml.AppendHtml(PaginatorLi(lastPage, "fast-forward", AsButtons));
-
-            var navTag = new TagBuilder("nav")
-            {
-                TagRenderMode = TagRenderMode.Normal
-            };
-            navTag.InnerHtml.SetHtmlContent(ulTag);
-            output.Content.SetHtmlContent(navTag);
+            output.Content.AppendHtml(PaginatorTag(lastPage, "fast-forward", AsButtons));
         }
 
-        private static TagBuilder PaginatorLi(string text, bool asButtons)
+        private static TagBuilder PaginatorTag(string pageUrl, string glyph, bool asButtons)
         {
-            var liTag = new TagBuilder("li")
-            {
-                TagRenderMode = TagRenderMode.Normal
-            };
-            liTag.MergeAttribute("class", "disabled");
+            var baseTag = asButtons ? new TagBuilder("button") : new TagBuilder("a");
+            baseTag.MergeAttribute("class", "btn btn-outline-primary");
 
             if (asButtons)
             {
-                var buttonTag = new TagBuilder("button")
+                baseTag.MergeAttribute("class", "page-button");
+                baseTag.MergeAttribute("type", "button");
+                if (pageUrl == null)
                 {
-                    TagRenderMode = TagRenderMode.Normal
-                };
-                buttonTag.InnerHtml.SetHtmlContent(text);
-                buttonTag.MergeAttribute("class", "page-button disabled");
-                buttonTag.MergeAttribute("type", "button");
-                liTag.InnerHtml.SetHtmlContent(buttonTag);
+                    baseTag.MergeAttribute("class", "disabled");
+                }
+                else
+                {
+                    baseTag.MergeAttribute("data-page", pageUrl);
+                }
             }
             else
             {
-                var aTag = new TagBuilder("a");
-                aTag.MergeAttribute("href", "#");
-                aTag.MergeAttribute("onclick", "return false;");
-                aTag.InnerHtml.SetHtmlContent(text);
-                aTag.TagRenderMode = TagRenderMode.Normal;
-                liTag.InnerHtml.SetHtmlContent(aTag);
+                if (pageUrl == null)
+                {
+                    baseTag.MergeAttribute("href", "#");
+                    baseTag.MergeAttribute("onclick", "return false;");
+                }
+                else
+                {
+                    baseTag.MergeAttribute("href", pageUrl);
+                }
             }
 
-            return liTag;
-        }
-
-        private static TagBuilder PaginatorLi(string pageUrl, string glyph, bool asButtons)
-        {
-            var liTag = new TagBuilder("li")
-            {
-                TagRenderMode = TagRenderMode.Normal
-            };
             var spanTag = new TagBuilder("span")
             {
                 TagRenderMode = TagRenderMode.Normal
             };
             spanTag.MergeAttribute("class", $"fas fa-{glyph}");
-            if (asButtons)
-            {
-                var buttonTag = new TagBuilder("button")
-                {
-                    TagRenderMode = TagRenderMode.Normal
-                };
-                buttonTag.MergeAttribute("class", "page-button");
-                buttonTag.MergeAttribute("type", "button");
-                if (pageUrl == null)
-                {
-                    buttonTag.AddCssClass("disabled");
-                    liTag.MergeAttribute("class", "disabled");
-                }
-                else
-                {
-                    buttonTag.MergeAttribute("data-page", pageUrl);
-                }
-                buttonTag.InnerHtml.SetHtmlContent(spanTag);
-                liTag.InnerHtml.SetHtmlContent(buttonTag);
-            }
-            else
-            {
-                var aTag = new TagBuilder("a")
-                {
-                    TagRenderMode = TagRenderMode.Normal
-                };
-                if (pageUrl == null)
-                {
-                    liTag.MergeAttribute("class", "disabled");
-                    aTag.MergeAttribute("href", "#");
-                    aTag.MergeAttribute("onclick", "return false;");
-                }
-                else
-                {
-                    aTag.MergeAttribute("href", pageUrl);
-                }
+            baseTag.InnerHtml.SetHtmlContent(spanTag);
 
-                aTag.InnerHtml.SetHtmlContent(spanTag);
-                liTag.InnerHtml.SetHtmlContent(aTag);
+            return baseTag;
+        }
+
+        private static TagBuilder PaginatorText(string text, string title)
+        {
+            var baseTag = new TagBuilder("button");
+            baseTag.MergeAttribute("class", "btn btn-outline-primary");
+            baseTag.MergeAttribute("type", "button");
+            if (!string.IsNullOrEmpty(title))
+            {
+                baseTag.MergeAttribute("title", title);
             }
-            return liTag;
+            baseTag.InnerHtml.SetContent(text);
+            return baseTag;
         }
 
         private static string QueryBuilder(IUrlHelper url, int? page, bool asButtons)
