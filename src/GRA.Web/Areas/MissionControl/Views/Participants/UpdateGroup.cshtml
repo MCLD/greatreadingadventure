@@ -9,12 +9,12 @@
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
-                        <badge asp-for="GroupInfo.Name" class="col-form-label"></badge>
+                        <label asp-for="GroupInfo.Name" class="col-form-label"></label>
                         <input asp-for="GroupInfo.Name" class="form-control" />
                         <span asp-validation-for="GroupInfo.Name" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
-                        <badge asp-for="GroupInfo.GroupTypeId" class="col-form-label"></badge>
+                        <label asp-for="GroupInfo.GroupTypeId" class="col-form-label"></label>
                         <select asp-for="GroupInfo.GroupTypeId"
                                 asp-items="Model.GroupTypes"
                                 class="form-control"></select>

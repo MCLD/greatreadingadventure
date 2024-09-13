@@ -70,19 +70,19 @@
     </div>
     <div class="col-xs-12 col-sm-7 col-md-8">
         <div class="mb-3">
-            <badge>Name</badge>
+            <label>Name</label>
             <div>@Model.Performer.Name</div>
         </div>
         <div class="mb-3">
-            <badge>Email @(Model.Performer.PhonePreferred ? "" : "(preferred)") </badge>
+            <label>Email @(Model.Performer.PhonePreferred ? "" : "(preferred)") </label>
             <div>@Model.Performer.Email</div>
         </div>
         <div class="mb-3">
-            <badge>Phone @(Model.Performer.PhonePreferred ? "(preferred)" : "")</badge>
+            <label>Phone @(Model.Performer.PhonePreferred ? "(preferred)" : "")</label>
             <div>@Model.Performer.Phone</div>
         </div>
         <div class="mb-3">
-            <badge>Website</badge>
+            <label>Website</label>
             @if (string.IsNullOrWhiteSpace(Model.Performer.Website))
             {
                 <div>n/a</div>
@@ -104,7 +104,7 @@
             }
         </div>
         <div class="mb-3">
-            <badge>Programs available for the age groups</badge>
+            <label>Programs available for the age groups</label>
             <ul>
                 @foreach (var ageGroup in Model.AgeGroups)
                 {
@@ -113,7 +113,7 @@
             </ul>
         </div>
         <div class="mb-3">
-            <badge>Locations</badge>
+            <label>Locations</label>
             <div>
                 Able to perform at
                 <strong>@(Model.Performer.AllBranches || Model.BranchAvailability.Count == Model.System.Branches.Count ? "all" : $"{Model.BranchAvailability.Count} of {Model.System.Branches.Count}")</strong>
@@ -264,11 +264,11 @@
                     {
                         <div>
                             <span class="colored-icon fas fa-lg @(Model.Performer.AllBranches || Model.BranchAvailability.Contains(branch.Id) ? "fa-check" : "fa-times")"></span>
-                            <badge data-toggle="tooltip"
+                            <label data-toggle="tooltip"
                                data-placement="top"
                                title="@branch.Address">
                                 @branch.Name
-                            </badge>
+                            </label>
                             <a aria-label="Map (Opens new window)"
                            href="https://www.google.com/maps/search/@branch.Address"
                            target="_blank">

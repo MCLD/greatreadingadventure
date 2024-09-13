@@ -27,7 +27,7 @@
               class="form-horizontal">
                 <input asp-for="SignUpSource" type="hidden" />
                 <div class="mb-3" style="padding: 0.5em 1em;">
-                    <badge asp-for="Email" class="col-form-label sr-only">@SharedLocalizer[GRA.Domain.Model.DisplayNames.EmailAddress]</badge>
+                    <label asp-for="Email" class="col-form-label sr-only">@SharedLocalizer[GRA.Domain.Model.DisplayNames.EmailAddress]</label>
                     <div class="input-group">
                         <input asp-for="Email" class="form-control" type="email" autofocus />
                         <span class="input-group-append">

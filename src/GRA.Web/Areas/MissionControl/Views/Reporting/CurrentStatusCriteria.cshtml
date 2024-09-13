@@ -9,7 +9,7 @@
     <input asp-for="ReportId" type="hidden" />
     <div class="mb-3">
         <div class="col-xs-12">
-            <badge asp-for="SystemId" class="col-form-label"></badge>
+            <label asp-for="SystemId" class="col-form-label"></label>
             <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control">
                 <option value="">All systems</option>
             </select>

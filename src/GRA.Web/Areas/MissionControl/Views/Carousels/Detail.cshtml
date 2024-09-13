@@ -26,13 +26,13 @@
     }
 
     <div class="mb-3">
-        <badge asp-for="Carousel.Name" class="col-form-label"></badge>
+        <label asp-for="Carousel.Name" class="col-form-label"></label>
         <description gra-description-for="Carousel.Name"></description>
         <input asp-for="Carousel.Name" type="text" class="form-control" />
         <span asp-validation-for="Carousel.Name" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <badge asp-for="Carousel.StartTime" class="col-form-label"></badge>
+        <label asp-for="Carousel.StartTime" class="col-form-label"></label>
         <description gra-description-for="Carousel.StartTime"></description>
         <div class="form-group date" id="pickerStart">
             <span class="input-group-addon">
@@ -43,7 +43,7 @@
         <span asp-validation-for="Carousel.StartTime" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <badge asp-for="Carousel.Heading" class="col-form-label"></badge>
+        <label asp-for="Carousel.Heading" class="col-form-label"></label>
         <description gra-description-for="Carousel.Heading"></description>
         <input asp-for="Carousel.Heading" type="text" class="form-control" />
         <span asp-validation-for="Carousel.Heading" class="text-danger"></span>

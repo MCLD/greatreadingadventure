@@ -13,11 +13,11 @@
             </div>
             <form asp-controller="PerformerManagement" asp-action="PrintCoverSheet" method="post">
                 <div class="col-xs-12 col-sm-6 col-sm-offset-3 mb-3">
-                    <badge for="month">Invoice Month: </badge>
+                    <label for="month">Invoice Month: </label>
                     <select class="form-control" name="month" asp-items="@Model.Months"></select>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-sm-offset-3 mb-3">
-                    <badge for="invoiceNumber">Invoice Number: </badge>
+                    <label for="invoiceNumber">Invoice Number: </label>
                     <input class="form-control" id="invoice-input" name="invoiceNumber" type="text" />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-sm-offset-3 mb-3">

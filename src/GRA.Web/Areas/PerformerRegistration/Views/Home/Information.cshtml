@@ -59,7 +59,7 @@ else
     }
 
     <div class="mb-3">
-        <badge asp-for="Performer.Name" class="col-sm-3 col-form-label required-field"></badge>
+        <label asp-for="Performer.Name" class="col-sm-3 col-form-label required-field"></label>
         <div class="col-sm-9">
             <input asp-for="Performer.Name" class="form-control" placeholder="" />
             <span asp-validation-for="Performer.Name" class="text-danger"></span>
@@ -82,10 +82,10 @@ else
         </div>
 
         <div class="mb-3">
-            <badge class="col-sm-3 col-form-label required-field">Upload photos</badge>
+            <label class="col-sm-3 col-form-label required-field">Upload photos</label>
             <div class="col-sm-9">
                 <div class="input-group">
-                    <badge class="input-group-append">
+                    <label class="input-group-append">
                         <span class="btn btn-secondary btn-file">
                             <span class="far fa-file-image"></span> Select file(s)...
                             <input type="file"
@@ -94,7 +94,7 @@ else
                                    accept=".png,.jpg,.jpeg"
                                    style="display: none;" />
                         </span>
-                    </badge>
+                    </label>
                     <input type="text" class="form-control @(ViewData.ModelState.GetValidationState("Images") == invalid ? "input-validation-error" : "")" readonly />
                 </div>
                 <span asp-validation-for="Images" class="text-danger"></span>
@@ -122,10 +122,10 @@ else
     </div>
 
     <div class="mb-3">
-        <badge class="col-sm-3 col-form-label @(Model.Performer?.RegistrationCompleted != true ? "required-field": "")">Upload PDF</badge>
+        <label class="col-sm-3 col-form-label @(Model.Performer?.RegistrationCompleted != true ? "required-field": "")">Upload PDF</label>
         <div class="col-sm-9">
             <div class="input-group">
-                <badge class="input-group-append">
+                <label class="input-group-append">
                     <span class="btn btn-secondary btn-file" style="width:132px;text-align:left;">
                         <span class="far fa-file-image"></span> Select file...
                         <input type="file"
@@ -133,7 +133,7 @@ else
                                accept=".pdf"
                                style="display: none;" />
                     </span>
-                </badge>
+                </label>
                 <input type="text" class="form-control @(ViewData.ModelState.GetValidationState("References") == invalid ? "input-validation-error" : "")" readonly />
             </div>
             <span asp-validation-for="References" class="text-danger"></span>
@@ -141,7 +141,7 @@ else
     </div>
 
     <div class="mb-3">
-        <badge asp-for="Performer.BillingAddress" class="col-sm-3 col-form-label required-field"></badge>
+        <label asp-for="Performer.BillingAddress" class="col-sm-3 col-form-label required-field"></label>
         <div class="col-sm-9">
             <textarea asp-for="Performer.BillingAddress" class="form-control"></textarea>
             <span asp-validation-for="Performer.BillingAddress" class="text-danger"></span>
@@ -150,7 +150,7 @@ else
 
 
     <div class="mb-3">
-        <badge asp-for="Performer.Website" class="col-sm-3 col-form-label"></badge>
+        <label asp-for="Performer.Website" class="col-sm-3 col-form-label"></label>
         <div class="col-sm-9">
             <input asp-for="Performer.Website" class="form-control" placeholder="" />
             <span asp-validation-for="Performer.Website" class="text-danger"></span>
@@ -158,7 +158,7 @@ else
     </div>
 
     <div class="mb-3">
-        <badge asp-for="Performer.PhonePreferred" class="col-sm-3 col-form-label required-field"></badge>
+        <label asp-for="Performer.PhonePreferred" class="col-sm-3 col-form-label required-field"></label>
         <div class="col-sm-9">
             <select asp-for="Performer.PhonePreferred" class="form-control">
                 <option value="false">Email</option>
@@ -169,7 +169,7 @@ else
     </div>
 
     <div class="mb-3">
-        <badge asp-for="Performer.Email" class="col-sm-3 col-form-label required-field">Email</badge>
+        <label asp-for="Performer.Email" class="col-sm-3 col-form-label required-field">Email</label>
         <div class="col-sm-9">
             <input asp-for="Performer.Email" class="form-control" placeholder="" />
             <span asp-validation-for="Performer.Email" class="text-danger"></span>
@@ -177,7 +177,7 @@ else
     </div>
 
     <div class="mb-3">
-        <badge asp-for="Performer.Phone" class="col-sm-3 col-form-label required-field"></badge>
+        <label asp-for="Performer.Phone" class="col-sm-3 col-form-label required-field"></label>
         <div class="col-sm-9">
             <input asp-for="Performer.Phone" class="form-control" placeholder="" />
             <span asp-validation-for="Performer.Phone" class="text-danger"></span>
@@ -185,13 +185,13 @@ else
     </div>
 
     <div class="mb-3">
-        <badge asp-for="Performer.VendorId" class="col-sm-3 col-form-label required-field">
+        <label asp-for="Performer.VendorId" class="col-sm-3 col-form-label required-field">
             @Model.Settings.VendorIdPrompt
             @if (!string.IsNullOrWhiteSpace(Model.Settings.VendorCodeFormat))
             {
                 <span class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Example number: @Model.Settings.VendorCodeFormat"></span>
             }
-        </badge>
+        </label>
         <div class="col-sm-9">
             <input asp-for="Performer.VendorId" class="form-control" placeholder="" />
             <span asp-validation-for="Performer.VendorId" class="text-danger"></span>
@@ -199,7 +199,7 @@ else
     </div>
 
     <div class="mb-3">
-        <badge asp-for="Performer.HasFingerprintCard" class="col-sm-3 col-form-label required-field"></badge>
+        <label asp-for="Performer.HasFingerprintCard" class="col-sm-3 col-form-label required-field"></label>
         <div class="col-sm-9">
             <select asp-for="Performer.HasFingerprintCard" class="form-control">
                 <option value="false">No</option>
@@ -211,7 +211,7 @@ else
 
     @if (Model.EnablePerformerInsuranceQuestion){
         <div class="mb-3">
-            <badge asp-for="Performer.HasInsurance" class="col-sm-3 col-form-label required-field"></badge>
+            <label asp-for="Performer.HasInsurance" class="col-sm-3 col-form-label required-field"></label>
             <div class="col-sm-9">
                 <select asp-for="Performer.HasInsurance" class="form-control">
                     <option value="false">No</option>
@@ -304,12 +304,12 @@ else
                                        data-id="@branch.Id"
                                        type="checkbox"
                                        asp-checked="@(Model.BranchAvailability?.Contains(branch.Id) == true)" />
-                                <badge for="@($"branch{branch.Id}")"
+                                <label for="@($"branch{branch.Id}")"
                                        data-toggle="tooltip"
                                        data-placement="top"
                                        title="@branch.Address">
                                     @branch.Name
-                                </badge>
+                                </label>
                                 <a aria-label="Map (Opens new window)"
                                    href="https://www.google.com/maps/search/@branch.Address"
                                    target="_blank"><span class="far fa-map"></span></a>

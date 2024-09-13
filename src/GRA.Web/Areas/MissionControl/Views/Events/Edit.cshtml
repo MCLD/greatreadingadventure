@@ -49,7 +49,7 @@
 
     <div class="row" style="padding: 10px 0;">
         <div class="col-xs-12">
-            <badge asp-for="Event.Name" class="col-form-label"></badge>
+            <label asp-for="Event.Name" class="col-form-label"></label>
             <input asp-for="Event.Name" class="form-control" />
             <span asp-validation-for="Event.Name" class="text-danger"></span>
         </div>
@@ -57,7 +57,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <badge asp-for="Event.IsCommunityExperience" class="col-form-label"></badge>
+            <label asp-for="Event.IsCommunityExperience" class="col-form-label"></label>
             <select asp-for="Event.IsCommunityExperience" class="form-control">
                 <option value="false">Event</option>
                 <option value="true">Community Experience</option>
@@ -70,14 +70,14 @@
         <div class="col-xs-8 col-sm-10 ">
             <div class="row">
                 <div class="col-xs-12 col-sm-6 row-spacing">
-                    <badge asp-for="Event.StartDate" class="col-form-label"></badge>
+                    <label asp-for="Event.StartDate" class="col-form-label"></label>
                     <div class="form-group date" id="pickerStart">
                         <input asp-for="Event.StartDate" type="date" class="form-control" name="date" />
                     </div>
                     <span asp-validation-for="Event.StartDate" class="text-danger"></span>
                 </div>
                 <div class="col-xs-12 col-sm-6 row-spacing">
-                    <badge asp-for="Event.EndDate" class="col-form-label"></badge>
+                    <label asp-for="Event.EndDate" class="col-form-label"></label>
                     <div class="form-group date" id="pickerEnd">
                         <input asp-for="Event.EndDate" type="date" name="date" value="@(Model.Event.AllDay ? Model.Event.EndDate?.ToString() : Model.Event.EndDate?.ToString("t"))" class="form-control" />
                     </div>
@@ -86,7 +86,7 @@
             </div>
         </div>
         <div class="col-xs-4 col-sm-2 row-spacing">
-            <badge asp-for="Event.AllDay" class="col-form-label center-label" style="text-align:center;"></badge>
+            <label asp-for="Event.AllDay" class="col-form-label center-label" style="text-align:center;"></label>
             <input asp-for="Event.AllDay" class="form-control form-checkbox" />
             <span asp-validation-for="Event.AllDay" class="text-danger"></span>
         </div>
@@ -94,7 +94,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <badge asp-for="Event.Description" class="col-form-label"></badge>
+            <label asp-for="Event.Description" class="col-form-label"></label>
             <textarea asp-for="Event.Description" class="form-control" rows="5"> </textarea>
             <span asp-validation-for="Event.Description" class="text-danger"></span>
         </div>
@@ -102,7 +102,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <badge asp-for="Event.ExternalLink" class="col-form-label"></badge>
+            <label asp-for="Event.ExternalLink" class="col-form-label"></label>
             <input asp-for="Event.ExternalLink" class="form-control" />
             <span asp-validation-for="Event.ExternalLink" class="text-danger"></span>
         </div>
@@ -111,7 +111,7 @@
     <div id="branchGroup" class="@(Model.UseLocation ? "hide" : "" )">
         <div class="row row-spacing">
             <div class="col-xs-12">
-                <badge asp-for="SystemId" class="col-form-label"></badge>
+                <label asp-for="SystemId" class="col-form-label"></label>
                 <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control"></select>
                 <span asp-validation-for="SystemId" class="text-danger"></span>
             </div>
@@ -119,10 +119,10 @@
 
         <div class="row row-spacing">
             <div class="col-xs-12">
-                <badge asp-for="Event.AtBranchId" class="col-form-label"></badge>
-                <badge style="font-size: 12px;">
+                <label asp-for="Event.AtBranchId" class="col-form-label"></label>
+                <label style="font-size: 12px;">
                     <a id="viewLocationList" style="text-decoration:none;cursor:pointer">View location list</a>
-                </badge>
+                </label>
                 <select asp-for="Event.AtBranchId" asp-items="Model.BranchList" class="form-control">
                     <option></option>
                 </select>
@@ -133,10 +133,10 @@
 
     <div id="locationGroup" class="row row-spacing @(Model.UseLocation ? "" : "hide" )">
         <div class="col-xs-12">
-            <badge asp-for="Event.AtLocationId" class="col-form-label"></badge>
-            <badge style="font-size: 12px;">
+            <label asp-for="Event.AtLocationId" class="col-form-label"></label>
+            <label style="font-size: 12px;">
                 <a id="viewBranchList" style="text-decoration:none;cursor:pointer">View library list</a>
-            </badge>
+            </label>
             <input asp-for="CanManageLocations" type="hidden" />
             <div style="display:flex">
                 <select asp-for="Event.AtLocationId" asp-items="Model.LocationList" class="form-control">
@@ -157,7 +157,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <badge asp-for="Event.ProgramId" class="col-form-label"></badge>
+            <label asp-for="Event.ProgramId" class="col-form-label"></label>
             <select asp-for="Event.ProgramId" asp-items="Model.ProgramList" class="form-control">
                 <option value="">All Programs</option>
             </select>
@@ -169,7 +169,7 @@
     {
         <div class="row row-spacing">
             <div class="col-xs-12">
-                <badge class="col-form-label">Related Challenge/Group</badge>
+                <label class="col-form-label">Related Challenge/Group</label>
                 <table id="challengeTable" class="table table-sm table-bordered table-striped @(Model.Event.Challenge == null ? "hide" : "")">
                     <thead>
                         <tr>
@@ -475,16 +475,16 @@
                         </div>
                         <div class="modal-body">
                             <div class="mb-3">
-                                <badge asp-for="Location.Name" class="col-form-label"></badge>
+                                <label asp-for="Location.Name" class="col-form-label"></label>
                                 <input asp-for="Location.Name" class="form-control" />
                                 <span asp-validation-for="Location.Name"
                                       class="text-danger"></span>
                             </div>
                             <div class="mb-3">
-                                <badge asp-for="Location.Address"
+                                <label asp-for="Location.Address"
                                        class="col-form-label">
                                     Address (include city, state and zip)
-                                </badge>
+                                </label>
                                 <input asp-for="Location.Address"
                                        class="form-control addressInput" />
                                 <span asp-validation-for="Location.Address"
@@ -500,12 +500,12 @@
                                 </div>
                             }
                             <div class="mb-3">
-                                <badge asp-for="Location.Url" class="col-form-label"></badge>
+                                <label asp-for="Location.Url" class="col-form-label"></label>
                                 <input asp-for="Location.Url" class="form-control" />
                                 <span asp-validation-for="Location.Url" class="text-danger"></span>
                             </div>
                             <div class="mb-3">
-                                <badge asp-for="Location.Telephone" class="col-form-label"></badge>
+                                <label asp-for="Location.Telephone" class="col-form-label"></label>
                                 <input asp-for="Location.Telephone" class="form-control" />
                                 <span asp-validation-for="Location.Telephone"
                                       class="text-danger"></span>

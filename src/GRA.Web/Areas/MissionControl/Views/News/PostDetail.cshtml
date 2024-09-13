@@ -14,31 +14,31 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="mb-3">
-                <badge asp-for="Post.Title" class="col-form-label"></badge>
+                <label asp-for="Post.Title" class="col-form-label"></label>
                 <input asp-for="Post.Title" class="form-control" />
                 <span asp-validation-for="Post.Title" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
-                <badge asp-for="Post.CategoryId" class="col-form-label"></badge>
+                <label asp-for="Post.CategoryId" class="col-form-label"></label>
                 <select asp-for="Post.CategoryId" asp-items="Model.Categories" class="form-control"></select>
                 <span asp-validation-for="Post.CategoryId" class="text-danger"></span>
             </div>
 
             <div class="row row-spacing">
                 <div class="col-xs-12">
-                    <badge asp-for="Post.Content" class="col-form-label"></badge>
+                    <label asp-for="Post.Content" class="col-form-label"></label>
                     <div id="wmd-button-bar"></div>
                     <textarea asp-for="Post.Content" id="wmd-input" class="form-control wmd-input"> </textarea>
                     <br />
-                    <badge class="col-form-label">Preview</badge>
+                    <label class="col-form-label">Preview</label>
                     <div id="preview"></div>
                     <span asp-validation-for="Post.Content" class="text-danger"></span>
                 </div>
             </div>
 
             <div class="mb-3">
-                <badge asp-for="Post.EmailSummary" class="col-form-label"></badge>
+                <label asp-for="Post.EmailSummary" class="col-form-label"></label>
                 <textarea asp-for="Post.EmailSummary" class="form-control"></textarea>
                 <span asp-validation-for="Post.EmailSummary" class="text-danger"></span>
             </div>
@@ -47,7 +47,7 @@
             {
                 <div class="row row-spacing">
                     <div class="col-xs-12">
-                        <badge asp-for="MarkUpdated" class="col-form-label"></badge>
+                        <label asp-for="MarkUpdated" class="col-form-label"></label>
                         <select asp-for="MarkUpdated" asp-items="Model.NoYes" class="form-control"></select>
                     </div>
                 </div>

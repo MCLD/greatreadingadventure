@@ -108,12 +108,12 @@
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <badge asp-for="School.Name" class="col-form-label"></badge>
+                            <label asp-for="School.Name" class="col-form-label"></label>
                             <input id="addName" asp-for="School.Name" class="form-control" />
                             <span asp-validation-for="School.Name" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <badge asp-for="School.SchoolDistrictId" class="col-form-label"></badge>
+                            <label asp-for="School.SchoolDistrictId" class="col-form-label"></label>
                             <select id="addDistrict"
                                     asp-for="School.SchoolDistrictId"
                                     class="form-control schoolDistrict">
@@ -173,12 +173,12 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <input id="School_Id" name="School.Id" type="hidden" />
-                            <badge asp-for="School.Name" class="col-form-label"></badge>
+                            <label asp-for="School.Name" class="col-form-label"></label>
                             <input id="editName" asp-for="School.Name" class="form-control" />
                             <span asp-validation-for="School.Name" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <badge asp-for="School.SchoolDistrictId" class="col-form-label"></badge>
+                            <label asp-for="School.SchoolDistrictId" class="col-form-label"></label>
                             <select id="editDistrict"
                                     asp-for="School.SchoolDistrictId"
                                     class="form-control schoolDistrict">

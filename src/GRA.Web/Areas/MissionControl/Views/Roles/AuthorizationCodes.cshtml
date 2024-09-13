@@ -109,8 +109,8 @@
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <badge asp-for="AuthorizationCode.RoleId"
-                                   class="col-form-label"></badge>
+                            <label asp-for="AuthorizationCode.RoleId"
+                                   class="col-form-label"></label>
                             <select id="addRole" asp-for="AuthorizationCode.RoleId"
                                     asp-items="Model.RoleList"
                                     class="form-control"></select>
@@ -118,15 +118,15 @@
                                   class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <badge asp-for="AuthorizationCode.Code" class="col-form-label"></badge>
+                            <label asp-for="AuthorizationCode.Code" class="col-form-label"></label>
                             <input id="addCode" asp-for="AuthorizationCode.Code"
                                    class="form-control" />
                             <span asp-validation-for="AuthorizationCode.Code"
                                   class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <badge asp-for="AuthorizationCode.Description"
-                                   class="col-form-label"></badge>
+                            <label asp-for="AuthorizationCode.Description"
+                                   class="col-form-label"></label>
                             <textarea id="addDescription"
                                       asp-for="AuthorizationCode.Description"
                                       class="form-control"></textarea>
@@ -134,8 +134,8 @@
                                   class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <badge asp-for="AuthorizationCode.IsSingleUse"
-                                   class="col-form-label"></badge>
+                            <label asp-for="AuthorizationCode.IsSingleUse"
+                                   class="col-form-label"></label>
                             <span class="far fa-question-circle"
                                   data-toggle="tooltip"
                                   title="Single use codes may be used once and then are deactivated."></span>
@@ -148,8 +148,8 @@
                                   class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <badge asp-for="AuthorizationCode.ProgramId"
-                                   class="col-form-label"></badge>
+                            <label asp-for="AuthorizationCode.ProgramId"
+                                   class="col-form-label"></label>
                             <span class="far fa-question-circle"
                                   data-toggle="tooltip"
                                   title="Automatically assign users of this role to the selected program (optional)."></span>
@@ -161,8 +161,8 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <badge asp-for="AuthorizationCode.BranchId"
-                                   class="col-form-label"></badge>
+                            <label asp-for="AuthorizationCode.BranchId"
+                                   class="col-form-label"></label>
                             <span class="far fa-question-circle"
                                   data-toggle="tooltip"
                                   title="Automatically assign users of this role to the selected branch (optional)."></span>
@@ -174,8 +174,8 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <badge asp-for="AuthorizationCode.SinglePageSignUp"
-                                   class="col-form-label"></badge>
+                            <label asp-for="AuthorizationCode.SinglePageSignUp"
+                                   class="col-form-label"></label>
                             <span class="far fa-question-circle"
                                   data-toggle="tooltip"
                                   title="Use a shortened, single-page sign-up to join with this code."></span>
@@ -238,7 +238,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <badge asp-for="AuthorizationCode.RoleId" class="col-form-label"></badge>
+                            <label asp-for="AuthorizationCode.RoleId" class="col-form-label"></label>
                             <select id="editRole"
                                     asp-for="AuthorizationCode.RoleId"
                                     asp-items="Model.RoleList"
@@ -247,16 +247,16 @@
                                   class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <badge asp-for="AuthorizationCode.Code"
-                                   class="col-form-label"></badge>
+                            <label asp-for="AuthorizationCode.Code"
+                                   class="col-form-label"></label>
                             <input id="editCode" asp-for="AuthorizationCode.Code"
                                    class="form-control" />
                             <span asp-validation-for="AuthorizationCode.Code"
                                   class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <badge asp-for="AuthorizationCode.Description"
-                                   class="col-form-label"></badge>
+                            <label asp-for="AuthorizationCode.Description"
+                                   class="col-form-label"></label>
                             <textarea id="editDescription"
                                       asp-for="AuthorizationCode.Description"
                                       class="form-control"></textarea>
@@ -264,8 +264,8 @@
                                   class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <badge asp-for="AuthorizationCode.IsSingleUse"
-                                   class="col-form-label"></badge>
+                            <label asp-for="AuthorizationCode.IsSingleUse"
+                                   class="col-form-label"></label>
                             <span class="far fa-question-circle"
                                   data-toggle="tooltip"
                                   title="Single use codes may be used once and then are deactivated."></span>
@@ -279,8 +279,8 @@
                                   class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <badge asp-for="AuthorizationCode.ProgramId"
-                                   class="col-form-label"></badge>
+                            <label asp-for="AuthorizationCode.ProgramId"
+                                   class="col-form-label"></label>
                             <span class="far fa-question-circle"
                                   data-toggle="tooltip"
                                   title="Automatically assign users of this role to a program (optional)"></span>
@@ -292,8 +292,8 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <badge asp-for="AuthorizationCode.BranchId"
-                                   class="col-form-label"></badge>
+                            <label asp-for="AuthorizationCode.BranchId"
+                                   class="col-form-label"></label>
                             <span class="far fa-question-circle"
                                   data-toggle="tooltip"
                                   title="Automatically assign users of this role to the selected branch (optional)."></span>
@@ -305,8 +305,8 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <badge asp-for="AuthorizationCode.SinglePageSignUp"
-                                   class="col-form-label"></badge>
+                            <label asp-for="AuthorizationCode.SinglePageSignUp"
+                                   class="col-form-label"></label>
                             <span class="far fa-question-circle"
                                   data-toggle="tooltip"
                                   title="Use a shortened, single-page sign-up to join with this code."></span>

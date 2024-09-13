@@ -18,7 +18,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <badge asp-for="DashboardContent.StartTime" class="col-form-label"></badge>
+            <label asp-for="DashboardContent.StartTime" class="col-form-label"></label>
             <div class="form-group date" id="pickerStart">
                 <input asp-for="DashboardContent.StartTime" type="date" class="form-control" name="date"/>
             </div>
@@ -28,10 +28,10 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <badge asp-for="DashboardContent.Content" class="col-form-label"></badge>
+            <label asp-for="DashboardContent.Content" class="col-form-label"></label>
             <div id="wmd-button-bar"></div>
             <textarea asp-for="DashboardContent.Content" id="wmd-input" class="form-control wmd-input"> </textarea>
-            <br /><badge class="col-form-label">Preview</badge>
+            <br /><label class="col-form-label">Preview</label>
             <div id="preview"></div>
             <span asp-validation-for="DashboardContent.Content" class="text-danger"></span>
         </div>

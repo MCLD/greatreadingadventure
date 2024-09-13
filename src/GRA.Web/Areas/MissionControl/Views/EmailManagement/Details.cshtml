@@ -47,14 +47,14 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="mb-3">
-                <badge asp-for="TemplateDescription" class="col-form-label"></badge>
+                <label asp-for="TemplateDescription" class="col-form-label"></label>
                 <description gra-description-for="TemplateDescription"></description>
                 <input asp-for="TemplateDescription" class="form-control" />
                 <span asp-validation-for="TemplateDescription" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
-                <badge asp-for="EmailBaseId" class="col-form-label"></badge>
+                <label asp-for="EmailBaseId" class="col-form-label"></label>
                 <description gra-description-for="EmailBaseId"></description>
                 <select class="form-control" asp-for="EmailBaseId">
                     @foreach (var emailBase in Model.EmailBases.Where(_ => !_.Disabled))
@@ -68,7 +68,7 @@
             @if (Model.Languages.Count() > 1)
             {
                 <div class="mb-3">
-                    <badge asp-for="LanguageId" class="col-form-label"></badge><br>
+                    <label asp-for="LanguageId" class="col-form-label"></label><br>
                     <description gra-description-for="LanguageId"></description><br>
                     @foreach (var item in Model.Languages)
                     {
@@ -111,26 +111,26 @@
             <hr />
 
             <div class="mb-3">
-                <badge asp-for="Subject" class="col-form-label"></badge>
+                <label asp-for="Subject" class="col-form-label"></label>
                 <description gra-description-for="Subject"></description>
                 <input asp-for="Subject" class="form-control" />
                 <span asp-validation-for="Subject" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <badge asp-for="Preview" class="col-form-label"></badge>
+                <label asp-for="Preview" class="col-form-label"></label>
                 <description gra-description-for="Preview"></description>
                 <input asp-for="Preview" class="form-control" />
                 <span asp-validation-for="Preview" class="text-danger"></span>
             </div>
             <hr />
             <div class="mb-3">
-                <badge asp-for="Title" class="col-form-label"></badge>
+                <label asp-for="Title" class="col-form-label"></label>
                 <description gra-description-for="Title"></description>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <badge asp-for="BodyCommonMark" class="col-form-label"></badge>
+                <label asp-for="BodyCommonMark" class="col-form-label"></label>
                 <description gra-description-for="BodyCommonMark"></description>
                 <textarea asp-for="BodyCommonMark"
                           rows="8"
@@ -138,7 +138,7 @@
                 <span asp-validation-for="BodyCommonMark" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <badge asp-for="Footer" class="col-form-label"></badge>
+                <label asp-for="Footer" class="col-form-label"></label>
                 <description gra-description-for="Footer"></description>
                 <textarea asp-for="Footer"
                           rows="8"
@@ -224,7 +224,7 @@
                     <div class="modal-body">
                         <p>Upload a .json file to replace the content of the selected template and language.</p>
                         <div class="input-group">
-                            <badge class="input-group-append">
+                            <label class="input-group-append">
                                 <span class="btn btn-secondary btn-file">
                                     <span class="far fa-file-image"></span>
                                     Select a .json file
@@ -234,7 +234,7 @@
                                            accept=".json"
                                            style="display: none;" />
                                 </span>
-                            </badge>
+                            </label>
                             <input type="text"
                                    class="form-control"
                                    readonly
@@ -286,7 +286,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <badge asp-for="SendTestRecipients" class="col-form-label"></badge>
+                            <label asp-for="SendTestRecipients" class="col-form-label"></label>
                             <input asp-for="SendTestRecipients"
                                    class="form-control"
                                value="@Model.DefaultTestEmail"

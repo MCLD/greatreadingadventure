@@ -788,8 +788,8 @@
                             <p>@Html.Raw(Model.Head.EmailAwardInstructions)</p>
                             <div class="row row-spacing">
                                 <div class="col-xs-12">
-                                    <badge asp-for="EmailAwardModel.Email"
-                                           class="col-form-label"></badge>
+                                    <label asp-for="EmailAwardModel.Email"
+                                           class="col-form-label"></label>
                                     <input asp-for="EmailAwardModel.Email" class="form-control" />
                                     <span asp-validation-for="EmailAwardModel.Email"
                                           class="text-danger"></span>
@@ -847,9 +847,9 @@
                             </h1>
                         </div>
                         <div class="modal-body">
-                            <badge asp-for="Prize" class="col-form-label">
+                            <label asp-for="Prize" class="col-form-label">
                                 Select which prize to redeem:
-                            </badge>
+                            </label>
                             <select asp-for="Prize"
                                     asp-items="Model.HouseholdPrizeList"
                                     class="form-control"

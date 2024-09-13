@@ -9,14 +9,14 @@
             <div class="card ">
                 <div class="card-heading">
                     <span class="lead">
-                        <strong><badge asp-for="InReplyToSubject"></badge></strong>
+                        <strong><label asp-for="InReplyToSubject"></label></strong>
                         @Model.InReplyToSubject
                     </span>
                 </div>
                 <div class="card-body">
                     <div class="row row-spacing">
                         <div class="col-sm-10 col-sm-offset-1">
-                            <badge asp-for="Subject" class="col-form-label"></badge>
+                            <label asp-for="Subject" class="col-form-label"></label>
                             <input asp-for="Subject" class="form-control" />
                             <span asp-validation-for="Subject" class="text-danger"></span>
                         </div>
@@ -24,7 +24,7 @@
 
                     <div class="row row-spacing">
                         <div class="col-sm-10 col-sm-offset-1">
-                            <badge asp-for="Body" class="col-form-label"></badge>
+                            <label asp-for="Body" class="col-form-label"></label>
                             <textarea asp-for="Body" class="form-control"></textarea>
                             <span asp-validation-for="Body" class="text-danger"></span>
                         </div>

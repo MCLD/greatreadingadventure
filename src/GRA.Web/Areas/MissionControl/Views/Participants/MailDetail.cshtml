@@ -2,21 +2,21 @@
 
 <div class="row row-spacing">
     <div class="col-xs-12">
-        <badge class="col-form-label">Sent At</badge>
+        <label class="col-form-label">Sent At</label>
         <input value="@Model.Mail.CreatedAt.ToString()" class="form-control" readonly />
     </div>
 </div>
 
 <div class="row row-spacing">
     <div class="col-xs-12">
-        <badge asp-for="Mail.Subject" class="col-form-label"></badge>
+        <label asp-for="Mail.Subject" class="col-form-label"></label>
         <input asp-for="Mail.Subject" class="form-control" readonly />
     </div>
 </div>
 
 <div class="row row-spacing">
     <div class="col-xs-12">
-        <badge asp-for="Mail.Body" class="col-form-label"></badge>
+        <label asp-for="Mail.Body" class="col-form-label"></label>
         @if (Model.Mail.ToUserId.HasValue)
         {
             <div class="form-control" style="min-height:71px;" readonly>
@@ -32,7 +32,7 @@
 
 <div class="row row-spacing">
     <div class="col-xs-12">
-        <badge class="col-form-label">Unread</badge>
+        <label class="col-form-label">Unread</label>
         <input value="@(Model.Mail.IsNew ? "Yes" : "No")" class="form-control" readonly />
     </div>
 </div>

@@ -40,7 +40,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="mb-3">
-                <badge asp-for="VendorCodeType.Description" class="col-form-label"></badge>*
+                <label asp-for="VendorCodeType.Description" class="col-form-label"></label>*
                 <description gra-description-for="VendorCodeType.Description"></description>
                 <input asp-for="VendorCodeType.Description" class="form-control" />
                 <span asp-validation-for="VendorCodeType.Description" class="text-danger"></span>
@@ -53,7 +53,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="mb-3">
-                    <badge class="col-form-label" asp-for="VendorCodeType.MessageTemplateId"></badge>
+                    <label class="col-form-label" asp-for="VendorCodeType.MessageTemplateId"></label>
                     <description gra-description-for="VendorCodeType.MessageTemplateId"></description>
                     <br />
                     @foreach (var item in Model.Languages)
@@ -71,7 +71,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="mb-3">
-                <badge asp-for="VendorCodeType.Url" class="col-form-label"></badge>
+                <label asp-for="VendorCodeType.Url" class="col-form-label"></label>
                 <description gra-description-for="VendorCodeType.Url"></description>
                 <input asp-for="VendorCodeType.Url" class="form-control" />
                 <span asp-validation-for="VendorCodeType.Url" class="text-danger"></span>
@@ -81,7 +81,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="mb-3">
-                <badge asp-for="VendorCodeType.ExpirationDate" class="col-form-label"></badge>
+                <label asp-for="VendorCodeType.ExpirationDate" class="col-form-label"></label>
                 <description gra-description-for="VendorCodeType.ExpirationDate"></description>
                 <input asp-for="VendorCodeType.ExpirationDate"
                        class="form-control"
@@ -93,7 +93,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="mb-3">
-                <badge asp-for="VendorCodeType.AwardPrizeOnShipDate" class="col-form-label"></badge>
+                <label asp-for="VendorCodeType.AwardPrizeOnShipDate" class="col-form-label"></label>
                 <description gra-description-for="VendorCodeType.AwardPrizeOnShipDate"></description>
                 <select asp-for="VendorCodeType.AwardPrizeOnShipDate"
                         asp-items="VendorCodesController.ShipDateOptions"
@@ -106,7 +106,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="mb-3">
-                <badge asp-for="VendorCodeType.AwardPrizeOnPackingSlip" class="col-form-label"></badge>
+                <label asp-for="VendorCodeType.AwardPrizeOnPackingSlip" class="col-form-label"></label>
                 <description gra-description-for="VendorCodeType.AwardPrizeOnPackingSlip"></description>
                 <select asp-for="VendorCodeType.AwardPrizeOnPackingSlip"
                         asp-items="VendorCodesController.PackingSlipOptions"
@@ -123,7 +123,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="mb-3">
-                    <badge class="col-form-label" asp-for="VendorCodeType.OptionMessageTemplateId"></badge>
+                    <label class="col-form-label" asp-for="VendorCodeType.OptionMessageTemplateId"></label>
                     <description gra-description-for="VendorCodeType.OptionMessageTemplateId"></description>
                     <br />
                     @foreach (var item in Model.Languages)
@@ -154,7 +154,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="mb-3">
-                        <badge asp-for="VendorCodeType.DonationSegmentId" class="col-form-label"></badge><br />
+                        <label asp-for="VendorCodeType.DonationSegmentId" class="col-form-label"></label><br />
                         @foreach (var item in Model.Languages)
                         {
                             <a class="btn @Model.LanguageSegmentClass(Model.VendorCodeType.DonationSegmentId, item.Value)"
@@ -170,7 +170,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="mb-3">
-                        <badge class="col-form-label" asp-for="VendorCodeType.DonationMessageTemplateId"></badge><br />
+                        <label class="col-form-label" asp-for="VendorCodeType.DonationMessageTemplateId"></label><br />
                         @foreach (var item in Model.Languages)
                         {
                             <a class="btn @Model.LanguageMessageClass(Model.VendorCodeType.DonationMessageTemplateId, item.Value)"
@@ -198,7 +198,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="mb-3">
-                        <badge asp-for="VendorCodeType.EmailAwardSegmentId" class="col-form-label"></badge><br />
+                        <label asp-for="VendorCodeType.EmailAwardSegmentId" class="col-form-label"></label><br />
                         @foreach (var item in Model.Languages)
                         {
                             <a class="btn @Model.LanguageSegmentClass(Model.VendorCodeType.EmailAwardSegmentId, item.Value)"
@@ -214,7 +214,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="mb-3">
-                        <badge class="col-form-label" asp-for="VendorCodeType.EmailAwardMessageTemplateId"></badge><br />
+                        <label class="col-form-label" asp-for="VendorCodeType.EmailAwardMessageTemplateId"></label><br />
                         @foreach (var item in Model.Languages)
                         {
                             <a class="btn @Model.LanguageMessageClass(Model.VendorCodeType.EmailAwardMessageTemplateId, item.Value)"
@@ -231,7 +231,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="mb-3">
-                    <badge asp-for="VendorCodeType.ReadyForPickupEmailTemplateId" class="col-form-label"></badge>
+                    <label asp-for="VendorCodeType.ReadyForPickupEmailTemplateId" class="col-form-label"></label>
                     <description gra-description-for="VendorCodeType.ReadyForPickupEmailTemplateId"></description>
                     <select asp-for="VendorCodeType.ReadyForPickupEmailTemplateId"
                         asp-items="VendorCodesController.GetSelectList(Model.DirectEmailTemplates)"
@@ -288,7 +288,7 @@
                     </div>
                     <div id="segmentModalContent" style="display: none;">
                         <div class="mb-3">
-                            <badge>Pop-up text</badge>
+                            <label>Pop-up text</label>
                             <input type="text"
                                    class="form-control"
                                    id="segmentText"
@@ -346,14 +346,14 @@
                     </div>
                     <div id="messageModalContent" style="display: none;">
                         <div class="mb-3">
-                            <badge>Message subject</badge>
+                            <label>Message subject</label>
                             <input type="text"
                                    class="form-control"
                                    id="messageSubject"
                                    name="subject" />
                         </div>
                         <div class="mb-3">
-                            <badge>Message text</badge>
+                            <label>Message text</label>
                             <textarea class="form-control"
                                       rows="4"
                                       id="messageBody"

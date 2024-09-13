@@ -3,7 +3,7 @@
 <form asp-controller="Questionnaires" asp-action="Create" method="post" role="form">
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <badge asp-for="Name" class="col-form-label"></badge>
+            <label asp-for="Name" class="col-form-label"></label>
             <input asp-for="Name" class="form-control" />
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>

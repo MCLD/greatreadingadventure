@@ -24,8 +24,8 @@
             <input type="hidden" name="templateId" value="@Model.Template.Id">
             <div class="row row-spacing">
                 <div class="col-xs-12">
-                    <badge asp-for="SubscriptionLists"
-                   class="col-form-label">Select a subscriber list:</badge>
+                    <label asp-for="SubscriptionLists"
+                   class="col-form-label">Select a subscriber list:</label>
                     <select name="listName"
                     asp-items="@Model.SubscriptionLists"
                     placeholder="Select a mailing list"

@@ -10,7 +10,7 @@
                     <p>@Html.Raw(Model.EmailAwardInstructions)</p>
                     <div class="row row-spacing">
                         <div class="col-xs-12">
-                            <badge asp-for="Email" class="col-form-label"></badge>
+                            <label asp-for="Email" class="col-form-label"></label>
                             <input asp-for="Email" type="email" class="form-control" required />
                             <span asp-validation-for="Email" class="text-danger"></span>
                         </div>

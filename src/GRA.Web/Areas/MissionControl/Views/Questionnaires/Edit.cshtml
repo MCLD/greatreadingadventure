@@ -29,7 +29,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <badge asp-for="Questionnaire.Name" class="col-form-label"></badge>
+            <label asp-for="Questionnaire.Name" class="col-form-label"></label>
             <input asp-for="Questionnaire.Name" class="form-control" />
             <span asp-validation-for="Questionnaire.Name" class="text-danger"></span>
         </div>
@@ -117,12 +117,12 @@
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <badge asp-for="Question.Name" class="col-form-label"></badge>
+                            <label asp-for="Question.Name" class="col-form-label"></label>
                             <input asp-for="Question.Name" class="form-control" />
                             <span asp-validation-for="Question.Name" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <badge asp-for="Question.Text" class="col-form-label"></badge>
+                            <label asp-for="Question.Text" class="col-form-label"></label>
                             <textarea asp-for="Question.Text" class="form-control"></textarea>
                             <span asp-validation-for="Question.Text" class="text-danger"></span>
                         </div>

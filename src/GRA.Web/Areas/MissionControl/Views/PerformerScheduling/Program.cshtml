@@ -86,23 +86,23 @@
 
     <div class="col-xs-12 col-sm-7 col-md-8">
         <div class="mb-3">
-            <badge>Performer</badge>
+            <label>Performer</label>
             <div>@Model.Program.PerformerName</div>
         </div>
         <div class="mb-3">
-            <badge>Name</badge>
+            <label>Name</label>
             <div>@Model.Program.Title</div>
         </div>
         <div class="mb-3">
-            <badge>Description</badge>
+            <label>Description</label>
             <div>@Model.Program.Description</div>
         </div>
         <div class="mb-3">
-            <badge>Capacity</badge>
+            <label>Capacity</label>
             <div>@Model.Program.MinimumCapacity &ndash; @Model.Program.MaximumCapacity</div>
         </div>
         <div class="mb-3">
-            <badge>Ages</badge>
+            <label>Ages</label>
             <div>
                 <ul>
                     @foreach (var age in Model.Program.AgeGroups)
@@ -114,30 +114,30 @@
         </div>
         <div class="row mb-3">
             <div class="col-xs-6">
-                <badge>Program Length</badge>
+                <label>Program Length</label>
                 <div>@Model.Program.ProgramLengthMinutes minutes</div>
             </div>
             <div class="col-xs-6">
-                <badge>Set-up Time</badge>
+                <label>Set-up Time</label>
                 <div>@Model.Program.SetupTimeMinutes minutes</div>
             </div>
         </div>
         <div class="row mb-3">
             <div class="col-xs-6">
-                <badge>Breakdown Time</badge>
+                <label>Breakdown Time</label>
                 <div>@Model.Program.BreakdownTimeMinutes minutes</div>
             </div>
             <div class="col-xs-6">
-                <badge>Time Between Back-to-Back Programs</badge>
+                <label>Time Between Back-to-Back Programs</label>
                 <div>@Model.Program.BackToBackMinutes minutes</div>
             </div>
         </div>
         <div class="mb-3">
-            <badge>Library Set-up</badge>
+            <label>Library Set-up</label>
             <div>@Model.Program.Setup</div>
         </div>
         <div class="mb-3">
-            <badge>Locations</badge>
+            <label>Locations</label>
             <div>
                 Available at
                 <strong>@(Model.AllBranches || Model.BranchAvailability.Count == Model.System.Branches.Count ? "all" : $"{Model.BranchAvailability.Count} of {Model.System.Branches.Count}")</strong>
@@ -182,7 +182,7 @@
                     <form asp-action="SelectProgram" class="form-horizontal col-xs-12" method="post" role="form">
                         <input asp-for="BranchSelection.ProgramId" value="@Model.Program.Id" type="hidden" />
                         <div class="mb-3">
-                            <badge asp-for="BranchSelection.BranchId" class="col-sm-3 col-form-label required-field"></badge>
+                            <label asp-for="BranchSelection.BranchId" class="col-sm-3 col-form-label required-field"></label>
                             <div class="col-sm-9">
                                 <select asp-for="BranchSelection.BranchId" asp-items="Model.BranchList" class="form-control">
                                     <option></option>
@@ -191,7 +191,7 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                            <badge asp-for="BranchSelection.AgeGroupId" class="col-sm-3 col-form-label required-field"></badge>
+                            <label asp-for="BranchSelection.AgeGroupId" class="col-sm-3 col-form-label required-field"></label>
                             <div class="col-sm-9">
                                 <select asp-for="BranchSelection.AgeGroupId" asp-items="Model.AgeGroupList" class="form-control" disabled="disabled">
                                     <option></option>
@@ -243,11 +243,11 @@
                     {
                         <div>
                             <span class="colored-icon fas fa-lg @(Model.AllBranches || Model.BranchAvailability.Contains(branch.Id) ? "fa-check" : "fa-times")"></span>
-                            <badge data-toggle="tooltip"
+                            <label data-toggle="tooltip"
                                    data-placement="top"
                                    title="@branch.Address">
                                 @branch.Name
-                            </badge>
+                            </label>
                             <a aria-label="Map (Opens new window)"
                                href="https://www.google.com/maps/search/@branch.Address"
                                target="_blank">

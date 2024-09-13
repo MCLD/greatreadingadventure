@@ -100,12 +100,12 @@
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <badge asp-for="AgeGroup.Name" class="col-form-label"></badge>
+                            <label asp-for="AgeGroup.Name" class="col-form-label"></label>
                             <input asp-for="AgeGroup.Name" class="form-control" />
                             <span asp-validation-for="AgeGroup.Name" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <badge asp-for="AgeGroup.IconColor" class="col-form-label"></badge>
+                            <label asp-for="AgeGroup.IconColor" class="col-form-label"></label>
                             <description gra-description-for="AgeGroup.IconColor"></description><br />
                             <input asp-for="AgeGroup.IconColor" type="color" />
                             <span asp-validation-for="AgeGroup.IconColor"
@@ -172,7 +172,7 @@
                                     <input id="@($"branch{branch.Id}")"
                                            class="branchSelector"
                                            data-id="@branch.Id" type="checkbox" />
-                                    <badge for="@($"branch{branch.Id}")">@branch.Name</badge>
+                                    <label for="@($"branch{branch.Id}")">@branch.Name</label>
                                 </div>
                             }
                             <br />

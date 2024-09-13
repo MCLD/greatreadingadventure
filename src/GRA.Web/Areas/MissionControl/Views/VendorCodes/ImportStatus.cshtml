@@ -10,21 +10,21 @@
 
     <div class="row">
         <div class="mb-3">
-            <badge for="vendorCodeTypeId">Vendor code:</badge>
+            <label for="vendorCodeTypeId">Vendor code:</label>
             <select id="vendorCodeTypeId"
                     name="vendorCodeTypeId"
                     asp-items="@Model"
                     class="form-control"></select>
         </div>
         <div class="mb-3">
-            <badge for="selectedFile">Select Excel file:</badge>
+            <label for="selectedFile">Select Excel file:</label>
             <div class="input-group">
-                <badge class="input-group-append">
+                <label class="input-group-append">
                     <span class="btn btn-secondary btn-file">
                         <span class="far fa-file-image"></span>
                         Select an Excel file<input type="file" name="excelFile" accept=".xls,.xlsx" />
                     </span>
-                </badge>
+                </label>
                 <input type="text" class="form-control" readonly id="selectedFile">
                 <span class="input-group-append">
                     <button type="submit"

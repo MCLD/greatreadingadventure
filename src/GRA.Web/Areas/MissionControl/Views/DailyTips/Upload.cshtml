@@ -47,19 +47,19 @@
     <div class="row" style="margin-top: 2rem; margin-bottom: 2rem;">
         <div class="col-xs-12">
             <div class="mb-3">
-                <badge asp-for="Name" class="col-form-label"></badge>*
+                <label asp-for="Name" class="col-form-label"></label>*
                 <description gra-description-for="Name"></description>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <badge asp-for="Message" class="col-form-label"></badge>*
+                <label asp-for="Message" class="col-form-label"></label>*
                 <description gra-description-for="Message"></description>
                 <input asp-for="Message" class="form-control" />
                 <span asp-validation-for="Message" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <badge asp-for="IsLarge" class="col-form-label"></badge>*
+                <label asp-for="IsLarge" class="col-form-label"></label>*
                 <description gra-description-for="IsLarge"></description>
                 <select asp-for="IsLarge" class="form-control">
                     <option value="True">Yes</option>
@@ -68,7 +68,7 @@
                 <span asp-validation-for="IsLarge" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <badge for="selectedFile">Select a .zip file:</badge>
+                <label for="selectedFile">Select a .zip file:</label>
                 <div class="input-group">
                     <input type="file" asp-for="UploadedFile" class="form-control" accept=".zip" />
                 </div>

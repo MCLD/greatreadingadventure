@@ -28,7 +28,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="mb-3">
-                <badge asp-for="Name" class="col-form-label"></badge>
+                <label asp-for="Name" class="col-form-label"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
@@ -36,7 +36,7 @@
             @if (Model.Languages?.Count() > 1)
             {
                 <div class="mb-3">
-                    <badge asp-for="LanguageId" class="col-form-label"></badge><br>
+                    <label asp-for="LanguageId" class="col-form-label"></label><br>
                     <description gra-description-for="LanguageId"></description><br>
                     @foreach (var item in Model.Languages)
                     {
@@ -79,18 +79,18 @@
             <hr />
 
             <div class="mb-3">
-                <badge asp-for="TemplateMjml" class="col-form-label"></badge>
+                <label asp-for="TemplateMjml" class="col-form-label"></label>
                 <description gra-description-for="TemplateMjml"></description>
                 <textarea asp-for="TemplateMjml" class="form-control" rows="8"></textarea>
                 <span asp-validation-for="TemplateMjml" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <badge asp-for="TemplateHtml" class="col-form-label"></badge>
+                <label asp-for="TemplateHtml" class="col-form-label"></label>
                 <textarea asp-for="TemplateHtml" class="form-control" rows="8"></textarea>
                 <span asp-validation-for="TemplateHtml" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <badge asp-for="TemplateText" class="col-form-label"></badge>
+                <label asp-for="TemplateText" class="col-form-label"></label>
                 <textarea asp-for="TemplateText" class="form-control" rows="8"></textarea>
                 <span asp-validation-for="TemplateText" class="text-danger"></span>
             </div>
@@ -156,7 +156,7 @@
                 <div class="modal-body">
                     <p>Upload a .json file to replace the content of the selected template and language.</p>
                     <div class="input-group">
-                        <badge class="input-group-append">
+                        <label class="input-group-append">
                             <span class="btn btn-secondary btn-file">
                                 <span class="far fa-file-image"></span>
                                 Select a .json file
@@ -166,7 +166,7 @@
                                        accept=".json"
                                        style="display: none;" />
                             </span>
-                        </badge>
+                        </label>
                         <input type="text"
                                class="form-control"
                                readonly

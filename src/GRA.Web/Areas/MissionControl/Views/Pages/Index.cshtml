@@ -103,14 +103,14 @@
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <badge asp-for="PageHeader.PageName" class="col-form-label"></badge>
+                            <label asp-for="PageHeader.PageName" class="col-form-label"></label>
                             <input id="addName" asp-for="PageHeader.PageName"
                                    class="form-control" />
                             <span asp-validation-for="PageHeader.PageName"
                                   class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <badge asp-for="PageHeader.Stub" class="col-form-label"></badge>
+                            <label asp-for="PageHeader.Stub" class="col-form-label"></label>
                             <input id="addStub" asp-for="PageHeader.Stub" class="form-control" />
                             <span asp-validation-for="PageHeader.Stub" class="text-danger"></span>
                         </div>
@@ -163,15 +163,15 @@
                     <div class="modal-body">
                         <div class="modal-body">
                             <div class="mb-3">
-                                <badge asp-for="PageHeader.PageName"
-                                       class="col-form-label"></badge>
+                                <label asp-for="PageHeader.PageName"
+                                       class="col-form-label"></label>
                                 <input id="editName" asp-for="PageHeader.PageName"
                                        class="form-control" />
                                 <span asp-validation-for="PageHeader.PageName"
                                       class="text-danger"></span>
                             </div>
                             <div class="mb-3">
-                                <badge asp-for="PageHeader.Stub" class="col-form-label"></badge>
+                                <label asp-for="PageHeader.Stub" class="col-form-label"></label>
                                 <input id="editStub" asp-for="PageHeader.Stub"
                                        class="form-control"
                                        readonly />

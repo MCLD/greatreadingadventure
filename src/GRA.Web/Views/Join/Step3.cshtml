@@ -19,7 +19,7 @@
 
                     <div class="row row-spacing">
                         <div class="col-xs-12">
-                            <badge asp-for="Username" class="col-form-label"></badge>
+                            <label asp-for="Username" class="col-form-label"></label>
                             <span id="Username-Icon" class="fas colored-icon hide"></span>
                             <input asp-for="Username" class="form-control" autofocus />
                             <span id="Username-Validation"
@@ -30,7 +30,7 @@
 
                     <div class="row row-spacing">
                         <div class="col-xs-12">
-                            <badge asp-for="Password" class="col-form-label"></badge>
+                            <label asp-for="Password" class="col-form-label"></label>
                             <p class="password-note">
                                 @SharedLocalizer[GRA.Annotations.Validate.PasswordRequirement]
                             </p>
@@ -41,7 +41,7 @@
 
                     <div class="row row-spacing">
                         <div class="col-xs-12">
-                            <badge asp-for="ConfirmPassword" class="col-form-label"></badge>
+                            <label asp-for="ConfirmPassword" class="col-form-label"></label>
                             <input asp-for="ConfirmPassword" type="password" class="form-control" />
                             <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                         </div>
@@ -59,7 +59,7 @@
 
                     <div class="row row-spacing">
                         <div class="col-xs-12">
-                            <badge asp-for="Email" class="col-form-label"></badge>
+                            <label asp-for="Email" class="col-form-label"></label>
                             <input asp-for="Email" class="form-control" type="email" />
                             <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
@@ -67,7 +67,7 @@
 
                     <div class="row row-spacing">
                         <div class="col-xs-12">
-                            <badge asp-for="PhoneNumber" class="col-form-label"></badge>
+                            <label asp-for="PhoneNumber" class="col-form-label"></label>
                             <input asp-for="PhoneNumber" class="form-control" type="tel" />
                             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                         </div>
@@ -77,7 +77,7 @@
                     {
                         <div class="row row-spacing">
                             <div class="col-xs-12">
-                                <badge asp-for="IsFirstTime" class="col-form-label"></badge>
+                                <label asp-for="IsFirstTime" class="col-form-label"></label>
                                 <select asp-for="IsFirstTime"
                                         asp-items="Model.AskFirstTime"
                                         class="form-control"></select>
@@ -90,7 +90,7 @@
                     {
                         <div class="row row-spacing">
                             <div class="col-xs-12">
-                                <badge asp-for="EmailSubscriptionRequested" class="col-form-label">@SharedLocalizer[Model.AskEmailSubscriptionText]</badge>
+                                <label asp-for="EmailSubscriptionRequested" class="col-form-label">@SharedLocalizer[Model.AskEmailSubscriptionText]</label>
                                 <select asp-for="EmailSubscriptionRequested"
                                         asp-items="Model.AskEmailSubscription"
                                         class="form-control"></select>
@@ -103,7 +103,7 @@
                     {
                         <div class="row row-spacing">
                             <div class="col-xs-12">
-                                <badge asp-for="DailyPersonalGoal" class="col-form-label"></badge>
+                                <label asp-for="DailyPersonalGoal" class="col-form-label"></label>
                                 <div>
                                     @SharedLocalizer["I will {0}", Model.TranslationDescriptionPastTense]
                                     <input asp-for="DailyPersonalGoal" class="form-control" style="display:inline-block; width:75px;" />

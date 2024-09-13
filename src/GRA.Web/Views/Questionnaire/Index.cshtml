@@ -24,10 +24,10 @@
                                 @foreach (var answer in Model.Questions[i].Answers)
                                 {
                                     <div class="answer-selection">
-                                        <badge>
+                                        <label>
                                             <input asp-for="@Model.Questions[i].ParticipantAnswer" type="radio" value="@answer.Id" />
                                             @answer.Text
-                                        </badge>
+                                        </label>
                                     </div>
                                 }
                                 <span asp-validation-for="@Model.Questions[i].ParticipantAnswer"></span>

@@ -55,17 +55,17 @@
     </div>
     <div class="col-xs-12 col-sm-7 col-md-8">
         <div class="mb-3">
-            <badge>Name</badge>
+            <label>Name</label>
             <div>@Model.Kit.Name</div>
         </div>
         <div class="mb-3">
-            <badge>Description</badge>
+            <label>Description</label>
             <div>@Model.Kit.Description</div>
         </div>
         @if (!string.IsNullOrWhiteSpace(Model.Kit.Website))
         {
             <div class="mb-3">
-                <badge>Website</badge>
+                <label>Website</label>
                 <div>
                     @if (Model.Uri != null)
                     {
@@ -79,7 +79,7 @@
             </div>
         }
         <div class="mb-3">
-            <badge>Ages</badge>
+            <label>Ages</label>
             <div>
                 <ul>
                     @foreach (var age in Model.Kit.AgeGroups)
@@ -108,7 +108,7 @@
                 <form asp-action="SelectKit" class="form-horizontal col-xs-12" method="post" role="form">
                     <input asp-for="BranchSelection.KitId" value="@Model.Kit.Id" type="hidden" />
                     <div class="mb-3">
-                        <badge asp-for="BranchSelection.BranchId" class="col-sm-3 col-form-label required-field"></badge>
+                        <label asp-for="BranchSelection.BranchId" class="col-sm-3 col-form-label required-field"></label>
                         <div class="col-sm-9">
                             <select asp-for="BranchSelection.BranchId" asp-items="Model.BranchList" class="form-control">
                                 <option></option>
@@ -117,7 +117,7 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <badge asp-for="BranchSelection.AgeGroupId" class="col-sm-3 col-form-label required-field"></badge>
+                        <label asp-for="BranchSelection.AgeGroupId" class="col-sm-3 col-form-label required-field"></label>
                         <div class="col-sm-9">
                             <select asp-for="BranchSelection.AgeGroupId" asp-items="Model.AgeGroupList" class="form-control" disabled="disabled">
                                 <option></option>

@@ -48,14 +48,14 @@
                            value="@Model.EventType" />
                     <div class="row row-spacing">
                         <div class="col-xs-6">
-                            <badge asp-for="StartDate" class="col-form-label"></badge>
+                            <label asp-for="StartDate" class="col-form-label"></label>
                             <div class="form-group date" id="pickerStart">
                                 <input asp-for="StartDate" type="date" class="form-control" name="date"/>
                             </div>
                         </div>
 
                         <div class="col-xs-6">
-                            <badge asp-for="EndDate" class="col-form-label"></badge>
+                            <label asp-for="EndDate" class="col-form-label"></label>
                             <div class="form-group date" id="pickerEnd">
                                 <input asp-for="EndDate" type="date" class="form-control" name="date"/>
                             </div>
@@ -68,13 +68,13 @@
                         {
                             <div class="row row-spacing">
                                 <div class="col-xs-6">
-                                    <badge asp-for="ProgramId" class="col-form-label"></badge>
+                                    <label asp-for="ProgramId" class="col-form-label"></label>
                                     <select asp-for="ProgramId" asp-items="Model.ProgramList" class="form-control">
                                         <option>@SharedLocalizer[GRA.Annotations.Interface.AllPrograms]</option>
                                     </select>
                                 </div>
                                 <div class="col-xs-6">
-                                    <badge asp-for="Near" class="col-form-label"></badge>
+                                    <label asp-for="Near" class="col-form-label"></label>
                                     @if (!string.IsNullOrWhiteSpace(Model.UserZipCode))
                                     {
                                         <button type="submit"
@@ -94,7 +94,7 @@
                         {
                             <div class="row row-spacing">
                                 <div class="col-xs-12">
-                                    <badge asp-for="ProgramId" class="col-form-label"></badge>
+                                    <label asp-for="ProgramId" class="col-form-label"></label>
                                     <select asp-for="ProgramId" asp-items="Model.ProgramList" class="form-control">
                                         <option>@SharedLocalizer[GRA.Annotations.Interface.AllPrograms]</option>
                                     </select>
@@ -104,14 +104,14 @@
                             <div class="row">
                                 <div class="col-xs-6">
                                     <div class="mb-3">
-                                        <badge asp-for="SystemId" class="col-form-label"></badge>
+                                        <label asp-for="SystemId" class="col-form-label"></label>
                                         <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control">
                                             <option></option>
                                         </select>
                                     </div>
 
                                     <div class="mb-3">
-                                        <badge asp-for="BranchId" class="col-form-label"></badge>
+                                        <label asp-for="BranchId" class="col-form-label"></label>
                                         <select asp-for="BranchId" asp-items="Model.BranchList" class="form-control">
                                             <option></option>
                                         </select>
@@ -119,7 +119,7 @@
                                 </div>
 
                                 <div class="col-xs-6">
-                                    <badge asp-for="LocationId" class="col-form-label"></badge>
+                                    <label asp-for="LocationId" class="col-form-label"></label>
                                     <select asp-for="LocationId" asp-items="Model.LocationList" class="form-control">
                                         <option></option>
                                     </select>
@@ -133,7 +133,7 @@
                             <div class="col-xs-12">
                                 @if (Model.EventType == GRA.EventType.StreamingEvent)
                                 {
-                                    <badge asp-for="Viewed" class="col-form-label"></badge>
+                                    <label asp-for="Viewed" class="col-form-label"></label>
                                     <select asp-for="Viewed" class="form-control">
                                         <option value="@EventsController.VisitedNo">@SharedLocalizer[GRA.Annotations.Interface.No]</option>
                                         <option value="@EventsController.VisitedYes">@SharedLocalizer[GRA.Annotations.Interface.Yes]</option>
@@ -142,7 +142,7 @@
                                 }
                                 else
                                 {
-                                    <badge asp-for="Visited" class="col-form-label"></badge>
+                                    <label asp-for="Visited" class="col-form-label"></label>
                                     <select asp-for="Visited" class="form-control">
                                         <option value="@EventsController.VisitedNo">@SharedLocalizer[GRA.Annotations.Interface.No]</option>
                                         <option value="@EventsController.VisitedYes">@SharedLocalizer[GRA.Annotations.Interface.Yes]</option>
@@ -155,7 +155,7 @@
 
                     <div class="row row-spacing">
                         <div class="col-xs-12">
-                            <badge asp-for="Search" class="col-form-label"></badge>
+                            <label asp-for="Search" class="col-form-label"></label>
                             <div class="row row-spacing">
                                 <div class="col-sm-12 gra-search-container">
                                     <input asp-for="Search"
@@ -322,7 +322,7 @@
                                                             <noscript>
                                                                 <input asp-for="@Model.Events[i].Id" type="hidden" />
                                                                 <input asp-for="@Model.Events[i].IsFavorited" class="favorite-checkbox" />
-                                                                <badge for="@($"Events_{i}__IsFavorited")"></badge>
+                                                                <label for="@($"Events_{i}__IsFavorited")"></label>
                                                             </noscript>
                                                         </td>
                                                     }

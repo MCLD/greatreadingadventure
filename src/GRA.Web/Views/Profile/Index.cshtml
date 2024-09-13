@@ -85,7 +85,7 @@
                             {
                                 <div class="row row-spacing">
                                     <div class="col-xs-12">
-                                        <badge asp-for="User.Username" class="col-form-label"></badge>
+                                        <label asp-for="User.Username" class="col-form-label"></label>
                                         <span class="fas fa-info-circle"
                                               data-toggle="tooltip"
                                               title="@SharedLocalizer[GRA.Annotations.Interface.NeedToChange, SharedLocalizer[DisplayNames.Username]]"></span>
@@ -96,7 +96,7 @@
 
                             <div class="row row-spacing">
                                 <div class="col-xs-12">
-                                    <badge asp-for="User.FirstName" class="col-form-label"></badge>
+                                    <label asp-for="User.FirstName" class="col-form-label"></label>
                                     <input asp-for="User.FirstName" class="form-control" />
                                     <span asp-validation-for="User.FirstName" class="text-danger"></span>
                                 </div>
@@ -104,7 +104,7 @@
 
                             <div class="row row-spacing">
                                 <div class="col-xs-12">
-                                    <badge asp-for="User.LastName" class="col-form-label"></badge>
+                                    <label asp-for="User.LastName" class="col-form-label"></label>
                                     <input asp-for="User.LastName" class="form-control" />
                                     <span asp-validation-for="User.LastName" class="text-danger"></span>
                                 </div>
@@ -114,7 +114,7 @@
                             {
                                 <div class="row row-spacing">
                                     <div class="col-xs-12">
-                                        <badge asp-for="User.PostalCode" class="col-form-label"></badge>
+                                        <label asp-for="User.PostalCode" class="col-form-label"></label>
                                         <input asp-for="User.PostalCode" class="form-control" />
                                         <span asp-validation-for="User.PostalCode" class="text-danger"></span>
                                     </div>
@@ -123,7 +123,7 @@
 
                             <div class="row row-spacing">
                                 <div class="col-xs-12">
-                                    <badge asp-for="User.Email" class="col-form-label"></badge>
+                                    <label asp-for="User.Email" class="col-form-label"></label>
                                     <input asp-for="User.Email" class="form-control" type="email" />
                                     <span asp-validation-for="User.Email" class="text-danger"></span>
                                 </div>
@@ -131,7 +131,7 @@
 
                             <div class="row row-spacing">
                                 <div class="col-xs-12">
-                                    <badge asp-for="User.PhoneNumber" class="col-form-label"></badge>
+                                    <label asp-for="User.PhoneNumber" class="col-form-label"></label>
                                     <input asp-for="User.PhoneNumber" class="form-control" type="tel" />
                                     <span asp-validation-for="User.PhoneNumber" class="text-danger"></span>
                                 </div>
@@ -146,7 +146,7 @@
                                 {
                                     <div class="row row-spacing">
                                         <div class="col-xs-12">
-                                            <badge asp-for="User.SystemId" class="col-form-label"></badge>
+                                            <label asp-for="User.SystemId" class="col-form-label"></label>
                                             <span class="fas fa-info-circle"
                                                   data-toggle="tooltip"
                                                   title="@SharedLocalizer[GRA.Annotations.Interface.NeedToChange, SharedLocalizer[DisplayNames.System]]"></span>
@@ -159,7 +159,7 @@
                                 {
                                     <div class="row row-spacing">
                                         <div class="col-xs-12">
-                                            <badge asp-for="User.BranchId" class="col-form-label"></badge>
+                                            <label asp-for="User.BranchId" class="col-form-label"></label>
                                             <span class="fas fa-info-circle"
                                                   data-toggle="tooltip"
                                                   title="@SharedLocalizer[GRA.Annotations.Interface.NeedToChange, SharedLocalizer[DisplayNames.Branch]]"></span>
@@ -175,7 +175,7 @@
                                 {
                                     <div class="row row-spacing">
                                         <div class="col-xs-12">
-                                            <badge asp-for="User.SystemId" class="col-form-label"></badge>
+                                            <label asp-for="User.SystemId" class="col-form-label"></label>
                                             <select asp-for="User.SystemId" asp-items="Model.SystemList" class="form-control"></select>
                                             <span asp-validation-for="User.SystemId" class="text-danger"></span>
                                         </div>
@@ -190,7 +190,7 @@
                                 {
                                     <div class="row row-spacing">
                                         <div class="col-xs-12">
-                                            <badge asp-for="User.BranchId" class="col-form-label"></badge>
+                                            <label asp-for="User.BranchId" class="col-form-label"></label>
                                             <select asp-for="User.BranchId" asp-items="Model.BranchList" class="form-control"></select>
                                             <span asp-validation-for="User.BranchId" class="text-danger"></span>
                                         </div>
@@ -206,7 +206,7 @@
                             {
                                 <div class="row row-spacing">
                                     <div class="col-xs-12">
-                                        <badge asp-for="User.ProgramId" class="col-form-label"></badge>
+                                        <label asp-for="User.ProgramId" class="col-form-label"></label>
                                         <select asp-for="User.ProgramId" asp-items="Model.ProgramList" class="form-control"></select>
                                         <span asp-validation-for="User.ProgramId" class="text-danger"></span>
                                     </div>
@@ -219,7 +219,7 @@
 
                             <div id="ageField" class="row row-spacing @(Model.ShowAge ? "" : "hide")">
                                 <div class="col-xs-12">
-                                    <badge asp-for="User.Age" class="col-form-label"></badge>
+                                    <label asp-for="User.Age" class="col-form-label"></label>
                                     <input asp-for="User.Age" class="form-control" type="text" />
                                     <span id="ageMessage" asp-validation-for="User.Age" class="text-danger"></span>
                                 </div>
@@ -233,7 +233,7 @@
                             {
                                 <div class="row row-spacing">
                                     <div class="col-xs-12">
-                                        <badge asp-for="User.IsEmailSubscribed" class="col-form-label">@SharedLocalizer[Model.AskEmailSubscriptionText]</badge>
+                                        <label asp-for="User.IsEmailSubscribed" class="col-form-label">@SharedLocalizer[Model.AskEmailSubscriptionText]</label>
                                         <select asp-for="User.IsEmailSubscribed" class="form-control">
                                             <option value="false">@SharedLocalizer[GRA.Annotations.Interface.No]</option>
                                             <option value="true">@SharedLocalizer[GRA.Annotations.Interface.Yes]</option>
@@ -247,7 +247,7 @@
                             {
                                 <div class="row row-spacing">
                                     <div class="col-xs-12">
-                                        <badge asp-for="User.DailyPersonalGoal" class="col-form-label"></badge>
+                                        <label asp-for="User.DailyPersonalGoal" class="col-form-label"></label>
                                         <div>
                                             I will @Model.TranslationDescriptionPastTense
                                             <input asp-for="User.DailyPersonalGoal" class="form-control" style="display:inline-block; width:75px;" />
@@ -294,8 +294,8 @@
                             <p>@Html.Raw(Model.User.EmailAwardInstructions)</p>
                             <div class="row row-spacing">
                                 <div class="col-xs-12">
-                                    <badge asp-for="EmailAwardModel.Email"
-                                           class="col-form-label"></badge>
+                                    <label asp-for="EmailAwardModel.Email"
+                                           class="col-form-label"></label>
                                     <input asp-for="EmailAwardModel.Email"
                                            class="form-control"
                                            value="@Model.User.Email" />

@@ -47,7 +47,7 @@
 
     <div class="row" style="padding: 10px 0;">
         <div class="col-xs-12">
-            <badge asp-for="Bundle.Name" class="col-form-label"></badge>
+            <label asp-for="Bundle.Name" class="col-form-label"></label>
             <input asp-for="Bundle.Name" class="form-control" disabled="@(Model.Bundle?.HasBeenAwarded == true ? "disabled" : null)" />
             <span asp-validation-for="Bundle.Name" class="text-danger"></span>
         </div>
@@ -55,7 +55,7 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <badge asp-for="Bundle.CanBeUnlocked" class="col-form-label">Bundle Type</badge>
+            <label asp-for="Bundle.CanBeUnlocked" class="col-form-label">Bundle Type</label>
             <select asp-for="Bundle.CanBeUnlocked" class="form-control" disabled="@(Model.Action == "Edit" ? "disabled" : null)">
                 <option value="True">Unlockable</option>
                 <option value="False">Default</option>
@@ -171,7 +171,7 @@
                             <div class="card-body">
                                 <div class="row row-spacing">
                                     <div class="col-xs-12">
-                                        <badge asp-for="Layers" class="col-form-label">Layer</badge>
+                                        <label asp-for="Layers" class="col-form-label">Layer</label>
                                         <select id="layerId"
                                                 asp-items="Model.Layers"
                                                 class="form-control">

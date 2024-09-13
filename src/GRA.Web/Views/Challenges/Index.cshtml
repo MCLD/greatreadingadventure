@@ -162,27 +162,27 @@
                                 <span style="font-size:large;">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Ordering]:</span>
                             </div>
                             <div class="col-xs-12 col-sm-10">
-                                <badge class="radio-inline">
+                                <label class="radio-inline">
                                     <input type="radio"
                                        name="Ordering"
                                        value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.MostPopular"
                                        @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.MostPopular)>
                                     @SharedLocalizer[GRA.Domain.Model.DisplayNames.MostPopular]
-                                </badge>
-                                <badge class="radio-inline">
+                                </label>
+                                <label class="radio-inline">
                                     <input type="radio"
                                        name="Ordering"
                                        value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Name"
                                        @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Name)>
                                     @SharedLocalizer[GRA.Domain.Model.DisplayNames.Name]
-                                </badge>
-                                <badge class="radio-inline">
+                                </label>
+                                <label class="radio-inline">
                                     <input type="radio"
                                        name="Ordering"
                                        value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Recent"
                                        @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Recent)>
                                     @SharedLocalizer[GRA.Domain.Model.DisplayNames.MostRecent]
-                                </badge>
+                                </label>
                             </div>
                         </div>
                         @if (Model.IsLoggedIn)
@@ -292,7 +292,7 @@
                                                             <noscript>
                                                                 <input asp-for="@Model.Challenges[i].Id" type="hidden" />
                                                                 <input asp-for="@Model.Challenges[i].IsFavorited" class="favorite-checkbox" />
-                                                                <badge for="@($"Challenges_{i}__IsFavorited")"></badge>
+                                                                <label for="@($"Challenges_{i}__IsFavorited")"></label>
                                                             </noscript>
                                                         </td>
                                                     }

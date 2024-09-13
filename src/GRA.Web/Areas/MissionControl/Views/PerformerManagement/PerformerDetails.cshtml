@@ -31,7 +31,7 @@
     <input asp-for="BranchAvailabilityString" type="hidden" />
 
     <div class="mb-3">
-        <badge asp-for="Performer.Name" class="col-sm-3 col-form-label required-field"></badge>
+        <label asp-for="Performer.Name" class="col-sm-3 col-form-label required-field"></label>
         <div class="col-sm-9">
             <input asp-for="Performer.Name" class="form-control" placeholder="" />
             <span asp-validation-for="Performer.Name" class="text-danger"></span>
@@ -48,10 +48,10 @@
     </div>
 
     <div class="mb-3">
-        <badge class="col-sm-3 col-form-label @(Model.Performer?.RegistrationCompleted != true ? "required-field": "")">Upload PDF</badge>
+        <label class="col-sm-3 col-form-label @(Model.Performer?.RegistrationCompleted != true ? "required-field": "")">Upload PDF</label>
         <div class="col-sm-9">
             <div class="input-group">
-                <badge class="input-group-append">
+                <label class="input-group-append">
                     <span class="btn btn-secondary btn-file" style="width:132px;text-align:left;">
                         <span class="far fa-file-image"></span> Select file...
                         <input type="file"
@@ -59,7 +59,7 @@
                                accept=".pdf"
                                style="display: none;" />
                     </span>
-                </badge>
+                </label>
                 <input type="text" class="form-control @(ViewData.ModelState.GetValidationState("References") == invalid ? "input-validation-error" : "")" readonly />
             </div>
             <span asp-validation-for="References" class="text-danger"></span>
@@ -67,7 +67,7 @@
     </div>
 
     <div class="mb-3">
-        <badge asp-for="Performer.BillingAddress" class="col-sm-3 col-form-label required-field"></badge>
+        <label asp-for="Performer.BillingAddress" class="col-sm-3 col-form-label required-field"></label>
         <div class="col-sm-9">
             <textarea asp-for="Performer.BillingAddress" class="form-control"></textarea>
             <span asp-validation-for="Performer.BillingAddress" class="text-danger"></span>
@@ -76,7 +76,7 @@
 
 
     <div class="mb-3">
-        <badge asp-for="Performer.Website" class="col-sm-3 col-form-label"></badge>
+        <label asp-for="Performer.Website" class="col-sm-3 col-form-label"></label>
         <div class="col-sm-9">
             <input asp-for="Performer.Website" class="form-control" placeholder="" />
             <span asp-validation-for="Performer.Website" class="text-danger"></span>
@@ -84,7 +84,7 @@
     </div>
 
     <div class="mb-3">
-        <badge asp-for="Performer.PhonePreferred" class="col-sm-3 col-form-label required-field"></badge>
+        <label asp-for="Performer.PhonePreferred" class="col-sm-3 col-form-label required-field"></label>
         <div class="col-sm-9">
             <select asp-for="Performer.PhonePreferred" class="form-control">
                 <option value="false">Email</option>
@@ -95,7 +95,7 @@
     </div>
 
     <div class="mb-3">
-        <badge asp-for="Performer.Email" class="col-sm-3 col-form-label">Email</badge>
+        <label asp-for="Performer.Email" class="col-sm-3 col-form-label">Email</label>
         <div class="col-sm-9">
             <input asp-for="Performer.Email" class="form-control" />
             <span asp-validation-for="Performer.Email" class="text-danger"></span>
@@ -103,7 +103,7 @@
     </div>
 
     <div class="mb-3">
-        <badge asp-for="Performer.Phone" class="col-sm-3 col-form-label required-field"></badge>
+        <label asp-for="Performer.Phone" class="col-sm-3 col-form-label required-field"></label>
         <div class="col-sm-9">
             <input asp-for="Performer.Phone" class="form-control" placeholder="" />
             <span asp-validation-for="Performer.Phone" class="text-danger"></span>
@@ -111,7 +111,7 @@
     </div>
 
     <div class="mb-3">
-        <badge asp-for="Performer.VendorId" class="col-sm-3 col-form-label required-field">@Model.VendorIdPrompt<span class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Example number: @Model.VendorCodeFormat"></span></badge>
+        <label asp-for="Performer.VendorId" class="col-sm-3 col-form-label required-field">@Model.VendorIdPrompt<span class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Example number: @Model.VendorCodeFormat"></span></label>
         <div class="col-sm-9">
             <input asp-for="Performer.VendorId" class="form-control" placeholder="" />
             <span asp-validation-for="Performer.VendorId" class="text-danger"></span>
@@ -119,7 +119,7 @@
     </div>
 
     <div class="mb-3">
-        <badge asp-for="Performer.HasFingerprintCard" class="col-sm-3 col-form-label required-field"></badge>
+        <label asp-for="Performer.HasFingerprintCard" class="col-sm-3 col-form-label required-field"></label>
         <div class="col-sm-9">
             <select asp-for="Performer.HasFingerprintCard" class="form-control">
                 <option value="false">No</option>
@@ -132,7 +132,7 @@
     @if (Model.EnablePerformerInsuranceQuestion)
     {
         <div class="mb-3">
-            <badge asp-for="Performer.HasInsurance" class="col-sm-3 col-form-label required-field"></badge>
+            <label asp-for="Performer.HasInsurance" class="col-sm-3 col-form-label required-field"></label>
             <div class="col-sm-9">
                 <select asp-for="Performer.HasInsurance" class="form-control">
                     <option value="false">No</option>
@@ -203,12 +203,12 @@
                                        class="branchSelector"
                                        data-id="@branch.Id" type="checkbox"
                                        asp-checked="@(Model.BranchAvailability?.Contains(branch.Id) == true)" />
-                                <badge for="@($"branch{branch.Id}")"
+                                <label for="@($"branch{branch.Id}")"
                                        data-toggle="tooltip"
                                        data-placement="top"
                                        title="@branch.Address">
                                     @branch.Name
-                                </badge>
+                                </label>
                                 <a aria-label="Map (Opens new window)"
                                    href="https://www.google.com/maps/search/@branch.Address"
                                    target="_blank">

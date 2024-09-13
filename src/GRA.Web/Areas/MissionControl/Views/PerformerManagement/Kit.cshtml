@@ -59,15 +59,15 @@
     </div>
     <div class="col-xs-12 col-sm-7 col-md-8">
         <div class="mb-3">
-            <badge>Name</badge>
+            <label>Name</label>
             <div>@Model.Kit.Name</div>
         </div>
         <div class="mb-3">
-            <badge>Description</badge>
+            <label>Description</label>
             <div>@Model.Kit.Description</div>
         </div>
         <div class="mb-3">
-            <badge>Website</badge>
+            <label>Website</label>
             @if (string.IsNullOrWhiteSpace(Model.Kit.Website))
             {
                 <div>n/a</div>
@@ -87,7 +87,7 @@
             }
         </div>
         <div class="mb-3">
-            <badge>Ages</badge>
+            <label>Ages</label>
             <div>
                 <ul>
                     @foreach (var ageGroup in Model.Kit.AgeGroups)
