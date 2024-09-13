@@ -1,6 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.Home.LandingPageViewModel
 @section metadata {
-<social data="Model.Social"></social>
+    <social data="@Model.Social"></social>
 }
 <div class="row gra-landing-banner">
     <div class="col-xs-12">
@@ -19,17 +19,17 @@
         <p>
             @SharedLocalizer[GRA.Annotations.Home.WelcomeTo, Model.SiteName]
             @SharedLocalizer[GRA.Annotations.Home.StartAdventure]
-            <div class="row" style="margin-top: 2em;">
-                <div class="col-sm-6" style="margin-top: 0.5em;">
+            <div class="row mt-sm-5">
+                <div class="col-sm-6 d-grid">
                     <a asp-controller="Join"
-                       asp-action="Index" class="btn btn-primary  btn-lg">
+                       asp-action="Index" class="btn btn-primary btn-lg mb-4">
                         <span class="fas fa-book"></span>
                         @SharedLocalizer[GRA.Domain.Model.DisplayNames.JoinNow]
                     </a>
                 </div>
-                <div class="col-sm-6" style="margin-top: 0.5em;">
+                <div class="col-sm-6 d-grid">
                     <a asp-controller="SignIn"
-                       asp-action="Index" class="btn btn-success  btn-lg">
+                       asp-action="Index" class="btn btn-success btn-lg mb-4">
                         <span class="fas fa-sign-in-alt"></span>
                         @SharedLocalizer[GRA.Domain.Model.DisplayNames.SignIn]
                     </a>
