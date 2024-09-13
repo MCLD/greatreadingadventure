@@ -30,7 +30,7 @@
             {
             <label asp-for="Broadcast.SendAt " class="col-form-label">Sent at</label>
             <div class="form-group date" id="pickerSend">
-                <input asp-for="Broadcast.SendAt" type="date" class="form-control" name="date" />
+                <input asp-for="Broadcast.SendAt" type="datetime-local" class="form-control" name="date" />
             </div>
             <span asp-validation-for="Broadcast.SendAt" class="text-danger"></span>
 
@@ -45,7 +45,7 @@
                     </td>
                     <td style="padding-bottom:10px;width:300px;">
                         <div class="form-group date" id="pickerSend">
-                                <input asp-for="Broadcast.SendAt" type="date" class="form-control" name="date" />
+                                <input asp-for="Broadcast.SendAt" type="datetime-local" class="form-control" name="date" />
                         </div>
                         <span asp-validation-for="Broadcast.SendAt" class="text-danger"></span>
                     </td>

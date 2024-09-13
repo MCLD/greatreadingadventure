@@ -20,7 +20,7 @@
         <div class="col-xs-12">
             <label asp-for="DashboardContent.StartTime" class="col-form-label"></label>
             <div class="form-group date" id="pickerStart">
-                <input asp-for="DashboardContent.StartTime" type="date" class="form-control" name="date"/>
+                <input asp-for="DashboardContent.StartTime" type="datetime-local" class="form-control" name="date"/>
             </div>
             <span asp-validation-for="DashboardContent.StartTime" class="text-danger"></span>
         </div>
