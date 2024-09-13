@@ -77,8 +77,8 @@
                 <label asp-for="FeaturedGroupText.AltText" class="col-form-label"></label>
                 <span class="fas fa-info-circle wide-tooltip"
                       title="How should this image be described to someone who can't see it?"
-                      data-toggle="tooltip"
-                      data-placement="top"></span>
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"></span>
                 <textarea asp-for="FeaturedGroupText.AltText" class="form-control"></textarea>
                 <span asp-validation-for="FeaturedGroupText.AltText" class="text-danger"></span>
             </div>
@@ -101,7 +101,7 @@
                         {
                             <strong>Filename:</strong> @Model.FeaturedGroupText.Filename<br />
                         }
-                        <a class="btn btn-warning" data-toggle="modal" data-target="#modalReplaceImage">
+                        <a class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalReplaceImage">
                             <span class="fas fa-file-upload"></span>
                             Replace Image
                         </a>

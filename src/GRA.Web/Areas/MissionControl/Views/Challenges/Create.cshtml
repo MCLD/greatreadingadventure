@@ -114,11 +114,11 @@
                 @if (Model.UseBadgeMaker)
                 {
                     <li role="presentation" class=@(Model.UseBadgeMaker ? "active" : "")>
-                        <a id="badgeTab" href="#badge" aria-controls="badge" role="tab" data-toggle="tab">Badge Maker</a>
+                        <a id="badgeTab" href="#badge" aria-controls="badge" role="tab" data-bs-toggle="tab">Badge Maker</a>
                     </li>
                 }
                 <li role="presentation" class=@(Model.UseBadgeMaker ? "" : "active")>
-                    <a id="uploadTab" href="#upload" aria-controls="upload" role="tab" data-toggle="tab">Upload an Image</a>
+                    <a id="uploadTab" href="#upload" aria-controls="upload" role="tab" data-bs-toggle="tab">Upload an Image</a>
                 </li>
             </ul>
 
@@ -152,8 +152,8 @@
             <label asp-for="BadgeAltText" class="col-form-label"></label>
             <span class="fas fa-info-circle wide-tooltip"
                   title="How should this badge be described to someone who can't see it?"
-                  data-toggle="tooltip"
-                  data-placement="top"></span>
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"></span>
             <textarea asp-for="BadgeAltText" class="form-control"></textarea>
             <span asp-validation-for="BadgeAltText" class="text-danger"></span>
         </div>

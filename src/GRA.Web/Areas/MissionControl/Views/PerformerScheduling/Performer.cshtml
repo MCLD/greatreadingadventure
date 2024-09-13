@@ -119,7 +119,7 @@
                 <strong>@(Model.Performer.AllBranches || Model.BranchAvailability.Count == Model.System.Branches.Count ? "all" : $"{Model.BranchAvailability.Count} of {Model.System.Branches.Count}")</strong>
                 libraries in your system.
             </div>
-            <button type="button" class="btn btn-secondary" style="margin-top:10px;" data-toggle="modal" data-target="#branchModal">View Locations</button>
+            <button type="button" class="btn btn-secondary" style="margin-top:10px;" data-bs-toggle="modal" data-bs-target="#branchModal">View Locations</button>
         </div>
     </div>
 
@@ -264,8 +264,8 @@
                     {
                         <div>
                             <span class="colored-icon fas fa-lg @(Model.Performer.AllBranches || Model.BranchAvailability.Contains(branch.Id) ? "fa-check" : "fa-times")"></span>
-                            <label data-toggle="tooltip"
-                               data-placement="top"
+                            <label data-bs-toggle="tooltip"
+                               data-bs-placement="top"
                                title="@branch.Address">
                                 @branch.Name
                             </label>

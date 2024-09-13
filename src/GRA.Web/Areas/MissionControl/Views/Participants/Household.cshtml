@@ -52,7 +52,7 @@
                     else
                     {
                         <a asp-action="AddHouseholdMember" asp-route-id="@Model.Id" class="btn btn-secondary">Register new @(Model.IsGroup ? "Group" : "Family") Member</a>
-                        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#listModal">Add Existing Participant to @(Model.IsGroup ? "Group" : "Family")</button>
+                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#listModal">Add Existing Participant to @(Model.IsGroup ? "Group" : "Family")</button>
                         @if (Model.CanImportNewMembers)
                         {
                             <a asp-action="@nameof(ParticipantsController.HouseholdImport)" asp-route-id="@(Model.HeadOfHouseholdId ?? Model.Id)" class="btn btn-secondary">Import new @(Model.IsGroup ? "Group" : "Family") Members</a>
@@ -65,7 +65,7 @@
                 }
                 @if (Model.CanViewPrizes && Model.HouseholdPrizeList.Count > 0 && Model.Users.Any())
                 {
-                    <button type="button" class="btn btn-success pull-right" data-toggle="modal" data-target="#prizeModal"><span class="fas fa-gift"></span> Prizes available</button>
+                    <button type="button" class="btn btn-success pull-right" data-bs-toggle="modal" data-bs-target="#prizeModal"><span class="fas fa-gift"></span> Prizes available</button>
                 }
             </div>
         }
@@ -179,8 +179,8 @@
                                         Book Code
                                         @if (Model.CanRedeemBulkVendorCodes)
                                         {
-                                            <button type="button" class="btn btn-info btn-sm pull-right" data-toggle="modal"
-                                                    data-target="#bulkRedeemModal">
+                                            <button type="button" class="btn btn-info btn-sm pull-right" data-bs-toggle="modal"
+                                                    data-bs-target="#bulkRedeemModal">
                                                 <span class="buttonText">Redeem all</span>
                                             </button>
                                         }
@@ -203,7 +203,7 @@
                                         }
                                         else
                                         {
-                                            <span class="pendingQuestionnaire fas fa-exclamation-circle text-warning" style="cursor:pointer" data-toggle="modal" data-target=".pendingModal"></span>
+                                            <span class="pendingQuestionnaire fas fa-exclamation-circle text-warning" style="cursor:pointer" data-bs-toggle="modal" data-bs-target=".pendingModal"></span>
                                         }
                                     </td>
                                 }
@@ -342,7 +342,7 @@
                                             }
                                             else
                                             {
-                                                <span class="pendingQuestionnaire fas fa-exclamation-circle text-warning" style="cursor:pointer" data-toggle="modal" data-target=".pendingModal"></span>
+                                                <span class="pendingQuestionnaire fas fa-exclamation-circle text-warning" style="cursor:pointer" data-bs-toggle="modal" data-bs-target=".pendingModal"></span>
                                             }
                                         </td>
                                     }
@@ -483,8 +483,8 @@
                                                 <button type="button"
                                                         class="btn btn-primary btn-sm"
                                                         style="width:22px;"
-                                                        data-toggle="modal"
-                                                        data-target="#promoteModal"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#promoteModal"
                                                         data-id="@user.Id"
                                                         data-name="@user.FullName"
                                                         title="Promote to @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group") manager">
@@ -494,8 +494,8 @@
                                                 <button type="button"
                                                         class="btn btn-danger btn-sm"
                                                         style="margin-left:16px;width:22px;"
-                                                        data-toggle="modal"
-                                                        data-target="#removeModal"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#removeModal"
                                                         data-id="@user.Id"
                                                         data-name="@user.FullName"
                                                         title="Remove from family/group">

@@ -159,7 +159,7 @@
         <div class="mb-3">
             <label>Branches</label>
             <div>@(Model.Performer.AllBranches ? Model.Systems.SelectMany(_ => _.Branches).Count() : Model.Performer.Branches.Count) of @Model.Systems.SelectMany(_ => _.Branches).Count() Selected</div>
-            <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#branchModal">View Selected Libraries</button>
+            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#branchModal">View Selected Libraries</button>
         </div>
     </div>
 
@@ -208,8 +208,8 @@
                                 <td class="on-top">
                                     <button type="button"
                                             class="btn btn-danger btn-sm"
-                                            data-toggle="modal"
-                                            data-target="#deleteModal"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal"
                                             data-id="@program.Id"
                                             data-name="@program.Title">
                                         <span class="fas fa-times" aria-hidden="true"></span>
@@ -326,8 +326,8 @@
                         {
                             <div>
                                 <span class="colored-icon fas fa-lg @(Model.BranchAvailability.Contains(branch.Id) || Model.Performer.AllBranches ? "fa-check" : "fa-times")"></span>
-                                <label data-toggle="tooltip"
-                                       data-placement="top"
+                                <label data-bs-toggle="tooltip"
+                                       data-bs-placement="top"
                                        title="@branch.Address">
                                     @branch.Name
                                 </label>

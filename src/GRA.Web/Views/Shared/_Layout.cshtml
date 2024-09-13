@@ -110,11 +110,11 @@
                     }
                     @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.ShowMissionControl))
                     {
-                        <li class="nav-item"><a asp-area="MissionControl" asp-controller="Home" asp-action="Index" title="Mission Control" data-toggle="tooltip" data-placement="bottom" class="nav-link gra-mclink"><span class="fas fa-rocket fa-fw"></span><span class="d-md-none"> @SharedLocalizer[GRA.Domain.Model.DisplayNames.MissionControl]</span></a></li>
+                        <li class="nav-item"><a asp-area="MissionControl" asp-controller="Home" asp-action="Index" title="Mission Control" data-bs-toggle="tooltip" data-bs-placement="bottom" class="nav-link gra-mclink"><span class="fas fa-rocket fa-fw"></span><span class="d-md-none"> @SharedLocalizer[GRA.Domain.Model.DisplayNames.MissionControl]</span></a></li>
                     }
                     @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.ShowPerformerRegistration) && !Context.Items.ContainsKey(GRA.Controllers.ItemKey.ShowMissionControl))
                     {
-                        <li class="nav-item"><a asp-area="PerformerRegistration" asp-controller="Home" asp-action="Index" title="Performer Registration" data-toggle="tooltip" data-placement="bottom" class="nav-link"><span class="fas fa-theater-masks fa-fw"></span><span class="d-md-none"> @SharedLocalizer[GRA.Domain.Model.DisplayNames.MissionControl]</span></a></li>
+                        <li class="nav-item"><a asp-area="PerformerRegistration" asp-controller="Home" asp-action="Index" title="Performer Registration" data-bs-toggle="tooltip" data-bs-placement="bottom" class="nav-link"><span class="fas fa-theater-masks fa-fw"></span><span class="d-md-none"> @SharedLocalizer[GRA.Domain.Model.DisplayNames.MissionControl]</span></a></li>
                     }
                     @if (!String.Equals(this.ViewContext.RouteData.Values["controller"].ToString(), "Questionnaire", StringComparison.OrdinalIgnoreCase))
                     {

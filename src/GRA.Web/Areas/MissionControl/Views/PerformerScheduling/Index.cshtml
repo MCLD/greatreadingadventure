@@ -127,8 +127,8 @@
                                         <span class="fa-stack cursor-pointer"
                                               style="color: @selection.AgeGroup.IconColor"
                                               title="@selection.Summary"
-                                              data-toggle="modal"
-                                              data-target="#selectionDetailsModal"
+                                              data-bs-toggle="modal"
+                                              data-bs-target="#selectionDetailsModal"
                                               data-performerid="@selection.Program?.PerformerId"
                                               data-performername="@selection.Program?.PerformerName"
                                               data-selectionid="@selection.Program?.Id"
@@ -400,7 +400,7 @@
         })
 
         $('#selectionDetailsModal').on('show.bs.modal', function (e) {
-            var dataElement = $(e.relatedTarget).closest('[data-target]');
+            var dataElement = $(e.relatedTarget).closest('[data-bs-target]');
             branchSelectionId = dataElement.data('branchselectionid');
             $('#selectionDetailsLabel').html(dataElement.data('selectionname') + ' @@ ' + dataElement.data('branchname'));
             $('#selectionname').text(dataElement.data('selectionname'));

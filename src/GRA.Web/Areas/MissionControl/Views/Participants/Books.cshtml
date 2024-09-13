@@ -43,20 +43,20 @@
                                 <td class="gra-mc-icon">
                                     <button type="button"
                                             class="btn btn-primary btn-sm"
-                                            data-toggle="modal"
-                                            data-target="#editModal"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editModal"
                                             data-id="@book.Id"
-                                            data-title="@book.Title"
+                                            data-bs-title="@book.Title"
                                             data-author="@book.Author">
                                         <span class="fas fa-pencil-alt" aria-hidden="true"></span>
                                     </button>
                                     <button type="button"
                                             class="btn btn-danger btn-sm"
                                             style="margin-left:16px;"
-                                            data-toggle="modal"
-                                            data-target="#deleteModal"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal"
                                             data-id="@book.Id"
-                                            data-title="@book.Title">
+                                            data-bs-title="@book.Title">
                                         <span class="fas fa-times" aria-hidden="true"></span>
                                     </button>
                                 </td>
@@ -77,7 +77,7 @@
     <a asp-action="Index" class="btn btn-secondary">Return to Participants</a>
     @if (!Model.HasPendingQuestionnaire)
     {
-        <button type="button" data-toggle="modal" data-target="#addModal" class="btn btn-primary">Add Book</button>
+        <button type="button" data-bs-toggle="modal" data-bs-target="#addModal" class="btn btn-primary">Add Book</button>
     }
 </div>
 

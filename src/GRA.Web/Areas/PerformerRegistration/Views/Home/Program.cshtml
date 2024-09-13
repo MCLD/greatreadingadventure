@@ -140,7 +140,7 @@ else
             <div class="visible-xs" style="padding-bottom:10px;"></div>
             <label class="col-sm-2 col-form-label required-field">
                 Set-up Time
-                <span class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="How much time needed before program begins."></span>
+                <span class="far fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="How much time needed before program begins."></span>
             </label>
             <div class="col-sm-2">
                 <input asp-for="Program.SetupTimeMinutes" class="form-control form-control-lg" type="text" placeholder="" />
@@ -151,7 +151,7 @@ else
         <div class="mb-3">
             <label class="col-sm-offset-3 col-sm-2 col-form-label col-form-label required-field">
                 Breakdown Time
-                <span class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="How much time needed after program ends."></span>
+                <span class="far fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="How much time needed after program ends."></span>
             </label>
             <div class="col-sm-2">
                 <input asp-for="Program.BreakdownTimeMinutes" class="form-control form-control-lg" type="text" placeholder="" />
@@ -160,7 +160,7 @@ else
             <div class="visible-xs" style="padding-bottom:10px;"></div>
             <label class="col-sm-2 col-form-label required-field">
                 Time between back-to-back programs
-                <span class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="If you are requested to do this program twice in a row, how much time do you require between them?"></span>
+                <span class="far fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="If you are requested to do this program twice in a row, how much time do you require between them?"></span>
             </label>
             <div class="col-sm-2">
                 <select asp-for="Program.BackToBackMinutes" asp-items="Model.BackToBackSelection" class="form-control" type="text"></select>
@@ -171,7 +171,7 @@ else
         <div class="mb-3">
             <label class="col-sm-3 col-form-label required-field">
                 Program description
-                <span class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Limited to 375 characters. Spaces are counted as characters."></span>
+                <span class="far fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Limited to 375 characters. Spaces are counted as characters."></span>
             </label>
             <div class="col-sm-9">
                 <textarea asp-for="Program.Description" class="form-control" maxlength="375" rows="4"></textarea>
@@ -185,7 +185,7 @@ else
         <div class="mb-3">
             <label class="col-sm-3 col-form-label required-field">
                 Inclusive cost
-                <span class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Includes mileage, supplies, etc."></span>
+                <span class="far fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Includes mileage, supplies, etc."></span>
             </label>
 
             <div class="col-sm-9">

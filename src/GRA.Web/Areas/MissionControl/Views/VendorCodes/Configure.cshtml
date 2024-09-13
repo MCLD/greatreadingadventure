@@ -59,8 +59,8 @@
                     @foreach (var item in Model.Languages)
                     {
                         <a class="btn @Model.LanguageMessageClass(Model.VendorCodeType.MessageTemplateId, item.Value)"
-                           data-toggle="modal"
-                           data-target="#messageModal"
+                           data-bs-toggle="modal"
+                           data-bs-target="#messageModal"
                            data-item="MessageTemplateId"
                            data-languageid="@item.Value">@item.Key</a>
                     }
@@ -129,8 +129,8 @@
                     @foreach (var item in Model.Languages)
                     {
                         <a class="btn @Model.LanguageMessageClass(Model.VendorCodeType.OptionMessageTemplateId, item.Value)"
-                           data-toggle="modal"
-                           data-target="#messageModal"
+                           data-bs-toggle="modal"
+                           data-bs-target="#messageModal"
                            data-item="OptionMessageTemplateId"
                            data-languageid="@item.Value">@item.Key</a>
                     }
@@ -158,8 +158,8 @@
                         @foreach (var item in Model.Languages)
                         {
                             <a class="btn @Model.LanguageSegmentClass(Model.VendorCodeType.DonationSegmentId, item.Value)"
-                               data-toggle="modal"
-                               data-target="#segmentModal"
+                               data-bs-toggle="modal"
+                               data-bs-target="#segmentModal"
                                data-item="DonationSegmentId"
                                data-languageid="@item.Value">@item.Key</a>
                         }
@@ -174,8 +174,8 @@
                         @foreach (var item in Model.Languages)
                         {
                             <a class="btn @Model.LanguageMessageClass(Model.VendorCodeType.DonationMessageTemplateId, item.Value)"
-                               data-toggle="modal"
-                               data-target="#messageModal"
+                               data-bs-toggle="modal"
+                               data-bs-target="#messageModal"
                                data-item="DonationMessageTemplateId"
                                data-languageid="@item.Value">@item.Key</a>
                         }
@@ -202,8 +202,8 @@
                         @foreach (var item in Model.Languages)
                         {
                             <a class="btn @Model.LanguageSegmentClass(Model.VendorCodeType.EmailAwardSegmentId, item.Value)"
-                               data-toggle="modal"
-                               data-target="#segmentModal"
+                               data-bs-toggle="modal"
+                               data-bs-target="#segmentModal"
                                data-item="EmailAwardSegmentId"
                                data-languageid="@item.Value">@item.Key</a>
                         }
@@ -218,8 +218,8 @@
                         @foreach (var item in Model.Languages)
                         {
                             <a class="btn @Model.LanguageMessageClass(Model.VendorCodeType.EmailAwardMessageTemplateId, item.Value)"
-                               data-toggle="modal"
-                               data-target="#messageModal"
+                               data-bs-toggle="modal"
+                               data-bs-target="#messageModal"
                                data-item="EmailAwardMessageTemplateId"
                                data-languageid="@item.Value">@item.Key</a>
                         }
