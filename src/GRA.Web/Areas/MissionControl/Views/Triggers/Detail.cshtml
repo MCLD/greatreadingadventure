@@ -73,7 +73,7 @@
             <div class="card ">
                 <div class="card-header" role="tab" id="headingDependent">
                     <h4 class="card-title">
-                        <a role="button" data-toggle="collapse" data-parent="#accordionDependent" href="#collapseDependent" aria-expanded="false" aria-controls="collapseDependent">
+                        <a role="button" data-bs-toggle="collapse" data-parent="#accordionDependent" href="#collapseDependent" aria-expanded="false" aria-controls="collapseDependent">
                             Dependent Triggers
                         </a>
                     </h4>
@@ -101,7 +101,7 @@
             <div class="card ">
                 <div class="card-header" role="tab" id="headingRelated">
                     <h4 class="card-title">
-                        <a role="button" data-toggle="collapse" data-parent="#accordionRelated" href="#collapseRelated" aria-expanded="false" aria-controls="collapseRelated">
+                        <a role="button" data-bs-toggle="collapse" data-parent="#accordionRelated" href="#collapseRelated" aria-expanded="false" aria-controls="collapseRelated">
                             Related Events
                         </a>
                     </h4>
@@ -164,10 +164,10 @@
 
     <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" class=@(Model.IsSecretCode ? "active" : "")>
-            <a id="codeTab" href="#secretCode" aria-controls="secretCode" role="tab" data-toggle="tab">Secret Code</a>
+            <a id="codeTab" href="#secretCode" aria-controls="secretCode" role="tab" data-bs-toggle="tab">Secret Code</a>
         </li>
         <li role="presentation" class=@(Model.IsSecretCode ? "" : "active")>
-            <a id="requirementsTab" href="#requirements" aria-controls="requirements" role="tab" data-toggle="tab">Requirements</a>
+            <a id="requirementsTab" href="#requirements" aria-controls="requirements" role="tab" data-bs-toggle="tab">Requirements</a>
         </li>
     </ul>
 
@@ -428,11 +428,11 @@
                         @if (Model.UseBadgeMaker)
                         {
                         <li role="presentation" class=@(Model.UseBadgeMaker ? "active" : "")>
-                            <a id="badgeTab" href="#badge" aria-controls="badge" role="tab" data-toggle="tab">Badge Maker</a>
+                            <a id="badgeTab" href="#badge" aria-controls="badge" role="tab" data-bs-toggle="tab">Badge Maker</a>
                         </li>
                         }
                         <li role="presentation" class=@(Model.UseBadgeMaker ? "" : "active")>
-                            <a id="uploadTab" href="#upload" aria-controls="upload" role="tab" data-toggle="tab">Upload an Image</a>
+                            <a id="uploadTab" href="#upload" aria-controls="upload" role="tab" data-bs-toggle="tab">Upload an Image</a>
                         </li>
                     </ul>
 
@@ -463,8 +463,8 @@
                             <label asp-for="BadgeAltText" class="col-form-label"></label>
                             <span class="fas fa-info-circle wide-tooltip"
                                   title="How should this badge be described to someone who can't see it?"
-                                  data-toggle="tooltip"
-                                  data-placement="top"></span>
+                                  data-bs-toggle="tooltip"
+                                  data-bs-placement="top"></span>
                             <textarea asp-for="BadgeAltText" class="form-control">@Model.BadgeAltText</textarea>
                             <span asp-validation-for="BadgeAltText" class="text-danger"></span>
                         </div>
@@ -524,7 +524,7 @@
         <div class="card card-info">
             <div class="card-header" role="tab" id="headingPrize">
                 <h4 class="card-title">
-                    <a role="button" data-toggle="collapse" data-parent="#accordionPrize" href="#collapsePrize" aria-expanded="true" aria-controls="collapsePrize">
+                    <a role="button" data-bs-toggle="collapse" data-parent="#accordionPrize" href="#collapsePrize" aria-expanded="true" aria-controls="collapsePrize">
                         <span id="prizeIcon" class="fas fa-lg @(Model.AwardsPrize ? "fa-caret-down" : "fa-caret-right")"></span>
                         Award Prize
                     </a>
@@ -564,7 +564,7 @@
                     <h4 class="card-title">
                         @if (Model.EditMail)
                         {
-                            <a role="button" data-toggle="collapse" data-parent="#accordionMail" href="#collapseMail" aria-expanded="true" aria-controls="collapseMail">
+                            <a role="button" data-bs-toggle="collapse" data-parent="#accordionMail" href="#collapseMail" aria-expanded="true" aria-controls="collapseMail">
                                 <span id="mailIcon" class="fas fa-lg @(Model.AwardsMail ? "fa-caret-down" : "fa-caret-right")"></span>
                                 Award Mail
                             </a>
@@ -606,7 +606,7 @@
             <div class="card card-info">
                 <div class="card-header" role="tab" id="headingAttachment">
                     <h4 class="card-title">
-                        <a role="button" data-toggle="collapse" data-parent="#accordionAttachment" href="#collapseAttachment" aria-expanded="true" aria-controls="collapseAttachment">
+                        <a role="button" data-bs-toggle="collapse" data-parent="#accordionAttachment" href="#collapseAttachment" aria-expanded="true" aria-controls="collapseAttachment">
                             <span id="attachmentIcon" class="fas fa-lg @(Model.AwardsAttachment ? "fa-caret-down" : "fa-caret-right")"></span>
                             Award Attachment
                         </a>
@@ -727,7 +727,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        
                     </button>
                     <h1 class="modal-title h4" id="deleteModalLabel">
                         Warning: Award points exceed maximum

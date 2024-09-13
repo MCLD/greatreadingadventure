@@ -111,7 +111,7 @@
     </div>
 
     <div class="mb-3">
-        <label asp-for="Performer.VendorId" class="col-sm-3 col-form-label required-field">@Model.VendorIdPrompt<span class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Example number: @Model.VendorCodeFormat"></span></label>
+        <label asp-for="Performer.VendorId" class="col-sm-3 col-form-label required-field">@Model.VendorIdPrompt<span class="far fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Example number: @Model.VendorCodeFormat"></span></label>
         <div class="col-sm-9">
             <input asp-for="Performer.VendorId" class="form-control" placeholder="" />
             <span asp-validation-for="Performer.VendorId" class="text-danger"></span>
@@ -149,7 +149,7 @@
                 Which locations are they willing to perform at:
                 <strong><span id="branchCount">@(Model.BranchAvailability?.Count ?? 0)</span> of @Model.BranchCount Selected</strong>
             </p>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#branchModal">Select Libraries</button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#branchModal">Select Libraries</button>
             <span id="branchValidator" asp-validation-for="BranchAvailability" class="field-validation-error text-danger">Please select the libraries where they are willing to perform.</span>
         </div>
     </div>
@@ -181,7 +181,7 @@
                             class="btn-close"
                             data-bs-dismiss="modal"
                             aria-label="Close dialog">
-                        <span aria-hidden="true">&times;</span>
+                        
                     </button>
                     <h1 class="modal-title h4" id="branchModalLabel">Branch Selection</h1>
                 </div>
@@ -204,8 +204,8 @@
                                        data-id="@branch.Id" type="checkbox"
                                        asp-checked="@(Model.BranchAvailability?.Contains(branch.Id) == true)" />
                                 <label for="@($"branch{branch.Id}")"
-                                       data-toggle="tooltip"
-                                       data-placement="top"
+                                       data-bs-toggle="tooltip"
+                                       data-bs-placement="top"
                                        title="@branch.Address">
                                     @branch.Name
                                 </label>

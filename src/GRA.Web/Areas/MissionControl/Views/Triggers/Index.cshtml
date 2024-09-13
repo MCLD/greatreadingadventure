@@ -123,8 +123,8 @@
                                 <td class="on-top gra-mc-icon">
                                     <button type="button"
                                             class="btn btn-danger btn-sm"
-                                            data-toggle="modal"
-                                            data-target="#deleteModal"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal"
                                             data-id="@trigger.Id"
                                             data-name="@trigger.Name"
                                             data-hasDependents="@trigger.HasDependents"
@@ -155,13 +155,14 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
+                    <h1 class="modal-title h4" id="deleteModalLabel">Delete trigger</h1>
                     <button type="button"
                             class="btn-close"
                             data-bs-dismiss="modal"
                             aria-label="Close dialog">
-                        <span aria-hidden="true">&times;</span>
+                        
                     </button>
-                    <h1 class="modal-title h4" id="deleteModalLabel">Delete trigger</h1>
+                   
                 </div>
                 <div class="modal-body">
                     <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>

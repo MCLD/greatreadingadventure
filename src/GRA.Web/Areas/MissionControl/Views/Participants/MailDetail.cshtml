@@ -43,7 +43,7 @@
     <a asp-action="Mail" asp-route-id="@Model.Id" class="btn btn-secondary">Return to Mail List</a>
     @if (Model.CanRemoveMail)
     {
-        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
             Delete Mail
         </button>
     }
@@ -64,7 +64,7 @@
                                 class="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="Close dialog">
-                            <span aria-hidden="true">&times;</span>
+                            
                         </button>
                         <h1 class="modal-title h4" id="deleteModalLabel">Delete mail</h1>
                     </div>

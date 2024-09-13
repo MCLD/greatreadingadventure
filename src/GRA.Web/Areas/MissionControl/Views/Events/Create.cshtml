@@ -108,7 +108,7 @@
                 @if (Model.CanManageLocations)
                 {
                     <button type="button" class="btn btn-primary btn-sm" style="margin-left:8px;"
-                            data-toggle="modal" data-target="#addModal">
+                            data-bs-toggle="modal" data-bs-target="#addModal">
                         <span class="fas fa-2x fa-plus"></span>
                     </button>
                 }
@@ -180,7 +180,7 @@
                         }
                         else
                         {
-                            <a role="button" data-toggle="collapse" data-parent="#accordionSecretCode" href="#collapseSecretCode" aria-expanded="true" aria-controls="collapseSecretCode">
+                            <a role="button" data-bs-toggle="collapse" data-parent="#accordionSecretCode" href="#collapseSecretCode" aria-expanded="true" aria-controls="collapseSecretCode">
                                 <span id="secretCodeIcon" class="fas fa-lg @(Model.IncludeSecretCode ? "fa-caret-down" : "fa-caret-right")"></span>
                                 Add Secret Code to this event
                             </a>
@@ -230,11 +230,11 @@
                                     @if (Model.UseBadgeMaker)
                                     {
                                         <li role="presentation" class=@(Model.UseBadgeMaker ? "active" : "")>
-                                            <a id="badgeTab" href="#badge" aria-controls="badge" role="tab" data-toggle="tab">Badge Maker</a>
+                                            <a id="badgeTab" href="#badge" aria-controls="badge" role="tab" data-bs-toggle="tab">Badge Maker</a>
                                         </li>
                                     }
                                     <li role="presentation" class=@(Model.UseBadgeMaker ? "" : "active")>
-                                        <a id="uploadTab" href="#upload" aria-controls="upload" role="tab" data-toggle="tab">Upload an Image</a>
+                                        <a id="uploadTab" href="#upload" aria-controls="upload" role="tab" data-bs-toggle="tab">Upload an Image</a>
                                     </li>
                                 </ul>
 
@@ -266,8 +266,8 @@
                                 <label asp-for="BadgeAltText" class="col-form-label"></label>
                                 <span class="fas fa-info-circle wide-tooltip"
                                       title="How should this badge be described to someone who can't see it?"
-                                      data-toggle="tooltip"
-                                      data-placement="top"></span>
+                                      data-bs-toggle="tooltip"
+                                      data-bs-placement="top"></span>
                                 <textarea asp-for="BadgeAltText" class="form-control"></textarea>
                                 <span asp-validation-for="BadgeAltText" class="text-danger"></span>
                             </div>
@@ -298,12 +298,11 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                     <h4 class="modal-title" id="deleteModalLabel">
                         Warning: Award points exceed maximum
                     </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
                 </div>
                 <div class="modal-body">
                     <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
@@ -358,7 +357,7 @@
                                            href="#challenge"
                                            aria-controls="challenge"
                                            role="tab"
-                                           data-toggle="tab">
+                                           data-bs-toggle="tab">
                                             Challenge
                                         </a>
                                     </li>
@@ -367,7 +366,7 @@
                                            href="#group"
                                            aria-controls="group"
                                            role="tab"
-                                           data-toggle="tab">
+                                           data-bs-toggle="tab">
                                             Challenge Group
                                         </a>
                                     </li>
@@ -525,7 +524,7 @@
                                     class="btn-close"
                                     data-bs-dismiss="modal"
                                     aria-label="Close dialog">
-                                <span aria-hidden="true">&times;</span>
+                                
                             </button>
                             <h1 class="modal-title h4" id="addModalLabel">Add location</h1>
                         </div>

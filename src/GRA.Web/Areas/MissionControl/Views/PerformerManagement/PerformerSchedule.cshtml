@@ -65,7 +65,7 @@
                                 @:<tr>
                                 }
                                 <td class="@(outOfRange || hideDate || blackoutDate != null ? "unselectable" : "selectable dateSelection")@(blackoutDate != null ? " blackout" : "")@(outOfRange ? " out-of-range" : "")" data-selector="Date" data-year="@calendarMonth.Year" data-month="@calendarMonth.Month" data-day="@((date + firstDayOfWeek - 1) % 7)" data-date="@date" asp-schedule="@scheduleDate">
-                                    <div class="option" data-toggle="tooltip" data-placement="top" title="@blackoutDate?.Reason">
+                                    <div class="option" data-bs-toggle="tooltip" data-bs-placement="top" title="@blackoutDate?.Reason">
                                         @Html.Raw(hideDate ? "&nbsp;" : date.ToString())
                                     </div>
                                 </td>

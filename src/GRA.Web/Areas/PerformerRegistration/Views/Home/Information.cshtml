@@ -189,7 +189,7 @@ else
             @Model.Settings.VendorIdPrompt
             @if (!string.IsNullOrWhiteSpace(Model.Settings.VendorCodeFormat))
             {
-                <span class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Example number: @Model.Settings.VendorCodeFormat"></span>
+                <span class="far fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Example number: @Model.Settings.VendorCodeFormat"></span>
             }
         </label>
         <div class="col-sm-9">
@@ -228,7 +228,7 @@ else
                 Please let us know at which locations you are willing to perform:
                 <strong><span id="branchCount">@(Model.BranchAvailability?.Count ?? 0)</span> of @Model.BranchCount Selected</strong>
             </p>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#branchModal">Select Libraries</button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#branchModal">Select Libraries</button>
             <span id="branchValidator" asp-validation-for="BranchAvailability" class="field-validation-error text-danger">Please select the libraries where you are willing to perform.</span>
         </div>
     </div>
@@ -271,7 +271,7 @@ else
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        
                     </button>
                     <h1 class="modal-title h4" id="branchModalLabel">Branch Selection</h1>
                 </div>
@@ -305,8 +305,8 @@ else
                                        type="checkbox"
                                        asp-checked="@(Model.BranchAvailability?.Contains(branch.Id) == true)" />
                                 <label for="@($"branch{branch.Id}")"
-                                       data-toggle="tooltip"
-                                       data-placement="top"
+                                       data-bs-toggle="tooltip"
+                                       data-bs-placement="top"
                                        title="@branch.Address">
                                     @branch.Name
                                 </label>

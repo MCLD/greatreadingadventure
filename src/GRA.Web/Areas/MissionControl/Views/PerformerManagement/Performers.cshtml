@@ -14,8 +14,8 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Email <span class="far fa-question-circle" title="Preferred method of contact is italicized." data-toggle="tooltip" data-placement="top"></span></th>
-                        <th>Phone <span class="far fa-question-circle" title="Preferred method of contact is italicized." data-toggle="tooltip" data-placement="top"></span></th>
+                        <th>Email <span class="far fa-question-circle" title="Preferred method of contact is italicized." data-bs-toggle="tooltip" data-bs-placement="top"></span></th>
+                        <th>Phone <span class="far fa-question-circle" title="Preferred method of contact is italicized." data-bs-toggle="tooltip" data-bs-placement="top"></span></th>
                         <th>@Model.VendorIdPrompt</th>
                         <th>Programs</th>
                         @if (Model.RegistrationClosed)
@@ -53,8 +53,8 @@
                                 <td class="on-top text-nowrap">
                                     <button type="button"
                                             class="btn btn-danger btn-sm"
-                                            data-toggle="modal"
-                                            data-target="#deleteModal"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal"
                                             data-id="@performer.Id"
                                             data-name="@performer.Name">
                                         <span class="fas fa-times" aria-hidden="true"></span>
@@ -78,8 +78,8 @@
                                            class="btn btn-info btn-sm">
                                             <span class="fas fa-file-alt"
                                                   title="Performer coversheet"
-                                                  data-toggle="tooltip"
-                                                  data-placement="top"></span>
+                                                  data-bs-toggle="tooltip"
+                                                  data-bs-placement="top"></span>
                                         </a>
                                     }
                                     else
@@ -116,7 +116,7 @@
                                 class="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="Close dialog">
-                            <span aria-hidden="true">&times;</span>
+                            
                         </button>
                         <h1 class="modal-title h4" id="deleteModalLabel">Delete performer</h1>
                     </div>

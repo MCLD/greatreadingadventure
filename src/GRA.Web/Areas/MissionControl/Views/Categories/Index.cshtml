@@ -15,8 +15,8 @@
 <div class="row" style="padding: 10px 0;">
     <div class="col-xs-12">
         <a class="btn btn-secondary"
-           data-toggle="modal"
-           data-target="#addModal">Add a Category</a>
+           data-bs-toggle="modal"
+           data-bs-target="#addModal">Add a Category</a>
     </div>
 </div>
 
@@ -54,8 +54,8 @@
                                 <td>
                                     <button type="button"
                                             class="btn btn-primary btn-sm"
-                                            data-toggle="modal"
-                                            data-target="#editModal"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editModal"
                                             data-id="@category.Id"
                                             data-name="@category.Name"
                                             data-description="@category.Description"
@@ -65,8 +65,8 @@
                                     <button type="button"
                                             class="btn btn-danger btn-sm"
                                             style="margin-left:16px;"
-                                            data-toggle="modal"
-                                            data-target="#deleteModal"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal"
                                             data-id="@category.Id"
                                             data-name="@category.Name">
                                         <span class="fas fa-2x fa-times" aria-hidden="true"></span>
@@ -105,7 +105,7 @@
                                 class="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="Close dialog">
-                            <span aria-hidden="true">&times;</span>
+                            
                         </button>
                         <h1 class="modal-title h4" id="addModalLabel">Add Category</h1>
                     </div>
@@ -167,7 +167,7 @@
                                 class="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="Close dialog">
-                            <span aria-hidden="true">&times;</span>
+                            
                         </button>
                         <h1 class="modal-title h4" id="editModalLabel">Edit Category</h1>
                     </div>
@@ -232,7 +232,7 @@
                                 class="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="Close dialog">
-                            <span aria-hidden="true">&times;</span>
+                            
                         </button>
                         <h1 class="modal-title h4" id="deleteModalLabel">Delete Category</h1>
                     </div>

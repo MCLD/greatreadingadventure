@@ -5,8 +5,8 @@
 <div class="row" style="padding: 10px 0;">
     <div class="col-xs-12">
         <a class="btn btn-secondary"
-           data-toggle="modal"
-           data-target="#addModal">Add an Age Group</a>
+           data-bs-toggle="modal"
+           data-bs-target="#addModal">Add an Age Group</a>
     </div>
 </div>
 
@@ -44,8 +44,8 @@
                                     <button type="button"
                                             class="btn btn-primary btn-sm"
                                             style="margin-left: 1rem"
-                                            data-toggle="modal"
-                                            data-target="#updateBackToBackModal"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#updateBackToBackModal"
                                             data-id="@AgeGroup.Id"
                                             data-name="@AgeGroup.Name"
                                             data-branchids="@string.Join(",", AgeGroup.BackToBackBranchIds)">
@@ -55,8 +55,8 @@
                                 <td>
                                     <button type="button"
                                             class="btn btn-danger btn-sm"
-                                            data-toggle="modal"
-                                            data-target="#deleteModal"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal"
                                             data-id="@AgeGroup.Id"
                                             data-name="@AgeGroup.Name">
                                         <span class="fas fa-2x fa-times" aria-hidden="true"></span>
@@ -94,7 +94,7 @@
                                 class="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="Close dialog">
-                            <span aria-hidden="true">&times;</span>
+                            
                         </button>
                         <h1 class="modal-title h4" id="addModalLabel">Add Age Group</h1>
                     </div>
@@ -153,7 +153,7 @@
                                 class="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="Close dialog">
-                            <span aria-hidden="true">&times;</span>
+                            
                         </button>
                         <h1 class="modal-title h4" id="updateBackToBackModalLabel">
                             Update Back to Back Branches
@@ -219,7 +219,7 @@
                                 class="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="Close dialog">
-                            <span aria-hidden="true">&times;</span>
+                            
                         </button>
                         <h1 class="modal-title h4" id="deleteModalLabel">Delete Age Group</h1>
                     </div>

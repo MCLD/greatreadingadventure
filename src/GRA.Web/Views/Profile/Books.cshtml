@@ -54,19 +54,19 @@
                                                 <td>
                                                     <button type="button"
                                                             class="btn btn-primary btn-sm"
-                                                            data-toggle="modal"
-                                                            data-target="#editModal"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#editModal"
                                                             data-id="@book.Id"
-                                                            data-title="@book.Title"
+                                                            data-bs-title="@book.Title"
                                                             data-author="@book.Author">
                                                         <span class="fas fa-2x fa-pencil-alt" aria-hidden="true"></span>
                                                     </button>
                                                     <button type="button"
                                                             class="btn btn-danger btn-sm pull-right"
-                                                            data-toggle="modal"
-                                                            data-target="#deleteModal"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#deleteModal"
                                                             data-id="@book.Id"
-                                                            data-title="@book.Title">
+                                                            data-bs-title="@book.Title">
                                                         <span class="fas fa-2x fa-times" aria-hidden="true"></span>
                                                     </button>
                                                 </td>
@@ -85,8 +85,8 @@
                             <a href="#"
                                id="addBook"
                                class="btn btn-secondary"
-                               data-toggle="modal"
-                               data-target="#addModal">
+                               data-bs-toggle="modal"
+                               data-bs-target="#addModal">
                                 @SharedLocalizer[GRA.Annotations.Interface.AddBook]
                             </a>
                         }
@@ -95,9 +95,9 @@
                             <a href="#"
                                id="addBook"
                                class="btn btn-secondary wide-tooltip"
-                               data-toggle="tooltip"
+                               data-bs-toggle="tooltip"
                                title="@SharedLocalizer[GRA.Annotations.Interface.AddBookNotYet]"
-                               data-placement="top"
+                               data-bs-placement="top"
                                disabled>
                                 @SharedLocalizer[GRA.Annotations.Interface.AddBook]
                             </a>
@@ -135,7 +135,7 @@
                                     class="btn-close"
                                     data-bs-dismiss="modal"
                                     aria-label="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]">
-                                <span aria-hidden="true">&times;</span>
+                                
                             </button>
                             <h1 class="modal-title h4"
                                 id="editModalLabel">
@@ -194,7 +194,7 @@
                                     class="btn-close"
                                     data-bs-dismiss="modal"
                                     aria-label="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]">
-                                <span aria-hidden="true">&times;</span>
+                                
                             </button>
                             <h1 class="modal-title h4"
                                 id="addModalLabel">
@@ -246,7 +246,7 @@
                                 class="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]">
-                            <span aria-hidden="true">&times;</span>
+                            
                         </button>
                         <h1 class="modal-title h4"
                             id="deleteModalLabel">

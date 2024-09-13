@@ -44,7 +44,7 @@
             </button>
             <div class="collapse navbar-collapse ms-auto" id="navbarContent">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a asp-area="" asp-controller="Home" asp-action="Index" class="nav-link" title="Back to the site" data-bs-toggle="tooltip" data-placement="bottom" class="gra-homelink"><span class="fas fa-sitemap fa-fw"></span><span class="d-md-none"> Back to the site</span></a></li>
+                    <li class="nav-item"><a asp-area="" asp-controller="Home" asp-action="Index" class="nav-link" title="Back to the site" data-bs-toggle="tooltip" data-bs-placement="bottom" class="gra-homelink"><span class="fas fa-sitemap fa-fw"></span><span class="d-md-none"> Back to the site</span></a></li>
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.ReadAllMail)))
                     {
                         var newMail = (int)Context.Items[GRA.Controllers.ItemKey.UnreadCount] > 0;
