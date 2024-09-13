@@ -309,7 +309,7 @@
 
         <div class="card-group" id="accordionSecretCode" role="tablist" aria-multiselectable="true">
             <div class="card @(Model.RequireSecretCode ? "card-warning" : "card-info")">
-                <div class="card-heading" role="tab" id="headingSecretCode">
+                <div class="card-header" role="tab" id="headingSecretCode">
                     <h4 class="card-title">
                         @if (Model.RequireSecretCode)
                         {
@@ -443,7 +443,7 @@
                 <div class="row">
                     <div class="col-xs-12 col-sm-10 col-sm-offset-1">
                         <div class="card ">
-                            <div class="card-heading">
+                            <div class="card-header">
                                 <h1 class="modal-title h4">
                                     <span class="relatedText">
                                         @(Model.Event?.Challenge != null || Model.Event?.ChallengeGroup != null ? "Change" : "Add")

@@ -156,7 +156,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
         @if (Model.SiteReadingGoal.HasValue && Model.SiteStage != SiteStage.BeforeRegistration && Model.SiteStage != SiteStage.RegistrationOpen)
         {
             <div class="card ">
-                <div class="card-heading"><strong>@SharedLocalizer[GRA.Annotations.Info.SiteGoalHeader]</strong></div>
+                <div class="card-header"><strong>@SharedLocalizer[GRA.Annotations.Info.SiteGoalHeader]</strong></div>
                 <div class="card-body text-center">
                     <p style="font-size: large;">@SharedHtmlLocalizer[Model.SiteStage == SiteStage.ProgramOpen ? GRA.Annotations.Info.MinutesReadSoFar : GRA.Annotations.Info.MinutesRead, Model.TotalSiteActivity.Value]</p>
                     <p>@SharedLocalizer[GRA.Annotations.Info.OurGoalInMinutes, @Model.SiteReadingGoal]</p>
@@ -306,7 +306,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
         @if (Model.SiteStage != GRA.Domain.Model.SiteStage.BeforeRegistration)
         {
             <div class="card ">
-                <div class="card-heading">
+                <div class="card-header">
                     <a asp-controller="Profile"
                        asp-action="Badges"
                        class="lead">@SharedLocalizer["Your badges"]</a>
@@ -397,7 +397,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
     {
         <div class="col-sm-3 text-center">
             <div class="card ">
-                <div class="card-heading">
+                <div class="card-header">
                     <a asp-controller="@EventsController.Name"
                        asp-action="@nameof(EventsController.StreamingEvents)"
                        class="lead">@SharedLocalizer[GRA.Annotations.Interface.StreamingEvents]</a>
@@ -458,7 +458,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
             <div class="card ">
                 @if (!string.IsNullOrEmpty(Model.Carousel.Heading))
                 {
-                    <div class="card-heading">
+                    <div class="card-header">
                         @Model.Carousel.Heading
                     </div>
                 }
