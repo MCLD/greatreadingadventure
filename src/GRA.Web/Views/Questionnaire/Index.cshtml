@@ -16,7 +16,7 @@
                     {
                         <input asp-for="@Model.Questions[i].Id" type="hidden" />
                         <span asp-validation-for="@Model.Questions[i]" class="text-danger"></span>
-                        <div class="card ">
+                        <div class="card">
                             <div class="card-header">
                                 <div class="question">@Html.Raw(Model.Questions[i].Text)</div>
                             </div>
