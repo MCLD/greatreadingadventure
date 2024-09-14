@@ -7,7 +7,7 @@
 <div class="performer-coversheet-container">
     <div class="row">
         <div class="col-xs-12 text-center text-muted">
-            <div class="text-danger hidden-print">
+            <div class="text-danger d-print-none">
                 <h4>
                     Please make sure to turn off printing web page header and footer in the print
                     settings before outputting to PDF
@@ -125,7 +125,7 @@
         </table>
     </div>
 
-    <div class="row hidden-print coversheet-row-spacing">
+    <div class="row d-print-none coversheet-row-spacing">
         <div class="text-center coversheet-row-spacing">
             <a class="link-unstyled" asp-controller="PerformerManagement" asp-action="Performers">
                 <button class="btn btn-secondary">Back to Performers</button>
@@ -142,8 +142,8 @@
 
 <script type="text/javascript">
     function hideHeaderFooter() {
-        document.querySelector(".mc-page-title").classList.add("hidden-print");
-        document.querySelector("footer").classList.add("hidden-print");
+        document.querySelector(".mc-page-title").classList.add("d-print-none");
+        document.querySelector("footer").classList.add("d-print-none");
         document.querySelector("#print-button").addEventListener("click", handlePrint);
     }
 

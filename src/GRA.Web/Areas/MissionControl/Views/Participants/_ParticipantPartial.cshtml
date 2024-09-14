@@ -2,7 +2,7 @@
 
 @if (Model.HasElevatedRole)
 {
-    <div class="row hidden-print" style="padding: 10px 0; margin-top: 1rem;">
+    <div class="row d-print-none" style="padding: 10px 0; margin-top: 1rem;">
         <div class="col-xs-12">
             <div class="alert alert-warning">
                 <strong>
@@ -13,7 +13,7 @@
         </div>
     </div>
 }
-<div class="row hidden-print">
+<div class="row d-print-none">
     <div class="col-xs-12" style="font-size: smaller;">
             <ul class="nav nav-pills" style="padding: 10px 0;">
                 <li ActiveBy routeKey="Action" value="Detail"><a asp-action="Detail" asp-route-id="@Model.Id">Details</a></li>

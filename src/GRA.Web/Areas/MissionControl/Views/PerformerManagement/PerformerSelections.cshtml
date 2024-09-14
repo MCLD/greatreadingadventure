@@ -11,7 +11,7 @@
     </style>
 }
 
-<div class="row hidden-print">
+<div class="row d-print-none">
     <div class="col-xs-12">
         <table style="margin:0 auto;">
             <tr>
@@ -75,7 +75,7 @@
                 var performerSchedule = Model.Performer.Schedule.Where(_ => _.Date.Date == date).FirstOrDefault();
                 var backToBack = branchSelectionDate.Any(_ => _.BackToBackProgram);
                 <strong style="font-size:large">@date.ToLongDateString()</strong>
-                <div class="hidden-print">
+                <div class="d-print-none">
                     @if (performerSchedule == null)
                     {
                         <div class="text-success" style="font-size:large">Available: @Model.DefaultPerformerScheduleStartTime.ToShortTimeString() &ndash; @Model.DefaultPerformerScheduleEndTime.ToShortTimeString()</div>
@@ -101,8 +101,8 @@
                             </th>
                             <th>Location</th>
                             <th width="400px">Secret Code</th>
-                            <th class="hidden-print" width="36px">&nbsp;</th>
-                            <th class="hidden-print" width="36px">&nbsp;</th>
+                            <th class="d-print-none" width="36px">&nbsp;</th>
+                            <th class="d-print-none" width="36px">&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -132,7 +132,7 @@
                                         <a aria-label="Map (Opens new window)"
                                            href="https://www.google.com/maps/search/@branchSelection.Branch.Address"
                                            target="_blank"
-                                           class="hidden-print">
+                                           class="d-print-none">
                                             <span class="far fa-map"></span>
                                         </a>
                                         <span class="visible-print">
@@ -158,18 +158,18 @@
                                                        value="@branchSelection.SecretCode"
                                                        autocomplete="off" />
                                             </td>
-                                            <td class="hidden-print" style="padding-left:3px; text-align:center; width:30px;">
+                                            <td class="d-print-none" style="padding-left:3px; text-align:center; width:30px;">
                                                 <span class="icon fas fa-lg colored-icon @(!string.IsNullOrWhiteSpace(branchSelection.SecretCode) ? "fa-check" : "hidden")"></span>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td colspan="2">
-                                                <div class="errorMessage text-danger hidden-print"></div>
+                                                <div class="errorMessage text-danger d-print-none"></div>
                                             </td>
                                         </tr>
                                     </table>
                                 </td>
-                                <td class="hidden-print" style="text-align:center;">
+                                <td class="d-print-none" style="text-align:center;">
                                     <button type="button"
                                             class="btn btn-sm btn-primary"
                                             data-bs-toggle="modal"
@@ -178,7 +178,7 @@
                                         <span class="fas fa-edit"></span>
                                     </button>
                                 </td>
-                                <td class="hidden-print" style="text-align:center;">
+                                <td class="d-print-none" style="text-align:center;">
                                     <button type="button"
                                             class="btn btn-sm btn-danger delete-selection"
                                             data-bs-toggle="modal"

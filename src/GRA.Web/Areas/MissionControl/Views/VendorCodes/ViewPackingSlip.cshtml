@@ -61,7 +61,7 @@
             }
             @if (Model.CanViewDetails)
             {
-                <tr class="hidden-print">
+                <tr class="d-print-none">
                     <th>Hold slips</th>
                     <td>
                         <a asp-action="@nameof(VendorCodesController.ViewHoldSlips)"
