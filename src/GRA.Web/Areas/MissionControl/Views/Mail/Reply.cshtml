@@ -8,7 +8,7 @@
     <input asp-for="ParticipantName" type="hidden" />
 
     <div class="row">
-        <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+        <div class="col-xs-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2">
             <div class="card">
                 <div class="card-header">
                     <span class="lead">
@@ -28,7 +28,7 @@
     </div>
 
     <div class="row row-spacing">
-        <div class="col-sm-8 col-sm-offset-2">
+        <div class="col-sm-8 offset-sm-2">
             <label asp-for="Subject" class="col-form-label"></label>
             <input asp-for="Subject" class="form-control" />
             <span asp-validation-for="Subject" class="text-danger"></span>
@@ -36,7 +36,7 @@
     </div>
 
     <div class="row row-spacing">
-        <div class="col-sm-8 col-sm-offset-2">
+        <div class="col-sm-8 offset-sm-2">
             <label asp-for="Body" class="col-form-label"></label>
             <textarea asp-for="Body" class="form-control"></textarea>
             <span asp-validation-for="Body" class="text-danger"></span>
@@ -44,7 +44,7 @@
     </div>
 
     <div class="row">
-        <div class="col-sm-8 col-sm-offset-2">
+        <div class="col-sm-8 offset-sm-2">
             <a asp-action="Index" class="btn btn-secondary">Return to Mail List</a>
             <a asp-action="Detail" asp-route-id="@Model.InReplyToId" class="btn btn-secondary">Return to Mail</a>
             <button type="submit" class="btn btn-primary">

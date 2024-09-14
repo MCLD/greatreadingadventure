@@ -38,7 +38,7 @@
     </div>
 
     <div class="row gra-js-required gra-carousel-container" aria-hidden="true">
-        <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+        <div class="col-xs-12 col-sm-10 offset-sm-1">
             <div class="accordion" id="accordionFeatured">
                 <div class="card">
                     <div class="card-header" id="headingOne">
@@ -85,7 +85,7 @@
 }
 
 <div class="row">
-    <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+    <div class="col-xs-12 col-sm-10 offset-sm-1">
         <div class="card">
             <div class="card-header">
                 <span class="lead">
@@ -203,7 +203,7 @@
                         @if (Model.IsFiltered)
                         {
                             <div class="row row-spacing">
-                                <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+                                <div class="col-xs-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3">
                                     <div class="alert-success" style="padding:1rem;border-radius:4px;text-align:center">
                                         @(Model.PaginateModel.ItemCount == 1 ?
                                             SharedLocalizer[GRA.Annotations.Info.SearchResultsMatchesSingular]
@@ -230,7 +230,7 @@
                                     </a>
                                 }
                                 </div>
-                                <div class="col-xs-6 col-sm-2 col-sm-offset-4 col-md-offset-5 row-spacing">
+                                <div class="col-xs-6 col-sm-2 offset-sm-4 offset-md-5 row-spacing">
                                 <a asp-action="Index" asp-route-ClearSearch="true" class="btn btn-secondary ">
                                     <span class="hidden-sm fas fa-minus-circle"></span>
                                     @SharedLocalizer[GRA.Annotations.Interface.Clear]

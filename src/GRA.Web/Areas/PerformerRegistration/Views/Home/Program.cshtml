@@ -18,7 +18,7 @@
 {
     @section nav {
         <div class="row row-spacing">
-            <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 join-header">
+            <div class="col-xs-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 join-header">
                 <div class="col-xs-4 sign-up-step">
                     <p>Information</p>
                 </div>
@@ -44,7 +44,7 @@ else
 
 <div class="row">
 
-    <div class="col-sm-9 col-sm-offset-3">
+    <div class="col-sm-9 offset-sm-3">
         <p>
             Please provide details about the programs you perform.
             <br />
@@ -68,7 +68,7 @@ else
         </div>
         @if (Model.EditingProgram == false)
         {
-            <div class="col-sm-9 col-sm-offset-3">
+            <div class="col-sm-9 offset-sm-3">
                 <p>
                     Do you have a photograph that is representative of this program? If so
                     you can attach it here - if not, you do not have to. For best results please
@@ -99,7 +99,7 @@ else
         }
 
         <div class="mb-3">
-            <label asp-for="Program.MinimumCapacity" class="col-sm-2 col-sm-offset-3 col-form-label required-field"></label>
+            <label asp-for="Program.MinimumCapacity" class="col-sm-2 offset-sm-3 col-form-label required-field"></label>
             <div class="col-sm-2">
                 <input asp-for="Program.MinimumCapacity" class="form-control form-control-lg" type="text" placeholder="" />
                 <span asp-validation-for="Program.MinimumCapacity" class="text-danger"></span>
@@ -113,7 +113,7 @@ else
         </div>
 
         <div class="mb-3">
-            <div class="col-xs-12 col-sm-9 col-sm-offset-3">
+            <div class="col-xs-12 col-sm-9 offset-sm-3">
                 <p>
                     Please select which age groups the program is suited for.
                 </p>
@@ -127,12 +127,12 @@ else
         </div>
 
         <div class="mb-3">
-            <div class="col-xs-12 col-sm-9 col-sm-offset-3">
+            <div class="col-xs-12 col-sm-9 offset-sm-3">
                 <p>
                     Please list all times in minutes.
                 </p>
             </div>
-            <label asp-for="Program.ProgramLengthMinutes" class="col-sm-offset-3 col-sm-2 col-form-label required-field"></label>
+            <label asp-for="Program.ProgramLengthMinutes" class="offset-sm-3 col-sm-2 col-form-label required-field"></label>
             <div class="col-sm-2">
                 <input asp-for="Program.ProgramLengthMinutes" class="form-control form-control-lg" type="text" placeholder="" />
                 <span asp-validation-for="Program.ProgramLengthMinutes" class="text-danger"></span>
@@ -149,7 +149,7 @@ else
         </div>
 
         <div class="mb-3">
-            <label class="col-sm-offset-3 col-sm-2 col-form-label col-form-label required-field">
+            <label class="offset-sm-3 col-sm-2 col-form-label col-form-label required-field">
                 Breakdown Time
                 <span class="far fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="How much time needed after program ends."></span>
             </label>
@@ -216,12 +216,12 @@ else
         @if (Model.EnablePerformerLivestreamQuestions)
         {
             <div class="mb-3">
-                <div class="col-xs-12 col-sm-9 col-sm-offset-3">
+                <div class="col-xs-12 col-sm-9 offset-sm-3">
                     <p>
                         Are you willing to allow the library to livestream your program online?<span class="required-field"></span>
                     </p>
                 </div>
-                <div class="col-sm-9 col-sm-offset-3">
+                <div class="col-sm-9 offset-sm-3">
                     <select asp-for="Program.AllowStreaming" class="form-control">
                         <option value="true">Yes</option>
                         <option value="false">No</option>
@@ -231,12 +231,12 @@ else
             </div>
 
             <div class="mb-3">
-                <div class="col-xs-12 col-sm-9 col-sm-offset-3">
+                <div class="col-xs-12 col-sm-9 offset-sm-3">
                 <p>
                     Are you willing to allow the library to save and share the archive of your event, if livestreamed or recorded?<span class="required-field"></span>
                 </p>
             </div>
-            <div class="col-sm-9 col-sm-offset-3">
+            <div class="col-sm-9 offset-sm-3">
                 <select asp-for="Program.AllowArchiving" class="form-control">
                     <option value="true">Yes</option>
                     <option value="false">No</option>
@@ -247,7 +247,7 @@ else
         }
 
         <div class="row">
-            <div class="col-sm-9 col-sm-offset-3" style="margin-top: 1em;">
+            <div class="col-sm-9 offset-sm-3" style="margin-top: 1em;">
                 <button type="submit"
                         class="btn btn-lg btn-success btn-spinner"
                         style="margin-bottom: 0.5rem;"

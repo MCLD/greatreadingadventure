@@ -18,7 +18,7 @@
     <form asp-action="KitImages" class="form-horizontal col-xs-12" method="post" role="form" enctype="multipart/form-data">
         <input asp-for="KitId" type="hidden" />
         <div class="row">
-            <div class="col-sm-9 col-sm-offset-3">
+            <div class="col-sm-9 offset-sm-3">
                 <p>
                     Additional images can be added here. For best results please
                     use images that are at least 1,000px by 1,000px, uploads are limited to @(Model.MaxUploadMB)MB total.
@@ -48,7 +48,7 @@
         </div>
 
         <div class="row">
-            <div class="col-sm-9 col-sm-offset-3" style="margin-top: 1em;margin-bottom: 1em;">
+            <div class="col-sm-9 offset-sm-3" style="margin-top: 1em;margin-bottom: 1em;">
                 <button type="submit"
                         class="btn btn-lg btn-success btn-spinner"
                         style="margin-bottom: 0.5rem;"
