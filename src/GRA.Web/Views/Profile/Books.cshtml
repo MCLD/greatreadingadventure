@@ -131,16 +131,16 @@
                     <input id="Book_Id" name="Book.Id" type="hidden" />
                     <div class="modal-content">
                         <div class="modal-header">
+                            <h1 class="modal-title h4"
+                                id="editModalLabel">
+                                @SharedLocalizer[GRA.Annotations.Title.EditBook]
+                            </h1>
                             <button type="button"
                                     class="btn-close"
                                     data-bs-dismiss="modal"
                                     aria-label="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]">
                                 
                             </button>
-                            <h1 class="modal-title h4"
-                                id="editModalLabel">
-                                @SharedLocalizer[GRA.Annotations.Title.EditBook]
-                            </h1>
                         </div>
                         <div class="modal-body">
                             <div class="mb-3">
@@ -190,16 +190,16 @@
                     <input asp-for="PaginateModel.CurrentPage" type="hidden" />
                     <div class="modal-content">
                         <div class="modal-header">
+                            <h1 class="modal-title h4"
+                                id="addModalLabel">
+                                @SharedLocalizer[GRA.Annotations.Interface.AddBook]
+                            </h1>
                             <button type="button"
                                     class="btn-close"
                                     data-bs-dismiss="modal"
                                     aria-label="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]">
                                 
                             </button>
-                            <h1 class="modal-title h4"
-                                id="addModalLabel">
-                                @SharedLocalizer[GRA.Annotations.Interface.AddBook]
-                            </h1>
                         </div>
                         <div class="modal-body">
                             <div class="mb-3">
@@ -242,16 +242,16 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
+                        <h1 class="modal-title h4"
+                            id="deleteModalLabel">
+                            @SharedLocalizer[GRA.Annotations.Title.DeleteBook]
+                        </h1>
                         <button type="button"
                                 class="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]">
                             
                         </button>
-                        <h1 class="modal-title h4"
-                            id="deleteModalLabel">
-                            @SharedLocalizer[GRA.Annotations.Title.DeleteBook]
-                        </h1>
                     </div>
                     <div class="modal-body">
                         <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>

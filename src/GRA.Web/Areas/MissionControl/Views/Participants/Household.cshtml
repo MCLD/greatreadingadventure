@@ -679,13 +679,13 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
+                        <h1 class="modal-title h4" id="promoteModalLabel">Promote to Manager</h1>
                         <button type="button"
                                 class="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="Close dialog">
                             
                         </button>
-                        <h1 class="modal-title h4" id="promoteModalLabel">Promote to Manager</h1>
                     </div>
                     <div class="modal-body">
                         <span class="fas fa-exclamation-circle" aria-hidden="true"></span>
@@ -727,15 +727,16 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
+                        <h1 class="modal-title h4" id="deleteModalLabel">
+                            Remove from family/group
+                        </h1>
                         <button type="button"
                                 class="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="Close dialog">
                             
                         </button>
-                        <h1 class="modal-title h4" id="deleteModalLabel">
-                            Remove from family/group
-                        </h1>
+
                     </div>
                     <div class="modal-body">
                         <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
@@ -835,16 +836,16 @@
                         <input asp-for="Id" type="hidden" />
 
                         <div class="modal-header">
+                            <h1 class="modal-title h4"
+                                id="deleteModalLabel">
+                                Redeem @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group") prize
+                            </h1>
                             <button type="button"
                                     class="btn-close"
                                     data-bs-dismiss="modal"
                                     aria-label="Close dialog">
                                 
                             </button>
-                            <h1 class="modal-title h4"
-                                id="deleteModalLabel">
-                                Redeem @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group") prize
-                            </h1>
                         </div>
                         <div class="modal-body">
                             <label asp-for="Prize" class="col-form-label">
@@ -895,15 +896,15 @@
                         <input id="bulkRedeemId" asp-for="Id" type="hidden" />
 
                         <div class="modal-header">
+                            <h1 class="modal-title h4" id="deleteModalLabel">
+                                Redeem @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group") codes
+                            </h1>
                             <button type="button"
                                     class="btn-close"
                                     data-bs-dismiss="modal"
                                     aria-label="Close dialog">
                                 
                             </button>
-                            <h1 class="modal-title h4" id="deleteModalLabel">
-                                Redeem @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group") codes
-                            </h1>
                         </div>
                         <div class="modal-body">
                             <p>
