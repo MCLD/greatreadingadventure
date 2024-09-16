@@ -27,7 +27,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
 {
     <div class="row">
         <div class="col-xs-12">
-            <div class="card ">
+            <div class="card">
                 <div class="card-body">
                     <div class="row" style="margin-bottom: 1.5em;">
                         <div class="col-xs-12 col-md-8 col-md-push-2">
@@ -58,7 +58,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
     <div class="col-sm-3 text-center">
         @if (Model.SiteStage != GRA.Domain.Model.SiteStage.BeforeRegistration)
         {
-            <div class="card ">
+            <div class="card">
                 <p>
                     <a asp-controller="Avatar" asp-action="Index">
                         @if (Model.AvatarElements?.Count > 0)
@@ -128,7 +128,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
             @if (!Model.SiteReadingGoal.HasValue
            || (Model.SiteReadingGoal.HasValue && (Model.SiteStage == SiteStage.BeforeRegistration || Model.SiteStage == SiteStage.RegistrationOpen)))
             {
-                <div class="card ">
+                <div class="card">
                     <div class="card-body text-center">
                         <span class="lead">@SharedHtmlLocalizer["Welcome <strong>{0}!</strong>", Model.User.FirstName]</span>
                         @if (Model.SiteStage == GRA.Domain.Model.SiteStage.RegistrationOpen)
@@ -155,7 +155,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
         }
         @if (Model.SiteReadingGoal.HasValue && Model.SiteStage != SiteStage.BeforeRegistration && Model.SiteStage != SiteStage.RegistrationOpen)
         {
-            <div class="card ">
+            <div class="card">
                 <div class="card-header"><strong>@SharedLocalizer[GRA.Annotations.Info.SiteGoalHeader]</strong></div>
                 <div class="card-body text-center">
                     <p style="font-size: large;">@SharedHtmlLocalizer[Model.SiteStage == SiteStage.ProgramOpen ? GRA.Annotations.Info.MinutesReadSoFar : GRA.Annotations.Info.MinutesRead, Model.TotalSiteActivity.Value]</p>
@@ -180,7 +180,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
         {
             if (Model.SingleEvent)
             {
-                <div class="card ">
+                <div class="card">
                     <div class="card-body">
                         <form asp-controller="Home" asp-action="LogActivity" method="post" role="form">
                             <input asp-for="SingleEvent" type="hidden" />
@@ -211,7 +211,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
             }
             else
             {
-                <div class="card ">
+                <div class="card">
                     <div class="card-body">
                         <form asp-controller="Home" asp-action="LogActivity" method="post" role="form" class="form-horizontal">
                             <div class="row row-spacing">
@@ -259,7 +259,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
             }
             if (!Model.DisableSecretCode)
             {
-                <div class="card ">
+                <div class="card">
                     <div class="card-body">
                         <form asp-controller="Home" asp-action="LogSecretCode" method="post" role="form" class="form-horizontal">
                             <div class="row row-spacing" style="text-align:center;">
@@ -305,7 +305,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
     <div class="col-sm-3 text-center">
         @if (Model.SiteStage != GRA.Domain.Model.SiteStage.BeforeRegistration)
         {
-            <div class="card ">
+            <div class="card">
                 <div class="card-header">
                     <a asp-controller="Profile"
                        asp-action="Badges"
@@ -375,7 +375,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
             </div>
             if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))
             {
-                <div class="card ">
+                <div class="card">
                     <div class="card-body text-center">
                         <button type="button"
                                 data-bs-toggle="modal"
@@ -396,7 +396,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
     @if (Model.UpcomingStreams?.Count() > 0)
     {
         <div class="col-sm-3 text-center">
-            <div class="card ">
+            <div class="card">
                 <div class="card-header">
                     <a asp-controller="@EventsController.Name"
                        asp-action="@nameof(EventsController.StreamingEvents)"
@@ -427,7 +427,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
 {
     <div class="row visible-xs">
         <div class="col-xs-12">
-            <div class="card ">
+            <div class="card">
                 <div class="dashboard-page-container">
                     @Html.Raw(Model.DashboardPageContent)
                 </div>
@@ -455,7 +455,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
     </div>
     <div class="row gra-js-required gra-carousel-container" aria-hidden="true">
         <div class="col-xs-12">
-            <div class="card ">
+            <div class="card">
                 @if (!string.IsNullOrEmpty(Model.Carousel.Heading))
                 {
                     <div class="card-header">

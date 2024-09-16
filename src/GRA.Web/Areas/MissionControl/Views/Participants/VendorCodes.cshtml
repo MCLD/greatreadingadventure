@@ -3,7 +3,7 @@
 
 @await Html.PartialAsync("_ParticipantPartial")
 
-<div class="row hidden-print" style="margin-bottom: 2rem;">
+<div class="row d-print-none" style="margin-bottom: 2rem;">
     <div class="col-xs-12">
         @if (Model.CurrentCodes?.Count() > 0)
         {

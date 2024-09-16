@@ -7,7 +7,7 @@
 @await Html.PartialAsync("_PerformerManagementPartial")
 
 <div class="row text-center">
-    <div class="col-sm-2 col-sm-offset-2">
+    <div class="col-sm-2 offset-sm-2">
         <div class="ataglance-pill ataglance-pill-steelblue">
             <span style="font-size: larger;" id="psPerformerCount">@Model.PerformerCount</span><br />Peformers
         </div>
@@ -31,7 +31,7 @@
 </div>
 
 <div class="row" style="margin-top: 2rem;">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="col-sm-8 offset-sm-2">
         <div class="progress" style="height: 3rem;">
             <div class="progress-bar progress-bar-striped"
                  role="progressbar"
@@ -43,7 +43,7 @@
 </div>
 
 <div class="row" style="margin-top: 0.5rem;">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="col-sm-8 offset-sm-2">
         <div class="card-group" id="accordion" role="tablist" aria-multiselectable="true">
             @foreach (var system in Model.Systems)
             {

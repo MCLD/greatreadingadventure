@@ -13,7 +13,7 @@
         <h1>@(Model.NewKit ? "Add Kit" : $"Edit Kit: {Model.Kit.Name}")</h1>
     </div>
 
-    <div class="col-sm-9 col-sm-offset-3">
+    <div class="col-sm-9 offset-sm-3">
         <p>
             <span class="text-danger small" style="font-weight: bold;">Fields marked with an asterisk (*) are required.</span>
         </p>
@@ -36,7 +36,7 @@
 
         @if (Model.NewKit)
         {
-            <div class="col-sm-9 col-sm-offset-3">
+            <div class="col-sm-9 offset-sm-3">
                 <p>
                     For best results please use images that are at least 1,000px by 1,000px,
                     uploads are limited to @(Model.MaxUploadMB)MB total.
@@ -82,7 +82,7 @@
         </div>
 
         <div class="mb-3">
-            <div class="col-xs-12 col-sm-9 col-sm-offset-3">
+            <div class="col-xs-12 col-sm-9 offset-sm-3">
                 <p>
                     Please select which age groups the kit is suited for.
                 </p>
@@ -96,7 +96,7 @@
         </div>
 
         <div class="row">
-            <div class="col-sm-9 col-sm-offset-3" style="margin-top: 1em;">
+            <div class="col-sm-9 offset-sm-3" style="margin-top: 1em;">
                 <button type="submit"
                         class="btn btn-lg btn-success btn-spinner"
                         style="margin-bottom: 0.5rem;"

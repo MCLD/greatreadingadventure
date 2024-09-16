@@ -6,8 +6,8 @@
 }
 
 <div class="row">
-    <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
-        <div class="card ">
+    <div class="col-sm-10 offset-sm-1 col-md-8 offset-md-2">
+        <div class="card">
             <div class="card-header">
                 <span class="lead">
                     @Model.Event.Name
@@ -137,7 +137,7 @@
 
                 }
             </div>
-            <div class="card-footer clearfix hidden-print">
+            <div class="card-footer clearfix d-print-none">
                 <div class="pull-left">
                     <return asp-action="Index" class="btn btn-secondary btn-lg">@SharedLocalizer[GRA.Annotations.Interface.BackToEventsCommunityExperiences]</return>
                 </div>

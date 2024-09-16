@@ -6,7 +6,7 @@
 }
 
 <div class="row">
-    <div class="col-xs-12 col-md-8 col-md-offset-2">
+    <div class="col-xs-12 col-md-8 offset-md-2">
         <table class="table table-sm table-bordered" style="margin-top: 2rem;">
             <tr>
                 <th>Packing slip number</th>
@@ -61,7 +61,7 @@
             }
             @if (Model.CanViewDetails)
             {
-                <tr class="hidden-print">
+                <tr class="d-print-none">
                     <th>Hold slips</th>
                     <td>
                         <a asp-action="@nameof(VendorCodesController.ViewHoldSlips)"

@@ -22,7 +22,7 @@
 @if (ViewContext?.ViewData?.ModelState?.IsValid == false)
 {
     <div class="row mc-alertrow">
-        <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+        <div class="col-xs-12 col-sm-6 offset-sm-3">
             <div class="alert alert-danger">
                 <p class="asp-validation-header"><strong>There were issues with your submission:</strong></p>
                 <div asp-validation-summary="All" class="text-danger"></div>

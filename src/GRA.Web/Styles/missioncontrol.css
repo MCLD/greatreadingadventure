@@ -25,59 +25,50 @@
 .ataglance-pill {
     border: 1px solid;
     border-radius: 1rem;
-    font-size: 2rem;
     padding: 1rem;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.25rem;
+    margin-top: 0.75rem;
     background-color: dimgray;
     color: white;
 }
 
 @media only screen and (min-width : 768px) {
     .ataglance-pill {
-        font-size: 1.5rem;
+        font-size: 1.2rem;
     }
 }
 
-@media only screen and (min-width : 992px) {
-    .ataglance-pill {
-        font-size: 1.5rem;
-    }
-}
 
-.ataglancepill-sidebar {
-    background-color: dimgray;
-    border: 1px solid;
-    border-radius: 1rem;
-    color: white;
-    line-height: 1.8em;
-    margin-bottom: 1rem;
-    padding: 0.75rem 1rem;
-}
-
-    .ataglancepill-sidebar .ataglance-icon {
-        width: 1.5em;
-    }
-
-.ataglance-pill-darkslateblue {
-    background-color: darkslateblue;
+.ataglance-pill-filtered {
+    background-color: rebeccapurple;
     color: white;
 }
 
-.ataglance-pill-teal {
+.ataglance-pill-site {
     background-color: teal;
     color: white;
 }
 
-.ataglance-pill-steelblue {
-    background-color: steelblue;
-    color: white;
+.ataglance-filtered, .ataglance-filtered .list-group-item {
+    border-color: rebeccapurple;
+    color: rebeccapurple;
 }
 
-.ataglance-pill-seagreen {
-    background-color: seagreen;
-    color: white;
+    .ataglance-filtered .card-header, .ataglance-filtered .card-footer {
+        background-color: rebeccapurple;
+        color: white;
+    }
+
+.ataglance-site, .ataglance-site .list-group-item {
+    border-color: teal;
+    color: teal;
 }
+
+    .ataglance-site .card-header, .ataglance-site .card-footer {
+        background-color: teal;
+        color: white;
+    }
+
 
 .badge-maker {
     position: relative;

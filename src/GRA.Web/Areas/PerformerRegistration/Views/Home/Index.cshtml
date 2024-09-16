@@ -1,8 +1,8 @@
 ﻿@model GRA.Controllers.ViewModel.PerformerRegistration.Home.IndexViewModel
 
 <div class="row" style="margin-top: 1rem;">
-    <div class="col-sm-8 col-sm-offset-2">
-        <div class="card ">
+    <div class="col-sm-8 offset-sm-2">
+        <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Performer Registration</h3>
             </div>
@@ -18,7 +18,7 @@
                 {
                     <form asp-action="AuthorizationCode" method="post">
                         <div class="row">
-                            <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+                            <div class="col-xs-12 col-sm-6 offset-sm-3">
                                 <div class="mb-3 mb-3-lg">
                                     <label asp-for="AuthorizationCode" class="h4">Authorization Code for <grasite property="name"></grasite>:</label>
                                     <input asp-for="AuthorizationCode" class="form-control form-control-lg" type="password" autofocus required>

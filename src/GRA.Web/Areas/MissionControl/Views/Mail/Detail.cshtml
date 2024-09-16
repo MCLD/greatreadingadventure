@@ -3,7 +3,7 @@
 @if (Model.MailThread.Count > 0)
 {
     <div class="row" style="margin-bottom: 1rem;">
-        <div class="col-md-8 col-md-offset-2">
+        <div class="col-md-8 offset-md-2">
             @foreach (var mail in Model.MailThread)
             {
                 if (mail.Id == Model.Mail.Id)
@@ -47,7 +47,7 @@
 }
 
 <div class="row">
-    <div class="col-md-8 col-md-offset-2">
+    <div class="col-md-8 offset-md-2">
         <div class="row">
             <p style="font-size:large" class="col-md-7">
                 Sent @Model.SentMessage
@@ -68,7 +68,7 @@
                 </p>
             </div>
         </div>
-        <div class="card ">
+        <div class="card">
             <div class="card-header">
                 <span class="lead">
                     Subject: @Model.Mail.Subject
@@ -88,7 +88,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card-footer clearfix hidden-print">
+            <div class="card-footer clearfix d-print-none">
                 <a asp-action="Index" class="btn btn-secondary">Return to Mail List</a>
                 <div class="pull-right">
                     @if (Model.CanDelete)

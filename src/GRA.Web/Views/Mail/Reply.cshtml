@@ -5,8 +5,8 @@
     <input asp-for="InReplyToSubject" type="hidden" />
 
     <div class="row">
-        <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
-            <div class="card ">
+        <div class="col-xs-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2">
+            <div class="card">
                 <div class="card-header">
                     <span class="lead">
                         <strong><label asp-for="InReplyToSubject"></label></strong>
@@ -15,7 +15,7 @@
                 </div>
                 <div class="card-body">
                     <div class="row row-spacing">
-                        <div class="col-sm-10 col-sm-offset-1">
+                        <div class="col-sm-10 offset-sm-1">
                             <label asp-for="Subject" class="col-form-label"></label>
                             <input asp-for="Subject" class="form-control" />
                             <span asp-validation-for="Subject" class="text-danger"></span>
@@ -23,7 +23,7 @@
                     </div>
 
                     <div class="row row-spacing">
-                        <div class="col-sm-10 col-sm-offset-1">
+                        <div class="col-sm-10 offset-sm-1">
                             <label asp-for="Body" class="col-form-label"></label>
                             <textarea asp-for="Body" class="form-control"></textarea>
                             <span asp-validation-for="Body" class="text-danger"></span>
@@ -31,7 +31,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-sm-10 col-sm-offset-1">
+                        <div class="col-sm-10 offset-sm-1">
                             <a asp-action="Index" class="btn btn-secondary">
                                 @SharedLocalizer[GRA.Annotations.Interface.BackToMailbox]
                             </a>

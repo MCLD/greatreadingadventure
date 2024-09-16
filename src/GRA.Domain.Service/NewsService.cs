@@ -200,6 +200,12 @@ namespace GRA.Domain.Service
             return await _newsCategoryRepository.GetByIdAsync(id);
         }
 
+        public async Task<int> GetDefaultCategoryIdAsync()
+        {
+            var category = await _newsCategoryRepository.GetDefaultCategoryAsync(GetCurrentSiteId());
+            return category.Id;
+        }
+
         public async Task<int> GetLatestNewsIdAsync()
         {
             var siteId = GetClaimId(ClaimType.SiteId);
@@ -298,6 +304,7 @@ namespace GRA.Domain.Service
                 _logger.LogWarning("Job {JobId}: {JobType} to send emails for post {NewsPostId} cancelled after {Elapsed} ms",
                     job.Id,
                     job.JobType,
+                    jobDetails.NewsPostId,
                     sw?.Elapsed.TotalMilliseconds);
             });
 

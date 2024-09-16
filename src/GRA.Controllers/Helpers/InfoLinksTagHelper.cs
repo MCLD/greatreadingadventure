@@ -59,7 +59,7 @@ namespace GRA.Controllers.Helpers
 
             if (!NavPages)
             {
-                output.Attributes.Add("class", "infolinks");
+                output.Attributes.Add("class", "infolinks mt-4");
                 output.TagName = "div";
             }
             else
@@ -92,7 +92,7 @@ namespace GRA.Controllers.Helpers
 
                     var aTag = new TagBuilder("a");
                     aTag.Attributes.Add("href", link);
-                    if(NavPages)
+                    if (NavPages)
                     {
                         aTag.AddCssClass("nav-link");
                     }

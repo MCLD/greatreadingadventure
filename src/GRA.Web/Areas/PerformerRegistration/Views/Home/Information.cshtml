@@ -8,7 +8,7 @@
 {
     @section nav {
         <div class="row row-spacing">
-            <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 join-header">
+            <div class="col-xs-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 join-header">
                 <div class="col-xs-4 sign-up-step active">
                     <p>Information</p>
                 </div>
@@ -34,7 +34,7 @@ else
 }
 
 <div class="row">
-    <div class="col-sm-9 col-sm-offset-3">
+    <div class="col-sm-9 offset-sm-3">
         <p>
             @if (Model.Performer?.RegistrationCompleted != true)
             {
@@ -69,7 +69,7 @@ else
     @if (Model.Performer?.RegistrationCompleted != true)
     {
         <div class="row">
-            <div class="col-sm-9 col-sm-offset-3">
+            <div class="col-sm-9 offset-sm-3">
                 <p>
                     In order to promote your programming, please upload one or more
                     <strong>photos of yourself</strong>
@@ -103,7 +103,7 @@ else
     }
 
     <div class="row">
-        <div class="col-sm-9 col-sm-offset-3">
+        <div class="col-sm-9 offset-sm-3">
             @if (Model.Performer?.RegistrationCompleted != true)
             {
                 <p>
@@ -223,7 +223,7 @@ else
     }
 
     <div class="mb-3">
-        <div class="col-sm-9 col-sm-offset-3">
+        <div class="col-sm-9 offset-sm-3">
             <p>
                 Please let us know at which locations you are willing to perform:
                 <strong><span id="branchCount">@(Model.BranchAvailability?.Count ?? 0)</span> of @Model.BranchCount Selected</strong>
@@ -234,7 +234,7 @@ else
     </div>
 
     <div class="row">
-        <div class="col-xs-12 col-sm-9 col-sm-offset-3">
+        <div class="col-xs-12 col-sm-9 offset-sm-3">
 
             @if (Model.Performer?.RegistrationCompleted != true)
             {

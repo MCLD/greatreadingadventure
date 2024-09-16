@@ -1,8 +1,8 @@
 ﻿@model GRA.Domain.Model.Mail
 
 <div class="row">
-    <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
-        <div class="card ">
+    <div class="col-xs-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2">
+        <div class="card">
             <div class="card-header">
                 <span class="lead">
                     @SharedLocalizer[GRA.Annotations.Interface.SentOn,
@@ -21,7 +21,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card-footer clearfix hidden-print">
+            <div class="card-footer clearfix d-print-none">
                 <a asp-action="Index" class="btn btn-secondary">
                     @SharedLocalizer[GRA.Annotations.Interface.BackToMailbox]
                 </a>
