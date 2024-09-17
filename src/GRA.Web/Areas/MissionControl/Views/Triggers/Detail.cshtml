@@ -354,8 +354,7 @@
                 <input asp-for="Trigger.ActivationDate"
                        type="form"
                        class="form-control"
-                       readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" 
-                       name="date"/>
+                       readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)"/>
             </div>
             <span asp-validation-for="Trigger.ActivationDate" class="text-danger"></span>
         </div>
