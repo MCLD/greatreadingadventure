@@ -69,7 +69,7 @@
 
     @if (Model.DependentTriggers?.Count > 0)
     {
-        <div class="card-group row-spacing" id="accordionDependent" role="tablist" aria-multiselectable="true">
+        <div class="list-group row-spacing" id="accordionDependent" role="tablist" aria-multiselectable="true">
             <div class="card">
                 <div class="card-header" role="tab" id="headingDependent">
                     <h4 class="card-title">
@@ -97,7 +97,7 @@
 
     @if (Model.RelatedEvents?.Count > 0)
     {
-        <div class="card-group row-spacing" id="accordionRelated" role="tablist" aria-multiselectable="true">
+        <div class="list-group row-spacing" id="accordionRelated" role="tablist" aria-multiselectable="true">
             <div class="card">
                 <div class="card-header" role="tab" id="headingRelated">
                     <h4 class="card-title">
@@ -519,7 +519,7 @@
         }
     }
 
-    <div class="card-group" id="accordionPrize" role="tablist" aria-multiselectable="true">
+    <div class="list-group" id="accordionPrize" role="tablist" aria-multiselectable="true">
         <div class="card card-info">
             <div class="card-header" role="tab" id="headingPrize">
                 <h4 class="card-title">
@@ -557,7 +557,7 @@
 
     @if (Model.EditMail || Model.AwardsMail)
     {
-        <div class="card-group" id="accordionMail" role="tablist" aria-multiselectable="true">
+        <div class="list-group" id="accordionMail" role="tablist" aria-multiselectable="true">
             <div class="card card-info">
                 <div class="card-header" role="tab" id="headingMail">
                     <h4 class="card-title">
@@ -601,7 +601,7 @@
     }
     @if (Model.EditAttachment || Model.AwardsAttachment)
     {
-        <div class="card-group" id="accordionAttachment" role="tablist" aria-multiselectable="true">
+        <div class="list-group" id="accordionAttachment" role="tablist" aria-multiselectable="true">
             <div class="card card-info">
                 <div class="card-header" role="tab" id="headingAttachment">
                     <h4 class="card-title">
