@@ -103,10 +103,14 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization",
+            "CA1308:Normalize strings to uppercase",
+            Justification = "Secret codes are normalized to lower-case")]
         public async Task<IActionResult> Create(TriggersDetailViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             byte[] badgeBytes = null;
-            byte[] attachmentBytes = null;
 
             var badgeRequiredList = new List<int>();
             var challengeRequiredList = new List<int>();
@@ -147,7 +151,7 @@ namespace GRA.Controllers.MissionControl
                 ModelState.AddModelError("BadgePath", "A badge is required.");
             }
             else if (model.BadgeUploadImage != null
-                    && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker))
+                && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker))
             {
                 if (!ValidImageExtensions.Contains(
                     Path.GetExtension(model.BadgeUploadImage.FileName).ToLowerInvariant()))
@@ -497,8 +501,13 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization",
+            "CA1308:Normalize strings to uppercase",
+            Justification = "Secret codes are normalized to lower-case")]
         public async Task<IActionResult> Edit(TriggersDetailViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             byte[] badgeBytes = null;
 
             var badgeRequiredList = new List<int>();
@@ -910,13 +919,17 @@ namespace GRA.Controllers.MissionControl
             {
                 if (programId.Value > 0)
                 {
-                    viewModel.ProgramName =
-                        (await _siteService.GetProgramByIdAsync(programId.Value)).Name;
+                    var program = await _siteService.GetProgramByIdAsync(programId.Value);
+                    viewModel.ProgramName = $"Limited to {program.Name}";
                 }
                 else
                 {
-                    viewModel.ProgramName = "Not Limited";
+                    viewModel.ProgramName = "Not Limited to a Program";
                 }
+            }
+            else
+            {
+                viewModel.ProgramName = "All Triggers";
             }
 
             return View(viewModel);
