@@ -308,8 +308,8 @@
         <input asp-for="BadgeMakerImage" type="hidden" />
 
         <div class="list-group" id="accordionSecretCode" role="tablist" aria-multiselectable="true">
-            <div class="card @(Model.RequireSecretCode ? "card-warning" : "card-info")">
-                <div class="card-header" role="tab" id="headingSecretCode">
+            <div class="card">
+                <div class="card-header @(Model.RequireSecretCode ? "bg-warning-subtle" : "bg-info-subtle")" role="tab" id="headingSecretCode">
                     <h4 class="card-title">
                         @if (Model.RequireSecretCode)
                         {
