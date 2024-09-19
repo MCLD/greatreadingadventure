@@ -1,50 +1,43 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Triggers.TriggersListViewModel
 
-<div class="row">
-    <div class="col-xs-12">
-        <ul class="nav nav-pills" style="padding: 10px 0;">
-            <li class="@(Model.ActiveNav == "All" ? "active" : "")"><a asp-route-Search="@Model.Search" asp-route-ProgramId="@Model.ProgramId">All</a></li>
-            <li class="@(Model.ActiveNav == "System" ? "active" : "")">
-                <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+<div class="row my-4">
+    <div class="col">
+        <ul class="nav nav-pills flex-column flex-sm-row">
+            <li class="nav-item"><a class="nav-link @(Model.ActiveNav == "All" ? "active" : "")" asp-route-Search="@Model.Search" asp-route-ProgramId="@Model.ProgramId">All</a></li>
+            <li class="nav-item dropdown">
+                <a class="dropdown-toggle nav-link @(Model.ActiveNav == "System" ? "active" : "")" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     @(Model.SystemName ?? "System") <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
                     @foreach (var system in Model.SystemList)
                     {
-                        <li><a asp-route-Search="@Model.Search" asp-route-SystemId="@system.Id" asp-route-ProgramId="@Model.ProgramId">@system.Name</a></li>
+                        <li><a class="dropdown-item" asp-route-Search="@Model.Search" asp-route-SystemId="@system.Id" asp-route-ProgramId="@Model.ProgramId">@system.Name</a></li>
                     }
                 </ul>
             </li>
-            <li class="@(Model.ActiveNav == "Branch" ? "active" : "")">
-                <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+            <li class="nav-item dropdown">
+                <a class="dropdown-toggle nav-link @(Model.ActiveNav == "Branch" ? "active" : "")" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     @(Model.BranchName ?? "Branch") <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
                     @foreach (var branch in Model.BranchList)
                     {
-                        <li><a asp-route-Search="@Model.Search" asp-route-BranchId="@branch.Id" asp-route-ProgramId="@Model.ProgramId">@branch.Name</a></li>
+                        <li><a class="dropdown-item" asp-route-Search="@Model.Search" asp-route-BranchId="@branch.Id" asp-route-ProgramId="@Model.ProgramId">@branch.Name</a></li>
                     }
                 </ul>
             </li>
-            <li class="@(Model.ActiveNav == "Mine" ? "active" : "")"><a asp-route-Search="@Model.Search" asp-route-ProgramId="@Model.ProgramId" asp-route-Mine="True">Mine</a></li>
-        </ul>
-    </div>
-</div>
-
-<div class="row row-spacing">
-    <div class="col-xs-12">
-        <span class="dropdown-label">Limited to Program:</span>
-        <ul class="nav" style="display: inline-table;">
-            <li>
-                <a class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                    @(Model.ProgramName ?? "Show All") <span class="caret"></span>
+            <li class="nav-item"><a class="nav-link @(Model.ActiveNav == "Mine" ? "active" : "")" asp-route-Search="@Model.Search" asp-route-ProgramId="@Model.ProgramId" asp-route-Mine="True">Mine</a></li>
+            <li class="nav-item d-none d-sm-block"><a class="nav-link disabled">|</a></li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    Limitations: @(Model.ProgramName) <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a asp-route-Search="@Model.Search" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-Mine="@Model.Mine">Show All</a></li>
-                    <li><a asp-route-Search="@Model.Search" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-Mine="@Model.Mine" asp-route-ProgramId="0">Not Limited</a></li>
+                    <li><a class="dropdown-item" asp-route-Search="@Model.Search" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-Mine="@Model.Mine">All Triggers</a></li>
+                    <li><a class="dropdown-item" asp-route-Search="@Model.Search" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-Mine="@Model.Mine" asp-route-ProgramId="0">Not Limited to a Program</a></li>
                     @foreach (var program in Model.ProgramList)
                     {
-                        <li><a asp-route-Search="@Model.Search" asp-route-ProgramId="@program.Id" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-Mine="@Model.Mine">@program.Name</a></li>
+                        <li><a class="dropdown-item" asp-route-Search="@Model.Search" asp-route-ProgramId="@program.Id" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-Mine="@Model.Mine">@program.Name</a></li>
                     }
                 </ul>
             </li>
@@ -70,25 +63,30 @@
         <input asp-for="ProgramId" type="hidden" />
     }
 
-    <div class="row row-spacing">
-        <div class="col-xs-8">
-            <input asp-for="Search" class="form-control" />
-        </div>
-        <div class="col-xs-4">
-            <input type="submit" value="Search" class="btn btn-secondary" style="margin-right: 8px;" />
-            <a asp-action="Index" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-ProgramId="@Model.ProgramId" asp-route-Mine="@Model.Mine" class="btn btn-secondary">Clear</a>
+    <div class="row my-4">
+        <div class="col">
+            <div class="input-group">
+                <input asp-for="Search" class="form-control" />
+                <a asp-action="Index"
+                   asp-route-SystemId="@Model.SystemId"
+                   asp-route-BranchId="@Model.BranchId"
+                   asp-route-ProgramId="@Model.ProgramId"
+                   asp-route-Mine="@Model.Mine"
+                   class="btn btn-outline-secondary">Clear</a>
+                <input type="submit" value="Search" class="btn btn-outline-primary" />
+            </div>
         </div>
     </div>
 </form>
 
-<div class="row" style="padding: 10px 0;">
-    <div class="col-xs-12">
-        <a asp-action="Create" class="btn btn-secondary">Create a new trigger</a>
+<div class="row my-4">
+    <div class="col">
+        <a asp-action="Create" class="btn btn-outline-primary">Create a new trigger</a>
     </div>
 </div>
 
-<div class="row" style="padding: 10px 0;">
-    <div class="col-xs-12">
+<div class="row">
+    <div class="col">
         @if (Model.Triggers.Count() == 0)
         {
             <div class="alert alert-warning">No Triggers</div>
@@ -111,18 +109,18 @@
                             <tr>
                                 <td class="td-class">
                                     <a asp-action="Edit" asp-route-id="@trigger.Id" class="rowlink">
-                                        @trigger.Name
+                                        @trigger.Name                                       
                                     </a>
                                 </td>
                                 <td>@trigger.AwardPoints</td>
                                 <td>
-                                    <img class="img-thumbnail" style="height: auto; width: 64px;"
+                                    <img class="img-thumbnail" style="height: auto; min-height: 64px; width: 64px;"
                                          src="~/@trigger.AwardBadgeFilename?@DateTime.Now.ToString("yyMMddHHmmss")"
                                          asp-append-version="true" />
                                 </td>
                                 <td class="on-top gra-mc-icon">
                                     <button type="button"
-                                            class="btn btn-danger btn-sm"
+                                            class="btn btn-outline-danger btn-sm"
                                             data-bs-toggle="modal"
                                             data-bs-target="#deleteModal"
                                             data-id="@trigger.Id"
@@ -160,9 +158,8 @@
                             class="btn-close"
                             data-bs-dismiss="modal"
                             aria-label="Close dialog">
-                        
                     </button>
-                   
+
                 </div>
                 <div class="modal-body">
                     <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
@@ -170,7 +167,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                            class="btn btn-secondary"
+                            class="btn btn-outline-secondary"
                             data-bs-dismiss="modal"
                             style="margin-right: 1em;">
                         Cancel
@@ -183,7 +180,7 @@
                         <input id="Id" name="Id" type="hidden" />
                         <button id="modal-deleteButton"
                                 type="submit"
-                                class="btn btn-danger pull-right"
+                                class="btn btn-outline-danger pull-right"
                                 aria-label="Confirm">
                             <span class="fas fa-times" aria-hidden="true"></span>
                             Delete
@@ -196,21 +193,21 @@
 </div>
 
 @section scripts
-    {
+{
     <script>
         var eventUrl = "@Url.Action("Edit", "Events")";
-        $(window).on("load", function() {
-            $('.td-class').each(function() {
+        $(window).on("load", function () {
+            $('.td-class').each(function () {
                 $(this).children('a.rowlink').height($(this).height() + 11);
             });
         });
-        $(window).resize(function() {
-            $('.td-class').each(function() {
+        $(window).resize(function () {
+            $('.td-class').each(function () {
                 $(this).children('a.rowlink').height($(this).height() + 11);
             });
         });
 
-        $('#deleteModal').on('show.bs.modal', function(event) {
+        $('#deleteModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var id = button.data('id');
             var name = button.data('name');
@@ -219,18 +216,16 @@
             var relatedEventName = button.data("relatedeventname");
             var modal = $(this);
             modal.find('#Id').val(id);
-            if (hasDependents == "True")
-            {
+            if (hasDependents == "True") {
                 modal.find('#modal-text').text(name + " has triggers depending on it and cannot be deleted.");
                 modal.find("#modal-deleteButton").hide();
             }
             else if (relatedEventId != "") {
 
-                modal.find("#modal-text").html(name + " is related to the event <a href=\"" + eventUrl + "/" + relatedEventId + "\" target=\"_blank\">" + relatedEventName +"</a> and can only be removed by deleting the event.");
+                modal.find("#modal-text").html(name + " is related to the event <a href=\"" + eventUrl + "/" + relatedEventId + "\" target=\"_blank\">" + relatedEventName + "</a> and can only be removed by deleting the event.");
                 modal.find("#modal-deleteButton").hide();
             }
-            else
-            {
+            else {
                 modal.find('#modal-text').text('Are you sure you wish to delete the trigger "' + name + '" ?');
                 modal.find("#modal-deleteButton").show();
             }
