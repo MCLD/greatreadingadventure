@@ -108,20 +108,6 @@
 
 @section scripts {
     <script>
-        $(".datetimepicker").datetimepicker({
-            format: "MM/DD/YYYY hh:mm A",
-            allowInputToggle: true,
-            sideBySide: true,
-            icons: {
-                time: "far fa-clock",
-                date: "fas fa-calendar-alt",
-                up: "fas fa-arrow-up",
-                down: "fas fa-arrow-down",
-                previous: "fas fa-arrow-left",
-                next: "fas fa-arrow-right"
-            }
-        });
-
         $(':file').on('fileselect', function (event, numFiles, label) {
             var input = $(this).parents('.input-group').find(':text'),
                 log = numFiles > 1 ? numFiles = ' files selected' : label;

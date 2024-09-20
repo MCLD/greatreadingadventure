@@ -608,32 +608,6 @@
 
 @section scripts {
     <script>
-        $("#pickerStart").datetimepicker({
-            allowInputToggle: true,
-            sideBySide: true,
-            icons: {
-                time: "far fa-clock",
-                date: "fas fa-calendar-alt",
-                up: "fas fa-arrow-up",
-                down: "fas fa-arrow-down",
-                previous: "fas fa-arrow-left",
-                next: "fas fa-arrow-right"
-            }
-        });
-
-        $("#pickerEnd").datetimepicker({
-            allowInputToggle: true,
-            sideBySide: true,
-            icons: {
-                time: "far fa-clock",
-                date: "fas fa-calendar-alt",
-                up: "fas fa-arrow-up",
-                down: "fas fa-arrow-down",
-                previous: "fas fa-arrow-left",
-                next: "fas fa-arrow-right"
-            }
-        });
-
         $("#Event_AllDay").on("change", function() {
             $("#pickerStart").data("DateTimePicker").format("MM/DD/YYYY hh:mm A");
             $("#pickerEnd").data("DateTimePicker").format("MM/DD/YYYY hh:mm A");

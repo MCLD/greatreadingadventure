@@ -127,20 +127,6 @@
 @section scripts 
 {
     <script>
-        $('[id^=picker]').datetimepicker({
-            format: 'MM/DD/YYYY h:mm a',
-            allowInputToggle: true,
-            sideBySide: true,
-            icons: {
-                time: "far fa-clock",
-                date: "fas fa-calendar-alt",
-                up: "fas fa-arrow-up",
-                down: "fas fa-arrow-down",
-                previous: "fas fa-arrow-left",
-                next: "fas fa-arrow-right"
-            }
-        });
-
         $("#Criterion_SystemId").on("change", function () {
             var systemId = $(this).val();
             var branchList = $("#Criterion_BranchId");

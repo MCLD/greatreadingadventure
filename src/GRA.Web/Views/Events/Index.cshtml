@@ -477,20 +477,6 @@
             }
         });
 
-        $("[id^=picker]").datetimepicker({
-            format: "MM/DD/YYYY",
-            allowInputToggle: true,
-            useCurrent: false,
-            icons: {
-                time: "far fa-clock",
-                date: "fas fa-calendar-alt",
-                up: "fas fa-arrow-up",
-                down: "fas fa-arrow-down",
-                previous: "fas fa-arrow-left",
-                next: "fas fa-arrow-right"
-            }
-        });
-
         $(".rowlink").on('click', function(e) {
             e.preventDefault();
             $("#detailModal").modal("show");

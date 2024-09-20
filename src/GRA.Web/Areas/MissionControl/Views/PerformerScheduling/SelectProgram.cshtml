@@ -302,21 +302,6 @@
             });
         });
 
-        $("[id^=picker]").datetimepicker({
-            format: "hh:mm A",
-            allowInputToggle: true,
-            stepping: 5,
-            useCurrent: false,
-            icons: {
-                time: "far fa-clock",
-                date: "fas fa-calendar-alt",
-                up: "fas fa-arrow-up",
-                down: "fas fa-arrow-down",
-                previous: "fas fa-arrow-left",
-                next: "fas fa-arrow-right"
-            }
-        });
-
         $("#pickerStart").on("dp.show", function () {
             if ($("#startTime").val() == "") {
                 $(this).data("DateTimePicker").date(startTime);

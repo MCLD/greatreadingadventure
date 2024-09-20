@@ -177,19 +177,6 @@
 
 @section scripts {
     <script>
-        $(".datepicker").datetimepicker({
-            format: "MM/DD/YYYY",
-            allowInputToggle: true,
-            icons: {
-                time: "far fa-clock",
-                date: "fas fa-calendar-alt",
-                up: "fas fa-arrow-up",
-                down: "fas fa-arrow-down",
-                previous: "fas fa-arrow-left",
-                next: "fas fa-arrow-right"
-            }
-        });
-
         $("#deleteModal").on("show.bs.modal", function (e) {
             var button = $(e.relatedTarget);
             var id = button.data("id");

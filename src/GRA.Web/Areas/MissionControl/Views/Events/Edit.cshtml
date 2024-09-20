@@ -535,36 +535,6 @@
 @section scripts
     {
     <script>
-        $("#pickerStart").datetimepicker({
-        @if (Model.Event != null && Model.Event.AllDay)
-        {
-            <text>format: "MM/DD/YYYY", </text>
-        }
-            allowInputToggle: true,
-            sideBySide: true,
-            icons: {
-            time: "far fa-clock",
-            date: "fas fa-calendar-alt",
-            up: "fas fa-arrow-up",
-            down: "fas fa-arrow-down",
-            previous: "fas fa-arrow-left",
-            next: "fas fa-arrow-right"
-        }
-                                        });
-
-        $("#pickerEnd").datetimepicker({
-            format: "@(Model.Event?.AllDay == true ? "MM/DD/YYYY" : "hh:mm A")",
-            allowInputToggle: true,
-            icons: {
-                time: "far fa-clock",
-                date: "fas fa-calendar-alt",
-                up: "fas fa-arrow-up",
-                down: "fas fa-arrow-down",
-                previous: "fas fa-arrow-left",
-                next: "fas fa-arrow-right"
-            }
-        });
-
         $("#Event_AllDay").on("change", function () {
             if ($("#Event_AllDay").is(":checked")) {
                 $("#pickerStart").data("DateTimePicker").format("MM/DD/YYYY");

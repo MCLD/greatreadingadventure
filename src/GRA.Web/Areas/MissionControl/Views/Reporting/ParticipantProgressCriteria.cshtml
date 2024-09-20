@@ -55,20 +55,6 @@
 @section scripts
 {
     <script>
-        $('[id^=picker]').datetimepicker({
-            format: 'MM/DD/YYYY h:mm a',
-            allowInputToggle: true,
-            sideBySide: true,
-            icons: {
-                time: "far fa-clock",
-                date: "fas fa-calendar-alt",
-                up: "fas fa-arrow-up",
-                down: "fas fa-arrow-down",
-                previous: "fas fa-arrow-left",
-                next: "fas fa-arrow-right"
-            }
-        });
-
         $("#pickerStart").data("DateTimePicker").defaultDate(moment(new Date()).subtract(2, "d").format("MM/DD/YYYY"));
         $("#pickerEnd").data("DateTimePicker").defaultDate(moment(new Date()).subtract(1, "d").format("MM/DD/YYYY"));
 
