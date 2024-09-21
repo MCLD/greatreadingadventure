@@ -147,13 +147,21 @@ footer p {
     background-color: #f9f9f9;
 }
 
+.badge-xs {
+    height: auto;
+    min-height: 64px;
+    width: 64px;
+}
+
 .badge-sm {
     height: auto;
+    min-height: 110px;
     width: 110px;
 }
 
 .badge-lg {
     height: auto;
+    min-height: 210px;
     width: 210px;
 }
 
@@ -198,32 +206,6 @@ footer p {
 input.form-check {
     margin: 0;
 }
-
-.page-button {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    color: #337ab7;
-    float: left;
-    line-height: 1.42857143;
-    margin-left: -1px;
-    padding: 6px 12px;
-    position: relative;
-    text-decoration: none;
-}
-
-    .page-button:hover {
-        background-color: #eee;
-        border-color: #ddd;
-        color: #23527c;
-        z-index: 2;
-    }
-
-    .page-button.disabled {
-        background-color: #fff;
-        border-color: #ddd;
-        color: #777;
-        cursor: not-allowed;
-    }
 
 input:read-only:not([type=checkbox]):not([type=radio]):not([type="submit"]):not([type="color"]) {
     cursor: not-allowed;

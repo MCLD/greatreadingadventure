@@ -2,7 +2,6 @@
 
 <form asp-controller="@ChallengesController.Name"
       asp-action="@nameof(ChallengesController.FeaturedDetails)"
-      style="padding: 1em 0;"
       method="post"
       role="form"
       enctype="multipart/form-data">
@@ -12,16 +11,13 @@
         <input asp-for="FeaturedGroup.Id" type="hidden" />
         <input asp-for="FeaturedGroupText.ImagePath" type="hidden" />
     }
-
     <div class="row">
-        <div class="col-xs-12">
-
+        <div class="col-12">
             <div class="mb-3">
                 <label asp-for="FeaturedGroup.Name" class="col-form-label"></label>
                 <input asp-for="FeaturedGroup.Name" class="form-control" />
                 <span asp-validation-for="FeaturedGroup.Name" class="text-danger"></span>
             </div>
-
             <div class="mb-3">
                 <label asp-for="FeaturedGroup.ChallengeGroupId" class="col-form-label"></label>
                 <select asp-for="FeaturedGroup.ChallengeGroupId" asp-items="Model.ChallengeGroupList" class="form-control">
@@ -29,50 +25,33 @@
                 </select>
                 <span asp-validation-for="FeaturedGroup.ChallengeGroupId" class="text-danger"></span>
             </div>
-
             <div class="row">
-                <div class="col-xs-12 col-sm-6 row-spacing">
+                <div class="col-12 col-sm-6">
                     <label asp-for="FeaturedGroup.StartDate" class="col-form-label"></label>
                     <div class="form-group date datetimePicker">
-                        <input asp-for="FeaturedGroup.StartDate" type="datetime-local" class="form-control"/>
+                        <input asp-for="FeaturedGroup.StartDate" type="datetime-local" class="form-control" />
                     </div>
                     <span asp-validation-for="FeaturedGroup.StartDate" class="text-danger"></span>
                 </div>
-
-                <div class="col-xs-12 col-sm-6 row-spacing">
+                <div class="col-12 col-sm-6 row-spacing">
                     <label asp-for="FeaturedGroup.EndDate" class="col-form-label"></label>
                     <div class="form-group date datetimePicker">
-                        <input asp-for="FeaturedGroup.EndDate" type="datetime-local" class="form-control"/>
+                        <input asp-for="FeaturedGroup.EndDate" type="datetime-local" class="form-control" />
                     </div>
                     <span asp-validation-for="FeaturedGroup.EndDate" class="text-danger"></span>
                 </div>
             </div>
-
             @if (Model.NewFeaturedGroup)
             {
                 <div class="mb-3">
                     <label asp-for="UploadedImage" class="col-form-label"></label>
-                    <div class="input-group">
-                        <label class="input-group-append">
-                            <span class="btn btn-secondary btn-file">
-                                <span class="far fa-file-image"></span>
-                                Image file
-                                <input type="file"
-                                       asp-for="UploadedImage"
-                                       class="form-control"
-                                       accept=".jpg,.png"
-                                       style="display: none;" />
-                            </span>
-                        </label>
-                        <input type="text"
-                               class="form-control"
-                               readonly
-                               id="selectedFile" />
-                    </div>
+                    <input type="file"
+                           class="form-control"
+                           asp-for="UploadedImage"
+                           accept=".jpg,.png" />
                     <span asp-validation-for="UploadedImage" class="text-danger"></span>
                 </div>
             }
-
             <div class="mb-3">
                 <label asp-for="FeaturedGroupText.AltText" class="col-form-label"></label>
                 <span class="fas fa-info-circle wide-tooltip"
@@ -82,7 +61,6 @@
                 <textarea asp-for="FeaturedGroupText.AltText" class="form-control"></textarea>
                 <span asp-validation-for="FeaturedGroupText.AltText" class="text-danger"></span>
             </div>
-
             @if (!Model.NewFeaturedGroup)
             {
                 <div class="row">
@@ -99,20 +77,24 @@
                     <div class="col-sm-6">
                         @if (!string.IsNullOrEmpty(Model.FeaturedGroupText.Filename))
                         {
-                            <strong>Filename:</strong> @Model.FeaturedGroupText.Filename<br />
+                            <strong>Filename:</strong> @Model.FeaturedGroupText.Filename
+
+                            <br />
                         }
-                        <a class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalReplaceImage">
+                        <a class="btn btn-warning"
+                           data-bs-toggle="modal"
+                           data-bs-target="#modalReplaceImage">
                             <span class="fas fa-file-upload"></span>
                             Replace Image
                         </a>
                     </div>
                 </div>
             }
-
-            <div class="row" style="margin-top: 2rem;">
-                <div class="col-xs-12">
-                    <a asp-action="@nameof(ChallengesController.FeaturedGroups)" class="btn btn-secondary">Return to List</a>
-                    <button class="btn btn-primary btn-spinner" type="submit" button-spinner>
+            <div class="row mt-4">
+                <div class="col-12">
+                    <a asp-action="@nameof(ChallengesController.FeaturedGroups)"
+                       class="btn btn-outline-secondary">Return to List</a>
+                    <button class="btn btn-outline-primary btn-spinner" type="submit" button-spinner>
                         <span class="fas fa-file-upload"></span>
                         @if (Model.NewFeaturedGroup)
                         {
@@ -136,84 +118,50 @@
           role="form"
           enctype="multipart/form-data">
         <input type="hidden" asp-for="FeaturedGroupId" value="@Model.FeaturedGroup.Id" />
-        <div>
-            <div class="modal fade"
-                 tabindex="-1"
-                 role="dialog"
-                 id="modalReplaceImage"
-                 aria-labelledby="modalReplaceImageLabel">
-                <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button"
-                                    class="btn-close"
-                                    data-bs-dismiss="modal"
-                                    aria-label="Close">
-                                
-                            </button>
-                            <h4 class="modal-title" id="modalReplaceImageLabel">Replace image</h4>
-                        </div>
-                        <div class="modal-body">
-                            <img src="/@Model.FeaturedGroupText.ImagePath" class="img img-fluid" />
-                        </div>
-                        <div class="modal-footer" style="text-align: left;">
+        <div class="modal fade"
+             tabindex="-1"
+             role="dialog"
+             id="modalReplaceImage"
+             data-bs-backdrop="static"
+             data-bs-keyboard="false"
+             aria-labelledby="modalReplaceImageLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title fs-5" id="modalReplaceImageLabel">Replace image</h2>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <img src="/@Model.FeaturedGroupText.ImagePath" class="img img-fluid" />
+                        <div class="mb-3">
                             <div class="mb-3">
                                 <label asp-for="UploadedImage" class="col-form-label"></label>
-                                <description gra-description-for="UploadedImage"></description>
-                                <div class="input-group">
-                                    <label class="input-group-append">
-                                        <span class="btn btn-secondary btn-file">
-                                            <span class="far fa-file-image"></span>
-                                            Image file
-                                            <input type="file"
-                                                   asp-for="UploadedImage"
-                                                   class="form-control"
-                                                   accept=".jpg,.png"
-                                                   style="display: none;" />
-                                        </span>
-                                    </label>
-                                    <input type="text"
-                                           class="form-control"
-                                           readonly
-                                           id="selectedFile">
-                                </div>
+                                <input type="file"
+                                       class="form-control"
+                                       asp-for="UploadedImage"
+                                       accept=".jpg,.png" />
                                 <span asp-validation-for="UploadedImage" class="text-danger"></span>
                             </div>
-                            <div style="text-align: right;">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">
-                                    Update Image
-                                </button>
-                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="text-align: left;">
+
+                        <div style="text-align: right;">
+                            <button type="button"
+                                    class="btn btn-secondary"
+                                    data-bs-dismiss="modal">
+                                Close
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                Update Image
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </form>
-}
-
-@section scripts {
-    <script>
-        $(':file').on('fileselect', function (event, numFiles, label) {
-            var input = $(this).parents('.input-group').find(':text'),
-                log = numFiles > 1 ? numFiles = ' files selected' : label;
-
-            if (input.length) {
-                input.val(log);
-                $('.btn-file').removeClass('btn-secondary').addClass('btn-success');
-            }
-            else {
-                input.val('');
-                $('.btn-file').addClass('btn-secondary').removeClass('btn-success');
-            }
-        });
-
-        $(document).on('change', ':file', function () {
-            var input = $(this),
-                numFiles = input.get(0).files ? input.get(0).files.length : 1,
-                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-            input.trigger('fileselect', [numFiles, label]);
-        });
-    </script>
 }

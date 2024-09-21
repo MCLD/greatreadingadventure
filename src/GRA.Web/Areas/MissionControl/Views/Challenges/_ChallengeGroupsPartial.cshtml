@@ -1,8 +1,15 @@
-﻿<div class="row">
-    <div class="col-xs-12">
-        <ul class="nav nav-pills" style="padding: 10px 0;">
-            <li ActiveBy routeKey="Action" value="@nameof(ChallengesController.Groups)"><a asp-action="Groups">Challenge Groups</a></li>
-            <li ActiveBy routeKey="Action" value="@nameof(ChallengesController.FeaturedGroups)"><a asp-action="FeaturedGroups">Featured Groups</a></li>
+﻿<div class="row my-4">
+    <div class="col">
+        <ul class="nav nav-pills">
+            <li class="nav-item">
+                <a ActiveBy routeKey="Action" value="@nameof(ChallengesController.Groups)"
+                   asp-action="Groups"
+                   class="nav-link">Challenge Groups</a>
+            </li>
+            <li class="nav-item">
+                <a ActiveBy routeKey="Action" value="@nameof(ChallengesController.FeaturedGroups)"
+                   asp-action="FeaturedGroups" class="nav-link">Featured Groups</a>
+            </li>
         </ul>
     </div>
 </div>

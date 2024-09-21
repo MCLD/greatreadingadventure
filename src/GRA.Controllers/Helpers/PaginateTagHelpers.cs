@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using GRA.Controllers.ViewModel.Shared;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
@@ -80,11 +81,10 @@ namespace GRA.Controllers.Helper
         private static TagBuilder PaginatorTag(string pageUrl, string glyph, bool asButtons)
         {
             var baseTag = asButtons ? new TagBuilder("button") : new TagBuilder("a");
-            baseTag.MergeAttribute("class", "btn btn-outline-primary");
 
             if (asButtons)
             {
-                baseTag.MergeAttribute("class", "page-button");
+                baseTag.MergeAttribute("class", "btn btn-outline-primary page-button");
                 baseTag.MergeAttribute("type", "button");
                 if (pageUrl == null)
                 {
@@ -97,6 +97,7 @@ namespace GRA.Controllers.Helper
             }
             else
             {
+                baseTag.MergeAttribute("class", "btn btn-outline-primary");
                 if (pageUrl == null)
                 {
                     baseTag.MergeAttribute("href", "#");
@@ -135,7 +136,7 @@ namespace GRA.Controllers.Helper
         {
             if (asButtons)
             {
-                return page.HasValue ? page.ToString() : null;
+                return page.HasValue ? $"{page}" : null;
             }
             else
             {
