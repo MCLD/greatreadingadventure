@@ -85,7 +85,7 @@
                             </tr>
                         </thead>
                         <tbody id="itemList">
-                            <tr id="noItems" class="@(Model.Bundle?.AvatarItems?.Count > 0 ? "hide" : "")">
+                            <tr id="noItems" class="@(Model.Bundle?.AvatarItems?.Count > 0 ? "d-none" : "")">
                                 <td colspan="4"><em>No items</em></td>
                             </tr>
                             @if (Model.Bundle?.AvatarItems?.Count > 0)
@@ -204,7 +204,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div id="searchMessage" class="row hide">
+                                <div id="searchMessage" class="row d-none">
                                     <div class="col-12">
                                         <p class="alert-sm alert-info">
                                             Searching for '<strong id="searchTerm"></strong>'
@@ -243,7 +243,7 @@
         $("#Bundle_CanBeUnlocked").on("change", function () {
             itemIds = [];
             $(".itemRow").remove();
-            $("#noItems").removeClass("hide");
+            $("#noItems").removeClass("d-none");
         });
 
         function UpdateItemsList() {
@@ -269,7 +269,7 @@
                 itemIds.push($(this).data("itemid"));
                 $("#ItemsList").val(itemIds.join(','));
 
-                $("#noItems").addClass("hide");
+                $("#noItems").addClass("d-none");
 
                 var row = $(this).parent().parent().clone();
                 var addedItem = row.find(".addItemButton");
@@ -290,7 +290,7 @@
             $("#ItemsList").val(itemIds.join(','));
             $(this).parent().parent().remove();
             if (itemIds.length == 0) {
-                $("#noItems").removeClass("hide");
+                $("#noItems").removeClass("d-none");
             }
         });
 
@@ -304,12 +304,12 @@
             search = $("#searchText").val();
             if (search != "")
             {
-                $("#searchMessage").removeClass("hide");
+                $("#searchMessage").removeClass("d-none");
                 $("#searchTerm").html(search);
             }
             else
             {
-                $("#searchMessage").addClass("hide");
+                $("#searchMessage").addClass("d-none");
             }
             page = 1;
             UpdateItemsList();
@@ -318,7 +318,7 @@
         $("#clearButton").on("click", function() {
             $("#searchText").val("");
             search = "";
-            $("#searchMessage").addClass("hide");
+            $("#searchMessage").addClass("d-none");
             page = 1;
             UpdateItemsList();
         })

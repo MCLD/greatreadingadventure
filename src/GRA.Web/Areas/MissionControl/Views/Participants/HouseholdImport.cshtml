@@ -31,7 +31,7 @@
                 </div>
             </div>
 
-            <div id="schoolFields" class="@(Model.ShowSchool ? "": "hide")">
+            <div id="schoolFields" class="@(Model.ShowSchool ? "": "d-none")">
                 @await Html.PartialAsync("_SchoolSelectionPartial", Model)
             </div>
 
@@ -117,11 +117,11 @@
             {
                 if (selectedProgram.AskSchool)
                 {
-                    $("#schoolFields").removeClass("hide");
+                    $("#schoolFields").removeClass("d-none");
                 }
                 else
                 {
-                    $("#schoolFields").addClass("hide");
+                    $("#schoolFields").addClass("d-none");
                 }
             }
         });

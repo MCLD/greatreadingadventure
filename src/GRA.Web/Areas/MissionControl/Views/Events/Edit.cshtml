@@ -108,7 +108,7 @@
         </div>
     </div>
 
-    <div id="branchGroup" class="@(Model.UseLocation ? "hide" : "" )">
+    <div id="branchGroup" class="@(Model.UseLocation ? "d-none" : "" )">
         <div class="row row-spacing">
             <div class="col-12">
                 <label asp-for="SystemId" class="col-form-label"></label>
@@ -131,7 +131,7 @@
         </div>
     </div>
 
-    <div id="locationGroup" class="row row-spacing @(Model.UseLocation ? "" : "hide" )">
+    <div id="locationGroup" class="row row-spacing @(Model.UseLocation ? "" : "d-none" )">
         <div class="col-12">
             <label asp-for="Event.AtLocationId" class="col-form-label"></label>
             <label style="font-size: 12px;">
@@ -170,7 +170,7 @@
         <div class="row row-spacing">
             <div class="col-12">
                 <label class="col-form-label">Related Challenge/Group</label>
-                <table id="challengeTable" class="table table-sm table-bordered table-striped @(Model.Event.Challenge == null ? "hide" : "")">
+                <table id="challengeTable" class="table table-sm table-bordered table-striped @(Model.Event.Challenge == null ? "d-none" : "")">
                     <thead>
                         <tr>
                             <th>Challenge Name</th>
@@ -227,7 +227,7 @@
                         }
                     </tbody>
                 </table>
-                <table id="groupTable" class="table table-sm table-bordered table-striped @(Model.Event.ChallengeGroup == null ? "hide" : "")">
+                <table id="groupTable" class="table table-sm table-bordered table-striped @(Model.Event.ChallengeGroup == null ? "d-none" : "")">
                     <thead>
                         <tr>
                             <th>Group Name</th>
@@ -281,7 +281,7 @@
                         }
                     </tbody>
                 </table>
-                <div id="noRelated" class="alert alert-warning @(Model.Event.Challenge != null || Model.Event.ChallengeGroup != null ? "hide" : "")" style="margin-bottom: 0.5rem;">No related challenges or challenge groups.</div>
+                <div id="noRelated" class="alert alert-warning @(Model.Event.Challenge != null || Model.Event.ChallengeGroup != null ? "d-none" : "")" style="margin-bottom: 0.5rem;">No related challenges or challenge groups.</div>
                 @if (Model.CanRelateChallenge)
                 {
                     <input asp-for="CanRelateChallenge" type="hidden" />
@@ -386,7 +386,7 @@
                                             </div>
                                         </div>
                                         <div id="challengeSearchMessage"
-                                             class="row hide">
+                                             class="row d-none">
                                             <div class="col-12">
                                                 <p class="alert-sm alert-info">
                                                     Searching for '<strong id="challengeSearchTerm"></strong>'
@@ -423,7 +423,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div id="groupSearchMessage" class="row hide">
+                                        <div id="groupSearchMessage" class="row d-none">
                                             <div class="col-12">
                                                 <p class="alert-sm alert-info">
                                                     Searching for '<strong id="groupSearchTerm"></strong>'
@@ -545,14 +545,14 @@
         });
 
         $("#viewLocationList").on("click", function () {
-            $("#branchGroup").addClass("hide");
-            $("#locationGroup").removeClass("hide");
+            $("#branchGroup").addClass("d-none");
+            $("#locationGroup").removeClass("d-none");
             $("#UseLocation").val("true");
         });
 
         $("#viewBranchList").on("click", function () {
-            $("#locationGroup").addClass("hide");
-            $("#branchGroup").removeClass("hide");
+            $("#locationGroup").addClass("d-none");
+            $("#branchGroup").removeClass("d-none");
             $("#UseLocation").val("false");
         });
 
@@ -592,7 +592,7 @@
                                 $.each(response.data, function (index, item) {
                                     locationList.append(new Option(item.text, item.value, item.selected, item.selected))
                                 });
-                                $("#addModal").modal("hide");
+                                $("#addModal").modal("d-none");
                                 name.val("");
                                 address.val("");
                                 url.val("");
@@ -621,9 +621,9 @@
                     var mapContainer = input.parent().siblings(".mapContainer");
 
                     if (address.length == 0) {
-                        mapContainer.addClass("hide");
+                        mapContainer.addClass("d-none");
                     } else {
-                        mapContainer.removeClass("hide");
+                        mapContainer.removeClass("d-none");
                         mapContainer.children().attr("src", mapsUrl + address);
                     }
                 });
@@ -707,26 +707,26 @@
                     addedItem.children().addClass("fa-minus-circle text-danger");
                     addedItem.addClass("removeRelatedButton");
 
-                    $("#noRelated").addClass("hide");
+                    $("#noRelated").addClass("d-none");
 
                     if ($(this).hasClass("addChallengeButton")) {
                         $("#Event_ChallengeId").val($(this).data("id"))
                         $("#Event_ChallengeGroupId").val("")
-                        $("#challengeTable").removeClass("hide");
-                        $("#groupTable").addClass("hide");
+                        $("#challengeTable").removeClass("d-none");
+                        $("#groupTable").addClass("d-none");
                         $("#challengeList").html(row);
                         $("#groupList").html("");
                     }
                     else {
                         $("#Event_ChallengeId").val("")
                         $("#Event_ChallengeGroupId").val($(this).data("id"))
-                        $("#challengeTable").addClass("hide");
-                        $("#groupTable").removeClass("hide");
+                        $("#challengeTable").addClass("d-none");
+                        $("#groupTable").removeClass("d-none");
                         $("#challengeList").html("");
                         $("#groupList").html(row);
                     }
 
-                    $("#listModal").modal("hide");
+                    $("#listModal").modal("d-none");
                     $(".relatedText").text("Change");
                     challengesLoaded = false;
                     groupsLoaded = false;
@@ -739,8 +739,8 @@
             $(document).on("click", ".removeRelatedButton", function () {
                 $("#Event_ChallengeId, #Event_ChallengeGroupId").val("");
                 $(this).parent().parent().remove();
-                $("#challengeTable, #groupTable").addClass("hide");
-                $("#noRelated").removeClass("hide");
+                $("#challengeTable, #groupTable").addClass("d-none");
+                $("#noRelated").removeClass("d-none");
                 $(".relatedText").text("Add");
                 challengesLoaded = false;
                 groupsLoaded = false;
@@ -758,11 +758,11 @@
             $("#challengeSearchButton").on("click", function () {
                 challengeSearch = $("#challengeSearchText").val();
                 if (challengeSearch != "") {
-                    $("#challengeSearchMessage").removeClass("hide");
+                    $("#challengeSearchMessage").removeClass("d-none");
                     $("#challengeSearchTerm").html(challengeSearch);
                 }
                 else {
-                    $("#challengeSearchMessage").addClass("hide");
+                    $("#challengeSearchMessage").addClass("d-none");
                 }
                 challengePage = 1;
                 UpdateChallengeList();
@@ -771,7 +771,7 @@
             $("#challengeClearButton").on("click", function () {
                 $("#challengeSearchText").val("");
                 challengeSearch = "";
-                $("#challengeSearchMessage").addClass("hide");
+                $("#challengeSearchMessage").addClass("d-none");
                 challengePage = 1;
                 UpdateChallengeList();
             })
@@ -779,11 +779,11 @@
             $("#groupSearchButton").on("click", function () {
                 groupSearch = $("#groupSearchText").val();
                 if (groupSearch != "") {
-                    $("#groupSearchMessage").removeClass("hide");
+                    $("#groupSearchMessage").removeClass("d-none");
                     $("#groupSearchTerm").html(groupSearch);
                 }
                 else {
-                    $("#groupSearchMessage").addClass("hide");
+                    $("#groupSearchMessage").addClass("d-none");
                 }
                 groupPage = 1;
                 UpdateGroupList();
@@ -792,7 +792,7 @@
             $("#groupClearButton").on("click", function () {
                 $("#groupSearchText").val("");
                 groupSearch = "";
-                $("#groupSearchMessage").addClass("hide");
+                $("#groupSearchMessage").addClass("d-none");
                 groupPage = 1;
                 UpdateGroupList();
             })

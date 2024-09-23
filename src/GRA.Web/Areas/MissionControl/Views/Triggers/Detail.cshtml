@@ -188,7 +188,7 @@
             <div class="col-12 mb-3-lg">
                 <label asp-for="Trigger.SecretCode" class="col-form-label col-sm-3"></label>
                 <div class="col-sm-9">
-                    <span id="SecretCode-Icon" style="float:left;margin-top:15px;" class="fa colored-icon hide"></span>
+                    <span id="SecretCode-Icon" style="float:left;margin-top:15px;" class="fa colored-icon d-none"></span>
                     <div style="margin-left:20px;">
                         <input asp-for="Trigger.SecretCode"
                                class="form-control"
@@ -254,7 +254,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="requirementList">
-                                    <tr id="noRequirements" class="@(Model.TriggerRequirements?.Count > 0 ? "hide" : "")">
+                                    <tr id="noRequirements" class="@(Model.TriggerRequirements?.Count > 0 ? "d-none" : "")">
                                         <td colspan="4"><em>No challenges or triggers required.</em></td>
                                     </tr>
                                     @if (Model.TriggerRequirements != null)
@@ -815,7 +815,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="searchMessage" class="row hide">
+                            <div id="searchMessage" class="row d-none">
                                 <div class="col-12">
                                     <p class="alert-sm alert-info">
                                         Searching for '<strong id="searchTerm"></strong>'
@@ -885,7 +885,7 @@
                     badgeIds.push(badgeId);
                     $("#BadgeRequiredList").val(badgeIds.join(','));
                 }
-                $("#noRequirements").addClass("hide");
+                $("#noRequirements").addClass("d-none");
 
                 var row = $(this).parent().parent().clone();
                 var addedItem = row.find(".addRequirementButton");
@@ -919,7 +919,7 @@
             $(this).parent().parent().remove();
             if (badgeIds == "" && challengeIds == "")
             {
-                $("#noRequirements").removeClass("hide");
+                $("#noRequirements").removeClass("d-none");
             }
         });
 
@@ -936,12 +936,12 @@
             search = $("#searchText").val();
             if (search != "")
             {
-                $("#searchMessage").removeClass("hide");
+                $("#searchMessage").removeClass("d-none");
                 $("#searchTerm").html(search);
             }
             else
             {
-                $("#searchMessage").addClass("hide");
+                $("#searchMessage").addClass("d-none");
             }
             page = 1;
             UpdateRequirementsList();
@@ -950,7 +950,7 @@
         $("#clearButton").on("click", function () {
             $("#searchText").val("");
             search = "";
-            $("#searchMessage").addClass("hide");
+            $("#searchMessage").addClass("d-none");
             page = 1;
             UpdateRequirementsList();
         });
@@ -1058,7 +1058,7 @@
         });
 
         $(window).on("message", function(e) {
-            $("#badgeModal").modal("hide");
+            $("#badgeModal").modal("d-none");
             var data = e.originalEvent.data;
             $("#badgeImage").attr("src", data);
             $("#badgeImage").height(200);
@@ -1110,7 +1110,7 @@
                     if (secretCode != "@Model.Trigger?.SecretCode") {
                         var codeCheckUrl = "@Url.Action("SecretCodeInUse", "Lookup")";
                         var icon = $("#SecretCode-Icon");
-                        icon.removeClass("hide fa-times fa-check");
+                        icon.removeClass("d-none fa-times fa-check");
                         icon.addClass("fa-spinner fa-spin");
                         $.post(codeCheckUrl, { secretCode: secretCode }, function (response) {
                             if (response) {
@@ -1135,7 +1135,7 @@
                         });
                     }
                     else {
-                        $("#SecretCode-Icon").removeClass("hide fa-times").addClass("fa-check");
+                        $("#SecretCode-Icon").removeClass("d-none fa-times").addClass("fa-check");
                         $("#SecretCode-Validation").removeClass("field-validation-valid");
                         $("#SecretCode-Validation").text("No change to secret code.");
                     }
@@ -1144,7 +1144,7 @@
         });
 
         $("#Trigger_SecretCode").on("keypress", function () {
-            $("#SecretCode-Icon").addClass("hide");
+            $("#SecretCode-Icon").addClass("d-none");
             $("#SecretCode-Validation").addClass("field-validation-valid");
         });
 

@@ -328,10 +328,10 @@
             var name = button.data('name');
             var isElevated = button.data("iselevated");
             if (isElevated == "True") {
-                $("#elevatedWarning").removeClass("hide");
+                $("#elevatedWarning").removeClass("d-none");
             }
             else {
-                $("#elevatedWarning").addClass("hide");
+                $("#elevatedWarning").addClass("d-none");
             }
             var modal = $(this);
             modal.find('#modal-text').text('Are you sure you wish to delete the participant "' + name + '"?');

@@ -71,7 +71,7 @@
         </div>
     </div>
 
-    <div id="branchGroup" class="@(Model.UseLocation ? "hide" : "" )">
+    <div id="branchGroup" class="@(Model.UseLocation ? "d-none" : "" )">
         <div class="row row-spacing">
             <div class="col-12">
                 <label asp-for="SystemId" class="col-form-label"></label>
@@ -95,7 +95,7 @@
     </div>
 
 
-    <div id="locationGroup" class="row row-spacing @(Model.UseLocation ? "" : "hide" )">
+    <div id="locationGroup" class="row row-spacing @(Model.UseLocation ? "" : "d-none" )">
         <div class="col-12">
             <label asp-for="Event.AtLocationId" class="col-form-label"></label>
             <label style="font-size: 12px;">
@@ -135,7 +135,7 @@
         <div class="row row-spacing">
             <div class="col-12">
                 <label class="col-form-label">Related Challenge/Group</label>
-                <table id="challengeTable" class="table table-sm table-bordered table-striped hide">
+                <table id="challengeTable" class="table table-sm table-bordered table-striped d-none">
                     <thead>
                         <tr>
                             <th>Challenge Name</th>
@@ -146,7 +146,7 @@
                     </thead>
                     <tbody id="challengeList"></tbody>
                 </table>
-                <table id="groupTable" class="table table-sm table-bordered table-striped hide">
+                <table id="groupTable" class="table table-sm table-bordered table-striped d-none">
                     <thead>
                         <tr>
                             <th>Group Name</th>
@@ -192,7 +192,7 @@
                         <div class="row row-spacing">
                             <div class="col-12">
                                 <label asp-for="SecretCode" class="col-form-label"></label>
-                                <span id="SecretCode-Icon" class="fa colored-icon hide"></span>
+                                <span id="SecretCode-Icon" class="fa colored-icon d-none"></span>
                                 <input asp-for="SecretCode" class="form-control secretCodeField @(Model.IncludeSecretCode ? "" : "ignore")" />
                                 <span id="SecretCode-Validation" asp-validation-for="SecretCode" class="text-danger"></span>
                             </div>
@@ -417,7 +417,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div id="challengeSearchMessage" class="row hide">
+                                        <div id="challengeSearchMessage" class="row d-none">
                                             <div class="col-12">
                                                 <p class="alert-sm alert-info">
                                                     Searching for '<strong id="challengeSearchTerm"></strong>'
@@ -454,7 +454,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div id="groupSearchMessage" class="row hide">
+                                        <div id="groupSearchMessage" class="row d-none">
                                             <div class="col-12">
                                                 <p class="alert-sm alert-info">
                                                     Searching for '<strong id="groupSearchTerm"></strong>'
@@ -587,7 +587,7 @@
 @section scripts {
     <script>
         $("#SecretCode").on("keypress", function () {
-            $("#SecretCode-Icon").addClass("hide");
+            $("#SecretCode-Icon").addClass("d-none");
         });
 
         @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
@@ -629,14 +629,14 @@
         });
 
         $("#viewLocationList").on("click", function() {
-            $("#branchGroup").addClass("hide");
-            $("#locationGroup").removeClass("hide");
+            $("#branchGroup").addClass("d-none");
+            $("#locationGroup").removeClass("d-none");
             $("#UseLocation").val("true");
         });
 
         $("#viewBranchList").on("click", function() {
-            $("#locationGroup").addClass("hide");
-            $("#branchGroup").removeClass("hide");
+            $("#locationGroup").addClass("d-none");
+            $("#branchGroup").removeClass("d-none");
             $("#UseLocation").val("false");
         });
 
@@ -681,7 +681,7 @@
                             $.each(response.data, function (index, item) {
                                 locationList.append(new Option(item.text, item.value, item.selected, item.selected))
                             });
-                            $("#addModal").modal("hide");
+                            $("#addModal").modal("d-none");
                             name.val("");
                             address.val("");
                             url.val("");
@@ -710,10 +710,10 @@
                     var mapContainer = input.parent().siblings(".mapContainer");
 
                     if (address.length == 0) {
-                        mapContainer.addClass("hide");
+                        mapContainer.addClass("d-none");
                     }
                     else {
-                        mapContainer.removeClass("hide");
+                        mapContainer.removeClass("d-none");
                         mapContainer.children().attr("src", mapsUrl + address);
                     }
                 });
@@ -782,7 +782,7 @@
             });
 
             $(window).on("message", function(e) {
-                $("#badgeModal").modal("hide");
+                $("#badgeModal").modal("d-none");
                 var data = e.originalEvent.data;
                 $("#badgeImage").attr("src", data);
                 $("#badgeImage").height(200);
@@ -797,7 +797,7 @@
                 if ($(this).val() != "" && !$(this).hasClass("input-validation-error")) {
                     var codeCheckUrl = "@Url.Action("SecretCodeInUse", "Lookup")";
                     var icon = $("#SecretCode-Icon");
-                    icon.removeClass("hide fa-times fa-check");
+                    icon.removeClass("d-none fa-times fa-check");
                     icon.addClass("fa-spinner fa-spin");
                     $.post(codeCheckUrl, { secretCode: $(this).val() }, function (response) {
                         if (response) {
@@ -824,7 +824,7 @@
             });
 
             $("#SecretCode").on("keypress", function () {
-                $("#SecretCode-Icon").addClass("hide");
+                $("#SecretCode-Icon").addClass("d-none");
             });
         </text>
         }
@@ -905,26 +905,26 @@
                     addedItem.children().addClass("fa-minus-circle text-danger");
                     addedItem.addClass("removeRelatedButton");
 
-                    $("#noRelated").addClass("hide");
+                    $("#noRelated").addClass("d-none");
 
                     if ($(this).hasClass("addChallengeButton")) {
                         $("#Event_ChallengeId").val($(this).data("id"))
                         $("#Event_ChallengeGroupId").val("")
-                        $("#challengeTable").removeClass("hide");
-                        $("#groupTable").addClass("hide");
+                        $("#challengeTable").removeClass("d-none");
+                        $("#groupTable").addClass("d-none");
                         $("#challengeList").html(row);
                         $("#groupList").html("");
                     }
                     else {
                         $("#Event_ChallengeId").val("")
                         $("#Event_ChallengeGroupId").val($(this).data("id"))
-                        $("#challengeTable").addClass("hide");
-                        $("#groupTable").removeClass("hide");
+                        $("#challengeTable").addClass("d-none");
+                        $("#groupTable").removeClass("d-none");
                         $("#challengeList").html("");
                         $("#groupList").html(row);
                     }
 
-                    $("#listModal").modal("hide");
+                    $("#listModal").modal("d-none");
                     $(".relatedText").text("Change");
                     challengesLoaded = false;
                     groupsLoaded = false;
@@ -937,8 +937,8 @@
             $(document).on("click", ".removeRelatedButton", function () {
                 $("#Event_ChallengeId,#Event_ChallengeGroupId").val("");
                 $(this).parent().parent().remove();
-                $("#challengeTable, #groupTable").addClass("hide");
-                $("#noRelated").removeClass("hide");
+                $("#challengeTable, #groupTable").addClass("d-none");
+                $("#noRelated").removeClass("d-none");
                 $(".relatedText").text("Add");
                 challengesLoaded = false;
                 groupsLoaded = false;
@@ -957,12 +957,12 @@
                 challengeSearch = $("#challengeSearchText").val();
                 if (challengeSearch != "")
                 {
-                    $("#challengeSearchMessage").removeClass("hide");
+                    $("#challengeSearchMessage").removeClass("d-none");
                     $("#challengeSearchTerm").html(challengeSearch);
                 }
                 else
                 {
-                    $("#challengeSearchMessage").addClass("hide");
+                    $("#challengeSearchMessage").addClass("d-none");
                 }
                 challengePage = 1;
                 UpdateChallengeList();
@@ -971,7 +971,7 @@
             $("#challengeClearButton").on("click", function() {
                 $("#challengeSearchText").val("");
                 challengeSearch = "";
-                $("#challengeSearchMessage").addClass("hide");
+                $("#challengeSearchMessage").addClass("d-none");
                 challengePage = 1;
                 UpdateChallengeList();
             })
@@ -979,11 +979,11 @@
             $("#groupSearchButton").on("click", function () {
                 groupSearch = $("#groupSearchText").val();
                 if (groupSearch != "") {
-                    $("#groupSearchMessage").removeClass("hide");
+                    $("#groupSearchMessage").removeClass("d-none");
                     $("#groupSearchTerm").html(groupSearch);
                 }
                 else {
-                    $("#groupSearchMessage").addClass("hide");
+                    $("#groupSearchMessage").addClass("d-none");
                 }
                 groupPage = 1;
                 UpdateGroupList();
@@ -992,7 +992,7 @@
             $("#groupClearButton").on("click", function () {
                 $("#groupSearchText").val("");
                 groupSearch = "";
-                $("#groupSearchMessage").addClass("hide");
+                $("#groupSearchMessage").addClass("d-none");
                 groupPage = 1;
                 UpdateGroupList();
             })

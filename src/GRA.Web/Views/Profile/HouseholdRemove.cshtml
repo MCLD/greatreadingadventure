@@ -30,7 +30,7 @@
                                 <div class="row row-spacing">
                                     <div class="col-12">
                                         <label asp-for="Username" class="col-form-label"></label>
-                                        <span id="Username-Icon" class="fas colored-icon hide"></span>
+                                        <span id="Username-Icon" class="fas colored-icon d-none"></span>
                                         <input asp-for="Username" class="form-control" autofocus />
                                         <span id="Username-Validation" asp-validation-for="Username" class="text-success"></span>
                                     </div>
@@ -78,7 +78,7 @@
                 $(this).val($(this).val().trim());
                 var usernameCheckUrl = "@Url.Action("UsernameInUse", "Lookup", new { Area = string.Empty })";
                 var icon = $("#Username-Icon");
-                icon.removeClass("hide fa-times fa-check");
+                icon.removeClass("d-none fa-times fa-check");
                 icon.addClass("fa-spinner fa-spin");
                 $.post(usernameCheckUrl, { username: $(this).val() }, function (response) {
                     if (response) {
@@ -101,7 +101,7 @@
         });
 
         $("#Username").on("keypress", function () {
-            $("#Username-Icon").addClass("hide");
+            $("#Username-Icon").addClass("d-none");
         });
     </script>
 }

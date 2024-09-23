@@ -12,7 +12,7 @@
                     @foreach (var layer in Model.LayerGroupings.SelectMany(_ => _))
                     {
                         <img src="~/@layer.FilePath"
-                             class="@($"image{layer.Id}") xsLayer avatar-layer@(string.IsNullOrWhiteSpace(layer.FilePath) ? " hide" : "")"
+                             class="@($"image{layer.Id}") xsLayer avatar-layer@(string.IsNullOrWhiteSpace(layer.FilePath) ? " d-none" : "")"
                              style="z-index: @(layer.Position + 1);"
                              data-layer="@layer.Id"
                              data-item="@layer.SelectedItem" />
@@ -27,7 +27,7 @@
                     @foreach (var layer in Model.LayerGroupings.SelectMany(_ => _))
                     {
                         <img src="~/@layer.FilePath"
-                             class="@($"image{layer.Id}") avatar-layer@(string.IsNullOrWhiteSpace(layer.FilePath) ? " hide" : "")"
+                             class="@($"image{layer.Id}") avatar-layer@(string.IsNullOrWhiteSpace(layer.FilePath) ? " d-none" : "")"
                              style="z-index: @(layer.Position + 1);"
                              data-layer="@layer.Id"
                              data-item="@layer.SelectedItem" />
@@ -45,7 +45,7 @@
                     {
                         foreach (var layerGroup in Model.LayerGroupings)
                         {
-                            <div style="display: inline-block;" class="@(layerGroup.Count == 1 ? "hide" : "")">
+                            <div style="display: inline-block;" class="@(layerGroup.Count == 1 ? "d-none" : "")">
                                 @foreach (var layer in layerGroup)
                                 {
                                     <img src="~/@layer.Icon"
@@ -66,7 +66,7 @@
                             </div>
                         }
                     }
-                    <div style="display: inline-block;" class="@(Model.Bundles.Count == 0 ? "hide" : "")">
+                    <div style="display: inline-block;" class="@(Model.Bundles.Count == 0 ? "d-none" : "")">
                         <img src="@(Model.Bundles.Any(_=>!_.HasBeenViewed.Value && _.CanBeUnlocked)
                             ? "/content/site1/avatarbundles/notif.png"
                             : "/content/site1/avatarbundles/icon.png")"
@@ -161,7 +161,7 @@
                     </li>
                 </ul>
             </div>
-            <div id="avatarColors" class="row hide">
+            <div id="avatarColors" class="row d-none">
                 <div class="col-12">
                     <div class="avatar-selector-well well well-sm">
                         <div id="avatarColorSelectors" class="avatar-selector-container">
@@ -169,7 +169,7 @@
                     </div>
                 </div>
             </div>
-            <div id="avatarItems" class="row hide">
+            <div id="avatarItems" class="row d-none">
                 <div class="col-12">
                     <div class="avatar-selector-well well well-sm">
                         <div id="avatarItemSelectors" class="avatar-selector-container">
@@ -188,7 +188,7 @@
                             @SharedLocalizer[GRA.Domain.Model.DisplayNames.Home]
                         </a>
                         <button id="removeButton"
-                                class="btn btn-lg btn-secondary hide"
+                                class="btn btn-lg btn-secondary d-none"
                                 style="margin:5px;">
                             <span class="fas fa-ban"></span>
                             <span id="layerName"></span>
@@ -277,13 +277,13 @@
         function UpdateRemoveButtonForBundle(item) {
             let layerId = item == undefined ? prevLayerSelected[0] : item.data("layer");
             if (layerId != undefined) {
-                $("#removeButton").removeClass("hide");
+                $("#removeButton").removeClass("d-none");
                 let layer = GetLayerById(layerId);
                 $("#layerName").text(layer.data("removelabel"));
                 $("#removeButton").data("layer", layerId);
             }
             else {
-                $("#removeButton").addClass("hide");
+                $("#removeButton").addClass("d-none");
             }
         }
 
@@ -315,10 +315,10 @@
                 image.data(type, id);
                 image.attr("src", srcStr);
                 if (hide) {
-                    image.addClass("hide");
+                    image.addClass("d-none");
                 }
                 else {
-                    image.removeClass("hide");
+                    image.removeClass("d-none");
                 }
             }
         }
@@ -377,36 +377,36 @@
         function SetLayer(layer) {
             layer.addClass("selected");
             if (layer.data("layer") == 999) {
-                $("#avatarBundles").removeClass("hide");
+                $("#avatarBundles").removeClass("d-none");
                 $("#bundle-selected").html("@SharedLocalizer[GRA.Annotations.Interface.SelectABundle] ");
                 $("#bundle-selected").append("<span class='caret'></span>");
                 $("#bundle-selected").data("bundleid", "");
-                $("#avatarItems").addClass("hide");
-                $("#removeButton").addClass("hide");
+                $("#avatarItems").addClass("d-none");
+                $("#removeButton").addClass("d-none");
             }
             else if (layer.data("showitemselector") == "True") {
                 //If a regular item container is being displayed
-                $("#avatarBundles").addClass("hide");
-                $("#avatarItems").removeClass("hide");
+                $("#avatarBundles").addClass("d-none");
+                $("#avatarItems").removeClass("d-none");
                 $("#removeButton").data("layer", layer.data("layer"));
                 $("#layerName").text(layer.data("removelabel"));
                 SetLayersSelectors("#avatarItemSelectors", 3);
             }
             else {
-                $("#avatarBundles").addClass("hide");
-                $("#avatarItems").addClass("hide");
+                $("#avatarBundles").addClass("d-none");
+                $("#avatarItems").addClass("d-none");
             }
             // Handles the display of Colors and their row cases
             if (layer.data("showcolorselector") == "True") {
-                $("#avatarColors").removeClass("hide");
+                $("#avatarColors").removeClass("d-none");
                 SetLayersSelectors("#avatarColorSelectors", layer.data("colorrows"));
             }
             else {
-                $("#avatarColors").addClass("hide");
+                $("#avatarColors").addClass("d-none");
             }
             layer.data("removable") == "True" ?
-                $("#removeButton").removeClass("hide") :
-                $("#removeButton").addClass("hide");
+                $("#removeButton").removeClass("d-none") :
+                $("#removeButton").addClass("d-none");
         }
 
         // Initializes the item/color slicks
@@ -550,7 +550,7 @@
             let button = $(this);
             let layer = CurrentSelectedLayer();
             if (layer.data("layer") != 999) {
-                if (!$("#removeButton").hasClass("hide") && $(".avatarItems").find(".selected") != undefined
+                if (!$("#removeButton").hasClass("d-none") && $(".avatarItems").find(".selected") != undefined
                     && layer.data("removable") == "True") {
                     $(".avatar-item-selector.selected").removeClass("selected");
                     $(".avatar-color-selector.selected").removeClass("selected");
@@ -576,7 +576,7 @@
                     else {
                         nextSelected = GetFirstActiveSelectedItem();
                         if (nextSelected == undefined) {
-                            $("#removeButton").addClass("hide");
+                            $("#removeButton").addClass("d-none");
                         }
                         else {
                             UpdateRemoveButtonForBundle(nextSelected);
@@ -608,7 +608,7 @@
             let beenViewed = $(bundle).data("beenviewed");
             let listItem = $(bundle);
             let bundleId = $(bundle).data("bundleid");
-            $("#avatarItems").removeClass("hide");
+            $("#avatarItems").removeClass("d-none");
             $("#bundle-selected").text(listItem.contents().not(listItem.children()).text());
             $("#bundle-selected").append("<span class='caret'></span>");
             $($("#bundle-drop").find(".active")).removeClass("active");
@@ -658,7 +658,7 @@
                         }
                     }
                     prevLayerSelected.unshift(itemsLayer.data("layer"));
-                    $("#removeButton").removeClass("hide");
+                    $("#removeButton").removeClass("d-none");
                     UpdateRemoveButtonForBundle(newDataItem);
                 }
             }

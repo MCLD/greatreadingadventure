@@ -23,7 +23,7 @@
                 <div class="row row-spacing">
                     <div class="col-12">
                         <label asp-for="User.Username" class="col-form-label"></label>
-                        <span id="Username-Icon" class="fa colored-icon hide"></span>
+                        <span id="Username-Icon" class="fa colored-icon d-none"></span>
                         <input asp-for="User.Username" class="form-control" />
                         <span id="Username-Validation" asp-validation-for="User.Username" class="text-success"></span>
                     </div>
@@ -97,7 +97,7 @@
                 </div>
             </div>
 
-            <div id="ageField" class="row row-spacing @(Model.ShowAge ? "": "hide")">
+            <div id="ageField" class="row row-spacing @(Model.ShowAge ? "": "d-none")">
                 <div class="col-12">
                     <label asp-for="User.Age" class="col-form-label"></label>
                     <input asp-for="User.Age" class="form-control" type="text" />
@@ -105,7 +105,7 @@
                 </div>
             </div>
 
-            <div id="schoolFields" class="@(Model.ShowSchool ? "": "hide")">
+            <div id="schoolFields" class="@(Model.ShowSchool ? "": "d-none")">
                 @if (Model.CanEditDetails)
                 {
                     @await Html.PartialAsync("_SchoolSelectionPartial", Model)
@@ -425,18 +425,18 @@
             })[0];
             if (selectedProgram != null) {
                 if (selectedProgram.AskAge) {
-                    $("#ageField").removeClass("hide");
+                    $("#ageField").removeClass("d-none");
                     validateAge();
                 }
                 else {
-                    $("#ageField").addClass("hide");
+                    $("#ageField").addClass("d-none");
                 }
 
                 if (selectedProgram.AskSchool) {
-                    $("#schoolFields").removeClass("hide");
+                    $("#schoolFields").removeClass("d-none");
                 }
                 else {
-                    $("#schoolFields").addClass("hide");
+                    $("#schoolFields").addClass("d-none");
                 }
             }
         });
@@ -476,7 +476,7 @@
                         if (username != "@Html.Raw(Model.Username)") {
                             var usernameCheckUrl = "@Url.Action("UsernameInUse", "Lookup", new { Area = string.Empty })";
                             var icon = $("#Username-Icon");
-                            icon.removeClass("hide fa-times fa-check");
+                            icon.removeClass("d-none fa-times fa-check");
                             icon.addClass("fa-spinner fa-spin");
                             $.post(usernameCheckUrl, { username: username }, function (response) {
                                 if (response) {
@@ -497,7 +497,7 @@
                             });
                         }
                         else {
-                            $("#Username-Icon").removeClass("hide fa-times").addClass("fa-check");
+                            $("#Username-Icon").removeClass("d-none fa-times").addClass("fa-check");
                             $("#Username-Validation").removeClass("field-validation-valid");
                             $("#Username-Validation").text("No change to username.");
 
@@ -506,7 +506,7 @@
                 });
 
             $("#User_Username").on("keypress", function () {
-                $("#Username-Icon").addClass("hide");
+                $("#Username-Icon").addClass("d-none");
             });
             </text>
         }

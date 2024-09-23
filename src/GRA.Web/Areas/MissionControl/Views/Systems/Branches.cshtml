@@ -342,10 +342,10 @@
                 var mapContainer = input.parent().siblings(".mapContainer");
 
                 if (address.length == 0) {
-                    mapContainer.addClass("hide");
+                    mapContainer.addClass("d-none");
                 }
                 else {
-                    mapContainer.removeClass("hide");
+                    mapContainer.removeClass("d-none");
                     mapContainer.children().attr("src", mapsUrl + address);
                 }
             });

@@ -56,7 +56,7 @@
                             </tr>
                         </thead>
                         <tbody id="requirementList">
-                            <tr id="noRequirements" class="@(Model.ReportBadges?.Count > 0 ? "hide" : "")">
+                            <tr id="noRequirements" class="@(Model.ReportBadges?.Count > 0 ? "d-none" : "")">
                                 <td colspan="4"><em>No badges reported</em></td>
                             </tr>
                             @if (Model.ReportBadges != null)
@@ -168,7 +168,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="searchMessage" class="row hide">
+                            <div id="searchMessage" class="row d-none">
                                 <div class="col-12">
                                     <p class="alert-sm alert-info">
                                         Searching for '<strong id="searchTerm"></strong>'
@@ -245,7 +245,7 @@
                     $("#BadgeRequiredList").val(badgeId);
                     $("#ChallengeRequiredList").val("");
                 }
-                $("#noRequirements").addClass("hide");
+                $("#noRequirements").addClass("d-none");
                 var row = $(this).parent().parent().clone();
                 var addedItem = row.find(".addRequirementButton");
                 addedItem.removeClass("addRequirementButton")
@@ -258,7 +258,7 @@
 
                 UpdateRequirementsList();
                 $("#addButton").html('Change Badge');
-                $("#listModal").modal("hide");
+                $("#listModal").modal("d-none");
             }
             console.log(challengeIds)
             console.log(badgeIds)
@@ -278,7 +278,7 @@
             }
             $(this).parent().parent().remove();
             if (badgeIds == "" && challengeIds == "") {
-                $("#noRequirements").removeClass("hide");
+                $("#noRequirements").removeClass("d-none");
             }
             $("#addButton").html('Add Badge');
             console.log(challengeIds)
@@ -298,12 +298,12 @@
             search = $("#searchText").val();
             if (search != "")
             {
-                $("#searchMessage").removeClass("hide");
+                $("#searchMessage").removeClass("d-none");
                 $("#searchTerm").html(search);
             }
             else
             {
-                $("#searchMessage").addClass("hide");
+                $("#searchMessage").addClass("d-none");
             }
             page = 1;
             UpdateRequirementsList();
@@ -312,7 +312,7 @@
         $("#clearButton").on("click", function() {
             $("#searchText").val("");
             search = "";
-            $("#searchMessage").addClass("hide");
+            $("#searchMessage").addClass("d-none");
             page = 1;
             UpdateRequirementsList();
         })

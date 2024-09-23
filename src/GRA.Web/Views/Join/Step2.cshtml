@@ -21,7 +21,7 @@
                         </div>
                     </div>
 
-                    <div id="ageField" class="row row-spacing @(Model.ShowAge ? "": "hide")">
+                    <div id="ageField" class="row row-spacing @(Model.ShowAge ? "": "d-none")">
                         <div class="col-12">
                             <label asp-for="Age" class="col-form-label"></label>
                             <input asp-for="Age" class="form-control" type="text" />
@@ -29,7 +29,7 @@
                         </div>
                     </div>
 
-                    <div id="schoolFields" class="@(Model.ShowSchool ? "": "hide")">
+                    <div id="schoolFields" class="@(Model.ShowSchool ? "": "d-none")">
                         @await Html.PartialAsync("_SchoolSelectionPartial", Model)
                     </div>
                 </div>
@@ -64,21 +64,21 @@
             {
                 if (selectedProgram.AskAge)
                 {
-                    $("#ageField").removeClass("hide");
+                    $("#ageField").removeClass("d-none");
                     validateAge();
                 }
                 else
                 {
-                    $("#ageField").addClass("hide");
+                    $("#ageField").addClass("d-none");
                 }
 
                 if (selectedProgram.AskSchool)
                 {
-                    $("#schoolFields").removeClass("hide");
+                    $("#schoolFields").removeClass("d-none");
                 }
                 else
                 {
-                    $("#schoolFields").addClass("hide");
+                    $("#schoolFields").addClass("d-none");
                 }
             }
         });

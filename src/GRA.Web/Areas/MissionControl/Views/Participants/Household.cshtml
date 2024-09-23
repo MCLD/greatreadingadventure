@@ -638,7 +638,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div id="searchMessage" class="row hide">
+                                <div id="searchMessage" class="row d-none">
                                     <div class="col-12">
                                         <p class="alert-sm alert-info">
                                             Searching for '<strong id="searchTerm"></strong>'
@@ -1131,11 +1131,11 @@
         $("#searchButton").on("click", function () {
             search = $("#searchText").val();
             if (search != "") {
-                $("#searchMessage").removeClass("hide");
+                $("#searchMessage").removeClass("d-none");
                 $("#searchTerm").html(search);
             }
             else {
-                $("#searchMessage").addClass("hide");
+                $("#searchMessage").addClass("d-none");
             }
             page = 1;
             UpdateParticipantsList();
@@ -1145,7 +1145,7 @@
             $("#searchText").val("");
             if (search != "") {
                 search = "";
-                $("#searchMessage").addClass("hide");
+                $("#searchMessage").addClass("d-none");
                 page = 1;
                 UpdateParticipantsList();
             }
