@@ -146,7 +146,7 @@
     <None Update="css\bootstrap-datetimepicker.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="css\bootstrap-multiselect.css">
+    <None Update="css\tom-select.bootstrap5.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="css\bootstrap-select.css">
@@ -170,7 +170,7 @@
     <None Update="js\bootstrap-multiselect.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="js\bootstrap-select.js">
+    <None Update="js\tom-select.complete.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="js\bootstrap.js">
