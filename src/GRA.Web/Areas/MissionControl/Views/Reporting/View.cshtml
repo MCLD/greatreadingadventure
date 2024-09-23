@@ -11,7 +11,7 @@
 }
 
 <div class="row" style="padding-top:10px;">
-    <div class="col-xs-12">
+    <div class="col-12">
         <table class="table table-bordered" style="border: none;margin-bottom:0; width:auto;">
             @if (Model.StartDate.HasValue)
             {
@@ -85,11 +85,11 @@
     <div class="row">
         @if (report.Title != Model.Title)
         {
-            <div class="col-xs-12">
+            <div class="col-12">
                 <h2>@report.Title</h2>
             </div>
         }
-        <div class="col-xs-12">
+        <div class="col-12">
             <table class="table table-sm table-bordered table-striped"
                    style="margin-top: 2rem; margin-bottom: 0.5rem;">
                 @if (report.HeaderRow != null)

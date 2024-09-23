@@ -3,7 +3,7 @@
 @await Html.PartialAsync("_VendorCodePartial")
 
 <div class="row" style="margin-top: 1rem; margin-bottom: 1rem;">
-    <div class="col-xs-12">
+    <div class="col-12">
         <p>
             Generate vendor codes for type: <strong>@Model</strong>
         </p>
@@ -11,7 +11,7 @@
 </div>
 
 <div class="row" style="margin-bottom: 1rem;">
-    <div class="col-xs-12">
+    <div class="col-12">
         <form asp-action="@nameof(VendorCodesController.GenerateCodes)"
               method="post"
               role="form"

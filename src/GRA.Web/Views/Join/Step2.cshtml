@@ -2,7 +2,7 @@
 
 <form asp-controller="Join" asp-action="Step2" method="post" role="form" novalidate>
     <div class="row">
-        <div class="col-xs-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2">
+        <div class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2">
             <div class="card">
                 <div class="card-header">
                     <span class="lead">@ViewData[ViewDataKey.Title]</span>
@@ -12,7 +12,7 @@
                     @await Html.PartialAsync("_MultiStepPartial")
 
                     <div class="row row-spacing">
-                        <div class="col-xs-12">
+                        <div class="col-12">
                             <label asp-for="ProgramId" class="col-form-label"></label>
                             <select asp-for="ProgramId" asp-items="Model.ProgramList" class="form-control">
                                 <option></option>
@@ -22,7 +22,7 @@
                     </div>
 
                     <div id="ageField" class="row row-spacing @(Model.ShowAge ? "": "hide")">
-                        <div class="col-xs-12">
+                        <div class="col-12">
                             <label asp-for="Age" class="col-form-label"></label>
                             <input asp-for="Age" class="form-control" type="text" />
                             <span id="ageMessage" asp-validation-for="Age" class="text-danger"></span>

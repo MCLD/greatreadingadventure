@@ -3,7 +3,7 @@
 @if (Model.ShowGroupsButton)
 {
     <div class="row row-spacing">
-        <div class="col-xs-12">
+        <div class="col-12">
             <ul class="nav nav-pills" style="padding: 10px 0;">
                 <li class="active px-5"><a asp-action="@nameof(ParticipantsController.Index)">Participants</a></li>
                 <li><a asp-action="@nameof(ParticipantsController.Groups)">Groups</a></li>
@@ -15,14 +15,14 @@
 @if (Model.CanSignUpParticipants)
 {
     <div class="row row-spacing">
-        <div class="col-xs-12">
+        <div class="col-12">
             <a asp-action="Add" class="btn btn-secondary">Add Participant</a>
         </div>
     </div>
 }
 
 <div class="row row-spacing">
-    <div class="col-xs-12 col-sm-6">
+    <div class="col-12 col-sm-6">
         <span class="dropdown-label">Location:</span>
         <ul class="nav" style="display: inline-table;">
             <li class="@(Model.ActiveNav == "All" ? "active" : "")"><a asp-route-Search="@Model.Search" asp-route-ProgramId="@Model.ProgramId">All</a></li>
@@ -104,12 +104,12 @@
         <input asp-for="ProgramId" type="hidden" />
     }
     <div class="row row-spacing">
-        <div class="col-xs-8">
+        <div class="col-8">
             <input asp-for="Search"
                    class="form-control"
                    placeholder="Search by username, first or last name, full name, free book code" />
         </div>
-        <div class="col-xs-4">
+        <div class="col-4">
             <input type="submit"
                    value="Search"
                    class="btn btn-secondary"
@@ -125,14 +125,14 @@
 @if (!string.IsNullOrEmpty(Model.Search))
 {
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-12">
             <p class="alert-sm alert-info">Searching for '<strong>@Model.Search</strong>'</p>
         </div>
     </div>
 }
 
 <div class="row" style="padding: 10px 0;">
-    <div class="col-xs-12">
+    <div class="col-12">
         @if (Model.Users.Count() == 0)
         {
             <div class="alert alert-warning">No Participants found.</div>
@@ -250,7 +250,7 @@
                         @if (Model.CanRemoveParticipant)
                         {
                             <div class="row" id="elevatedWarning">
-                                <div class="col-xs-12">
+                                <div class="col-12">
                                     <div class="alert alert-warning">
                                         <strong>
                                             <span class="fas fa-exclamation-triangle"></span>

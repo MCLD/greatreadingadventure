@@ -7,7 +7,7 @@
 }
 
 <div class="row" style="margin-top: 1rem; margin-bottom: 1rem;">
-    <div class="col-xs-12">
+    <div class="col-12">
         @if (Model.VendorCodeType.Id == default)
         {
             <p>Vendor codes are not yet configured. Use this page to set them up.</p>
@@ -38,7 +38,7 @@
       enctype="multipart/form-data">
     <input type="hidden" asp-for="VendorCodeType.SiteId" value="@Model.VendorCodeType.SiteId" />
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-12">
             <div class="mb-3">
                 <label asp-for="VendorCodeType.Description" class="col-form-label"></label>*
                 <description gra-description-for="VendorCodeType.Description"></description>
@@ -51,7 +51,7 @@
     @if (Model.VendorCodeType.Id != default)
     {
         <div class="row">
-            <div class="col-xs-12">
+            <div class="col-12">
                 <div class="mb-3">
                     <label class="col-form-label" asp-for="VendorCodeType.MessageTemplateId"></label>
                     <description gra-description-for="VendorCodeType.MessageTemplateId"></description>
@@ -69,7 +69,7 @@
         </div>
     }
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-12">
             <div class="mb-3">
                 <label asp-for="VendorCodeType.Url" class="col-form-label"></label>
                 <description gra-description-for="VendorCodeType.Url"></description>
@@ -79,7 +79,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-12">
             <div class="mb-3">
                 <label asp-for="VendorCodeType.ExpirationDate" class="col-form-label"></label>
                 <description gra-description-for="VendorCodeType.ExpirationDate"></description>
@@ -91,7 +91,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-12">
             <div class="mb-3">
                 <label asp-for="VendorCodeType.AwardPrizeOnShipDate" class="col-form-label"></label>
                 <description gra-description-for="VendorCodeType.AwardPrizeOnShipDate"></description>
@@ -104,7 +104,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-12">
             <div class="mb-3">
                 <label asp-for="VendorCodeType.AwardPrizeOnPackingSlip" class="col-form-label"></label>
                 <description gra-description-for="VendorCodeType.AwardPrizeOnPackingSlip"></description>
@@ -121,7 +121,7 @@
         <hr />
         <input type="hidden" asp-for="VendorCodeType.OptionMessageTemplateId" value="@Model.VendorCodeType.OptionMessageTemplateId">
         <div class="row">
-            <div class="col-xs-12">
+            <div class="col-12">
                 <div class="mb-3">
                     <label class="col-form-label" asp-for="VendorCodeType.OptionMessageTemplateId"></label>
                     <description gra-description-for="VendorCodeType.OptionMessageTemplateId"></description>
@@ -144,7 +144,7 @@
            ^ Model.VendorCodeType.DonationMessageTemplateId.HasValue)
             {
                 <div class="row">
-                    <div class="col-xs-12">
+                    <div class="col-12">
                         <div class="alert alert-warning">
                             Please supply values for both the pop-up message as well as the sent message.
                         </div>
@@ -152,7 +152,7 @@
                 </div>
             }
             <div class="row">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <div class="mb-3">
                         <label asp-for="VendorCodeType.DonationSegmentId" class="col-form-label"></label><br />
                         @foreach (var item in Model.Languages)
@@ -168,7 +168,7 @@
             </div>
             <input type="hidden" asp-for="VendorCodeType.DonationMessageTemplateId" value="@Model.VendorCodeType.DonationMessageTemplateId">
             <div class="row">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <div class="mb-3">
                         <label class="col-form-label" asp-for="VendorCodeType.DonationMessageTemplateId"></label><br />
                         @foreach (var item in Model.Languages)
@@ -187,7 +187,7 @@
            ^ Model.VendorCodeType.EmailAwardMessageTemplateId.HasValue)
             {
                 <div class="row">
-                    <div class="col-xs-12">
+                    <div class="col-12">
                         <div class="alert alert-warning">
                             Please supply values for both the pop-up message as well as the sent message.
                         </div>
@@ -196,7 +196,7 @@
             }
 
             <div class="row">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <div class="mb-3">
                         <label asp-for="VendorCodeType.EmailAwardSegmentId" class="col-form-label"></label><br />
                         @foreach (var item in Model.Languages)
@@ -212,7 +212,7 @@
             </div>
             <input type="hidden" asp-for="VendorCodeType.EmailAwardMessageTemplateId" value="@Model.VendorCodeType.EmailAwardMessageTemplateId">
             <div class="row">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <div class="mb-3">
                         <label class="col-form-label" asp-for="VendorCodeType.EmailAwardMessageTemplateId"></label><br />
                         @foreach (var item in Model.Languages)
@@ -229,7 +229,7 @@
         }
         <hr />
         <div class="row">
-            <div class="col-xs-12">
+            <div class="col-12">
                 <div class="mb-3">
                     <label asp-for="VendorCodeType.ReadyForPickupEmailTemplateId" class="col-form-label"></label>
                     <description gra-description-for="VendorCodeType.ReadyForPickupEmailTemplateId"></description>
@@ -244,7 +244,7 @@
         </div>
     }
     <div class="row row-spacing">
-        <div class="col-xs-12 text-right">
+        <div class="col-12 text-right">
             @if (Model.VendorCodeType.Id > 0)
             {
                 <a asp-action="@nameof(VendorCodesController.Index)"

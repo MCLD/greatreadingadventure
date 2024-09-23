@@ -1,7 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.Shared.DisplayNotificationsViewModel
 
 <div class="row">
-    <div id="notificationsAlert" class="col-xs-12 col-sm-6 offset-sm-3">
+    <div id="notificationsAlert" class="col-12 col-sm-6 offset-sm-3">
         <div class="alert alert-success">
             @foreach (var notification in Model.Notifications)
             {
@@ -42,7 +42,7 @@
                         {
                             <tr>
                                 <td>
-                                    <div class="col-xs-8 col-sm-9">
+                                    <div class="col-8 col-sm-9">
                                         @if (notification.LocalizedText != null)
                                         {
                                             if (!string.IsNullOrEmpty(notification.DisplayIcon))
@@ -56,7 +56,7 @@
                                             <p>@Html.Raw(notification.Text)</p>
                                         }
                                     </div>
-                                    <div class="col-xs-4 col-sm-3" style="min-width: 110px;">
+                                    <div class="col-4 col-sm-3" style="min-width: 110px;">
                                         @if (!string.IsNullOrEmpty(notification.BadgeFilename))
                                         {
                                             <img class="img-thumbnail badge-sm pull-right"
@@ -71,7 +71,7 @@
                             {
                                 <tr>
                                     <td>
-                                        <div class="col-xs-12">
+                                        <div class="col-12">
                                             <span>@SharedLocalizer[GRA.Annotations.Info.ReceivedCertificate]</span>
                                             <a href="~/@notification.AttachmentFilename" target="_blank">
                                                 <img src="~/images/certificate.png"
@@ -85,7 +85,7 @@
                         }
                         <tr>
                             <td>
-                                <div class="col-xs-12">@Html.Raw(Model.SummaryText)</div>
+                                <div class="col-12">@Html.Raw(Model.SummaryText)</div>
                             </td>
                         </tr>
                     </table>

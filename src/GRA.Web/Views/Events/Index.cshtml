@@ -9,14 +9,14 @@
 </noscript>
 
 <div class="row">
-    <div class="col-xs-12 col-sm-10 offset-sm-1">
+    <div class="col-12 col-sm-10 offset-sm-1">
         <div class="card">
             <div class="card-header">
                 <span class="lead">@SharedLocalizer[GRA.Annotations.Title.EventsAndCommunityExperiences]</span>
             </div>
             <div class="card-body">
                 <div class="row row-spacing">
-                    <div class="col-xs-12">
+                    <div class="col-12">
                         <ul class="nav nav-pills">
                             <li role="presentation" class="@(Model.EventType == GRA.EventType.Event ? "active" : "")">
                                 <a asp-action="Index">@SharedLocalizer[GRA.Annotations.Interface.Events]</a>
@@ -47,14 +47,14 @@
                            type="hidden"
                            value="@Model.EventType" />
                     <div class="row row-spacing">
-                        <div class="col-xs-6">
+                        <div class="col-6">
                             <label asp-for="StartDate" class="col-form-label"></label>
                             <div class="form-group date" id="pickerStart">
                                 <input asp-for="StartDate" type="datetime-local" class="form-control" />
                             </div>
                         </div>
 
-                        <div class="col-xs-6">
+                        <div class="col-6">
                             <label asp-for="EndDate" class="col-form-label"></label>
                             <div class="form-group date" id="pickerEnd">
                                 <input asp-for="EndDate" type="datetime-local" class="form-control" />
@@ -67,13 +67,13 @@
                         @if (Model.ShowNearSearch)
                         {
                             <div class="row row-spacing">
-                                <div class="col-xs-6">
+                                <div class="col-6">
                                     <label asp-for="ProgramId" class="col-form-label"></label>
                                     <select asp-for="ProgramId" asp-items="Model.ProgramList" class="form-control">
                                         <option>@SharedLocalizer[GRA.Annotations.Interface.AllPrograms]</option>
                                     </select>
                                 </div>
-                                <div class="col-xs-6">
+                                <div class="col-6">
                                     <label asp-for="Near" class="col-form-label"></label>
                                     @if (!string.IsNullOrWhiteSpace(Model.UserZipCode))
                                     {
@@ -93,7 +93,7 @@
                         else
                         {
                             <div class="row row-spacing">
-                                <div class="col-xs-12">
+                                <div class="col-12">
                                     <label asp-for="ProgramId" class="col-form-label"></label>
                                     <select asp-for="ProgramId" asp-items="Model.ProgramList" class="form-control">
                                         <option>@SharedLocalizer[GRA.Annotations.Interface.AllPrograms]</option>
@@ -102,7 +102,7 @@
                             </div>
 
                             <div class="row">
-                                <div class="col-xs-6">
+                                <div class="col-6">
                                     <div class="mb-3">
                                         <label asp-for="SystemId" class="col-form-label"></label>
                                         <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control">
@@ -118,7 +118,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-xs-6">
+                                <div class="col-6">
                                     <label asp-for="LocationId" class="col-form-label"></label>
                                     <select asp-for="LocationId" asp-items="Model.LocationList" class="form-control">
                                         <option></option>
@@ -130,7 +130,7 @@
                     @if (Model.IsLoggedIn)
                     {
                         <div class="row row-spacing">
-                            <div class="col-xs-12">
+                            <div class="col-12">
                                 @if (Model.EventType == GRA.EventType.StreamingEvent)
                                 {
                                     <label asp-for="Viewed" class="col-form-label"></label>
@@ -154,7 +154,7 @@
                     }
 
                     <div class="row row-spacing">
-                        <div class="col-xs-12">
+                        <div class="col-12">
                             <label asp-for="Search" class="col-form-label"></label>
                             <div class="row row-spacing">
                                 <div class="col-sm-12 gra-search-container">
@@ -166,7 +166,7 @@
                             <div class="row">
                                 @if (Model.IsLoggedIn)
                                 {
-                                    <div class="col-xs-12 col-sm-4 col-md-3 row-spacing">
+                                    <div class="col-12 col-sm-4 col-md-3 row-spacing">
                                         <a asp-action="@(Model.FormAction)"
                                            asp-route-Sort="@Model.Sort"
                                            asp-route-Search="@Model.Search"
@@ -184,13 +184,13 @@
                                             @SharedLocalizer[GRA.Annotations.Interface.MyFavorites]
                                         </a>
                                     </div>
-                                    <div class="col-xs-6 col-sm-2 offset-sm-4 offset-md-5 row-spacing">
+                                    <div class="col-6 col-sm-2 offset-sm-4 offset-md-5 row-spacing">
                                         <a asp-action="CommunityExperiences" class="btn btn-secondary ">
                                             <span class="hidden-sm fas fa-minus-circle"></span>
                                             @SharedLocalizer[GRA.Annotations.Interface.Clear]
                                         </a>
                                     </div>
-                                    <div class="col-xs-6 col-sm-2 row-spacing">
+                                    <div class="col-6 col-sm-2 row-spacing">
                                         <button type="submit" class="btn btn-primary ">
                                             <span class="hidden-sm fas fa-search"></span>
                                             @SharedLocalizer[GRA.Annotations.Interface.Find]
@@ -199,7 +199,7 @@
                                 }
                                 else
                                 {
-                                    <div class="col-xs-6 col-sm-2 offset-sm-8 offset-md-8 row-spacing">
+                                    <div class="col-6 col-sm-2 offset-sm-8 offset-md-8 row-spacing">
                                         @if (Model.EventType == GRA.EventType.CommunityExperience)
                                         {
                                             <a asp-action="CommunityExperiences" class="btn btn-secondary ">
@@ -223,7 +223,7 @@
                 </form>
 
                 <div class="row">
-                    <div class="col-xs-12">
+                    <div class="col-12">
                         @if (Model.Events.Count() == 0)
                         {
                             <div class="alert alert-warning">@SharedLocalizer[GRA.Annotations.Interface.NoEvents]</div>

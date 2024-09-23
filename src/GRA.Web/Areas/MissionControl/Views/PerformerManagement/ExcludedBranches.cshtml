@@ -3,7 +3,7 @@
 @await Html.PartialAsync("_PerformerManagementPartial")
 
 <div class="row" style="padding: 10px 0;">
-    <div class="col-xs-12">
+    <div class="col-12">
         <a class="btn btn-secondary"
            data-bs-toggle="modal"
            data-bs-target="#addModal">Add Branch Exclusion</a>
@@ -11,7 +11,7 @@
 </div>
 
 <div class="row" style="padding: 10px 0;">
-    <div class="col-xs-12">
+    <div class="col-12">
         @if (Model.ExcludedBranches.Count == 0)
         {
             <div class="alert alert-warning">No Branch Exclusions</div>

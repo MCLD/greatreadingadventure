@@ -1,13 +1,13 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Questionnaires.QuestionnairesListViewModel
 
 <div class="row" style="padding: 10px 0;">
-    <div class="col-xs-12">
+    <div class="col-12">
         <a asp-action="Create" class="btn btn-secondary">Create a new questionnaire</a>
     </div>
 </div>
 
 <div class="row" style="padding: 10px 0;">
-    <div class="col-xs-12">
+    <div class="col-12">
         @if (Model.Questionnaires.Count() == 0)
         {
             <div class="alert alert-warning">No Questionnaires found.</div>

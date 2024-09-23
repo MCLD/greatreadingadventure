@@ -1,7 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.HouseholdPrizeViewModel
 
 <div class="row" style="padding: 10px 0;">
-    <div class="col-xs-12">
+    <div class="col-12">
         <h4>Select @(string.IsNullOrEmpty(Model.GroupName) ? "household" : "group") members to reedem the <strong>@Model.PrizeName</strong> prize</h4>
         <form id="form" asp-action="@nameof(ParticipantsController.HouseholdPrize)" method="post" role="form">
             <input asp-for="Id" type="hidden" />

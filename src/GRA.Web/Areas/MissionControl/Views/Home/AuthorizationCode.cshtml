@@ -22,7 +22,7 @@
         @if (TempData[GRA.Controllers.TempDataKey.AlertDanger] != null)
         {
             <div class="row mc-alertrow">
-                <div class="col-xs-12 col-sm-6 offset-sm-3">
+                <div class="col-12 col-sm-6 offset-sm-3">
                     <div class="alert alert-danger">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertDanger])</div>
                 </div>
             </div>
@@ -30,7 +30,7 @@
         @if (TempData[GRA.Controllers.TempDataKey.AlertWarning] != null)
         {
             <div class="row mc-alertrow">
-                <div class="col-xs-12 col-sm-6 offset-sm-3">
+                <div class="col-12 col-sm-6 offset-sm-3">
                     <div class="alert alert-warning">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertWarning])</div>
                 </div>
             </div>
@@ -38,7 +38,7 @@
         @if (TempData[GRA.Controllers.TempDataKey.AlertSuccess] != null)
         {
             <div class="row mc-alertrow">
-                <div class="col-xs-12 col-sm-6 offset-sm-3">
+                <div class="col-12 col-sm-6 offset-sm-3">
                     <div class="alert alert-success">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertSuccess])</div>
                 </div>
             </div>
@@ -46,14 +46,14 @@
         @if (TempData[GRA.Controllers.TempDataKey.AlertInfo] != null)
         {
             <div class="row mc-alertrow">
-                <div class="col-xs-12 col-sm-6 offset-sm-3">
+                <div class="col-12 col-sm-6 offset-sm-3">
                     <div class="alert alert-info">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertInfo])</div>
                 </div>
             </div>
         }
         <form asp-action="AuthorizationCode" method="post">
             <div class="row" style="padding-top: 2rem;">
-                <div class="col-xs-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2">
+                <div class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2">
                     <div class="card">
                         <div class="card-header">
                             <span class="lead"><grasite property="name"></grasite> - Authorization</span>

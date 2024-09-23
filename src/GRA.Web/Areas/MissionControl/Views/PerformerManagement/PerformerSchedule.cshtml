@@ -5,18 +5,18 @@
 }
 
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <h1>Schedule for Performer: @Model.Performer.Name</h1>
     </div>
 
-    <div class="col-xs-12">
+    <div class="col-12">
         <p>
             Select days and then indicate your availability using the buttons below.
             See below for more detailed instructions.
         </p>
     </div>
 
-    <form asp-action="PerformerSchedule" class="form-horizontal col-xs-12" method="post" role="form">
+    <form asp-action="PerformerSchedule" class="form-horizontal col-12" method="post" role="form">
         <input asp-for="Performer.Id" type="hidden" />
         <input asp-for="Performer.Name" type="hidden" />
         <input asp-for="JsonSchedule" type="hidden" />
@@ -31,7 +31,7 @@
             {
                 @Html.Raw("<div class=\"row\">");
             }
-            <div class="col-xs-12 col-md-4">
+            <div class="col-12 col-md-4">
                 <table class="table table-bordered" style="table-layout:fixed; text-align:center">
                     <thead>
                         <tr>
@@ -89,13 +89,13 @@
         }
 
         <div class="row" style="margin-bottom:30px;">
-            <div class="col-xs-6 col-md-3" style="margin-bottom: 0.33rem;text-align:center;">
+            <div class="col-6 col-md-3" style="margin-bottom: 0.33rem;text-align:center;">
                 <button type="button" id="availableButton" class="btn btn-success">Available</button>
             </div>
-            <div class="col-xs-6 col-md-3" style="margin-bottom: 0.33rem;text-align:center;">
+            <div class="col-6 col-md-3" style="margin-bottom: 0.33rem;text-align:center;">
                 <button type="button" id="unavailableButton" class="btn btn-danger">Unavailable</button>
             </div>
-            <div class="col-xs-12 col-md-6" style="margin-bottom: 0.33rem;text-align:center;">
+            <div class="col-12 col-md-6" style="margin-bottom: 0.33rem;text-align:center;">
                 <table style="margin:0 auto;">
                     <tr>
                         <td>
@@ -125,7 +125,7 @@
             </div>
         </div>
 
-        <div class="col-xs-12">
+        <div class="col-12">
             <h3>Selecting days:</h3>
             <ul>
                 <li>Click a day to select it.</li>
@@ -152,7 +152,7 @@
                 </li>
             </ul>
         </div>
-        <div class="col-xs-12 col-sm-8 offset-sm-3" style="padding-top: 1em;">
+        <div class="col-12 col-sm-8 offset-sm-3" style="padding-top: 1em;">
             <button type="submit"
                     class="btn btn-lg btn-success btn-spinner"
                     style="margin-bottom: 0.5rem;"

@@ -2,10 +2,10 @@
 
 <form asp-controller="Participants" asp-action="Add" method="post" role="form" novalidate>
     <div class="row" style="padding-top:10px;">
-        <div class="col-xs-12">
+        <div class="col-12">
 
             <div class="row row-spacing">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <label asp-for="Username" class="col-form-label"></label>
                     <span id="Username-Icon" class="fa colored-icon hide"></span>
                     <input asp-for="Username" class="form-control" autofocus />
@@ -14,7 +14,7 @@
             </div>
 
             <div class="row row-spacing">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <label asp-for="Password" class="col-form-label"></label>
                     <input asp-for="Password" type="password" class="form-control" />
                     <span asp-validation-for="Password" class="text-danger"></span>
@@ -24,7 +24,7 @@
             <hr />
 
             <div class="row row-spacing">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <label asp-for="FirstName" class="col-form-label"></label>
                     <input asp-for="FirstName" class="form-control" />
                     <span asp-validation-for="FirstName" class="text-danger"></span>
@@ -32,7 +32,7 @@
             </div>
 
             <div class="row row-spacing">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <label asp-for="LastName" class="col-form-label"></label>
                     <input asp-for="LastName" class="form-control" />
                     <span asp-validation-for="LastName" class="text-danger"></span>
@@ -42,7 +42,7 @@
             @if (Model.RequirePostalCode)
             {
                 <div class="row row-spacing">
-                    <div class="col-xs-12">
+                    <div class="col-12">
                         <label asp-for="PostalCode" class="col-form-label"></label>
                         <input asp-for="PostalCode" class="form-control" />
                         <span asp-validation-for="PostalCode" class="text-danger"></span>
@@ -53,7 +53,7 @@
             @if (Model.SystemList.Count() > 1)
             {
                 <div class="row row-spacing">
-                    <div class="col-xs-12">
+                    <div class="col-12">
                         <label asp-for="SystemId" class="col-form-label"></label>
                         <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control">
                             <option></option>
@@ -68,7 +68,7 @@
             }
 
             <div class="row row-spacing">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <label asp-for="BranchId" class="col-form-label"></label>
                     <select asp-for="BranchId" asp-items="Model.BranchList" class="form-control"></select>
                     <span asp-validation-for="BranchId" class="text-danger"></span>
@@ -78,7 +78,7 @@
             @if (Model.ProgramList.Count() > 1)
             {
                 <div class="row row-spacing">
-                    <div class="col-xs-12">
+                    <div class="col-12">
                         <label asp-for="ProgramId" class="col-form-label"></label>
                         <select asp-for="ProgramId" asp-items="Model.ProgramList" class="form-control">
                             <option></option>
@@ -93,7 +93,7 @@
             }
 
             <div id="ageField" class="row row-spacing @(Model.ShowAge ? "": "hide")">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <label asp-for="Age" class="col-form-label"></label>
                     <input asp-for="Age" class="form-control" type="text" />
                     <span id="ageMessage" asp-validation-for="Age" class="text-danger"></span>
@@ -107,7 +107,7 @@
             <hr />
 
             <div class="row row-spacing">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <p>
                         @GRA.Annotations.Validate.EmailPhoneNeededForPrizes
                     </p>
@@ -115,7 +115,7 @@
             </div>
 
             <div class="row row-spacing">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <label asp-for="Email" class="col-form-label"></label>
                     <input asp-for="Email" class="form-control" type="email" />
                     <span asp-validation-for="Email" class="text-danger"></span>
@@ -123,7 +123,7 @@
             </div>
 
             <div class="row row-spacing">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <label asp-for="PhoneNumber" class="col-form-label"></label>
                     <input asp-for="PhoneNumber" class="form-control" type="tel" />
                     <span asp-validation-for="PhoneNumber" class="text-danger"></span>
@@ -133,7 +133,7 @@
             @if (Model?.AskFirstTime?.Count() > 1)
             {
                 <div class="row row-spacing">
-                    <div class="col-xs-12">
+                    <div class="col-12">
                         <label asp-for="IsFirstTime" class="col-form-label"></label>
                         <select asp-for="IsFirstTime"
                                 asp-items="Model.AskFirstTime"
@@ -146,7 +146,7 @@
             @if (Model.AskEmailSubscription?.Count() > 1)
             {
                 <div class="row row-spacing">
-                    <div class="col-xs-12">
+                    <div class="col-12">
                         <label asp-for="EmailSubscriptionRequested" class="col-form-label">@Model.AskEmailSubscriptionText</label>
                         <select asp-for="EmailSubscriptionRequested"
                                 asp-items="Model.AskEmailSubscription"
@@ -159,7 +159,7 @@
             @if (!string.IsNullOrWhiteSpace(Model.TranslationDescriptionPastTense))
             {
                 <div class="row row-spacing">
-                    <div class="col-xs-12">
+                    <div class="col-12">
                         <label asp-for="DailyPersonalGoal" class="col-form-label"></label>
                         <div>
                             I will @Model.TranslationDescriptionPastTense
@@ -174,7 +174,7 @@
             <hr />
 
             <div class="row row-spacing">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <button type="submit" class="btn btn-primary pull-right btn-spinner" button-spinner>
                         Add Participant
                     </button>

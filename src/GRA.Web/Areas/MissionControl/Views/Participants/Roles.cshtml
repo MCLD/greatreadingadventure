@@ -6,7 +6,7 @@
     <input asp-for="Id" type="hidden" />
 
     <div class="row">
-        <div class="col-xs-6">
+        <div class="col-6">
             <h3>Available Roles</h3>
             <ul id="unselectedRoles" class="list-group">
                 @foreach (var role in Model.UnselectedRoles)
@@ -19,7 +19,7 @@
             </ul>
         </div>
 
-        <div class="col-xs-6">
+        <div class="col-6">
             <h3>Has Roles</h3>
             <ul id="selectedRoles" class="list-group">
                 @foreach (var role in Model.SelectedRoles)

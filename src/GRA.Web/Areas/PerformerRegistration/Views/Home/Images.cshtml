@@ -5,7 +5,7 @@
 }
 
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <h1>
             Performer Images
             <a asp-action="Dashboard" class="btn btn-lg btn-secondary" style="margin-bottom: 0.5rem;">Return to Dashboard</a>
@@ -13,7 +13,7 @@
     </div>
     @if (Model.IsEditable)
     {
-        <form asp-action="Images" class="form-horizontal col-xs-12" method="post" role="form" enctype="multipart/form-data">
+        <form asp-action="Images" class="form-horizontal col-12" method="post" role="form" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-sm-9 offset-sm-3">
                     <p>
@@ -59,7 +59,7 @@
             </div>
         </form>
     }
-    <div class="col-xs-12">
+    <div class="col-12">
         @if (Model.PerformerImages.Count == 0)
         {
             <div class="alert alert-warning">No Images.</div>
@@ -72,7 +72,7 @@
                 {
                     @Html.Raw("<div class=\"row\">");
                 }
-                <div class="col-xs-12 col-md-4" style="margin-bottom: 2rem;">
+                <div class="col-12 col-md-4" style="margin-bottom: 2rem;">
                     <div style="padding:10px;border:1px solid black;">
                         <img src="~/@Model.PerformerImages[i].Filename" class="img-fluid" style="margin: 0 auto;" />
                         @if (Model.IsEditable)

@@ -9,7 +9,7 @@
     }
 
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-12">
             <div class="mb-3">
                 <label asp-for="Role.Name" class="col-form-label"></label>
                 <input asp-for="Role.Name" class="form-control" />
@@ -28,7 +28,7 @@
             }
 
             <div class="row">
-                <div class="col-xs-6">
+                <div class="col-6">
                     <h2 class="h3">Available Permissions (@Model.UnselectedPermissions?.Count())</h2>
                     <ul id="unselectedPermissions" class="list-group">
                         @foreach (var permission in Model.UnselectedPermissions)
@@ -41,7 +41,7 @@
                     </ul>
                 </div>
 
-                <div class="col-xs-6">
+                <div class="col-6">
                     <h2 class="h3">Has Permissions (@Model.SelectedPermissions?.Count())</h2>
                     <ul id="selectedPermissions" class="list-group">
                         @if (Model.SelectedPermissions != null)

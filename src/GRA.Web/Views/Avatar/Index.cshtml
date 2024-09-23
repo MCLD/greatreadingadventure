@@ -6,7 +6,7 @@
 <div class="alert alert-danger" id="error-container"></div>
 <div class="card">
     <div class="row">
-        <div class="col-xs-12 col-sm-5 pull-right">
+        <div class="col-12 col-sm-5 pull-right">
             <div class="visible-xs" id="mobile-container">
                 <div class="avatar-container mx-auto">
                     @foreach (var layer in Model.LayerGroupings.SelectMany(_ => _))
@@ -38,9 +38,9 @@
                 <div class="avatar-save-message"></div>
             </div>
         </div>
-        <div class="col-xs-12 col-sm-7">
+        <div class="col-12 col-sm-7">
             <div class="row">
-                <div class="col-xs-12 text-center" id="layer-container">
+                <div class="col-12 text-center" id="layer-container">
                     @if (Model.LayerGroupings.Count > 0)
                     {
                         foreach (var layerGroup in Model.LayerGroupings)
@@ -82,7 +82,7 @@
                     </div>
                 </div>
             </div>
-            <div id="avatarBundles" class="row col-xs-12" style="text-align:center;">
+            <div id="avatarBundles" class="row col-12" style="text-align:center;">
                 <ul class="nav" style="display: inline-table;">
                     <li>
 
@@ -162,7 +162,7 @@
                 </ul>
             </div>
             <div id="avatarColors" class="row hide">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <div class="avatar-selector-well well well-sm">
                         <div id="avatarColorSelectors" class="avatar-selector-container">
                         </div>
@@ -170,7 +170,7 @@
                 </div>
             </div>
             <div id="avatarItems" class="row hide">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <div class="avatar-selector-well well well-sm">
                         <div id="avatarItemSelectors" class="avatar-selector-container">
                         </div>
@@ -178,7 +178,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <div style="text-align:center;vertical-align:top;">
                         <a asp-controller="Home"
                            asp-action="Index"

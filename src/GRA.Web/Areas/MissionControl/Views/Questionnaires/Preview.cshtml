@@ -4,7 +4,7 @@
     @for (int i = 0; i < Model.Count; i++)
     {
         <div class="row row-spacing">
-            <div class="col-xs-12">
+            <div class="col-12">
                 @if (Model[i].Answers.Count == 0)
                 {
                     <input asp-for="@Model[i].Id" type="hidden" value="-1" />
@@ -36,7 +36,7 @@
         </div>
     }
     <div class="row">
-        <div class="col-xs-12 col-sm-4 offset-sm-4">
+        <div class="col-12 col-sm-4 offset-sm-4">
             <button type="submit" class="btn btn-lg  btn-primary btn-spinner" button-spinner>
                 Submit
             </button>

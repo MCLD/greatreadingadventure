@@ -11,7 +11,7 @@
         <input asp-for="Action" value="@nameof(ParticipantsController.Prizes)" type="hidden" />
         <input asp-for="User.Id" type="hidden" />
         <div class="row" style="margin-top: 1rem;">
-            <div class="col-xs-12">
+            <div class="col-12">
                 <div class="alert alert-info">
                     Free Book Code:
                     @if (Model.User.NeedsToAnswerVendorCodeQuestion)
@@ -97,7 +97,7 @@
     </form>
 }
 <div class="row" style="padding: 10px 0;">
-    <div class="col-xs-12">
+    <div class="col-12">
         @if (Model.PrizeWinners.Count() == 0)
         {
             <div class="alert alert-warning">No Prizes</div>
@@ -216,7 +216,7 @@
                         <div class="modal-body">
                             <p>@Html.Raw(Model.User.EmailAwardInstructions)</p>
                             <div class="row row-spacing">
-                                <div class="col-xs-12">
+                                <div class="col-12">
                                     <label asp-for="EmailAwardModel.Email"
                                            class="col-form-label"></label>
                                     <input asp-for="EmailAwardModel.Email"

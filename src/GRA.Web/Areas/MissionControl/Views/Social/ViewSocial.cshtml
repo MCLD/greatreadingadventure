@@ -18,7 +18,7 @@
     <input type="hidden" asp-for="HeaderId" />
     <input type="hidden" asp-for="SocialIsNew" />
     <div class="row" style="margin-top: 2rem; margin-bottom: 2rem;">
-        <div class="col-xs-12">
+        <div class="col-12">
             <div class="mb-3">
                 <label asp-for="Name" class="col-form-label"></label>*
                 <description gra-description-for="Name"></description>
@@ -98,7 +98,7 @@
         }
         else
         {
-            <div class="col-xs-12">
+            <div class="col-12">
                 <div class="mb-3">
                     <label asp-for="UploadedImage" class="col-form-label"></label>*
                     <description gra-description-for="UploadedImage"></description>
@@ -123,7 +123,7 @@
                 </div>
             </div>
         }
-        <div class="col-xs-12" style="margin-top: 2rem;">
+        <div class="col-12" style="margin-top: 2rem;">
             <a asp-action="@nameof(Index)"
                class="btn btn-secondary">Return to List</a>
             <button class="btn btn-primary btn-spinner" type="submit" button-spinner>

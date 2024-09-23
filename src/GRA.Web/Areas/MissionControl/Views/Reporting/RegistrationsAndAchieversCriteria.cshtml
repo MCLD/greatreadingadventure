@@ -4,14 +4,14 @@
     <input asp-for="ReportId" type="hidden" />
 
     <div class="row" style="padding: 10px 0;">
-        <div class="col-xs-12">
+        <div class="col-12">
             <btn type="button" class="btn btn-secondary time-selector" data-start="null" data-end="null">Entire program</btn>
             <btn type="button" class="btn btn-secondary time-selector" data-start="@DateTime.Now.AddDays(-8).ToString("MM/dd/yyyy")" data-end="@DateTime.Now.AddDays(-1).ToString("MM/dd/yyyy")">Last 7 days</btn>
         </div>
     </div>
 
     <div class="mb-3">
-        <div class="col-xs-6">
+        <div class="col-6">
             <label asp-for="StartDate" class="col-form-label"></label>
             <div class="form-group date" id="pickerStart">
                 <input asp-for="StartDate" type="date" class="form-control"/>
@@ -19,7 +19,7 @@
             <span asp-validation-for="StartDate" class="text-danger"></span>
         </div>
 
-        <div class="col-xs-6">
+        <div class="col-6">
             <label asp-for="EndDate" class="col-form-label"></label>
             <div class="form-group date" id="pickerEnd">
                 <input asp-for="EndDate" type="date" class="form-control"/>
@@ -29,7 +29,7 @@
     </div>
 
     <div class="mb-3">
-        <div class="col-xs-12">
+        <div class="col-12">
             <label asp-for="SystemId" class="col-form-label"></label>
             <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control">
                 <option value="">All systems</option>
@@ -38,7 +38,7 @@
     </div>
 
     <div class="mb-3">
-        <div class="col-xs-12">
+        <div class="col-12">
             <button type="submit" class="btn btn-primary">
                 <span class="fas fa-file-alt"></span>
                 Run Report!

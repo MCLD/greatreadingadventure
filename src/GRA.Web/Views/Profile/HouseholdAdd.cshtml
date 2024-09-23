@@ -1,7 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.Profile.HouseholdAddViewModel
 
 <div class="row">
-    <div class="col-xs-12 col-sm-10 offset-sm-1">
+    <div class="col-12 col-sm-10 offset-sm-1">
         <div class="card">
             <div class="card-header">
                 <span class="lead">
@@ -12,10 +12,10 @@
             <div class="card-body">
                 <form asp-controller="Profile" asp-action="AddHouseholdMember" method="post" role="form">
                     <div class="row" style="padding: 10px 0;">
-                        <div class="col-xs-12">
+                        <div class="col-12">
 
                             <div class="row row-spacing">
-                                <div class="col-xs-12">
+                                <div class="col-12">
                                     <label asp-for="User.FirstName" class="col-form-label"></label>
                                     <input asp-for="User.FirstName" class="form-control" />
                                     <span asp-validation-for="User.FirstName" class="text-danger"></span>
@@ -23,7 +23,7 @@
                             </div>
 
                             <div class="row row-spacing">
-                                <div class="col-xs-12">
+                                <div class="col-12">
                                     <label asp-for="User.LastName" class="col-form-label"></label>
                                     <input asp-for="User.LastName" class="form-control" />
                                     <span asp-validation-for="User.LastName" class="text-danger"></span>
@@ -33,7 +33,7 @@
                             @if (Model.RequirePostalCode)
                             {
                                 <div class="row row-spacing">
-                                    <div class="col-xs-12">
+                                    <div class="col-12">
                                         <label asp-for="User.PostalCode" class="col-form-label"></label>
                                         <input asp-for="User.PostalCode" class="form-control" />
                                         <span asp-validation-for="User.PostalCode" class="text-danger"></span>
@@ -42,7 +42,7 @@
                             }
 
                             <div class="row row-spacing">
-                                <div class="col-xs-12">
+                                <div class="col-12">
                                     <label asp-for="User.Email" class="col-form-label"></label>
                                     <input asp-for="User.Email" class="form-control" type="email" />
                                     <span asp-validation-for="User.Email" class="text-danger"></span>
@@ -50,7 +50,7 @@
                             </div>
 
                             <div class="row row-spacing">
-                                <div class="col-xs-12">
+                                <div class="col-12">
                                     <label asp-for="User.PhoneNumber" class="col-form-label"></label>
                                     <input asp-for="User.PhoneNumber" class="form-control" type="tel" />
                                     <span asp-validation-for="User.PhoneNumber" class="text-danger"></span>
@@ -60,7 +60,7 @@
                             @if (Model.SystemList.Count() > 1)
                             {
                                 <div class="row row-spacing">
-                                    <div class="col-xs-12">
+                                    <div class="col-12">
                                         <label asp-for="User.SystemId" class="col-form-label"></label>
                                         <select asp-for="User.SystemId" asp-items="Model.SystemList" class="form-control"></select>
                                         <span asp-validation-for="User.SystemId" class="text-danger"></span>
@@ -75,7 +75,7 @@
                             @if (Model.SystemList.Count() > 1 || Model.BranchList.Count() > 1)
                             {
                                 <div class="row row-spacing">
-                                    <div class="col-xs-12">
+                                    <div class="col-12">
                                         <label asp-for="User.BranchId" class="col-form-label"></label>
                                         <select asp-for="User.BranchId" asp-items="Model.BranchList" class="form-control"></select>
                                         <span asp-validation-for="User.BranchId" class="text-danger"></span>
@@ -90,7 +90,7 @@
                             @if (Model.ProgramList.Count() > 1)
                             {
                                 <div class="row row-spacing">
-                                    <div class="col-xs-12">
+                                    <div class="col-12">
                                         <label asp-for="User.ProgramId" class="col-form-label"></label>
                                         <select asp-for="User.ProgramId" asp-items="Model.ProgramList" class="form-control">
                                             <option value="-1"></option>
@@ -105,7 +105,7 @@
                             }
 
                             <div id="ageField" class="row row-spacing @(Model.ShowAge ? "": "hide")">
-                                <div class="col-xs-12">
+                                <div class="col-12">
                                     <label asp-for="User.Age" class="col-form-label"></label>
                                     <input asp-for="User.Age" class="form-control" type="text" />
                                     <span id="ageMessage" asp-validation-for="User.Age" class="text-danger"></span>
@@ -119,7 +119,7 @@
                             @if (Model?.AskFirstTime?.Count() > 1)
                             {
                                 <div class="row row-spacing">
-                                    <div class="col-xs-12">
+                                    <div class="col-12">
                                         <label asp-for="IsFirstTime" class="col-form-label"></label>
                                         <select asp-for="IsFirstTime"
                                                 asp-items="Model.AskFirstTime"
@@ -132,7 +132,7 @@
                             @if (Model.AskEmailSubscription?.Count() > 1)
                             {
                                 <div class="row row-spacing">
-                                    <div class="col-xs-12">
+                                    <div class="col-12">
                                         <label asp-for="EmailSubscriptionRequested" class="col-form-label">@Model.AskEmailSubscriptionText</label>
                                         <select asp-for="EmailSubscriptionRequested"
                                                 asp-items="Model.AskEmailSubscription"
@@ -145,7 +145,7 @@
                             @if (!string.IsNullOrWhiteSpace(Model.TranslationDescriptionPastTense))
                             {
                                 <div class="row row-spacing">
-                                    <div class="col-xs-12">
+                                    <div class="col-12">
                                         <label asp-for="User.DailyPersonalGoal" class="col-form-label"></label>
                                         <div>
                                             I will @Model.TranslationDescriptionPastTense

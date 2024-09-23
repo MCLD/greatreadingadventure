@@ -4,7 +4,7 @@
 
 <form asp-controller="VendorCodes">
     <div class="row row-spacing">
-        <div class="col-xs-12">
+        <div class="col-12">
             <div class="mb-3">
                 <label for="vendorCodeTypeId">Vendor code:</label>
                 <select id="vendorCodeTypeId" name="vendorCodeTypeId" asp-items="@Model" class="form-control"></select>
@@ -13,13 +13,13 @@
     </div>
 
     <div class="row row-spacing">
-        <div class="col-xs-12">
+        <div class="col-12">
             <button asp-action="@nameof(VendorCodesController.DownloadUnreportedEmailAddresses)" formmethod="get" class="btn btn-primary">Download Unreported Email Addresses</button>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-12">
             <div class="mb-3">
                 <label for="selectedFile">Update email award status:</label>
                 <div class="input-group">

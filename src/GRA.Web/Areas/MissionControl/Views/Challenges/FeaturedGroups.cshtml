@@ -5,14 +5,14 @@
 @if (Model.CanManageFeaturedGroups)
 {
     <div class="row row-spacing">
-        <div class="col-xs-12">
+        <div class="col-12">
             <a asp-action="@nameof(ChallengesController.FeaturedCreate)" class="btn btn-outline-primary">Add Featured Group</a>
         </div>
     </div>
 }
 
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         @if (Model.FeaturedGroups.Count() == 0)
         {
             <div class="alert alert-warning">No Featured Groups</div>

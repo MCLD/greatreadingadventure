@@ -5,7 +5,7 @@
 }
 
 <div class="row" style="padding: 1rem 0;">
-    <div class="col-xs-12">
+    <div class="col-12">
         <div class="mb-3">
             <label asp-for="HeaderName" class="col-form-label"></label>
             <input asp-for="HeaderName" class="form-control" readonly />
@@ -26,9 +26,9 @@
 @if (!Model.NewPage)
 {
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-12">
             <div class="row">
-                <div class="col-xs-6">
+                <div class="col-6">
                     @if (!string.IsNullOrWhiteSpace(Model.PageUrl))
                     {
                         <label class="col-form-label">Link to page</label>
@@ -40,7 +40,7 @@
                         </a>
                     }
                 </div>
-                <div class="col-xs-6">
+                <div class="col-6">
                     <a asp-action="@nameof(PagesController.Preview)"
                        asp-route-headerId="@Model.HeaderId"
                        asp-route-languageId="@Model.SelectedLanguageId"
@@ -61,7 +61,7 @@
     <input asp-for="NewPage" type="hidden" />
 
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-12">
             <div class="mb-3">
                 <label asp-for="Page.Title" class="col-form-label"></label>
                 <input asp-for="Page.Title" class="form-control" />

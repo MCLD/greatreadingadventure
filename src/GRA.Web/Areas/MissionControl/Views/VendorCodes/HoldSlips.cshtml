@@ -78,12 +78,12 @@
 @foreach (var vendorCode in Model.VendorCodes)
 {
     <div class="row holdslip">
-        <div class="col-xs-1 vertical-element">
+        <div class="col-1 vertical-element">
             <div class="rotate">
                 @GRA.Domain.Model.PackingSlipSummary.LastCommaFirstUpper(vendorCode.FirstName, vendorCode.LastName)
             </div>
         </div>
-        <div class="col-xs-11 slip-content">
+        <div class="col-11 slip-content">
             <div class="participant-name">
                 @GRA.Domain.Model.PackingSlipSummary.LastCommaFirstUpper(vendorCode.FirstName, vendorCode.LastName)
             </div>

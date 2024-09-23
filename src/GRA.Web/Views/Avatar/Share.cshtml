@@ -1,13 +1,13 @@
 ﻿@model GRA.Controllers.ViewModel.Avatar.ShareViewModel
 
 <div class="row row-spacing">
-    <div class="col-xs-12">
+    <div class="col-12">
         <img src="@Model.AvatarImageUrl" class="img-fluid" />
     </div>
 </div>
 
 <div class="row row-spacing">
-    <div class="col-xs-12">
+    <div class="col-12">
         <a asp-action="Index" class="btn btn-secondary row-spacing">
             <span class="fas fa-arrow-left"></span>
             @SharedLocalizer[GRA.Annotations.Interface.Back]

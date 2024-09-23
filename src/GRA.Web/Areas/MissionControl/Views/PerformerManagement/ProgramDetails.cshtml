@@ -16,7 +16,7 @@
 }
 
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <h1>@(Model.PerformerId.HasValue ? $"Add Program for: {Model.PerformerName}" : $"Edit Program: {Model.Program.Title}")</h1>
     </div>
 
@@ -26,7 +26,7 @@
         </p>
     </div>
 
-    <form asp-action="ProgramDetails" class="form-horizontal col-xs-12" method="post" role="form" enctype="multipart/form-data">
+    <form asp-action="ProgramDetails" class="form-horizontal col-12" method="post" role="form" enctype="multipart/form-data">
         @if (Model.PerformerId.HasValue)
         {
             <input asp-for="PerformerId" type="hidden" />
@@ -90,7 +90,7 @@
         </div>
 
         <div class="mb-3">
-            <div class="col-xs-12 col-sm-9 offset-sm-3">
+            <div class="col-12 col-sm-9 offset-sm-3">
                 <p>
                     Please select which age groups the program is suited for.
                 </p>
@@ -104,7 +104,7 @@
         </div>
 
         <div class="mb-3">
-            <div class="col-xs-12 col-sm-9 offset-sm-3">
+            <div class="col-12 col-sm-9 offset-sm-3">
                 <p>
                     Please list all times in minutes.
                 </p>
@@ -165,10 +165,10 @@
         <div class="mb-3">
             <div class="col-sm-3">
                 <div class="row">
-                    <label asp-for="Program.Setup" class="col-xs-12 col-form-label required-field"></label>
+                    <label asp-for="Program.Setup" class="col-12 col-form-label required-field"></label>
                     @if (!string.IsNullOrWhiteSpace(Model.SetupSupplementalText))
                     {
-                        <label class="col-xs-12 col-form-label" style="font-size:small;"><em>@Model.SetupSupplementalText</em></label>
+                        <label class="col-12 col-form-label" style="font-size:small;"><em>@Model.SetupSupplementalText</em></label>
                     }
                 </div>
             </div>
@@ -181,7 +181,7 @@
         @if (Model.EnablePerformerLivestreamQuestions)
         {
             <div class="mb-3">
-                <div class="col-xs-12 col-sm-9 offset-sm-3">
+                <div class="col-12 col-sm-9 offset-sm-3">
                     <p>
                         Are you willing to allow the library to livestream your program online?<span class="required-field"></span>
                     </p>
@@ -196,7 +196,7 @@
             </div>
 
             <div class="mb-3">
-                <div class="col-xs-12 col-sm-9 offset-sm-3">
+                <div class="col-12 col-sm-9 offset-sm-3">
                     <p>
                         Are you willing to allow the library to save and share the archive of your event, if livestreamed or recorded?<span class="required-field"></span>
                     </p>

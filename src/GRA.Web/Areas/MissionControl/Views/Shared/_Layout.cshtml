@@ -232,7 +232,7 @@
     <div class="container body-content">
         <noscript>
             <div class="row">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <div class="alert alert-warning"><span class="fas fa-lg fa-exclamation-triangle text-primary"></span> This website relies on JavaScript. Please enable JavaScript in your browser to get the best experience.</div>
                 </div>
             </div>
@@ -242,7 +242,7 @@
         && ViewData[GRA.Controllers.ViewDataKey.TitleHtml] != null)
         {
             <div class="row">
-                <div class="col-xs-12">
+                <div class="col-12">
                     @RenderSection("inHeading", required: false)
                     <span class="h2">@Html.Raw(ViewData[GRA.Controllers.ViewDataKey.TitleHtml])</span>
                 </div>
@@ -251,7 +251,7 @@
         else if (ViewData.ContainsKey(GRA.Controllers.ViewDataKey.Title))
         {
             <div class="row mc-page-title">
-                <div class="col-xs-12">
+                <div class="col-12">
                     @RenderSection("inHeading", required: false)
                     <span class="h2">@ViewData[GRA.Controllers.ViewDataKey.Title]</span>
                 </div>
@@ -261,7 +261,7 @@
         @if (TempData[GRA.Controllers.TempDataKey.AlertDanger] != null)
         {
             <div class="row mc-alertrow">
-                <div class="col-xs-12 col-sm-6 offset-sm-3">
+                <div class="col-12 col-sm-6 offset-sm-3">
                     <div class="alert alert-danger">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertDanger])</div>
                 </div>
             </div>
@@ -269,7 +269,7 @@
         @if (TempData[GRA.Controllers.TempDataKey.AlertWarning] != null)
         {
             <div class="row mc-alertrow">
-                <div class="col-xs-12 col-sm-6 offset-sm-3">
+                <div class="col-12 col-sm-6 offset-sm-3">
                     <div class="alert alert-warning">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertWarning])</div>
                 </div>
             </div>
@@ -277,7 +277,7 @@
         @if (TempData[GRA.Controllers.TempDataKey.AlertSuccess] != null)
         {
             <div class="row mc-alertrow">
-                <div class="col-xs-12 col-sm-6 offset-sm-3">
+                <div class="col-12 col-sm-6 offset-sm-3">
                     <div class="alert alert-success">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertSuccess])</div>
                 </div>
             </div>
@@ -285,7 +285,7 @@
         @if (TempData[GRA.Controllers.TempDataKey.AlertInfo] != null)
         {
             <div class="row mc-alertrow">
-                <div class="col-xs-12 col-sm-6 offset-sm-3">
+                <div class="col-12 col-sm-6 offset-sm-3">
                     <div class="alert alert-info">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertInfo])</div>
                 </div>
             </div>

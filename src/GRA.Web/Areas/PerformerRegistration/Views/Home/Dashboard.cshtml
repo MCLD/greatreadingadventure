@@ -1,7 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.PerformerRegistration.Home.DashboardViewModel
 
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <h1>
             Performer Dashboard
         </h1>
@@ -20,7 +20,7 @@
         }
     </div>
 
-    <div class="col-xs-12">
+    <div class="col-12">
         <hr />
         <h2 style="margin-top:0px;">
             Performer Information
@@ -30,22 +30,22 @@
             }
         </h2>
     </div>
-    <div class="col-xs-12 col-sm-5 col-md-4">
+    <div class="col-12 col-sm-5 col-md-4">
         @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
         {
             <div class="row" style="padding-bottom:15px;">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <img src="~/@Model.ImagePath" class="img-fluid" style="margin: 0 auto;" />
                 </div>
             </div>
         }
         <div class="row" style="padding-bottom:15px;">
-            <div class="col-xs-12" style="text-align:center;">
+            <div class="col-12" style="text-align:center;">
                 <a asp-action="Images" class="btn btn-primary">@(Model.IsEditable ? "View/Manage Images" : "View Images")</a>
             </div>
         </div>
         <div class="row" style="padding-bottom:15px;">
-            <div class="col-xs-12" style="text-align:center;">
+            <div class="col-12" style="text-align:center;">
                 <a aria-label="View References (Opens new window)"
                    href="~/@Model.ReferencesPath"
                    target="_blank"
@@ -53,7 +53,7 @@
             </div>
         </div>
     </div>
-    <div class="col-xs-12 col-sm-7 col-md-8">
+    <div class="col-12 col-sm-7 col-md-8">
         <div class="mb-3">
             <label>Name</label>
             <div>@Model.Performer.Name</div>
@@ -114,7 +114,7 @@
         </div>
     </div>
 
-    <div class="col-xs-12">
+    <div class="col-12">
         <hr />
         <h2>
             Programs
@@ -124,7 +124,7 @@
             }
         </h2>
     </div>
-    <div class="col-xs-12">
+    <div class="col-12">
         @if (Model.Performer.Programs.Count == 0)
         {
             <div class="alert alert-warning">No Programs.</div>
@@ -177,7 +177,7 @@
         }
     </div>
 
-    <div class="col-xs-12">
+    <div class="col-12">
         <hr />
         <h2>
             Schedule
@@ -188,7 +188,7 @@
         </h2>
     </div>
 
-    <div class="col-xs-12">
+    <div class="col-12">
         @{int count = 0;}
         @for (var calendarMonth = new DateTime(Model.Settings.ScheduleStartDate.Value.Year, Model.Settings.ScheduleStartDate.Value.Month, 1); calendarMonth <= Model.Settings.ScheduleEndDate; calendarMonth = calendarMonth.AddMonths(1))
         {
@@ -196,7 +196,7 @@
             {
                 @Html.Raw("<div class=\"row\">");
             }
-            <div class="col-xs-12 col-md-4">
+            <div class="col-12 col-md-4">
                 <table class="table table-sm">
                     <thead>
                         <tr>

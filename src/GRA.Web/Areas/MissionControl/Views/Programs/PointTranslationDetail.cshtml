@@ -6,7 +6,7 @@
     <input asp-for="HasBeenUsed" type="hidden" />
 
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-12">
 
             <div class="mb-3">
                 <label asp-for="PointTranslation.TranslationName" class="col-form-label"></label>
@@ -23,14 +23,14 @@
             </div>
 
             <div class="row">
-                <div class="col-xs-12 col-sm-6">
+                <div class="col-12 col-sm-6">
                     <div class="mb-3">
                         <label asp-for="PointTranslation.PointsEarned" class="col-form-label"></label>
                         <input asp-for="PointTranslation.PointsEarned" class="form-control" disabled="@(Model.HasBeenUsed ? "readonly" : null)" />
                         <span asp-validation-for="PointTranslation.PointsEarned" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-6">
+                <div class="col-12 col-sm-6">
                     <div class="mb-3">
                         <label asp-for="PointTranslation.ActivityAmount" class="col-form-label"></label>
                         <input asp-for="PointTranslation.ActivityAmount" class="form-control" disabled="@(Model.HasBeenUsed ? "readonly" : null)" />
@@ -40,14 +40,14 @@
             </div>
 
             <div class="row">
-                <div class="col-xs-12 col-sm-6">
+                <div class="col-12 col-sm-6">
                     <div class="mb-3">
                         <label asp-for="PointTranslation.ActivityDescription" class="col-form-label"></label>
                         <input asp-for="PointTranslation.ActivityDescription" class="form-control" />
                         <span asp-validation-for="PointTranslation.ActivityDescription" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-6">
+                <div class="col-12 col-sm-6">
                     <div class="mb-3">
                         <label asp-for="PointTranslation.ActivityDescriptionPlural" class="col-form-label"></label>
                         <input asp-for="PointTranslation.ActivityDescriptionPlural" class="form-control" />
@@ -57,14 +57,14 @@
             </div>
 
             <div class="row">
-                <div class="col-xs-12 col-sm-6">
+                <div class="col-12 col-sm-6">
                     <div class="mb-3">
                         <label asp-for="PointTranslation.TranslationDescriptionPastTense" class="col-form-label"></label>
                         <input asp-for="PointTranslation.TranslationDescriptionPastTense" class="form-control" />
                         <span asp-validation-for="PointTranslation.TranslationDescriptionPastTense" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-6">
+                <div class="col-12 col-sm-6">
                     <div class="mb-3">
                         <label asp-for="PointTranslation.TranslationDescriptionPresentTense" class="col-form-label"></label>
                         <input asp-for="PointTranslation.TranslationDescriptionPresentTense" class="form-control" />

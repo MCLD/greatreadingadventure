@@ -13,13 +13,13 @@
     <div class="row" style="padding: 10px 0;">
         @if (Model.HasPendingQuestionnaire)
         {
-            <div class="col-xs-12 row-spacing">
+            <div class="col-12 row-spacing">
                 <div class="alert alert-warning">Activity cannot be logged while there is a pending questionnaire to be taken.</div>
             </div>
         }
         else
         {
-            <div class="col-xs-12 col-sm-6 row-spacing">
+            <div class="col-12 col-sm-6 row-spacing">
                 <table>
                     <tr>
                         @if (Model.PointTranslation.IsSingleEvent == false)
@@ -59,7 +59,7 @@
             </div>
             @if (!Model.DisableSecretCode)
             {
-                <div class="col-xs-12 col-sm-6 row-spacing">
+                <div class="col-12 col-sm-6 row-spacing">
                     <table>
                         <tr>
                             <td style="padding-right:6px;">Apply</td>
@@ -87,7 +87,7 @@
     @if (Model.VendorCodeTypeList?.Count() > 0)
     {
         <div class="row">
-            <div class="col-xs-12 row-spacing">
+            <div class="col-12 row-spacing">
                 <table>
                     <tr>
                         <td style="padding-right:6px;">Award</td>

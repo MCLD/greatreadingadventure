@@ -9,7 +9,7 @@
                     <h4>@Model.Name</h4>
                     <p>@Html.Raw(Model.EmailAwardInstructions)</p>
                     <div class="row row-spacing">
-                        <div class="col-xs-12">
+                        <div class="col-12">
                             <label asp-for="Email" class="col-form-label"></label>
                             <input asp-for="Email" type="email" class="form-control" required />
                             <span asp-validation-for="Email" class="text-danger"></span>

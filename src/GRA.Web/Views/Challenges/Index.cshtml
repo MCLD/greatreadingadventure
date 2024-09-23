@@ -38,7 +38,7 @@
     </div>
 
     <div class="row gra-js-required gra-carousel-container" aria-hidden="true">
-        <div class="col-xs-12 col-sm-10 offset-sm-1">
+        <div class="col-12 col-sm-10 offset-sm-1">
             <div class="accordion" id="accordionFeatured">
                 <div class="card">
                     <div class="card-header" id="headingOne">
@@ -85,7 +85,7 @@
 }
 
 <div class="row">
-    <div class="col-xs-12 col-sm-10 offset-sm-1">
+    <div class="col-12 col-sm-10 offset-sm-1">
         <div class="card">
             <div class="card-header">
                 <span class="lead">
@@ -114,10 +114,10 @@
                         }
 
                         <div class="row row-spacing">
-                            <div class="col-xs-12 col-sm-2" style="margin-bottom:0.25rem;">
+                            <div class="col-12 col-sm-2" style="margin-bottom:0.25rem;">
                                 <span style="font-size:large;">Search:</span>
                             </div>
-                            <div class="col-xs-12 col-sm-10 gra-search-container">
+                            <div class="col-12 col-sm-10 gra-search-container">
                                 <input asp-for="Search"
                                    class="form-control"
                                    placeholder="@SharedLocalizer[GRA.Annotations.Interface.EnterChallengeSearch]" />
@@ -125,10 +125,10 @@
                         </div>
 
                         <div class="row row-spacing">
-                            <div class="col-xs-12 col-sm-2" style="margin-bottom:0.25rem;">
+                            <div class="col-12 col-sm-2" style="margin-bottom:0.25rem;">
                                 <span style="font-size:large;">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Program]:</span>
                             </div>
-                            <div class="col-xs-12 col-sm-10">
+                            <div class="col-12 col-sm-10">
                                 <select asp-for="Program" asp-items="Model.ProgramList" class="form-control">
                                     <option value="">@SharedLocalizer[GRA.Annotations.Interface.AllPrograms]</option>
                                 </select>
@@ -137,10 +137,10 @@
                         @if (Model.CategoryList?.Count() > 0)
                         {
                             <div id="Category" class="row row-spacing">
-                                <div class="col-xs-12 col-sm-2" style="margin-bottom:0.25rem;">
+                                <div class="col-12 col-sm-2" style="margin-bottom:0.25rem;">
                                     <span style="font-size:large;">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Category]:</span>
                                 </div>
-                                <div class="col-xs-12 col-sm-10">
+                                <div class="col-12 col-sm-10">
                                     <noscript id="noscript">
                                         <select asp-for="Categories"
                                         asp-items="Model.CategoryList"
@@ -158,10 +158,10 @@
                             </div>
                         }
                         <div id="Ordering" class="row row-spacing">
-                            <div class="col-xs-12 col-sm-2" style="margin-bottom:0.25rem;">
+                            <div class="col-12 col-sm-2" style="margin-bottom:0.25rem;">
                                 <span style="font-size:large;">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Ordering]:</span>
                             </div>
-                            <div class="col-xs-12 col-sm-10">
+                            <div class="col-12 col-sm-10">
                                 <label class="radio-inline">
                                     <input type="radio"
                                        name="Ordering"
@@ -188,10 +188,10 @@
                         @if (Model.IsLoggedIn)
                         {
                             <div class="row row-spacing">
-                                <div class="col-xs-12 col-sm-2" style="margin-bottom:0.25rem;">
+                                <div class="col-12 col-sm-2" style="margin-bottom:0.25rem;">
                                     <span style="font-size:large;">@SharedLocalizer[GRA.Annotations.Interface.Status]:</span>
                                 </div>
-                                <div class="col-xs-12 col-sm-10">
+                                <div class="col-12 col-sm-10">
                                     <select asp-for="Status" class="form-control">
                                         <option value="@ChallengesController.StatusUncompleted">@SharedLocalizer[GRA.Annotations.Interface.ViewUncompleted]</option>
                                         <option value="@ChallengesController.StatusCompleted">@SharedLocalizer[GRA.Annotations.Interface.ViewCompleted]</option>
@@ -203,7 +203,7 @@
                         @if (Model.IsFiltered)
                         {
                             <div class="row row-spacing">
-                                <div class="col-xs-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3">
+                                <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3">
                                     <div class="alert-success" style="padding:1rem;border-radius:4px;text-align:center">
                                         @(Model.PaginateModel.ItemCount == 1 ?
                                             SharedLocalizer[GRA.Annotations.Info.SearchResultsMatchesSingular]
@@ -215,7 +215,7 @@
                             </div>
                         }
                         <div class="row">
-                                <div class="col-xs-12 col-sm-4 col-md-3 @(Model.IsLoggedIn ? "row-spacing" : "")">
+                                <div class="col-12 col-sm-4 col-md-3 @(Model.IsLoggedIn ? "row-spacing" : "")">
                                 @if (Model.IsLoggedIn)
                                 {
                                     <a asp-action="Index"
@@ -230,13 +230,13 @@
                                     </a>
                                 }
                                 </div>
-                                <div class="col-xs-6 col-sm-2 offset-sm-4 offset-md-5 row-spacing">
+                                <div class="col-6 col-sm-2 offset-sm-4 offset-md-5 row-spacing">
                                 <a asp-action="Index" asp-route-ClearSearch="true" class="btn btn-secondary ">
                                     <span class="hidden-sm fas fa-minus-circle"></span>
                                     @SharedLocalizer[GRA.Annotations.Interface.Clear]
                                 </a>
                             </div>
-                            <div class="col-xs-6 col-sm-2 row-spacing">
+                            <div class="col-6 col-sm-2 row-spacing">
                                 <button type="submit" class="btn btn-primary ">
                                     <span class="hidden-sm fas fa-search"></span>
                                     @SharedLocalizer[GRA.Annotations.Interface.Find]
@@ -247,7 +247,7 @@
                     </form>
                 }
                 <div class="row">
-                    <div class="col-xs-12">
+                    <div class="col-12">
                         @if (Model.Challenges.Count() == 0)
                         {
                             <div class="alert alert-warning">@SharedLocalizer[GRA.Annotations.Interface.NoChallenges]</div>

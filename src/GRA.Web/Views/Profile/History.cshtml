@@ -1,7 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.Profile.HistoryListViewModel
 
 <div class="row">
-    <div class="col-xs-12 col-sm-10 offset-sm-1">
+    <div class="col-12 col-sm-10 offset-sm-1">
         <div class="card">
             <div class="card-header">
                 <span class="lead">@SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProfile]</span>
@@ -11,7 +11,7 @@
                 @await Html.PartialAsync("_ProfilePartial")
 
                 <div class="row" style="padding: 10px 0;">
-                    <div class="col-xs-12">
+                    <div class="col-12">
                         @if (Model.Historys.Count() == 0)
                         {
                             <div class="alert alert-warning">@SharedLocalizer[GRA.Annotations.Info.NoHistory]</div>

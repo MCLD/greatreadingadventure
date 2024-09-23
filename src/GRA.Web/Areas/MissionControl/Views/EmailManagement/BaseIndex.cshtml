@@ -1,7 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.EmailManagement.EmailBaseIndexViewModel
 
 <div class="row" style="margin: 1rem 0;">
-    <div class="col-xs-12">
+    <div class="col-12">
         <a class="btn btn-secondary"
            asp-action="@nameof(EmailManagementController.Index)">
             Return to Template List
@@ -16,7 +16,7 @@
 </div>
 
 <div class="row" style="margin: 1rem 0;">
-    <div class="col-xs-12">
+    <div class="col-12">
         @if (Model.EmailBases?.Any() != true)
         {
             <div class="alert alert-warning"

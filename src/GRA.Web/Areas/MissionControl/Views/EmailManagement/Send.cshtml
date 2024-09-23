@@ -5,7 +5,7 @@
     @if (Model.IsForSubscribers)
     {
         <div class="row row-spacing" style="margin-top: 1rem;">
-            <div class="col-xs-12">
+            <div class="col-12">
                 <div class="alert alert-info">
                     <p>
                         This email does not have the <code>{{UnsubscribeLink}}</code> in the footer so it is
@@ -23,7 +23,7 @@
         <form method="get" asp-action="@nameof(EmailManagementController.SelectList)">
             <input type="hidden" name="templateId" value="@Model.Template.Id">
             <div class="row row-spacing">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <label asp-for="SubscriptionLists"
                    class="col-form-label">Select a subscriber list:</label>
                     <select name="listName"
@@ -37,7 +37,7 @@
             </div>
 
             <div class="row row-spacing">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <a class="btn btn-secondary"
                asp-action="@nameof(EmailManagementController.Index)">Back</a>
                     <button class="btn btn-success">Select this list</button>
@@ -48,7 +48,7 @@
     else
     {
         <div class="row" style="margin-top: 1rem;">
-            <div class="col-xs-12">
+            <div class="col-12">
                 <div class="alert alert-info">
                     <p>
                         This email has the <code>{{UnsubscribeLink}}</code> in the footer so it is
@@ -87,7 +87,7 @@
             <form method="post" asp-action="@nameof(EmailManagementController.SendParticipants)">
                 <input type="hidden" name="templateId" value="@Model.Template.Id">
                 <div class="row row-spacing">
-                    <div class="col-xs-12">
+                    <div class="col-12">
                         <a class="btn btn-secondary"
                asp-action="@nameof(EmailManagementController.Index)">Back</a>
                         <button class="btn btn-success">Send to participants</button>
@@ -98,7 +98,7 @@
         else
         {
             <div class="row row-spacing">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <div class="alert alert-danger">
                         There are no subscribed participants.
                     </div>

@@ -14,7 +14,7 @@
 <h3>Export</h3>
 <form asp-action="@nameof(EmailManagementController.ExportAddresses)" method="get">
     <div class="row row-spacing">
-        <div class="col-xs-12">
+        <div class="col-12">
             <label asp-for="SignUpSource" class="col-form-label">Mailing list</label>
             <select asp-for="SignUpSource"
                     asp-items="@Model.SignUpSources"
@@ -40,7 +40,7 @@
       method="post"
       enctype="multipart/form-data">
     <div class="row row-spacing">
-        <div class="col-xs-12">
+        <div class="col-12">
             <label for="selectedFile">Select a .json file:</label>
             <div class="input-group">
                 <label class="input-group-append">
@@ -64,7 +64,7 @@
         </div>
     </div>
     <div class="row row-spacing">
-        <div class="col-xs-12">
+        <div class="col-12">
             <label asp-for="SignUpSource" class="col-form-label">Mailing list</label>
             <select asp-for="SignUpSource"
                     asp-items="@GRA.Controllers.ViewModel.MissionControl.EmailManagement.EmailAddressesViewModel.AllSources"

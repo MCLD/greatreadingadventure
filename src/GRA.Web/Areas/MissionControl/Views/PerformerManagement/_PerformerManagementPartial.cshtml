@@ -3,7 +3,7 @@
 @if (Model.PerformerSchedulingEnabled)
 {
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-12">
             <ul class="nav nav-pills" style="padding: 10px 0;">
                 <li ActiveBy routeKey="Action" value="@nameof(PerformerManagementController.Index)"><a asp-action="@nameof(PerformerManagementController.Index)">Status</a></li>
                 <li ActiveBy routeKey="Action" value="@nameof(PerformerManagementController.Performers)"><a asp-action="@nameof(PerformerManagementController.Performers)">Performers</a></li>

@@ -12,7 +12,7 @@
     <input asp-for="BadgeMakerImage" type="hidden" />
 
     <div class="row row-spacing">
-        <div class="col-xs-12">
+        <div class="col-12">
             <label asp-for="Challenge.Name" class="col-form-label"></label>
             <input asp-for="Challenge.Name" class="form-control" />
             <span asp-validation-for="Challenge.Name" class="text-danger"></span>
@@ -20,7 +20,7 @@
     </div>
 
     <div class="row row-spacing">
-        <div class="col-xs-12">
+        <div class="col-12">
             <label asp-for="Challenge.Description" class="col-form-label"></label>
             <textarea asp-for="Challenge.Description" class="form-control"> </textarea>
             <span asp-validation-for="Challenge.Description" class="text-danger"></span>
@@ -28,14 +28,14 @@
     </div>
 
     <div class="row">
-        <div class="col-xs-12 col-sm-6 row-spacing">
+        <div class="col-12 col-sm-6 row-spacing">
             <label asp-for="Challenge.PointsAwarded" class="col-form-label"></label>
             <label style="font-size: 12px;">@Model.MaxPointsMessage</label>
             <input asp-for="Challenge.PointsAwarded" type="number" min="1" class="form-control" />
             <span asp-validation-for="Challenge.PointsAwarded" class="text-danger"></span>
         </div>
 
-        <div class="col-xs-12 col-sm-6 row-spacing">
+        <div class="col-12 col-sm-6 row-spacing">
             <label asp-for="Challenge.TasksToComplete" class="col-form-label"></label>
             <input asp-for="Challenge.TasksToComplete" type="number" min="1" class="form-control" />
             <span asp-validation-for="Challenge.TasksToComplete" class="text-danger"></span>
@@ -43,7 +43,7 @@
     </div>
 
     <div class="row row-spacing">
-        <div class="col-xs-12">
+        <div class="col-12">
             <label asp-for="Challenge.CategoryIds" class="col-form-label"></label>
             <input asp-for="CategoryPlaceholder" class="form-control" />
             <select asp-for="Challenge.CategoryIds" asp-items="Model.CategoryList" class="form-control hidden" multiple="multiple"></select>
@@ -52,7 +52,7 @@
     </div>
 
     <div class="row row-spacing">
-        <div class="col-xs-12">
+        <div class="col-12">
             <label asp-for="Challenge.LimitToSystemId" class="col-form-label"></label>
             <select asp-for="Challenge.LimitToSystemId" asp-items="Model.SystemList" class="form-control">
                 <option value="">No</option>
@@ -62,7 +62,7 @@
     </div>
 
     <div class="row row-spacing">
-        <div class="col-xs-12">
+        <div class="col-12">
             <label asp-for="Challenge.LimitToBranchId" class="col-form-label"></label>
             <select asp-for="Challenge.LimitToBranchId" asp-items="Model.BranchList" class="form-control">
                 <option value="">No</option>
@@ -72,7 +72,7 @@
     </div>
 
     <div class="row row-spacing">
-        <div class="col-xs-12">
+        <div class="col-12">
             <label asp-for="Challenge.AssociatedProgramId" class="col-form-label"></label>
             <select asp-for="Challenge.AssociatedProgramId" asp-items="Model.ProgramList" class="form-control">
                 <option value="">No</option>
@@ -82,7 +82,7 @@
     </div>
 
     <div class="row row-spacing">
-        <div class="col-xs-12">
+        <div class="col-12">
             @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
             {
                 <label class="col-form-label">Edit badge image</label>
@@ -93,7 +93,7 @@
             }
         </div>
 
-        <div class="col-xs-12 col-sm-4 col-md-3">
+        <div class="col-12 col-sm-4 col-md-3">
 
             @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
             {
@@ -109,7 +109,7 @@
             <span asp-validation-for="BadgePath" class="text-danger" style="display:block;"></span>
         </div>
 
-        <div class="col-xs-12 col-sm-8 col-md-9">
+        <div class="col-12 col-sm-8 col-md-9">
             <ul class="nav nav-tabs" role="tablist">
                 @if (Model.UseBadgeMaker)
                 {
@@ -148,7 +148,7 @@
         </div>
     </div>
     <div class="row row-spacing">
-        <div class="col-xs-12">
+        <div class="col-12">
             <label asp-for="BadgeAltText" class="col-form-label"></label>
             <span class="fas fa-info-circle wide-tooltip"
                   title="How should this badge be described to someone who can't see it?"

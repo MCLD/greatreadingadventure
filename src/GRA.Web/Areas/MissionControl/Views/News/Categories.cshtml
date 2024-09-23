@@ -3,13 +3,13 @@
 @await Html.PartialAsync("_NewsPartial")
 
 <div class="row" style="padding: 10px 0;">
-    <div class="col-xs-12">
+    <div class="col-12">
         <a asp-action="CreateCategory" class="btn btn-secondary">Add a Category</a>
     </div>
 </div>
 
 <div class="row" style="padding: 10px 0;">
-    <div class="col-xs-12">
+    <div class="col-12">
         @if (Model.Categories.Count() == 0)
         {
             <div class="alert alert-warning">No Categories found.</div>

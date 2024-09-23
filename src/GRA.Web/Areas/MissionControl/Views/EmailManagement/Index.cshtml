@@ -11,7 +11,7 @@
 }
 
 <div class="row" style="margin: 1rem 0;">
-    <div class="col-xs-12">
+    <div class="col-12">
         <a class="btn btn-success"
            asp-action="@nameof(EmailManagementController.CreateTemplate)">
             <span class="fas fa-plus-circle"></span>
@@ -42,7 +42,7 @@
 </div>
 
 <div class="row" style="margin: 1rem 0;">
-    <div class="col-xs-12">
+    <div class="col-12">
         @if (Model.EmailTemplates.Count() == 0)
         {
             <div class="alert alert-warning">No Emails.</div>

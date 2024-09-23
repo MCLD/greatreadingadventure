@@ -5,13 +5,13 @@
 }
 
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <h1>
             Images for Kit: @Model.Name
             <a asp-action="Kit" asp-route-id="@Model.Id" class="btn btn-lg btn-secondary" style="margin-bottom: 0.5rem;">Return to Kit</a>
         </h1>
     </div>
-    <div class="col-xs-12">
+    <div class="col-12">
         @if (Model.Images.Count == 0)
         {
             <div class="alert alert-warning">No Images.</div>
@@ -24,7 +24,7 @@
                 {
                     @Html.Raw("<div class=\"row\">");
                 }
-                <div class="col-xs-12 col-md-4" style="margin-bottom: 2rem;">
+                <div class="col-12 col-md-4" style="margin-bottom: 2rem;">
                     <div style="padding:10px;border:1px solid black;">
                         <img src="~/@Model.Images[i].Filename" class="img-fluid" style="margin: 0 auto;" />
                     </div>

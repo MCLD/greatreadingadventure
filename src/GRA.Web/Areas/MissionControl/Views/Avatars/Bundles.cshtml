@@ -1,7 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Avatar.BundlesListViewModel
 
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <ul class="nav nav-pills" style="padding: 10px 0;">
             <li ActiveBy routeKey="Unlockable" value=",True"><a asp-action="Bundles">Unlockable</a></li>
             <li ActiveBy routeKey="Unlockable" value="False"><a asp-action="Bundles" asp-route-Unlockable="False">Default</a></li>
@@ -10,13 +10,13 @@
 </div>
 
 <div class="row" style="padding: 10px 0;">
-    <div class="col-xs-12">
+    <div class="col-12">
         <a asp-action="BundleCreate" class="btn btn-secondary">Create a new bundle</a>
     </div>
 </div>
 
 <div class="row" style="padding: 10px 0;">
-    <div class="col-xs-12">
+    <div class="col-12">
         @if (Model.Bundles.Count() == 0)
         {
             <div class="alert alert-warning">No Bundles</div>

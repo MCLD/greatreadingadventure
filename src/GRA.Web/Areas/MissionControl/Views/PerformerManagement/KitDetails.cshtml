@@ -9,7 +9,7 @@
 }
 
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <h1>@(Model.NewKit ? "Add Kit" : $"Edit Kit: {Model.Kit.Name}")</h1>
     </div>
 
@@ -19,7 +19,7 @@
         </p>
     </div>
 
-    <form asp-action="KitDetails" class="form-horizontal col-xs-12" method="post" role="form" enctype="multipart/form-data">
+    <form asp-action="KitDetails" class="form-horizontal col-12" method="post" role="form" enctype="multipart/form-data">
         <input asp-for="NewKit" type="hidden" />
         @if (Model.NewKit == false)
         {
@@ -82,7 +82,7 @@
         </div>
 
         <div class="mb-3">
-            <div class="col-xs-12 col-sm-9 offset-sm-3">
+            <div class="col-12 col-sm-9 offset-sm-3">
                 <p>
                     Please select which age groups the kit is suited for.
                 </p>

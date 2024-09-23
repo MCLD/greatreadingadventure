@@ -2,12 +2,12 @@
 
 <form asp-controller="Participants" asp-action="RegisterHouseholdMember" method="post" role="form">
     <div class="row" style="padding: 10px 0;">
-        <div class="col-xs-12">
+        <div class="col-12">
 
             <input asp-for="Id" type="hidden" />
 
             <div class="row row-spacing">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <label asp-for="Username" class="col-form-label"></label>
                     <span id="Username-Icon" class="fa colored-icon hide"></span>
                     <input asp-for="Username" class="form-control" autofocus />
@@ -16,7 +16,7 @@
             </div>
 
             <div class="row row-spacing">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <label asp-for="Password" class="col-form-label"></label>
                     <input asp-for="Password" type="password" class="form-control" />
                     <span asp-validation-for="Password" class="text-danger"></span>
@@ -24,7 +24,7 @@
             </div>
 
             <div class="row row-spacing">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <label asp-for="ConfirmPassword" class="col-form-label"></label>
                     <input asp-for="ConfirmPassword" type="password" class="form-control ignore"/>
                     <span asp-validation-for="ConfirmPassword" class="text-danger"></span>

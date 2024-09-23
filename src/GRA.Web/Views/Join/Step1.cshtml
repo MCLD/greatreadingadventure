@@ -7,7 +7,7 @@
     }
 
     <div class="row">
-        <div class="col-xs-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2">
+        <div class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2">
             <div class="card">
                 <div class="card-header">
                     <span class="lead">@ViewData[ViewDataKey.Title]</span>
@@ -23,7 +23,7 @@
                     }
 
                     <div class="row row-spacing">
-                        <div class="col-xs-12">
+                        <div class="col-12">
                             <label asp-for="FirstName" class="col-form-label"></label>
                             <input asp-for="FirstName" class="form-control first-name-field" />
                             <span asp-validation-for="FirstName" class="text-danger"></span>
@@ -31,7 +31,7 @@
                     </div>
 
                     <div class="row row-spacing">
-                        <div class="col-xs-12">
+                        <div class="col-12">
                             <label asp-for="LastName" class="col-form-label"></label>
                             <input asp-for="LastName" class="form-control" />
                             <span asp-validation-for="LastName" class="text-danger"></span>
@@ -41,7 +41,7 @@
                     @if (Model.RequirePostalCode)
                     {
                         <div class="row row-spacing">
-                            <div class="col-xs-12">
+                            <div class="col-12">
                                 <label asp-for="PostalCode" class="col-form-label"></label>
                                 <input asp-for="PostalCode" class="form-control" />
                                 <span asp-validation-for="PostalCode" class="text-danger"></span>
@@ -52,7 +52,7 @@
                     @if (Model.SystemList.Count() > 1)
                     {
                         <div class="row row-spacing">
-                            <div class="col-xs-12">
+                            <div class="col-12">
                                 <label asp-for="SystemId" class="col-form-label"></label>
                                 <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control">
                                     <option></option>
@@ -73,7 +73,7 @@
                     else
                     {
                         <div class="row row-spacing">
-                            <div class="col-xs-12">
+                            <div class="col-12">
                                 <label asp-for="BranchId" class="col-form-label"></label>
                                 <select asp-for="BranchId"
                                         asp-items="Model.BranchList"

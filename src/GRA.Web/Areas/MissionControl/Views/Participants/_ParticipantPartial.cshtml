@@ -3,7 +3,7 @@
 @if (Model.HasElevatedRole)
 {
     <div class="row d-print-none" style="padding: 10px 0; margin-top: 1rem;">
-        <div class="col-xs-12">
+        <div class="col-12">
             <div class="alert alert-warning">
                 <strong>
                     <span class="fas fa-exclamation-triangle"></span>
@@ -14,7 +14,7 @@
     </div>
 }
 <div class="row d-print-none">
-    <div class="col-xs-12" style="font-size: smaller;">
+    <div class="col-12" style="font-size: smaller;">
             <ul class="nav nav-pills" style="padding: 10px 0;">
                 <li ActiveBy routeKey="Action" value="Detail"><a asp-action="Detail" asp-route-id="@Model.Id">Details</a></li>
                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.LogActivityForAny.ToString()))

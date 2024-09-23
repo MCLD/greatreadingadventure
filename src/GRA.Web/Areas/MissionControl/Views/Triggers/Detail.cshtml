@@ -143,7 +143,7 @@
 
         @if (!string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
         {
-            <div class="col-xs-12 col-sm-6 offset-sm-3">
+            <div class="col-12 col-sm-6 offset-sm-3">
                 <div class="alert alert-warning">
                     <span class="fas fa-exclamation-circle" aria-hidden="true"></span> @Model.MaxPointsWarningMessage
                 </div>
@@ -152,7 +152,7 @@
     }
 
 
-    <div class="col-xs-12 mb-3-lg" style="margin-top: 2rem; margin-bottom: 2rem;">
+    <div class="col-12 mb-3-lg" style="margin-top: 2rem; margin-bottom: 2rem;">
         <label asp-for="Trigger.Name" class="col-form-label col-sm-3"></label>
         <div class="col-sm-9">
             <input asp-for="Trigger.Name"
@@ -173,7 +173,7 @@
 
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane @(Model.IsSecretCode ? "active" : "")" id="secretCode">
-            <div class="col-xs-12" style="margin-top: 1rem;">
+            <div class="col-12" style="margin-top: 1rem;">
                 <p>
                     <strong>
                         Choose a secret code to trigger this award. Don't choose something that is easy
@@ -185,7 +185,7 @@
                     Upper-case and lower-case don't matter.
                 </p>
             </div>
-            <div class="col-xs-12 mb-3-lg">
+            <div class="col-12 mb-3-lg">
                 <label asp-for="Trigger.SecretCode" class="col-form-label col-sm-3"></label>
                 <div class="col-sm-9">
                     <span id="SecretCode-Icon" style="float:left;margin-top:15px;" class="fa colored-icon hide"></span>
@@ -201,7 +201,7 @@
         </div>
 
         <div role="tabpanel" class="tab-pane @(Model.IsSecretCode ? "" : "active")" id="requirements">
-            <div class="col-xs-12" style="margin-top: 1rem;">
+            <div class="col-12" style="margin-top: 1rem;">
                 <p>
                     <strong>
                         You can trigger this award through a combination of requirements selected below.
@@ -214,7 +214,7 @@
                 <span asp-validation-for="TriggerRequirements" style="font-weight:bold;"></span>
             </div>
 
-            <div class="col-xs-12 mb-3">
+            <div class="col-12 mb-3">
                 <label asp-for="Trigger.Points" class="col-form-label col-sm-4"></label>
                 <div class="col-sm-8">
                     <input asp-for="Trigger.Points"
@@ -224,7 +224,7 @@
                 </div>
             </div>
 
-            <div class="col-xs-12 col-sm-10 offset-sm-1" style="margin-top: 2rem;">
+            <div class="col-12 col-sm-10 offset-sm-1" style="margin-top: 2rem;">
                 <div class="card">
                     <div class="card-header bg-warning-subtle">
                         <h3 class="card-title">Require Challenges and Triggers</h3>
@@ -305,7 +305,7 @@
                 </div>
             </div>
 
-            <div class="col-xs-12 mb-3">
+            <div class="col-12 mb-3">
                 <label asp-for="Trigger.LimitToSystemId" class="col-form-label col-sm-4"></label>
                 <div class="col-sm-8">
                     <select asp-for="Trigger.LimitToSystemId"
@@ -318,7 +318,7 @@
                 </div>
             </div>
 
-            <div class="col-xs-12 mb-3">
+            <div class="col-12 mb-3">
                 <label asp-for="Trigger.LimitToBranchId" class="col-form-label col-sm-4"></label>
                 <div class="col-sm-8">
                     <select asp-for="Trigger.LimitToBranchId"
@@ -331,7 +331,7 @@
                 </div>
             </div>
 
-            <div class="col-xs-12 mb-3">
+            <div class="col-12 mb-3">
                 <label asp-for="Trigger.LimitToProgramId" class="col-form-label col-sm-4"></label>
                 <div class="col-sm-8">
                     <select asp-for="Trigger.LimitToProgramId"
@@ -348,7 +348,7 @@
     </div>
 
     <div class="row row-spacing">
-        <div class="col-xs-12">
+        <div class="col-12">
             <label asp-for="Trigger.ActivationDate" class="col-form-label"></label>
             <div class="form-group date" id="activationDatePicker">
                 <input asp-for="Trigger.ActivationDate"
@@ -365,7 +365,7 @@
             <h3 class="card-title">Awards</h3>
         </div>
         <div class="card-body">
-            <div class="col-xs-12 mb-3">
+            <div class="col-12 mb-3">
                 <label asp-for="Trigger.AwardMessage" class="col-form-label col-sm-3"></label>
                 <div class="col-sm-9">
                     <textarea asp-for="Trigger.AwardMessage"
@@ -375,7 +375,7 @@
                 </div>
             </div>
 
-            <div class="col-xs-12 mb-3">
+            <div class="col-12 mb-3">
                 <div class="col-sm-3">
                     <div class="row-12 text-right text-sm-left">
                         <label asp-for="Trigger.AwardPoints" class="col-form-label"></label>
@@ -396,7 +396,7 @@
 
 
             <div class="row row-spacing">
-                <div class="col-xs-12">
+                <div class="col-12">
                     @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
                     {
                         <label class="col-form-label">Edit Badge</label>
@@ -407,7 +407,7 @@
                     }
                 </div>
 
-                <div class="col-xs-12 col-sm-4 col-md-3">
+                <div class="col-12 col-sm-4 col-md-3">
                     @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
                     {
                         <input asp-for="BadgePath" type="hidden" />
@@ -422,7 +422,7 @@
                     <span asp-validation-for="BadgePath" class="text-danger" style="display:block;"></span>
                 </div>
 
-                <div class="col-xs-12 col-sm-8 col-md-9">
+                <div class="col-12 col-sm-8 col-md-9">
                     <ul class="nav nav-tabs" role="tablist">
                         @if (Model.UseBadgeMaker)
                         {
@@ -458,7 +458,7 @@
                         </div>
                     </div>
                     <div class="row row-spacing">
-                        <div class="col-xs-12">
+                        <div class="col-12">
                             <label asp-for="BadgeAltText" class="col-form-label"></label>
                             <span class="fas fa-info-circle wide-tooltip"
                                   title="How should this badge be described to someone who can't see it?"
@@ -478,7 +478,7 @@
         if (!string.IsNullOrWhiteSpace(Model.VendorCodeType) || Model.VendorCodeTypeList.Count() > 0)
         {
             <div class="row row-spacing">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <label asp-for="Trigger.AwardVendorCodeTypeId" class="col-form-label"></label>
                     @if (Model.EditVendorCode)
                     {
@@ -501,7 +501,7 @@
         if (!string.IsNullOrWhiteSpace(Model.UnlockableAvatarBundle) || Model.UnlockableAvatarBundleList.Count() > 0)
         {
             <div class="row row-spacing">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <label asp-for="Trigger.AwardAvatarBundleId" class="col-form-label"></label>
                     @if (Model.EditAvatarBundle)
                     {
@@ -532,7 +532,7 @@
             <div id="collapsePrize" class="collapse" role="tabpanel" aria-labelledby="headingPrize">
                 <div class="card-body">
                     <div class="row row-spacing">
-                        <div class="col-xs-12">
+                        <div class="col-12">
                             <label asp-for="Trigger.AwardPrizeName" class="col-form-label"></label>
                             <description gra-description-for="Trigger.AwardPrizeName"></description>
                             <input asp-for="Trigger.AwardPrizeName"
@@ -542,7 +542,7 @@
                         </div>
                     </div>
                     <div class="row row-spacing">
-                        <div class="col-xs-12">
+                        <div class="col-12">
                             <label asp-for="Trigger.AwardPrizeRedemptionInstructions" class="col-form-label"></label>
                             <textarea asp-for="Trigger.AwardPrizeRedemptionInstructions"
                                       class="form-control"
@@ -577,7 +577,7 @@
                 <div id="collapseMail" class="collapse" role="tabpanel" aria-labelledby="headingMail">
                     <div class="card-body">
                         <div class="row row-spacing">
-                            <div class="col-xs-12">
+                            <div class="col-12">
                                 <label asp-for="Trigger.AwardMailSubject" class="col-form-label"></label>
                                 <input asp-for="Trigger.AwardMailSubject"
                                        class="form-control"
@@ -586,7 +586,7 @@
                             </div>
                         </div>
                         <div class="row row-spacing">
-                            <div class="col-xs-12">
+                            <div class="col-12">
                                 <label asp-for="Trigger.AwardMail" class="col-form-label"></label>
                                 <textarea asp-for="Trigger.AwardMail"
                                           class="form-control"
@@ -614,7 +614,7 @@
                 <div id="collapseAttachment" class="collapse" role="tabpanel" aria-labelledby="headingAttachment">                   
                     <div class="card-body">
                         <div class="row row-spacing">
-                            <div class="col-xs-12" id="uploadAttachmentContainer">
+                            <div class="col-12" id="uploadAttachmentContainer">
                                 <p id="uploadAttachmentHeader">
                                     @if (Model.AwardsAttachment)
                                     {
@@ -767,14 +767,14 @@
          aria-labelledby="listModalLabel">
         <div class="modal-dialog modal-lg" role="document">
             <div class="row">
-                <div class="col-xs-12 col-sm-10 offset-sm-1">
+                <div class="col-12 col-sm-10 offset-sm-1">
                     <div class="card">
                         <div class="card-header">
                             <h1 class="h4 modal-title lead">Add requirement</h1>
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-xs-12">
+                                <div class="col-12">
                                     <ul class="nav nav-pills" style="padding: 10px 0;">
                                         <li id="All" class="active requirementScope">
                                             <a>All</a>
@@ -793,12 +793,12 @@
                             </div>
 
                             <div class="row row-spacing">
-                                <div class="col-xs-8">
+                                <div class="col-8">
                                     <input id="searchText" class="form-control"
                                            placeholder="Enter text to search for an event here" />
                                 </div>
-                                <div class="col-xs-4">
-                                    <div class="col-xs-6">
+                                <div class="col-4">
+                                    <div class="col-6">
                                         <button type="button"
                                                 id="searchButton"
                                                 class="btn btn-secondary "
@@ -806,7 +806,7 @@
                                             Search
                                         </button>
                                     </div>
-                                    <div class="col-xs-6">
+                                    <div class="col-6">
                                         <button type="button"
                                                 id="clearButton"
                                                 class="btn btn-secondary ">
@@ -816,14 +816,14 @@
                                 </div>
                             </div>
                             <div id="searchMessage" class="row hide">
-                                <div class="col-xs-12">
+                                <div class="col-12">
                                     <p class="alert-sm alert-info">
                                         Searching for '<strong id="searchTerm"></strong>'
                                     </p>
                                 </div>
                             </div>
                             <div class="row">
-                                <div id="modalRequirementList" class="col-xs-12">
+                                <div id="modalRequirementList" class="col-12">
                                 </div>
                             </div>
                         </div>

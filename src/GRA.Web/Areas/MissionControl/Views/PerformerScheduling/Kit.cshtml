@@ -5,7 +5,7 @@
 }
 
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <table style="margin:0 auto;">
             <tr>
                 @if (Model.PrevKit.HasValue)
@@ -30,11 +30,11 @@
         <hr />
     </div>
 
-    <div class="col-xs-12 col-sm-5 col-md-4">
+    <div class="col-12 col-sm-5 col-md-4">
         @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
         {
             <div class="row" style="padding-bottom:15px;">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <img src="~/@Model.ImagePath" class="img-fluid" style="margin: 0 auto;" />
                 </div>
             </div>
@@ -42,18 +42,18 @@
         @if (Model.Kit.Images.Count > 1)
         {
             <div class="row" style="padding-bottom:15px;">
-                <div class="col-xs-12" style="text-align:center;">
+                <div class="col-12" style="text-align:center;">
                     <a asp-action="KitImages" asp-route-id="@Model.Kit.Id" class="btn btn-primary">View More Images</a>
                 </div>
             </div>
         }
         <div class="row" style="padding-bottom:15px;">
-            <div class="col-xs-12" style="text-align:center;">
+            <div class="col-12" style="text-align:center;">
                 <a asp-action="Kits" asp-route-page="@Model.ReturnPage" class="btn btn-secondary">Return to List</a>
             </div>
         </div>
     </div>
-    <div class="col-xs-12 col-sm-7 col-md-8">
+    <div class="col-12 col-sm-7 col-md-8">
         <div class="mb-3">
             <label>Name</label>
             <div>@Model.Kit.Name</div>
@@ -95,9 +95,9 @@
 @if (Model.SchedulingOpen && Model.CanSchedule)
 {
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-12">
             <div class="row">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <hr />
                     <h2>
                         Select Kit
@@ -105,7 +105,7 @@
                 </div>
             </div>
             <div class="row">
-                <form asp-action="SelectKit" class="form-horizontal col-xs-12" method="post" role="form">
+                <form asp-action="SelectKit" class="form-horizontal col-12" method="post" role="form">
                     <input asp-for="BranchSelection.KitId" value="@Model.Kit.Id" type="hidden" />
                     <div class="mb-3">
                         <label asp-for="BranchSelection.BranchId" class="col-sm-3 col-form-label required-field"></label>

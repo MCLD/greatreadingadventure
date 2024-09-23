@@ -18,14 +18,14 @@
 {
     @section nav {
         <div class="row row-spacing">
-            <div class="col-xs-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 join-header">
-                <div class="col-xs-4 sign-up-step">
+            <div class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 join-header">
+                <div class="col-4 sign-up-step">
                     <p>Information</p>
                 </div>
-                <div class="col-xs-4 sign-up-step">
+                <div class="col-4 sign-up-step">
                     <p>Schedule</p>
                 </div>
-                <div class="col-xs-4 sign-up-step active">
+                <div class="col-4 sign-up-step active">
                     <p>Program</p>
                 </div>
             </div>
@@ -35,7 +35,7 @@
 else
 {
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-12">
             <h1>@(Model.EditingProgram ? "Edit " : "")Program</h1>
         </div>
     </div>
@@ -52,7 +52,7 @@ else
         </p>
     </div>
 
-    <form asp-action="Program" class="form-horizontal col-xs-12" method="post" role="form" enctype="multipart/form-data">
+    <form asp-action="Program" class="form-horizontal col-12" method="post" role="form" enctype="multipart/form-data">
         @if (Model.EditingProgram)
         {
             <input asp-for="Program.Id" type="hidden" />
@@ -113,7 +113,7 @@ else
         </div>
 
         <div class="mb-3">
-            <div class="col-xs-12 col-sm-9 offset-sm-3">
+            <div class="col-12 col-sm-9 offset-sm-3">
                 <p>
                     Please select which age groups the program is suited for.
                 </p>
@@ -127,7 +127,7 @@ else
         </div>
 
         <div class="mb-3">
-            <div class="col-xs-12 col-sm-9 offset-sm-3">
+            <div class="col-12 col-sm-9 offset-sm-3">
                 <p>
                     Please list all times in minutes.
                 </p>
@@ -200,10 +200,10 @@ else
         <div class="mb-3">
             <div class="col-sm-3">
                 <div class="row">
-                    <label asp-for="Program.Setup" class="col-xs-12 col-form-label required-field"></label>
+                    <label asp-for="Program.Setup" class="col-12 col-form-label required-field"></label>
                     @if (!string.IsNullOrWhiteSpace(Model.SetupSupplementalText))
                     {
-                        <label class="col-xs-12 col-form-label" style="font-size:small;"><em>@Model.SetupSupplementalText</em></label>
+                        <label class="col-12 col-form-label" style="font-size:small;"><em>@Model.SetupSupplementalText</em></label>
                     }
                 </div>
             </div>
@@ -216,7 +216,7 @@ else
         @if (Model.EnablePerformerLivestreamQuestions)
         {
             <div class="mb-3">
-                <div class="col-xs-12 col-sm-9 offset-sm-3">
+                <div class="col-12 col-sm-9 offset-sm-3">
                     <p>
                         Are you willing to allow the library to livestream your program online?<span class="required-field"></span>
                     </p>
@@ -231,7 +231,7 @@ else
             </div>
 
             <div class="mb-3">
-                <div class="col-xs-12 col-sm-9 offset-sm-3">
+                <div class="col-12 col-sm-9 offset-sm-3">
                 <p>
                     Are you willing to allow the library to save and share the archive of your event, if livestreamed or recorded?<span class="required-field"></span>
                 </p>

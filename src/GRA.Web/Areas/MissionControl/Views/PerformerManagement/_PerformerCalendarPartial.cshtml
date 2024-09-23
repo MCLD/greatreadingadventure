@@ -1,13 +1,13 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.PerformerCalendarViewModel
 
 <div class="row">
-    <div class="col-xs-12" style="font-size:larger;margin-bottom: 0.5rem;">
+    <div class="col-12" style="font-size:larger;margin-bottom: 0.5rem;">
         @Model.BranchSelection.Branch.Name <a href="https://www.google.com/maps/search/@Model.BranchSelection.Branch.Address" target="_blank"><span class="far fa-map"></span></a> &ndash; Starting at @Model.BranchSelection.RequestedStartTime.ToShortTimeString()@(Model.BranchSelection.BackToBackProgram ? $" & {Model.BranchSelection.RequestedStartTime.AddMinutes(Model.BranchSelection.Program.ProgramLengthMinutes + Model.BranchSelection.Program.BackToBackMinutes).ToShortTimeString()}" : ""): @Model.BranchSelection.Program.Title
     </div>
 </div>
 
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         @{int count = 0;}
         @for (var calendarMonth = new DateTime(Model.Settings.ScheduleStartDate.Value.Year, Model.Settings.ScheduleStartDate.Value.Month, 1); calendarMonth <= Model.Settings.ScheduleEndDate.Value; calendarMonth = calendarMonth.AddMonths(1))
         {
@@ -19,7 +19,7 @@
             {
                 @Html.Raw("<div class=\"row\">");
             }
-            <div class="col-xs-12 col-md-4">
+            <div class="col-12 col-md-4">
                 <table class="table table-bordered" style="table-layout:fixed; text-align:center">
                     <thead>
                         <tr>
@@ -82,7 +82,7 @@
 </div>
 
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <div id="daySchedule">
             <ul>
                 @if (!string.IsNullOrWhiteSpace(Model.DayScheduleModel.StartTime))
@@ -130,13 +130,13 @@
         </table>
 
         <div class="row" style="margin-top: 20px;">
-            <div class="col-xs-12 col-sm-6">
+            <div class="col-12 col-sm-6">
                 <div id="checkAlert" class="alert hidden"></div>
             </div>
         </div>
 
         <div class="row">
-            <div class="col-xs-12 col-sm-6">
+            <div class="col-12 col-sm-6">
                 <button id="scheduleProgram" type="button" class="btn btn-success hidden">Save Selection</button>
             </div>
         </div>

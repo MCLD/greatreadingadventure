@@ -5,7 +5,7 @@
 }
 
 <div class="row" style="padding: 10px 0;">
-    <div class="col-xs-12">
+    <div class="col-12">
         <table style="margin:0 auto;">
             <tr>
                 @if (Model.PrevPerformer.HasValue)
@@ -29,7 +29,7 @@
         </table>
         <hr />
     </div>
-    <div class="col-xs-12">
+    <div class="col-12">
         <h2 style="margin-top:0px;">
             Information
             <a asp-action="PerformerDetails" asp-route-id="@Model.Performer.Id" class="btn btn-secondary" style="display:inline-block">Edit Information</a>
@@ -66,22 +66,22 @@
         }
 
     </div>
-    <div class="col-xs-12 col-sm-5 col-md-4">
+    <div class="col-12 col-sm-5 col-md-4">
         @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
         {
             <div class="row" style="padding-bottom:15px;">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <img src="~/@Model.ImagePath" class="img-fluid" style="margin: 0 auto;" />
                 </div>
             </div>
         }
         <div class="row" style="padding-bottom:15px;">
-            <div class="col-xs-12" style="text-align:center;">
+            <div class="col-12" style="text-align:center;">
                 <a asp-action="PerformerImages" asp-route-id="@Model.Performer.Id" class="btn btn-primary">View/Manage Images</a>
             </div>
         </div>
         <div class="row" style="padding-bottom:15px;">
-            <div class="col-xs-12" style="text-align:center;">
+            <div class="col-12" style="text-align:center;">
                 <a aria-label="View References (Opens new window)"
                    href="~/@Model.ReferencesPath"
                    target="_blank"
@@ -91,18 +91,18 @@
         @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewParticipantDetails.ToString()))
         {
             <div class="row" style="padding-bottom:15px;">
-                <div class="col-xs-12" style="text-align:center;">
+                <div class="col-12" style="text-align:center;">
                     <a asp-controller="Participants" asp-action="Detail" asp-route-id="@Model.Performer.UserId" class="btn btn-secondary">View Participant Profile</a>
                 </div>
             </div>
         }
         <div class="row" style="padding-bottom:15px;">
-            <div class="col-xs-12" style="text-align:center;">
+            <div class="col-12" style="text-align:center;">
                 <a asp-action="@nameof(PerformerManagementController.Performers)" asp-route-page="@Model.ReturnPage" class="btn btn-secondary">Return to List</a>
             </div>
         </div>
     </div>
-    <div class="col-xs-12 col-sm-7 col-md-8">
+    <div class="col-12 col-sm-7 col-md-8">
         <div class="mb-3">
             <label>Name</label>
             <div>@Model.Performer.Name</div>
@@ -163,7 +163,7 @@
         </div>
     </div>
 
-    <div class="col-xs-12">
+    <div class="col-12">
         <hr />
         <h2>
             Programs
@@ -171,7 +171,7 @@
         </h2>
         <hr />
     </div>
-    <div class="col-xs-12">
+    <div class="col-12">
         @if (Model.Performer.Programs.Count == 0)
         {
             <div class="alert alert-warning">No Programs.</div>
@@ -224,14 +224,14 @@
         }
     </div>
 
-    <div class="col-xs-12">
+    <div class="col-12">
         <hr />
         <h2>
             Schedule
             <a asp-action="PerformerSchedule" asp-route-id="@Model.Performer.Id" class="btn btn-secondary" style="display:inline-block">Edit Schedule</a>
         </h2>
     </div>
-    <div class="col-xs-12">
+    <div class="col-12">
         @{
             int count = 0;
         }
@@ -241,7 +241,7 @@
             {
                 @Html.Raw("<div class=\"row\">");
             }
-            <div class="col-xs-12 col-md-4">
+            <div class="col-12 col-md-4">
                 <table class="table table-sm">
                     <thead>
                         <tr>

@@ -9,13 +9,13 @@
 }
 
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <h1>
             Images for Program: @Model.ProgramName
             <a asp-action="Program" asp-route-id="@Model.ProgramId" class="btn btn-lg btn-secondary" style="margin-bottom: 0.5rem;">Return to Program</a>
         </h1>
     </div>
-    <form asp-action="ProgramImages" class="form-horizontal col-xs-12" method="post" role="form" enctype="multipart/form-data">
+    <form asp-action="ProgramImages" class="form-horizontal col-12" method="post" role="form" enctype="multipart/form-data">
         <input asp-for="ProgramId" type="hidden" />
         <div class="row">
             <div class="col-sm-9 offset-sm-3">
@@ -61,7 +61,7 @@
             </div>
         </div>
     </form>
-    <div class="col-xs-12">
+    <div class="col-12">
         @if (Model.ProgramImages.Count == 0)
         {
             <div class="alert alert-warning">No Images.</div>
@@ -74,7 +74,7 @@
                 {
                     @Html.Raw("<div class=\"row\">");
                 }
-                <div class="col-xs-12 col-md-4" style="margin-bottom: 2rem;">
+                <div class="col-12 col-md-4" style="margin-bottom: 2rem;">
                     <div style="padding:10px;border:1px solid black;">
                         <img src="~/@Model.ProgramImages[i].Filename" class="img-fluid" style="margin: 0 auto;" />
                         <input class="deleteSelection form-control" type="checkbox" data-id="@Model.ProgramImages[i].Id" />

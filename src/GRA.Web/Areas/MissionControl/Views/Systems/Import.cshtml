@@ -1,7 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Systems.ImportViewModel
 
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <ul class="nav nav-pills" style="padding: 10px 0;">
             <li ActiveBy routeKey="Action" value="Index"><a asp-action="Index">Systems</a></li>
             <li ActiveBy routeKey="Action" value="Branches"><a asp-action="Branches">Branches</a></li>
@@ -22,7 +22,7 @@
 </div>
 
 <div class="row" style="margin-top: 1rem; margin-bottom: 1rem;">
-    <div class="col-xs-12">
+    <div class="col-12">
         <p>Import systems and branches from a properly-formatted <code>.csv</code> file.</p>
         <ul>
             <li>
@@ -61,14 +61,14 @@
 </div>
 
 <div class="row" style="margin-bottom: 1rem;">
-    <div class="col-xs-12">
+    <div class="col-12">
         <form asp-controller="@SystemsController.Name"
               asp-action="@nameof(SystemsController.Import)"
               method="post"
               role="form"
               enctype="multipart/form-data">
             <div class="row row-spacing">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <label for="selectedFile">Select CSV file:</label>
                     <div class="input-group">
                         <label class="input-group-append">
@@ -86,7 +86,7 @@
             </div>
 
             <div class="row row-spacing">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <select class="form-control" asp-for="DoImport">
                         <option value="false">Test run - read the CSV file and analyze import</option>
                         <option value="true">Perform import</option>
@@ -95,7 +95,7 @@
             </div>
 
             <div class="row" style="margin-bottom: 2rem;">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <a asp-action="Index" class="btn btn-secondary">Return to Systems/Branches</a>
                     <button type="submit" class="btn btn-primary btn-spinner" button-spinner>
                         <span class="buttonText">Upload</span>

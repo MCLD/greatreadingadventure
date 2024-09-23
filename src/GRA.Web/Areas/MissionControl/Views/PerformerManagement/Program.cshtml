@@ -5,34 +5,34 @@
 }
 
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <h1>
             Program
             <a asp-action="ProgramDetails" asp-route-id="@Model.Program.Id" class="btn btn-secondary" style="display:inline-block">Edit Program</a>
         </h1>
     </div>
 
-    <div class="col-xs-12 col-sm-5 col-md-4">
+    <div class="col-12 col-sm-5 col-md-4">
         @if (!string.IsNullOrWhiteSpace(Model.Image))
         {
             <div class="row" style="padding-bottom:15px;">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <img src="~/@Model.Image" class="img-fluid" style="margin: 0 auto;" />
                 </div>
             </div>
         }
         <div class="row" style="padding-bottom:15px;">
-            <div class="col-xs-12" style="text-align:center;">
+            <div class="col-12" style="text-align:center;">
                 <a asp-action="ProgramImages" asp-route-id="@Model.Program.Id" class="btn btn-primary">View/Manage Images</a>
             </div>
         </div>
         <div class="row" style="padding-bottom:15px;">
-            <div class="col-xs-12" style="text-align:center;">
+            <div class="col-12" style="text-align:center;">
                 <a asp-action="Performer" asp-route-id="@Model.Program.PerformerId" class="btn btn-secondary">Return to Performer</a>
             </div>
         </div>
     </div>
-    <div class="col-xs-12 col-sm-7 col-md-8">
+    <div class="col-12 col-sm-7 col-md-8">
         <div class="mb-3">
             <label>Name</label>
             <div>@Model.Program.Title</div>
@@ -57,21 +57,21 @@
             </div>
         </div>
         <div class="row mb-3">
-            <div class="col-xs-6">
+            <div class="col-6">
                 <label>Program Length</label>
                 <div>@Model.Program.ProgramLengthMinutes minutes</div>
             </div>
-            <div class="col-xs-6">
+            <div class="col-6">
                 <label>Set-up Time</label>
                 <div>@Model.Program.SetupTimeMinutes minutes</div>
             </div>
         </div>
         <div class="row mb-3">
-            <div class="col-xs-6">
+            <div class="col-6">
                 <label>Breakdown Time</label>
                 <div>@Model.Program.BreakdownTimeMinutes minutes</div>
             </div>
-            <div class="col-xs-6">
+            <div class="col-6">
                 <label>Time Between Back-to-Back Programs</label>
                 <div>@Model.Program.BackToBackMinutes minutes</div>
             </div>

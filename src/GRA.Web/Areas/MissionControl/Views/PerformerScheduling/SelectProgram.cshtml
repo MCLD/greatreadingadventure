@@ -5,41 +5,41 @@
 }
 
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <h1>
             Select Program
         </h1>
 
         <div class="row">
-            <div class="col-xs-12 col-sm-8 offset-sm-2">
+            <div class="col-12 col-sm-8 offset-sm-2">
                 <div class="card">
                     <div class="card-body">
                         <div class="row mb-3">
-                            <div class="col-xs-6">
+                            <div class="col-6">
                                 <label>Branch</label>
                                 <div>@Model.BranchSelection.Branch.Name</div>
                             </div>
-                            <div class="col-xs-6">
+                            <div class="col-6">
                                 <label>Age Group</label>
                                 <div>@Model.BranchSelection.AgeGroup.Name</div>
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <div class="col-xs-6">
+                            <div class="col-6">
                                 <label>Program</label>
                                 <div>@Model.BranchSelection.Program.Title</div>
                             </div>
-                            <div class="col-xs-6">
+                            <div class="col-6">
                                 <label>Program Length</label>
                                 <div>@Model.BranchSelection.Program.ProgramLengthMinutes minutes</div>
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <div class="col-xs-6">
+                            <div class="col-6">
                                 <label>Set-up Time</label>
                                 <div>@Model.BranchSelection.Program.SetupTimeMinutes minutes</div>
                             </div>
-                            <div class="col-xs-6">
+                            <div class="col-6">
                                 <label>Breakdown Time</label>
                                 <div>@Model.BranchSelection.Program.BreakdownTimeMinutes minutes</div>
                             </div>
@@ -47,11 +47,11 @@
                         @if (Model.BranchSelection.BackToBackProgram)
                         {
                             <div class="row mb-3">
-                                <div class="col-xs-6">
+                                <div class="col-6">
                                     <label>Back to Back Program</label>
                                     <div>Yes</div>
                                 </div>
-                                <div class="col-xs-6">
+                                <div class="col-6">
                                     <label>Back to Back Time</label>
                                     <div>@Model.BranchSelection.Program.BackToBackMinutes minutes</div>
                                 </div>
@@ -63,7 +63,7 @@
         </div>
 
         <div class="row mb-3">
-            <div class="col-xs-12 col-sm-8 offset-sm-2">
+            <div class="col-12 col-sm-8 offset-sm-2">
                 <div class=" card">
                     <form class="card-body" id="onSiteContactInfo">
                         <div class="mb-3">
@@ -111,7 +111,7 @@
             {
                 @Html.Raw("<div class=\"row\">");
             }
-            <div class="col-xs-12 col-md-4">
+            <div class="col-12 col-md-4">
                 <table class="table table-bordered" style="table-layout:fixed; text-align:center">
                     <thead>
                         <tr>
@@ -171,7 +171,7 @@
         }
 
         <div class="row">
-            <div class="col-xs-12">
+            <div class="col-12">
                 <div id="daySchedule"><p>Select a date to see available times.</p></div>
                 <table>
                     <tr>
@@ -197,13 +197,13 @@
                 </table>
 
                 <div class="row" style="margin-top: 20px;">
-                    <div class="col-xs-12 col-sm-6">
+                    <div class="col-12 col-sm-6">
                         <div id="checkAlert" class="alert hidden"></div>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-xs-12 col-sm-6">
+                    <div class="col-12 col-sm-6">
                         <button id="scheduleProgram" type="button" class="btn btn-success" disabled="true">Schedule Program</button>
                     </div>
                 </div>

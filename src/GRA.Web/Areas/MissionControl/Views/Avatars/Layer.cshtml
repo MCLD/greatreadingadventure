@@ -1,7 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Avatar.ItemsListViewModel
 
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <ul class="nav nav-pills" style="padding: 10px 0;">
             <li class="@(!Model.Available && !Model.Unavailable && !Model.Unlockable ? "active" : null)"><a asp-route-search="@Model.Search">All</a></li>
             <li class="@(Model.Available ? "active" : null)"><a asp-route-search="@Model.Search" asp-route-available="True">Available</a></li>
@@ -16,10 +16,10 @@
     <input asp-for="Unavailable" type="hidden" />
     <input asp-for="Unlockable" type="hidden" />
     <div class="row row-spacing" style="padding-top: 10px;">
-        <div class="col-xs-8">
+        <div class="col-8">
             <input name="Search" value="@Model.Search" class="form-control" />
         </div>
-        <div class="col-xs-4">
+        <div class="col-4">
             <input type="submit" value="Search" class="btn btn-secondary" style="margin-right: 8px;" />
             <a asp-action="Layer" asp-route-id="@Model.Id" class="btn btn-secondary">Clear</a>
         </div>
@@ -28,7 +28,7 @@
 
 
 <div class="row" style="padding: 10px 0">
-    <div class="col-xs-12">
+    <div class="col-12">
         <div class="row">
             <form asp-controller="Avatars" method="post" role="form">
                 <input name="Id" value="@Model.Id" type="hidden" />
@@ -39,7 +39,7 @@
                 <input name="PaginateModel.CurrentPage" value="@Model.PaginateModel.CurrentPage" type="hidden" />
                 @foreach (var item in Model.Items)
                 {
-                    <div class="col-xs-4 col-sm-3 col-md-2" style="padding-top:10px; padding-bottom:20px; text-align:center;">
+                    <div class="col-4 col-sm-3 col-md-2" style="padding-top:10px; padding-bottom:20px; text-align:center;">
                         <img src="~/@item.Thumbnail" class="img-fluid img-thumbnail" />
                         <div style="height: 40px;">
                             @item.Name

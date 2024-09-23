@@ -1,7 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Carousels.ListViewModel
 
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <ul class="nav" style="padding: 10px 0;">
             <li ActiveBy routeKey="Archived" value=",false"><a asp-action="Index">Current and Upcoming</a></li>
             <li ActiveBy routeKey="Archived" value="True"><a asp-action="Index" asp-route-archived="true">Archived</a></li>
@@ -10,13 +10,13 @@
 </div>
 
 <div class="row" style="padding: 10px 0;">
-    <div class="col-xs-12">
+    <div class="col-12">
         <a asp-action="Add" class="btn btn-secondary">Create a new dashboard carousel</a>
     </div>
 </div>
 
 <div class="row" style="padding: 10px 0;">
-    <div class="col-xs-12">
+    <div class="col-12">
         @if (Model.Carousels.Count() == 0)
         {
             <div class="alert alert-warning">No Carousels</div>
