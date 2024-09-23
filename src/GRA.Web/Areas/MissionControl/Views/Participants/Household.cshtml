@@ -65,7 +65,7 @@
                 }
                 @if (Model.CanViewPrizes && Model.HouseholdPrizeList.Count > 0 && Model.Users.Any())
                 {
-                    <button type="button" class="btn btn-success pull-right" data-bs-toggle="modal" data-bs-target="#prizeModal"><span class="fas fa-gift"></span> Prizes available</button>
+                    <button type="button" class="btn btn-success float-end" data-bs-toggle="modal" data-bs-target="#prizeModal"><span class="fas fa-gift"></span> Prizes available</button>
                 }
             </div>
         }
@@ -179,7 +179,7 @@
                                         Book Code
                                         @if (Model.CanRedeemBulkVendorCodes)
                                         {
-                                            <button type="button" class="btn btn-info btn-sm pull-right" data-bs-toggle="modal"
+                                            <button type="button" class="btn btn-info btn-sm float-end" data-bs-toggle="modal"
                                                     data-bs-target="#bulkRedeemModal">
                                                 <span class="buttonText">Redeem all</span>
                                             </button>
@@ -524,7 +524,7 @@
     <a asp-action="Index" class="btn btn-secondary">Return to Participants</a>
     @if (Model.HouseholdCount > 0)
     {
-        <a href="#" class="btn btn-secondary pull-right">Return to Top</a>
+        <a href="#" class="btn btn-secondary float-end">Return to Top</a>
     }
 </div>
 
@@ -706,7 +706,7 @@
                             <input asp-for="Id" type="hidden" />
                             <input id="PromoteId" name="PromoteId" type="hidden" />
                             <button type="submit"
-                                    class="btn btn-primary pull-right"
+                                    class="btn btn-primary float-end"
                                     aria-label="Confirm">
                                 <span class="fas fa-level-up-alt" aria-hidden="true"></span>
                                 Promote
@@ -757,7 +757,7 @@
                             <input asp-for="Id" type="hidden" />
                             <input id="RemoveId" name="RemoveId" type="hidden" />
                             <button type="submit"
-                                    class="btn btn-danger pull-right"
+                                    class="btn btn-danger float-end"
                                     aria-label="Confirm">
                                 <span class="fas fa-minus" aria-hidden="true"></span>
                                 Remove
@@ -805,7 +805,7 @@
                                 @GRA.Annotations.Interface.Cancel
                             </button>
                             <button type="submit"
-                                    class="btn btn-warning btn-spinner pull-right"
+                                    class="btn btn-warning btn-spinner float-end"
                                     aria-label="Confirm"
                                     button-spinner>
                                 @GRA.Annotations.Interface.Confirm
@@ -867,7 +867,7 @@
                                 Cancel
                             </button>
                             <button type="submit"
-                                    class="btn btn-primary pull-right"
+                                    class="btn btn-primary float-end"
                                     aria-label="Confirm">
                                 Select
                             </button>
@@ -923,7 +923,7 @@
                                 Do not redeem
                             </button>
                             <button type="submit"
-                                    class="btn btn-info btn-spinner pull-right"
+                                    class="btn btn-info btn-spinner float-end"
                                     aria-label="Confirm"
                                     onclick="$('#bulkDoNotRedeem').prop('disabled', true).addClass('disabled')"
                                     button-spinner>

@@ -20,7 +20,7 @@
                         <a role="button" data-bs-toggle="collapse" data-parent="#accordion" href="#collapse@(mail.Id)" aria-expanded="true" aria-controls="collapse@(mail.Id)">
                             <div class="mail-thread-header" role="tab" id="heading@(mail.Id)">
                                 <span class="fas @(mail.ToUserId.HasValue ? "fa-reply" : "fa-share")"></span> @(mail.ToUserId.HasValue ? "To" : "From") @Model.User.FirstName: <strong>@(mail.Subject.Count() > 40 ? $"{mail.Subject.Substring(0, 40)}..." : mail.Subject)</strong>
-                                <span class="pull-right">@mail.CreatedAt</span>
+                                <span class="float-end">@mail.CreatedAt</span>
                             </div>
                         </a>
                         <div id="collapse@(mail.Id)" class="collapse" role="tabpanel" aria-labelledby="heading@(mail.Id)">
@@ -90,7 +90,7 @@
             </div>
             <div class="card-footer clearfix d-print-none">
                 <a asp-action="Index" class="btn btn-secondary">Return to Mail List</a>
-                <div class="pull-right">
+                <div class="float-end">
                     @if (Model.CanDelete)
                     {
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" style="margin-right: 12px;">
@@ -159,7 +159,7 @@
                               style="display:inline">
                             <input asp-for="Mail.Id" name="Id" type="hidden" />
                             <button type="submit"
-                                    class="btn btn-danger pull-right"
+                                    class="btn btn-danger float-end"
                                     aria-label="Confirm">
                                 <span class="fas fa-times" aria-hidden="true"></span>
                                 Delete

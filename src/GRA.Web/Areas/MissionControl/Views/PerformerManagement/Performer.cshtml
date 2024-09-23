@@ -40,14 +40,14 @@
                 <input asp-for="Performer.Id" type="hidden" />
                 <input asp-for="Approve" type="hidden" />
                 <button asp-action="PerformerApprove"
-                        class="btn btn-lg @(Model.Approve ? "btn-success" : "btn-danger") pull-right">
+                        class="btn btn-lg @(Model.Approve ? "btn-success" : "btn-danger") float-end">
                     @(Model.Approve ? "Approve" : "Unapprove")
                 </button>
             </form>
         }
         else if (Model.SchedulingStage >= GRA.Domain.Model.PsSchedulingStage.SchedulingOpen && Model.Performer.IsApproved)
         {
-            <div class="pull-right text-right">
+            <div class="float-end text-right">
                 <div class="row-spacing">
                     <a asp-action="PerformerSelections"
                        asp-route-id="@Model.Performer.Id"
@@ -390,7 +390,7 @@
                         <input asp-for="ProgramToDelete.Id" type="hidden" />
                         <input asp-for="ProgramToDelete.Title" type="hidden" />
                         <button type="submit"
-                                class="btn btn-danger btn-spinner pull-right"
+                                class="btn btn-danger btn-spinner float-end"
                                 aria-label="Confirm"
                                 button-spinner>
                             <span class="fas fa-times" aria-hidden="true"></span>

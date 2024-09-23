@@ -175,7 +175,7 @@ else
             </label>
             <div class="col-sm-9">
                 <textarea asp-for="Program.Description" class="form-control" maxlength="375" rows="4"></textarea>
-                <span id="descriptionCounter" class="pull-right">
+                <span id="descriptionCounter" class="float-end">
                     <span id="descriptionCount">@(Model.Program?.Description?.Length ?? 0)</span> / 375
                 </span>
                 <span asp-validation-for="Program.Description" class="text-danger"></span>
@@ -258,11 +258,11 @@ else
                 {
                     if (Model.EditingProgram)
                     {
-                        <a asp-action="ProgramDetails" asp-route-id="@Model.Program.Id" class="btn btn-lg btn-secondary pull-left" style="margin-right: 10px;">Return to Program</a>
+                        <a asp-action="ProgramDetails" asp-route-id="@Model.Program.Id" class="btn btn-lg btn-secondary float-start" style="margin-right: 10px;">Return to Program</a>
                     }
                     else
                     {
-                        <a asp-action="Dashboard" class="btn btn-lg btn-secondary pull-left" style="margin-right: 10px;">Return to Dashboard</a>
+                        <a asp-action="Dashboard" class="btn btn-lg btn-secondary float-start" style="margin-right: 10px;">Return to Dashboard</a>
                     }
                 }
             </div>

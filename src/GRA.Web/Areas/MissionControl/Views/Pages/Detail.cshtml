@@ -44,7 +44,7 @@
                     <a asp-action="@nameof(PagesController.Preview)"
                        asp-route-headerId="@Model.HeaderId"
                        asp-route-languageId="@Model.SelectedLanguageId"
-                       class="btn btn-secondary pull-right">
+                       class="btn btn-secondary float-end">
                         Preview
                     </a>
                 </div>
@@ -117,7 +117,7 @@
                 @if (Model.NewPage)
                 {
                     <button type="button"
-                            class="btn btn-danger pull-right"
+                            class="btn btn-danger float-end"
                             data-bs-toggle="modal"
                             data-bs-target="#deleteModal">
                         Delete
@@ -161,7 +161,7 @@
                             Cancel
                         </button>
                         <button type="submit"
-                                class="btn btn-danger pull-right"
+                                class="btn btn-danger float-end"
                                 aria-label="Confirm">
                             <span class="fas fa-times" aria-hidden="true"></span>
                             Delete

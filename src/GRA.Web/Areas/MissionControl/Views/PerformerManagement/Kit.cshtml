@@ -34,7 +34,7 @@
         <a asp-action="KitDetails" asp-route-id="@Model.Kit.Id" class="btn btn-secondary">Edit Kit</a>
         @if (Model.SchedulingStage >= GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
         {
-            <a asp-action="KitSelections" asp-route-id="@Model.Kit.Id" class="btn btn-lg btn-secondary pull-right">View Selections</a>
+            <a asp-action="KitSelections" asp-route-id="@Model.Kit.Id" class="btn btn-lg btn-secondary float-end">View Selections</a>
         }
     </div>
     <div class="col-12 col-sm-5 col-md-4">

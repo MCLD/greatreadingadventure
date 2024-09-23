@@ -25,7 +25,7 @@
                 <a asp-action="Index" class="btn btn-secondary">
                     @SharedLocalizer[GRA.Annotations.Interface.BackToMailbox]
                 </a>
-                <div class="pull-right">
+                <div class="float-end">
                     @if (Model.CanParticipantDelete)
                     {
                         <div style="display: inline-block">
@@ -91,7 +91,7 @@
                               style="display:inline">
                             <input asp-for="Id" type="hidden" />
                             <button type="submit"
-                                    class="btn btn-danger pull-right"
+                                    class="btn btn-danger float-end"
                                     aria-label="Confirm">
                                 <span class="fas fa-times" aria-hidden="true"></span>
                                 @SharedLocalizer[GRA.Annotations.Interface.Delete]

@@ -55,7 +55,7 @@
                         <span class="fas fa-lg fa-minus-circle text-danger removeRow"></span>
                     }
                     <button type="button"
-                            class="btn btn-secondary pull-right editQuestionButton"
+                            class="btn btn-secondary float-end editQuestionButton"
                             style="margin-right:10px;"
                             data-id="@question.Id"
                             data-name="@question.Name"
@@ -299,7 +299,7 @@
                                     }
                                     else {
                                         form.find("#Question_Id").val(response.question.id);
-                                        $("#questionList").append("<div class='orderable-row' id='question_" + response.question.id + "' +> <span class='fas fa-bars' style='margin-right:6px;'></span> <span class='name'>" + response.question.name + "</span><span class='fas fa-lg fa-minus-circle text-danger removeRow'></span><button type='button' class='btn btn-secondary pull-right editQuestionButton' style='margin-right:10px;' data-id='" + response.question.id + "' data-name='" + response.question.name + "' data-text='" + response.question.text + "' data-correctanswerid='" + response.question.correctAnswerId + "'>Edit</button></div>");
+                                        $("#questionList").append("<div class='orderable-row' id='question_" + response.question.id + "' +> <span class='fas fa-bars' style='margin-right:6px;'></span> <span class='name'>" + response.question.name + "</span><span class='fas fa-lg fa-minus-circle text-danger removeRow'></span><button type='button' class='btn btn-secondary float-end editQuestionButton' style='margin-right:10px;' data-id='" + response.question.id + "' data-name='" + response.question.name + "' data-text='" + response.question.text + "' data-correctanswerid='" + response.question.correctAnswerId + "'>Edit</button></div>");
                                         $("#QuestionSortOrder").val($("#questionList").sortable("serialize"));
                                     }
                                     $("#modalUpdateText").show().delay(2000).fadeOut("slow");

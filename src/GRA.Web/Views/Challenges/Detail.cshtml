@@ -23,7 +23,7 @@
                             @if (Model.IsLoggedIn)
                             {
                                 <td id="favoriteCell" style="text-align:center;vertical-align:top;width:40px">
-                                    <div class="favorite-button pull-right @(Model.Challenge.IsFavorited ? "fa-star" : "fa-star-o")" data-favorite="@Model.Challenge.IsFavorited"></div>
+                                    <div class="favorite-button float-end @(Model.Challenge.IsFavorited ? "fa-star" : "fa-star-o")" data-favorite="@Model.Challenge.IsFavorited"></div>
                                 </td>
                             }
                         </tr>
@@ -52,7 +52,7 @@
                         <div class="col-4 col-sm-3" style="min-width: 110px;">
                             @if (!string.IsNullOrEmpty(Model.BadgePath))
                             {
-                                <img class="img-thumbnail badge-sm pull-right"
+                                <img class="img-thumbnail badge-sm float-end"
                                      src="~/@Model.BadgePath"
                                      alt="@Model.BadgeAltText"
                                      asp-append-version="true" />
@@ -135,12 +135,12 @@
                     }
                 </table>
                 <div class="card-footer clearfix d-print-none">
-                    <div class="pull-left">
+                    <div class="float-start">
                         <return asp-action="Index" class="btn btn-secondary btn-lg">@SharedLocalizer[GRA.Annotations.Interface.BackToChallenges]</return>
                     </div>
                     @if (Model.Challenge.IsCompleted == true && Model.ShowCompleted)
                     {
-                        <div class="pull-right">
+                        <div class="float-end">
                             <div class="btn-lg" style="border:1px solid transparent">
                                 @SharedLocalizer[GRA.Annotations.Info.CompletedOnDate, Model.Challenge.CompletedAt?.ToString("d")]
                             </div>
@@ -150,7 +150,7 @@
                     else if (Model.IsActive)
                     {
                         <input asp-for="Challenge.Id" type="hidden" />
-                        <div class="pull-right">
+                        <div class="float-end">
                             <button type="submit"
                                     class="btn mx-auto btn-success btn-lg btn-spinner"
                                     button-spinner>

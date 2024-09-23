@@ -5,7 +5,7 @@
         <ul class="nav nav-pills" style="padding: 10px 0;">
             <li ActiveBy routeKey="Action" value="Index"><a asp-action="Index">Systems</a></li>
             <li ActiveBy routeKey="Action" value="Branches"><a asp-action="Branches">Branches</a></li>
-            <li class="pull-right">
+            <li class="float-end">
                 <div>
                     <a asp-action="Import" class="btn btn-sm btn-secondary">
                         <span class="fas fa-file-upload"></span>
@@ -133,7 +133,7 @@
                                 Cancel
                             </button>
                             <button type="submit"
-                                    class="btn btn-primary btn-spinner pull-right"
+                                    class="btn btn-primary btn-spinner float-end"
                                     aria-label="Confirm"
                                     button-spinner>
                                 Add
@@ -185,7 +185,7 @@
                             Cancel
                         </button>
                         <button type="submit"
-                                class="btn btn-primary btn-spinner pull-right"
+                                class="btn btn-primary btn-spinner float-end"
                                 aria-label="Confirm"
                                 button-spinner>
                             Save
@@ -233,7 +233,7 @@
                         <input asp-for="Search" type="hidden" />
                         <input id="Id" name="Id" type="hidden" />
                         <button type="submit"
-                                class="btn btn-danger btn-spinner pull-right"
+                                class="btn btn-danger btn-spinner float-end"
                                 aria-label="Confirm"
                                 button-spinner>
                             <span class="fas fa-times" aria-hidden="true"></span>
