@@ -135,7 +135,7 @@
 .tempus-dominus-widget .calendar-header {
   display: grid;
   grid-template-areas: "a a a";
-  margin-bottom: 0.5rem;
+  margin-bottom: 10px;
   font-weight: bold;
 }
 .tempus-dominus-widget .calendar-header .next {

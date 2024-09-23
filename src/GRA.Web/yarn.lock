@@ -24,6 +24,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@orchidjs/sifter@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "@orchidjs/sifter@npm:1.0.3"
+  dependencies:
+    "@orchidjs/unicode-variants": "npm:^1.0.4"
+  checksum: 10/ed4b142de90dc413371f1d85792f9cdad45c3fe02060d60af41b338b5077c77fd8eb00e2d5ac3e862347a876ce4ccb4bfea2bef4bfba842dc7fdd4523ec1e0e9
+  languageName: node
+  linkType: hard
+
+"@orchidjs/unicode-variants@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "@orchidjs/unicode-variants@npm:1.0.4"
+  checksum: 10/83213445467309e5bfa54f94229c0ecca8f04c9b3ff5e15d8afdde9afa236c190b40b932a3e1299f7b15ce91750832f35656fa418588641e63dd61d6e5cbbe44
+  languageName: node
+  linkType: hard
+
 "@popperjs/core@npm:^2.11.8":
   version: 2.11.8
   resolution: "@popperjs/core@npm:2.11.8"
@@ -39,7 +55,6 @@ __metadata:
     "@fortawesome/fontawesome-free": "npm:^5.15.4"
     "@popperjs/core": "npm:^2.11.8"
     bootstrap: "npm:^5.3.3"
-    bootstrap-multiselect: "npm:^1.1.0"
     bootstrap-select: "npm:^1.13.18"
     commonmark: "npm:^0.31.1"
     jquery: "npm:^3.7.1"
@@ -48,17 +63,9 @@ __metadata:
     moment: "npm:^2.30.1"
     moment-timezone: "npm:^0.5.45"
     slick-carousel: "npm:^1.8.1"
+    tom-select: "npm:^2.3.1"
   languageName: unknown
   linkType: soft
-
-"bootstrap-multiselect@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "bootstrap-multiselect@npm:1.1.0"
-  dependencies:
-    jquery: "npm:>= 2.2.4"
-  checksum: 10/38fbbf334a118d269e50689439625f9184638f2f17c6de8bce96e41994c95c8054b9d06512c26f3dbadd129b7fe82e4ef590f4eaea780434bd63d35727c5b4b4
-  languageName: node
-  linkType: hard
 
 "bootstrap-select@npm:^1.13.18":
   version: 1.13.18
@@ -127,17 +134,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jquery@npm:>= 2.2.4, jquery@npm:^3.7.1":
-  version: 3.7.1
-  resolution: "jquery@npm:3.7.1"
-  checksum: 10/17be9929f5fa37697d9848284f0d108c543318ef79ec794e130cd0c49f6c050d60c803a69e8cfa16fa19f5ff7cdb814a6905cceab0831186560c65ed113cd579
-  languageName: node
-  linkType: hard
-
 "jquery@npm:^3.6.0":
   version: 3.6.0
   resolution: "jquery@npm:3.6.0"
   checksum: 10/9785a3a13718ae51a13394e9953cc321fc11fb820e98b92ad1e76bc81086e596b3e7627fd2f23db79f4088cc0862eb2541ad775ea75d3079cc1fec834c28d5ad
+  languageName: node
+  linkType: hard
+
+"jquery@npm:^3.7.1":
+  version: 3.7.1
+  resolution: "jquery@npm:3.7.1"
+  checksum: 10/17be9929f5fa37697d9848284f0d108c543318ef79ec794e130cd0c49f6c050d60c803a69e8cfa16fa19f5ff7cdb814a6905cceab0831186560c65ed113cd579
   languageName: node
   linkType: hard
 
@@ -184,5 +191,15 @@ __metadata:
   peerDependencies:
     jquery: ">=1.8.0"
   checksum: 10/b383e6f96b3bec573522467cfeeac1fce22d1cd53a68f5699cd3d62f0167777116b925dc48fbe64979a7a830777e4440036b8a7d4575c9ff8d18c3dd141b1ea2
+  languageName: node
+  linkType: hard
+
+"tom-select@npm:^2.3.1":
+  version: 2.3.1
+  resolution: "tom-select@npm:2.3.1"
+  dependencies:
+    "@orchidjs/sifter": "npm:^1.0.3"
+    "@orchidjs/unicode-variants": "npm:^1.0.4"
+  checksum: 10/785ae8fc648d9a99fb36cc7d541638597dcc349feb1f6f7dc838c9c0edbd78e07f2943ce1b0dc4e925fb8d628d547130cc7bd62aa52347f5b7a4d3e2f8881fe4
   languageName: node
   linkType: hard
