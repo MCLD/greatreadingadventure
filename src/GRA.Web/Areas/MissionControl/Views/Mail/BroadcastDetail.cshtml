@@ -29,7 +29,7 @@
             @if (Model.Sent)
             {
             <label asp-for="Broadcast.SendAt " class="col-form-label">Sent at</label>
-            <div class="form-group date" id="pickerSend">
+            <div class="mb-3 date" id="pickerSend">
                 <input asp-for="Broadcast.SendAt" type="datetime-local" class="form-control"/>
             </div>
             <span asp-validation-for="Broadcast.SendAt" class="text-danger"></span>
@@ -44,7 +44,7 @@
                         <input asp-for="SendNow" type="radio" value="false" />
                     </td>
                     <td style="padding-bottom:10px;width:300px;">
-                        <div class="form-group date" id="pickerSend">
+                        <div class="mb-3 date" id="pickerSend">
                                 <input asp-for="Broadcast.SendAt" type="datetime-local" class="form-control"/>
                         </div>
                         <span asp-validation-for="Broadcast.SendAt" class="text-danger"></span>

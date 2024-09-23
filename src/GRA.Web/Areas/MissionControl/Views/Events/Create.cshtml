@@ -34,14 +34,14 @@
             <div class="row">
                 <div class="col-12 col-sm-6 row-spacing">
                     <label asp-for="Event.StartDate" class="col-form-label"></label>
-                    <div class="form-group date" id="pickerStart">
+                    <div class="mb-3 date" id="pickerStart">
                         <input asp-for="Event.StartDate" type="date" class="form-control"/>
                     </div>
                     <span asp-validation-for="Event.StartDate" class="text-danger"></span>
                 </div>
                 <div class="col-12 col-sm-6 row-spacing">
                     <label asp-for="Event.EndDate" class="col-form-label"></label>
-                    <div class="form-group date" id="pickerEnd">
+                    <div class="mb-3 date" id="pickerEnd">
                         <input asp-for="Event.EndDate" type="date" class="form-control"/>
                     </div>
                     <span asp-validation-for="Event.EndDate" class="text-danger"></span>

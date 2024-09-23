@@ -163,15 +163,15 @@ select.selectpicker {
 }
 .form-inline .bootstrap-select,
 .form-horizontal .bootstrap-select,
-.form-group .bootstrap-select {
+.mb-3 .bootstrap-select {
   margin-bottom: 0;
 }
-.form-group-lg .bootstrap-select.form-control,
-.form-group-sm .bootstrap-select.form-control {
+.mb-3-lg .bootstrap-select.form-control,
+.mb-3-sm .bootstrap-select.form-control {
   padding: 0;
 }
-.form-group-lg .bootstrap-select.form-control .dropdown-toggle,
-.form-group-sm .bootstrap-select.form-control .dropdown-toggle {
+.mb-3-lg .bootstrap-select.form-control .dropdown-toggle,
+.mb-3-sm .bootstrap-select.form-control .dropdown-toggle {
   height: 100%;
   font-size: inherit;
   line-height: inherit;
