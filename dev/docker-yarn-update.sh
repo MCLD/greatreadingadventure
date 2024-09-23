@@ -17,7 +17,6 @@ rm -rf /app/src/GRA.Web/js/*.js
 cp /app/src/GRA.Web/node_modules/@eonasdan/tempus-dominus/dist/js/tempus-dominus.js /app/src/GRA.Web/js
 cp /app/src/GRA.Web/node_modules/@popperjs/core/dist/umd/popper.js /app/src/GRA.Web/js
 cp /app/src/GRA.Web/node_modules/bootstrap/dist/js/bootstrap.js /app/src/GRA.Web/js
-cp /app/src/GRA.Web/node_modules/bootstrap-multiselect/dist/js/bootstrap-multiselect.js /app/src/GRA.Web/js
 cp /app/src/GRA.Web/node_modules/bootstrap-select/dist/js/bootstrap-select.js /app/src/GRA.Web/js
 cp /app/src/GRA.Web/node_modules/commonmark/dist/commonmark.js /app/src/GRA.Web/js
 cp /app/src/GRA.Web/node_modules/jquery/dist/jquery.js /app/src/GRA.Web/js
@@ -26,6 +25,7 @@ cp /app/src/GRA.Web/node_modules/jquery-validation-unobtrusive/dist/jquery.valid
 cp /app/src/GRA.Web/node_modules/moment/min/moment.min.js /app/src/GRA.Web/js
 cp /app/src/GRA.Web/node_modules/moment-timezone/builds/moment-timezone.min.js /app/src/GRA.Web/js
 cp /app/src/GRA.Web/node_modules/slick-carousel/slick/slick.js /app/src/GRA.Web/js
+cp /app/src/GRA.Web/node_modules/tom-select/dist/js/tom-select.complete.js /app/src/GRA.Web/js
 
 mkdir -p /app/src/GRA.Web/css
 rm -rf /app/src/GRA.Web/css/*.css
@@ -34,10 +34,10 @@ cp /app/src/GRA.Web/node_modules/@eonasdan/tempus-dominus/dist/css/tempus-dominu
 cp /app/src/GRA.Web/node_modules/@fortawesome/fontawesome-free/css/all.css /app/src/GRA.Web/css
 cp /app/src/GRA.Web/node_modules/@fortawesome/fontawesome-free/css/v4-shims.css /app/src/GRA.Web/css
 cp /app/src/GRA.Web/node_modules/bootstrap/dist/css/bootstrap.css /app/src/GRA.Web/css
-cp /app/src/GRA.Web/node_modules/bootstrap-multiselect/dist/css/bootstrap-multiselect.css /app/src/GRA.Web/css
 cp /app/src/GRA.Web/node_modules/bootstrap-select/dist/css/bootstrap-select.css /app/src/GRA.Web/css
 cp /app/src/GRA.Web/node_modules/slick-carousel/slick/slick.css /app/src/GRA.Web/css
 cp /app/src/GRA.Web/node_modules/slick-carousel/slick/slick-theme.css /app/src/GRA.Web/css
+cp /app/src/GRA.Web/node_modules/tom-select/dist/css/tom-select.bootstrap5.css /app/src/GRA.Web/css
 
 # FontAwesome
 rm -rf /app/src/GRA.Web/wwwroot/webfonts/*

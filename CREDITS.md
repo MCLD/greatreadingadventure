@@ -84,11 +84,6 @@ The Great Reading Adventure uses open source components. You can find informatio
 - JQuery multiselect plugin based on Twitter Bootstrap [Bootstrap-Multiselect](http://davidstutz.github.io/bootstrap-multiselect/)
 - Source on GitHub: [davidstutz/bootstrap-multiselect](https://github.com/davidstutz/bootstrap-multiselect) - [Apache License, Version 2.0 & BSD-3-Clause](https://github.com/davidstutz/bootstrap-multiselect/blob/master/LICENSE.md)
 
-### Bootstrap-Select
-
-- The jQuery plugin that brings select elements into the 21st century with intuitive multiselection, searching, and much more [Bootstrap-Select](https://developer.snapappointments.com/bootstrap-select/)
-- Source on GitHub: [snapappointments/bootstrap-select](https://github.com/snapappointments/bootstrap-select/) - [MIT License](https://github.com/snapappointments/bootstrap-select/blob/master/LICENSE)
-
 ### buildscript
 
 - The build.bash script helps build Docker images and upload them to container registries.
@@ -189,3 +184,8 @@ The Great Reading Adventure uses open source components. You can find informatio
 
 - Trimmed down {{mustache}} templates
 - Source on GitHub [StubbleOrg/Stubble](https://github.com/stubbleorg/stubble) - [MIT License](https://github.com/StubbleOrg/Stubble/blob/master/licence.md)
+
+### tom-select
+
+- Tom Select is a lightweight (~16kb gzipped) hybrid of a textbox and select box [tom-select](https://github.com/orchidjs/tom-select)
+- Source on GitHub: [orchidjs/tom-select](https://github.com/orchidjs/tom-select) - [Apache License, Version 2.0](https://github.com/orchidjs/tom-select/blob/master/LICENSE) 
