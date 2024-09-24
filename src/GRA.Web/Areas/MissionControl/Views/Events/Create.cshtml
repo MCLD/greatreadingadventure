@@ -681,7 +681,7 @@
                             $.each(response.data, function (index, item) {
                                 locationList.append(new Option(item.text, item.value, item.selected, item.selected))
                             });
-                            $("#addModal").modal("d-none");
+                            $("#addModal").modal("hide");
                             name.val("");
                             address.val("");
                             url.val("");
@@ -782,7 +782,7 @@
             });
 
             $(window).on("message", function(e) {
-                $("#badgeModal").modal("d-none");
+                $("#badgeModal").modal("hide");
                 var data = e.originalEvent.data;
                 $("#badgeImage").attr("src", data);
                 $("#badgeImage").height(200);
@@ -924,7 +924,7 @@
                         $("#groupList").html(row);
                     }
 
-                    $("#listModal").modal("d-none");
+                    $("#listModal").modal("hide");
                     $(".relatedText").text("Change");
                     challengesLoaded = false;
                     groupsLoaded = false;

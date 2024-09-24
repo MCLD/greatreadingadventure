@@ -281,7 +281,7 @@
         });
 
         $(window).on("message", function (e) {
-            $("#badgeModal").modal("d-none");
+            $("#badgeModal").modal("hide");
             var data = e.originalEvent.data;
             $("#badgeImage").attr("src", data);
             $("#badgeImage").height(200);
