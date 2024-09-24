@@ -73,7 +73,7 @@
             <div class="card">
                 <div class="card-header" role="tab" id="headingDependent">
                     <h4 class="card-title">
-                        <a role="button" data-bs-toggle="collapse" data-parent="#accordionDependent" href="#collapseDependent" aria-expanded="false" aria-controls="collapseDependent">
+                        <a role="button" data-bs-toggle="collapse" data-bs-parent="#accordionDependent" href="#collapseDependent" aria-expanded="false" aria-controls="collapseDependent">
                             Dependent Triggers
                         </a>
                     </h4>
@@ -101,7 +101,7 @@
             <div class="card">
                 <div class="card-header" role="tab" id="headingRelated">
                     <h4 class="card-title">
-                        <a role="button" data-bs-toggle="collapse" data-parent="#accordionRelated" href="#collapseRelated" aria-expanded="false" aria-controls="collapseRelated">
+                        <a role="button" data-bs-toggle="collapse" data-bs-parent="#accordionRelated" href="#collapseRelated" aria-expanded="false" aria-controls="collapseRelated">
                             Related Events
                         </a>
                     </h4>
@@ -523,7 +523,7 @@
         <div class="card">
             <div class="card-header bg-info-subtle" role="tab" id="headingPrize">
                 <h4 class="card-title">
-                    <a role="button" data-bs-toggle="collapse" data-parent="#accordionPrize" href="#collapsePrize" aria-expanded="true" aria-controls="collapsePrize">
+                    <a role="button" data-bs-toggle="collapse" data-bs-parent="#accordionPrize" href="#collapsePrize" aria-expanded="true" aria-controls="collapsePrize">
                         <span id="prizeIcon" class="fas fa-lg @(Model.AwardsPrize ? "fa-caret-down" : "fa-caret-right")"></span>
                         Award Prize
                     </a>
@@ -563,7 +563,7 @@
                     <h4 class="card-title">
                         @if (Model.EditMail)
                         {
-                            <a role="button" data-bs-toggle="collapse" data-parent="#accordionMail" href="#collapseMail" aria-expanded="true" aria-controls="collapseMail">
+                            <a role="button" data-bs-toggle="collapse" data-bs-parent="#accordionMail" href="#collapseMail" aria-expanded="true" aria-controls="collapseMail">
                                 <span id="mailIcon" class="fas fa-lg @(Model.AwardsMail ? "fa-caret-down" : "fa-caret-right")"></span>
                                 Award Mail
                             </a>
@@ -605,7 +605,7 @@
             <div class="card card-info bg-info-subtle">
                 <div class="card-header" role="tab" id="headingAttachment">
                     <h4 class="card-title">
-                        <a role="button" data-bs-toggle="collapse" data-parent="#accordionAttachment" href="#collapseAttachment" aria-expanded="true" aria-controls="collapseAttachment">
+                        <a role="button" data-bs-toggle="collapse" data-bs-parent="#accordionAttachment" href="#collapseAttachment" aria-expanded="true" aria-controls="collapseAttachment">
                             <span id="attachmentIcon" class="fas fa-lg @(Model.AwardsAttachment ? "fa-caret-down" : "fa-caret-right")"></span>
                             Award Attachment
                         </a>

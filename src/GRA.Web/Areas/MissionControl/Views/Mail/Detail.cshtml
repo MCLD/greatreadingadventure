@@ -17,7 +17,7 @@
                 else
                 {
                     <div class="mail-thread-container">
-                        <a role="button" data-bs-toggle="collapse" data-parent="#accordion" href="#collapse@(mail.Id)" aria-expanded="true" aria-controls="collapse@(mail.Id)">
+                        <a role="button" data-bs-toggle="collapse" data-bs-parent="#accordion" href="#collapse@(mail.Id)" aria-expanded="true" aria-controls="collapse@(mail.Id)">
                             <div class="mail-thread-header" role="tab" id="heading@(mail.Id)">
                                 <span class="fas @(mail.ToUserId.HasValue ? "fa-reply" : "fa-share")"></span> @(mail.ToUserId.HasValue ? "To" : "From") @Model.User.FirstName: <strong>@(mail.Subject.Count() > 40 ? $"{mail.Subject.Substring(0, 40)}..." : mail.Subject)</strong>
                                 <span class="float-end">@mail.CreatedAt</span>
