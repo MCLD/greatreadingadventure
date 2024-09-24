@@ -152,16 +152,22 @@
     </div>
     @if (Model.CategoryList?.Count() > 0)
     {
-        <div id="Category" class="row my-4">
+        <div class="row mt-4">
             <div class="col-12 col-sm-2">
                 <label class="col-form-label fs-5">Category:</label>
             </div>
             <div class="col-12 col-sm-10">
-                <input id="CategoryPlaceholderxx" class="form-control" />
                 <select asp-for="CategoryIds"
                         asp-items="Model.CategoryList"
-                        class="form-control XXhidden"
-                        multiple="multiple"></select>
+                        autocomplete="off"
+                        class="form-control"
+                        multiple="multiple"
+                        size="1"></select>
+            </div>
+        </div>
+        <div class="mb-4">
+            <div class="col-12 col-sm-10 offset-sm-2 ps-2">
+                <small><em>Select a category and use your backspace or delete key to remove it from the list.</em></small>
             </div>
         </div>
     }
@@ -369,29 +375,12 @@
 </div>
 
 @section scripts {
-    <script>
-        $("#CategoryPlaceholderXX").remove();
-        $("#CategoryIds").multiselect({
-            nonSelectedText: "",
-            buttonClass: "form-control",
-            buttonWidth: "100%",
-            disableIfEmpty: true
-        });
-
-        $("#searchForm").on("submit", function () {
-            var categoryIds = $("#CategoryIds option:selected")
-                .map(function (a, item) { return item.value; })
-                .get();
-
-            if (categoryIds.length > 0) {
-                $("<input />")
-                    .attr("type", "hidden")
-                    .attr("name", "Categories")
-                    .attr("value", categoryIds.join(","))
-                    .appendTo($(this));
-            }
-        });
-    </script>
+    @if (Model.CategoryList?.Count() > 0)
+    {
+        <script>
+            new TomSelect("#CategoryIds");
+        </script>
+    }
     @if (Model.CanEditChallenges)
     {
         <script>

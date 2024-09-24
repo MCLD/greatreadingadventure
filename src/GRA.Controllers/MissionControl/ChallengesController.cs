@@ -538,7 +538,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         public async Task<IActionResult> Index(string Search,
-            string Categories,
+            int[] CategoryIds,
             int? Program,
             int? System,
             int? Branch,
@@ -549,7 +549,7 @@ namespace GRA.Controllers.MissionControl
             try
             {
                 var viewModel = await GetChallengeList(Search,
-                    Categories,
+                    CategoryIds,
                     Program,
                     System,
                     Branch,
@@ -582,7 +582,7 @@ namespace GRA.Controllers.MissionControl
 
         [Authorize(Policy = Policy.ActivateChallenges)]
         public async Task<IActionResult> Pending(string Search,
-            string Categories,
+            int[] CategoryIds,
             int? System,
             int? Branch,
             int? Program,
@@ -604,7 +604,7 @@ namespace GRA.Controllers.MissionControl
                     }
                 }
                 var viewModel = await GetChallengeList(Search,
-                    Categories,
+                    CategoryIds,
                     Program,
                     System,
                     Branch,
@@ -638,7 +638,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         private async Task<ChallengesListViewModel> GetChallengeList(string Search,
-            string Categories,
+            int[] CategoryIds,
             int? Program,
             int? System,
             int? Branch,
@@ -647,7 +647,10 @@ namespace GRA.Controllers.MissionControl
             int page = 1,
             bool pending = false)
         {
-            var filter = new ChallengeFilter(page);
+            var filter = new ChallengeFilter(page)
+            {
+                CategoryIds = CategoryIds
+            };
 
             if (!string.IsNullOrEmpty(Ordering) && Enum.TryParse(typeof(ChallengeFilter.OrderingOption),
                     Ordering,
@@ -664,18 +667,7 @@ namespace GRA.Controllers.MissionControl
             {
                 filter.Search = Search;
             }
-            if (!string.IsNullOrWhiteSpace(Categories))
-            {
-                var categoryIds = new List<int>();
-                foreach (var category in Categories.Split(','))
-                {
-                    if (int.TryParse(category, out int result))
-                    {
-                        categoryIds.Add(result);
-                    }
-                }
-                filter.CategoryIds = categoryIds;
-            }
+
             if (System.HasValue)
             {
                 filter.SystemIds = new List<int>() { System.Value };
@@ -731,7 +723,6 @@ namespace GRA.Controllers.MissionControl
                 CanAddChallenges = UserHasPermission(Permission.AddChallenges),
                 CanDeleteChallenges = UserHasPermission(Permission.RemoveChallenges),
                 CanEditChallenges = UserHasPermission(Permission.EditChallenges),
-                Categories = Categories,
                 CategoryIds = filter.CategoryIds,
                 CategoryList = new SelectList(categoryList, "Id", "Name"),
                 Challenges = challengeList.Data,

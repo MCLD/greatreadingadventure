@@ -13,7 +13,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Challenges
         public GRA.Domain.Model.ChallengeTask Task { get; set; }
         public bool AddTask { get; set; }
         public string BadgePath { get; set; }
-        [DisplayName("Image")]
+        [DisplayName("Upload a badge image. Badge images must be square.")]
         public IFormFile BadgeUploadImage { get; set; }
         public bool CanActivate { get; set; }
         public bool CanEditGroups { get; set; }
