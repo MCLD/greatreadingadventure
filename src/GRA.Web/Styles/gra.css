@@ -207,7 +207,7 @@ input.form-check {
     margin: 0;
 }
 
-input:read-only:not([type=checkbox]):not([type=radio]):not([type="submit"]):not([type="color"]) {
+input:read-only:not([type=checkbox]):not([type=radio]):not([type="submit"]):not([type="color"]):not([type="file"]) {
     cursor: not-allowed;
 }
 

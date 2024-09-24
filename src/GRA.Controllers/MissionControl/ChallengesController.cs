@@ -241,7 +241,7 @@ namespace GRA.Controllers.MissionControl
                     if (!string.IsNullOrWhiteSpace(task.Filename))
                     {
                         var contentPath = _pathResolver.ResolveContentPath(task.Filename);
-                        task.Filename = $"{siteUrl}/{contentPath}";
+                        task.Filename = $"{siteUrl}{contentPath}";
                     }
                 }
                 if (TempData.TryGetValue(TempEditChallenge, out object value))
@@ -336,7 +336,7 @@ namespace GRA.Controllers.MissionControl
                 if (!string.IsNullOrWhiteSpace(viewModel.Task.Filename))
                 {
                     var contentPath = _pathResolver.ResolveContentPath(viewModel.Task.Filename);
-                    viewModel.TaskFilePath = $"{siteUrl}/{contentPath}";
+                    viewModel.TaskFilePath = $"{siteUrl}{contentPath}";
                 }
             }
             PageTitle = $"Edit Challenge - {viewModel.Challenge.Name}";

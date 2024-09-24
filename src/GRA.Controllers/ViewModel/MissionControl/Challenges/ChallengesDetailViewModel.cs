@@ -9,8 +9,8 @@ namespace GRA.Controllers.ViewModel.MissionControl.Challenges
 {
     public class ChallengesDetailViewModel
     {
-        public GRA.Domain.Model.Challenge Challenge { get; set; }
-        public GRA.Domain.Model.ChallengeTask Task { get; set; }
+        public Challenge Challenge { get; set; }
+        public ChallengeTask Task { get; set; }
         public bool AddTask { get; set; }
         public string BadgePath { get; set; }
         [DisplayName("Upload a badge image. Badge images must be square.")]

@@ -7,19 +7,19 @@
     }
 }
 
-    <noscript>
-        <style>
-            #CategoryPlaceholder {
-                display: none;
-            }
+<noscript>
+    <style>
+        #CategoryPlaceholder {
+            display: none;
+        }
 
-            .favorite-button {
-                display: none;
-            }
-        </style>
-    </noscript>
+        .favorite-button {
+            display: none;
+        }
+    </style>
+</noscript>
 
-    @if (Model.FeaturedChallengeGroups?.Any() == true)
+@if (Model.FeaturedChallengeGroups?.Any() == true)
 {
     <div class="sr-only">
         <h2>Featured Challenge Groups</h2>
@@ -28,8 +28,8 @@
             {
                 <li>
                     <a asp-controller="@ChallengesController.Name"
-               asp-action="@nameof(ChallengesController.List)"
-               asp-route-id="@featuredChallenge.Stub">
+                       asp-action="@nameof(ChallengesController.List)"
+                       asp-route-id="@featuredChallenge.Stub">
                         @featuredChallenge.Name
                     </a>
                 </li>
@@ -65,12 +65,12 @@
                                 {
                                     <div>
                                         <a asp-controller="@ChallengesController.Name"
-                                   asp-action="@nameof(ChallengesController.List)"
-                                   asp-route-id="@featuredChallenge.Stub"
-                                   class="gra-carousel-link">
+                                           asp-action="@nameof(ChallengesController.List)"
+                                           asp-route-id="@featuredChallenge.Stub"
+                                           class="gra-carousel-link">
                                             <img src="@featuredChallenge.ImagePath"
-                                         alt="@featuredChallenge.AltText"
-                                         style="max-width: 100px;" />
+                                                 alt="@featuredChallenge.AltText"
+                                                 style="max-width: 100px;" />
                                             <p>@featuredChallenge.Name</p>
                                         </a>
                                     </div>
@@ -92,7 +92,7 @@
                     @if (Model.ChallengeGroup != null)
                     {
                         @SharedLocalizer[GRA.Annotations.Title.ChallengeGroup,
-                    Model.ChallengeGroup.Name]
+                                 Model.ChallengeGroup.Name]
                     }
                     else
                     {
@@ -119,8 +119,8 @@
                             </div>
                             <div class="col-12 col-sm-10 gra-search-container">
                                 <input asp-for="Search"
-                                   class="form-control"
-                                   placeholder="@SharedLocalizer[GRA.Annotations.Interface.EnterChallengeSearch]" />
+                                       class="form-control"
+                                       placeholder="@SharedLocalizer[GRA.Annotations.Interface.EnterChallengeSearch]" />
                             </div>
                         </div>
 
@@ -141,19 +141,12 @@
                                     <span style="font-size:large;">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Category]:</span>
                                 </div>
                                 <div class="col-12 col-sm-10">
-                                    <noscript id="noscript">
-                                        <select asp-for="Categories"
-                                        asp-items="Model.CategoryList"
-                                        class="form-control">
-                                            <option></option>
-                                        </select>
-                                    </noscript>
-                                    <input id="CategoryPlaceholder" class="form-control" />
                                     <select asp-for="CategoryIds"
-                                    asp-items="Model.CategoryList"
-                                    class="form-control hidden"
-                                    disabled="disabled"
-                                    multiple="multiple"></select>
+                                            asp-items="Model.CategoryList"
+                                            autocomplete="off"
+                                            class="form-control"
+                                            multiple="multiple"
+                                            size="1"></select>
                                 </div>
                             </div>
                         }
@@ -164,23 +157,23 @@
                             <div class="col-12 col-sm-10">
                                 <label class="radio-inline">
                                     <input type="radio"
-                                       name="Ordering"
-                                       value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.MostPopular"
-                                       @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.MostPopular)>
+                                           name="Ordering"
+                                           value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.MostPopular"
+                                    @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.MostPopular)>
                                     @SharedLocalizer[GRA.Domain.Model.DisplayNames.MostPopular]
                                 </label>
                                 <label class="radio-inline">
                                     <input type="radio"
-                                       name="Ordering"
-                                       value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Name"
-                                       @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Name)>
+                                           name="Ordering"
+                                           value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Name"
+                                    @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Name)>
                                     @SharedLocalizer[GRA.Domain.Model.DisplayNames.Name]
                                 </label>
                                 <label class="radio-inline">
                                     <input type="radio"
-                                       name="Ordering"
-                                       value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Recent"
-                                       @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Recent)>
+                                           name="Ordering"
+                                           value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Recent"
+                                    @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Recent)>
                                     @SharedLocalizer[GRA.Domain.Model.DisplayNames.MostRecent]
                                 </label>
                             </div>
@@ -209,28 +202,28 @@
                                             SharedLocalizer[GRA.Annotations.Info.SearchResultsMatchesSingular]
                                             :
                                             SharedLocalizer[GRA.Annotations.Info.SearchResultsMatchesPlural, Model.PaginateModel.ItemCount]
-                                        )  
+                                            )
                                     </div>
                                 </div>
                             </div>
                         }
                         <div class="row">
-                                <div class="col-12 col-sm-4 col-md-3 @(Model.IsLoggedIn ? "row-spacing" : "")">
+                            <div class="col-12 col-sm-4 col-md-3 @(Model.IsLoggedIn ? "row-spacing" : "")">
                                 @if (Model.IsLoggedIn)
                                 {
                                     <a asp-action="Index"
-                                    asp-route-Search="@Model.Search"
-                                    asp-route-Program="@Model.Program"
-                                    asp-route-Categories="@Model.Categories"
-                                    asp-route-Status="@Model.Status"
-                                    asp-route-Favorites="@(Model.Favorites == true ? null : "True")"
-                                    class="btn  @(Model.Favorites == true ? "btn-success" : "btn-secondary")">
+                                       asp-route-Search="@Model.Search"
+                                       asp-route-Program="@Model.Program"
+                                       asp-route-Categories="@Model.Categories"
+                                       asp-route-Status="@Model.Status"
+                                       asp-route-Favorites="@(Model.Favorites == true ? null : "True")"
+                                       class="btn  @(Model.Favorites == true ? "btn-success" : "btn-secondary")">
                                         <span class="@(Model.Favorites == true ? "fas" : "far") fa-star"></span>
                                         @SharedLocalizer[GRA.Annotations.Interface.MyFavorites]
                                     </a>
                                 }
-                                </div>
-                                <div class="col-6 col-sm-2 offset-sm-4 offset-md-5 row-spacing">
+                            </div>
+                            <div class="col-6 col-sm-2 offset-sm-4 offset-md-5 row-spacing">
                                 <a asp-action="Index" asp-route-ClearSearch="true" class="btn btn-secondary ">
                                     <span class="hidden-sm fas fa-minus-circle"></span>
                                     @SharedLocalizer[GRA.Annotations.Interface.Clear]
@@ -323,9 +316,9 @@
                                                         {
                                                             <div style="text-align:center;">
                                                                 <img class="img-thumbnail badge-sm"
-                                                         src="~/@Model.Challenges[i].BadgeFilename"
-                                                         alt="@Model.Challenges[i].BadgeAltText"
-                                                         asp-append-version="true" />
+                                                                     src="~/@Model.Challenges[i].BadgeFilename"
+                                                                     alt="@Model.Challenges[i].BadgeAltText"
+                                                                     asp-append-version="true" />
                                                             </div>
                                                         }
                                                         else
@@ -371,9 +364,9 @@
             disableIfEmpty: true
         });
 
-        $("#searchForm").on("submit", function() {
+        $("#searchForm").on("submit", function () {
             var categoryIds = $("#CategoryIds option:selected")
-                .map(function(a, item) { return item.value; })
+                .map(function (a, item) { return item.value; })
                 .get();
 
             if (categoryIds.length > 0) {
@@ -386,14 +379,14 @@
             }
         });
 
-        $(".favorite-button").on("click", function() {
+        $(".favorite-button").on("click", function () {
             var button = $(this);
             if (button.hasClass("fa-spinner") == false) {
                 button.removeClass("far fa-star").addClass("fas fa-spinner fa-pulse");
                 var favorite = button.data("favorite") == "False";
 
-                $.post(favoriteUrl, { challengeId: button.data("challengeid"), favorite: favorite }, function(response) {
-                    setTimeout(function() {
+                $.post(favoriteUrl, { challengeId: button.data("challengeid"), favorite: favorite }, function (response) {
+                    setTimeout(function () {
                         if (response.success) {
                             if (response.favorite) {
                                 button.addClass("fa-star");
@@ -424,9 +417,15 @@
     @if (Model.FeaturedChallengeGroups?.Any() == true)
     {
         <script type="text/javascript" src="/js/slick.min.js"></script>
+        @if (Model.CategoryList?.Count() > 0)
+        {
+            <script>
+                new TomSelect("#CategoryIds");
+            </script>
+        }
         <script>
             const sessionFeatured = 'featuredChallengeStatus';
-            $('#collapseFeatured').on('show.bs.collapse', function() {
+            $('#collapseFeatured').on('show.bs.collapse', function () {
                 if (sessionStorage) {
                     sessionStorage.removeItem(sessionFeatured);
                 }
@@ -434,16 +433,16 @@
                     $('.slick-slider').slick('refresh');
                 }
             });
-            $('#collapseFeatured').on('hide.bs.collapse', function() {
+            $('#collapseFeatured').on('hide.bs.collapse', function () {
                 if (sessionStorage) {
                     sessionStorage.setItem(sessionFeatured, 'hide');
                 }
             });
-            $('#collapseFeatured').ready(function() {
+            $('#collapseFeatured').ready(function () {
                 if (sessionStorage && sessionStorage.getItem(sessionFeatured) !== 'hide') {
                     $('#collapseFeatured').collapse('show');
                 }
             });
         </script>
     }
-    }
+}
