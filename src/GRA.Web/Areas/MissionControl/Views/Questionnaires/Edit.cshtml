@@ -181,7 +181,7 @@
         }
 
         function CreateAnswerRow(id, text, type) {
-            return "<div class='orderable-row' name='answer_" + id + "' id='answer_" + id + "'><span class='fas fa-bars' style='margin-top:10px;float:left;'></span><span class='fas fa-lg fa-minus-circle text-danger removeRow'></span><div class='input-group' style='margin:0 30px;'><span class='input-group-addon'><input type='radio' name='correctAnswer' value='" + id + "'></span><input class='form-control' name='" + type + "_" + id + "' value='" + text + "' required /></div></div>";
+            return "<div class='orderable-row' name='answer_" + id + "' id='answer_" + id + "'><span class='fas fa-bars' style='margin-top:10px;float:left;'></span><span class='fas fa-lg fa-minus-circle text-danger removeRow'></span><div class='input-group' style='margin:0 30px;'><span class='input-group-text'><input type='radio' name='correctAnswer' value='" + id + "'></span><input class='form-control' name='" + type + "_" + id + "' value='" + text + "' required /></div></div>";
         }
 
         function UpdateAnswerList(answerListItems, correctAnswerId) {
