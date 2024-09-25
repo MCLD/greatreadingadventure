@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using GRA.Controllers.ViewModel.Shared;
+using GRA.Domain.Model;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Events
 {
     public class EventsListViewModel
     {
-        public IEnumerable<GRA.Domain.Model.Event> Events { get; set; }
+        public IEnumerable<Event> Events { get; set; }
         public PaginateViewModel PaginateModel { get; set; }
         public string Search { get; set; }
         public int? SystemId { get; set; }
@@ -21,8 +22,8 @@ namespace GRA.Controllers.ViewModel.MissionControl.Events
         public bool RequireSecretCode { get; set; }
         public bool Streaming { get; set; }
 
-        public IEnumerable<GRA.Domain.Model.Branch> BranchList { get; set; }
+        public IEnumerable<Branch> BranchList { get; set; }
         public IEnumerable<GRA.Domain.Model.System> SystemList { get; set; }
-        public IEnumerable<GRA.Domain.Model.Program> ProgramList { get; set; }
+        public IEnumerable<Program> ProgramList { get; set; }
     }
 }

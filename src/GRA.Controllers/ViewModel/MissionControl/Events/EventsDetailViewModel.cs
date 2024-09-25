@@ -2,12 +2,13 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using GRA.Domain.Model;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Events
 {
     public class EventsDetailViewModel
     {
-        public GRA.Domain.Model.Event Event { get; set; }
+        public Event Event { get; set; }
         public string CreatedByName { get; set; }
         public bool CanViewParticipants { get; set; }
         public bool UseLocation { get; set; }

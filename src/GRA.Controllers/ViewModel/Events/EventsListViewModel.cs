@@ -9,7 +9,7 @@ namespace GRA.Controllers.ViewModel.Events
 {
     public class EventsListViewModel
     {
-        public IList<GRA.Domain.Model.Event> Events { get; set; }
+        public IList<Event> Events { get; set; }
         public PaginateViewModel PaginateModel { get; set; }
         public string Sort { get; set; }
         public bool? UseLocation { get; set; }

@@ -2,20 +2,28 @@
 
 <form asp-controller="Events" asp-action="Edit" method="post" role="form">
 
-    <input asp-for="UseLocation" type="hidden" />
-    <input asp-for="Event.Id" type="hidden" />
-    <input asp-for="Event.IsActive" type="hidden" />
-    <input asp-for="Event.IsValid" type="hidden" />
-    <input asp-for="Event.ParentEventId" type="hidden" />
-    <input asp-for="Event.RelatedBranchId" type="hidden" />
-    <input asp-for="Event.RelatedSystemId" type="hidden" />
-    <input asp-for="Event.RelatedTriggerId" type="hidden" />
+    <input asp-for="UseLocation"
+        type="hidden" />
+    <input asp-for="Event.Id"
+        type="hidden" />
+    <input asp-for="Event.IsActive"
+        type="hidden" />
+    <input asp-for="Event.IsValid"
+        type="hidden" />
+    <input asp-for="Event.ParentEventId"
+        type="hidden" />
+    <input asp-for="Event.RelatedBranchId"
+        type="hidden" />
+    <input asp-for="Event.RelatedSystemId"
+        type="hidden" />
+    <input asp-for="Event.RelatedTriggerId"
+        type="hidden" />
 
     <div style="font-size:large;  padding-top:10px;">
         Created By:
         @if (Model.CanViewParticipants)
         {
-            <a aria-label="@Model.CreatedByName (Opens new window)"
+           <a aria-label="@Model.CreatedByName (Opens new window)"
            asp-controller="Participants"
            asp-action="@nameof(ParticipantsController.Detail)"
            asp-route-id="@Model.Event.CreatedBy"
@@ -29,10 +37,12 @@
     </div>
     @if (Model.CanAddSecretCode)
     {
-        <input asp-for="CanAddSecretCode" type="hidden" />
+        <input asp-for="CanAddSecretCode"
+            type="hidden" />
         @if (Model.Event.RelatedTriggerId.HasValue)
         {
-            <div class="row" style="padding-top:10px;">
+            <div class="row"
+                style="padding-top:10px;">
                 <div class="col-12">
                     <a aria-label="View Related Trigger (Opens new window)"
                asp-controller="Triggers"
@@ -40,7 +50,7 @@
                asp-route-id="@Model.Event.RelatedTriggerId"
                        target="_blank"
                        class="btn btn-secondary">
-                        View Related Trigger
+                    View Related Trigger
                     </a>
                 </div>
             </div>
@@ -49,20 +59,28 @@
 
     <div class="row" style="padding: 10px 0;">
         <div class="col-12">
-            <label asp-for="Event.Name" class="col-form-label"></label>
-            <input asp-for="Event.Name" class="form-control" />
-            <span asp-validation-for="Event.Name" class="text-danger"></span>
+            <label asp-for="Event.Name"
+                class="col-form-label"></label>
+            <input asp-for="Event.Name"
+                class="form-control" />
+            <span asp-validation-for="Event.Name"
+                class="text-danger"></span>
         </div>
     </div>
 
     <div class="row row-spacing">
         <div class="col-12">
-            <label asp-for="Event.IsCommunityExperience" class="col-form-label"></label>
-            <select asp-for="Event.IsCommunityExperience" class="form-control">
-                <option value="false">Event</option>
-                <option value="true">Community Experience</option>
+            <label asp-for="Event.IsCommunityExperience"
+                class="col-form-label"></label>
+            <select asp-for="Event.IsCommunityExperience"
+                class="form-control">
+                <option value="false">
+                    Event</option>
+                <option value="true">
+                    Community Experience</option>
             </select>
-            <span asp-validation-for="Event.IsCommunityExperience" class="text-danger"></span>
+            <span asp-validation-for="Event.IsCommunityExperience"
+                class="text-danger"></span>
         </div>
     </div>
 
@@ -70,98 +88,143 @@
         <div class="col-8 col-sm-10 ">
             <div class="row">
                 <div class="col-12 col-sm-6 row-spacing">
-                    <label asp-for="Event.StartDate" class="col-form-label"></label>
-                    <div class="mb-3 date" id="pickerStart">
-                        <input asp-for="Event.StartDate" type="datetime-local" class="form-control" />
+                    <label asp-for="Event.StartDate"
+                        class="col-form-label"></label>
+                    <div class="mb-3 date"
+                        id="pickerStart">
+                        <input asp-for="Event.StartDate"
+                            type="date"
+                            class="form-control" />
                     </div>
-                    <span asp-validation-for="Event.StartDate" class="text-danger"></span>
+                    <span asp-validation-for="Event.StartDate"
+                        class="text-danger"></span>
                 </div>
                 <div class="col-12 col-sm-6 row-spacing">
-                    <label asp-for="Event.EndDate" class="col-form-label"></label>
-                    <div class="mb-3 date" id="pickerEnd">
-                        <input asp-for="Event.EndDate" type="datetime-local" value="@(Model.Event.AllDay ? Model.Event.EndDate?.ToString() : Model.Event.EndDate?.ToString("t"))" class="form-control" />
+                    <label asp-for="Event.EndDate"
+                        class="col-form-label"></label>
+                    <div class="mb-3 date" 
+                        id="pickerEnd">
+                        <input asp-for="Event.EndDate"
+                            type="date"
+                            value="@(Model.Event.AllDay ? Model.Event.EndDate?.ToString() : Model.Event.EndDate?.ToString("t"))"
+                            class="form-control" />
                     </div>
-                    <span asp-validation-for="Event.EndDate" class="text-danger"></span>
+                    <span asp-validation-for="Event.EndDate"
+                        class="text-danger"></span>
                 </div>
             </div>
         </div>
         <div class="col-4 col-sm-2 row-spacing">
-            <label asp-for="Event.AllDay" class="col-form-label center-label" style="text-align:center;"></label>
-            <input asp-for="Event.AllDay" class="form-check mx-auto"/>
-            <span asp-validation-for="Event.AllDay" class="text-danger"></span>
+            <label asp-for="Event.AllDay"
+                class="col-form-label center-label"
+                style="text-align:center;"></label>
+            <input asp-for="Event.AllDay"
+                class="form-check mx-auto"/>
+            <span asp-validation-for="Event.AllDay"
+                class="text-danger"></span>
         </div>
     </div>
 
     <div class="row row-spacing">
         <div class="col-12">
-            <label asp-for="Event.Description" class="col-form-label"></label>
-            <textarea asp-for="Event.Description" class="form-control" rows="5"> </textarea>
-            <span asp-validation-for="Event.Description" class="text-danger"></span>
+            <label asp-for="Event.Description"
+                class="col-form-label"></label>
+            <textarea asp-for="Event.Description"
+                class="form-control"
+                rows="5"> </textarea>
+            <span asp-validation-for="Event.Description"
+                class="text-danger"></span>
         </div>
     </div>
 
     <div class="row row-spacing">
         <div class="col-12">
-            <label asp-for="Event.ExternalLink" class="col-form-label"></label>
-            <input asp-for="Event.ExternalLink" class="form-control" />
-            <span asp-validation-for="Event.ExternalLink" class="text-danger"></span>
+            <label asp-for="Event.ExternalLink"
+                class="col-form-label"></label>
+            <input asp-for="Event.ExternalLink"
+                class="form-control" />
+            <span asp-validation-for="Event.ExternalLink"
+                class="text-danger"></span>
         </div>
     </div>
 
     <div id="branchGroup" class="@(Model.UseLocation ? "d-none" : "" )">
         <div class="row row-spacing">
             <div class="col-12">
-                <label asp-for="SystemId" class="col-form-label"></label>
-                <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control"></select>
-                <span asp-validation-for="SystemId" class="text-danger"></span>
+                <label asp-for="SystemId"
+                    class="col-form-label"></label>
+                <select asp-for="SystemId"
+                    asp-items="Model.SystemList"
+                    class="form-control"></select>
+                <span asp-validation-for="SystemId"
+                    class="text-danger"></span>
             </div>
         </div>
 
         <div class="row row-spacing">
             <div class="col-12">
-                <label asp-for="Event.AtBranchId" class="col-form-label"></label>
+                <label asp-for="Event.AtBranchId"
+                    class="col-form-label"></label>
                 <label style="font-size: 12px;">
-                    <a id="viewLocationList" style="text-decoration:none;cursor:pointer">View location list</a>
+                    <a id="viewLocationList"
+                        style="text-decoration:none;cursor:pointer">
+                        View location list</a>
                 </label>
-                <select asp-for="Event.AtBranchId" asp-items="Model.BranchList" class="form-control">
-                    <option></option>
+                <select asp-for="Event.AtBranchId"
+                    asp-items="Model.BranchList"
+                    class="form-control">
                 </select>
-                <span asp-validation-for="Event.AtBranchId" class="text-danger"></span>
+                <span asp-validation-for="Event.AtBranchId"
+                    class="text-danger"></span>
             </div>
         </div>
     </div>
 
-    <div id="locationGroup" class="row row-spacing @(Model.UseLocation ? "" : "d-none" )">
+    <div id="locationGroup"
+        class="row row-spacing @(Model.UseLocation ? "" : "d-none" )">
         <div class="col-12">
-            <label asp-for="Event.AtLocationId" class="col-form-label"></label>
+            <label asp-for="Event.AtLocationId"
+                class="col-form-label"></label>
             <label style="font-size: 12px;">
-                <a id="viewBranchList" style="text-decoration:none;cursor:pointer">View library list</a>
+                <a id="viewBranchList"
+                    style="text-decoration:none;cursor:pointer">
+                    View library list</a>
             </label>
-            <input asp-for="CanManageLocations" type="hidden" />
+            <input asp-for="CanManageLocations"
+                type="hidden" />
             <div style="display:flex">
-                <select asp-for="Event.AtLocationId" asp-items="Model.LocationList" class="form-control">
-                    <option></option>
+                <select asp-for="Event.AtLocationId"
+                    asp-items="Model.LocationList"
+                    class="form-control">
                 </select>
                 @if (Model.CanManageLocations)
                 {
-                    <button type="button" class="btn btn-primary btn-sm" style="margin-left:8px;"
-                            data-bs-toggle="modal" data-bs-target="#addModal">
+                    <button type="button"
+                        class="btn btn-primary btn-sm"
+                        style="margin-left:8px;"
+                        data-bs-toggle="modal"
+                        data-bs-target="#addModal">
                         <span class="fas fa-2x fa-plus"></span>
                     </button>
                 }
             </div>
-            <span asp-validation-for="Event.AtLocationId" class="text-danger"></span>
+            <span asp-validation-for="Event.AtLocationId"
+                class="text-danger"></span>
 
         </div>
     </div>
 
     <div class="row row-spacing">
         <div class="col-12">
-            <label asp-for="Event.ProgramId" class="col-form-label"></label>
-            <select asp-for="Event.ProgramId" asp-items="Model.ProgramList" class="form-control">
-                <option value="">All Programs</option>
+            <label asp-for="Event.ProgramId"
+                class="col-form-label"></label>
+            <select asp-for="Event.ProgramId"
+                asp-items="Model.ProgramList" class="form-control">
+                <option value="">
+                    All Programs</option>
             </select>
-            <span asp-validation-for="Event.ProgramId" class="text-danger"></span>
+            <span asp-validation-for="Event.ProgramId"
+                class="text-danger"></span>
         </div>
     </div>
 
@@ -170,7 +233,8 @@
         <div class="row row-spacing">
             <div class="col-12">
                 <label class="col-form-label">Related Challenge/Group</label>
-                <table id="challengeTable" class="table table-sm table-bordered table-striped @(Model.Event.Challenge == null ? "d-none" : "")">
+                <table id="challengeTable"
+                    class="table table-sm table-bordered table-striped @(Model.Event.Challenge == null ? "d-none" : "")">
                     <thead>
                         <tr>
                             <th>Challenge Name</th>
@@ -196,7 +260,8 @@
                                 <td>
                                     @if (!string.IsNullOrWhiteSpace(Model.Event.Challenge.BadgeFilename))
                                     {
-                                        <img class="img-thumbnail" style="height: auto; width: 64px;"
+                                        <img class="img-thumbnail"
+                                            style="height: auto; width: 64px;"
                                  src="~/@Model.Event.Challenge.BadgeFilename?@DateTime.Now.ToString("yyMMddHHmmss")"
                                  asp-append-version="true" />
                                     }
@@ -218,8 +283,10 @@
                                 @if (Model.CanRelateChallenge)
                                 {
                                     <td class="gra-mc-icon">
-                                        <button type="button" class="btn btn-link btn-sm removeRelatedButton">
-                                            <span class="fas fa-2x fa-minus-circle text-danger" aria-hidden="true"></span>
+                                        <button type="button"
+                                            class="btn btn-link btn-sm removeRelatedButton">
+                                            <span class="fas fa-2x fa-minus-circle text-danger"
+                                                aria-hidden="true"></span>
                                         </button>
                                     </td>
                                 }
@@ -227,7 +294,8 @@
                         }
                     </tbody>
                 </table>
-                <table id="groupTable" class="table table-sm table-bordered table-striped @(Model.Event.ChallengeGroup == null ? "d-none" : "")">
+                <table id="groupTable"
+                    class="table table-sm table-bordered table-striped @(Model.Event.ChallengeGroup == null ? "d-none" : "")">
                     <thead>
                         <tr>
                             <th>Group Name</th>
@@ -281,25 +349,38 @@
                         }
                     </tbody>
                 </table>
-                <div id="noRelated" class="alert alert-warning @(Model.Event.Challenge != null || Model.Event.ChallengeGroup != null ? "d-none" : "")" style="margin-bottom: 0.5rem;">No related challenges or challenge groups.</div>
+                <div id="noRelated"
+                    class="alert alert-warning @(Model.Event.Challenge != null || Model.Event.ChallengeGroup != null ? "d-none" : "")"
+                    style="margin-bottom: 0.5rem;">
+                    No related challenges or challenge groups.</div>
                 @if (Model.CanRelateChallenge)
                 {
                     <input asp-for="CanRelateChallenge" type="hidden" />
                     <input asp-for="Event.ChallengeId" type="hidden" />
                     <input asp-for="Event.ChallengeGroupId" type="hidden" />
-                    <button type="button" id="addButton" class="btn btn-secondary" style="display: block"><span class="relatedText">@(Model.Event.Challenge != null || Model.Event.ChallengeGroup != null ? "Change" : "Add")</span> Related Challenge</button>
+                    <button type="button"
+                        id="addButton"
+                        class="btn btn-secondary"
+                        style="display: block">
+                        <span class="relatedText">@(Model.Event.Challenge != null || Model.Event.ChallengeGroup != null ? "Change" : "Add")</span> 
+                        Related Challenge</button>
                 }
             </div>
         </div>
     }
 
     <div class="mb-3">
-        <a asp-action="Index" class="btn btn-secondary">Return to List</a>
-        <a asp-action="Create" asp-route-id="@Model.Event.Id" class="btn btn-secondary">
+        <a asp-action="Index"
+            class="btn btn-secondary">
+            Return to List</a>
+        <a asp-action="Create"
+            asp-route-id="@Model.Event.Id"
+            class="btn btn-secondary">
             <span class="far fa-copy"></span>
             Copy Event
         </a>
-        <button type="submit" class="btn btn-primary" button-spinner>
+        <button type="submit"
+            class="btn btn-primary" button-spinner>
             <span class="buttonText">Save @(Model.Event.IsCommunityExperience ? "Community Experience" : "Event")</span>
         </button>
     </div>
@@ -313,48 +394,62 @@
              tabindex="-1"
              role="dialog"
              aria-labelledby="listModalLabel">
-            <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-dialog modal-lg"
+                role="document">
                 <div class="row">
                     <div class="col-12 col-sm-10 offset-sm-1">
-                        <div class="card">
-                            <div class="card-header">
+                        <div class="modal-content">
+                            <div class="modal-header">
                                 <h1 class="h4 modal-title lead">
                                     <span class="relatedText">@(Model.Event.Challenge != null || Model.Event.ChallengeGroup != null ? "Change" : "Add")</span> challenge/group
                                 </h1>
                             </div>
-                            <div class="card-body">
-                                <ul class="nav nav-tabs" role="tablist">
-                                    <li role="presentation" class="active" )>
+                            <div class="modal-body">
+                                <ul class="nav nav-tabs"
+                                    role="tablist">
+                                    <li role="presentation"
+                                        class="active" )>
                                         <a id="challengeTab"
                                            href="#challenge"
                                            aria-controls="challenge"
                                            role="tab"
-                                           data-bs-toggle="tab">Challenge</a>
+                                           data-bs-toggle="tab">
+                                       Challenge</a>
                                     </li>
-                                    <li role="presentation" class="">
+                                    <li role="presentation"
+                                        class=""
+                                        style="padding: 0 10px;">
                                         <a id="groupTab"
                                            href="#group"
                                            aria-controls="group"
                                            role="tab"
-                                           data-bs-toggle="tab">Challenge Group</a>
+                                           data-bs-toggle="tab">
+                                           Challenge Group</a>
                                     </li>
                                 </ul>
 
                                 <div class="tab-content">
-                                    <div role="tabpanel" class="tab-pane active" id="challenge">
+                                    <div role="tabpanel"
+                                        class="tab-pane active"
+                                        id="challenge">
                                         <div class="row">
                                             <div class="col-12">
-                                                <ul class="nav nav-pills" style="padding: 10px 0;">
-                                                    <li id="All" class="active challengeScope">
+                                                <ul class="nav nav-pills"
+                                                    style="padding: 10px 0;">
+                                                    <li id="All"
+                                                        class="active challengeScope">
                                                         <a>All</a>
                                                     </li>
-                                                    <li id="System" class="challengeScope">
+                                                    <li id="System"
+                                                        class="challengeScope">
                                                         <a>My System</a>
                                                     </li>
-                                                    <li id="Branch" class="challengeScope">
+                                                    <li id="Branch"
+                                                        class="challengeScope">
                                                         <a>My Branch</a>
                                                     </li>
-                                                    <li id="Mine" class="challengeScope">
+                                                    <li id="Mine"
+                                                        class="challengeScope">
                                                         <a>Mine</a>
                                                     </li>
                                                 </ul>
@@ -398,8 +493,11 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div role="tabpanel" class="tab-pane" id="group">
-                                        <div class="row row-spacing" style="padding-top: 10px;">
+                                    <div role="tabpanel"
+                                        class="tab-pane"
+                                        id="group">
+                                        <div class="row row-spacing"
+                                            style="padding-top: 10px;">
                                             <div class="col-8">
                                                 <input id="groupSearchText"
                                                        class="form-control"
@@ -423,7 +521,8 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div id="groupSearchMessage" class="row d-none">
+                                        <div id="groupSearchMessage"
+                                            class="row d-none">
                                             <div class="col-12">
                                                 <p class="alert-sm alert-info">
                                                     Searching for '<strong id="groupSearchTerm"></strong>'
@@ -431,7 +530,8 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div id="modalGroupList" class="col-12">
+                                            <div id="modalGroupList"
+                                                class="col-12">
                                             </div>
                                         </div>
                                     </div>
@@ -464,7 +564,9 @@
             <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title h4" id="addModalLabel">Add location</h1>
+                            <h1 class="modal-title h4"
+                                id="addModalLabel">
+                            Add location</h1>
                             <button type="button"
                                     class="btn-close"
                                     data-bs-dismiss="modal"
@@ -474,8 +576,10 @@
                         </div>
                         <div class="modal-body">
                             <div class="mb-3">
-                                <label asp-for="Location.Name" class="col-form-label"></label>
-                                <input asp-for="Location.Name" class="form-control" />
+                                <label asp-for="Location.Name"
+                                    class="col-form-label"></label>
+                                <input asp-for="Location.Name"
+                                    class="form-control" />
                                 <span asp-validation-for="Location.Name"
                                       class="text-danger"></span>
                             </div>
@@ -499,13 +603,18 @@
                                 </div>
                             }
                             <div class="mb-3">
-                                <label asp-for="Location.Url" class="col-form-label"></label>
-                                <input asp-for="Location.Url" class="form-control" />
-                                <span asp-validation-for="Location.Url" class="text-danger"></span>
+                                <label asp-for="Location.Url"
+                                    class="col-form-label"></label>
+                                <input asp-for="Location.Url"
+                                    class="form-control" />
+                                <span asp-validation-for="Location.Url"
+                                    class="text-danger"></span>
                             </div>
                             <div class="mb-3">
-                                <label asp-for="Location.Telephone" class="col-form-label"></label>
-                                <input asp-for="Location.Telephone" class="form-control" />
+                                <label asp-for="Location.Telephone"
+                                    class="col-form-label"></label>
+                                <input asp-for="Location.Telephone"
+                                    class="form-control" />
                                 <span asp-validation-for="Location.Telephone"
                                       class="text-danger"></span>
                             </div>
