@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -652,7 +651,8 @@ namespace GRA.Controllers.MissionControl
                 CategoryIds = CategoryIds
             };
 
-            if (!string.IsNullOrEmpty(Ordering) && Enum.TryParse(typeof(ChallengeFilter.OrderingOption),
+            if (!string.IsNullOrEmpty(Ordering)
+                && Enum.TryParse(typeof(ChallengeFilter.OrderingOption),
                     Ordering,
                     out var typedOrdering))
             {
@@ -702,7 +702,8 @@ namespace GRA.Controllers.MissionControl
             {
                 if (!string.IsNullOrEmpty(challenge.BadgeFilename))
                 {
-                    challenge.BadgeFilename = _pathResolver.ResolveContentPath(challenge.BadgeFilename);
+                    challenge.BadgeFilename
+                        = _pathResolver.ResolveContentPath(challenge.BadgeFilename);
                 }
             }
 
@@ -795,7 +796,8 @@ namespace GRA.Controllers.MissionControl
             return viewModel;
         }
 
-        private async Task<ChallengesDetailViewModel> GetDetailLists(ChallengesDetailViewModel model)
+        private async Task<ChallengesDetailViewModel>
+            GetDetailLists(ChallengesDetailViewModel model)
         {
             var systemList = (await _siteService.GetSystemList())
                     .OrderByDescending(_ => _.Id == GetId(ClaimType.SystemId))
@@ -1356,7 +1358,8 @@ namespace GRA.Controllers.MissionControl
 
             if (model.FeaturedGroup.StartDate >= model.FeaturedGroup.EndDate)
             {
-                ModelState.AddModelError("FeaturedGroup.EndDate", "The End date cannot be before the Start date.");
+                ModelState.AddModelError("FeaturedGroup.EndDate",
+                    "The End date cannot be before the Start date.");
             }
 
             if (model.NewFeaturedGroup)

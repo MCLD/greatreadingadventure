@@ -112,23 +112,29 @@
                                                 Clear selection
                                             </button>
                                         </div>
-                                        <span asp-validation-for="TaskUploadFile" class="text-danger"></span>
+                                        <span asp-validation-for="TaskUploadFile"
+                                              class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div role="tabpanel" class="tab-pane gra-tab-pane" id="book">
                                     <div class="mb-3">
                                         <label asp-for="Task.Title" class="col-form-label"></label>
-                                        <input asp-for="Task.Title" id="bookTitle" class="form-control" disabled />
+                                        <input asp-for="Task.Title"
+                                               id="bookTitle"
+                                               class="form-control"
+                                               disabled />
                                     </div>
                                     <div class="mb-3">
                                         <label asp-for="Task.Author" class="col-form-label"></label>
                                         <input asp-for="Task.Author" class="form-control" />
-                                        <span asp-validation-for="Task.Author" class="text-danger"></span>
+                                        <span asp-validation-for="Task.Author"
+                                              class="text-danger"></span>
                                     </div>
                                     <div class="mb-3">
                                         <label asp-for="Task.Isbn" class="col-form-label"></label>
                                         <input asp-for="Task.Isbn" class="form-control" />
-                                        <span asp-validation-for="Task.Isbn" class="text-danger"></span>
+                                        <span asp-validation-for="Task.Isbn"
+                                              class="text-danger"></span>
                                     </div>
                                     <div class="mb-3">
                                         <label asp-for="Task.Url" class="col-form-label"></label>
@@ -147,7 +153,8 @@
                                                 Clear selection
                                             </button>
                                         </div>
-                                        <span asp-validation-for="TaskUploadFile" class="text-danger"></span>
+                                        <span asp-validation-for="TaskUploadFile"
+                                              class="text-danger"></span>
                                     </div>
                                 </div>
                             </div>
@@ -176,7 +183,11 @@
     @if (Model.Task != null)
     {
         <div class="row">
-            <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+            <div class="modal fade"
+                 id="editModal"
+                 tabindex="-1"
+                 role="dialog"
+                 aria-labelledby="editModalLabel">
                 <div class="modal-dialog modal-xl" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -211,7 +222,8 @@
                                      class="tab-pane gra-tab-pane @(Model.Task.ChallengeTaskType == ChallengeTaskType.Action ? " active" : "" )"
                                      id="action">
                                     <div class="mb-3">
-                                        <label asp-for="Task.Title" class="col-form-label">Description</label>
+                                        <label asp-for="Task.Title"
+                                               class="col-form-label">Description</label>
                                         <div id="wmd-button-bar"></div>
                                         <textarea asp-for="Task.Title"
                                                   id="wmd-input"
@@ -236,6 +248,9 @@
                                                     @Model.Task.Filename
                                                 </a>
                                             </label>
+                                            <div class="fileRemoveAlert d-none alert alert-danger">
+                                                File will be removed upon save.
+                                            </div>
                                         }
                                         <div class="input-group">
                                             <input type="file"
@@ -252,7 +267,8 @@
                                               class="text-danger"></span>
                                         @if (!string.IsNullOrWhiteSpace(Model.Task.Filename))
                                         {
-                                            <button class="btn btn-outline-warning mt-2">
+                                            <button type="button"
+                                                    class="btn btn-outline-warning mt-2 clearTaskFile">
                                                 Remove attached file
                                             </button>
                                         }
@@ -299,6 +315,9 @@
                                                     @Model.Task.Filename
                                                 </a>
                                             </label>
+                                            <div class="fileRemoveAlert d-none alert alert-danger">
+                                                File will be removed upon save.
+                                            </div>
                                         }
                                         <div class="input-group">
                                             <input type="file"
@@ -315,7 +334,8 @@
                                               class="text-danger"></span>
                                         @if (!string.IsNullOrWhiteSpace(Model.Task.Filename))
                                         {
-                                            <button class="btn btn-outline-warning mt-2">
+                                            <button type="button"
+                                                    class="btn btn-outline-warning mt-2 clearTaskFile">
                                                 Remove attached file
                                             </button>
                                         }
@@ -626,7 +646,11 @@
         </div>
         <div>
             <div class="col-12">
-                <small><em>To remove a category: select it and use your backspace or delete key.</em></small>
+                <small>
+                    <em>
+                        To remove a category: select it and use your backspace or delete key.
+                    </em>
+                </small>
             </div>
         </div>
     </div>
@@ -1095,6 +1119,12 @@
                     branchList.append(new Option(item.text, item.value, item.selected, item.selected))
                 });
             });
+        });
+
+        $(".clearTaskFile").on("click", function () {
+            $("#Task_Filename").val("");
+            $("#TaskUploadFile").val("");
+            $(".fileRemoveAlert").removeClass("d-none");
         });
 
         $("#bookTab").on('show.bs.tab', function () {
