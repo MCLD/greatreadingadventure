@@ -221,7 +221,7 @@
                                         <br /><label class="col-form-label">Preview</label>
                                         <div id="preview"></div>
                                     </div>
-                                    <div class="mb-3">
+                                    <div>
                                         @if (string.IsNullOrWhiteSpace(Model.Task.Filename))
                                         {
                                             <label class="col-form-label">Add a file</label>
@@ -229,11 +229,11 @@
                                         else
                                         {
                                             <label class="col-form-label">
-                                                Edit File &ndash;
+                                                Update or Remove File &ndash;
                                                 <a aria-label="Link (opens new window)"
                                                    href="@Model.TaskFilePath"
                                                    target="_blank">
-                                                    Link
+                                                    @Model.Task.Filename
                                                 </a>
                                             </label>
                                         }
@@ -250,6 +250,12 @@
                                         </div>
                                         <span asp-validation-for="TaskUploadFile"
                                               class="text-danger"></span>
+                                        @if (!string.IsNullOrWhiteSpace(Model.Task.Filename))
+                                        {
+                                            <button class="btn btn-outline-warning mt-2">
+                                                Remove attached file
+                                            </button>
+                                        }
                                     </div>
                                 </div>
                                 <div role="tabpanel"
@@ -278,14 +284,21 @@
                                         <label asp-for="Task.Url" class="col-form-label"></label>
                                         <input asp-for="Task.Url" class="form-control" />
                                     </div>
-                                    <div class="mb-3">
+                                    <div>
                                         @if (string.IsNullOrWhiteSpace(Model.Task.Filename))
                                         {
                                             <label class="col-form-label">Add a file</label>
                                         }
                                         else
                                         {
-                                            <label class="col-form-label">Edit file</label>
+                                            <label class="col-form-label">
+                                                Update or Remove File &ndash;
+                                                <a aria-label="Link (opens new window)"
+                                                   href="@Model.TaskFilePath"
+                                                   target="_blank">
+                                                    @Model.Task.Filename
+                                                </a>
+                                            </label>
                                         }
                                         <div class="input-group">
                                             <input type="file"
@@ -300,6 +313,12 @@
                                         </div>
                                         <span asp-validation-for="TaskUploadFile"
                                               class="text-danger"></span>
+                                        @if (!string.IsNullOrWhiteSpace(Model.Task.Filename))
+                                        {
+                                            <button class="btn btn-outline-warning mt-2">
+                                                Remove attached file
+                                            </button>
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -497,7 +516,7 @@
                     <h4 class="card-title">
                         <a role="button"
                            data-bs-toggle="collapse"
-                           data-bs-parent=""="#accordion"
+                           data-bs-parent="#accordion"
                            href="#collapseOne"
                            aria-expanded="false"
                            aria-controls="collapseOne">
