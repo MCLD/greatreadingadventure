@@ -2,29 +2,29 @@
 
 <div class="row">
     <div class="col-12">
-        <ul class="nav nav-pills" style="padding: 10px 0;">
-            <li ActiveBy routeKey="Action" value="Index"><a asp-action="Index">Events</a></li>
+        <ul class="nav nav-pills">
+            <li ActiveBy routeKey="Action" value="Index"><a asp-action="Index" class="nav-link">Events</a></li>
             <li ActiveBy routeKey="Action"
                 value="CommunityExperiences">
-                <a asp-action="CommunityExperiences">Community Experiences</a>
+                <a asp-action="CommunityExperiences" class="nav-link">Community Experiences</a>
             </li>
             @if (Model.CanManageLocations)
             {
                 <li ActiveBy routeKey="Action"
-                    value="Locations"><a asp-action="Locations">Locations</a></li>
+                    value="Locations"><a asp-action="Locations" class="nav-link">Locations</a></li>
             }
             <li ActiveBy routeKey="Action"
-                value="StreamingEvents"><a asp-action="StreamingEvents">Streaming Events</a></li>
+                value="StreamingEvents"><a asp-action="StreamingEvents" class="nav-link">Streaming Events</a></li>
         </ul>
     </div>
 </div>
 
 <div class="row">
-    <div class="col-12">
-        <ul class="nav nav-pills" style="padding: 10px 0;">
-            <li class="@(Model.ActiveNav == "All" ? "active" : "")"><a asp-route-Search="@Model.Search" asp-route-ProgramId="@Model.ProgramId">All</a></li>
-            <li class="@(Model.ActiveNav == "System" ? "active" : "")">
-                <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+    <div class="col-12 mb-2">
+        <ul class="nav nav-pills flex-column flex-sm-row">
+            <li class="nav-item"><a asp-route-Search="@Model.Search" asp-route-ProgramId="@Model.ProgramId" class="nav-link @(Model.ActiveNav == "All" ? "active" : "")">All</a></li>
+            <li class="nav-item">
+                <a class="dropdown-toggle nav-link @(Model.ActiveNav == "System" ? "active" : "")" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     @(Model.SystemName ?? "System") <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
@@ -34,9 +34,9 @@
                     }
                 </ul>
             </li>
-            <li class="@(Model.ActiveNav == "Branch" ? "active" : "")">
-                <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                    @(Model.BranchName ?? "Branch") <span class="caret"></span>
+            <li class="nav-item">
+                <a class="dropdown-toggle nav-link @(Model.ActiveNav == "Branch" ? "active" : "")" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    @(Model.BranchName ?? "Branch") <span class="caret"></span> 
                 </a>
                 <ul class="dropdown-menu">
                     @foreach (var branch in Model.BranchList)
@@ -45,7 +45,7 @@
                     }
                 </ul>
             </li>
-            <li class="@(Model.ActiveNav == "Mine" ? "active" : "")"><a asp-route-Search="@Model.Search" asp-route-ProgramId="@Model.ProgramId" asp-route-Mine="True">Mine</a></li>
+            <li class="nav-item"><a asp-route-Search="@Model.Search" asp-route-ProgramId="@Model.ProgramId" asp-route-Mine="True" class="nav-link @(Model.ActiveNav == "Mine" ? "active" : "")">Mine</a></li>
         </ul>
     </div>
 </div>
