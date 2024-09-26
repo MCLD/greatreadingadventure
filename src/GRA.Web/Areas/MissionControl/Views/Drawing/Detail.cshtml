@@ -118,12 +118,12 @@
                     @if (!winner.RedeemedAt.HasValue)
                     {
                         <button type="button"
-                                class="btn btn-danger btn-sm"
+                                class="btn btn-outline-danger btn-sm"
                                 data-bs-toggle="modal"
                                 data-bs-target="#deleteModal"
                                 data-id="@winner.Id"
                                 data-name="@winner.UserFirstName @winner.UserLastName">
-                            <span class="fas fa-times" aria-hidden="true"></span>
+                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                         </button>
                     }
                     else
@@ -159,7 +159,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
                     <span id="modal-text"></span>
                 </div>
                 <div class="modal-footer">

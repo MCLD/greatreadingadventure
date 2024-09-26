@@ -204,13 +204,13 @@
                                 {
                                     <td class="on-top gra-mc-icon">
                                         <button type="button"
-                                                class="btn btn-danger btn-sm"
+                                                class="btn btn-outline-danger btn-sm"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#deleteModal"
                                                 data-id="@user.Id"
                                                 data-name="@(user.Username ?? user.FullName)"
                                                 data-iselevated="@user.IsAdmin">
-                                            <span class="fas fa-times" aria-hidden="true"></span>
+                                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                                         </button>
                                     </td>
                                 }
@@ -253,7 +253,7 @@
                                 <div class="col-12">
                                     <div class="alert alert-warning">
                                         <strong>
-                                            <span class="fas fa-exclamation-triangle"></span>
+                                            <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"></span>
                                             This user has an administrative role in this software.
                                         </strong>
                                     </div>
