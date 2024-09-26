@@ -60,13 +60,13 @@
                             </button>
                         }
                         <button type="button"
-                                class="btn btn-sm btn-danger"
+                                class="btn btn-outline-danger btn-sm"
                                 style="margin: 0 3px;"
                                 data-bs-toggle="modal"
                                 data-bs-target="#deleteModal"
                                 data-id="@item.Id"
                                 data-name="@item.Name">
-                            <span class="fas fa-times"></span>
+                            <span class="fas fa-times fa-fw"></span>
                         </button>
                         <button asp-action="@nameof(AvatarsController.IncreaseItemSort)" name="ItemId" value="@item.Id" class="btn btn-sm btn-secondary" style="margin-left: 6px;" disabled="@(Model.PaginateModel.LastPage == null && item == Model.Items.Last() ? "disabled" : null)">
                             <span class="fas fa-arrow-right"></span>
@@ -116,7 +116,7 @@
 
                     </div>
                     <div class="modal-body">
-                        <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
+                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
                         <span id="modal-text"></span>
                     </div>
                     <div class="modal-footer">
