@@ -270,7 +270,8 @@ namespace GRA.Controllers.MissionControl
 
             if (challenge.TasksToComplete > challenge.Tasks.Count())
             {
-                AlertInfo = "The challenge does not have enough tasks to be completable";
+                var taskLabel = challenge.TasksToComplete != 1 ? "s" : "";
+                AlertInfo = $"This challenge cannot currently be completed, it requires <strong>{challenge.TasksToComplete}</strong> task{taskLabel} to be complete but only has <strong>{challenge.Tasks.Count()}</strong> assigned.";
             }
 
             bool canActivate = challenge.IsValid

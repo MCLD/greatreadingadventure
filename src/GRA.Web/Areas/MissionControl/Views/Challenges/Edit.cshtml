@@ -644,14 +644,12 @@
                     size="1"></select>
             <span asp-validation-for="Challenge.CategoryIds" class="text-danger"></span>
         </div>
-        <div>
-            <div class="col-12">
-                <small>
-                    <em>
-                        To remove a category: select it and use your backspace or delete key.
-                    </em>
-                </small>
-            </div>
+        <div class="col-12">
+            <small>
+                <em>
+                    To remove a category: select it and use your backspace or delete key.
+                </em>
+            </small>
         </div>
     </div>
 
@@ -737,7 +735,6 @@
                 </button>
             </div>
             <span asp-validation-for="BadgeUploadImage" class="text-danger"></span>
-
         </div>
     </div>
     <div class="row mb-3">
@@ -771,7 +768,7 @@
                         asp-action="Edit"
                         name="Submit"
                         value="Activate"
-                        class="btn btn-success mx-2"
+                        class="btn btn-outline-success mx-2"
                         button-spinner>
                     <span class="buttonText">Save and Activate</span>
                 </button>
