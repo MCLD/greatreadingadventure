@@ -30,10 +30,12 @@ namespace GRA.Controllers.ViewModel.MissionControl.Triggers
         public string BadgeAltText { get; set; }
 
         public string BadgeMakerImage { get; set; }
-        public string BadgeMakerUrl { get; set; }
         public string BadgePath { get; set; }
         public string BadgeRequiredList { get; set; }
+
+        [DisplayName("Upload a badge image. Badge images must be square.")]
         public IFormFile BadgeUploadImage { get; set; }
+
         public SelectList BranchList { get; set; }
         public bool CanViewParticipants { get; set; }
         public string ChallengeRequiredList { get; set; }

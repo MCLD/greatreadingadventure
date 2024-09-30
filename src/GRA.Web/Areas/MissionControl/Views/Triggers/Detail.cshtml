@@ -20,8 +20,6 @@
     <input asp-for="BadgeRequiredList" type="hidden" />
     <input asp-for="ChallengeRequiredList" type="hidden" />
     <input asp-for="IsSecretCode" type="hidden" />
-    <input asp-for="UseBadgeMaker" type="hidden" />
-    <input asp-for="BadgeMakerUrl" type="hidden" />
     <input asp-for="BadgeMakerImage" type="hidden" />
     <input asp-for="EditMail" type="hidden" />
     <input asp-for="EditVendorCode" type="hidden" />
@@ -256,9 +254,9 @@
                                 <thead>
                                     <tr>
                                         <th>Name</th>
-                                        <th width="44px">Type</th>
-                                        <th width="75px">Badge</th>
-                                        <th width="44px">&nbsp;</th>
+                                        <th style="width: 75px;">Type</th>
+                                        <th style="width: 75px;">Badge</th>
+                                        <th style="width: 75px">&nbsp;</th>
                                     </tr>
                                 </thead>
                                 <tbody id="requirementList">
@@ -278,11 +276,14 @@
                                                 <td>
                                                     @requirement.Name
                                                 </td>
-                                                <td class="align-middle">
-                                                    <span class="fa fa-fw fa-2x @requirement.Icon"
-                                                          title="@requirement.IconDescription"></span>
+                                                <td class="align-middle text-primary text-center">
+                                                    <span class="fa-stack">
+                                                        <span class="fas fa-circle fa-stack-2x"></span>
+                                                        <span class="fa fa-stack-1x fa-inverse @requirement.Icon"
+                                                              title="@requirement.IconDescription"></span>
+                                                    </span>
                                                 </td>
-                                                <td>
+                                                <td class="align-middle text-center">
                                                     @if (!string.IsNullOrWhiteSpace(requirement.BadgePath))
                                                     {
                                                         <img class="img-thumbnail badge-xs"
@@ -293,7 +294,7 @@
                                                         <text>&nbsp;</text>
                                                     }
                                                 </td>
-                                                <td class="align-middle">
+                                                <td class="align-middle text-center">
                                                     <button type="button"
                                                             id="removeRequirementButton"
                                                             class="btn btn-outline-danger btn-sm"
@@ -391,7 +392,6 @@
                        readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
                 <span asp-validation-for="Trigger.AwardPoints" class="text-danger"></span>
             </div>
-
             <div class="row mb-3">
                 <div class="col-12">
                     @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
@@ -424,7 +424,7 @@
 
                 <div class="col-12 col-sm-8 col-md-9">
                     <label asp-for="BadgeUploadImage" class="col-form-label"></label>
-                    <div class="input-group">
+                    <div class="input-group mb-3">
                         <input type="file"
                                class="form-control"
                                asp-for="BadgeUploadImage"
@@ -435,10 +435,19 @@
                             Clear selection
                         </button>
                     </div>
-                    <span asp-validation-for="BadgeUploadImage" class="text-danger"></span>
+                    <span asp-validation-for="BadgeUploadImage" class="text-danger mb-3"></span>
+                    <div>
+                        <label asp-for="BadgeAltText" class="control-label"></label>
+                        <span class="fas fa-info-circle wide-tooltip"
+                              title="How should this badge be described to someone who can't see it?"
+                              data-toggle="tooltip"
+                              data-placement="top"></span>
+                        <textarea asp-for="BadgeAltText" class="form-control">@Model.BadgeAltText</textarea>
+                        <span asp-validation-for="BadgeAltText" class="text-danger"></span>
+
+                    </div>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -644,9 +653,13 @@
                                         @:Upload an attachment.
                                     }
                                 </p>
+                                <div class="alert alert-warning d-none" id="removeAttachmentAlert">
+                                    The attached award will be removed when this trigger is saved.
+                                    Choose "Return to List" to to cancel the removal.
+                                </div>
                                 @if (!Model.RemoveAttachment)
                                 {
-                                    <div id="attachmentInputWrapper mb-2">
+                                    <div id="attachmentInputWrapper" class="mb-2">
                                         <div class="input-group">
                                             <input type="file"
                                                    class="form-control"
@@ -659,8 +672,6 @@
                                                 Clear selection
                                             </button>
                                         </div>
-                                        <span asp-validation-for="AttachmentUploadFile"
-                                              class="text-danger"></span>
                                         <div>
                                             <span asp-validation-for="AttachmentUploadFile"
                                                   class="text-danger"></span>
@@ -769,75 +780,71 @@
          id="listModal"
          tabindex="-1"
          role="dialog"
+         data-bs-backdrop="static"
+         data-bs-keyboard="false"
          aria-labelledby="listModalLabel">
         <div class="modal-dialog modal-xl" role="document">
-            <div class="row">
-                <div class="col-12 col-sm-10 offset-sm-1">
-                    <div class="card">
-                        <div class="card-header">
-                            <h1 class="h4 modal-title lead">Add requirement</h1>
+            <div class="modal-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h1 class="h4 modal-title lead">Add requirement</h1>
+                    </div>
+                    <div class="card-body pt-2">
+                        <div class="row">
+                            <div class="col-12 mb-2">
+                                <ul class="nav nav-pills">
+                                    <li id="All" class="nav-item requirementScope">
+                                        <a class="nav-link active">All</a>
+                                    </li>
+                                    <li id="System" class="nav-item requirementScope">
+                                        <a class="nav-link">My System</a>
+                                    </li>
+                                    <li id="Branch" class="nav-item requirementScope">
+                                        <a class="nav-link">My Branch</a>
+                                    </li>
+                                    <li id="Mine" class="nav-item requirementScope">
+                                        <a class="nav-link">Mine</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-12">
-                                    <ul class="nav nav-pills">
-                                        <li id="All" class="active requirementScope">
-                                            <a>All</a>
-                                        </li>
-                                        <li id="System" class="requirementScope">
-                                            <a>My System</a>
-                                        </li>
-                                        <li id="Branch" class="requirementScope">
-                                            <a>My Branch</a>
-                                        </li>
-                                        <li id="Mine" class="requirementScope">
-                                            <a>Mine</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-8">
-                                    <input id="searchText" class="form-control"
-                                           placeholder="Enter text to search for an event here" />
-                                </div>
-                                <div class="col-4">
-                                    <div class="col-6">
-                                        <button type="button"
-                                                id="searchButton"
-                                                class="btn btn-outline-secondary">
-                                            Search
-                                        </button>
-                                    </div>
-                                    <div class="col-6">
-                                        <button type="button"
-                                                id="clearButton"
-                                                class="btn btn-outline-secondary">
-                                            Clear
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="searchMessage" class="row d-none">
-                                <div class="col-12">
-                                    <p class="alert-sm alert-info">
-                                        Searching for '<strong id="searchTerm"></strong>'
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div id="modalRequirementList" class="col-12">
+                        <div class="row mb-2">
+                            <div class="col-12">
+                                <div class="input-group">
+                                    <input id="searchText"
+                                           class="form-control"
+                                           placeholder="Enter text to search for an challenge here" />
+                                    <button type="button"
+                                            id="clearButton"
+                                            class="btn btn-outline-secondary">
+                                        Clear
+                                    </button>
+                                    <button type="button"
+                                            id="searchButton"
+                                            class="btn btn-outline-secondary">
+                                        Search
+                                    </button>
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button"
-                                    class="btn btn-outline-secondary"
-                                    data-bs-dismiss="modal">
-                                Close
-                            </button>
+                        <div id="searchMessage" class="row d-none">
+                            <div class="col-12">
+                                <p class="alert-sm alert-info">
+                                    Searching for '<strong id="searchTerm"></strong>'
+                                </p>
+                            </div>
                         </div>
+                        <div class="row">
+                            <div id="modalRequirementList" class="col-12">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">
+                            Close
+                        </button>
                     </div>
                 </div>
             </div>
@@ -893,8 +900,10 @@
                 var row = $(this).parent().parent().clone();
                 var addedItem = row.find(".addRequirementButton");
                 addedItem.removeClass("addRequirementButton")
-                addedItem.children().removeClass("fa-plus-circle text-primary");
-                addedItem.children().addClass("fa-minus-circle text-danger");
+                addedItem.children().removeClass("fa-plus");
+                addedItem.children().addClass("fa-times");
+                addedItem.removeClass("btn-outline-success");
+                addedItem.addClass("btn-outline-danger");
                 addedItem.attr("id", "removeRequirementButton");
                 $("#requirementList").append(row);
 
@@ -925,8 +934,8 @@
 
         $(".requirementScope").on("click", function (e) {
             e.preventDefault();
-            $(this).siblings().removeClass("active");
-            $(this).addClass().addClass("active");
+            $(this).siblings().children().removeClass("active");
+            $(this).children().addClass("active");
             scope = $(this).attr("id");
             page = 1;
             UpdateRequirementsList();
@@ -1048,9 +1057,9 @@
             $("#headingAttachment").removeClass("bg-info-subtle");
         });
 
-        $("#btn-remove-attachment").on("mouseup", function () {
+        $("#btn-remove-attachment").on("click", function () {
+            $("#removeAttachmentAlert").removeClass("d-none");
             $("#attachmentInputWrapper").hide();
-            $("#uploadAttachmentHeader").text("Attachment will be removed when this trigger is saved. Click “Return to List” to cancel attachment removal.");
             $("#RemoveAttachment").val(true);
             $("#btn-remove-attachment").hide();
         });
@@ -1113,22 +1122,22 @@
             $("#saveButton").on("click", function (e) {
                 e.preventDefault();
                 if ($("#Trigger_AwardPoints").val() > @Model.MaxPointLimit) {
-                    @if (Model.Trigger != null)
-                    {
-                        <text>
-                            if ($("#Trigger_AwardPoints").val() != @Model.Trigger.AwardPoints) {
-                                $('#warningModal').modal("show");
-                            }
-                            else {
-                                $("#triggerForm").submit();
-                            }
-                        </text>
-                    }
-                    else
-                    {
-                        @:$('#warningModal').modal("show");
-                    }
-                } else {
+            @if (Model.Trigger != null)
+            {
+                <text>
+                                if ($("#Trigger_AwardPoints").val() != @Model.Trigger.AwardPoints) {
+                                    $('#warningModal').modal("show");
+                                                                                                            }
+                                else {
+                                    $("#triggerForm").submit();
+                                                                                                            }
+                </text>
+            }
+            else
+            {
+                @:$('#warningModal').modal("show");
+            }
+                                                                            } else {
                     $("#triggerForm").submit();
                 }
             });

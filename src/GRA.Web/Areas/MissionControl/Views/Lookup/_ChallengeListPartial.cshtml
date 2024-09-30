@@ -26,18 +26,25 @@ else
                         <td>
                             @if (Model.CanEditChallenges)
                             {
-                                <a asp-controller="Challenges" asp-action="Edit" asp-route-id="@challenge.Id" target="_blank">@challenge.Name</a>
+                                <a asp-controller="Challenges"
+                                   asp-action="Edit"
+                                   asp-route-id="@challenge.Id"
+                                   target="_blank">@challenge.Name</a>
                             }
                             else
                             {
-                                <a asp-area="" asp-controller="Challenges" asp-action="Details" asp-route-id="@challenge.Id" target="_blank">@challenge.Name</a>
+                                <a asp-area=""
+                                   asp-controller="Challenges"
+                                   asp-action="Details"
+                                   asp-route-id="@challenge.Id"
+                                   target="_blank">@challenge.Name</a>
                             }
                         </td>
-                        <td class="gra-mc-icon">
+                        <td class="text-center align-middle">
                             @if (!string.IsNullOrWhiteSpace(challenge.BadgeFilename))
                             {
                                 <img class="img-thumbnail badge-xs"
-                                     src="~/@challenge.BadgeFilename?@DateTime.Now.ToString("yyMMddHHmmss")"/>
+                                     src="~/@challenge.BadgeFilename?@DateTime.Now.ToString("yyMMddHHmmss")" />
                             }
                             else
                             {
@@ -46,7 +53,7 @@ else
                         </td>
                         @if (Model.ShowActive)
                         {
-                            <td class="gra-mc-icon">
+                            <td class="text-center align-middle">
                                 @if (challenge.IsActive)
                                 {
                                     <span class="far fa-check-circle fa-lg text-success"></span>
@@ -57,7 +64,7 @@ else
                                 }
                             </td>
                         }
-                        <td class="gra-mc-icon">
+                        <td class="text-center align-middle">
                             <button type="button"
                                     class="btn btn-outline-success btn-sm addChallengeButton"
                                     data-id="@challenge.Id">

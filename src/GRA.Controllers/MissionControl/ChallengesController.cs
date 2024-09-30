@@ -42,15 +42,22 @@ namespace GRA.Controllers.MissionControl
             UserService userService)
             : base(context)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _badgeService = badgeService ?? throw new ArgumentNullException(nameof(badgeService));
-            _categoryService = categoryService
-                ?? throw new ArgumentNullException(nameof(categoryService));
-            _challengeService = challengeService
-                ?? throw new ArgumentNullException(nameof(challengeService));
-            _eventService = eventService ?? throw new ArgumentNullException(nameof(eventService));
-            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            ArgumentNullException.ThrowIfNull(badgeService);
+            ArgumentNullException.ThrowIfNull(categoryService);
+            ArgumentNullException.ThrowIfNull(challengeService);
+            ArgumentNullException.ThrowIfNull(eventService);
+            ArgumentNullException.ThrowIfNull(logger);
+            ArgumentNullException.ThrowIfNull(siteService);
+            ArgumentNullException.ThrowIfNull(userService);
+
+            _badgeService = badgeService;
+            _categoryService = categoryService;
+            _challengeService = challengeService;
+            _eventService = eventService;
+            _logger = logger;
+            _siteService = siteService;
+            _userService = userService;
+
             PageTitle = "Challenges";
         }
 
@@ -66,9 +73,6 @@ namespace GRA.Controllers.MissionControl
 
             var viewModel = new ChallengesDetailViewModel
             {
-                BadgeMakerUrl = GetBadgeMakerUrl(siteUrl.ToString(), site.FromEmailAddress),
-                UseBadgeMaker = await _siteLookupService.GetSiteSettingBoolAsync(site.Id,
-                    SiteSettingKey.Badges.EnableBadgeMaker),
                 IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
                 MaxPointLimit = await _challengeService.GetMaximumAllowedPointsAsync(site.Id)
             };
@@ -76,7 +80,8 @@ namespace GRA.Controllers.MissionControl
             viewModel = await GetDetailLists(viewModel);
             if (viewModel.MaxPointLimit.HasValue)
             {
-                viewModel.MaxPointsMessage = $"(Up to {viewModel.MaxPointLimit.Value} points per required task)";
+                viewModel.MaxPointsMessage
+                    = $"(Up to {viewModel.MaxPointLimit.Value} points per required task)";
             }
 
             return View(viewModel);
@@ -110,7 +115,8 @@ namespace GRA.Controllers.MissionControl
                 if ((!string.IsNullOrWhiteSpace(model.BadgeMakerImage) && model.UseBadgeMaker) ||
                     (model.BadgeUploadImage != null && !model.UseBadgeMaker))
                 {
-                    ModelState.AddModelError("BadgeAltText", "The badge's alternative text is required.");
+                    ModelState.AddModelError("BadgeAltText",
+                        "The badge's alternative text is required.");
                 }
             }
             else
@@ -123,9 +129,12 @@ namespace GRA.Controllers.MissionControl
                 if (model.BadgeUploadImage != null
                     && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) && !model.UseBadgeMaker))
                 {
-                    if (!ValidImageExtensions.Contains(Path.GetExtension(model.BadgeUploadImage.FileName).ToLowerInvariant()))
+                    if (!ValidImageExtensions.Contains(Path
+                        .GetExtension(model.BadgeUploadImage.FileName)
+                        .ToLowerInvariant()))
                     {
-                        ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
+                        ModelState.AddModelError("BadgeUploadImage",
+                            $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                     }
                 }
                 if (model.BadgeUploadImage != null)
@@ -165,7 +174,7 @@ namespace GRA.Controllers.MissionControl
                         {
                             if (badgeBytes == null)
                             {
-                                using var ms = new MemoryStream();
+                                await using var ms = new MemoryStream();
                                 await model.BadgeUploadImage.CopyToAsync(ms);
                                 badgeBytes = ms.ToArray();
                             }
@@ -199,7 +208,8 @@ namespace GRA.Controllers.MissionControl
 
             if (model.MaxPointLimit.HasValue)
             {
-                model.MaxPointsMessage = $"(Up to {model.MaxPointLimit.Value} points per required task)";
+                model.MaxPointsMessage
+                    = $"(Up to {model.MaxPointLimit.Value} points per required task)";
             }
 
             return View(model);
@@ -292,15 +302,13 @@ namespace GRA.Controllers.MissionControl
                 DependentTriggers = await _challengeService.GetDependentsAsync(challenge.Id),
                 Groups = await _challengeService.GetGroupsByChallengeId(challenge.Id),
                 RelatedEvents = await _eventService.GetByChallengeIdAsync(challenge.Id),
-                BadgeMakerUrl = GetBadgeMakerUrl(siteUrl.ToString(), site.FromEmailAddress),
-                UseBadgeMaker = await _siteLookupService.GetSiteSettingBoolAsync(site.Id,
-                    SiteSettingKey.Badges.EnableBadgeMaker),
                 IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
                 MaxPointLimit = await _challengeService.GetMaximumAllowedPointsAsync(site.Id)
             };
             if (viewModel.MaxPointLimit.HasValue)
             {
-                viewModel.MaxPointsMessage = $"(Up to {viewModel.MaxPointLimit.Value} points per required task)";
+                viewModel.MaxPointsMessage
+                    = $"(Up to {viewModel.MaxPointLimit.Value} points per required task)";
             }
             if (challenge.TasksToComplete.HasValue
                 && viewModel.MaxPointLimit.HasValue)
@@ -379,7 +387,8 @@ namespace GRA.Controllers.MissionControl
                     || (!string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker)
                     || existingBadge != null)
                 {
-                    ModelState.AddModelError("BadgeAltText", "The badge's alternative text is required.");
+                    ModelState.AddModelError("BadgeAltText",
+                        "The badge's alternative text is required.");
                 }
             }
             else if ((model.BadgeUploadImage == null)
@@ -397,7 +406,8 @@ namespace GRA.Controllers.MissionControl
                     .GetExtension(model.BadgeUploadImage.FileName)
                     .ToLowerInvariant()))
                 {
-                    ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
+                    ModelState.AddModelError("BadgeUploadImage",
+                        $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                 }
                 if (model.BadgeUploadImage != null)
                 {
@@ -434,7 +444,7 @@ namespace GRA.Controllers.MissionControl
                     {
                         if (badgeBytes == null)
                         {
-                            using var ms = new MemoryStream();
+                            await using var ms = new MemoryStream();
                             await model.BadgeUploadImage.CopyToAsync(ms);
                             badgeBytes = ms.ToArray();
                         }
@@ -519,7 +529,8 @@ namespace GRA.Controllers.MissionControl
 
                 if (model.MaxPointLimit.HasValue)
                 {
-                    model.MaxPointsMessage = $"(Up to {model.MaxPointLimit.Value} points per required task)";
+                    model.MaxPointsMessage
+                        = $"(Up to {model.MaxPointLimit.Value} points per required task)";
 
                     var currentChallenge = await _challengeService
                         .MCGetChallengeDetailsAsync(model.Challenge.Id);
@@ -864,7 +875,8 @@ namespace GRA.Controllers.MissionControl
                     .GetExtension(viewModel.TaskUploadFile.FileName)
                     .ToLowerInvariant()))
             {
-                ModelState.AddModelError("BadgeUploadImage", $"File upload must be one of the following types: {string.Join(", ", ValidUploadExtensions)}");
+                ModelState.AddModelError("BadgeUploadImage",
+                    $"File upload must be one of the following types: {string.Join(", ", ValidUploadExtensions)}");
             }
 
             if (ModelState.IsValid)
@@ -879,8 +891,8 @@ namespace GRA.Controllers.MissionControl
                 if (viewModel.TaskUploadFile != null)
                 {
                     viewModel.Task.Filename = viewModel.TaskUploadFile.FileName;
-                    using var fileStream = viewModel.TaskUploadFile.OpenReadStream();
-                    using var ms = new MemoryStream();
+                    await using var fileStream = viewModel.TaskUploadFile.OpenReadStream();
+                    await using var ms = new MemoryStream();
                     fileStream.CopyTo(ms);
                     fileBytes = ms.ToArray();
                 }
@@ -1000,7 +1012,8 @@ namespace GRA.Controllers.MissionControl
                     .GetExtension(viewModel.TaskUploadFile.FileName)
                     .ToLowerInvariant()))
             {
-                ModelState.AddModelError("BadgeUploadImage", $"File upload must be one of the following types: {string.Join(", ", ValidUploadExtensions)}");
+                ModelState.AddModelError("BadgeUploadImage",
+                    $"File upload must be one of the following types: {string.Join(", ", ValidUploadExtensions)}");
             }
 
             if (ModelState.IsValid)
@@ -1014,8 +1027,8 @@ namespace GRA.Controllers.MissionControl
                 if (viewModel.TaskUploadFile != null)
                 {
                     viewModel.Task.Filename = viewModel.TaskUploadFile.FileName;
-                    using var fileStream = viewModel.TaskUploadFile.OpenReadStream();
-                    using var ms = new MemoryStream();
+                    await using var fileStream = viewModel.TaskUploadFile.OpenReadStream();
+                    await using var ms = new MemoryStream();
                     fileStream.CopyTo(ms);
                     fileBytes = ms.ToArray();
                 }
@@ -1374,7 +1387,7 @@ namespace GRA.Controllers.MissionControl
                 {
                     try
                     {
-                        using var memoryStream = new MemoryStream();
+                        await using var memoryStream = new MemoryStream();
                         await model.UploadedImage.CopyToAsync(memoryStream);
                         imageBytes = memoryStream.ToArray();
                         await _badgeService.ValidateBadgeImageAsync(imageBytes);
@@ -1469,19 +1482,23 @@ namespace GRA.Controllers.MissionControl
             if (model?.UploadedImage == null)
             {
                 ShowAlertDanger("No replacement image was submitted.");
-                return RedirectToAction(nameof(FeaturedDetails), new { id = model.FeaturedGroupId });
+                return RedirectToAction(nameof(FeaturedDetails),
+                    new { id = model.FeaturedGroupId });
             }
 
-            if (!ValidImageExtensions.Contains(Path.GetExtension(model.UploadedImage.FileName).ToLowerInvariant()))
+            if (!ValidImageExtensions.Contains(Path
+                .GetExtension(model.UploadedImage.FileName)
+                .ToLowerInvariant()))
             {
                 ShowAlertDanger($"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
-                return RedirectToAction(nameof(FeaturedDetails), new { id = model.FeaturedGroupId });
+                return RedirectToAction(nameof(FeaturedDetails),
+                    new { id = model.FeaturedGroupId });
             }
 
             byte[] imageBytes = null;
             try
             {
-                using var memoryStream = new MemoryStream();
+                await using var memoryStream = new MemoryStream();
                 await model.UploadedImage.CopyToAsync(memoryStream);
                 imageBytes = memoryStream.ToArray();
                 await _badgeService.ValidateBadgeImageAsync(imageBytes);

@@ -33,28 +33,36 @@ namespace GRA.Controllers.MissionControl
 
         public TriggersController(ILogger<TriggersController> logger,
             ServiceFacade.Controller context,
+            AttachmentService attachmentService,
             AvatarService avatarService,
             BadgeService badgeService,
-            AttachmentService attachmentService,
             EventService eventService,
             SiteService siteService,
             TriggerService triggerService,
-            VendorCodeService vendorCodeService,
-            UserService userService)
+            UserService userService,
+            VendorCodeService vendorCodeService)
             : base(context)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _avatarService = avatarService
-                ?? throw new ArgumentNullException(nameof(avatarService));
-            _badgeService = badgeService ?? throw new ArgumentNullException(nameof(badgeService));
-            _attachmentService = attachmentService ?? throw new ArgumentNullException(nameof(attachmentService));
-            _eventService = eventService ?? throw new ArgumentNullException(nameof(eventService));
-            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
-            _triggerService = triggerService
-                ?? throw new ArgumentNullException(nameof(triggerService));
-            _vendorCodeService = vendorCodeService
-                ?? throw new ArgumentNullException(nameof(vendorCodeService));
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            ArgumentNullException.ThrowIfNull(attachmentService);
+            ArgumentNullException.ThrowIfNull(avatarService);
+            ArgumentNullException.ThrowIfNull(badgeService);
+            ArgumentNullException.ThrowIfNull(eventService);
+            ArgumentNullException.ThrowIfNull(logger);
+            ArgumentNullException.ThrowIfNull(siteService);
+            ArgumentNullException.ThrowIfNull(triggerService);
+            ArgumentNullException.ThrowIfNull(userService);
+            ArgumentNullException.ThrowIfNull(vendorCodeService);
+
+            _attachmentService = attachmentService;
+            _avatarService = avatarService;
+            _badgeService = badgeService;
+            _eventService = eventService;
+            _logger = logger;
+            _siteService = siteService;
+            _triggerService = triggerService;
+            _userService = userService;
+            _vendorCodeService = vendorCodeService;
+
             PageTitle = "Triggers";
         }
 
@@ -69,9 +77,6 @@ namespace GRA.Controllers.MissionControl
             {
                 Action = "Create",
                 IsSecretCode = true,
-                BadgeMakerUrl = GetBadgeMakerUrl(siteUrl.AbsoluteUri, site.FromEmailAddress),
-                UseBadgeMaker = await _siteLookupService.GetSiteSettingBoolAsync(site.Id,
-                    SiteSettingKey.Badges.EnableBadgeMaker),
                 EditAvatarBundle = UserHasPermission(Permission.ManageAvatars),
                 EditAttachment = UserHasPermission(Permission.TriggerAttachments),
                 EditMail = UserHasPermission(Permission.ManageTriggerMail),
@@ -82,6 +87,7 @@ namespace GRA.Controllers.MissionControl
                 IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
                 MaxPointLimit = await _triggerService.GetMaximumAllowedPointsAsync(site.Id)
             };
+
             if (viewModel.MaxPointLimit.HasValue)
             {
                 viewModel.MaxPointsMessage = $"(Up to {viewModel.MaxPointLimit.Value} points)";
@@ -144,7 +150,8 @@ namespace GRA.Controllers.MissionControl
             var requirementCount = badgeRequiredList.Count + challengeRequiredList.Count;
             if (string.IsNullOrWhiteSpace(model.BadgeAltText))
             {
-                ModelState.AddModelError("BadgeAltText", "The badge's alternative text is required.");
+                ModelState.AddModelError("BadgeAltText",
+                    "The badge's alternative text is required.");
             }
             if (string.IsNullOrWhiteSpace(model.BadgeMakerImage) && model.BadgeUploadImage == null)
             {
@@ -156,17 +163,16 @@ namespace GRA.Controllers.MissionControl
                 if (!ValidImageExtensions.Contains(
                     Path.GetExtension(model.BadgeUploadImage.FileName).ToLowerInvariant()))
                 {
-                    ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
+                    ModelState.AddModelError("BadgeUploadImage",
+                        $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                 }
                 if (model.BadgeUploadImage != null)
                 {
                     try
                     {
-                        using (var ms = new MemoryStream())
-                        {
-                            await model.BadgeUploadImage.CopyToAsync(ms);
-                            badgeBytes = ms.ToArray();
-                        }
+                        await using var ms = new MemoryStream();
+                        await model.BadgeUploadImage.CopyToAsync(ms);
+                        badgeBytes = ms.ToArray();
                         await _badgeService.ValidateBadgeImageAsync(badgeBytes);
                     }
                     catch (GraException gex)
@@ -180,21 +186,25 @@ namespace GRA.Controllers.MissionControl
                 if ((!model.Trigger.Points.HasValue || model.Trigger.Points < 1)
                     && requirementCount < 1)
                 {
-                    ModelState.AddModelError("TriggerRequirements", "Points or a Challenge/Trigger item is required.");
+                    ModelState.AddModelError("TriggerRequirements",
+                        "Points or a Challenge/Trigger item is required.");
                 }
                 else if ((!model.Trigger.ItemsRequired.HasValue || model.Trigger.ItemsRequired < 1)
                     && requirementCount >= 1)
                 {
-                    ModelState.AddModelError("Trigger.ItemsRequired", "Please enter how many of the Challenge/Trigger item are required.");
+                    ModelState.AddModelError("Trigger.ItemsRequired",
+                        "Please enter how many of the Challenge/Trigger item are required.");
                 }
                 else if (model.Trigger.ItemsRequired > requirementCount)
                 {
-                    ModelState.AddModelError("Trigger.ItemsRequired", "Items Required can not be greater than the number of Challenge/Trigger items.");
+                    ModelState.AddModelError("Trigger.ItemsRequired",
+                        "Items Required can not be greater than the number of Challenge/Trigger items.");
                 }
             }
             else if (string.IsNullOrWhiteSpace(model.Trigger.SecretCode))
             {
-                ModelState.AddModelError("Trigger.SecretCode", "The Secret Code field is required.");
+                ModelState.AddModelError("Trigger.SecretCode",
+                    "The Secret Code field is required.");
             }
             else if (await _triggerService.CodeExistsAsync(model.Trigger.SecretCode))
             {
@@ -203,17 +213,20 @@ namespace GRA.Controllers.MissionControl
 
             if (model.AwardsPrize && string.IsNullOrWhiteSpace(model.Trigger.AwardPrizeName))
             {
-                ModelState.AddModelError("Trigger.AwardPrizeName", "The Prize Name field is required.");
+                ModelState.AddModelError("Trigger.AwardPrizeName",
+                    "The Prize Name field is required.");
             }
             if (model.AwardsMail)
             {
                 if (string.IsNullOrWhiteSpace(model.Trigger.AwardMailSubject))
                 {
-                    ModelState.AddModelError("Trigger.AwardMailSubject", "The Mail Subject field is required.");
+                    ModelState.AddModelError("Trigger.AwardMailSubject",
+                        "The Mail Subject field is required.");
                 }
                 if (string.IsNullOrWhiteSpace(model.Trigger.AwardMail))
                 {
-                    ModelState.AddModelError("Trigger.AwardMail", "The Mail Message field is required.");
+                    ModelState.AddModelError("Trigger.AwardMail",
+                        "The Mail Message field is required.");
                 }
             }
 
@@ -280,7 +293,7 @@ namespace GRA.Controllers.MissionControl
                         {
                             if (badgeBytes == null)
                             {
-                                using var ms = new MemoryStream();
+                                await using var ms = new MemoryStream();
                                 await model.BadgeUploadImage.CopyToAsync(ms);
                                 badgeBytes = ms.ToArray();
                             }
@@ -297,8 +310,9 @@ namespace GRA.Controllers.MissionControl
 
                     if (model.AttachmentUploadFile != null)
                     {
-                        var attachment = await _attachmentService.AddAttachmentAsync(AttachmentService.Certificates,
-                            model.AttachmentUploadFile);
+                        var attachment = await _attachmentService
+                            .AddAttachmentAsync(AttachmentService.Certificates,
+                                model.AttachmentUploadFile);
                         model.Trigger.AwardAttachmentId = attachment.Id;
                     }
                     var trigger = await _triggerService.AddAsync(model.Trigger);
@@ -315,11 +329,15 @@ namespace GRA.Controllers.MissionControl
             if (model.Trigger.LimitToSystemId.HasValue)
             {
                 model.BranchList = new SelectList(
-                    await _siteService.GetBranches(model.Trigger.LimitToSystemId.Value), "Id", "Name");
+                    await _siteService.GetBranches(model.Trigger.LimitToSystemId.Value),
+                    "Id",
+                    "Name");
             }
             else
             {
-                model.BranchList = new SelectList(await _siteService.GetAllBranches(), "Id", "Name");
+                model.BranchList = new SelectList(await _siteService.GetAllBranches(),
+                    "Id",
+                    "Name");
             }
             model.ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name");
             model.TriggerRequirements = await _triggerService
@@ -417,9 +435,6 @@ namespace GRA.Controllers.MissionControl
                 CanViewParticipants = UserHasPermission(Permission.ViewParticipantDetails),
                 Action = "Edit",
                 IsSecretCode = !string.IsNullOrWhiteSpace(trigger.SecretCode),
-                BadgeMakerUrl = GetBadgeMakerUrl(siteUrl.AbsoluteUri, site.FromEmailAddress),
-                UseBadgeMaker = await _siteLookupService.GetSiteSettingBoolAsync(site.Id,
-                    SiteSettingKey.Badges.EnableBadgeMaker),
                 EditAvatarBundle = UserHasPermission(Permission.ManageAvatars),
                 EditAttachment = UserHasPermission(Permission.TriggerAttachments),
                 EditMail = UserHasPermission(Permission.ManageTriggerMail),
@@ -471,11 +486,15 @@ namespace GRA.Controllers.MissionControl
             if (viewModel.Trigger.LimitToSystemId.HasValue)
             {
                 viewModel.BranchList = new SelectList(
-                    await _siteService.GetBranches(viewModel.Trigger.LimitToSystemId.Value), "Id", "Name");
+                    await _siteService.GetBranches(viewModel.Trigger.LimitToSystemId.Value),
+                    "Id",
+                    "Name");
             }
             else
             {
-                viewModel.BranchList = new SelectList(await _siteService.GetAllBranches(), "Id", "Name");
+                viewModel.BranchList = new SelectList(await _siteService.GetAllBranches(),
+                    "Id",
+                    "Name");
             }
             foreach (var requirement in viewModel.TriggerRequirements)
             {
@@ -486,11 +505,13 @@ namespace GRA.Controllers.MissionControl
             }
             if (!string.IsNullOrWhiteSpace(viewModel.Trigger.AwardBadgeFilename))
             {
-                viewModel.BadgePath = _pathResolver.ResolveContentPath(viewModel.Trigger.AwardBadgeFilename);
+                viewModel.BadgePath
+                    = _pathResolver.ResolveContentPath(viewModel.Trigger.AwardBadgeFilename);
             }
             if (attachment != null)
             {
-                viewModel.Trigger.AwardAttachmentFilename = _pathResolver.ResolveContentPath(attachment.FileName);
+                viewModel.Trigger.AwardAttachmentFilename
+                    = _pathResolver.ResolveContentPath(attachment.FileName);
             }
             if (UserHasPermission(Permission.ManageEvents))
             {
@@ -542,7 +563,7 @@ namespace GRA.Controllers.MissionControl
             var requirementCount = badgeRequiredList.Count + challengeRequiredList.Count;
 
             if (model.BadgeUploadImage != null
-                    && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker))
+                && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker))
             {
                 if (!ValidImageExtensions.Contains(
                     Path.GetExtension(model.BadgeUploadImage.FileName).ToLowerInvariant()))
@@ -553,11 +574,10 @@ namespace GRA.Controllers.MissionControl
                 {
                     try
                     {
-                        using (var ms = new MemoryStream())
-                        {
-                            await model.BadgeUploadImage.CopyToAsync(ms);
-                            badgeBytes = ms.ToArray();
-                        }
+                        await using var ms = new MemoryStream();
+                        await model.BadgeUploadImage.CopyToAsync(ms);
+                        badgeBytes = ms.ToArray();
+
                         await _badgeService.ValidateBadgeImageAsync(badgeBytes);
                     }
                     catch (GraException gex)
@@ -568,7 +588,8 @@ namespace GRA.Controllers.MissionControl
             }
             if (string.IsNullOrWhiteSpace(model.BadgeAltText))
             {
-                ModelState.AddModelError("BadgeAltText", "The badge's alternative text is required.");
+                ModelState.AddModelError("BadgeAltText",
+                    "The badge's alternative text is required.");
             }
 
             if (!model.IsSecretCode)
@@ -576,42 +597,52 @@ namespace GRA.Controllers.MissionControl
                 if ((!model.Trigger.Points.HasValue || model.Trigger.Points < 1)
                     && requirementCount < 1)
                 {
-                    ModelState.AddModelError("TriggerRequirements", "Points or a Challenge/Trigger item is required.");
+                    ModelState.AddModelError("TriggerRequirements",
+                        "Points or a Challenge/Trigger item is required.");
                 }
                 else if ((!model.Trigger.ItemsRequired.HasValue || model.Trigger.ItemsRequired < 1)
                     && requirementCount >= 1)
                 {
-                    ModelState.AddModelError("Trigger.ItemsRequired", "Please enter how many of the Challenge/Trigger item are required.");
+                    ModelState.AddModelError("Trigger.ItemsRequired",
+                        "Please enter how many of the Challenge/Trigger item are required.");
                 }
                 else if (model.Trigger.ItemsRequired > requirementCount)
                 {
-                    ModelState.AddModelError("Trigger.ItemsRequired", "Items Required can not be greater than the number of Challenge/Trigger items.");
+                    ModelState.AddModelError("Trigger.ItemsRequired",
+                        "Items Required can not be greater than the number of Challenge/Trigger items.");
                 }
             }
             else if (string.IsNullOrWhiteSpace(model.Trigger.SecretCode))
             {
-                ModelState.AddModelError("Trigger.SecretCode", "The Secret Code field is required.");
+                ModelState.AddModelError("Trigger.SecretCode",
+                    "The Secret Code field is required.");
             }
-            else if (await _triggerService.CodeExistsAsync(model.Trigger.SecretCode, model.Trigger.Id))
+            else if (await _triggerService.CodeExistsAsync(model.Trigger.SecretCode,
+                model.Trigger.Id))
             {
                 ModelState.AddModelError("Trigger.SecretCode", "That Secret Code already exists.");
             }
             if (model.AwardsPrize && string.IsNullOrWhiteSpace(model.Trigger.AwardPrizeName))
             {
-                ModelState.AddModelError("Trigger.AwardPrizeName", "The Prize Name field is required.");
+                ModelState.AddModelError("Trigger.AwardPrizeName",
+                    "The Prize Name field is required.");
             }
             if (model.AwardsMail)
             {
                 if (string.IsNullOrWhiteSpace(model.Trigger.AwardMailSubject))
                 {
-                    ModelState.AddModelError("Trigger.AwardMailSubject", "The Mail Subject field is required.");
+                    ModelState.AddModelError("Trigger.AwardMailSubject",
+                        "The Mail Subject field is required.");
                 }
                 if (string.IsNullOrWhiteSpace(model.Trigger.AwardMail))
                 {
-                    ModelState.AddModelError("Trigger.AwardMail", "The Mail Message field is required.");
+                    ModelState.AddModelError("Trigger.AwardMail",
+                        "The Mail Message field is required.");
                 }
             }
-            if (model.AwardsAttachment && model.AttachmentUploadFile == null && !model.Trigger.AwardAttachmentId.HasValue)
+            if (model.AwardsAttachment
+                && model.AttachmentUploadFile == null
+                && !model.Trigger.AwardAttachmentId.HasValue)
             {
                 ModelState.AddModelError("AttachmentUploadFile", "An attachment is required.");
             }
@@ -667,7 +698,7 @@ namespace GRA.Controllers.MissionControl
                         {
                             if (badgeBytes == null)
                             {
-                                using var ms = new MemoryStream();
+                                await using var ms = new MemoryStream();
                                 await model.BadgeUploadImage.CopyToAsync(ms);
                                 badgeBytes = ms.ToArray();
                             }
@@ -716,11 +747,13 @@ namespace GRA.Controllers.MissionControl
                         }
 
                         var newAttachment = existingAttachmentId.HasValue
-                            ? await _attachmentService.ReplaceAttachmentFileAsync(existingAttachmentId.Value,
-                                AttachmentService.Certificates,
-                                model.AttachmentUploadFile)
-                            : await _attachmentService.AddAttachmentAsync(AttachmentService.Certificates,
-                                model.AttachmentUploadFile);
+                            ? await _attachmentService
+                                .ReplaceAttachmentFileAsync(existingAttachmentId.Value,
+                                    AttachmentService.Certificates,
+                                    model.AttachmentUploadFile)
+                            : await _attachmentService
+                                .AddAttachmentAsync(AttachmentService.Certificates,
+                                    model.AttachmentUploadFile);
                         model.Trigger.AwardAttachmentId = newAttachment?.Id;
                     }
                     var savedtrigger = await _triggerService.UpdateAsync(model.Trigger);
@@ -729,7 +762,8 @@ namespace GRA.Controllers.MissionControl
                     {
                         if (model.Trigger.AwardAttachmentId.HasValue)
                         {
-                            await _attachmentService.RemoveAttachmentFileAsync(model.Trigger.AwardAttachmentId.Value);
+                            await _attachmentService
+                                .RemoveAttachmentFileAsync(model.Trigger.AwardAttachmentId.Value);
                         }
                         model.Trigger.AwardAttachmentFilename = "";
                         model.Trigger.AwardAttachmentId = null;
@@ -750,11 +784,14 @@ namespace GRA.Controllers.MissionControl
             if (model.Trigger.LimitToSystemId.HasValue)
             {
                 model.BranchList = new SelectList(
-                    await _siteService.GetBranches(model.Trigger.LimitToSystemId.Value), "Id", "Name");
+                    await _siteService.GetBranches(model.Trigger.LimitToSystemId.Value),
+                        "Id",
+                        "Name");
             }
             else
             {
-                model.BranchList = new SelectList(await _siteService.GetAllBranches(), "Id", "Name");
+                model.BranchList
+                    = new SelectList(await _siteService.GetAllBranches(), "Id", "Name");
             }
             model.ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name");
             model.TriggerRequirements = await _triggerService
@@ -802,7 +839,11 @@ namespace GRA.Controllers.MissionControl
         }
 
         public async Task<IActionResult> Index(string search,
-                                                    int? systemId, int? branchId, bool? mine, int? programId, int page = 1)
+            int? systemId,
+            int? branchId,
+            bool? mine, int?
+            programId,
+            int page = 1)
         {
             var filter = new TriggerFilter(page);
 

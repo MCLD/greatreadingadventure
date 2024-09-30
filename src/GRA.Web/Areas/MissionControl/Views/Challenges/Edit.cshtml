@@ -409,8 +409,6 @@
     <input asp-for="CanEditGroups" type="hidden" />
     <input asp-for="CanManageEvents" type="hidden" />
     <input asp-for="CanViewTriggers" type="hidden" />
-    <input asp-for="UseBadgeMaker" type="hidden" />
-    <input asp-for="BadgeMakerUrl" type="hidden" />
     <input asp-for="BadgeMakerImage" type="hidden" />
     @if (Model.Groups.Count > 0)
     {
@@ -723,7 +721,7 @@
 
         <div class="col-12 col-sm-8 col-md-9">
             <label asp-for="BadgeUploadImage" class="col-form-label"></label>
-            <div class="input-group">
+            <div class="input-group mb-3">
                 <input type="file"
                        class="form-control"
                        asp-for="BadgeUploadImage"
@@ -734,18 +732,16 @@
                     Clear selection
                 </button>
             </div>
-            <span asp-validation-for="BadgeUploadImage" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="row mb-3">
-        <div class="col-12">
-            <label asp-for="BadgeAltText" class="col-form-label"></label>
-            <span class="fas fa-info-circle wide-tooltip"
-                  title="How should this badge be described to someone who can't see it?"
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="top"></span>
-            <textarea asp-for="BadgeAltText" class="form-control"></textarea>
-            <span asp-validation-for="BadgeAltText" class="text-danger"></span>
+            <span asp-validation-for="BadgeUploadImage" class="text-danger mb-3"></span>
+            <div class="mb-3">
+                <label asp-for="BadgeAltText" class="col-form-label"></label>
+                <span class="fas fa-info-circle wide-tooltip"
+                      title="How should this badge be described to someone who can't see it?"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"></span>
+                <textarea asp-for="BadgeAltText" class="form-control"></textarea>
+                <span asp-validation-for="BadgeAltText" class="text-danger"></span>
+            </div>
         </div>
     </div>
     <div class="mb-3 d-flex justify-content-end my-4">

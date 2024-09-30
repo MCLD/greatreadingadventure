@@ -2,7 +2,7 @@
 
 @if (Model.Requirements.Count() == 0)
 {
-    <div class="alert alert-warning">No Requirements found</div>
+    <div class="alert alert-warning">No Requirements found.</div>
 }
 else
 {
@@ -12,9 +12,9 @@ else
             <thead>
                 <tr>
                     <td>Name</td>
-                    <td width="44px">Type</td>
-                    <td width="75px">Badge</td>
-                    <td width="44px">&nbsp;</td>
+                    <td>Type</td>
+                    <td>Badge</td>
+                    <td style="min-width: 50px;">&nbsp;</td>
                 </tr>
             </thead>
             <tbody>
@@ -24,28 +24,30 @@ else
                         <td>
                             @requirement.Name
                         </td>
-                        <td style="text-align:center;">
-                            <span class="fa fa-2x @requirement.Icon" title="@requirement.IconDescription"></span>
+                        <td class="align-middle text-primary text-center">
+                            <span class="fa-stack">
+                                <span class="fas fa-circle fa-stack-2x"></span>
+                                <span class="fa fa-stack-1x fa-inverse @requirement.Icon"
+                                      title="@requirement.IconDescription"></span>
+                            </span>
                         </td>
-                        <td>
+                        <td class="text-center align-middle">
                             @if (!string.IsNullOrWhiteSpace(requirement.BadgePath))
                             {
-                                <div style="min-height: 64px;">
-                                    <img class="img-thumbnail" style="height: auto; width: 64px;"
-                                         src="~/@requirement.BadgePath?@cacheBuster" />
-                                </div>
+                                <img class="img-thumbnail badge-xs"
+                                     src="~/@requirement.BadgePath?@cacheBuster" />
                             }
                             else
                             {
                                 <text>&nbsp;</text>
                             }
                         </td>
-                        <td>
+                        <td class="text-center align-middle">
                             <button type="button"
-                                    class="btn btn-link btn-sm addRequirementButton"
+                                    class="btn btn-outline-success btn-sm addRequirementButton"
                                     data-badgeid="@requirement.BadgeId"
                                     data-challengeid="@requirement.ChallengeId">
-                                <span class="fas fa-2x fa-plus-circle text-success" aria-hidden="true"></span>
+                                <span class="fas fa-plus fa-fw" aria-hidden="true"></span>
                             </button>
                         </td>
                     </tr>
@@ -53,8 +55,5 @@ else
             </tbody>
         </table>
     </div>
-    @if (Model.PaginateModel.MaxPage > 1)
-    {
-        <paginate paginateModel="@Model.PaginateModel" asButtons="true"></paginate>
-    }
+    <paginate paginateModel="@Model.PaginateModel" asButtons="true"></paginate>
 }

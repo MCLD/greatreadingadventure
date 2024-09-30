@@ -16,7 +16,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.Challenges
         public string BadgeAltText { get; set; }
 
         public string BadgeMakerImage { get; set; }
-        public string BadgeMakerUrl { get; set; }
         public string BadgePath { get; set; }
 
         [DisplayName("Upload a badge image. Badge images must be square.")]

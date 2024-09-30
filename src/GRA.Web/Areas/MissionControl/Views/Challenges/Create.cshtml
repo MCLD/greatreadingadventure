@@ -7,8 +7,6 @@
       role="form"
       enctype="multipart/form-data">
 
-    <input asp-for="UseBadgeMaker" type="hidden" />
-    <input asp-for="BadgeMakerUrl" type="hidden" />
     <input asp-for="BadgeMakerImage" type="hidden" />
 
     <div class="row mb-3">
@@ -103,11 +101,11 @@
         <div class="col-12">
             @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
             {
-                <label class="col-form-label">Edit badge image</label>
+                        <label class="col-form-label">Edit badge image</label>
             }
             else
             {
-                <label class="col-form-label">Add a badge</label>
+                        <label class="col-form-label">Add a badge</label>
             }
         </div>
 
@@ -115,22 +113,22 @@
 
             @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
             {
-                <input asp-for="BadgePath" type="hidden" />
-                <img id="badgeImage" class="img-thumbnail badge-lg"
-                     src="~/@Model.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")" />
+                        <input asp-for="BadgePath" type="hidden" />
+                        <img id="badgeImage" class="img-thumbnail badge-lg"
+                             src="~/@Model.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")" />
             }
             else
             {
-                <img id="badgeImage"
-                     class="img-thumbnail badge-lg"
-                     src="@Model.BadgeMakerImage" />
+                        <img id="badgeImage"
+                             class="img-thumbnail badge-lg"
+                             src="@Model.BadgeMakerImage" />
             }
             <span asp-validation-for="BadgePath" class="text-danger" style="display:block;"></span>
         </div>
 
         <div class="col-12 col-sm-8 col-md-9">
             <label asp-for="BadgeUploadImage" class="col-form-label"></label>
-            <div class="input-group">
+            <div class="input-group mb-3">
                 <input type="file"
                        class="form-control"
                        asp-for="BadgeUploadImage"
@@ -141,18 +139,20 @@
                     Clear selection
                 </button>
             </div>
-            <span asp-validation-for="BadgeUploadImage" class="text-danger"></span>
+            <span asp-validation-for="BadgeUploadImage" class="text-danger mb-3"></span>
+            <div action="mb-3">
+                <label asp-for="BadgeAltText" class="col-form-label"></label>
+                <span class="fas fa-info-circle wide-tooltip"
+                      title="How should this badge be described to someone who can't see it?"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"></span>
+                <textarea asp-for="BadgeAltText" class="form-control"></textarea>
+                <span asp-validation-for="BadgeAltText" class="text-danger"></span>
+            </div>
         </div>
     </div>
     <div class="row mb-3">
         <div class="col-12">
-            <label asp-for="BadgeAltText" class="col-form-label"></label>
-            <span class="fas fa-info-circle wide-tooltip"
-                  title="How should this badge be described to someone who can't see it?"
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="top"></span>
-            <textarea asp-for="BadgeAltText" class="form-control"></textarea>
-            <span asp-validation-for="BadgeAltText" class="text-danger"></span>
         </div>
     </div>
     <hr />
@@ -173,153 +173,148 @@
 
 @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
 {
-    <div class="modal fade"
-         id="warningModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="warningModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    </button>
-                    <h1 class="h4 modal-title" id="deleteModalLabel">
-                        Warning: Award points exceed maximum
-                    </h1>
-                </div>
-                <div class="modal-body">
-                    <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
-                    <span id="modal-text">
-                        The awarded points for this trigger exceed the maximum of
-                        <strong>@Model.MaxPointLimit points per task</strong>. Do you wish to continue?
-                    </span>
-                </div>
-                <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-outline-secondary"
-                            data-bs-dismiss="modal">
-                        Cancel
-                    </button>
-                    <button id="warningSave"
-                            type="button"
-                            class="btn btn-outline-primary"
-                            data-bs-dismiss="modal">
-                        Save Challenge
-                    </button>
+            <div class="modal fade"
+                 id="warningModal"
+                 tabindex="-1"
+                 role="dialog"
+                 aria-labelledby="warningModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            </button>
+                            <h1 class="h4 modal-title" id="deleteModalLabel">
+                                Warning: Award points exceed maximum
+                            </h1>
+                        </div>
+                        <div class="modal-body">
+                            <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
+                            <span id="modal-text">
+                                The awarded points for this trigger exceed the maximum of
+                                <strong>@Model.MaxPointLimit points per task</strong>. Do you wish to continue?
+                            </span>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button"
+                                    class="btn btn-outline-secondary"
+                                    data-bs-dismiss="modal">
+                                Cancel
+                            </button>
+                            <button id="warningSave"
+                                    type="button"
+                                    class="btn btn-outline-primary"
+                                    data-bs-dismiss="modal">
+                                Save Challenge
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
 }
 
 @section scripts {
-    <script>
-        new TomSelect("#Challenge_CategoryIds");
+            <script>
+                new TomSelect("#Challenge_CategoryIds");
 
-        $("#CategoryPlaceholder").remove();
-        $("#Challenge_CategoryIds").multiselect({
-            nonSelectedText: "",
-            buttonClass: "form-control",
-            buttonWidth: "100%",
-            disableIfEmpty: true
-        });
+                $("#CategoryPlaceholder").remove();
+                $("#Challenge_CategoryIds").multiselect({
+                    nonSelectedText: "",
+                    buttonClass: "form-control",
+                    buttonWidth: "100%",
+                    disableIfEmpty: true
+                });
 
-        $(document).ready(function () {
-            $(':file').on('fileselect', function (event, numFiles, label) {
-                var input = $(this).parents('.input-group').find(':text'),
-                    log = numFiles > 1 ? numFiles = ' files selected' : label;
+                $(document).ready(function () {
+                    $(':file').on('fileselect', function (event, numFiles, label) {
+                        var input = $(this).parents('.input-group').find(':text'),
+                            log = numFiles > 1 ? numFiles = ' files selected' : label;
 
-                if (input.length) {
-                    input.val(log);
-                    $('.btn-file').removeClass('btn-outline-secondary');
-                    $('.btn-file').addClass('btn-outline-success');
-                    $("#badgeImage").removeAttr("src");
-                    $("#badgeImage").height(200);
-                    $("#BadgeMakerImage").val("");
-                }
-                else {
-                    input.val('');
-                    $('.btn-file').addClass('btn-outline-secondary');
-                    $('.btn-file').removeClass('btn-outline-success');
-                }
-            });
+                        if (input.length) {
+                            input.val(log);
+                            $('.btn-file').removeClass('btn-outline-secondary');
+                            $('.btn-file').addClass('btn-outline-success');
+                            $("#badgeImage").removeAttr("src");
+                            $("#badgeImage").height(200);
+                            $("#BadgeMakerImage").val("");
+                        }
+                        else {
+                            input.val('');
+                            $('.btn-file').addClass('btn-outline-secondary');
+                            $('.btn-file').removeClass('btn-outline-success');
+                        }
+                    });
 
         @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
         {
             <text>
-                        $("#saveChallenge").on("click",function(e) {
-                            e.preventDefault();
-                                            if ($("#Challenge_PointsAwarded").val() / $("#Challenge_TasksToComplete").val() > @Model.MaxPointLimit) {
-                            $('#warningModal').modal("show");
-                                            }
-                        else {
-                            $("#challengeForm").submit();
-                                            }
-                                        });
+                                        $("#saveChallenge").on("click",function(e) {
+                                            e.preventDefault();
+                                                            if ($("#Challenge_PointsAwarded").val() / $("#Challenge_TasksToComplete").val() > @Model.MaxPointLimit) {
+                                            $('#warningModal').modal("show");
+                                                            }
+                                        else {
+                                            $("#challengeForm").submit();
+                                                            }
+                                                        });
 
-                        $("#warningSave").on("click", function () {
-                            $("#challengeForm").submit();
-                                        });
+                                        $("#warningSave").on("click", function () {
+                                            $("#challengeForm").submit();
+                                                        });
 
-                        $("#warningModal").on("hide.bs.modal", function () {
-                            ResetSpinners($("#saveChallenge"));
-                                        });
+                                        $("#warningModal").on("hide.bs.modal", function () {
+                                            ResetSpinners($("#saveChallenge"));
+                                                        });
             </text>
         }
 
-                $('#clearFile').on("click", function () {
-                    $('#BadgeUploadImage').val('');
-                    $('.btn-file').addClass('btn-outline-secondary');
-                    $('.btn-file').removeClass('btn-outline-success');
-                    $('#selectedFile').val('');
-                });
+                        $('#clearFile').on("click", function () {
+                            $('#BadgeUploadImage').val('');
+                            $('.btn-file').addClass('btn-outline-secondary');
+                            $('.btn-file').removeClass('btn-outline-success');
+                            $('#selectedFile').val('');
+                        });
 
-            $(document).on('change', ':file', function () {
-                var input = $(this),
-                    numFiles = input.get(0).files ? input.get(0).files.length : 1,
-                    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-                input.trigger('fileselect', [numFiles, label]);
-            });
+                    $(document).on('change', ':file', function () {
+                        var input = $(this),
+                            numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+                        input.trigger('fileselect', [numFiles, label]);
+                    });
 
-            $("#Challenge_LimitToSystemId").on("change", function () {
-                var systemId = $(this).val();
-                var branchList = $("#Challenge_LimitToBranchId");
-                var branchId = branchList.val();
-                var url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
+                    $("#Challenge_LimitToSystemId").on("change", function () {
+                        var systemId = $(this).val();
+                        var branchList = $("#Challenge_LimitToBranchId");
+                        var branchId = branchList.val();
+                        var url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
 
-                $.getJSON(url, { systemId: systemId, branchId: branchId, listAll: "true", prioritize: "true" }, function (response) {
-                    branchList.empty();
-                    branchList.append(new Option("No", ""));
-                    $.each(response, function (index, item) {
-                        branchList.append(new Option(item.text, item.value, item.selected, item.selected))
+                        $.getJSON(url, { systemId: systemId, branchId: branchId, listAll: "true", prioritize: "true" }, function (response) {
+                            branchList.empty();
+                            branchList.append(new Option("No", ""));
+                            $.each(response, function (index, item) {
+                                branchList.append(new Option(item.text, item.value, item.selected, item.selected))
+                            });
+                        });
+                    });
+
+                    $("#badgeTab").on('show.bs.tab', function () {
+                        $("#UseBadgeMaker").val("true");
+                    });
+
+                    $("#uploadTab").on('show.bs.tab', function () {
+                        $("#UseBadgeMaker").val("false");
+                    });
+
+                    $(window).on("message", function (e) {
+                        $("#badgeModal").modal("hide");
+                        var data = e.originalEvent.data;
+                        $("#badgeImage").attr("src", data);
+                        $("#badgeImage").height(200);
+                        $("#BadgeMakerImage").val(data);
+                        $('#BadgeUploadImage').val('');
+                        $('.btn-file').addClass('btn-outline-secondary');
+                        $('.btn-file').removeClass('btn-outline-success');
+                        $('#selectedFile').val('');
                     });
                 });
-            });
-
-            $("#badgeTab").on('show.bs.tab', function () {
-                $("#UseBadgeMaker").val("true");
-            });
-
-            $("#uploadTab").on('show.bs.tab', function () {
-                $("#UseBadgeMaker").val("false");
-            });
-
-            $("#openMaker").on("click", function () {
-                $("#badgeMaker").attr("src", "@Html.Raw(@Model.BadgeMakerUrl)");
-                $("#badgeModal").modal("show");
-            });
-
-            $(window).on("message", function (e) {
-                $("#badgeModal").modal("hide");
-                var data = e.originalEvent.data;
-                $("#badgeImage").attr("src", data);
-                $("#badgeImage").height(200);
-                $("#BadgeMakerImage").val(data);
-                $('#BadgeUploadImage').val('');
-                $('.btn-file').addClass('btn-outline-secondary');
-                $('.btn-file').removeClass('btn-outline-success');
-                $('#selectedFile').val('');
-            });
-        });
-    </script>
+            </script>
 }
