@@ -69,7 +69,7 @@
                         else
                         {
                             $('#cancelWs').text(wsCompleteButton);
-                            $('#cancelWs').removeClass('btn-danger');
+                                $('#cancelWs').removeClass('btn-outline-danger');
                             $('#cancelWs').addClass('btn-secondary');
                             $('#cancelWs').on('click', function () {
                                 window.location.href = wsError ? wsCancelUrl : wsSuccessUrl;
@@ -78,13 +78,13 @@
                         }
                     } else if (wsStarted && !wsFinished) {
                         $('#cancelWs').text('Close window');
-                        $('#cancelWs').addClass('btn-danger');
+                            $('#cancelWs').addClass('btn-outline-danger');
                         $('#wsProgress').removeClass('active');
                         $('#wsProgress').addClass('progress-bar-danger');
                         $('#wsStatus').text('The server disconnected while running the ' + wsFunction + '.');
                     } else if (wsTryingToConnect) {
                         $('#cancelWs').text('Close window');
-                        $('#cancelWs').addClass('btn-danger');
+                            $('#cancelWs').addClass('btn-outline-danger');
                         $('#wsProgress').removeClass('active');
                         $('#wsProgress').addClass('progress-bar-danger');
                         $('#wsStatus').text('Unable to connect to the server to run the ' + wsFunction + '.');
@@ -167,7 +167,7 @@
                             {
                                 console.log("Complete");
                                 $('#cancelWs').text('Close window');
-                                $('#cancelWs').removeClass('btn-danger');
+                                    $('#cancelWs').removeClass('btn-outline-danger');
                                 $('#cancelWs').addClass('btn-secondary');
                                 $('#wsProgress').removeClass('active');
                                 $('#wsProgress').addClass('progress-bar-success');
@@ -207,7 +207,7 @@
         $('#wsProgress').removeClass('progress-bar-danger');
         $('#wsProgress').removeClass('progress-bar-success');
         $('#cancelWs').text('Cancel ' + wsFunction);
-        $('#cancelWs').addClass('btn-danger');
+            $('#cancelWs').addClass('btn-outline-danger');
         $('#wsModal').modal({
             backdrop: 'static',
             keyboard: false

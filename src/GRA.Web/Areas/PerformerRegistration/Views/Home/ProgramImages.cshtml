@@ -53,7 +53,7 @@
                             button-spinner>
                         Upload Image(s)
                     </button>
-                    <button id="deleteButton" type="button" class="btn btn-lg btn-danger" style="margin-bottom: 0.5rem;" data-bs-toggle="modal" data-bs-target="#deleteModal" disabled>
+                    <button id="deleteButton" type="button" class="btn btn-lg btn-outline-danger" style="margin-bottom: 0.5rem;" data-bs-toggle="modal" data-bs-target="#deleteModal" disabled>
                         Delete Selected Image(s)
                     </button>
                 </div>
@@ -126,10 +126,10 @@
                         <input asp-for="ProgramId" type="hidden" />
                         <input asp-for="ImagesToDelete" type="hidden" />
                         <button type="submit"
-                                class="btn btn-danger btn-spinner float-end"
+                                class="btn btn-outline-danger btn-spinner float-end"
                                 aria-label="Confirm"
                                 button-spinner>
-                            <span class="fas fa-times" aria-hidden="true"></span>
+                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                             Delete
                         </button>
                     </form>

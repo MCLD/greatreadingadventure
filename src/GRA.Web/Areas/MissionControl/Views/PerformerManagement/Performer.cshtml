@@ -40,7 +40,7 @@
                 <input asp-for="Performer.Id" type="hidden" />
                 <input asp-for="Approve" type="hidden" />
                 <button asp-action="PerformerApprove"
-                        class="btn btn-lg @(Model.Approve ? "btn-success" : "btn-danger") float-end">
+                        class="btn btn-lg @(Model.Approve ? "btn-success" : "btn-outline-danger") float-end">
                     @(Model.Approve ? "Approve" : "Unapprove")
                 </button>
             </form>
@@ -390,10 +390,10 @@
                         <input asp-for="ProgramToDelete.Id" type="hidden" />
                         <input asp-for="ProgramToDelete.Title" type="hidden" />
                         <button type="submit"
-                                class="btn btn-danger btn-spinner float-end"
+                                class="btn btn-outline-danger btn-spinner float-end"
                                 aria-label="Confirm"
                                 button-spinner>
-                            <span class="fas fa-times" aria-hidden="true"></span>
+                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                             Delete
                         </button>
                     </form>

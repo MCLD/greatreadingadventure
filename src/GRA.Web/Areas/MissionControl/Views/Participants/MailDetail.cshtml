@@ -43,7 +43,7 @@
     <a asp-action="Mail" asp-route-id="@Model.Id" class="btn btn-secondary">Return to Mail List</a>
     @if (Model.CanRemoveMail)
     {
-        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
             Delete Mail
         </button>
     }
@@ -89,9 +89,9 @@
                             <input id="Id" name="Id" value="@Model.Mail.Id" type="hidden" />
                             <input id="userId" name="userId" value="@Model.Id" type="hidden" />
                             <button type="submit"
-                                    class="btn btn-danger float-end"
+                                    class="btn btn-outline-danger float-end"
                                     aria-label="Confirm">
-                                <span class="fas fa-times" aria-hidden="true"></span>
+                                <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                                 Delete
                             </button>
                         </form>

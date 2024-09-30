@@ -23,11 +23,11 @@
                                 <th width="44">
                                     <button type="button"
                                     id="deleteCheckedItems"
-                                    class="btn btn-danger btn-sm mx-auto"
+                                            class="btn btn-outline-danger btn-sm mx-auto"
                                     data-bs-toggle="modal"
                                     data-bs-target="#deleteModal"
                                     disabled>
-                                        <span class="fas fa-times" aria-hidden="true"></span>
+                                        <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                                     </button>
                                 </th>
                             }
@@ -157,9 +157,9 @@
                             <input id="ids" name="ids" type="hidden" />
                             <input id="userId" name="userId" value="@Model.Id" type="hidden" />
                             <button type="submit"
-                                class="btn btn-danger float-end"
+                                    class="btn btn-outline-danger float-end"
                                 aria-label="Confirm">
-                                <span class="fas fa-times" aria-hidden="true"></span>
+                                <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                                 Delete
                             </button>
                         </form>

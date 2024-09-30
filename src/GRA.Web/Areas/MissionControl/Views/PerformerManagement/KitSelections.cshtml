@@ -94,13 +94,13 @@
                             </td>
                             <td class="d-print-none" style="text-align:center;">
                                 <button type="button"
-                                        class="btn btn-sm btn-danger delete-selection"
+                                        class="btn btn-sm btn-outline-danger delete-selection"
                                         data-bs-toggle="modal"
                                         data-bs-target="#deleteModal"
                                         data-selectionid="@branchSelection.Id"
                                         data-branchname="@branchSelection.Branch.Name"
                                         data-kitname="@branchSelection.Kit.Name">
-                                    <span class="fas fa-minus-circle"></span>
+                                    <span class="fas fa-minus-circle fa-fw"></span>
                                 </button>
                             </td>
                         </tr>
@@ -226,9 +226,9 @@
                         </button>
                         <button type="submit"
                                 id="buttonDelete"
-                                class="btn btn-danger float-end"
+                                class="btn btn-outline-danger float-end"
                                 aria-label="Confirm">
-                            <span class="fas fa-times" aria-hidden="true"></span>
+                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                             Delete
                         </button>
                     </form>
