@@ -203,7 +203,7 @@
             $('.gra-save-warning').removeClass('d-none');
         }
         if($('.gra-save-button')) {
-            $('.gra-save-button').removeClass('btn-primary').addClass('btn-success');
+                $('.gra-save-button').removeClass('btn-primary').addClass('btn-outline-success');
         }
     }
 
@@ -217,7 +217,7 @@
         if (input.length) {
             input.val(log);
             $('.btn-file').removeClass('btn-secondary');
-            $('.btn-file').addClass('btn-success');
+                $('.btn-file').addClass('btn-outline-success');
             $("#badgeImage").removeAttr("src");
             $("#badgeImage").height(200);
             $("#BadgeMakerImage").val("");
@@ -225,7 +225,7 @@
         else {
             input.val('');
             $('.btn-file').addClass('btn-secondary');
-            $('.btn-file').removeClass('btn-success');
+                $('.btn-file').removeClass('btn-outline-success');
         }
     });
 

@@ -67,7 +67,7 @@
                         <a asp-action="@nameof(VendorCodesController.ViewHoldSlips)"
                            asp-route-id="@Model.PackingSlipNumber"
                            target="_blank"
-                           class="btn btn-sm btn-success">Generate hold slips</a>
+                           class="btn btn-sm btn-outline-success">Generate hold slips</a>
                     </td>
                 </tr>
             }
@@ -180,7 +180,7 @@
                         <input asp-for="PackingSlipNumber" type="hidden" />
                         <a asp-action="@nameof(ParticipantsController.Index)" class="btn btn-warning">Cancel</a>
                         <button type="submit"
-                                class="btn btn-success">
+                                class="btn btn-outline-success">
                             @Model.SubmitText
                         </button>
                     }

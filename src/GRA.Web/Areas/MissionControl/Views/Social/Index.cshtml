@@ -17,9 +17,9 @@
 
 <div class="row" style="margin-top: 2rem; margin-bottom: 2rem;">
     <div class="col-12">
-        <a class="btn btn-success"
+        <a class="btn btn-outline-success"
            asp-action="@nameof(GRA.Controllers.MissionControl.SocialController.AddSocialHeader)">
-            <span class="fas fa-plus-circle"></span>
+            <span class="fas fa-plus-circle fa-fw"></span>
             Add new social panel
         </a>
     </div>
@@ -70,8 +70,8 @@
                                 <a asp-action="ViewSocial"
                                    asp-route-socialheaderid="@socialHeader.Id"
                                    asp-route-languageid="@language.Id"
-                                   class="btn btn-success btn-sm">
-                                    <span class="fas fa-plus-circle"></span>
+                                   class="btn btn-outline-success btn-sm">
+                                    <span class="fas fa-plus-circle fa-fw"></span>
                                     @language.Description
                                 </a>
                             }

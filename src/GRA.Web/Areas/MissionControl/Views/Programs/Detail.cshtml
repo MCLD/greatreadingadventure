@@ -241,7 +241,7 @@
             if (input.length) {
                 input.val(log);
                 $('.btn-file').removeClass('btn-secondary');
-                $('.btn-file').addClass('btn-success');
+                $('.btn-file').addClass('btn-outline-success');
                 $("#badgeImage").removeAttr("src");
                 $("#badgeImage").height(200);
                 $("#BadgeMakerImage").val("");
@@ -249,7 +249,7 @@
             else {
                 input.val('');
                 $('.btn-file').addClass('btn-secondary');
-                $('.btn-file').removeClass('btn-success');
+                $('.btn-file').removeClass('btn-outline-success');
             }
         });
 
@@ -276,7 +276,7 @@
         $('#clearFile').on("click", function () {
             $('#BadgeUploadImage').val('');
             $('.btn-file').addClass('btn-secondary');
-            $('.btn-file').removeClass('btn-success');
+            $('.btn-file').removeClass('btn-outline-success');
             $('#selectedFile').val('');
         });
 
@@ -288,7 +288,7 @@
             $("#BadgeMakerImage").val(data);
             $('#BadgeUploadImage').val('');
             $('.btn-file').addClass('btn-secondary');
-            $('.btn-file').removeClass('btn-success');
+            $('.btn-file').removeClass('btn-outline-success');
             $('#selectedFile').val('');
         });
 

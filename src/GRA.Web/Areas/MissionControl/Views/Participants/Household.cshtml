@@ -65,7 +65,7 @@
                 }
                 @if (Model.CanViewPrizes && Model.HouseholdPrizeList.Count > 0 && Model.Users.Any())
                 {
-                    <button type="button" class="btn btn-success float-end" data-bs-toggle="modal" data-bs-target="#prizeModal"><span class="fas fa-gift"></span> Prizes available</button>
+                    <button type="button" class="btn btn-outline-success float-end" data-bs-toggle="modal" data-bs-target="#prizeModal"><span class="fas fa-gift fa-fw"></span> Prizes available</button>
                 }
             </div>
         }
@@ -267,7 +267,7 @@
                                             @if (Model.Head.CanDonateVendorCode)
                                             {
                                                 @:or
-                                                <button class="btn btn-success btn-sm btn-spinner btn-on-top"
+                                                <button class="btn btn-outline-success btn-sm btn-spinner btn-on-top"
                                                         name="donateButton"
                                                         value="@Model.Head.Id"
                                                         asp-action="HandleHouseholdDonation"
@@ -419,7 +419,7 @@
                                                 @if (user.CanDonateVendorCode)
                                                 {
                                                     @:or
-                                                    <button class="btn btn-success btn-sm btn-spinner btn-on-top"
+                                                    <button class="btn btn-outline-success btn-sm btn-spinner btn-on-top"
                                                             name="donateButton"
                                                             value="@user.Id"
                                                             asp-action="HandleHouseholdDonation"

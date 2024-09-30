@@ -93,12 +93,12 @@
             if (input.length) {
                 input.val(log);
                 $('.btn-file').removeClass('btn-secondary');
-                $('.btn-file').addClass('btn-success');
+                $('.btn-file').addClass('btn-outline-success');
             }
             else {
                 input.val('');
                 $('.btn-file').addClass('btn-secondary');
-                $('.btn-file').removeClass('btn-success');
+                $('.btn-file').removeClass('btn-outline-success');
             }
         });
         $(document).on('change', ':file', function () {

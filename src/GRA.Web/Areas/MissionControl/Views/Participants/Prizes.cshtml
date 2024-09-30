@@ -25,7 +25,7 @@
                         @if (Model.User.CanDonateVendorCode)
                         {
                             @:or
-                            <button class="btn btn-success btn-spinner"
+                            <button class="btn btn-outline-success btn-spinner"
                                     asp-action="DonateCode"
                                     asp-is-disabled="@(!Model.CanEditDetails)"
                                     button-spinner>
@@ -144,9 +144,9 @@
                                             <input id="page" name="page" value="@Model.PaginateModel.CurrentPage" type="hidden" />
                                             <input id="staffNotes" name="staffNotes" value="@prizeWinner.StaffNotes" class="form-control mb-3" placeholder="Redemption notes (optional)" maxlength="255" />
                                             <button type="submit"
-                                                    class="btn btn-success btn-sm btn-spinner"
+                                                    class="btn btn-outline-success btn-sm btn-spinner"
                                                     button-spinner>
-                                                <span class="fas fa-gift"></span>
+                                                <span class="fas fa-gift fa-fw"></span>
                                                 Available, click to redeem!
                                             </button>
                                         </form>

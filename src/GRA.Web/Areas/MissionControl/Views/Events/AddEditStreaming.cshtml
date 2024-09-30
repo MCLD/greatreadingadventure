@@ -640,7 +640,7 @@
                 {
                     input.val(log);
                     $('.btn-file').removeClass('btn-secondary');
-                    $('.btn-file').addClass('btn-success');
+                    $('.btn-file').addClass('btn-outline-success');
                     $("#badgeImage").removeAttr("src");
                     $("#badgeImage").height(200);
                     $("#BadgeMakerImage").val("");
@@ -649,7 +649,7 @@
                 {
                     input.val('');
                     $('.btn-file').addClass('btn-secondary');
-                    $('.btn-file').removeClass('btn-success');
+                    $('.btn-file').removeClass('btn-outline-success');
                 }
             });
 
@@ -681,7 +681,7 @@
                 $("#BadgeMakerImage").val(data);
                 $('#BadgeUploadImage').val('');
                 $('.btn-file').addClass('btn-secondary');
-                $('.btn-file').removeClass('btn-success');
+                    $('.btn-file').removeClass('btn-outline-success');
                 $('#selectedFile').val('');
             });
 

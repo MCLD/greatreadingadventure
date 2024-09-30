@@ -40,7 +40,7 @@
                 <input asp-for="Performer.Id" type="hidden" />
                 <input asp-for="Approve" type="hidden" />
                 <button asp-action="PerformerApprove"
-                        class="btn btn-lg @(Model.Approve ? "btn-success" : "btn-outline-danger") float-end">
+                        class="btn btn-lg @(Model.Approve ? "btn-outline-success" : "btn-outline-danger") float-end">
                     @(Model.Approve ? "Approve" : "Unapprove")
                 </button>
             </form>
