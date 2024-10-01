@@ -41,8 +41,7 @@
             type="hidden" />
         @if (Model.Event.RelatedTriggerId.HasValue)
         {
-            <div class="row"
-                style="padding-top:10px;">
+            <div class="row my-4">
                 <div class="col-12">
                     <a aria-label="View Related Trigger (Opens new window)"
                asp-controller="Triggers"
@@ -57,7 +56,7 @@
         }
     }
 
-    <div class="row" style="padding: 10px 0;">
+    <div class="row my-4">
         <div class="col-12">
             <label asp-for="Event.Name"
                 class="col-form-label"></label>
@@ -68,7 +67,7 @@
         </div>
     </div>
 
-    <div class="row row-spacing">
+    <div class="row my-4">
         <div class="col-12">
             <label asp-for="Event.IsCommunityExperience"
                 class="col-form-label"></label>
@@ -84,7 +83,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row my-4">
         <div class="col-8 col-sm-10 ">
             <div class="row">
                 <div class="col-12 col-sm-6 row-spacing">
@@ -125,7 +124,7 @@
         </div>
     </div>
 
-    <div class="row row-spacing">
+    <div class="row">
         <div class="col-12">
             <label asp-for="Event.Description"
                 class="col-form-label"></label>
@@ -137,7 +136,7 @@
         </div>
     </div>
 
-    <div class="row row-spacing">
+    <div class="row my-4">
         <div class="col-12">
             <label asp-for="Event.ExternalLink"
                 class="col-form-label"></label>
@@ -149,7 +148,7 @@
     </div>
 
     <div id="branchGroup" class="@(Model.UseLocation ? "d-none" : "" )">
-        <div class="row row-spacing">
+        <div class="row my-4">
             <div class="col-12">
                 <label asp-for="SystemId"
                     class="col-form-label"></label>
@@ -161,7 +160,7 @@
             </div>
         </div>
 
-        <div class="row row-spacing">
+        <div class="row my-4">
             <div class="col-12">
                 <label asp-for="Event.AtBranchId"
                     class="col-form-label"></label>
@@ -181,7 +180,7 @@
     </div>
 
     <div id="locationGroup"
-        class="row row-spacing @(Model.UseLocation ? "" : "d-none" )">
+        class="row my-4 @(Model.UseLocation ? "" : "d-none" )">
         <div class="col-12">
             <label asp-for="Event.AtLocationId"
                 class="col-form-label"></label>
@@ -214,7 +213,7 @@
         </div>
     </div>
 
-    <div class="row row-spacing">
+    <div class="row my-4">
         <div class="col-12">
             <label asp-for="Event.ProgramId"
                 class="col-form-label"></label>
@@ -230,7 +229,7 @@
 
     @if (Model.CanRelateChallenge || Model.Event.Challenge != null || Model.Event.ChallengeGroup != null)
     {
-        <div class="row row-spacing">
+        <div class="row my-4">
             <div class="col-12">
                 <label class="col-form-label">Related Challenge/Group</label>
                 <table id="challengeTable"
@@ -388,7 +387,7 @@
 
 @if (Model.CanRelateChallenge)
 {
-    <div class="row">
+    <div class="row my-4">
         <div class="modal fade"
              id="listModal"
              tabindex="-1"
@@ -432,7 +431,7 @@
                                     <div role="tabpanel"
                                         class="tab-pane active"
                                         id="challenge">
-                                        <div class="row">
+                                        <div class="row my-4">
                                             <div class="col-12 mb-2">
                                                 <ul class="nav nav-pills flex-column flex-sm-row">
                                                     <li id="All" class="nav-item challengeScope">
@@ -451,7 +450,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="row row-spacing">
+                                        <div class="row my-4">
                                             <div class="col-8">
                                                 <input id="challengeSearchText"
                                                        class="form-control"
@@ -483,7 +482,7 @@
                                                 </p>
                                             </div>
                                         </div>
-                                        <div class="row">
+                                        <div class="row my-4">
                                             <div id="modalChallengeList" class="col-12">
                                             </div>
                                         </div>
@@ -491,7 +490,7 @@
                                     <div role="tabpanel"
                                         class="tab-pane"
                                         id="group">
-                                        <div class="row row-spacing"
+                                        <div class="row my-4"
                                             style="padding-top: 10px;">
                                             <div class="col-8">
                                                 <input id="groupSearchText"
@@ -524,7 +523,7 @@
                                                 </p>
                                             </div>
                                         </div>
-                                        <div class="row">
+                                        <div class="row my-4">
                                             <div id="modalGroupList"
                                                 class="col-12">
                                             </div>
@@ -550,7 +549,7 @@
 
 @if (Model.CanManageLocations)
 {
-    <div class="row">
+    <div class="row my-4">
         <div class="modal fade"
              id="addModal"
              tabindex="-1"
