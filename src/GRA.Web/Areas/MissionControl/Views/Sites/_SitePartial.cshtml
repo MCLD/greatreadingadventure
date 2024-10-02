@@ -1,11 +1,46 @@
-﻿<div class="row">
-    <div class="col-12">
-        <ul class="nav nav-pills" style="padding: 10px 0;">
-            <li ActiveBy routeKey="Action" value="Detail"><a asp-action="Detail" asp-route-id="@Model.Id">Details</a></li>
-            <li ActiveBy routeKey="Action" value="Configuration"><a asp-action="Configuration" asp-route-id="@Model.Id">Configuration</a></li>
-            <li ActiveBy routeKey="Action" value="Schedule"><a asp-action="Schedule" asp-route-id="@Model.Id">Schedule</a></li>
-            <li ActiveBy routeKey="Action" value="SocialMedia"><a asp-action="SocialMedia" asp-route-id="@Model.Id">Social Media</a></li>
-            <li ActiveBy routeKey="Action" value="Settings"><a asp-action="Settings" asp-route-id="@Model.Id">Settings</a></li>
+﻿<div class="row my-4">
+    <div class="col-12 mb-2">
+        <ul class="nav nav-pills flex-column flex-sm-row"
+            <li class="nav-item">
+                <a ActiveBy routeKey="Action"
+                value="Detail"
+                asp-action="Detail" 
+                asp-route-id="@Model.Id"
+                class="nav-link">
+                Details</a>
+            </li>
+            <li class="nav-item">
+                <a ActiveBy routeKey="Action"
+                value="Configuration"
+                asp-action="Configuration" 
+                asp-route-id="@Model.Id"
+                class="nav-link">
+                Configuration</a>
+            </li>            
+            <li class="nav-item">
+                <a ActiveBy routeKey="Action"
+                value="Schedule"
+                asp-action="Schedule" 
+                asp-route-id="@Model.Id"
+                class="nav-link">
+                Schedule</a>
+            </li>           
+            <li class="nav-item">
+                <a ActiveBy routeKey="Action"
+                value="SocialMedia"
+                asp-action="SocialMedia" 
+                asp-route-id="@Model.Id"
+                class="nav-link">
+                Social Media</a>
+            </li>               
+            <li class="nav-item">
+                <a ActiveBy routeKey="Action"
+                value="Settings"
+                asp-action="Settings" 
+                asp-route-id="@Model.Id"
+                class="nav-link">
+                Settings</a>
+            </li>   
         </ul>
     </div>
 </div>
