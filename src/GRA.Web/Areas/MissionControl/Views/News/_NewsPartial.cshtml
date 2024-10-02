@@ -1,8 +1,20 @@
-﻿<div class="row">
-    <div class="col-12">
-        <ul class="nav nav-pills" style="padding: 10px 0;">
-            <li ActiveBy routeKey="Action" value="Index"><a asp-action="Index">Posts</a></li>
-            <li ActiveBy routeKey="Action" value="Categories"><a asp-action="Categories">Categories</a></li>
+﻿<div class="row my-4">
+    <div class="col-12 mb-2">
+        <ul class="nav nav-pills flex-column flex-sm-row">
+            <li class="nav-item">
+                <a ActiveBy routeKey="Action"
+                value="Index"
+                asp-action="Index" 
+                class="nav-link">
+            Posts</a>
+            </li>
+            <li class="nav-item">
+                <a ActiveBy routeKey="Action" 
+                value="Categories" 
+                asp-action="Categories" 
+                class="nav-link">
+                Categories</a>
+            </li>
         </ul>
     </div>
 </div>
