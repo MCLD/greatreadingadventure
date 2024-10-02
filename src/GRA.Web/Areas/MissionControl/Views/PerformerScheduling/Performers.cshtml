@@ -4,18 +4,36 @@
     <link rel="stylesheet" href="/css/performerregistration.min.css" />
 }
 
-<div class="row">
-    <div class="col-12">
-        <ul class="nav nav-pills" style="padding: 10px 0;">
-            <li ActiveBy routeKey="Action" value="Performers"><a asp-action="Performers">Performers</a></li>
-            <li ActiveBy routeKey="Action" value="Programs"><a asp-action="Programs">Programs</a></li>
-            <li ActiveBy routeKey="Action" value="Kits"><a asp-action="Kits">Kits</a></li>
+<div class="row my-4">
+    <div class="col-12 mb-2">
+        <ul class="nav nav-pills flex-column flex-sm-row">
+            <li class="nav-item">
+                <a ActiveBy routeKey="Action" 
+                value="Performers"
+                asp-action="Performers"
+                class="nav-link">
+            Performers</a>
+            </li>
+            <li class="nav-item">
+                <a ActiveBy routeKey="Action"
+                value="Programs"
+                asp-action="Programs"
+                class="nav-link">
+            Programs</a>
+            </li>
+            <li class="nav-item">
+                <a ActiveBy routeKey="Action"
+                value="Kits" 
+                asp-action="Kits" 
+                class="nav-link">
+            Kits</a>
+            </li>
         </ul>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-12">
+<div class="row my-4">
+    <div class="col-12 mb-2">
         @if (Model.Performers.Count == 0)
         {
             <div class="alert alert-warning">No performers found.</div>
