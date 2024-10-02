@@ -1,17 +1,33 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Systems.BranchesListViewModel
 
-<div class="row">
-    <div class="col-12">
-        <ul class="nav nav-pills" style="padding: 10px 0;">
-            <li ActiveBy routeKey="Action" value="Index"><a asp-action="Index">System</a></li>
-            <li ActiveBy routeKey="Action" value="Branches"><a asp-action="Branches">Branches</a></li>
-            <li class="float-end">
+<div class="row my-4">
+    <div class="col-12 mb-2">
+        <ul class="nav nav-pills flex-column flex-sm-row">
+            <li class="nav-item">
+                <a ActiveBy routeKey="Action"
+                value="Index"
+                asp-action="Index"
+                class="nav-link">
+            System</a>
+            </li>
+            <li class="nav-item">
+                <a ActiveBy routeKey="Action"
+                value="Branches"
+                asp-action="Branches"
+                class="nav-link">
+            Branches</a>
+            </li>
+            <li class="float-end nav-item">
                 <div>
-                    <a asp-action="Import" class="btn btn-sm btn-secondary">
+                    <a asp-action="Import" class="btn btn-sm btn-secondary nav-link">
                         <span class="fas fa-file-upload"></span>
                         Import
                     </a>
-                    <a asp-action="Export" class="btn btn-sm btn-secondary">
+                    </div>
+                     <li class="float-end nav-item">
+                <div>
+                    <div>
+                    <a asp-action="Export" class="btn btn-sm btn-secondary nav-link">
                         <span class="fas fa-file-download"></span>
                         Export
                     </a>
