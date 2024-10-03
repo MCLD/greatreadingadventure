@@ -2,22 +2,35 @@
 
 @await Html.PartialAsync("_MailPartial")
 
-<div class="row">
-    <div class="col-12">
-        <ul class="nav nav-pills" style="padding: 10px 0;">
-            <li ActiveBy routeKey="Upcoming" value=",True"><a asp-action="Broadcasts">Upcoming</a></li>
-            <li ActiveBy routeKey="Upcoming" value="False"><a asp-action="Broadcasts" asp-route-Upcoming="False">Sent</a></li>
+<div class="row my-4">
+    <div class="col-12 mb-2">
+        <ul class="nav nav-pills flex-column flex-sm-row">
+            <li class="nav-item">
+                <a ActiveBy routeKey="Upcoming"
+                value=",True"
+                asp-action="Broadcasts"
+                class="nav-link">
+                Upcoming</a>
+            </li>
+            <li class="nav-item">
+                <a ActiveBy routeKey="Upcoming"
+                value="False"
+                asp-action="Broadcasts" 
+                asp-route-Upcoming="False"
+                class="nav-link">
+                Sent</a>
+            </li>
         </ul>
     </div>
 </div>
 
-<div class="row" style="padding: 10px 0;">
-    <div class="col-12">
+<div class="row my-4"">
+    <div class="col-12 mb-2">
         <a asp-action="BroadcastCreate" class="btn btn-secondary">Schedule a new Broadcast</a>
     </div>
 </div>
 
-<div class="row" style="padding: 10px 0;">
+<div class="row my-4">
     <div class="col-12">
         @if (Model.Broadcasts.Count() == 0)
         {
