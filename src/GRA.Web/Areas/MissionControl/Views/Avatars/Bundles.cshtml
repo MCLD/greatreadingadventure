@@ -1,10 +1,23 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Avatar.BundlesListViewModel
 
-<div class="row">
-    <div class="col-12">
-        <ul class="nav nav-pills" style="padding: 10px 0;">
-            <li ActiveBy routeKey="Unlockable" value=",True"><a asp-action="Bundles">Unlockable</a></li>
-            <li ActiveBy routeKey="Unlockable" value="False"><a asp-action="Bundles" asp-route-Unlockable="False">Default</a></li>
+<div class="row my-4">
+    <div class="col-12 mb-2">
+        <ul class="nav nav-pills flex-column flex-sm-row">
+            <li class="nav-item">
+                <a ActiveBy routeKey="Unlockable"
+                value=",True"
+                asp-action="Bundles" 
+                class="nav-link">
+                Unlockable</a>
+            </li>
+            <li class="nav-item">
+                <a ActiveBy routeKey="Unlockable"
+                value="False"
+                asp-action="Bundles" 
+                asp-route-Unlockable="False"
+                class="nav-link">
+                Default</a>
+            </li>
         </ul>
     </div>
 </div>
