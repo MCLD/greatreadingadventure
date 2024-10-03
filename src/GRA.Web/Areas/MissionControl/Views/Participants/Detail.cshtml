@@ -14,13 +14,12 @@
     <input asp-for="User.VendorCode" type="hidden" />
     <input asp-for="User.VendorCodeMessage" type="hidden" />
 
-    <div class="row" style="padding: 10px 0;">
+    <div class="row">
         <div class="col-12">
-
             @if (Model.CanEditUsername)
             {
                 <input asp-for="CanEditUsername" type="hidden" />
-                <div class="row row-spacing">
+                <div class="row mb-3">
                     <div class="col-12">
                         <label asp-for="User.Username" class="col-form-label"></label>
                         <span id="Username-Icon" class="fa colored-icon d-none"></span>
@@ -30,7 +29,7 @@
                 </div>
             }
 
-            <div class="row row-spacing">
+            <div class="row mb-3">
                 <div class="col-12">
                     <label asp-for="User.FirstName" class="col-form-label"></label>
                     <input asp-for="User.FirstName" class="form-control" />
@@ -38,7 +37,7 @@
                 </div>
             </div>
 
-            <div class="row row-spacing">
+            <div class="row mb-3">
                 <div class="col-12">
                     <label asp-for="User.LastName" class="col-form-label"></label>
                     <input asp-for="User.LastName" class="form-control" />
@@ -48,7 +47,7 @@
 
             @if (Model.RequirePostalCode)
             {
-                <div class="row row-spacing">
+                <div class="row mb-3">
                     <div class="col-12">
                         <label asp-for="User.PostalCode" class="col-form-label"></label>
                         <input asp-for="User.PostalCode" class="form-control" />
@@ -57,7 +56,7 @@
                 </div>
             }
 
-            <div class="row row-spacing">
+            <div class="row mb-3">
                 <div class="col-12">
                     <label asp-for="User.Email" class="col-form-label"></label>
                     <input asp-for="User.Email" class="form-control" />
@@ -65,7 +64,7 @@
                 </div>
             </div>
 
-            <div class="row row-spacing">
+            <div class="row mb-3">
                 <div class="col-12">
                     <label asp-for="User.PhoneNumber" class="col-form-label"></label>
                     <input asp-for="User.PhoneNumber" class="form-control" />
@@ -73,7 +72,7 @@
                 </div>
             </div>
 
-            <div class="row row-spacing">
+            <div class="row mb-3">
                 <div class="col-12">
                     <label asp-for="User.SystemId" class="col-form-label"></label>
                     <select asp-for="User.SystemId" asp-items="Model.SystemList" class="form-control"></select>
@@ -81,7 +80,7 @@
                 </div>
             </div>
 
-            <div class="row row-spacing">
+            <div class="row mb-3">
                 <div class="col-12">
                     <label asp-for="User.BranchId" class="col-form-label"></label>
                     <select asp-for="User.BranchId" asp-items="Model.BranchList" class="form-control"></select>
@@ -89,7 +88,7 @@
                 </div>
             </div>
 
-            <div class="row row-spacing">
+            <div class="row mb-3">
                 <div class="col-12">
                     <label asp-for="User.ProgramId" class="col-form-label"></label>
                     <select asp-for="User.ProgramId" asp-items="Model.ProgramList" class="form-control"></select>
@@ -97,7 +96,7 @@
                 </div>
             </div>
 
-            <div id="ageField" class="row row-spacing @(Model.ShowAge ? "": "d-none")">
+            <div id="ageField" class="row mb-3 @(Model.ShowAge ? "": "d-none")">
                 <div class="col-12">
                     <label asp-for="User.Age" class="col-form-label"></label>
                     <input asp-for="User.Age" class="form-control" type="text" />
@@ -131,7 +130,7 @@
 
             @if (Model.AskEmailSubscription == true)
             {
-                <div class="row row-spacing">
+                <div class="row mb-3">
                     <div class="col-12">
                         <label asp-for="User.IsEmailSubscribed" class="col-form-label">@Model.AskEmailSubscriptionText</label>
                         <select asp-for="User.IsEmailSubscribed" class="form-control">
@@ -145,7 +144,7 @@
 
             @if (!string.IsNullOrWhiteSpace(Model.TranslationDescriptionPastTense))
             {
-                <div class="row row-spacing">
+                <div class="row mb-3">
                     <div class="col-12">
                         <label asp-for="User.DailyPersonalGoal" class="col-form-label"></label>
                         <div>
@@ -160,7 +159,7 @@
 
             @if (Model.IsVendorCodeDisplayed)
             {
-                <div class="row row-spacing">
+                <div class="row mb-3">
                     <div class="col-12">
                         <div class="alert alert-info">
                             <strong>Free Book Code:</strong>
@@ -268,8 +267,8 @@
         </div>
     </div>
 
-    <div class="mb-3">
-        <a asp-action="Index" class="btn btn-secondary">Return to Participants</a>
+    <div class="mb-3 d-flex justify-content-end">
+        <a asp-action="Index" class="btn btn-outline-secondary mt-2 me-2">Return to Participants</a>
         @if (Model.CanEditDetails)
         {
             <input asp-for="Action" value="@nameof(ParticipantsController.Detail)" type="hidden" />
@@ -283,13 +282,12 @@
             <input asp-for="User.LastAccess" type="hidden" />
             <input asp-for="User.PointsEarned" type="hidden" />
             <input asp-for="User.AchievedAt" type="hidden" />
-
             <button type="submit"
                     asp-action="Detail"
                     id="Submit"
                     name="Submit"
                     value="Submit"
-                    class="btn btn-primary btn-spinner"
+                    class="btn btn-outline-primary mt-2"
                     button-spinner>
                 <span class="buttonText">Save Changes</span>
             </button>
@@ -353,7 +351,7 @@
                                type="hidden" />
                         <div class="modal-body">
                             <p>@Html.Raw(Model.User.EmailAwardInstructions)</p>
-                            <div class="row row-spacing">
+                            <div class="row mb-3">
                                 <div class="col-12">
                                     <label asp-for="EmailAwardModel.Email"
                                            class="col-form-label"></label>
@@ -387,25 +385,24 @@
 }
 
 @section scripts {
-    <script>
-        @if (!Model.CanEditDetails)
-        {
-            <text>
+    @if (!Model.CanEditDetails)
+    {
+        <script>
             $("input").prop('readonly', true);
             $("select").prop('disabled', true);
-            </text>
-        }
-
+        </script>
+    }
+    <script>
         var programs = JSON.parse('@Html.Raw(Model.ProgramJson)');
         var selectedProgram = $.grep(programs, function (obj) {
             return obj.Id == $("#User_ProgramId").val();
         })[0];
 
         $("#User_SystemId").on("change", function () {
-            var systemId = $(this).val();
-            var branchList = $("#User_BranchId");
-            var branchId = branchList.val();
-            var url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
+            let systemId = $(this).val();
+            let branchList = $("#User_BranchId");
+            let branchId = branchList.val();
+            let url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
 
             $.getJSON(url, { systemId: systemId, branchId: branchId }, function (response) {
                 branchList.empty();
@@ -419,7 +416,7 @@
         });
 
         $("#User_ProgramId").on("change", function () {
-            var programId = $(this).val();
+            let programId = $(this).val();
             selectedProgram = $.grep(programs, function (obj) {
                 return obj.Id == programId;
             })[0];
@@ -446,11 +443,11 @@
         });
 
         function validateAge() {
-            var age = $("#User_Age").val();
-            var message = $("#ageMessage");
+            let age = $("#User_Age").val();
+            let message = $("#ageMessage");
             if (age != "" && ((age > selectedProgram.AgeMaximum && selectedProgram.AgeMaximum != null)
                 || (age < selectedProgram.AgeMinimum && selectedProgram.AgeMinimum != null))) {
-                var program = $.grep(programs, function (obj) {
+                let program = $.grep(programs, function (obj) {
                     return ((obj.AgeMaximum >= age || obj.AgeMaximum == null)
                         && (obj.AgeMinimum <= age || obj.AgeMinimum == null));
                 })[0];
@@ -465,65 +462,65 @@
                 message.text("");
             }
         }
+    </script>
 
-        @if (Model.CanEditUsername)
-        {
-            <text>
-                $("#User_Username").on("blur", function () {
-                    $(this).val($(this).val().trim());
-                    var username = $(this).val();
-                    if (username != "" && !$(this).hasClass("input-validation-error")) {
-                        if (username != "@Html.Raw(Model.Username)") {
-                            var usernameCheckUrl = "@Url.Action("UsernameInUse", "Lookup", new { Area = string.Empty })";
-                            var icon = $("#Username-Icon");
-                            icon.removeClass("d-none fa-times fa-check");
-                            icon.addClass("fa-spinner fa-spin");
-                            $.post(usernameCheckUrl, { username: username }, function (response) {
-                                if (response) {
-                                    $("#User_Username").removeClass("valid");
-                                    $("#User_Username").addClass("input-validation-error");
-                                    $("#Username-Validation").removeClass("field-validation-valid");
-                                    $("#Username-Validation").addClass("field-validation-error");
-                                    $("#Username-Validation").text("@GRA.Annotations.Validate.UsernameTaken");
-                                    icon.removeClass("fa-spinner fa-spin");
-                                    icon.addClass("fa-times");
-                                }
-                                else {
-                                    $("#Username-Validation").removeClass("field-validation-valid");
-                                    $("#Username-Validation").text("The chosen username is available.");
-                                    icon.removeClass("fa-spinner fa-spin");
-                                    icon.addClass("fa-check");
-                                }
-                            });
-                        }
-                        else {
-                            $("#Username-Icon").removeClass("d-none fa-times").addClass("fa-check");
-                            $("#Username-Validation").removeClass("field-validation-valid");
-                            $("#Username-Validation").text("No change to username.");
-
-                        }
+    @if (Model.CanEditUsername)
+    {
+        <script>
+            $("#User_Username").on("blur", function () {
+                $(this).val($(this).val().trim());
+                let username = $(this).val();
+                if (username != "" && !$(this).hasClass("input-validation-error")) {
+                    if (username != "@Html.Raw(Model.Username)") {
+                        let usernameCheckUrl = "@Url.Action("UsernameInUse", "Lookup", new { Area = string.Empty })";
+                        let icon = $("#Username-Icon");
+                        icon.removeClass("d-none fa-times fa-check");
+                        icon.addClass("fa-spinner fa-spin");
+                        $.post(usernameCheckUrl, { username: username }, function (response) {
+                            if (response) {
+                                $("#User_Username").removeClass("valid");
+                                $("#User_Username").addClass("input-validation-error");
+                                $("#Username-Validation").removeClass("field-validation-valid");
+                                $("#Username-Validation").addClass("field-validation-error");
+                                $("#Username-Validation").text("@GRA.Annotations.Validate.UsernameTaken");
+                                icon.removeClass("fa-spinner fa-spin");
+                                icon.addClass("fa-times");
+                            }
+                            else {
+                                $("#Username-Validation").removeClass("field-validation-valid");
+                                $("#Username-Validation").text("The chosen username is available.");
+                                icon.removeClass("fa-spinner fa-spin");
+                                icon.addClass("fa-check");
+                            }
+                        });
                     }
-                });
+                    else {
+                        $("#Username-Icon").removeClass("d-none fa-times").addClass("fa-check");
+                        $("#Username-Validation").removeClass("field-validation-valid");
+                        $("#Username-Validation").text("No change to username.");
+
+                    }
+                }
+            });
 
             $("#User_Username").on("keypress", function () {
                 $("#Username-Icon").addClass("d-none");
             });
-            </text>
-        }
+        </script>
+    }
 
-        @if (Model.User.NeedsToAnswerVendorCodeQuestion && Model.User.CanEmailAwardVendorCode
-       && Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.EditParticipants.ToString()))
-        {
-            <text>
-                $("#emailAwardButton").on("click", function (event) {
-                    event.preventDefault();
-                    $("#emailAwardModal").modal();
-                });
-            </text>
-        }
-    </script>
+    @if (Model.User.NeedsToAnswerVendorCodeQuestion && Model.User.CanEmailAwardVendorCode && Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.EditParticipants.ToString()))
+    {
+        <script>
+            $("#emailAwardButton").on("click", function (event) {
+                event.preventDefault();
+                $("#emailAwardModal").modal();
+            });
+        </script>
+    }
     @if (Model.CanEditDetails)
     {
-        @await Html.PartialAsync("_SchoolSelectionScripts", Model);
+        @await Html.PartialAsync("_SchoolSelectionScripts", Model)
+        ;
     }
 }

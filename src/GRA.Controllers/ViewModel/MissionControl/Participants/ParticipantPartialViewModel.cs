@@ -1,4 +1,6 @@
-﻿using GRA.Controllers.ViewModel.Shared;
+﻿using System;
+using GRA.Controllers.ViewModel.Shared;
+using Microsoft.AspNetCore.Http;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Participants
 {
@@ -32,5 +34,21 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public bool IsGroup { get; set; }
         public int PrizeCount { get; set; }
         public int RoleCount { get; set; }
+
+        public string GetBadgeClass(Microsoft.AspNetCore.Mvc.Razor.RazorPage page, string action)
+        {
+            if (page == null || string.IsNullOrEmpty(action))
+            {
+                return "text-bg-primary";
+            }
+
+            return page
+                .ViewContext
+                .RouteData
+                .Values["action"]
+                .ToString()
+                .Equals(action, StringComparison.OrdinalIgnoreCase)
+                ? "text-bg-light" : "text-bg-primary";
+        }
     }
 }

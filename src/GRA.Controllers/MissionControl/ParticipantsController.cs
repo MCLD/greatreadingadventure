@@ -1297,7 +1297,7 @@ namespace GRA.Controllers.MissionControl
                 .GetByProgramIdAsync(user.ProgramId, true);
             if (model.ActivityAmount < 1 && !model.PointTranslation.IsSingleEvent)
             {
-                TempData[ActivityMessage] = "You must enter an amonunt!";
+                TempData[ActivityMessage] = "You must enter an amount!";
             }
             else if (!string.IsNullOrWhiteSpace(model.UserSelection))
             {

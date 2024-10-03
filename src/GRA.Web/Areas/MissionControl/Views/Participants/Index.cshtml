@@ -2,11 +2,17 @@
 
 @if (Model.ShowGroupsButton)
 {
-    <div class="row row-spacing">
+    <div class="row my-3">
         <div class="col-12">
-            <ul class="nav nav-pills" style="padding: 10px 0;">
-                <li class="active px-5"><a asp-action="@nameof(ParticipantsController.Index)">Participants</a></li>
-                <li><a asp-action="@nameof(ParticipantsController.Groups)">Groups</a></li>
+            <ul class="nav nav-pills">
+                <li>
+                    <a asp-action="@nameof(ParticipantsController.Index)"
+                       class="nav-link active">Participants</a>
+                </li>
+                <li>
+                    <a asp-action="@nameof(ParticipantsController.Groups)"
+                       class="nav-link">Groups</a>
+                </li>
             </ul>
         </div>
     </div>
@@ -14,83 +20,112 @@
 
 @if (Model.CanSignUpParticipants)
 {
-    <div class="row row-spacing">
+    <div class="row mb-3">
         <div class="col-12">
-            <a asp-action="Add" class="btn btn-secondary">Add Participant</a>
+            <a asp-action="Add" class="btn btn-outline-primary">Add Participant</a>
         </div>
     </div>
 }
 
-<div class="row row-spacing">
-    <div class="col-12 col-sm-6">
-        <span class="dropdown-label">Location:</span>
-        <ul class="nav" style="display: inline-table;">
-            <li class="@(Model.ActiveNav == "All" ? "active" : "")"><a asp-route-Search="@Model.Search" asp-route-ProgramId="@Model.ProgramId">All</a></li>
-            <li class="@(Model.ActiveNav == "System" ? "active" : "")">
-                <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+<div class="row my-4">
+    <div class="col-12">
+        <ul class="nav nav-pills flex-column flex-sm-row">
+            <li class="nav-item">
+                <a class="nav-link @(Model.ActiveNav == "All" ? "active" : "")"
+                   asp-route-Search="@Model.Search" asp-route-ProgramId="@Model.ProgramId">All</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="dropdown-toggle nav-link @(Model.ActiveNav == "System" ? "active" : "")"
+                   data-bs-toggle="dropdown"
+                   href="#"
+                   role="button"
+                   aria-haspopup="true"
+                   aria-expanded="false">
                     @(Model.SystemName ?? "System") <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
                     @foreach (var system in Model.SystemList)
                     {
-                        <li><a asp-route-Search="@Model.Search" asp-route-SystemId="@system.Id" asp-route-ProgramId="@Model.ProgramId">@system.Name</a></li>
+                        <li>
+                            <a class="dropdown-item"
+                               asp-route-Search="@Model.Search"
+                               asp-route-SystemId="@system.Id"
+                               asp-route-ProgramId="@Model.ProgramId">@system.Name</a>
+                        </li>
                     }
                 </ul>
             </li>
-            <li class="@(Model.ActiveNav == "Branch" ? "active" : "")">
-                <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+            <li class="nav-item dropdown">
+                <a class="dropdown-toggle nav-link @(Model.ActiveNav == "Branch" ? "active" : "")"
+                   data-bs-toggle="dropdown"
+                   href="#" role="button"
+                   aria-haspopup="true"
+                   aria-expanded="false">
                     @(Model.BranchName ?? "Branch") <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
                     @foreach (var branch in Model.BranchList)
                     {
-                        <li><a asp-route-Search="@Model.Search" asp-route-BranchId="@branch.Id" asp-route-ProgramId="@Model.ProgramId">@branch.Name</a></li>
+                        <li>
+                            <a class="dropdown-item"
+                               asp-route-Search="@Model.Search"
+                               asp-route-BranchId="@branch.Id"
+                               asp-route-ProgramId="@Model.ProgramId">@branch.Name</a>
+                        </li>
                     }
                 </ul>
             </li>
-        </ul>
-        <span class="dropdown-label">Program:</span>
-        <ul class="nav" style="display: inline-table;">
-            <li>
-                <a class="btn btn-secondary dropdown-toggle"
-                   data-bs-toggle="dropdown" 
-                    href="#" 
-                    role="button" 
-                    aria-haspopup="true" 
-                    aria-expanded="false">
-                    @(Model.ProgramName ?? "Show All") <span class="caret"></span>
+            <li class="nav-item d-none d-sm-block"><a class="nav-link disabled">|</a></li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle"
+                   data-bs-toggle="dropdown"
+                   href="#"
+                   role="button"
+                   aria-haspopup="true"
+                   aria-expanded="false">
+                    Age Group: @(Model.ProgramName ?? "Show All") <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a asp-route-Search="@Model.Search" 
-                        asp-route-SystemId="@Model.SystemId" 
-                        asp-route-BranchId="@Model.BranchId">Show All</a></li>
+                    <li>
+                        <a class="dropdown-item"
+                           asp-route-Search="@Model.Search"
+                           asp-route-SystemId="@Model.SystemId"
+                           asp-route-BranchId="@Model.BranchId">Show All</a>
+                    </li>
                     @foreach (var program in Model.ProgramList)
                     {
-                        <li><a asp-route-Search="@Model.Search" 
-                            asp-route-ProgramId="@program.Id" 
-                            asp-route-SystemId="@Model.SystemId" 
-                            asp-route-BranchId="@Model.BranchId">@program.Name</a></li>
+                        <li>
+                            <a class="dropdown-item"
+                               asp-route-Search="@Model.Search"
+                               asp-route-ProgramId="@program.Id"
+                               asp-route-SystemId="@Model.SystemId"
+                               asp-route-BranchId="@Model.BranchId">@program.Name</a>
+                        </li>
                     }
                 </ul>
             </li>
+            <li class="nav-item d-none d-small-block"><a class="nav-link disabled">|</a></li>
+            <li class="nav-item pt-2">
+                @if (Model.HasVendorCodeManagement)
+                {
+                    <input type="checkbox"
+                           id="multiplePrimaryVendorCodesIndicator"
+                           class="form-check-input"
+                           checked="@Model.HasMultiplePrimaryVendorCodes">
+                    <label class="form-check-label"
+                           for="multiplePrimaryVendorCodesIndicator">
+                        Multiple primary vendor codes
+                    </label>
+                }
+            </li>
         </ul>
-        @if (Model.HasVendorCodeManagement)
-        {
-            <div class="checkbox" style="display: inline-table;">
-                <label>
-                <input type="checkbox" 
-                    id="multiplePrimaryVendorCodesIndicator"
-                    checked="@Model.HasMultiplePrimaryVendorCodes"> Multiple primary vendor codes
-            </label>
-        </div>
-        }
     </div>
 </div>
 
 <form asp-controller="Participants" asp-action="Index" method="get" role="form">
-    <input type="hidden" 
-        asp-for="HasMultiplePrimaryVendorCodes" 
-        value="@Model.HasMultiplePrimaryVendorCodes" />
+    <input type="hidden"
+           asp-for="HasMultiplePrimaryVendorCodes"
+           value="@Model.HasMultiplePrimaryVendorCodes" />
     @if (Model.SystemId.HasValue)
     {
         <input asp-for="SystemId" type="hidden" />
@@ -103,21 +138,19 @@
     {
         <input asp-for="ProgramId" type="hidden" />
     }
-    <div class="row row-spacing">
-        <div class="col-8">
+    <div class="row my-3">
+        <div class="col-12 input-group">
             <input asp-for="Search"
                    class="form-control"
                    placeholder="Search by username, first or last name, full name, free book code" />
-        </div>
-        <div class="col-4">
-            <input type="submit"
-                   value="Search"
-                   class="btn btn-secondary"
-                   style="margin-right: 8px;" />
             <a asp-action="Index"
                asp-route-SystemId="@Model.SystemId"
                asp-route-BranchId="@Model.BranchId"
-               asp-route-ProgramId="@Model.ProgramId" class="btn btn-secondary">Clear</a>
+               asp-route-ProgramId="@Model.ProgramId"
+               class="btn btn-outline-secondary">Clear</a>
+            <input type="submit"
+                   value="Search"
+                   class="btn btn-outline-primary" />
         </div>
     </div>
 </form>
@@ -126,12 +159,12 @@
 {
     <div class="row">
         <div class="col-12">
-            <p class="alert-sm alert-info">Searching for '<strong>@Model.Search</strong>'</p>
+            <p class="alert-sm alert-info">Searching for '<strong>@Model.Search</strong>'...</p>
         </div>
     </div>
 }
 
-<div class="row" style="padding: 10px 0;">
+<div class="row">
     <div class="col-12">
         @if (Model.Users.Count() == 0)
         {
@@ -143,30 +176,38 @@
                 <table class="table table-sm table-bordered @(Model.CanViewDetails ? "link-table" : "table-striped")">
                     <thead>
                         <tr>
-                            <th><a sort asp-route-Search="@Model.Search" 
-                                asp-route-SystemId="@Model.SystemId" 
-                                asp-route-BranchId="@Model.BranchId" 
-                                asp-route-ProgramId="@Model.ProgramId" 
-                                asp-route-Sort="@Model.SortUsers.GetValue(3)" 
-                                asp-route-Order="@(Model.Sort == Model.SortUsers.GetValue(3).ToString() && !Model.IsDescending ? "Descending" : "Ascending")">Registered</a></th>
-                            <th><a sort asp-route-Search="@Model.Search" 
-                                asp-route-SystemId="@Model.SystemId" 
-                                asp-route-BranchId="@Model.BranchId" 
-                                asp-route-ProgramId="@Model.ProgramId" 
-                                asp-route-Sort="@Model.SortUsers.GetValue(0)" 
-                                asp-route-Order="@(Model.Sort == Model.SortUsers.GetValue(0).ToString() && !Model.IsDescending ? "Descending" : "Ascending")">First Name</a></th>
-                            <th><a sort asp-route-Search="@Model.Search" 
-                                asp-route-SystemId="@Model.SystemId" 
-                                asp-route-BranchId="@Model.BranchId" 
-                                asp-route-ProgramId="@Model.ProgramId" 
-                                asp-route-Sort="@Model.SortUsers.GetValue(1)" 
-                                asp-route-Order="@(Model.Sort == Model.SortUsers.GetValue(1).ToString() && !Model.IsDescending ? "Descending" : "Ascending")">Last Name</a></th>
-                            <th><a sort asp-route-Search="@Model.Search" 
-                                asp-route-SystemId="@Model.SystemId" 
-                                asp-route-BranchId="@Model.BranchId" 
-                                asp-route-ProgramId="@Model.ProgramId" 
-                                asp-route-Sort="@Model.SortUsers.GetValue(2)" 
-                                asp-route-Order="@(Model.Sort == Model.SortUsers.GetValue(2).ToString() && !Model.IsDescending ? "Descending" : "Ascending")">Username</a></th>
+                            <th>
+                                <a sort asp-route-Search="@Model.Search"
+                                   asp-route-SystemId="@Model.SystemId"
+                                   asp-route-BranchId="@Model.BranchId"
+                                   asp-route-ProgramId="@Model.ProgramId"
+                                   asp-route-Sort="@Model.SortUsers.GetValue(3)"
+                                   asp-route-Order="@(Model.Sort == Model.SortUsers.GetValue(3).ToString() && !Model.IsDescending ? "Descending" : "Ascending")">Registered</a>
+                            </th>
+                            <th>
+                                <a sort asp-route-Search="@Model.Search"
+                                   asp-route-SystemId="@Model.SystemId"
+                                   asp-route-BranchId="@Model.BranchId"
+                                   asp-route-ProgramId="@Model.ProgramId"
+                                   asp-route-Sort="@Model.SortUsers.GetValue(0)"
+                                   asp-route-Order="@(Model.Sort == Model.SortUsers.GetValue(0).ToString() && !Model.IsDescending ? "Descending" : "Ascending")">First Name</a>
+                            </th>
+                            <th>
+                                <a sort asp-route-Search="@Model.Search"
+                                   asp-route-SystemId="@Model.SystemId"
+                                   asp-route-BranchId="@Model.BranchId"
+                                   asp-route-ProgramId="@Model.ProgramId"
+                                   asp-route-Sort="@Model.SortUsers.GetValue(1)"
+                                   asp-route-Order="@(Model.Sort == Model.SortUsers.GetValue(1).ToString() && !Model.IsDescending ? "Descending" : "Ascending")">Last Name</a>
+                            </th>
+                            <th>
+                                <a sort asp-route-Search="@Model.Search"
+                                   asp-route-SystemId="@Model.SystemId"
+                                   asp-route-BranchId="@Model.BranchId"
+                                   asp-route-ProgramId="@Model.ProgramId"
+                                   asp-route-Sort="@Model.SortUsers.GetValue(2)"
+                                   asp-route-Order="@(Model.Sort == Model.SortUsers.GetValue(2).ToString() && !Model.IsDescending ? "Descending" : "Ascending")">Username</a>
+                            </th>
                             <th>Email Address</th>
                             <th>Branch</th>
                             <th hidden>Program</th>
@@ -184,7 +225,9 @@
                                 <td class="td-class">
                                     @if (Model.CanViewDetails)
                                     {
-                                        <a asp-action="Detail" asp-route-id="@user.Id" class="rowlink">
+                                        <a asp-action="Detail"
+                                           asp-route-id="@user.Id"
+                                           class="rowlink">
                                             @user.CreatedAt.ToString("d")
                                         </a>
                                     }
@@ -210,7 +253,8 @@
                                                 data-id="@user.Id"
                                                 data-name="@(user.Username ?? user.FullName)"
                                                 data-iselevated="@user.IsAdmin">
-                                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
+                                            <span class="fas fa-times fa-fw"
+                                                  aria-hidden="true"></span>
                                         </button>
                                     </td>
                                 }
@@ -219,10 +263,7 @@
                     </tbody>
                 </table>
             </div>
-            @if (Model.PaginateModel.MaxPage > 1)
-            {
-                <paginate paginateModel="@Model.PaginateModel"></paginate>
-            }
+            <paginate paginateModel="@Model.PaginateModel"></paginate>
         }
     </div>
 </div>
@@ -243,7 +284,6 @@
                                 class="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="Close dialog">
-                            
                         </button>
                     </div>
                     <div class="modal-body">
@@ -264,7 +304,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-secondary"
+                                class="btn btn-outline-secondary"
                                 data-bs-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel
@@ -290,10 +330,10 @@
 }
 
 @section scripts
+{
+    @if (Model.HasVendorCodeManagement)
     {
-    <script>
-        @if (Model.HasVendorCodeManagement) {
-            <text>
+        <script>
             const multiplePrimaryVendorCodesIndicator = document
                 .getElementById("multiplePrimaryVendorCodesIndicator");
             const multiplePrimaryVendorCodes = document
@@ -302,42 +342,42 @@
             multiplePrimaryVendorCodesIndicator.addEventListener("change", (e) => {
                 multiplePrimaryVendorCodes.value = e.target.checked;
             });
-            </text>
-        }
-        @if (Model.CanViewDetails)
-        {
-            <text>
-                $(document).ready(function() {
-            $('.td-class').each(function() {
-                $(this).children('a.rowlink').height($(this).height() + 11);
+        </script>
+    }
+    @if (Model.CanViewDetails)
+    {
+        <script>
+            $(document).ready(function () {
+                $('.td-class').each(function () {
+                    $(this).children('a.rowlink').height($(this).height() + 11);
+                });
             });
-        });
-        $(window).resize(function() {
-            $('.td-class').each(function() {
-                $(this).children('a.rowlink').height($(this).height() + 11);
+            $(window).resize(function () {
+                $('.td-class').each(function () {
+                    $(this).children('a.rowlink').height($(this).height() + 11);
+                });
             });
-        });
-        </text>
-        }
+        </script>
+    }
 
-        @if (Model.CanRemoveParticipant) {
-        <text>
-        $('#deleteModal').on('show.bs.modal', function(event) {
-            var button = $(event.relatedTarget);
-            var id = button.data('id');
-            var name = button.data('name');
-            var isElevated = button.data("iselevated");
-            if (isElevated == "True") {
-                $("#elevatedWarning").removeClass("d-none");
-            }
-            else {
-                $("#elevatedWarning").addClass("d-none");
-            }
-            var modal = $(this);
-            modal.find('#modal-text').text('Are you sure you wish to delete the participant "' + name + '"?');
-            modal.find('#Id').val(id);
-        })
-        </text>
-        }
-    </script>
+    @if (Model.CanRemoveParticipant)
+    {
+        <script>
+            $('#deleteModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var id = button.data('id');
+                var name = button.data('name');
+                var isElevated = button.data("iselevated");
+                if (isElevated == "True") {
+                    $("#elevatedWarning").removeClass("d-none");
+                }
+                else {
+                    $("#elevatedWarning").addClass("d-none");
+                }
+                var modal = $(this);
+                modal.find('#modal-text').html('Are you sure you wish to delete the participant <strong>' + name + '</strong>?');
+                modal.find('#Id').val(id);
+            })
+        </script>
+    }
 }

@@ -43,8 +43,5 @@ else
             </tbody>
         </table>
     </div>
-    @if (Model.PaginateModel.MaxPage > 1)
-    {
-        <paginate paginateModel="@Model.PaginateModel" asButtons="true"></paginate>
-    }
+    <paginate paginateModel="@Model.PaginateModel" asButtons="true"></paginate>
 }

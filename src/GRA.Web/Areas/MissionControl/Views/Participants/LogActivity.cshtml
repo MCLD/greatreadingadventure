@@ -10,112 +10,114 @@
     <input asp-for="HasAccount" type="hidden" />
     <input asp-for="IsSecretCode" value="False" type="hidden" />
 
-    <div class="row" style="padding: 10px 0;">
+    <div class="row">
         @if (Model.HasPendingQuestionnaire)
         {
-            <div class="col-12 row-spacing">
+            <div class="col-12 mb-3">
                 <div class="alert alert-warning">Activity cannot be logged while there is a pending questionnaire to be taken.</div>
             </div>
         }
         else
         {
-            <div class="col-12 col-sm-6 row-spacing">
-                <table>
-                    <tr>
-                        @if (Model.PointTranslation.IsSingleEvent == false)
-                        {
-                            <td style="padding-right:6px;">@Model.PointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim()</td>
-                            <td width="80px" style="padding-right:6px;">
-                                <input asp-for="ActivityAmount" value="" class="form-control" />
-                            </td>
-                        }
-                        <td>
+            <div class="col-12 col-sm-6 col-lg-4 my-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            Log
+                            @if (Model.PointTranslation.IsSingleEvent)
+                            {
+                                <span>
+                                    @($"{Model.PointTranslation.TranslationDescriptionPastTense.Replace("{0}", "1")} {Model.PointTranslation.ActivityDescription}")
+                                </span>
+                            }
+                            else
+                            {
+                                <span>
+                                    @Model.PointTranslation.ActivityDescriptionPlural
+                                </span>
+                            }
+                        </h5>
+                        <p class="card-text">
+                            @if (!Model.PointTranslation.IsSingleEvent)
+                            {
+                                <input asp-for="ActivityAmount" value="" type="number" class="form-control mt-3" />
+                                <span asp-validation-for="ActivityAmount"
+                                      class="text-danger d-block"></span>
+                            }
                             <button type="submit"
-                                    class="btn btn-primary btn-spinner"
+                                    class="btn btn-outline-primary mt-3"
                                     button-spinner>
                                 @if (Model.PointTranslation.IsSingleEvent)
                                 {
                                     <span>
+                                        Apply
                                         @($"{Model.PointTranslation.TranslationDescriptionPastTense.Replace("{0}", "1")} {Model.PointTranslation.ActivityDescription}")
                                     </span>
                                 }
                                 else
                                 {
                                     <span>
+                                        Apply
                                         @Model.PointTranslation.ActivityDescriptionPlural
                                     </span>
                                 }
                             </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        @if (Model.PointTranslation.IsSingleEvent == false)
-                        {
-                            <td>&nbsp;</td>
-                        }
-                        <td colspan="2"><span asp-validation-for="ActivityAmount" class="text-danger"></span></td>
-                    </tr>
-                </table>
+                        </p>
+                    </div>
+                </div>
             </div>
             @if (!Model.DisableSecretCode)
             {
-                <div class="col-12 col-sm-6 row-spacing">
-                    <table>
-                        <tr>
-                            <td style="padding-right:6px;">Apply</td>
-                            <td width="200px">
-                                <input asp-for="SecretCode" value="" class="form-control codeInput" />
-                            </td>
-                            <td style="padding-left:6px;">
+
+                <div class="col-12 col-sm-6 col-lg-4 my-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Secret Code</h5>
+                            <p class="card-text">
+                                <input asp-for="SecretCode"
+                                       value=""
+                                       class="form-control codeInput mt-3" />
+                                <span asp-validation-for="SecretCode"
+                                      class="text-danger d-block"></span>
                                 <button type="submit"
-                                        class="btn btn-primary btn-spinner codeButton"
+                                        class="btn btn-outline-primary codeButton mt-3"
                                         button-spinner>
-                                    <span class="buttonText">Secret Code</span>
+                                    <span class="buttonText">Apply Secret Code</span>
                                 </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td colspan="2"><span asp-validation-for="SecretCode" class="text-danger"></span></td>
-                        </tr>
-                    </table>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (Model.VendorCodeTypeList?.Count() > 0)
+            {
+                <div class="col-12 col-sm-6 col-lg-4 my-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Vendor Code</h5>
+                            <p class="card-text">
+                                <select asp-for="VendorCodeTypeId"
+                                        asp-items="Model.VendorCodeTypeList"
+                                        class="form-select mt-3">
+                                    <option></option>
+                                </select>
+                                <span asp-validation-for="VendorCodeTypeId"
+                                      class="text-danger d-block"></span>
+                                <button type="submit"
+                                        asp-action="AwardVendorCode"
+                                        class="btn btn-outline-primary mt-3"
+                                        button-spinner>
+                                    <span class="buttonText">Apply Vendor Code</span>
+                                </button>
+                            </p>
+                        </div>
+                    </div>
                 </div>
             }
         }
     </div>
-
-    @if (Model.VendorCodeTypeList?.Count() > 0)
-    {
-        <div class="row">
-            <div class="col-12 row-spacing">
-                <table>
-                    <tr>
-                        <td style="padding-right:6px;">Award</td>
-                        <td>
-                            <select asp-for="VendorCodeTypeId" asp-items="Model.VendorCodeTypeList" class="form-control">
-                                <option></option>
-                            </select>
-                        </td>
-                        <td style="padding-left:6px;">
-                            <button type="submit"
-                                    asp-action="AwardVendorCode"
-                                    class="btn btn-primary btn-spinner"
-                                    button-spinner>
-                                <span class="buttonText">Vendor Code</span>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td colspan="2"><span asp-validation-for="VendorCodeTypeId" class="text-danger"></span></td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    }
-
-    <div class="mb-3">
-        <a asp-action="Index" class="btn btn-secondary">Return to Participants</a>
+    <div class="mb-3 d-flex justify-content-end">
+        <a asp-action="Index" class="btn btn-outline-secondary">Return to Participants</a>
     </div>
 </form>
 
