@@ -3,8 +3,21 @@
 <div class="row">
     <div class="col-12">
         <ul class="nav nav-pills" style="padding: 10px 0;">
-            <li ActiveBy routeKey="Archived" value=",false"><a asp-action="Index">Current and Upcoming</a></li>
-            <li ActiveBy routeKey="Archived" value="True"><a asp-action="Index" asp-route-archived="true">Archived</a></li>
+            <li class="nav-item">
+                <a ActiveBy routeKey="Archived" 
+                value=",false"
+                asp-action="Index"
+                class="nav-link">
+            Current and Upcoming</a>
+            </li>
+            <li class="nav-item">
+                <a ActiveBy routeKey="Archived" 
+                value="True"
+                asp-action="Index" 
+                asp-route-archived="true"
+                class="nav-link">
+                Archived</a>
+            </li>
         </ul>
     </div>
 </div>

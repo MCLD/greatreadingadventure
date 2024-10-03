@@ -1,6 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Events.LocationsListViewModel
 
-<div class="row">
+<div class="row my-4">
     <div class="col-12">
         <ul class="nav nav-pills flex-column flex-sm-row">
             <li ActiveBy routeKey="Action" value="Index"><a asp-action="Index" class="nav-link">Events</a></li>
@@ -12,7 +12,7 @@
     </div>
 </div>
 
-<div class="row" style="padding: 10px 0;">
+<div class="row my-4">
     <div class="col-12">
         <a class="btn btn-secondary"
            data-bs-toggle="modal"
@@ -20,7 +20,7 @@
     </div>
 </div>
 
-<div class="row" style="padding: 10px 0;">
+<div class="row my-4">
     <div class="col-12">
         @if (Model.Locations.Count() == 0)
         {
@@ -109,7 +109,7 @@
 </div>
 
 
-<div class="row">
+<div class="row my-4">
     <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
         <div class="modal-dialog" role="document">
             <form asp-controller="Events" asp-action="AddLocation" method="post" role="form" style="display:inline">
@@ -163,7 +163,7 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row my-4">
     <div class="modal fade"
          id="editModal"
          tabindex="-1"
@@ -237,7 +237,7 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row my-4">
     <div class="modal fade"
          id="deleteModal"
          tabindex="-1"
