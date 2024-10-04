@@ -46,28 +46,31 @@
                                     @code.Uses
                                 </td>
                                 <td class="text-middle">
-                                    <button type="button"
-                                            class="btn btn-primary"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#editModal"
-                                            data-id="@code.Id"
-                                            data-role="@code.RoleId"
-                                            data-code="@code.Code"
-                                            data-description="@code.Description"
-                                            data-single="@code.IsSingleUse"
-                                            data-program="@code.ProgramId"
-                                            data-branch="@code.BranchId"
-                                            data-express="@code.SinglePageSignUp">
-                                        <span class="fas fa-fw fa-pencil-alt" aria-hidden="true"></span>
-                                    </button>
-                                    <button type="button"
-                                            class="btn btn-outline-danger"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal"
-                                            data-id="@code.Id"
-                                            data-code="@code.Code">
-                                        <span class="fas fa-fw fa-times" aria-hidden="true"></span>
-                                    </button>
+                                    <div class="btn-group-sm">
+                                        <button type="button"
+                                                class="btn btn-outline-primary"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#editModal"
+                                                data-id="@code.Id"
+                                                data-role="@code.RoleId"
+                                                data-code="@code.Code"
+                                                data-description="@code.Description"
+                                                data-single="@code.IsSingleUse"
+                                                data-program="@code.ProgramId"
+                                                data-branch="@code.BranchId"
+                                                data-express="@code.SinglePageSignUp">
+                                            <span class="fas fa-fw fa-pencil-alt" aria-hidden="true"></span>
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-outline-danger"
+                                                style="margin-left:16px;"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteModal"
+                                                data-id="@code.Id"
+                                                data-code="@code.Code">
+                                            <span class="fas fa-fw fa-times" aria-hidden="true"></span>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         }

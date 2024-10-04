@@ -3,11 +3,30 @@
 <div class="row my-4">
     <div class="col-12">
         <ul class="nav nav-pills flex-column flex-sm-row">
-            <li ActiveBy routeKey="Action" value="Index"><a asp-action="Index" class="nav-link">Events</a></li>
-            <li ActiveBy routeKey="Action" value="CommunityExperiences"><a asp-action="CommunityExperiences" class="nav-link">Community Experiences</a></li>
-            <li ActiveBy routeKey="Action" value="Locations"><a asp-action="Locations" class="nav-link active">Locations</a></li>
             <li ActiveBy routeKey="Action"
-                value="StreamingEvents"><a asp-action="StreamingEvents" class="nav-link">Streaming Events</a></li>
+                value="Index">
+                <a asp-action="Index"
+                class="nav-link">
+                Events</a>
+            </li>
+            <li ActiveBy routeKey="Action"
+                value="CommunityExperiences">
+                <a asp-action="CommunityExperiences"
+                class="nav-link">
+                Community Experiences</a>
+            </li>
+            <li ActiveBy routeKey="Action"
+                value="Locations">
+                <a asp-action="Locations"
+                class="nav-link active">
+                Locations</a>
+            </li>
+            <li ActiveBy routeKey="Action"
+                value="StreamingEvents">
+                <a asp-action="StreamingEvents"
+                class="nav-link">
+                Streaming Events</a>
+            </li>
         </ul>
     </div>
 </div>
@@ -74,26 +93,28 @@
                                     </td>
                                 }
                                 <td>
-                                    <button type="submit"
-                                            class="btn btn-primary btn-sm"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#editModal"
-                                            data-id="@location.Id"
-                                            data-name="@location.Name"
-                                            data-address="@location.Address"
-                                            data-url="@location.Url"
-                                            data-telephone="@location.Telephone">
-                                        <span class="fas fa-2x fa-pencil-alt" aria-hidden="true"></span>
-                                    </button>
-                                    <button type="button"
-                                            class="btn btn-outline-danger btn-sm"
-                                            style="margin-left:16px;"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal"
-                                            data-id="@location.Id"
-                                            data-name="@location.Name">
-                                        <span class="fas fa-2x fa-times fa-fw" aria-hidden="true"></span>
-                                    </button>
+                                    <div class="btn-group-sm">
+                                        <button type="submit"
+                                                class="btn btn-outline-primary btn-sm"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#editModal"
+                                                data-id="@location.Id"
+                                                data-name="@location.Name"
+                                                data-address="@location.Address"
+                                                data-url="@location.Url"
+                                                data-telephone="@location.Telephone">
+                                            <span class="fas fa-fw fa-pencil-alt" aria-hidden="true"></span>
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-outline-danger btn-sm"
+                                                style="margin-left:16px;"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteModal"
+                                                data-id="@location.Id"
+                                                data-name="@location.Name">
+                                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         }

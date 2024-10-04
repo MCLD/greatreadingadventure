@@ -50,24 +50,26 @@
                                     @school.SchoolDistrict.Name
                                 </td>
                                 <td class="gra-mc-icon">
-                                    <button type="submit"
-                                            class="btn btn-primary btn-sm"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#editModal"
-                                            data-id="@school.Id"
-                                            data-name="@school.Name"
-                                            data-district="@school.SchoolDistrictId">
-                                        <span class="fas fa-pencil-alt" aria-hidden="true"></span>
-                                    </button>
-                                    <button type="button"
-                                            class="btn btn-outline-danger btn-sm"
-                                            style="margin-left:16px;"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal"
-                                            data-id="@school.Id"
-                                            data-name="@school.Name">
-                                        <span class="fas fa-times fa-fw" aria-hidden="true"></span>
-                                    </button>
+                                    <div class="btn-group-sm">
+                                        <button type="submit"
+                                                class="btn btn-outline-primary btn-sm"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#editModal"
+                                                data-id="@school.Id"
+                                                data-name="@school.Name"
+                                                data-district="@school.SchoolDistrictId">
+                                            <span class="fas fa-pencil-alt fa-fw" aria-hidden="true"></span>
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-outline-danger btn-sm"
+                                                style="margin-left:16px;"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteModal"
+                                                data-id="@school.Id"
+                                                data-name="@school.Name">
+                                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         }

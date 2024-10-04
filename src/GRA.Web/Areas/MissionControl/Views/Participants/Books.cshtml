@@ -41,24 +41,26 @@
                             @if (Model.CanEditBooks)
                             {
                                 <td class="gra-mc-icon">
-                                    <button type="button"
-                                            class="btn btn-primary btn-sm"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#editModal"
-                                            data-id="@book.Id"
-                                            data-bs-title="@book.Title"
-                                            data-author="@book.Author">
-                                        <span class="fas fa-pencil-alt" aria-hidden="true"></span>
-                                    </button>
-                                    <button type="button"
-                                            class="btn btn-outline-danger btn-sm"
-                                            style="margin-left:16px;"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal"
-                                            data-id="@book.Id"
-                                            data-bs-title="@book.Title">
-                                        <span class="fas fa-times fa-fw" aria-hidden="true"></span>
-                                    </button>
+                                    <div class="btn-group-sm">
+                                        <button type="button"
+                                                class="btn btn-outline-primary btn-sm"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#editModal"
+                                                data-id="@book.Id"
+                                                data-bs-title="@book.Title"
+                                                data-author="@book.Author">
+                                            <span class="fas fa-pencil-alt fa-fw" aria-hidden="true"></span>
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-outline-danger btn-sm"
+                                                style="margin-left:16px;"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteModal"
+                                                data-id="@book.Id"
+                                                data-bs-title="@book.Title">
+                                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
+                                        </button>
+                                    </div>
                                 </td>
                             }
                         </tr>

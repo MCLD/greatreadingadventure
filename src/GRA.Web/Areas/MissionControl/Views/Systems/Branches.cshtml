@@ -108,23 +108,25 @@
                                     </td>
                                 }
                                 <td class="gra-mc-icon">
-                                    <button type="submit"
-                                    class="btn btn-primary btn-sm"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#editModal"
-                                    data-id="@branch.Id"
-                                    data-name="@branch.Name"
-                                    data-url="@branch.Url"
-                                    data-address="@branch.Address"
-                                    data-telephone="@branch.Telephone">
-                                        <span class="fas fa-pencil-alt fa-fw" aria-hidden="true"></span>
-                                    </button>
-                                    <a class="btn btn-outline-danger btn-sm"
-                               style="margin-left:16px;"
-                               asp-action="@nameof(SystemsController.RemoveBranch)"
-                               asp-route-id="@branch.Id">
-                                        <span class="fas fa-times fa-fw" aria-hidden="true"></span>
-                                    </a>
+                                    <div class="btn-group-sm">
+                                        <button type="submit"
+                                                class="btn btn-outline-primary btn-sm"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#editModal"
+                                                data-id="@branch.Id"
+                                                data-name="@branch.Name"
+                                                data-url="@branch.Url"
+                                                data-address="@branch.Address"
+                                                data-telephone="@branch.Telephone">
+                                            <span class="fas fa-pencil-alt fa-fw" aria-hidden="true"></span>
+                                        </button>
+                                        <a class="btn btn-outline-danger btn-sm"
+                                           style="margin-left:16px;"
+                                           asp-action="@nameof(SystemsController.RemoveBranch)"
+                                           asp-route-id="@branch.Id">
+                                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         }

@@ -52,25 +52,27 @@
                                     <span class="label" style="background-color:@category.Color">@category.Name</span>
                                 </td>
                                 <td>
-                                    <button type="button"
-                                            class="btn btn-outline-danger btn-sm"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#editModal"
-                                            data-id="@category.Id"
-                                            data-name="@category.Name"
-                                            data-description="@category.Description"
-                                            data-color="@category.Color">
-                                        <span class="fas fa-2x fa-pencil-alt" aria-hidden="true"></span>
-                                    </button>
-                                    <button type="button"
-                                            class="btn btn-outline-danger btn-sm"
-                                            style="margin-left:16px;"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal"
-                                            data-id="@category.Id"
-                                            data-name="@category.Name">
-                                        <span class="fas fa-2x fa-times fa-fw" aria-hidden="true"></span>
-                                    </button>
+                                    <div class="btn-group-sm">
+                                        <button type="button"
+                                                class="btn btn-outline-primary btn-sm"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#editModal"
+                                                data-id="@category.Id"
+                                                data-name="@category.Name"
+                                                data-description="@category.Description"
+                                                data-color="@category.Color">
+                                            <span class="fas fa-pencil-alt fa-fw" aria-hidden="true"></span>
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-outline-danger btn-sm"
+                                                style="margin-left:16px;"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteModal"
+                                                data-id="@category.Id"
+                                                data-name="@category.Name">
+                                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         }
