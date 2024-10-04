@@ -263,7 +263,7 @@
                     @foreach (var branch in Model.System.Branches)
                     {
                         <div>
-                            <span class="colored-icon fas fa-lg @(Model.Performer.AllBranches || Model.BranchAvailability.Contains(branch.Id) ? "fa-check" : "fa-times")"></span>
+                            <span class="far fa-lg @(Model.Performer.AllBranches || Model.BranchAvailability.Contains(branch.Id) ? "fa-check-circle text-success" : "fa-times-circle text-danger")"></span>
                             <label data-bs-toggle="tooltip"
                                data-bs-placement="top"
                                title="@branch.Address">

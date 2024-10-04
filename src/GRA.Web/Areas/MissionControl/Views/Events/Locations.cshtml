@@ -79,7 +79,7 @@
                                     <td>
                                         @if (!string.IsNullOrWhiteSpace(location.Geolocation))
                                         {
-                                            <span class="fas fa-check colored-icon"></span>
+                                            <span class="far fa-check-circle fa-lg text-success"></span>
                                         }
                                         else
                                         {
@@ -93,7 +93,7 @@
                                     </td>
                                 }
                                 <td>
-                                    <div class="btn-group-sm">
+                                    <div class="btn-group">
                                         <button type="submit"
                                                 class="btn btn-outline-primary btn-sm"
                                                 data-bs-toggle="modal"
@@ -348,7 +348,7 @@
                     button.children("span").removeClass("hidden");
                     $.post(geolocationUrl, { id: button.data("id") }, function (response) {
                         if (response.success) {
-                            button.parent().html("<span class=\"fas fa-check colored-icon\"></span>");
+                            button.parent().html("<span class=\"far fa-check-circle fa-lg text-success\"></span>");
                         }
                         else {
                             alert("Unable to set geolocation: " + response.message);

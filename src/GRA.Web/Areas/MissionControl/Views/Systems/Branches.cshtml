@@ -338,7 +338,7 @@
                     button.children("span").removeClass("hidden");
                     $.post(geolocationUrl, { id: button.data("id") }, function (response) {
                         if (response.success) {
-                            button.parent().html("<span class=\"fas fa-check colored-icon\"></span>");
+                            button.parent().html("<span class=\"far fa-check-circle text-success\"></span>");
                         }
                         else {
                             alert("Unable to set geolocation: " + response.message);

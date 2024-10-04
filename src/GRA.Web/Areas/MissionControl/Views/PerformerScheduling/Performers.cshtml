@@ -62,7 +62,7 @@
                             <td style="@(performer.PhonePreferred ? "" : "font-style:italic")">@performer.Email</td>
                             <td style="@(performer.PhonePreferred ? "font-style:italic" : "")">@performer.Phone</td>
                             <td>@performer.ProgramCount</td>
-                            <td><span class="colored-icon fas @(performer.AvailableInSystem ? "fa-check" : "fa-times")"></span></td>
+                            <td><span class="far fa-lg @(performer.AvailableInSystem ? "fa-check-circle text-success" : "fa-times-circle text-danger")"></span></td>
                         </tr>
                     }
                 </tbody>

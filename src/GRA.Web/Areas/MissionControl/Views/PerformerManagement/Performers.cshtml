@@ -45,7 +45,7 @@
                             @if (Model.RegistrationClosed)
                             {
                                 <td>
-                                    <span class="colored-icon fas @(performer.IsApproved ? "fa-check" : "fa-times")"></span>
+                                    <span class="far fa-lg @(performer.IsApproved ? "fa-check-circle text-success" : "fa-times-circle text-danger")"></span>
                                 </td>
                             }
                             @if (Model.SchedulingStage < GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
