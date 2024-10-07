@@ -13,8 +13,14 @@
     <div class="row">
         @if (Model.HasPendingQuestionnaire)
         {
-            <div class="col-12 mb-3">
+            <div class="col-12 mt-3">
                 <div class="alert alert-warning">Activity cannot be logged while there is a pending questionnaire to be taken.</div>
+            </div>
+        }
+        else if(!Model.OpenToLog)
+        {
+            <div class="col-12 mt-3">
+                <div class="alert alert-warning">This program is not open to log activity.</div>
             </div>
         }
         else
