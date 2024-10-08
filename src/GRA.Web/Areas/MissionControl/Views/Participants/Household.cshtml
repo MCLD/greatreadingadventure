@@ -621,106 +621,6 @@
              data-bs-backdrop="static"
              data-bs-keyboard="false"
              aria-labelledby="listModalLabel">
-<<<<<<< HEAD
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="row">
-                    <div class="col-12 col-sm-10 offset-sm-1">
-                        <div class="card">
-                            <div class="card-header">
-                                <span class="lead">Add existing participant</span>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <ul class="nav nav-pills" style="padding: 10px 0;">
-                                            <li id="All" class="active participantScope">
-                                                <a style="cursor:pointer">All</a>
-                                            </li>
-                                            <li id="System" class="participantScope">
-                                                <a class="dropdown-toggle"
-                                                   data-bs-toggle="dropdown"
-                                                   href="#"
-                                                   role="button"
-                                                   aria-haspopup="true"
-                                                   aria-expanded="false">
-                                                    <span id="systemText">System</span> <span class="caret"></span>
-                                                </a>
-                                                <ul class="dropdown-menu">
-                                                    @foreach (var system in Model.SystemList)
-                                                    {
-                                                        <li>
-                                                            <a class="system-selector"
-                                                               data-id="@system.Id">
-                                                                @system.Name
-                                                            </a>
-                                                        </li>
-                                                    }
-                                                </ul>
-                                            </li>
-                                            <li id="Branch" class="participantScope">
-                                                <a class="dropdown-toggle"
-                                                   data-bs-toggle="dropdown"
-                                                   href="#"
-                                                   role="button"
-                                                   aria-haspopup="true"
-                                                   aria-expanded="false">
-                                                    <span id="branchText">Branch</span> <span class="caret"></span>
-                                                </a>
-                                                <ul id="branchDropdown" class="dropdown-menu">
-                                                    @foreach (var branch in Model.BranchList)
-                                                    {
-                                                        <li>
-                                                            <a class="branch-selector"
-                                                               data-id="@branch.Id">
-                                                                @branch.Name
-                                                            </a>
-                                                        </li>
-                                                    }
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-                                <div class="row mb-3">
-                                    <div class="col-8">
-                                        <input id="searchText" class="form-control"
-                                               placeholder="Enter text to search for a participant here" />
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="col-6">
-                                            <button type="button"
-                                                    id="searchButton"
-                                                    class="btn btn-outline-primary"
-                                                    style="margin-right: 8px;">
-                                                Search
-                                            </button>
-                                        </div>
-                                        <div class="col-6">
-                                            <button type="button"
-                                                    id="clearButton"
-                                                    class="btn btn-outline-secondary ">
-                                                Clear
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="searchMessage" class="row d-none">
-                                    <div class="col-12">
-                                        <p class="alert-sm alert-info">
-                                            Searching for '<strong id="searchTerm"></strong>'
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <form asp-action="AddExisitingParticipant"
-                                          method="post"
-                                          role="form">
-                                        <input name="Id" value="@Model.Id" type="hidden" />
-                                        <div id="modalParticipantsList" class="col-12">
-                                        </div>
-                                    </form>
-=======
             <div class="modal-dialog modal-xl" role="document">
                 <div class="modal-content">
                     <div class="card">
@@ -778,7 +678,6 @@
                                             </ul>
                                         </li>
                                     </ul>
->>>>>>> a8987a795f5bfbe988fafeb6fb0e6dfb67776978
                                 </div>
                             </div>
                             <div class="row mb-3">

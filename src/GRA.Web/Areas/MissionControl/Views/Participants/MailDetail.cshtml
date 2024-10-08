@@ -38,15 +38,9 @@
 </div>
 
 
-<<<<<<< HEAD
-<div class="mb-3">
-    <a asp-action="Index" class="btn btn-outline-secondary">Return to Participants</a>
-    <a asp-action="Mail" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Return to Mail List</a>
-=======
 <div class="mb-3 d-print-none d-flex">
     <a asp-action="Index"
        class="btn btn-outline-secondary">Return to Participants</a>
->>>>>>> a8987a795f5bfbe988fafeb6fb0e6dfb67776978
     @if (Model.CanRemoveMail)
     {
         <button type="button"
@@ -89,12 +83,7 @@
                     <div class="modal-footer d-flex justify-content-end">
                         <button type="button"
                                 class="btn btn-outline-secondary"
-<<<<<<< HEAD
-                                data-bs-dismiss="modal"
-                                style="margin-right: 1em;">
-=======
                                 data-bs-dismiss="modal">
->>>>>>> a8987a795f5bfbe988fafeb6fb0e6dfb67776978
                             Cancel
                         </button>
                         <form asp-controller="Participants"
