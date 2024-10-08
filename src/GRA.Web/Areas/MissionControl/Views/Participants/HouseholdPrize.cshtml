@@ -11,7 +11,7 @@
             <input asp-for="UserSelection" type="hidden" />
 
             <button type="submit"
-                    class="btn btn-primary btn-spinner"
+                    class="btn btn-outline-primary btn-spinner"
                     style="margin-bottom: 0.33rem;"
                     button-spinner>
                 Redeem
@@ -48,8 +48,8 @@
 </div>
 
 <div class="mb-3">
-    <a asp-action="@nameof(ParticipantsController.Household)" asp-route-id="@Model.Id" class="btn btn-secondary">Return to @(string.IsNullOrEmpty(Model.GroupName) ? "Household" : "Group")</a>
-    <a href="#" class="btn btn-secondary float-end">Return to Top</a>
+    <a asp-action="@nameof(ParticipantsController.Household)" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Return to @(string.IsNullOrEmpty(Model.GroupName) ? "Household" : "Group")</a>
+    <a href="#" class="btn btn-outline-secondary float-end">Return to Top</a>
 </div>
 
 @section scripts {

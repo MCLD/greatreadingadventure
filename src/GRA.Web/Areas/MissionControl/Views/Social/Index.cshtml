@@ -59,7 +59,7 @@
                                 <a asp-action="ViewSocial"
                                    asp-route-socialheaderid="@socialHeader.Id"
                                    asp-route-languageid="@social.LanguageId"
-                                   class="btn btn-secondary btn-sm">
+                                   class="btn btn-outline-primary btn-sm">
                                     @Model.Languages.SingleOrDefault(_ => _.Id == social.LanguageId)?.Description
                                 </a>
                             }

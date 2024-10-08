@@ -167,12 +167,12 @@
             }
 
             <div class="mb-3">
-                <a asp-action="Index" class="btn btn-secondary">Return to List</a>
+                <a asp-action="Index" class="btn btn-outline-secondary">Return to List</a>
                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.SendBulkEmails.ToString()))
                 {
                     @if (Model.Action == nameof(EmailManagementController.EditTemplate))
                     {
-                        <button class="btn btn-info testEmail gra-button-buffer"
+                        <button class="btn btn-outline-primary testEmail gra-button-buffer"
                                 type="button"
                                 data-bs-toggle="modal"
                                 data-bs-target="#sendTestModal">
@@ -186,7 +186,7 @@
                             id="Submit"
                             name="Submit"
                             value="Submit"
-                            class="btn btn-primary btn-spinner gra-save-button"
+                            class="btn btn-outline-primary btn-spinner gra-save-button"
                             button-spinner>
                         <span class="buttonText">Save Template</span>
                     </button>
@@ -244,14 +244,14 @@
                         <span asp-validation-for="UploadedFile" class="text-danger"></span>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-secondary"
+                        <button class="btn btn-outline-secondary"
                                 type="button"
                                 data-bs-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel
                         </button>
                         <button type="submit"
-                                class="btn btn-primary float-end"
+                                class="btn btn-outline-primary float-end"
                                 aria-label="Confirm">
                             Upload and replace
                         </button>
@@ -295,13 +295,13 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-secondary"
+                                class="btn btn-outline-secondary"
                                 data-bs-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel
                         </button>
                         <button type="submit"
-                                class="btn btn-primary float-end"
+                                class="btn btn-outline-primary float-end"
                                 aria-label="Confirm">
                             Send
                         </button>
@@ -358,7 +358,7 @@
                 $('.gra-save-warning').removeClass('d-none');
             }
             if ($('.gra-save-button')) {
-                $('.gra-save-button').removeClass('btn-primary').addClass('btn-outline-success');
+                $('.gra-save-button').removeClass('btn-outline-primary').addClass('btn-outline-success');
             }
         }
 

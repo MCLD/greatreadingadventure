@@ -8,7 +8,7 @@
     <div class="col-12">
         <h1>
             Program Images: @Model.ProgramTitle
-            <a asp-action="ProgramDetails" asp-route-id="@Model.ProgramId" class="btn btn-lg btn-secondary" style="margin-bottom: 0.5rem;">Return to Program</a>
+            <a asp-action="ProgramDetails" asp-route-id="@Model.ProgramId" class="btn btn-lg btn-outline-secondary" style="margin-bottom: 0.5rem;">Return to Program</a>
         </h1>
     </div>
     @if (Model.IsEditable)
@@ -114,7 +114,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                            class="btn btn-secondary"
+                            class="btn btn-outline-secondary"
                             data-bs-dismiss="modal"
                             style="margin-right: 1em;">
                         Cancel

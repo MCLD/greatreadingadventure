@@ -19,7 +19,7 @@
                 <button class="btn btn-warning">Unset Welcome Email</button>
             </form>
         }
-        <a class="btn btn-secondary"
+        <a class="btn btn-outline-secondary"
            asp-action="@nameof(EmailManagementController.Index)">
             Back
         </a>
@@ -59,7 +59,7 @@
                                         <form asp-action="@nameof(EmailManagementController.SetWelcomeEmail)"
                                               method="post">
                                             <input type="hidden" name="id" value="@template.Id" />
-                                            <button class="btn btn-secondary">Set as Welcome Email</button>
+                                            <button class="btn btn-outline-primary">Set as Welcome Email</button>
                                         </form>
                                     }
                                 </td>
