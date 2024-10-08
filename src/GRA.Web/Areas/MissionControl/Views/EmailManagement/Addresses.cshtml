@@ -5,7 +5,7 @@
 }
 
 <div class="row" style="margin: 1rem 0;">
-    <a asp-action="Index" class="btn btn-secondary">
+    <a asp-action="Index" class="btn btn-outline-secondary">
         <span class="fas fa-envelope-open-text"></span>
         Back to Email Management
     </a>
@@ -27,7 +27,7 @@
             <span asp-validation-for="SignUpSource" class="text-danger"></span>
         </div>
     </div>
-    <button class="btn btn-primary"
+    <button class="btn btn-outline-primary"
             disabled="@(!Model.HasSources ? "disabled" : null )"
             type="submit">
         <span class="fas fa-file-download"></span>
@@ -74,7 +74,7 @@
         </div>
     </div>
     <div class="row-spacing">
-        <button class="btn btn-primary btn-spinner" type="submit" button-spinner>
+        <button class="btn btn-outline-primary btn-spinner" type="submit" button-spinner>
             <span class="fas fa-file-upload"></span>
             Upload
         </button>

@@ -76,10 +76,10 @@
 </div>
 
 <div class="mb-3">
-    <a asp-action="Index" class="btn btn-secondary">Return to Participants</a>
+    <a asp-action="Index" class="btn btn-outline-secondary">Return to Participants</a>
     @if (!Model.HasPendingQuestionnaire)
     {
-        <button type="button" data-bs-toggle="modal" data-bs-target="#addModal" class="btn btn-primary">Add Book</button>
+        <button type="button" data-bs-toggle="modal" data-bs-target="#addModal" class="btn btn-outline-primary">Add Book</button>
     }
 </div>
 
@@ -125,13 +125,13 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button"
-                                    class="btn btn-secondary"
+                                    class="btn btn-outline-secondary"
                                     data-bs-dismiss="modal"
                                     style="margin-right: 1em;">
                                 Cancel
                             </button>
                             <button type="submit"
-                                    class="btn btn-primary float-end"
+                                    class="btn btn-outline-primary float-end"
                                     aria-label="Confirm">
                                 Add
                             </button>
@@ -185,12 +185,12 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button"
-                                    class="btn btn-secondary"
+                                    class="btn btn-outline-secondary"
                                     data-bs-dismiss="modal"
                                     style="margin-right: 1em;">
                                 Cancel
                             </button>
-                            <button type="submit" class="btn btn-primary float-end"
+                            <button type="submit" class="btn btn-outline-primary float-end"
                                     aria-label="Confirm">
                                 Save
                             </button>
@@ -224,7 +224,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-secondary"
+                                class="btn btn-outline-secondary"
                                 data-bs-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel

@@ -62,14 +62,14 @@
                         {
                             if (Model.User.IsDonationLocked)
                             {
-                                <button class="btn btn-secondary disabled"
+                                <button class="btn btn-outline-primary disabled"
                                     asp-is-disabled="true">
                                     <span class="buttonText">Donated through vendor</span>
                                 </button>
                             }
                             else
                             {
-                                <button class="btn btn-info btn-spinner"
+                                <button class="btn btn-outline-secondary btn-spinner"
                                         asp-action="@nameof(ParticipantsController.UndonateCode)"
                                         asp-is-disabled="@(!Model.CanEditDetails)"
                                         button-spinner>
@@ -130,7 +130,7 @@
                                             <input id="page" name="page" value="@Model.PaginateModel.CurrentPage" type="hidden" />
                                             <button type="submit"
                                                     style="margin-left:5px;"
-                                                    class="btn btn-secondary btn-sm btn-spinner"
+                                                    class="btn btn-outline-secondary btn-sm btn-spinner"
                                                     button-spinner>
                                                 Undo
                                             </button>
@@ -187,9 +187,9 @@
         {
             <a asp-action="Household" 
                asp-route-id="@(Model.User.HouseholdHeadUserId.HasValue ? Model.User.HouseholdHeadUserId.Value : Model.User.Id)"
-               class="btn btn-secondary">Return to Family</a>
+               class="btn btn-outline-secondary">Return to Family</a>
         }
-        <a asp-action="Index" class="btn btn-secondary">Return to All Participants</a>
+        <a asp-action="Index" class="btn btn-outline-secondary">Return to All Participants</a>
     </div>
 </div>
 
@@ -229,13 +229,13 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button"
-                                    class="btn btn-secondary"
+                                    class="btn btn-outline-secondary"
                                     data-bs-dismiss="modal"
                                     style="margin-right: 1em;">
                                 @GRA.Annotations.Interface.Cancel
                             </button>
                             <button type="submit"
-                                    class="btn btn-warning btn-spinner float-end"
+                                    class="btn btn-outline-warning btn-spinner float-end"
                                     aria-label="Confirm"
                                     button-spinner>
                                 @GRA.Annotations.Interface.Confirm

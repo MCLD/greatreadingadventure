@@ -149,7 +149,7 @@
                 Which locations are they willing to perform at:
                 <strong><span id="branchCount">@(Model.BranchAvailability?.Count ?? 0)</span> of @Model.BranchCount Selected</strong>
             </p>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#branchModal">Select Libraries</button>
+            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#branchModal">Select Libraries</button>
             <span id="branchValidator" asp-validation-for="BranchAvailability" class="field-validation-error text-danger">Please select the libraries where they are willing to perform.</span>
         </div>
     </div>
@@ -163,7 +163,7 @@
                     button-spinner>
                 Save Information
             </button>
-            <a asp-action="Performer" asp-route-id="@Model.Performer.Id" class="btn btn-lg btn-secondary float-start" style="margin-right: 10px;">Return to Performer</a>
+            <a asp-action="Performer" asp-route-id="@Model.Performer.Id" class="btn btn-lg btn-outline-secondary float-start" style="margin-right: 10px;">Return to Performer</a>
         </div>
     </div>
 </form>
@@ -221,7 +221,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                            class="btn btn-secondary"
+                            class="btn btn-outline-primary"
                             data-bs-dismiss="modal"
                             style="margin-right: 1em;">
                         Confirm

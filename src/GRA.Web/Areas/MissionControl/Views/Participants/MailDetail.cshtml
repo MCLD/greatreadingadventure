@@ -39,8 +39,8 @@
 
 
 <div class="mb-3">
-    <a asp-action="Index" class="btn btn-secondary">Return to Participants</a>
-    <a asp-action="Mail" asp-route-id="@Model.Id" class="btn btn-secondary">Return to Mail List</a>
+    <a asp-action="Index" class="btn btn-outline-secondary">Return to Participants</a>
+    <a asp-action="Mail" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Return to Mail List</a>
     @if (Model.CanRemoveMail)
     {
         <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
@@ -76,7 +76,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-secondary"
+                                class="btn btn-outline-secondary"
                                 data-bs-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel

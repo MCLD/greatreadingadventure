@@ -314,7 +314,7 @@
                     Change that status by clicking below which will email the participant that their item is ready.
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                     <form asp-action="@nameof(ParticipantsController.MarkVendorItemAsReceived)"
                           style="display: inline;">
                         <input type="hidden" name="id" value="@Model.User.Id">
@@ -365,13 +365,13 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button"
-                                    class="btn btn-secondary"
+                                    class="btn btn-outline-secondary"
                                     data-bs-dismiss="modal"
                                     style="margin-right: 1em;">
                                 @GRA.Annotations.Interface.Cancel
                             </button>
                             <button type="submit"
-                                    class="btn btn-warning btn-spinner float-end"
+                                    class="btn btn-outline-warning btn-spinner float-end"
                                     aria-label="Confirm"
                                     button-spinner>
                                 @GRA.Annotations.Interface.Confirm

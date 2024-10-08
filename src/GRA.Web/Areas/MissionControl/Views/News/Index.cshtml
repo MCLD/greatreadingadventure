@@ -7,7 +7,7 @@
         <span class="dropdown-label">Category:</span>
         <ul class="nav" style="display: inline-table;">
             <li>
-                <a class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                <a class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     @(Model.Category?.Name ?? "Show All") <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
@@ -32,8 +32,8 @@
             <input asp-for="Search" class="form-control" />
         </div>
         <div class="col-4">
-            <input type="submit" value="Search" class="btn btn-secondary" style="margin-right: 8px;" />
-            <a asp-action="Index" asp-route-Category="@Model.CategoryId" class="btn btn-secondary">Clear</a>
+            <input type="submit" value="Search" class="btn btn-outline-primary" style="margin-right: 8px;" />
+            <a asp-action="Index" asp-route-Category="@Model.CategoryId" class="btn btn-outline-secondary">Clear</a>
         </div>
     </div>
 </form>
@@ -49,7 +49,7 @@
 
 <div class="row" style="padding: 10px 0;">
     <div class="col-12">
-        <a asp-action="CreatePost" class="btn btn-secondary">Add a Post</a>
+        <a asp-action="CreatePost" class="btn btn-outline-primary">Add a Post</a>
     </div>
 </div>
 
@@ -135,7 +135,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-secondary"
+                                class="btn btn-outline-secondary"
                                 data-bs-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel

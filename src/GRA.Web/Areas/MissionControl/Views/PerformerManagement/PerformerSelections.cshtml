@@ -51,7 +51,7 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col-12">
-                                <a asp-action="Performer" asp-route-id="@Model.Performer.Id" class="btn btn-lg btn-secondary">View Performer</a>
+                                <a asp-action="Performer" asp-route-id="@Model.Performer.Id" class="btn btn-lg btn-outline-primary">View Performer</a>
                             </div>
                         </div>
                     </div>
@@ -171,7 +171,7 @@
                                 </td>
                                 <td class="d-print-none" style="text-align:center;">
                                     <button type="button"
-                                            class="btn btn-sm btn-primary"
+                                            class="btn btn-sm btn-outline-primary"
                                             data-bs-toggle="modal"
                                             data-bs-target="#editModal"
                                             data-selectionid="@branchSelection.Id">
@@ -229,7 +229,7 @@
                         <input class="hidden" asp-for="Performer.Id" aria-hidden="true" />
                         <input class="hidden" asp-for="BranchSelectionId" aria-hidden="true" />
                         <button type="button"
-                                class="btn btn-secondary"
+                                class="btn btn-outline-secondary"
                                 data-bs-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel
@@ -270,7 +270,7 @@
                 <div class="modal-footer">
                     <form>
                         <button type="button"
-                                class="btn btn-secondary"
+                                class="btn btn-outline-secondary"
                                 data-bs-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel

@@ -35,7 +35,7 @@
                         {
                             <li class="list-group-item" data-name="@permission">
                                 @permission
-                                <button type="button" class="btn btn-secondary btn-sm move-right"><span class="fas fa-angle-double-right"></span></button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm move-right"><span class="fas fa-angle-double-right"></span></button>
                             </li>
                         }
                     </ul>
@@ -52,7 +52,7 @@
                                     @permission
                                     @if (Model.Role.IsAdmin == false)
                                     {
-                                        <button type="button" class="btn btn-secondary btn-sm move-left"><span class="fas fa-angle-double-left"></span></button>
+                                        <button type="button" class="btn btn-outline-secondary btn-sm move-left"><span class="fas fa-angle-double-left"></span></button>
                                     }
                                 </li>
                             }
@@ -64,12 +64,12 @@
             <hr />
 
             <div class="mb-3">
-                <a asp-action="Index" class="btn btn-secondary">Return to List</a>
+                <a asp-action="Index" class="btn btn-outline-secondary">Return to List</a>
                 <button type="submit"
                         id="Submit"
                         name="Submit"
                         value="Submit"
-                        class="btn btn-primary btn-spinner"
+                        class="btn btn-outline-primary btn-spinner"
                         button-spinner>
                     <span class="buttonText">Save Role</span>
                 </button>

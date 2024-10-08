@@ -32,13 +32,13 @@
         <a asp-action="@nameof(HomeController.Post)"
            asp-route-id="@Model.Post.PreviousPostId"
            title="Previous post"
-           class="btn btn-secondary">
+           class="btn btn-outline-primary">
             <span class="fas fa-backward"></span>
         </a>
     }
     <a asp-action="@nameof(HomeController.Index)"
        title="Back to Mission Control"
-       class="btn btn-secondary">
+       class="btn btn-outline-secondary">
         <span class="fas fa-rocket"></span>
     </a>
 
@@ -47,7 +47,7 @@
         <a asp-action="@nameof(HomeController.Post)"
            asp-route-id="@Model.Post.NextPostId"
            title="Next post"
-           class="btn btn-secondary">
+           class="btn btn-outline-primary">
             <span class="fas fa-forward"></span>
         </a>
     }

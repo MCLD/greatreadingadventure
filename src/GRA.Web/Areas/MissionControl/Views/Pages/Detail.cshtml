@@ -44,7 +44,7 @@
                     <a asp-action="@nameof(PagesController.Preview)"
                        asp-route-headerId="@Model.HeaderId"
                        asp-route-languageId="@Model.SelectedLanguageId"
-                       class="btn btn-secondary float-end">
+                       class="btn btn-outline-primary float-end">
                         Preview
                     </a>
                 </div>
@@ -105,12 +105,12 @@
             </div>
 
             <div class="mb-3">
-                <a asp-action="Index" class="btn btn-secondary">Return to List</a>
+                <a asp-action="Index" class="btn btn-outline-secondary">Return to List</a>
                 <button type="submit"
                         id="Submit"
                         name="Submit"
                         value="Submit"
-                        class="btn btn-primary btn-spinner"
+                        class="btn btn-outline-primary btn-spinner"
                         button-spinner>
                     <span class="buttonText">Save</span>
                 </button>
@@ -155,7 +155,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-secondary"
+                                class="btn btn-outline-secondary"
                                 data-bs-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel
