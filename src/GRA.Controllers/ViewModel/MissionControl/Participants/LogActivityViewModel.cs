@@ -20,6 +20,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public bool DisableSecretCode { get; set; }
         public bool HasPendingQuestionnaire { get; set; }
         public bool IsSecretCode { get; set; }
+        public bool OpenToLog { get; set; }
 
         public PointTranslation PointTranslation { get; set; }
 

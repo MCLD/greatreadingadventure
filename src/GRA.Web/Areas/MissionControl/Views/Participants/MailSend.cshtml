@@ -2,29 +2,32 @@
 
 <form asp-controller="Participants" asp-action="MailSend" method="post" role="form">
     <input asp-for="Id" type="hidden" />
-
-    <br />
-
-    <div class="row row-spacing">
+    <div class="row mb-3">
         <div class="col-sm-8 offset-sm-2">
             <label asp-for="Subject" class="col-form-label"></label>
             <input asp-for="Subject" class="form-control" />
             <span asp-validation-for="Subject" class="text-danger"></span>
         </div>
     </div>
-
-    <div class="row row-spacing">
+    <div class="row mb-3">
         <div class="col-sm-8 offset-sm-2">
             <label asp-for="Body" class="col-form-label"></label>
             <textarea asp-for="Body" class="form-control"></textarea>
             <span asp-validation-for="Body" class="text-danger"></span>
         </div>
     </div>
-
     <div class="row">
+<<<<<<< HEAD
         <div class="col-sm-8 offset-sm-2">
             <a asp-action="Index" class="btn btn-outline-secondary">Return to Participants List</a>
             <a asp-action="Mail" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Return to Mail List</a>
+=======
+        <div class="col-sm-8 offset-sm-2 d-flex d-print-none">
+            <a asp-action="Index" class="btn btn-outline-secondary">Return to Participants List</a>
+            <a asp-action="Mail"
+               asp-route-id="@Model.Id"
+               class="btn btn-outline-secondary ms-auto me-2">Return to Mail List</a>
+>>>>>>> a8987a795f5bfbe988fafeb6fb0e6dfb67776978
             <button type="submit" class="btn btn-outline-primary">
                 Send Mail
             </button>

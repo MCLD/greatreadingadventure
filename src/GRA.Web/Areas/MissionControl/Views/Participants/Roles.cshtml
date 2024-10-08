@@ -13,7 +13,13 @@
                 {
                     <li class="list-group-item" data-id="@role.Id" data-name="@role.Name">
                         @role.Name
+<<<<<<< HEAD
                         <button type="button" class="btn btn-outline-secondary btn-sm move-right"><span class="fas fa-angle-double-right"></span></button>
+=======
+                        <button type="button" class="btn btn-outline-secondary btn-sm move-right">
+                            <span class="fas fa-angle-double-right"></span>
+                        </button>
+>>>>>>> a8987a795f5bfbe988fafeb6fb0e6dfb67776978
                     </li>
                 }
             </ul>
@@ -26,7 +32,13 @@
                 {
                     <li class="list-group-item" data-id="@role.Id" data-name="@role.Name">
                         @role.Name
+<<<<<<< HEAD
                         <button type="button" class="btn btn-outline-secondary btn-sm move-left"><span class="fas fa-angle-double-left"></span></button>
+=======
+                        <button type="button" class="btn btn-outline-secondary btn-sm move-left">
+                            <span class="fas fa-angle-double-left"></span>
+                        </button>
+>>>>>>> a8987a795f5bfbe988fafeb6fb0e6dfb67776978
                     </li>
                 }
             </ul>
@@ -35,13 +47,22 @@
 
     <hr />
 
+<<<<<<< HEAD
     <div class="mb-3">
         <a asp-action="Index" class="btn btn-outline-secondary">Return to Participants</a>
+=======
+    <div class="mb-3 d-flex d-print-none justify-content-end">
+        <a asp-action="Index" class="btn btn-outline-secondary me-2">Return to Participants</a>
+>>>>>>> a8987a795f5bfbe988fafeb6fb0e6dfb67776978
         <button type="submit"
                 id="Submit"
                 name="Submit"
                 value="Submit"
+<<<<<<< HEAD
                 class="btn btn-outline-primary btn-spinner"
+=======
+                class="btn btn-outline-primary"
+>>>>>>> a8987a795f5bfbe988fafeb6fb0e6dfb67776978
                 button-spinner>
             <span class="buttonText">Save Roles</span>
         </button>
@@ -65,7 +86,7 @@
             }
         });
 
-        $(document).on("click", ".move-right", function() {
+        $(document).on("click", ".move-right", function () {
             $(this).removeClass("move-right").addClass("move-left");
             $(this).children().removeClass("fa-angle-double-right").addClass("fa-angle-double-left");
             var item = $(this).parent();
@@ -74,7 +95,7 @@
                 item.removeClass("list-group-item-danger");
                 var added = false;
                 var name = item.data("name");
-                $(".list-group-item", selectedList).each(function() {
+                $(".list-group-item", selectedList).each(function () {
                     if ($(this).hasClass("list-group-item-success") == false && $(this).data("name") > name) {
                         item.insertBefore($(this));
                         added = true;
@@ -89,7 +110,7 @@
                 item.addClass("list-group-item-success");
                 var added = false;
                 var name = item.data("name");
-                $(".list-group-item", selectedList).each(function() {
+                $(".list-group-item", selectedList).each(function () {
                     if ($(this).hasClass("list-group-item-success") == false || $(this).data("name") > name) {
                         item.insertBefore($(this));
                         added = true;
@@ -102,7 +123,7 @@
             }
         });
 
-        $(document).on("click", ".move-left", function() {
+        $(document).on("click", ".move-left", function () {
             $(this).removeClass("move-left").addClass("move-right");
             $(this).children().removeClass("fa-angle-double-left").addClass("fa-angle-double-right");
             var item = $(this).parent();
@@ -111,7 +132,7 @@
                 item.removeClass("list-group-item-success");
                 var added = false;
                 var name = item.data("name");
-                $(".list-group-item", unselectedList).each(function() {
+                $(".list-group-item", unselectedList).each(function () {
                     if ($(this).hasClass("list-group-item-danger") == false && $(this).data("name") > name) {
                         item.insertBefore($(this));
                         added = true;
@@ -126,7 +147,7 @@
                 item.addClass("list-group-item-danger");
                 var added = false;
                 var name = item.data("name");
-                $(".list-group-item", unselectedList).each(function() {
+                $(".list-group-item", unselectedList).each(function () {
                     if ($(this).hasClass("list-group-item-danger") == false || $(this).data("name") > name) {
                         item.insertBefore($(this));
                         added = true;

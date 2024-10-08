@@ -786,9 +786,10 @@ namespace GRA.Controllers.MissionControl
 
             var viewModel = new LogActivityViewModel(await GetPopulatedBaseViewModel(user))
             {
+                DisableSecretCode = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
                 HasPendingQuestionnaire = (await _questionnaireService
                     .GetRequiredQuestionnaire(user.Id, user.Age)).HasValue,
-                DisableSecretCode = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
+                OpenToLog = _activityService.IsOpenToLog(),
                 PointTranslation = await _pointTranslationService
                     .GetByProgramIdAsync(user.ProgramId, true),
             };
@@ -867,6 +868,7 @@ namespace GRA.Controllers.MissionControl
                 model.VendorCodeTypeList = new SelectList(
                     await _vendorCodeService.GetTypeAllAsync(), "Id", "Description");
             }
+            model.OpenToLog = _activityService.IsOpenToLog();
             return View(model);
         }
 
@@ -1179,22 +1181,24 @@ namespace GRA.Controllers.MissionControl
 
                 var viewModel = new HouseholdListViewModel(await GetPopulatedBaseViewModel(user))
                 {
-                    Users = household,
-                    HeadOfHouseholdId = user.HouseholdHeadUserId,
-                    CanRedeemBulkVendorCodes = UserHasPermission(Permission.RedeemBulkVendorCodes),
+                    BranchList = branchList,
                     CanEditDetails = UserHasPermission(Permission.EditParticipants),
                     CanImportNewMembers = UserHasPermission(Permission.ImportHouseholdMembers),
+                    OpenToLog = _activityService.IsOpenToLog(),
                     CanLogActivity = UserHasPermission(Permission.LogActivityForAny),
                     CanReadMail = ReadAllMail,
+                    CanRedeemBulkVendorCodes = UserHasPermission(Permission.RedeemBulkVendorCodes),
                     CanViewPrizes = ViewUserPrizes,
+                    DisableSecretCode
+                        = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
                     Head = head,
-                    SystemId = systemId,
-                    BranchList = branchList,
-                    SystemList = systemList,
-                    DisableSecretCode = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
+                    HeadOfHouseholdId = user.HouseholdHeadUserId,
+                    PointTranslation
+                        = await _pointTranslationService.GetByProgramIdAsync(user.ProgramId, true),
                     ShowVendorCodes = showVendorCodes,
-                    PointTranslation = await _pointTranslationService
-                        .GetByProgramIdAsync(user.ProgramId, true),
+                    SystemId = systemId,
+                    SystemList = systemList,
+                    Users = household,
                 };
 
                 if (ViewUserPrizes)
@@ -1385,7 +1389,8 @@ namespace GRA.Controllers.MissionControl
             {
                 UserIds = new List<int>() { userId },
                 Search = search,
-                CanAddToHousehold = true
+                CanAddToHousehold = true,
+                Take = 10
             };
             if (branchId.HasValue)
             {
@@ -1919,7 +1924,10 @@ namespace GRA.Controllers.MissionControl
             {
                 var filter = new BookFilter(page);
 
-                bool isDescending = string.Equals(order, "Descending", StringComparison.OrdinalIgnoreCase);
+                bool isDescending = string.Equals(order,
+                    "Descending",
+                    StringComparison.OrdinalIgnoreCase);
+
                 if (!string.IsNullOrWhiteSpace(sort) && Enum.IsDefined(typeof(SortBooksBy), sort))
                 {
                     filter.SortBy = (SortBooksBy)Enum.Parse(typeof(SortBooksBy), sort);
@@ -1950,13 +1958,15 @@ namespace GRA.Controllers.MissionControl
                 var viewModel = new BookListViewModel(await GetPopulatedBaseViewModel(user))
                 {
                     Books = books.Data.ToList(),
+                    CanEditBooks = UserHasPermission(Permission.LogActivityForAny),
+                    HasPendingQuestionnaire
+                        = (await _questionnaireService.GetRequiredQuestionnaire(user.Id,
+                            user.Age)).HasValue,
+                    HeadOfHouseholdId = user.HouseholdHeadUserId,
+                    IsDescending = isDescending,
+                    OpenToLog = _activityService.IsOpenToLog(),
                     PaginateModel = paginateModel,
                     Sort = sort,
-                    IsDescending = isDescending,
-                    HasPendingQuestionnaire = (await _questionnaireService
-                        .GetRequiredQuestionnaire(user.Id, user.Age)).HasValue,
-                    HeadOfHouseholdId = user.HouseholdHeadUserId,
-                    CanEditBooks = UserHasPermission(Permission.LogActivityForAny),
                     SortBooks = Enum.GetValues(typeof(SortBooksBy)),
                 };
 

@@ -149,19 +149,16 @@ footer p {
 
 .badge-xs {
     height: auto;
-    min-height: 64px;
     width: 64px;
 }
 
 .badge-sm {
     height: auto;
-    min-height: 110px;
     width: 110px;
 }
 
 .badge-lg {
     height: auto;
-    min-height: 210px;
     width: 210px;
 }
 
