@@ -868,6 +868,7 @@ namespace GRA.Controllers.MissionControl
                 model.VendorCodeTypeList = new SelectList(
                     await _vendorCodeService.GetTypeAllAsync(), "Id", "Description");
             }
+            model.OpenToLog = _activityService.IsOpenToLog();
             return View(model);
         }
 
@@ -1388,7 +1389,8 @@ namespace GRA.Controllers.MissionControl
             {
                 UserIds = new List<int>() { userId },
                 Search = search,
-                CanAddToHousehold = true
+                CanAddToHousehold = true,
+                Take = 10
             };
             if (branchId.HasValue)
             {

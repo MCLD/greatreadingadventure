@@ -88,14 +88,14 @@
     </div>
 </div>
 
-<div class="mb-3 d-flex">
+<div class="mb-3 d-flex d-print-none justify-content-end">
     @if (Model.CanSendMail)
     {
         <a asp-action="MailSend"
            asp-route-id="@Model.Id"
-           class="btn btn-outline-primary">Send Mail</a>
+           class="btn btn-outline-primary me-2">Send Mail</a>
     }
-    <a asp-action="Index" class="btn btn-outline-secondary ms-auto">Return to Participants</a>
+    <a asp-action="Index" class="btn btn-outline-secondary">Return to Participants</a>
 </div>
 
 @if (Model.CanRemoveMail)

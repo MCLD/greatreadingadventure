@@ -98,6 +98,11 @@
     </div>
 </div>
 
+<div class="mb-3 d-flex d-print-none justify-content-end">
+    <a asp-action="Index"
+       class="btn btn-outline-secondary">Return to Participants</a>
+</div>
+
 <form method="post" asp-action="@nameof(ParticipantsController.AssignNewCode)">
     <input type="hidden" name="id" value="@Model.Id" />
     <div class="modal" id="areYouSureModal" tabindex="-1" role="dialog">
@@ -213,8 +218,6 @@
         </div>
     </div>
 </form>
-
-
 
 @if (Model.CurrentUser)
 {

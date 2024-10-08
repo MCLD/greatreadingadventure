@@ -8,7 +8,7 @@
         <div class="col-12 mb-3">
             <div class="alert alert-warning">
                 Books cannot be added while there is a pending questionnaire to be taken.
-                </div>
+            </div>
         </div>
     </div>
 }
@@ -82,21 +82,17 @@
     </div>
 </div>
 
-<div class="mb-3 d-flex d-print-none">
+<div class="mb-3 d-flex d-print-none justify-content-end">
     @if (!Model.HasPendingQuestionnaire && Model.OpenToLog)
     {
-        <div>
-            <button type="button"
-                    data-bs-toggle="modal"
-                    data-bs-target="#addModal"
-                    class="btn btn-outline-primary">
-                Add Book
-            </button>
-        </div>
+        <button type="button"
+                data-bs-toggle="modal"
+                data-bs-target="#addModal"
+                class="btn btn-outline-primary me-2">
+            Add Book
+        </button>
     }
-    <div class="ms-auto">
-        <a asp-action="Index" class="btn btn-outline-secondary">Return to Participants</a>
-    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Return to Participants</a>
 </div>
 
 @if (Model.CanEditBooks)
@@ -229,8 +225,8 @@
                         </button>
                     </div>
                     <div class="modal-body d-flex align-items-stretch">
-                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" 
-                        aria-hidden="true"></span>
+                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                              aria-hidden="true"></span>
                         <span id="modal-text"></span>
                     </div>
                     <div class="modal-footer d-flex justify-content-end">
