@@ -62,19 +62,14 @@
                         {
                             if (Model.User.IsDonationLocked)
                             {
-<<<<<<< HEAD
-                                <button class="btn btn-outline-primary disabled"
-                                    asp-is-disabled="true">
-=======
                                 <button class="btn btn-secondary disabled"
                                         asp-is-disabled="true">
->>>>>>> a8987a795f5bfbe988fafeb6fb0e6dfb67776978
                                     <span class="buttonText">Donated through vendor</span>
                                 </button>
                             }
                             else
                             {
-                                <button class="btn btn-outline-secondary btn-spinner"
+                                <button class="btn btn-info btn-spinner"
                                         asp-action="@nameof(ParticipantsController.UndonateCode)"
                                         asp-is-disabled="@(!Model.CanEditDetails)"
                                         button-spinner>
@@ -147,12 +142,7 @@
                                                    value="@Model.PaginateModel.CurrentPage"
                                                    type="hidden" />
                                             <button type="submit"
-<<<<<<< HEAD
-                                                    style="margin-left:5px;"
-                                                    class="btn btn-outline-secondary btn-sm btn-spinner"
-=======
                                                     class="btn btn-outline-secondary btn-sm mx-auto d-block mb-2"
->>>>>>> a8987a795f5bfbe988fafeb6fb0e6dfb67776978
                                                     button-spinner>
                                                 Undo redemption
                                             </button>
@@ -227,11 +217,7 @@
                asp-route-id="@(Model.User.HouseholdHeadUserId.HasValue ? Model.User.HouseholdHeadUserId.Value : Model.User.Id)"
                class="btn btn-outline-secondary">Return to Family</a>
         }
-<<<<<<< HEAD
-        <a asp-action="Index" class="btn btn-outline-secondary">Return to All Participants</a>
-=======
         <a asp-action="Index" class="btn btn-outline-secondary ms-auto">Return to All Participants</a>
->>>>>>> a8987a795f5bfbe988fafeb6fb0e6dfb67776978
     </div>
 </div>
 
@@ -271,13 +257,13 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button"
-                                    class="btn btn-outline-secondary"
+                                    class="btn btn-secondary"
                                     data-bs-dismiss="modal"
                                     style="margin-right: 1em;">
                                 @GRA.Annotations.Interface.Cancel
                             </button>
                             <button type="submit"
-                                    class="btn btn-outline-warning btn-spinner float-end"
+                                    class="btn btn-warning btn-spinner float-end"
                                     aria-label="Confirm"
                                     button-spinner>
                                 @GRA.Annotations.Interface.Confirm
