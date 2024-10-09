@@ -124,8 +124,8 @@
         }
         <div class="col-12" style="margin-top: 2rem;">
             <a asp-action="@nameof(Index)"
-               class="btn btn-outline-secondary">Return to List</a>
-            <button class="btn btn-outline-primary btn-spinner" type="submit" button-spinner>
+               class="btn btn-secondary">Return to List</a>
+            <button class="btn btn-primary btn-spinner" type="submit" button-spinner>
                 @if (Model.SocialIsNew)
                 {
                     @:Upload and Create
@@ -196,8 +196,8 @@
                             <span asp-validation-for="UploadedImage" class="text-danger"></span>
                         </div>
                         <div style="text-align: right;">
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-outline-primary">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">
                                 Update Image
                             </button>
                         </div>
@@ -243,7 +243,7 @@
                     </p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-outline-danger">
                         <span class="fas fa-minus-circle fa-fw"></span>
                         Delete Social

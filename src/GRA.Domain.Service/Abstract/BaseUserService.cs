@@ -106,6 +106,12 @@ namespace GRA.Domain.Service.Abstract
             return _userContextProvider.UserHasPermission(currentUser, permission.ToString());
         }
 
+        protected bool OpenToLog()
+        {
+            var userContext = GetUserContext();
+            return userContext.SiteStage == SiteStage.ProgramOpen;
+        }
+
         protected void SetManagementPermission(Permission permission)
         {
             _managementPermission = permission;
@@ -113,8 +119,7 @@ namespace GRA.Domain.Service.Abstract
 
         protected void VerifyCanLog()
         {
-            var userContext = GetUserContext();
-            if (userContext.SiteStage != SiteStage.ProgramOpen)
+            if (!OpenToLog())
             {
                 throw new GraException(Annotations.Validate.NotOpenActivity);
             }

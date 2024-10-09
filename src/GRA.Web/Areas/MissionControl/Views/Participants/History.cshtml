@@ -2,7 +2,7 @@
 
 @await Html.PartialAsync("_ParticipantPartial")
 
-<div class="row" style="padding: 10px 0;">
+<div class="row">
     <div class="col-12">
         @if (Model.Historys.Count() == 0)
         {
@@ -20,13 +20,13 @@
                             <th>Points</th>
                             @if (Model.CanRemoveHistory)
                             {
-                                <th width="44">
+                                <th width="48" class="d-print-none text-center">
                                     <button type="button"
-                                    id="deleteCheckedItems"
+                                            id="deleteCheckedItems"
                                             class="btn btn-outline-danger btn-sm mx-auto"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal"
-                                    disabled>
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal"
+                                            disabled>
                                         <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                                     </button>
                                 </th>
@@ -42,8 +42,9 @@
                                 <td>
                                     @if (!string.IsNullOrEmpty(history.BadgeFilename))
                                     {
-                                        <div style="text-align:center;">
-                                            <img class="img-thumbnail badge-sm" src="~/@history.BadgeFilename" asp-append-version="true" />
+                                        <div class="text-center">
+                                            <img class="img-thumbnail badge-sm"
+                                                 src="~/@history.BadgeFilename" />
                                         </div>
                                     }
                                     else
@@ -54,18 +55,20 @@
                                 <td>@history.PointsEarned</td>
                                 @if (Model.CanRemoveHistory)
                                 {
-                                    <td class="gra-mc-icon">
+                                    <td class="align-middle text-center d-print-none">
                                         @if (history.IsDeletable)
                                         {
-                                            <input type="checkbox" data-id="@history.Id" class="checkedHistoryItem" />
+                                            <input type="checkbox"
+                                                   data-id="@history.Id"
+                                                   class="checkedHistoryItem" />
                                         }
                                         else
                                         {
                                             if (!string.IsNullOrEmpty(history.WhyNotDeletable))
                                             {
-                                                <span class="text-info fas fa-info-circle"
-                                  title="Not able to delete: @history.WhyNotDeletable"
-                                  onClick="alert('Not able to delete: @history.WhyNotDeletable.Replace("'", "\"")')"></span>
+                                                <span class="text-info fas fa-info-circle fa-fw"
+                                                      title="Not able to delete: @history.WhyNotDeletable"
+                                                      onClick="alert('Not able to delete: @history.WhyNotDeletable.Replace("'", "\"")')"></span>
                                             }
                                             else
                                             {
@@ -77,21 +80,18 @@
                             </tr>
                         }
                         <tr class="total-row">
-                            <td colspan="3" style="text-align:right">Total Points:</td>
+                            <td colspan="3" class="text-end">Total Points:</td>
                             <td colspan="2">@Model.TotalPoints</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            @if (Model.PaginateModel.MaxPage > 1)
-            {
-                <paginate paginateModel="@Model.PaginateModel"></paginate>
-            }
+            <paginate paginateModel="@Model.PaginateModel"></paginate>
         }
     </div>
 </div>
 
-<div class="mb-3">
+<div class="mb-3 d-flex justify-content-end d-print-none">
     <a asp-action="Index" class="btn btn-outline-secondary">Return to Participants</a>
 </div>
 
@@ -109,7 +109,6 @@
                             class="btn-close"
                             data-bs-dismiss="modal"
                             aria-label="Close dialog">
-                        
                     </button>
                 </div>
                 <div id="bundleModalBody" class="modal-body">
@@ -123,43 +122,41 @@
 {
     <div class="row">
         <div class="modal fade"
-         id="deleteModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="deleteModalLabel">
+             id="deleteModal"
+             tabindex="-1"
+             role="dialog"
+             aria-labelledby="deleteModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title h4" id="deleteModalLabel">Delete item</h1>
                         <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close dialog">
-                            
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close dialog">
                         </button>
                     </div>
-                    <div class="modal-body">
-                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
+                    <div class="modal-body d-flex align-items-stretch">
+                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                              aria-hidden="true"></span>
                         <span id="modal-text"></span>
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer d-flex justify-content-end">
                         <button type="button"
                                 class="btn btn-outline-secondary"
-                            data-bs-dismiss="modal"
-                            style="margin-right: 1em;">
+                                data-bs-dismiss="modal">
                             Cancel
                         </button>
                         <form asp-controller="Participants"
-                          asp-action="DeleteHistory"
-                          method="post"
-                          role="form"
-                          style="display:inline">
+                              asp-action="DeleteHistory"
+                              method="post"
+                              role="form"
+                              style="display:inline">
                             <input id="ids" name="ids" type="hidden" />
                             <input id="userId" name="userId" value="@Model.Id" type="hidden" />
                             <button type="submit"
-                                    class="btn btn-outline-danger float-end"
-                                aria-label="Confirm">
-                                <span class="fas fa-times fa-fw" aria-hidden="true"></span>
+                                    class="btn btn-outline-danger"
+                                    aria-label="Confirm">
                                 Delete
                             </button>
                         </form>
@@ -171,50 +168,51 @@
 }
 
 @section scripts
-    {
+{
     <script>
-        $(".bundle-link").on("click", function() {
+        $(".bundle-link").on("click", function () {
             var id = $(this).data("id");
             var url = "@Url.Action(nameof(GRA.Controllers.LookupController.GetItemsInBundle), GRA.Controllers.LookupController.Name, new { Area = string.Empty })";
 
-            $.getJSON(url, { id: id }, function(response) {
+            $.getJSON(url, { id: id }, function (response) {
                 $("#bundleModalBody").html("");
                 $("#bundleModal").modal("show");
-                $.each(response, function(index, item) {
+                $.each(response, function (index, item) {
                     $("#bundleModalBody").html($("#bundleModalBody").html() + "<img class='img-thumbnail badge-sm bundle-image' src='/" + item + "' asp-append-version='true' />");
                 });
             });
 
         })
+    </script>
 
-        @if (Model.CanRemoveHistory)
-        {
-            <text>
-                $('#deleteModal').on('show.bs.modal', function(event) {
-                    var button = $(event.relatedTarget);
-                    var modal = $(this);
-                    var checkedHistoryItems = [];
-                    $('.checkedHistoryItem').each(function() {
-                        if ($(this).prop('checked')) {
-                            checkedHistoryItems.push($(this).data("id"));
-                        }
-                    });
-
-                    if (checkedHistoryItems.length > 0) {
-                        $('#ids').val(checkedHistoryItems.join(','));
-                        modal.find('#modal-text').text('Are you sure you wish to delete the ' + checkedHistoryItems.length + ' checked items?');
-                    } else {
-                        event.preventDefault();
-                        alert("You must check the boxes next to the items you wish to delete.");
+    @if (Model.CanRemoveHistory)
+    {
+        <script>
+            $('#deleteModal').on('show.bs.modal', function (event) {
+                let button = $(event.relatedTarget);
+                let modal = $(this);
+                let checkedHistoryItems = [];
+                $('.checkedHistoryItem').each(function () {
+                    if ($(this).prop('checked')) {
+                        checkedHistoryItems.push($(this).data("id"));
                     }
-                })
+                });
 
-            $().ready(function() {
+                if (checkedHistoryItems.length > 0) {
+                    $('#ids').val(checkedHistoryItems.join(','));
+                    modal.find('#modal-text').html('Are you sure you wish to delete the <strong>' + checkedHistoryItems.length + '</strong> checked items?');
+                } else {
+                    event.preventDefault();
+                    alert("You must check the boxes next to the items you wish to delete.");
+                }
+            })
+
+            $().ready(function () {
                 $('#deleteCheckedItems').prop("disabled", true);
-                $('.checkedHistoryItem').each(function() {
-                    $(this).on('change', function() {
+                $('.checkedHistoryItem').each(function () {
+                    $(this).on('change', function () {
                         $('#deleteCheckedItems').prop("disabled", true);
-                        $('.checkedHistoryItem').each(function() {
+                        $('.checkedHistoryItem').each(function () {
                             if ($(this).prop('checked')) {
                                 $('#deleteCheckedItems').prop("disabled", false);
                                 return false;
@@ -223,7 +221,6 @@
                     });
                 })
             });
-            </text>
-        }
-    </script>
+        </script>
+    }
 }

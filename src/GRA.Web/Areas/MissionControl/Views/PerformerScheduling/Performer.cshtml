@@ -58,13 +58,13 @@
                     <a aria-label="View References (Opens new window)"
                    href="~/@Model.ReferencesPath"
                    target="_blank"
-                       class="btn btn-outline-primary">View References</a>
+                   class="btn btn-primary">View References</a>
                 </div>
             </div>
         }
         <div class="row" style="padding-bottom:15px;">
             <div class="col-12" style="text-align:center;">
-                <a asp-action="Performers" asp-route-page="@Model.ReturnPage" class="btn btn-outline-secondary">Return to List</a>
+                <a asp-action="Performers" asp-route-page="@Model.ReturnPage" class="btn btn-secondary">Return to List</a>
             </div>
         </div>
     </div>
@@ -119,7 +119,7 @@
                 <strong>@(Model.Performer.AllBranches || Model.BranchAvailability.Count == Model.System.Branches.Count ? "all" : $"{Model.BranchAvailability.Count} of {Model.System.Branches.Count}")</strong>
                 libraries in your system.
             </div>
-            <button type="button" class="btn btn-outline-primary" style="margin-top:10px;" data-bs-toggle="modal" data-bs-target="#branchModal">View Locations</button>
+            <button type="button" class="btn btn-secondary" style="margin-top:10px;" data-bs-toggle="modal" data-bs-target="#branchModal">View Locations</button>
         </div>
     </div>
 
@@ -279,7 +279,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                            class="btn btn-outline-secondary"
+                            class="btn btn-secondary"
                             data-bs-dismiss="modal"
                             style="margin-right: 1em;">
                         Close

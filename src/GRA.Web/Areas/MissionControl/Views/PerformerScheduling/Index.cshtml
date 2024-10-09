@@ -29,10 +29,10 @@
                         begins on @Model.Settings.SchedulingOpen.Value.ToLongDateString() at @Model.Settings.SchedulingOpen.Value.ToLongTimeString().
                     </p>
                     <div class="col-sm-6">
-                        <a asp-action="Performers" class="btn btn-lg btn-outline-primary">Preview Performers</a>
+                        <a asp-action="Performers" class="btn btn-lg btn-secondary ">Preview Performers</a>
                     </div>
                     <div class="col-sm-6">
-                        <a asp-action="Kits" class="btn btn-lg btn-outline-primary">Preview Kits</a>
+                        <a asp-action="Kits" class="btn btn-lg btn-secondary ">Preview Kits</a>
                     </div>
                 }
                 else if (Model.SchedulingStage == GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
@@ -55,10 +55,10 @@
                             Scheduling has begun! Selections need to be compeleted by @Model.Settings.SchedulingClosed.Value.ToLongDateString() at @Model.Settings.SchedulingClosed.Value.ToLongTimeString().
                         </p>
                         <div class="col-sm-6" style="margin-bottom: 0.5rem;">
-                            <a asp-action="Performers" class="btn btn-lg btn-outline-primary ">View Performers</a>
+                            <a asp-action="Performers" class="btn btn-lg btn-secondary ">View Performers</a>
                         </div>
                         <div class="col-sm-6" style="margin-bottom: 0.5rem;">
-                            <a asp-action="Kits" class="btn btn-lg btn-outline-primary">View Kits</a>
+                            <a asp-action="Kits" class="btn btn-lg btn-secondary ">View Kits</a>
                         </div>
                     }
                 }
@@ -68,10 +68,10 @@
                         Scheduling has closed, the finalized schedule will be posted on @Model.Settings.SchedulePosted.Value.ToLongDateString() at @Model.Settings.SchedulePosted.Value.ToLongTimeString(). If you have any questions please contact <a href="@($"mailto:{Model.Settings.ContactEmail}")">@Model.Settings.ContactEmail</a>
                     </p>
                     <div class="col-sm-6">
-                        <a asp-action="Performers" class="btn btn-lg btn-outline-primary ">View Performers</a>
+                        <a asp-action="Performers" class="btn btn-lg btn-secondary ">View Performers</a>
                     </div>
                     <div class="col-sm-6">
-                        <a asp-action="Kits" class="btn btn-lg btn-outline-primary">View Kits</a>
+                        <a asp-action="Kits" class="btn btn-lg btn-secondary ">View Kits</a>
                     </div>
                 }
                 else if (Model.SchedulingStage >= GRA.Domain.Model.PsSchedulingStage.SchedulePosted)
@@ -85,7 +85,7 @@
                                     <select name="id" asp-items="Model.BranchList" class="form-control"></select>
                                 </div>
                                 <div class="col-3" style="margin-top: 10px;">
-                                    <button type="submit" class="btn btn-outline-primary">View</button>
+                                    <button type="submit" class="btn btn-primary">View</button>
                                 </div>
                             </div>
                         </form>
@@ -94,10 +94,10 @@
                         If you have any questions please contact <a href="@($"mailto:{Model.Settings.ContactEmail}")">@Model.Settings.ContactEmail</a>
                     </p>
                     <div class="col-sm-6" style="margin-top: 10px;">
-                        <a asp-action="Performers" class="btn btn-lg btn-outline-primary ">View Performers</a>
+                        <a asp-action="Performers" class="btn btn-lg btn-secondary ">View Performers</a>
                     </div>
                     <div class="col-sm-6" style="margin-top: 10px;">
-                        <a asp-action="Kits" class="btn btn-lg btn-outline-primary">View Kits</a>
+                        <a asp-action="Kits" class="btn btn-lg btn-secondary ">View Kits</a>
                     </div>
                 }
 
@@ -307,7 +307,7 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

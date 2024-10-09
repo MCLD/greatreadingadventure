@@ -31,10 +31,10 @@
     </div>
 
     <div class="col-12" style="padding-bottom:15px;">
-        <a asp-action="KitDetails" asp-route-id="@Model.Kit.Id" class="btn btn-outline-primary">Edit Kit</a>
+        <a asp-action="KitDetails" asp-route-id="@Model.Kit.Id" class="btn btn-secondary">Edit Kit</a>
         @if (Model.SchedulingStage >= GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
         {
-            <a asp-action="KitSelections" asp-route-id="@Model.Kit.Id" class="btn btn-lg btn-outline-primary float-end">View Selections</a>
+            <a asp-action="KitSelections" asp-route-id="@Model.Kit.Id" class="btn btn-lg btn-secondary float-end">View Selections</a>
         }
     </div>
     <div class="col-12 col-sm-5 col-md-4">
@@ -48,12 +48,12 @@
         }
         <div class="row" style="padding-bottom:15px;">
             <div class="col-12" style="text-align:center;">
-                <a asp-action="KitImages" asp-route-id="@Model.Kit.Id" class="btn btn-outline-primary">View/Manage Images</a>
+                <a asp-action="KitImages" asp-route-id="@Model.Kit.Id" class="btn btn-primary">View/Manage Images</a>
             </div>
         </div>
         <div class="row" style="padding-bottom:15px;">
             <div class="col-12" style="text-align:center;">
-                <a asp-action="Kits" asp-route-page="@Model.ReturnPage" class="btn btn-outline-secondary">Return to List</a>
+                <a asp-action="Kits" asp-route-page="@Model.ReturnPage" class="btn btn-secondary">Return to List</a>
             </div>
         </div>
     </div>

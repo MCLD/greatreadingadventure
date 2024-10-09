@@ -8,7 +8,7 @@
 
 <div class="row" style="padding: 10px 0;">
     <div class="col-12">
-        <a asp-action="KitAdd" class="btn btn-outline-primary">Add Kit</a>
+        <a asp-action="KitAdd" class="btn btn-secondary">Add Kit</a>
     </div>
 </div>
 
@@ -62,7 +62,7 @@
                             {
                                 <td>@kit.SelectionsCount</td>
                                 <td class="on-top">
-                                    <a asp-action="KitSelections" asp-route-id="@kit.Id" class="btn btn-sm btn-outline-primary">View Selections</a>
+                                    <a asp-action="KitSelections" asp-route-id="@kit.Id" class="btn btn-sm btn-secondary">View Selections</a>
                                 </td>
                             }
                         </tr>
@@ -103,7 +103,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-outline-secondary"
+                                class="btn btn-secondary"
                                 data-bs-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel

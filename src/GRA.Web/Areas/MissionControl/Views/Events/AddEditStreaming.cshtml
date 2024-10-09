@@ -63,7 +63,7 @@
                            asp-action="Edit"
                            asp-route-id="@Model.Event.RelatedTriggerId"
                            target="_blank"
-                           class="btn btn-outline-primary">
+                           class="btn btn-secondary">
                             View Related Trigger
                         </a>
                     </div>
@@ -258,7 +258,7 @@
                     <input asp-for="CanRelateChallenge" type="hidden" />
                     <input asp-for="Event.ChallengeId" type="hidden" />
                     <input asp-for="Event.ChallengeGroupId" type="hidden" />
-                    <button type="button" id="addButton" class="btn btn-outline-primary" style="display: block"><span class="relatedText">@(Model.Event.Challenge != null || Model.Event.ChallengeGroup != null ? "Change" : "Add")</span> Related Challenge</button>
+                    <button type="button" id="addButton" class="btn btn-secondary" style="display: block"><span class="relatedText">@(Model.Event.Challenge != null || Model.Event.ChallengeGroup != null ? "Change" : "Add")</span> Related Challenge</button>
                 }
             </div>
         </div>
@@ -294,7 +294,7 @@
                     <tbody id="groupList"></tbody>
                 </table>
                 <div id="noRelated" class="alert alert-warning" style="margin-bottom: 0.5rem;">No related challenges or challenge groups.</div>
-                <button type="button" id="addButton" class="btn btn-outline-primary" style="display: block"><span class="relatedText">@(Model.Event?.Challenge != null || Model.Event?.ChallengeGroup != null ? "Change" : "Add")</span> Related Challenge</button>
+                <button type="button" id="addButton" class="btn btn-secondary" style="display: block"><span class="relatedText">@(Model.Event?.Challenge != null || Model.Event?.ChallengeGroup != null ? "Change" : "Add")</span> Related Challenge</button>
             </div>
         </div>
     }
@@ -376,7 +376,7 @@
 
                                 <div class="tab-content">
                                     <div role="tabpanel" class="tab-pane @(Model.UseBadgeMaker ? "active" : "")" id="badge">
-                                        <button id="openMaker" type="button" class="btn btn-outline-primary">
+                                        <button id="openMaker" type="button" class="btn btn-secondary">
                                             <span class="fas fa-certificate"></span> Create a Badge
                                         </button>
                                     </div>
@@ -415,8 +415,8 @@
     }
 
     <div class="mb-3 my-4">
-        <a asp-action="StreamingEvents" class="btn btn-outline-secondary">Return to List</a>
-        <button type="submit" class="btn btn-outline-primary" button-spinner>
+        <a asp-action="StreamingEvents" class="btn btn-secondary">Return to List</a>
+        <button type="submit" class="btn btn-primary" button-spinner>
             <span class="buttonText">
                 @if (Model.Editing)
                 {
@@ -501,7 +501,7 @@
                                                 <div class="col-6">
                                                     <button type="button"
                                                             id="challengeSearchButton"
-                                                            class="btn btn-outline-primary"
+                                                            class="btn btn-secondary "
                                                             style="margin-right: 8px;">
                                                         Search
                                                     </button>
@@ -509,7 +509,7 @@
                                                 <div class="col-6">
                                                     <button type="button"
                                                             id="challengeClearButton"
-                                                            class="btn btn-outline-secondary">
+                                                            class="btn btn-secondary ">
                                                         Clear
                                                     </button>
                                                 </div>
@@ -538,7 +538,7 @@
                                                 <div class="col-6">
                                                     <button type="button"
                                                             id="groupSearchButton"
-                                                            class="btn btn-outline-primary"
+                                                            class="btn btn-secondary "
                                                             style="margin-right: 8px;">
                                                         Search
                                                     </button>
@@ -546,7 +546,7 @@
                                                 <div class="col-6">
                                                     <button type="button"
                                                             id="groupClearButton"
-                                                            class="btn btn-outline-secondary">
+                                                            class="btn btn-secondary ">
                                                         Clear
                                                     </button>
                                                 </div>
@@ -568,7 +568,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button"
-                                        class="btn btn-outline-secondary"
+                                        class="btn btn-secondary"
                                         data-bs-dismiss="modal"
                                         style="margin-right: 1em;">
                                     Close

@@ -3,7 +3,7 @@
 @if (Model.ShowGroupsButton)
 {
     <div class="row my-3">
-        <div class="col-12">
+        <div class="col-12 d-flex">
             <ul class="nav nav-pills">
                 <li>
                     <a asp-action="@nameof(ParticipantsController.Index)"
@@ -14,15 +14,10 @@
                        class="nav-link">Groups</a>
                 </li>
             </ul>
-        </div>
-    </div>
-}
-
-@if (Model.CanSignUpParticipants)
-{
-    <div class="row mb-3">
-        <div class="col-12">
-            <a asp-action="Add" class="btn btn-outline-primary">Add Participant</a>
+            @if (Model.CanSignUpParticipants)
+            {
+                <a asp-action="Add" class="btn btn-outline-success ms-auto">Add Participant</a>
+            }
         </div>
     </div>
 }
@@ -159,7 +154,7 @@
 {
     <div class="row">
         <div class="col-12">
-            <p class="alert-sm alert-info">Searching for '<strong>@Model.Search</strong>'...</p>
+            <p class="alert-sm alert-info">Searching for: <strong>@Model.Search</strong></p>
         </div>
     </div>
 }
@@ -291,11 +286,9 @@
                         {
                             <div class="row" id="elevatedWarning">
                                 <div class="col-12">
-                                    <div class="alert alert-warning">
-                                        <strong>
-                                            <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"></span>
-                                            This user has an administrative role in this software.
-                                        </strong>
+                                    <div class="alert alert-warning d-flex align-items-stretch">
+                                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"></span>
+                                        <strong>This user has an administrative role in this software.</strong>
                                     </div>
                                 </div>
                             </div>

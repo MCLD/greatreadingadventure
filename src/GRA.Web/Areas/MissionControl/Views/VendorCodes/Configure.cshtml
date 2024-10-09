@@ -248,15 +248,15 @@
             @if (Model.VendorCodeType.Id > 0)
             {
                 <a asp-action="@nameof(VendorCodesController.Index)"
-                   class="btn btn-outline-secondary">Back</a>
+                   class="btn btn-secondary">Back</a>
             }
             else
             {
                 <a asp-controller="@HomeController.Name"
                asp-action="@nameof(HomeController.Index)"
-                   class="btn btn-outline-secondary">Cancel</a>
+                   class="btn btn-secondary">Cancel</a>
             }
-            <button type="submit" class="btn btn-outline-primary">Save vendor code</button>
+            <button type="submit" class="btn btn-primary">Save vendor code</button>
         </div>
     </div>
 </form>
@@ -303,13 +303,13 @@
                         Remove pop-up message
                     </button>
                     <button type="button"
-                            class="btn btn-outline-secondary"
+                            class="btn btn-secondary"
                             data-bs-dismiss="modal">
                         Close
                     </button>
                     <button type="submit"
                             button-spinner
-                            class="btn btn-outline-primary btn-spinner"
+                            class="btn btn-primary btn-spinner"
                             id="saveSegment">
                         Save changes
                     </button>
@@ -363,18 +363,18 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                            class="btn btn-outline-warning btn-spinner"
+                            class="btn btn-warning btn-spinner"
                             id="clearMessageTemplate">
                         Remove message
                     </button>
                     <button type="button"
-                            class="btn btn-outline-secondary"
+                            class="btn btn-secondary"
                             data-bs-dismiss="modal">
                         Close
                     </button>
                     <button type="submit"
                             button-spinner
-                            class="btn btn-outline-primary btn-spinner"
+                            class="btn btn-primary btn-spinner"
                             id="saveMessageTemplate">
                         Save changes
                     </button>

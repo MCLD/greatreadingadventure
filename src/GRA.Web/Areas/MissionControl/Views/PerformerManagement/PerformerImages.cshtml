@@ -12,7 +12,7 @@
     <div class="col-12">
         <h1>
             Images for Performer: @Model.PerformerName
-            <a asp-action="Performer" asp-route-id="@Model.PerformerId" class="btn btn-lg btn-outline-secondary" style="margin-bottom: 0.5rem;">Return to Performer</a>
+            <a asp-action="Performer" asp-route-id="@Model.PerformerId" class="btn btn-lg btn-secondary" style="margin-bottom: 0.5rem;">Return to Performer</a>
         </h1>
     </div>
     <form asp-action="PerformerImages" class="form-horizontal col-12" method="post" role="form" enctype="multipart/form-data">
@@ -118,7 +118,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                            class="btn btn-outline-secondary"
+                            class="btn btn-secondary"
                             data-bs-dismiss="modal"
                             style="margin-right: 1em;">
                         Cancel

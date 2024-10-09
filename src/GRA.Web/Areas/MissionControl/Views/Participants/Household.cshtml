@@ -36,8 +36,7 @@
     <div class="row">
         <div class="col-12">
             <div class="alert alert-warning">
-                Participant is not a member of a
-                @(string.IsNullOrEmpty(Model.GroupName) ? "family." : "group.")
+                Participant is not a member of a @Model.FamilyOrGroup
             </div>
         </div>
     </div>
@@ -96,7 +95,7 @@
 {
     <form id="form" asp-controller="Participants" method="post" role="form">
         <input asp-for="Id" type="hidden" />
-        @if (Model.CanLogActivity)
+        @if (Model.CanLogActivity && Model.OpenToLog)
         {
             <input asp-for="UserSelection" type="hidden" />
             <input asp-for="ActivityAmount" type="hidden" />
@@ -164,7 +163,7 @@
                 <table class="table table-sm table-bordered link-table">
                     <thead>
                         <tr>
-                            @if (Model.CanLogActivity)
+                            @if (Model.CanLogActivity && Model.OpenToLog)
                             {
                                 <th class="text-center align-middle">
                                     <input id="checkAll"
@@ -209,7 +208,7 @@
                             }
                         </tr>
                         <tr class="warning @(Model.Id == Model.Head.Id ? " text-strong" : null)">
-                            @if (Model.CanLogActivity)
+                            @if (Model.CanLogActivity && Model.OpenToLog)
                             {
                                 <td class="on-top text-center align-middle">
                                     @if (!Model.Head.HasPendingQuestionnaire)
@@ -280,7 +279,7 @@
                                     <div>
                                         @if (Model.Head.Id == Model.Id)
                                         {
-                                            <span class="fas fa-user"></span>
+                                            <span class="fas fa-crown fa-fw"></span>
                                         }
                                         @Model.Head.FullName
                                     </div>
@@ -304,7 +303,7 @@
                                         @if (Model.Head.CanDonateVendorCode)
                                         {
                                             @:or
-                                            <button class="btn btn-outline-success btn-sm btn-spinner btn-on-top"
+                                            <button class="btn btn-outline-success btn-sm btn-on-top"
                                                     name="donateButton"
                                                     value="@Model.Head.Id"
                                                     asp-action="HandleHouseholdDonation"
@@ -372,9 +371,9 @@
                         @foreach (var user in Model.Users)
                         {
                             <tr class="@(Model.Id == user.Id ? " info text-strong" : null)">
-                                @if (Model.CanLogActivity)
+                                @if (Model.CanLogActivity && Model.OpenToLog)
                                 {
-                                    <td class="on-top text-center" style="vertical-align:middle;">
+                                    <td class="on-top text-center align-middle">
                                         @if (!user.HasPendingQuestionnaire)
                                         {
                                             <input class="userSelection"
@@ -392,8 +391,7 @@
                                 }
                                 @if (Model.CanReadMail)
                                 {
-                                    <td class="on-top text-center"
-                                        style="vertical-align:middle;">
+                                    <td class="on-top text-center align-middle">
                                         <a class="plain-link"
                                            asp-action="Mail"
                                            asp-route-id="@user.Id">
@@ -417,8 +415,7 @@
                                 }
                                 @if (Model.CanViewPrizes)
                                 {
-                                    <td class="on-top text-center"
-                                        style="vertical-align:middle;">
+                                    <td class="on-top text-center align-middle">
                                         <a class="plain-link"
                                            asp-action="Prizes"
                                            asp-route-id="@user.Id">
@@ -465,7 +462,7 @@
                                         }
                                     </div>
                                 </td>
-                                <td>@user.PointsEarned</td>
+                                <td class="align-bottom">@user.PointsEarned</td>
                                 @if (Model.ShowVendorCodes)
                                 {
                                     <td>
@@ -537,34 +534,32 @@
                                         }
                                     </td>
                                 }
-                                <td>@user.BranchName</td>
-                                <td>@user.ProgramName</td>
+                                <td class="align-bottom">@user.BranchName</td>
+                                <td class="align-bottom">@user.ProgramName</td>
                                 @if (Model.CanEditDetails)
                                 {
 
-                                    <td class="on-top">
+                                    <td class="on-top align-middle text-center">
                                         @if (!string.IsNullOrWhiteSpace(user.Username))
                                         {
                                             <button type="button"
                                                     class="btn btn-outline-primary btn-sm"
-                                                    style="width:22px;"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#promoteModal"
                                                     data-id="@user.Id"
                                                     data-name="@user.FullName"
-                                                    title="Promote to @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group") manager">
-                                                <span class="fas fa-level-up-alt"
+                                                    title="Promote to @Model.FamilyOrGroup manager">
+                                                <span class="fas fa-level-up-alt fa-fw"
                                                       aria-hidden="true"></span>
                                             </button>
                                             <button type="button"
                                                     class="btn btn-outline-danger btn-sm"
-                                                    style="margin-left:16px;width:22px;"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#removeModal"
                                                     data-id="@user.Id"
                                                     data-name="@user.FullName"
-                                                    title="Remove from family/group">
-                                                <span class="fas fa-minus fa-fw"
+                                                    title="Remove from @Model.FamilyOrGroup">
+                                                <span class="fas fa-times fa-fw"
                                                       aria-hidden="true"></span>
                                             </button>
                                         }
@@ -585,12 +580,16 @@
 }
 
 
-<div class="mb-3">
-    <a asp-action="Index" class="btn btn-outline-secondary">Return to Participants</a>
+<div class="mb-3 d-print-none d-flex">
     @if (Model.HouseholdCount > 0)
     {
-        <a href="#" class="btn btn-outline-secondary float-end">Return to Top</a>
+        <div>
+            <a href="#" class="btn btn-outline-secondary float-end">Return to Top</a>
+        </div>
     }
+    <div class="ms-auto">
+        <a asp-action="Index" class="btn btn-outline-secondary">Return to Participants</a>
+    </div>
 </div>
 
 <div class="modal fade pendingModal"
@@ -615,118 +614,111 @@
 @if (Model.CanEditDetails)
 {
     <div class="row">
-        <div class="modal fade" id="listModal"
+        <div class="modal fade"
+             id="listModal"
              tabindex="-1"
              role="dialog"
+             data-bs-backdrop="static"
+             data-bs-keyboard="false"
              aria-labelledby="listModalLabel">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="row">
-                    <div class="col-12 col-sm-10 offset-sm-1">
-                        <div class="card">
-                            <div class="card-header">
-                                <span class="lead">Add existing participant</span>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <ul class="nav nav-pills" style="padding: 10px 0;">
-                                            <li id="All" class="active participantScope">
-                                                <a style="cursor:pointer">All</a>
-                                            </li>
-                                            <li id="System" class="participantScope">
-                                                <a class="dropdown-toggle"
-                                                   data-bs-toggle="dropdown"
-                                                   href="#"
-                                                   role="button"
-                                                   aria-haspopup="true"
-                                                   aria-expanded="false">
-                                                    <span id="systemText">System</span> <span class="caret"></span>
-                                                </a>
-                                                <ul class="dropdown-menu">
-                                                    @foreach (var system in Model.SystemList)
-                                                    {
-                                                        <li>
-                                                            <a class="system-selector"
-                                                               data-id="@system.Id">
-                                                                @system.Name
-                                                            </a>
-                                                        </li>
-                                                    }
-                                                </ul>
-                                            </li>
-                                            <li id="Branch" class="participantScope">
-                                                <a class="dropdown-toggle"
-                                                   data-bs-toggle="dropdown"
-                                                   href="#"
-                                                   role="button"
-                                                   aria-haspopup="true"
-                                                   aria-expanded="false">
-                                                    <span id="branchText">Branch</span> <span class="caret"></span>
-                                                </a>
-                                                <ul id="branchDropdown" class="dropdown-menu">
-                                                    @foreach (var branch in Model.BranchList)
-                                                    {
-                                                        <li>
-                                                            <a class="branch-selector"
-                                                               data-id="@branch.Id">
-                                                                @branch.Name
-                                                            </a>
-                                                        </li>
-                                                    }
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-                                <div class="row mb-3">
-                                    <div class="col-8">
-                                        <input id="searchText" class="form-control"
-                                               placeholder="Enter text to search for a participant here" />
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="col-6">
-                                            <button type="button"
-                                                    id="searchButton"
-                                                    class="btn btn-outline-primary"
-                                                    style="margin-right: 8px;">
-                                                Search
-                                            </button>
-                                        </div>
-                                        <div class="col-6">
-                                            <button type="button"
-                                                    id="clearButton"
-                                                    class="btn btn-outline-secondary ">
-                                                Clear
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="searchMessage" class="row d-none">
-                                    <div class="col-12">
-                                        <p class="alert-sm alert-info">
-                                            Searching for '<strong id="searchTerm"></strong>'
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <form asp-action="AddExisitingParticipant"
-                                          method="post"
-                                          role="form">
-                                        <input name="Id" value="@Model.Id" type="hidden" />
-                                        <div id="modalParticipantsList" class="col-12">
-                                        </div>
-                                    </form>
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="lead">Add existing participant</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <div class="col-12">
+                                    <ul class="nav nav-pills">
+                                        <li id="All" class="participantScope nav-item">
+                                            <a style="cursor:pointer"
+                                               class="nav-link active">All</a>
+                                        </li>
+                                        <li id="System" class="participantScope nav-item">
+                                            <a class="dropdown-toggle nav-link"
+                                               data-bs-toggle="dropdown"
+                                               href="#"
+                                               role="button"
+                                               aria-haspopup="true"
+                                               aria-expanded="false">
+                                                <span id="systemText">System</span> <span class="caret"></span>
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                @foreach (var system in Model.SystemList)
+                                                {
+                                                    <li>
+                                                        <a class="system-selector dropdown-item"
+                                                           data-id="@system.Id">
+                                                            @system.Name
+                                                        </a>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </li>
+                                        <li id="Branch" class="participantScope nav-item">
+                                            <a class="dropdown-toggle nav-link"
+                                               data-bs-toggle="dropdown"
+                                               href="#"
+                                               role="button"
+                                               aria-haspopup="true"
+                                               aria-expanded="false">
+                                                <span id="branchText">Branch</span> <span class="caret"></span>
+                                            </a>
+                                            <ul id="branchDropdown" class="dropdown-menu">
+                                                @foreach (var branch in Model.BranchList)
+                                                {
+                                                    <li>
+                                                        <a class="branch-selector dropdown-item"
+                                                           data-id="@branch.Id">
+                                                            @branch.Name
+                                                        </a>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button"
-                                        class="btn btn-outline-secondary"
-                                        data-bs-dismiss="modal"
-                                        style="margin-right: 1em;">
-                                    Close
-                                </button>
+                            <div class="row mb-3">
+                                <div class="col-12 input-group">
+                                    <input id="searchText"
+                                           class="form-control"
+                                           placeholder="Search by username, first or last name, full name, free book code" />
+                                    <button type="button"
+                                            id="clearButton"
+                                            class="btn btn-outline-secondary">
+                                        Clear
+                                    </button>
+                                    <input type="submit"
+                                           id="searchButton"
+                                           value="Search"
+                                           class="btn btn-outline-primary" />
+                                </div>
                             </div>
+                            <div id="searchMessage" class="row d-none">
+                                <div class="col-12">
+                                    <p class="alert-sm alert-info">
+                                        Searching for: <strong id="searchTerm"></strong>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <form asp-action="AddExisitingParticipant"
+                                      method="post"
+                                      role="form">
+                                    <input name="Id" value="@Model.Id" type="hidden" />
+                                    <div id="modalParticipantsList" class="col-12">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button"
+                                    class="btn btn-outline-secondary"
+                                    data-bs-dismiss="modal">
+                                Close
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -750,15 +742,15 @@
                                 aria-label="Close dialog">
                         </button>
                     </div>
-                    <div class="modal-body">
-                        <span class="fas fa-exclamation-circle" aria-hidden="true"></span>
+                    <div class="modal-body d-flex align-items-stretch">
+                        <span class="fas fa-exclamation-circle fa-lg text-warning pt-2 me-3"
+                              aria-hidden="true"></span>
                         <span id="modal-text"></span>
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer d-flex justify-content-end">
                         <button type="button"
                                 class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal"
-                                style="margin-right: 1em;">
+                                data-bs-dismiss="modal">
                             Cancel
                         </button>
                         <form asp-controller="Participants"
@@ -769,9 +761,9 @@
                             <input asp-for="Id" type="hidden" />
                             <input id="PromoteId" name="PromoteId" type="hidden" />
                             <button type="submit"
-                                    class="btn btn-outline-primary float-end"
+                                    class="btn btn-outline-primary"
                                     aria-label="Confirm">
-                                <span class="fas fa-level-up-alt" aria-hidden="true"></span>
+                                <span class="fas fa-level-up-alt fa-fw" aria-hidden="true"></span>
                                 Promote
                             </button>
                         </form>
@@ -800,15 +792,15 @@
                         </button>
 
                     </div>
-                    <div class="modal-body">
-                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
+                    <div class="modal-body d-flex align-items-stretch">
+                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                              aria-hidden="true"></span>
                         <span id="modal-text"></span>
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer d-flex justify-content-end">
                         <button type="button"
                                 class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal"
-                                style="margin-right: 1em;">
+                                data-bs-dismiss="modal">
                             Cancel
                         </button>
                         <form asp-controller="Participants"
@@ -819,9 +811,8 @@
                             <input asp-for="Id" type="hidden" />
                             <input id="RemoveId" name="RemoveId" type="hidden" />
                             <button type="submit"
-                                    class="btn btn-outline-danger float-end"
+                                    class="btn btn-outline-danger"
                                     aria-label="Confirm">
-                                <span class="fas fa-minus fa-fw" aria-hidden="true"></span>
                                 Remove
                             </button>
                         </form>
@@ -896,11 +887,10 @@
                           role="form"
                           style="display:inline">
                         <input asp-for="Id" type="hidden" />
-
                         <div class="modal-header">
                             <h1 class="modal-title h4"
                                 id="deleteModalLabel">
-                                Redeem @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group") prize
+                                Redeem @Model.FamilyOrGroup prize
                             </h1>
                             <button type="button"
                                     class="btn-close"
@@ -914,21 +904,20 @@
                             </label>
                             <select asp-for="Prize"
                                     asp-items="Model.HouseholdPrizeList"
-                                    class="form-control"
+                                    class="form-select"
                                     required>
                                 <option></option>
                             </select>
                             <span asp-validation-for="Prize" class="text-danger"></span>
                         </div>
-                        <div class="modal-footer">
+                        <div class="modal-footer d-flex justify-content-end">
                             <button type="button"
                                     class="btn btn-outline-secondary"
-                                    data-bs-dismiss="modal"
-                                    style="margin-right: 1em;">
+                                    data-bs-dismiss="modal">
                                 Cancel
                             </button>
                             <button type="submit"
-                                    class="btn btn-outline-primary float-end"
+                                    class="btn btn-outline-primary"
                                     aria-label="Confirm">
                                 Select
                             </button>
@@ -955,10 +944,9 @@
                           method="post"
                           role="form" style="display:inline">
                         <input id="bulkRedeemId" asp-for="Id" type="hidden" />
-
                         <div class="modal-header">
                             <h1 class="modal-title h4" id="deleteModalLabel">
-                                Redeem @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group") codes
+                                Redeem @Model.FamilyOrGroup codes
                             </h1>
                             <button type="button"
                                     class="btn-close"
@@ -968,22 +956,24 @@
                         </div>
                         <div class="modal-body">
                             <p>
-                                This will redeem codes for every member of this @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group"). Once codes are redeemed, they cannot be donated.
+                                This will redeem codes for every member of this
+                                @Model.FamilyOrGroup - once codes are redeemed,
+                                they cannot be donated.
                             </p>
                             <p>
-                                <strong>Mail will not be sent</strong> to members of this @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group") with redemption instructions.
+                                <strong>Mail will not be sent</strong> to members of this
+                                @Model.FamilyOrGroup with redemption instructions.
                             </p>
                         </div>
-                        <div class="modal-footer">
+                        <div class="modal-footer d-flex justify-content-end">
                             <button type="button"
                                     class="btn btn-outline-secondary"
                                     data-bs-dismiss="modal"
-                                    style="margin-right: 1em;"
                                     id="bulkDoNotRedeem">
                                 Do not redeem
                             </button>
                             <button type="submit"
-                                    class="btn btn-info btn-spinner float-end"
+                                    class="btn btn-info"
                                     aria-label="Confirm"
                                     onclick="$('#bulkDoNotRedeem').prop('disabled', true).addClass('disabled')"
                                     button-spinner>
@@ -1009,241 +999,251 @@
                 $(this).children('a.rowlink').height($(this).height() + 11);
             });
         });
+    </script>
 
-        @if (Model.CanLogActivity)
-        {
-            <text>
-                    var submitting = false;
+    @if (Model.CanLogActivity && Model.OpenToLog)
+    {
+        <script>
+            var submitting = false;
 
-                    $("#checkAll").on("change", function (e) {
-                                                                                                                                                                                                                                                                                                                                    if (e.originalEvent) {
-                        $(".userSelection").prop("checked", $(this).prop("checked"));
-                                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                                });
+            $("#checkAll").on("change", function (e) {
+                if (e.originalEvent) {
+                    $(".userSelection").prop("checked", $(this).prop("checked"));
+                }
+            });
 
-                    $(".userSelection").on("change", function (e) {
-                                                                                                                                                                                                                                                                                                                                    if (e.originalEvent) {
-                                                                                                                                                                                                                                                                                                                                        if ($(".userSelection:not(:checked)").length) {
+            $(".userSelection").on("change", function (e) {
+                if (e.originalEvent) {
+                    if ($(".userSelection:not(:checked)").length) {
                         $("#checkAll").prop("checked", false);
-                                                                                                                                                                                                                                                                                                                                        }
+                    }
                     else {
                         $("#checkAll").prop("checked", true);
-                                                                                                                                                                                                                                                                                                                                        }
-                                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                                });
+                    }
+                }
+            });
 
-                    $(".activityInput").on("keypress", function (e) {
-                                                                                                                                                                                                                                                                                                                                    var keyCode = e.keyCode || e.which;
-                    if (keyCode === 13) {
-                        e.preventDefault();
+            $(".activityInput").on("keypress", function (e) {
+                let keyCode = e.keyCode || e.which;
+                if (keyCode === 13) {
+                    e.preventDefault();
                     if (submitting != true) {
                         submitting = true;
-                    $("#ActivityAmount").val($(this).val());
-                    SetUserSelection();
-                    $("#form").attr("action", $(this).data("action")).submit();
-                                                                                                                                                                                                                                                                                                                                        }
-                                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                                });
+                        $("#ActivityAmount").val($(this).val());
+                        SetUserSelection();
+                        $("#form").attr("action", $(this).data("action")).submit();
+                    }
+                }
+            });
 
-                    $(".codeInput").on("keypress", function (e) {
-                                                                                                                                                                                                                                                                                                                                    var keyCode = e.keyCode || e.which;
-                    if (keyCode === 13) {
-                        e.preventDefault();
+            $(".codeInput").on("keypress", function (e) {
+                let keyCode = e.keyCode || e.which;
+                if (keyCode === 13) {
+                    e.preventDefault();
                     if (submitting != true) {
                         submitting = true;
-                    $("#SecretCode").val($(this).val());
-                    SetUserSelection();
-                    $("#form").attr("action", $(this).data("action")).submit();
-                                                                                                                                                                                                                                                                                                                                        }
-                                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                                });
+                        $("#SecretCode").val($(this).val());
+                        SetUserSelection();
+                        $("#form").attr("action", $(this).data("action")).submit();
+                    }
+                }
+            });
 
-                    $(".activityButton").on("click", function (e) {
-                        e.preventDefault();
-                    if (submitting != true) {
-                        submitting = true;
+            $(".activityButton").on("click", function (e) {
+                e.preventDefault();
+                if (submitting != true) {
+                    submitting = true;
                     $("#ActivityAmount").val($(this).parent().parent().find(".activityInput").val());
                     SetUserSelection();
                     $("#form").attr("action", $(this).data("action")).submit();
-                                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                                });
+                }
+            });
 
-                    $(".codeButton").on("click", function (e) {
-                        e.preventDefault();
-                    if (submitting != true) {
-                        submitting = true;
+            $(".codeButton").on("click", function (e) {
+                e.preventDefault();
+                if (submitting != true) {
+                    submitting = true;
                     $("#SecretCode").val($(this).parent().parent().find(".codeInput").val());
                     SetUserSelection();
                     $("#form").attr("action", $(this).data("action")).submit();
-                                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                                });
+                }
+            });
 
-                    function SetUserSelection() {
-                                                                                                                                                                                                                                                                                                                                    var selectionArray = [];
-                    $(".userSelection:checked").each(function () {
-                        selectionArray.push($(this).data("id"));
-                                                                                                                                                                                                                                                                                                                                    });
-                    $("#UserSelection").val(selectionArray);
-                                                                                                                                                                                                                                                                                                                                };
-            </text>
-        }
+            function SetUserSelection() {
+                let selectionArray = [];
+                $(".userSelection:checked").each(function () {
+                    selectionArray.push($(this).data("id"));
+                });
+                $("#UserSelection").val(selectionArray);
+            };
+        </script>
+    }
 
-        @if (Model.CanEditDetails)
-        {
-            <text>
-                    var userId = @Model.Id
-                    var defaultSystemId = @Model.SystemId;
-                    var participantsUrl = "@Url.Action("HouseholdGetParticipantsList")";
-                    var branchUrl = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
-                    var systemId = null;
-                    var branchId = null;
-                    var search = "";
-                    var page = 1;
+    @if (Model.CanEditDetails)
+    {
+        <script>
+            var userId = @Model.Id;
+                                                                                                                                    var defaultSystemId = @Model.SystemId;
+            var participantsUrl = "@Url.Action("HouseholdGetParticipantsList")";
+            var branchUrl = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
+            var systemId = null;
+            var branchId = null;
+            var search = "";
+            var page = 1;
 
-                    function UpdateParticipantsList() {
-                        $.get(participantsUrl,
-                            {
-                                userId: userId,
-                                systemId: systemId,
-                                branchId: branchId,
-                                search: search,
-                                page: page
-                            }, function (response) {
-                                $("#modalParticipantsList").html(response);
-                            });
-                                                                                                                                                                                                                                                                                                                                }
+            function UpdateParticipantsList() {
+                $.get(participantsUrl,
+                    {
+                        userId: userId,
+                        systemId: systemId,
+                        branchId: branchId,
+                        search: search,
+                        page: page
+                    }, function (response) {
+                        $("#modalParticipantsList").html(response);
+                    });
+            }
 
-                    function UpdateBranchList(system) {
-                        $.get(branchUrl,
-                            {
-                                systemId: system,
-                                branchId: null,
-                                prioritize: true
-                            }, function (response) {
-                                $("#branchDropdown").empty();
-                                $.each(response, function (index, item) {
-                                    $("#branchDropdown").append('<li><a class="branch-selector" data-id="' + item.value + '">' + item.text + '</a></li>');
-                                });
-                            });
-                                                                                                                                                                                                                                                                                                                                }
+            function UpdateBranchList(system) {
+                $.get(branchUrl,
+                    {
+                        systemId: system,
+                        branchId: null,
+                        prioritize: true
+                    }, function (response) {
+                        $("#branchDropdown").empty();
+                        $.each(response, function (index, item) {
+                            $("#branchDropdown").append('<li><a class="branch-selector" data-id="' + item.value + '">' + item.text + '</a></li>');
+                        });
+                    });
+            }
 
-                    $('#listModal').on('show.bs.modal', function () {
-                        UpdateParticipantsList();
-                                                                                                                                                                                                                                                                                                                                })
+            $('#listModal').on('show.bs.modal', function () {
+                UpdateParticipantsList();
+            })
 
-                    $("#All").on("click", function () {
-                                                                                                                                                                                                                                                                                                                                    if (systemId != null) {
-                        $(this).siblings().removeClass("active");
+            $("#All").on("click", function () {
+                if (systemId != null) {
+                    $(this).siblings().removeClass("active");
                     $(this).addClass().addClass("active");
                     $("#systemText").text("System");
                     $("#branchText").text("Branch");
                     if (systemId != defaultSystemId) {
                         UpdateBranchList(defaultSystemId);
-                                                                                                                                                                                                                                                                                                                                        }
+                    }
                     systemId = null;
                     branchId = null;
                     page = 1;
                     UpdateParticipantsList();
-                                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                                });
+                }
+            });
 
-                    $(".system-selector").on("click", function (e) {
-                                                                                                                                                                                                                                                                                                                                    var thisId = $(this).data("id");
-                    if (systemId != thisId || branchId != null) {
-                                                                                                                                                                                                                                                                                                                                        if (systemId == null || branchId != null) {
-                                                                                                                                                                                                                                                                                                                                            var navPill = $(this).parent().parent().parent();
-                    navPill.siblings().removeClass("active");
-                    navPill.addClass().addClass("active");
-                    if (branchId != null) {
-                        $("#branchText").text("Branch");
-                                                                                                                                                                                                                                                                                                                                            }
-                                                                                                                                                                                                                                                                                                                                        }
+            $(".system-selector").on("click", function (e) {
+                let thisId = $(this).data("id");
+                if (systemId != thisId || branchId != null) {
+                    if (systemId == null || branchId != null) {
+                        var navPill = $(this).parent().parent().parent();
+                        navPill.siblings().removeClass("active");
+                        navPill.addClass().addClass("active");
+                        if (branchId != null) {
+                            $("#branchText").text("Branch");
+                        }
+                    }
                     $("#systemText").text($(this).text());
                     if (systemId != thisId && (systemId != null || thisId != defaultSystemId)) {
                         UpdateBranchList(thisId);
-                                                                                                                                                                                                                                                                                                                                        }
+                    }
                     systemId = thisId;
                     branchId = null;
                     page = 1;
                     UpdateParticipantsList();
-                                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                                });
+                }
+            });
 
-                    $(document).on("click", ".branch-selector", function (e) {
-                                                                                                                                                                                                                                                                                                                                    var thisId = $(this).data("id");
-                    if (branchId != thisId) {
-                                                                                                                                                                                                                                                                                                                                        if (branchId == null) {
-                                                                                                                                                                                                                                                                                                                                            var navPill = $(this).parent().parent().parent();
-                    navPill.siblings().removeClass("active");
-                    navPill.addClass().addClass("active");
-                    if (systemId == null) {
-                        systemId = defaultSystemId;
-                    $("#systemText").text($(".system-selector").first().text());
-                                                                                                                                                                                                                                                                                                                                            }
-                                                                                                                                                                                                                                                                                                                                        }
+            $(document).on("click", ".branch-selector", function (e) {
+                let thisId = $(this).data("id");
+                if (branchId != thisId) {
+                    if (branchId == null) {
+                        var navPill = $(this).parent().parent().parent();
+                        navPill.siblings().removeClass("active");
+                        navPill.addClass().addClass("active");
+                        if (systemId == null) {
+                            systemId = defaultSystemId;
+                            $("#systemText").text($(".system-selector").first().text());
+                        }
+                    }
                     $("#branchText").text($(this).text());
                     branchId = thisId;
                     page = 1;
                     UpdateParticipantsList();
-                                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                                });
+                }
+            });
 
-                    $("#searchButton").on("click", function () {
-                        search = $("#searchText").val();
-                    if (search != "") {
-                        $("#searchMessage").removeClass("d-none");
+            $("#searchText").on("keypress", function (e) {
+                let keyCode = e.keyCode || e.which;
+                if (keyCode === 13) {
+                    e.preventDefault();
+                    performParticipantSearch();
+                }
+            });
+
+            function performParticipantSearch() {
+                search = $("#searchText").val();
+                if (search != "") {
+                    $("#searchMessage").removeClass("d-none");
                     $("#searchTerm").html(search);
-                                                                                                                                                                                                                                                                                                                                    }
-                    else {
-                        $("#searchMessage").addClass("d-none");
-                                                                                                                                                                                                                                                                                                                                    }
-                    page = 1;
-                    UpdateParticipantsList();
-                                                                                                                                                                                                                                                                                                                                })
+                }
+                else {
+                    $("#searchMessage").addClass("d-none");
+                }
+                page = 1;
+                UpdateParticipantsList();
+            }
 
-                    $("#clearButton").on("click", function () {
-                        $("#searchText").val("");
-                    if (search != "") {
-                        search = "";
+            $("#searchButton").on("click", performParticipantSearch);
+
+            $("#clearButton").on("click", function () {
+                $("#searchText").val("");
+                if (search != "") {
+                    search = "";
                     $("#searchMessage").addClass("d-none");
                     page = 1;
                     UpdateParticipantsList();
-                                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                                })
+                }
+            })
 
-                    $(document).on("click", ".page-button", function () {
-                                                                                                                                                                                                                                                                                                                                    if (!$(this).hasClass("disabled")) {
-                        page = $(this).data("page");
+            $(document).on("click", ".page-button", function () {
+                if (!$(this).hasClass("disabled")) {
+                    page = $(this).data("page");
                     UpdateParticipantsList();
-                                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                                });
+                }
+            });
 
-                    $('#promoteModal').on('show.bs.modal', function (event) {
-                                                                                                                                                                                                                                                                                                                                    var button = $(event.relatedTarget);
-                    var id = button.data('id');
-                    var name = button.data('name');
-                    var modal = $(this);
-                    modal.find('#modal-text').text('Are you sure you wish to promote "' + name + '" to @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group") manager?');
-                    modal.find('#PromoteId').val(id);
-                                                                                                                                                                                                                                                                                                                                })
+            $('#promoteModal').on('show.bs.modal', function (event) {
+                let button = $(event.relatedTarget);
+                let id = button.data('id');
+                let name = button.data('name');
+                let modal = $(this);
+                modal.find('#modal-text').text('Are you sure you wish to promote "' + name + '" to @Model.FamilyOrGroup manager?');
+                modal.find('#PromoteId').val(id);
+            })
 
-                    $('#removeModal').on('show.bs.modal', function (event) {
-                                                                                                                                                                                                                                                                                                                                    var button = $(event.relatedTarget);
-                    var id = button.data('id');
-                    var name = button.data('name');
-                    var modal = $(this);
-                    modal.find('#modal-text').text('Are you sure you wish to remove "' + name + '" from the @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group")?');
-                    modal.find('#RemoveId').val(id);
-                                                                                                                                                                                                                                                                                                                                })
+            $('#removeModal').on('show.bs.modal', function (event) {
+                let button = $(event.relatedTarget);
+                let id = button.data('id');
+                let name = button.data('name');
+                let modal = $(this);
+                modal.find('#modal-text').text('Are you sure you wish to remove "' + name + '" from the @Model.FamilyOrGroup?');
+                modal.find('#RemoveId').val(id);
+            })
 
-                    $(".emailAwardButton").on("click", function (event) {
-                        event.preventDefault();
-                    var modal = $("#emailAwardModal");
-                    modal.find("#EmailAwardModel_Email").val($(this).data("email"));
-                    modal.find("#EmailAwardModel_UserId").val($(this).data("userid"));
-                    modal.modal();
-                                                                                                                                                                                                                                                                                                                                });
-            </text>
-        }
-    </script>
+            $(".emailAwardButton").on("click", function (event) {
+                event.preventDefault();
+                let modal = $("#emailAwardModal");
+                modal.find("#EmailAwardModel_Email").val($(this).data("email"));
+                modal.find("#EmailAwardModel_UserId").val($(this).data("userid"));
+                modal.modal();
+            });
+        </script>
+    }
 }

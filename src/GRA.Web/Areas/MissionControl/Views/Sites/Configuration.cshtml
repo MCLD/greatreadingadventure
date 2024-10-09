@@ -97,18 +97,18 @@
     <div class="mb-3">
         <label>Send test email to:</label>
         <input id="emailAddress" class="form-control" style="display:unset; width:300px;" value="@Model.CurrentUserMail">
-        <button id="sendTest" type="button" class="btn btn-outline-primary" button-spinner>
+        <button id="sendTest" type="button" class="btn btn-secondary" button-spinner>
             Send
         </button>
     </div>
 
     <div class="mb-3">
-        <a asp-action="Index" class="btn btn-outline-secondary">Return to List</a>
+        <a asp-action="Index" class="btn btn-secondary">Return to List</a>
         <button type="submit"
                 id="Submit"
                 name="Submit"
                 value="Submit"
-                class="btn btn-outline-primary btn-spinner"
+                class="btn btn-primary btn-spinner"
                 button-spinner>
             <span class="buttonText">Save</span>
         </button>

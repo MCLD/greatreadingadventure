@@ -2,8 +2,8 @@
 
 <div class="row" style="padding: 10px 0;">
     <div class="col-12">
-        <a asp-action="Index" class="btn btn-outline-secondary">Drawings</a>
-        <a asp-action="CriteriaCreate" class="btn btn-outline-primary">Create Criteria</a>
+        <a asp-action="Index" class="btn btn-secondary">Drawings</a>
+        <a asp-action="CriteriaCreate" class="btn btn-primary">Create Criteria</a>
     </div>
 </div>
 
@@ -84,8 +84,8 @@
             <input asp-for="Search" class="form-control" />
         </div>
         <div class="col-4">
-            <input type="submit" value="Search" class="btn btn-outline-primary" style="margin-right: 8px;" />
-            <a asp-action="Criteria" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-ProgramId="@Model.ProgramId" asp-route-Mine="@Model.Mine" class="btn btn-outline-secondary">Clear</a>
+            <input type="submit" value="Search" class="btn btn-secondary" style="margin-right: 8px;" />
+            <a asp-action="Criteria" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-ProgramId="@Model.ProgramId" asp-route-Mine="@Model.Mine" class="btn btn-secondary">Clear</a>
         </div>
     </div>
 </form>

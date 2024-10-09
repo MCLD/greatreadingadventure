@@ -116,12 +116,12 @@
             }
 
             <div class="mb-3">
-                <a asp-action="BaseIndex" class="btn btn-outline-secondary">Return to List</a>
+                <a asp-action="BaseIndex" class="btn btn-secondary">Return to List</a>
                 <button type="submit"
                         id="Submit"
                         name="Submit"
                         value="Submit"
-                        class="btn btn-outline-primary btn-spinner gra-save-button"
+                        class="btn btn-primary btn-spinner gra-save-button"
                         button-spinner>
                     <span class="buttonText">Save Base Template</span>
                 </button>
@@ -183,7 +183,7 @@
                         Cancel
                     </button>
                     <button type="submit"
-                            class="btn btn-outline-primary float-end"
+                            class="btn btn-primary float-end"
                             aria-label="Confirm">
                         Upload and replace
                     </button>
@@ -203,7 +203,7 @@
             $('.gra-save-warning').removeClass('d-none');
         }
         if($('.gra-save-button')) {
-                $('.gra-save-button').removeClass('btn-outline-primary').addClass('btn-outline-success');
+                $('.gra-save-button').removeClass('btn-primary').addClass('btn-outline-success');
         }
     }
 

@@ -101,8 +101,8 @@
             <input asp-for="Search" class="form-control" />
         </div>
         <div class="col-4">
-            <input type="submit" value="Search" class="btn btn-outline-primary" style="margin-right: 8px;" />
-            <a asp-action="Index" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-ProgramId="@Model.ProgramId" asp-route-Mine="@Model.Mine" class="btn btn-outline-secondary">Clear</a>
+            <input type="submit" value="Search" class="btn btn-secondary" style="margin-right: 8px;" />
+            <a asp-action="Index" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-ProgramId="@Model.ProgramId" asp-route-Mine="@Model.Mine" class="btn btn-secondary">Clear</a>
         </div>
     </div>
 </form>
@@ -113,17 +113,17 @@
         {
             <a asp-action="Create"
                asp-route-streamingEvent="true"
-               class="btn btn-outline-primary">Create a new streaming event</a>
+               class="btn btn-secondary">Create a new streaming event</a>
         }
         else if (Model.CommunityExperience)
         {
             <a asp-action="Create"
                asp-route-communityExperience="true"
-               class="btn btn-outline-primary">Create a new community experience</a>
+               class="btn btn-secondary">Create a new community experience</a>
         }
         else
         {
-            <a asp-action="Create" class="btn btn-outline-primary">Create a new event</a>
+            <a asp-action="Create" class="btn btn-secondary">Create a new event</a>
         }
     </div>
 </div>
@@ -228,7 +228,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                            class="btn btn-outline-secondary"
+                            class="btn btn-secondary"
                             data-bs-dismiss="modal"
                             style="margin-right: 1em;">
                         Cancel

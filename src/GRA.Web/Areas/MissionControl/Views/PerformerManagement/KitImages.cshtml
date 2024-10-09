@@ -12,7 +12,7 @@
     <div class="col-12">
         <h1>
             Images for Kit: @Model.KitName
-            <a asp-action="Kit" asp-route-id="@Model.KitId" class="btn btn-lg btn-outline-secondary" style="margin-bottom: 0.5rem;">Return to Kit</a>
+            <a asp-action="Kit" asp-route-id="@Model.KitId" class="btn btn-lg btn-secondary" style="margin-bottom: 0.5rem;">Return to Kit</a>
         </h1>
     </div>
     <form asp-action="KitImages" class="form-horizontal col-12" method="post" role="form" enctype="multipart/form-data">
@@ -32,7 +32,7 @@
             <div class="col-sm-9">
                 <div class="input-group">
                     <label class="input-group-text">
-                        <span class="btn btn-outline-primary btn-file">
+                        <span class="btn btn-secondary btn-file">
                             <span class="far fa-file-image"></span> Select file(s)...
                             <input type="file"
                                    multiple="multiple"
@@ -118,7 +118,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                            class="btn btn-outline-secondary"
+                            class="btn btn-secondary"
                             data-bs-dismiss="modal"
                             style="margin-right: 1em;">
                         Cancel

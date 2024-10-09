@@ -54,10 +54,10 @@
             }
 
             <div class="mb-3">
-                <a asp-action="Index" class="btn btn-outline-secondary">Return to List</a>
+                <a asp-action="Index" class="btn btn-secondary">Return to List</a>
                 @if (Model.Post?.PublishedAt != null)
                 {
-                    <button type="submit" class="btn btn-outline-primary btn-spinner" button-spinner>
+                    <button type="submit" class="btn btn-primary btn-spinner" button-spinner>
                         <span class="buttonText">Update Post</span>
                     </button>
                 }
@@ -66,14 +66,14 @@
                     <button type="submit"
                             name="Publish"
                             value="False"
-                            class="btn btn-outline-primary btn-spinner"
+                            class="btn btn-primary btn-spinner"
                             button-spinner>
                         <span class="buttonText">Save as Draft</span>
                     </button>
                     <button type="submit"
                             name="Publish"
                             value="True"
-                            class="btn btn-outline-info btn-spinner"
+                            class="btn btn-primary btn-spinner"
                             button-spinner>
                         <span class="buttonText">Save and Publish</span>
                     </button>

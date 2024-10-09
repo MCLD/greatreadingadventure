@@ -26,7 +26,7 @@
             Performer Information
             @if (Model.IsEditable)
             {
-                <a asp-action="Information" class="btn btn-outline-primary" style="display:inline-block">Edit Information</a>
+                <a asp-action="Information" class="btn btn-secondary" style="display:inline-block">Edit Information</a>
             }
         </h2>
     </div>
@@ -41,7 +41,7 @@
         }
         <div class="row" style="padding-bottom:15px;">
             <div class="col-12" style="text-align:center;">
-                <a asp-action="Images" class="btn btn-outline-primary">@(Model.IsEditable ? "View/Manage Images" : "View Images")</a>
+                <a asp-action="Images" class="btn btn-primary">@(Model.IsEditable ? "View/Manage Images" : "View Images")</a>
             </div>
         </div>
         <div class="row" style="padding-bottom:15px;">
@@ -49,7 +49,7 @@
                 <a aria-label="View References (Opens new window)"
                    href="~/@Model.ReferencesPath"
                    target="_blank"
-                   class="btn btn-outline-primary">View References</a>
+                   class="btn btn-primary">View References</a>
             </div>
         </div>
     </div>
@@ -110,7 +110,7 @@
         <div class="mb-3">
             <label>Branches</label>
             <div>@(Model.Performer.AllBranches ? Model.Systems.SelectMany(_ => _.Branches).Count() : Model.Performer.Branches.Count) of @Model.Systems.SelectMany(_ => _.Branches).Count() Selected</div>
-            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#branchModal">View Selected Libraries</button>
+            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#branchModal">View Selected Libraries</button>
         </div>
     </div>
 
@@ -120,7 +120,7 @@
             Programs
             @if (Model.IsEditable)
             {
-                <a asp-action="Program" class="btn btn-outline-primary" style="display:inline-block">Add Program</a>
+                <a asp-action="Program" class="btn btn-secondary" style="display:inline-block">Add Program</a>
             }
         </h2>
     </div>
@@ -183,7 +183,7 @@
             Schedule
             @if (Model.IsEditable)
             {
-                <a asp-action="Schedule" class="btn btn-outline-primary" style="display:inline-block">Edit Schedule</a>
+                <a asp-action="Schedule" class="btn btn-secondary" style="display:inline-block">Edit Schedule</a>
             }
         </h2>
     </div>
@@ -291,7 +291,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                            class="btn btn-outline-secondary"
+                            class="btn btn-secondary"
                             data-bs-dismiss="modal"
                             style="margin-right: 1em;">
                         Close
@@ -322,7 +322,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                            class="btn btn-outline-secondary"
+                            class="btn btn-secondary"
                             data-bs-dismiss="modal"
                             style="margin-right: 1em;">
                         Cancel

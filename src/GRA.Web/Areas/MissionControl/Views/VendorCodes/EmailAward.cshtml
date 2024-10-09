@@ -14,7 +14,7 @@
 
     <div class="row row-spacing">
         <div class="col-12">
-            <button asp-action="@nameof(VendorCodesController.DownloadUnreportedEmailAddresses)" formmethod="get" class="btn btn-outline-info">Download Unreported Email Addresses</button>
+            <button asp-action="@nameof(VendorCodesController.DownloadUnreportedEmailAddresses)" formmethod="get" class="btn btn-primary">Download Unreported Email Addresses</button>
         </div>
     </div>
 
@@ -78,12 +78,12 @@
 
             if (input.length) {
                 input.val(log);
-                $('.btn-file').removeClass('btn-outline-secondary');
+                $('.btn-file').removeClass('btn-secondary');
                 $('.btn-file').addClass('btn-outline-success');
             }
             else {
                 input.val('');
-                $('.btn-file').addClass('btn-outline-secondary');
+                $('.btn-file').addClass('btn-secondary');
                 $('.btn-file').removeClass('btn-outline-success');
             }
         });

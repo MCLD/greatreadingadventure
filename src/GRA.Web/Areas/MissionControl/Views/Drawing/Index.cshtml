@@ -2,14 +2,14 @@
 
 <div class="row" style="padding: 10px 0;">
     <div class="col-12">
-        <a asp-action="Criteria" class="btn btn-outline-secondary">Drawing Criteria</a>
+        <a asp-action="Criteria" class="btn btn-secondary">Drawing Criteria</a>
         @if (Model.Archived == true)
         {
-            <a asp-action="Index" class="btn btn-outline-secondary">Drawing List</a>
+            <a asp-action="Index" class="btn btn-secondary">Drawing List</a>
         }
         else
         {
-            <a asp-action="Index" asp-route-Archived="True" class="btn btn-outline-secondary">Archived Drawings</a>
+            <a asp-action="Index" asp-route-Archived="True" class="btn btn-secondary">Archived Drawings</a>
         }
     </div>
 </div>
@@ -93,8 +93,8 @@
             <input asp-for="Search" class="form-control" />
         </div>
         <div class="col-4">
-            <input type="submit" value="Search" class="btn btn-outline-primary" style="margin-right: 8px;" />
-            <a asp-action="Index" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-ProgramId="@Model.ProgramId" asp-route-Mine="@Model.Mine" asp-route-Archived="@Model.Archived" class="btn btn-outline-secondary">Clear</a>
+            <input type="submit" value="Search" class="btn btn-secondary" style="margin-right: 8px;" />
+            <a asp-action="Index" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-ProgramId="@Model.ProgramId" asp-route-Mine="@Model.Mine" asp-route-Archived="@Model.Archived" class="btn btn-secondary">Clear</a>
         </div>
     </div>
 </form>

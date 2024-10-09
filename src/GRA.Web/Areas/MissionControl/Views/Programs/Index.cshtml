@@ -8,15 +8,15 @@
             <input asp-for="Search" class="form-control" />
         </div>
         <div class="col-4">
-            <input type="submit" value="Search" class="btn btn-outline-primary" style="margin-right: 8px;" />
-            <a asp-action="Index" class="btn btn-outline-secondary">Clear</a>
+            <input type="submit" value="Search" class="btn btn-secondary" style="margin-right: 8px;" />
+            <a asp-action="Index" class="btn btn-secondary">Clear</a>
         </div>
     </div>
 </form>
 
 <div class="row" style="padding: 10px 0;">
     <div class="col-12">
-        <a asp-action="Create" class="btn btn-outline-primary">Add a Program</a>
+        <a asp-action="Create" class="btn btn-secondary">Add a Program</a>
     </div>
 </div>
 
@@ -46,10 +46,10 @@
                                     </a>
                                 </td>
                                 <td class="on-top gra-mc-icon">
-                                    <button type="button" data-id="@program.Id" class="btn btn-outline-secondary btn-sm decreasePosition" style="width:25px;" disabled="@(Model.PaginateModel.CurrentPage == 1 && program == Model.Programs.First() ? " disabled" : null)">
+                                    <button type="button" data-id="@program.Id" class="btn btn-secondary btn-sm decreasePosition" style="width:25px;" disabled="@(Model.PaginateModel.CurrentPage == 1 && program == Model.Programs.First() ? " disabled" : null)">
                                         <span class="fas fa-arrow-up"></span>
                                     </button>
-                                    <button type="button" data-id="@program.Id" class="btn btn-outline-secondary btn-sm increasePosition" style="width:25px;" disabled="@(Model.PaginateModel.CurrentPage == Model.PaginateModel.MaxPage && program == Model.Programs.Last() ? " disabled" : null)">
+                                    <button type="button" data-id="@program.Id" class="btn btn-secondary btn-sm increasePosition" style="width:25px;" disabled="@(Model.PaginateModel.CurrentPage == Model.PaginateModel.MaxPage && program == Model.Programs.Last() ? " disabled" : null)">
                                         <span class="fas fa-arrow-down"></span>
                                     </button>
                                     <button type="button"
@@ -103,7 +103,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-outline-secondary"
+                                class="btn btn-secondary"
                                 data-bs-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel

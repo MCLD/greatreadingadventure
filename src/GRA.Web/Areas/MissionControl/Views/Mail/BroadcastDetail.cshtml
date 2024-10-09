@@ -72,10 +72,10 @@
     </div>
 
     <div class="mb-3">
-        <a asp-action="Broadcasts" asp-route-Upcoming="@(Model.Sent ? "False" : null)" class="btn btn-outline-secondary">Return to List</a>
+        <a asp-action="Broadcasts" asp-route-Upcoming="@(Model.Sent ? "False" : null)" class="btn btn-secondary">Return to List</a>
         @if (Model.Sent != true)
         {
-            <button type="submit" class="btn btn-outline-primary" button-spinner>
+        <button type="submit" class="btn btn-primary" button-spinner>
             <span class="buttonText">@(Model.Action == "Edit" ? "Save" : Model.Action) Broadcast</span>
         </button>
         }

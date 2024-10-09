@@ -20,8 +20,8 @@
             <input name="Search" value="@Model.Search" class="form-control" />
         </div>
         <div class="col-4">
-            <input type="submit" value="Search" class="btn btn-outline-primary" style="margin-right: 8px;" />
-            <a asp-action="Layer" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Clear</a>
+            <input type="submit" value="Search" class="btn btn-secondary" style="margin-right: 8px;" />
+            <a asp-action="Layer" asp-route-id="@Model.Id" class="btn btn-secondary">Clear</a>
         </div>
     </div>
 </form>
@@ -44,12 +44,12 @@
                         <div style="height: 40px;">
                             @item.Name
                         </div>
-                        <button asp-action="@nameof(AvatarsController.DecreaseItemSort)" name="ItemId" value="@item.Id" class="btn btn-sm btn-outline-secondary" style="margin-right: 6px;" disabled="@(Model.PaginateModel.FirstPage == null && item == Model.Items.First() ? "disabled" : null)">
-                            <span class="fas fa-arrow-left fa-fw"></span>
+                        <button asp-action="@nameof(AvatarsController.DecreaseItemSort)" name="ItemId" value="@item.Id" class="btn btn-sm btn-secondary" style="margin-right: 6px;" disabled="@(Model.PaginateModel.FirstPage == null && item == Model.Items.First() ? "disabled" : null)">
+                            <span class="fas fa-arrow-left"></span>
                         </button>
                         @if (item.Unlockable)
                         {
-                            <button asp-action="@nameof(AvatarsController.SetItemAvailable)" name="ItemId" value="@item.Id" class="btn btn-sm btn-outline-primary" style="margin: 0 3px;">
+                            <button asp-action="@nameof(AvatarsController.SetItemAvailable)" name="ItemId" value="@item.Id" class="btn btn-sm btn-primary" style="margin: 0 3px;">
                                 <span class="fas fa-lock"></span>
                             </button>
                         }
@@ -68,8 +68,8 @@
                                 data-name="@item.Name">
                             <span class="fas fa-times fa-fw"></span>
                         </button>
-                        <button asp-action="@nameof(AvatarsController.IncreaseItemSort)" name="ItemId" value="@item.Id" class="btn btn-sm btn-outline-secondary" style="margin-left: 6px;" disabled="@(Model.PaginateModel.LastPage == null && item == Model.Items.Last() ? "disabled" : null)">
-                            <span class="fas fa-arrow-right fa-fw"></span>
+                        <button asp-action="@nameof(AvatarsController.IncreaseItemSort)" name="ItemId" value="@item.Id" class="btn btn-sm btn-secondary" style="margin-left: 6px;" disabled="@(Model.PaginateModel.LastPage == null && item == Model.Items.Last() ? "disabled" : null)">
+                            <span class="fas fa-arrow-right"></span>
                         </button>
                     </div>
 
@@ -80,7 +80,7 @@
         {
             <paginate paginateModel="@Model.PaginateModel"></paginate>
         }
-        <a asp-action="Index" class="btn btn-outline-secondary">Return to List</a>
+        <a asp-action="Index" class="btn btn-secondary">Return to List</a>
     </div>
 </div>
 
@@ -121,7 +121,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-outline-secondary"
+                                class="btn btn-secondary"
                                 data-bs-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel

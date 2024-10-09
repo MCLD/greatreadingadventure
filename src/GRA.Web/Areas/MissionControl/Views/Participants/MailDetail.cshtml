@@ -1,20 +1,20 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.MailDetailViewModel
 
-<div class="row row-spacing">
+<div class="row mb-3">
     <div class="col-12">
         <label class="col-form-label">Sent At</label>
         <input value="@Model.Mail.CreatedAt.ToString()" class="form-control" readonly />
     </div>
 </div>
 
-<div class="row row-spacing">
+<div class="row mb-3">
     <div class="col-12">
         <label asp-for="Mail.Subject" class="col-form-label"></label>
         <input asp-for="Mail.Subject" class="form-control" readonly />
     </div>
 </div>
 
-<div class="row row-spacing">
+<div class="row mb-3">
     <div class="col-12">
         <label asp-for="Mail.Body" class="col-form-label"></label>
         @if (Model.Mail.ToUserId.HasValue)
@@ -30,7 +30,7 @@
     </div>
 </div>
 
-<div class="row row-spacing">
+<div class="row mb-3">
     <div class="col-12">
         <label class="col-form-label">Unread</label>
         <input value="@(Model.Mail.IsNew ? "Yes" : "No")" class="form-control" readonly />
@@ -38,15 +38,21 @@
 </div>
 
 
-<div class="mb-3">
-    <a asp-action="Index" class="btn btn-outline-secondary">Return to Participants</a>
-    <a asp-action="Mail" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Return to Mail List</a>
+<div class="mb-3 d-print-none d-flex">
+    <a asp-action="Index"
+       class="btn btn-outline-secondary">Return to Participants</a>
     @if (Model.CanRemoveMail)
     {
-        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+        <button type="button"
+                class="btn btn-outline-danger ms-auto me-2"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteModal">
             Delete Mail
         </button>
     }
+    <a asp-action="Mail"
+       asp-route-id="@Model.Id"
+       class="btn btn-outline-secondary">Return to Mail List</a>
 </div>
 
 @if (Model.CanRemoveMail)
@@ -65,20 +71,19 @@
                                 class="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="Close dialog">
-                            
                         </button>
                     </div>
-                    <div class="modal-body">
-                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
+                    <div class="modal-body d-flex align-items-stretch">
+                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                              aria-hidden="true"></span>
                         <span id="modal-text">
                             Are you sure you wish to delete the mail "@Model.Mail.Subject" ?
                         </span>
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer d-flex justify-content-end">
                         <button type="button"
                                 class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal"
-                                style="margin-right: 1em;">
+                                data-bs-dismiss="modal">
                             Cancel
                         </button>
                         <form asp-controller="Participants"
@@ -89,9 +94,8 @@
                             <input id="Id" name="Id" value="@Model.Mail.Id" type="hidden" />
                             <input id="userId" name="userId" value="@Model.Id" type="hidden" />
                             <button type="submit"
-                                    class="btn btn-outline-danger float-end"
+                                    class="btn btn-outline-danger"
                                     aria-label="Confirm">
-                                <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                                 Delete
                             </button>
                         </form>

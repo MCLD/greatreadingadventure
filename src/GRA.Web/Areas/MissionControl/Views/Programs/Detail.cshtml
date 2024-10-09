@@ -32,7 +32,7 @@
                       title="Display this text in a banner at the top of the participant dashboard. Only text, no HTML/links."
                       data-bs-toggle="tooltip"
                       data-bs-placement="top"></span>
-                <button type="button" class="btn btn-sm btn-outline-primary" id="previewAlertButton" data-bs-toggle="modal" data-bs-target="#previewAlertModal" style="margin-bottom: 0.25rem; margin-left: 0.5rem;">Preview alert</button>
+                <button type="button" class="btn btn-sm btn-secondary" id="previewAlertButton" data-bs-toggle="modal" data-bs-target="#previewAlertModal" style="margin-bottom: 0.25rem; margin-left: 0.5rem;">Preview alert</button>
                 <select asp-for="Program.DashboardAlertType" asp-items="Html.GetEnumSelectList<GRA.Domain.Model.AlertType>()" class="form-control" style="margin-bottom: 1rem;"></select>
                 <textarea asp-for="Program.DashboardAlert" class="form-control"></textarea>
             </div>
@@ -137,7 +137,7 @@
 
                     <div class="tab-content">
                         <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.UseBadgeMaker ? "active" : "")" id="badge">
-                            <button id="openMaker" type="button" class="btn btn-outline-primary">
+                            <button id="openMaker" type="button" class="btn btn-secondary">
                                 <span class="fas fa-certificate"></span> Create a Badge
                             </button>
                         </div>
@@ -146,7 +146,7 @@
                             <p>Upload a badge image. Badge images must be square.</p>
                             <div class="input-group">
                                 <label class="input-group-text">
-                                    <span class="btn btn-outline-primary btn-file">
+                                    <span class="btn btn-secondary btn-file">
                                         <span class="far fa-file-image"></span> Select an image<input type="file" asp-for="BadgeUploadImage" accept=".png,.jpg,.jpeg" style="display: none;" />
                                     </span>
                                 </label>
@@ -155,7 +155,7 @@
                             <div>
                                 <span asp-validation-for="BadgeUploadImage" class="text-danger"></span>
                             </div>
-                            <button id="clearFile" class="btn btn-outline-secondary" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
+                            <button id="clearFile" class="btn btn-secondary" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
                         </div>
                     </div>
                 </div>
@@ -177,12 +177,12 @@
             <hr />
 
             <div class="mb-3">
-                <a asp-action="Index" class="btn btn-outline-secondary">Return to List</a>
+                <a asp-action="Index" class="btn btn-secondary">Return to List</a>
                 <button type="submit"
                         id="Submit"
                         name="Submit"
                         value="Submit"
-                        class="btn btn-outline-primary btn-spinner"
+                        class="btn btn-primary btn-spinner"
                         button-spinner>
                     <span class="buttonText">Save Program</span>
                 </button>
@@ -224,7 +224,7 @@
                 <div class="alert" id="alertPreview"></div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
