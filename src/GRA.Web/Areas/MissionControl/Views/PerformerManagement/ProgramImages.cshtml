@@ -12,7 +12,7 @@
     <div class="col-12">
         <h1>
             Images for Program: @Model.ProgramName
-            <a asp-action="Program" asp-route-id="@Model.ProgramId" class="btn btn-lg btn-secondary" style="margin-bottom: 0.5rem;">Return to Program</a>
+            <a asp-action="Program" asp-route-id="@Model.ProgramId" class="btn btn-lg btn-outline-secondary" style="margin-bottom: 0.5rem;">Return to Program</a>
         </h1>
     </div>
     <form asp-action="ProgramImages" class="form-horizontal col-12" method="post" role="form" enctype="multipart/form-data">
@@ -118,7 +118,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                            class="btn btn-secondary"
+                            class="btn btn-outline-secondary"
                             data-bs-dismiss="modal"
                             style="margin-right: 1em;">
                         Cancel

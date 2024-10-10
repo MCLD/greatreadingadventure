@@ -48,7 +48,7 @@
                asp-action="Edit"
                asp-route-id="@Model.Event.RelatedTriggerId"
                        target="_blank"
-                       class="btn btn-secondary">
+                       class="btn btn-outline-primary">
                     View Related Trigger
                     </a>
                 </div>
@@ -199,7 +199,7 @@
                 @if (Model.CanManageLocations)
                 {
                     <button type="button"
-                        class="btn btn-primary btn-sm"
+                            class="btn btn-outline-primary btn-sm"
                         style="margin-left:8px;"
                         data-bs-toggle="modal"
                         data-bs-target="#addModal">
@@ -359,7 +359,7 @@
                     <input asp-for="Event.ChallengeGroupId" type="hidden" />
                     <button type="button"
                         id="addButton"
-                        class="btn btn-secondary"
+                            class="btn btn-outline-primary"
                         style="display: block">
                         <span class="relatedText">@(Model.Event.Challenge != null || Model.Event.ChallengeGroup != null ? "Change" : "Add")</span> 
                         Related Challenge</button>
@@ -370,16 +370,16 @@
 
     <div class="mb-3">
         <a asp-action="Index"
-            class="btn btn-secondary">
+           class="btn btn-outline-secondary">
             Return to List</a>
         <a asp-action="Create"
             asp-route-id="@Model.Event.Id"
-            class="btn btn-secondary">
+            class="btn btn-outline-info">
             <span class="far fa-copy"></span>
             Copy Event
         </a>
         <button type="submit"
-            class="btn btn-primary" button-spinner>
+                class="btn btn-outline-primary" button-spinner>
             <span class="buttonText">Save @(Model.Event.IsCommunityExperience ? "Community Experience" : "Event")</span>
         </button>
     </div>
@@ -460,7 +460,7 @@
                                                 <div class="col-6">
                                                     <button type="button"
                                                             id="challengeSearchButton"
-                                                            class="btn btn-secondary "
+                                                            class="btn btn-outline-primary"
                                                             style="margin-right: 8px;">
                                                         Search
                                                     </button>
@@ -468,7 +468,7 @@
                                                 <div class="col-6">
                                                     <button type="button"
                                                             id="challengeClearButton"
-                                                            class="btn btn-secondary ">
+                                                            class="btn btn-outline-secondary">
                                                         Clear
                                                     </button>
                                                 </div>
@@ -501,7 +501,7 @@
                                                 <div class="col-6">
                                                     <button type="button"
                                                             id="groupSearchButton"
-                                                            class="btn btn-secondary "
+                                                            class="btn btn-outline-primary"
                                                             style="margin-right: 8px;">
                                                         Search
                                                     </button>
@@ -509,7 +509,7 @@
                                                 <div class="col-6">
                                                     <button type="button"
                                                             id="groupClearButton"
-                                                            class="btn btn-secondary ">
+                                                            class="btn btn-outline-secondary ">
                                                         Clear
                                                     </button>
                                                 </div>
@@ -533,7 +533,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button"
-                                        class="btn btn-secondary"
+                                        class="btn btn-outline-secondary"
                                         data-bs-dismiss="modal"
                                         style="margin-right: 1em;">
                                     Close
@@ -615,14 +615,14 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button"
-                                    class="btn btn-secondary"
+                                class="btn btn-outline-secondary"
                                     data-bs-dismiss="modal"
                                     style="margin-right: 1em;">
                                 Cancel
                             </button>
                             <button id="addLocation"
                                     type="button"
-                                    class="btn btn-primary float-end"
+                                    class="btn btn-outline-primary float-end"
                                     aria-label="Confirm">
                                 Add
                             </button>

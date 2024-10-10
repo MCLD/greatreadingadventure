@@ -113,7 +113,6 @@
                    target="_blank">Exit</a>
             </em>
             <div class="mb-3 date datetimepicker">
-                @* timepicker *@
                 <input asp-for="AccessClosed" type="datetime-local" class="form-control" />
             </div>
             <span asp-validation-for="AccessClosed" class="text-danger"></span>
@@ -121,12 +120,12 @@
     </div>
 
     <div class="mb-3">
-        <a asp-action="Index" class="btn btn-secondary">Return to List</a>
+        <a asp-action="Index" class="btn btn-outline-secondary">Return to List</a>
         <button type="submit"
                 id="Submit"
                 name="Submit"
                 value="Submit"
-                class="btn btn-primary btn-spinner"
+                class="btn btn-outline-primary btn-spinner"
                 button-spinner>
             <span class="buttonText">Save</span>
         </button>

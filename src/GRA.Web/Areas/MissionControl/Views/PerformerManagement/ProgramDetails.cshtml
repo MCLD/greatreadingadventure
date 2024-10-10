@@ -221,11 +221,11 @@
                 </button>
                 @if (Model.PerformerId.HasValue)
                 {
-                    <a asp-action="Performer" asp-route-id="@Model.PerformerId" class="btn btn-lg btn-secondary float-start" style="margin-right: 10px;">Return to Dashboard</a>
+                    <a asp-action="Performer" asp-route-id="@Model.PerformerId" class="btn btn-lg btn-outline-secondary float-start" style="margin-right: 10px;">Return to Dashboard</a>
                 }
                 else
                 {
-                    <a asp-action="Program" asp-route-id="@Model.Program.Id" class="btn btn-lg btn-secondary float-start" style="margin-right: 10px;">Return to Program</a>
+                    <a asp-action="Program" asp-route-id="@Model.Program.Id" class="btn btn-lg btn-outline-secondary float-start" style="margin-right: 10px;">Return to Program</a>
                 }
             </div>
         </div>

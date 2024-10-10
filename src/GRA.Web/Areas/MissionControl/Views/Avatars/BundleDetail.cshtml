@@ -137,10 +137,10 @@
     </div>
 
     <div class="mb-3">
-        <a asp-action="Bundles" class="btn btn-secondary">Return to List</a>
+        <a asp-action="Bundles" class="btn btn-outline-secondary">Return to List</a>
         @if (Model.Bundle?.HasBeenAwarded != true)
         {
-            <button type="submit" class="btn btn-primary" button-spinner>
+            <button type="submit" class="btn btn-outline-primary" button-spinner>
                 <span class="buttonText">@(Model.Action == "Edit" ? "Save" : Model.Action) Bundle</span>
             </button>
         }
@@ -190,7 +190,7 @@
                                         <div class="col-6">
                                             <button type="button"
                                                     id="searchButton"
-                                                    class="btn btn-secondary "
+                                                    class="btn btn-outline-primary "
                                                     style="margin-right: 8px;">
                                                 Search
                                             </button>
@@ -198,7 +198,7 @@
                                         <div class="col-6">
                                             <button type="button"
                                                     id="clearButton"
-                                                    class="btn btn-secondary ">
+                                                    class="btn btn-outline-secondary ">
                                                 Clear
                                             </button>
                                         </div>
@@ -218,7 +218,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button"
-                                        class="btn btn-secondary"
+                                        class="btn btn-outline-secondary"
                                         data-bs-dismiss="modal"
                                         style="margin-right: 1em;">
                                     Close

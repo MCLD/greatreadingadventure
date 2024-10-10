@@ -44,7 +44,7 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col-12">
-                                <a asp-action="Kit" asp-route-id="@Model.Kit.Id" class="btn btn-lg btn-secondary">View Kit</a>
+                                <a asp-action="Kit" asp-route-id="@Model.Kit.Id" class="btn btn-lg btn-outline-primary">View Kit</a>
                             </div>
                         </div>
                     </div>
@@ -80,7 +80,7 @@
                             <td>@branchSelection.AgeGroup.Name</td>
                             <td style="text-align:center;">
                                 <button type="button"
-                                        class="btn btn-sm btn-primary"
+                                        class="btn btn-sm btn-outline-primary"
                                         data-bs-toggle="modal"
                                         data-bs-target="#editModal"
                                         data-id="@branchSelection.Id"
@@ -184,7 +184,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                            class="btn btn-secondary"
+                            class="btn btn-outline-secondary"
                             data-bs-dismiss="modal"
                             style="margin-right: 1em;">
                         Cancel
@@ -221,7 +221,7 @@
                         <input class="hidden" asp-for="Kit.Id" aria-hidden="true" />
                         <input class="hidden" asp-for="BranchSelectionId" aria-hidden="true" />
                         <button type="button"
-                                class="btn btn-secondary"
+                                class="btn btn-outline-secondary"
                                 data-bs-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel
