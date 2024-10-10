@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Update packages
+- Update Docker Lock checksums
+- Update pinned curl version
+
 ## [4.5.0] 2024-08-29
 
 ## Changed
