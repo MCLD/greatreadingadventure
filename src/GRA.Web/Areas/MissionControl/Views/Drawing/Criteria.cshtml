@@ -1,7 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Drawing.CriterionListViewModel
 
-<div class="row" style="padding: 10px 0;">
-    <div class="col-12">
+<div class="row">
+    <div class="col-12 mt-4">
         <a asp-action="Index" class="btn btn-outline-secondary">Drawings</a>
         <a asp-action="CriteriaCreate" class="btn btn-outline-primary">Create Criteria</a>
     </div>
@@ -9,7 +9,7 @@
 
 <div class="row">
     <div class="col-12 mb-2">
-        <ul class="nav nav-pills flex-column flex-sm-row">
+        <ul class="nav nav-pills flex-column flex-sm-row my-4">
             <li class="nav-item">
                 <a asp-route-Search="@Model.Search" asp-route-ProgramId="@Model.ProgramId" class="nav-link @(Model.ActiveNav == "All" ? "active" : "")">All</a>
             </li>
