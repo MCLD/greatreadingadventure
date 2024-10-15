@@ -1,7 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Categories.CategoryListViewModel
 
 <form asp-controller="Categories" asp-action="Index" method="get" role="form">
-    <div class="row row-spacing" style="padding-top: 10px;">
+    <div class="row row-spacing my-4">
         <div class="col-8">
             <input asp-for="Search" class="form-control" />
         </div>
@@ -12,7 +12,7 @@
     </div>
 </form>
 
-<div class="row" style="padding: 10px 0;">
+<div class="row mb-4">
     <div class="col-12">
         <a class="btn btn-outline-primary"
            data-bs-toggle="modal"
@@ -52,7 +52,7 @@
                                     <span class="label" style="background-color:@category.Color">@category.Name</span>
                                 </td>
                                 <td>
-                                    <div class="btn-group-sm">
+                                    <div class="btn-toolbar">
                                         <button type="button"
                                                 class="btn btn-outline-primary btn-sm"
                                                 data-bs-toggle="modal"
