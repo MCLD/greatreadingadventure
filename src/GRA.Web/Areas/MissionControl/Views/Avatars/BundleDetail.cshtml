@@ -10,7 +10,7 @@
 
     @if (Model.TriggersAwardingBundle?.Count > 0)
     {
-        <div class="list-group" style="padding-top:10px;" id="accordionTriggers" role="tablist" aria-multiselectable="true">
+        <div class="list-group pt-4" id="accordionTriggers" role="tablist" aria-multiselectable="true">
             <div class="card">
                 <div class="card-header" role="tab" id="headingTriggers">
                     <h4 class="card-title">
@@ -38,14 +38,14 @@
 
     @if (Model.Bundle?.HasBeenAwarded == true)
     {
-        <div class="row" style="padding: 10px 0;">
+        <div class="row pt-4">
             <div class="col-12">
                 <div style="font-size:large">This bundle has been awarded to a participant and can no longer be edited.</div>
             </div>
         </div>
     }
 
-    <div class="row" style="padding: 10px 0;">
+    <div class="row py-2">
         <div class="col-12">
             <label asp-for="Bundle.Name" class="col-form-label"></label>
             <input asp-for="Bundle.Name" class="form-control" disabled="@(Model.Bundle?.HasBeenAwarded == true ? "disabled" : null)" />
@@ -136,7 +136,7 @@
         </div>
     </div>
 
-    <div class="mb-3">
+    <div class="my-4">
         <a asp-action="Bundles" class="btn btn-outline-secondary">Return to List</a>
         @if (Model.Bundle?.HasBeenAwarded != true)
         {
