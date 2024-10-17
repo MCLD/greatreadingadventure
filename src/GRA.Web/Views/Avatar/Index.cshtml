@@ -5,9 +5,9 @@
 }
 <div class="alert alert-danger" id="error-container"></div>
 <div class="card">
-    <div class="row">
+    <div>
         <div class="col-12 col-sm-5 float-end">
-            <div class="visible-xs" id="mobile-container">
+            <div class="d-block d-sm-none" id="mobile-container">
                 <div class="avatar-container mx-auto">
                     @foreach (var layer in Model.LayerGroupings.SelectMany(_ => _))
                     {
@@ -22,7 +22,7 @@
                     <span class="fas fa-lg fa-search-plus"></span>
                 </button>
             </div>
-            <div class="hidden-xs" id="desktop-container">
+            <div class="d-none d-sm-block" id="desktop-container">
                 <div class="avatar-container mx-auto">
                     @foreach (var layer in Model.LayerGroupings.SelectMany(_ => _))
                     {
