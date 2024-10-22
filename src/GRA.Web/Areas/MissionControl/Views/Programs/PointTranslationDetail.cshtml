@@ -1,6 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Programs.PointTranslationDetailViewModel
 
-<form asp-action="@Model.Action" method="post" role="form" style="padding-top:10px;">
+<form asp-action="@Model.Action" method="post" role="form" class="py-2">
     <input asp-for="PointTranslation.Id" type="hidden" />
     <input asp-for="Action" type="hidden" />
     <input asp-for="HasBeenUsed" type="hidden" />
@@ -15,7 +15,7 @@
             </div>
             <div class="mb-3">
                 <label asp-for="PointTranslation.IsSingleEvent" class="col-form-label"></label>
-                <select asp-for="PointTranslation.IsSingleEvent" class="form-control" disabled="@(Model.HasBeenUsed ? "readonly" : null)">
+                <select asp-for="PointTranslation.IsSingleEvent" class="form-select" disabled="@(Model.HasBeenUsed ? "readonly" : null)">
                     <option value="false">No</option>
                     <option value="true">Yes</option>
                 </select>

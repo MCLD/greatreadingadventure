@@ -121,7 +121,7 @@ else
             <label class="col-sm-3 col-form-label required-field">Age(s)</label>
             <div class="col-sm-9">
                 <input id="agePlaceholder" class="form-control" />
-                <select asp-for="AgeSelection" asp-items="Model.AgeList" class="form-control hidden" type="text" multiple="multiple"></select>
+                <select asp-for="AgeSelection" asp-items="Model.AgeList" class="form-select hidden" type="text" multiple="multiple"></select>
                 <span asp-validation-for="AgeSelection" class="text-danger"></span>
             </div>
         </div>
@@ -163,7 +163,7 @@ else
                 <span class="far fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="If you are requested to do this program twice in a row, how much time do you require between them?"></span>
             </label>
             <div class="col-sm-2">
-                <select asp-for="Program.BackToBackMinutes" asp-items="Model.BackToBackSelection" class="form-control" type="text"></select>
+                <select asp-for="Program.BackToBackMinutes" asp-items="Model.BackToBackSelection" class="form-select" type="text"></select>
                 <span asp-validation-for="Program.BackToBackMinutes" class="text-danger"></span>
             </div>
         </div>
@@ -222,7 +222,7 @@ else
                     </p>
                 </div>
                 <div class="col-sm-9 offset-sm-3">
-                    <select asp-for="Program.AllowStreaming" class="form-control">
+                    <select asp-for="Program.AllowStreaming" class="form-select">
                         <option value="true">Yes</option>
                         <option value="false">No</option>
                     </select>
@@ -237,7 +237,7 @@ else
                 </p>
             </div>
             <div class="col-sm-9 offset-sm-3">
-                <select asp-for="Program.AllowArchiving" class="form-control">
+                    <select asp-for="Program.AllowArchiving" class="form-select">
                     <option value="true">Yes</option>
                     <option value="false">No</option>
                 </select>

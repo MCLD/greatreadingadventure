@@ -3,12 +3,12 @@
 <form asp-controller="Participants" asp-action="@nameof(ParticipantsController.HouseholdImport)" method="post" role="form" enctype="multipart/form-data">
     <input asp-for="Id" type="hidden" />
 
-    <div class="row" style="padding:10px 0">
+    <div class="row my-4">
         <div class="col-12">
             <div class="row row-spacing">
                 <div class="col-12">
                     <label asp-for="SystemId" class="col-form-label"></label>
-                    <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control"></select>
+                    <select asp-for="SystemId" asp-items="Model.SystemList" class="form-select"></select>
                     <span asp-validation-for="SystemId" class="text-danger"></span>
                 </div>
             </div>
@@ -16,7 +16,7 @@
             <div class="row row-spacing">
                 <div class="col-12">
                     <label asp-for="BranchId" class="col-form-label"></label>
-                    <select asp-for="BranchId" asp-items="Model.BranchList" class="form-control"></select>
+                    <select asp-for="BranchId" asp-items="Model.BranchList" class="form-select"></select>
                     <span asp-validation-for="BranchId" class="text-danger"></span>
                 </div>
             </div>
@@ -24,7 +24,7 @@
             <div class="row row-spacing">
                 <div class="col-12">
                     <label asp-for="ProgramId" class="col-form-label"></label>
-                    <select asp-for="ProgramId" asp-items="Model.ProgramList" class="form-control">
+                    <select asp-for="ProgramId" asp-items="Model.ProgramList" class="form-select">
                         <option></option>
                     </select>
                     <span asp-validation-for="ProgramId" class="text-danger"></span>
@@ -42,7 +42,7 @@
                         <label asp-for="IsFirstTime" class="col-form-label"></label>
                         <select asp-for="IsFirstTime"
                                 asp-items="Model.AskFirstTime"
-                                class="form-control"></select>
+                                class="form-select"></select>
                         <span asp-validation-for="IsFirstTime" class="text-danger"></span>
                     </div>
                 </div>

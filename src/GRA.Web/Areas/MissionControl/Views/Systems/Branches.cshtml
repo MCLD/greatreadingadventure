@@ -49,7 +49,7 @@
     </div>
 </form>
 
-<div class="row" style="padding: 10px 0;">
+<div class="row my-4">
     <div class="col-12">
         <a class="btn btn-outline-primary"
            data-bs-toggle="modal"
@@ -57,7 +57,7 @@
     </div>
 </div>
 
-<div class="row" style="padding: 10px 0;">
+<div class="row my-4">
     <div class="col-12">
         @if (Model.Branches.Count() == 0)
         {
@@ -174,7 +174,7 @@
                             <label asp-for="Branch.SystemId" class="col-form-label"></label>
                             <select asp-for="Branch.SystemId"
                                     asp-items="Model.SystemList"
-                                    class="form-control">
+                                    class="form-select">
                                 <option></option>
                             </select>
                             <span asp-validation-for="Branch.SystemId" class="text-danger"></span>

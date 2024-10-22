@@ -1,7 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.HouseholdAddViewModel
 
 <form asp-controller="Participants" asp-action="AddHouseholdMember" method="post" role="form">
-    <div class="row" style="padding: 10px 0;">
+    <div class="row my-2">
         <div class="col-12">
 
             <input asp-for="Id" type="hidden" />
@@ -52,7 +52,7 @@
             <div class="row row-spacing">
                 <div class="col-12">
                     <label asp-for="User.SystemId" class="col-form-label"></label>
-                    <select asp-for="User.SystemId" asp-items="Model.SystemList" class="form-control"></select>
+                    <select asp-for="User.SystemId" asp-items="Model.SystemList" class="form-select"></select>
                     <span asp-validation-for="User.SystemId" class="text-danger"></span>
                 </div>
             </div>
@@ -60,7 +60,7 @@
             <div class="row row-spacing">
                 <div class="col-12">
                     <label asp-for="User.BranchId" class="col-form-label"></label>
-                    <select asp-for="User.BranchId" asp-items="Model.BranchList" class="form-control"></select>
+                    <select asp-for="User.BranchId" asp-items="Model.BranchList" class="form-select"></select>
                     <span asp-validation-for="User.BranchId" class="text-danger"></span>
                 </div>
             </div>
@@ -68,7 +68,7 @@
             <div class="row row-spacing">
                 <div class="col-12">
                     <label asp-for="User.ProgramId" class="col-form-label"></label>
-                    <select asp-for="User.ProgramId" asp-items="Model.ProgramList" class="form-control">
+                    <select asp-for="User.ProgramId" asp-items="Model.ProgramList" class="form-select">
                         <option value="-1"></option>
                     </select>
                     <span asp-validation-for="User.ProgramId" class="text-danger"></span>
@@ -94,7 +94,7 @@
                         <label asp-for="IsFirstTime" class="col-form-label"></label>
                         <select asp-for="IsFirstTime"
                                 asp-items="Model.AskFirstTime"
-                                class="form-control"></select>
+                                class="form-select"></select>
                         <span asp-validation-for="IsFirstTime" class="text-danger"></span>
                     </div>
                 </div>
@@ -107,7 +107,7 @@
                         <label asp-for="EmailSubscriptionRequested" class="col-form-label">@Model.AskEmailSubscriptionText</label>
                         <select asp-for="EmailSubscriptionRequested"
                                 asp-items="Model.AskEmailSubscription"
-                                class="form-control"></select>
+                                class="form-select"></select>
                         <span asp-validation-for="EmailSubscriptionRequested" class="text-danger"></span>
                     </div>
                 </div>

@@ -6,7 +6,7 @@
     <div class="mb-3">
         <div class="col-12">
             <label asp-for="SystemId" class="col-form-label"></label>
-            <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control">
+            <select asp-for="SystemId" asp-items="Model.SystemList" class="form-select">
                 <option value="">All Systems</option>
             </select>
         </div>
@@ -16,7 +16,7 @@
         <div class="col-12">
             <label asp-for="TriggerList" class="col-form-label"></label>
             <input id="triggerPlaceholder" class="form-control"/>
-            <select asp-for="TriggerList" asp-items="Model.PrizeList" class="form-control hidden" multiple="multiple" data-val="true" data-val-required="Please select one or more triggers."></select>
+            <select asp-for="TriggerList" asp-items="Model.PrizeList" class="form-select hidden" multiple="multiple" data-val="true" data-val-required="Please select one or more triggers."></select>
             <span asp-validation-for="TriggerList" class="text-danger"></span>
         </div>
     </div>

@@ -14,7 +14,7 @@
             <form asp-controller="PerformerManagement" asp-action="PrintCoverSheet" method="post">
                 <div class="col-12 col-sm-6 offset-sm-3 mb-3">
                     <label for="month">Invoice Month: </label>
-                    <select class="form-control" name="month" asp-items="@Model.Months"></select>
+                    <select class="form-select" name="month" asp-items="@Model.Months"></select>
                 </div>
                 <div class="col-12 col-sm-6 offset-sm-3 mb-3">
                     <label for="invoiceNumber">Invoice Number: </label>

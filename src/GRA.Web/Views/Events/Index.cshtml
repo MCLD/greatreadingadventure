@@ -69,7 +69,7 @@
                             <div class="row row-spacing">
                                 <div class="col-6">
                                     <label asp-for="ProgramId" class="col-form-label"></label>
-                                    <select asp-for="ProgramId" asp-items="Model.ProgramList" class="form-control">
+                                    <select asp-for="ProgramId" asp-items="Model.ProgramList" class="form-select">
                                         <option>@SharedLocalizer[GRA.Annotations.Interface.AllPrograms]</option>
                                     </select>
                                 </div>
@@ -95,7 +95,7 @@
                             <div class="row row-spacing">
                                 <div class="col-12">
                                     <label asp-for="ProgramId" class="col-form-label"></label>
-                                    <select asp-for="ProgramId" asp-items="Model.ProgramList" class="form-control">
+                                    <select asp-for="ProgramId" asp-items="Model.ProgramList" class="form-select">
                                         <option>@SharedLocalizer[GRA.Annotations.Interface.AllPrograms]</option>
                                     </select>
                                 </div>
@@ -105,14 +105,14 @@
                                 <div class="col-6">
                                     <div class="mb-3">
                                         <label asp-for="SystemId" class="col-form-label"></label>
-                                        <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control">
+                                        <select asp-for="SystemId" asp-items="Model.SystemList" class="form-select">
                                             <option></option>
                                         </select>
                                     </div>
 
                                     <div class="mb-3">
                                         <label asp-for="BranchId" class="col-form-label"></label>
-                                        <select asp-for="BranchId" asp-items="Model.BranchList" class="form-control">
+                                        <select asp-for="BranchId" asp-items="Model.BranchList" class="form-select">
                                             <option></option>
                                         </select>
                                     </div>
@@ -120,7 +120,7 @@
 
                                 <div class="col-6">
                                     <label asp-for="LocationId" class="col-form-label"></label>
-                                    <select asp-for="LocationId" asp-items="Model.LocationList" class="form-control">
+                                    <select asp-for="LocationId" asp-items="Model.LocationList" class="form-select">
                                         <option></option>
                                     </select>
                                 </div>
@@ -134,7 +134,7 @@
                                 @if (Model.EventType == GRA.EventType.StreamingEvent)
                                 {
                                     <label asp-for="Viewed" class="col-form-label"></label>
-                                    <select asp-for="Viewed" class="form-control">
+                                    <select asp-for="Viewed" class="form-select">
                                         <option value="@EventsController.VisitedNo">@SharedLocalizer[GRA.Annotations.Interface.No]</option>
                                         <option value="@EventsController.VisitedYes">@SharedLocalizer[GRA.Annotations.Interface.Yes]</option>
                                         <option value="@EventsController.VisitedAll">@SharedLocalizer[GRA.Annotations.Interface.ViewAll]</option>
@@ -143,7 +143,7 @@
                                 else
                                 {
                                     <label asp-for="Visited" class="col-form-label"></label>
-                                    <select asp-for="Visited" class="form-control">
+                                    <select asp-for="Visited" class="form-select">
                                         <option value="@EventsController.VisitedNo">@SharedLocalizer[GRA.Annotations.Interface.No]</option>
                                         <option value="@EventsController.VisitedYes">@SharedLocalizer[GRA.Annotations.Interface.Yes]</option>
                                         <option value="@EventsController.VisitedAll">@SharedLocalizer[GRA.Annotations.Interface.ViewAll]</option>

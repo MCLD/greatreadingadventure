@@ -35,8 +35,8 @@
       id="updateTemplate"
       method="post"
       role="form"
-      enctype="multipart/form-data"
-      style="padding-top:10px;">
+      enctype="multipart/form-data" 
+      class="my-2">
     <input asp-for="Action" type="hidden" />
     <input asp-for="LanguageId" type="hidden" />
     @if (Model.Action == nameof(EmailManagementController.EditTemplate))
@@ -56,7 +56,7 @@
             <div class="mb-3">
                 <label asp-for="EmailBaseId" class="col-form-label"></label>
                 <description gra-description-for="EmailBaseId"></description>
-                <select class="form-control" asp-for="EmailBaseId">
+                <select class="form-select" asp-for="EmailBaseId">
                     @foreach (var emailBase in Model.EmailBases.Where(_ => !_.Disabled))
                     {
                         <option value="@emailBase.Value">@emailBase.Text</option>

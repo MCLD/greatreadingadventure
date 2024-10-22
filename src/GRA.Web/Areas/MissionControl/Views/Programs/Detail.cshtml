@@ -33,13 +33,13 @@
                       data-bs-toggle="tooltip"
                       data-bs-placement="top"></span>
                 <button type="button" class="btn btn-sm btn-outline-primary" id="previewAlertButton" data-bs-toggle="modal" data-bs-target="#previewAlertModal" style="margin-bottom: 0.25rem; margin-left: 0.5rem;">Preview alert</button>
-                <select asp-for="Program.DashboardAlertType" asp-items="Html.GetEnumSelectList<GRA.Domain.Model.AlertType>()" class="form-control" style="margin-bottom: 1rem;"></select>
+                <select asp-for="Program.DashboardAlertType" asp-items="Html.GetEnumSelectList<GRA.Domain.Model.AlertType>()" class="form-select" style="margin-bottom: 1rem;"></select>
                 <textarea asp-for="Program.DashboardAlert" class="form-control"></textarea>
             </div>
 
             <div class="mb-3">
                 <label class="col-form-label">Ask Age</label>
-                <select asp-for="AgeValues" class="form-control">
+                <select asp-for="AgeValues" class="form-select">
                     <option value="0">Don't Ask</option>
                     <option value="1">Ask</option>
                     <option value="2">Ask (Required)</option>
@@ -49,7 +49,7 @@
 
             <div class="mb-3">
                 <label class="col-form-label">Ask School</label>
-                <select asp-for="SchoolValues" class="form-control">
+                <select asp-for="SchoolValues" class="form-select">
                     <option value="0">Don't Ask</option>
                     <option value="1">Ask</option>
                     <option value="2">Ask (Required)</option>
@@ -77,13 +77,13 @@
 
             <div class="mb-3">
                 <label asp-for="Program.PointTranslationId" class="col-form-label"></label>
-                <select asp-for="Program.PointTranslationId" asp-items="Model.PointTranslationList" class="form-control" disabled="@(Model.PointTranslationList.Count() == 0 ? "disabled" : null)"></select>
+                <select asp-for="Program.PointTranslationId" asp-items="Model.PointTranslationList" class="form-select" disabled="@(Model.PointTranslationList.Count() == 0 ? "disabled" : null)"></select>
                 <span asp-validation-for="Program.PointTranslationId" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
                 <label asp-for="Program.DailyLiteracyTipId" class="col-form-label"></label>
-                <select asp-for="Program.DailyLiteracyTipId" asp-items="Model.DailyLiteracyTipList" class="form-control" disabled="@(Model.DailyLiteracyTipList.Count() == 0 ? "disabled" : null)">
+                <select asp-for="Program.DailyLiteracyTipId" asp-items="Model.DailyLiteracyTipList" class="form-select" disabled="@(Model.DailyLiteracyTipList.Count() == 0 ? "disabled" : null)">
                     <option></option>
                 </select>
                 <span asp-validation-for="Program.DailyLiteracyTipId" class="text-danger"></span>

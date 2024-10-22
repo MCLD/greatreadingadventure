@@ -56,7 +56,7 @@
     <div class="row row-spacing">
         <div class="col-12">
             <label asp-for="Bundle.CanBeUnlocked" class="col-form-label">Bundle Type</label>
-            <select asp-for="Bundle.CanBeUnlocked" class="form-control" disabled="@(Model.Action == "Edit" ? "disabled" : null)">
+            <select asp-for="Bundle.CanBeUnlocked" class="form-select" disabled="@(Model.Action == "Edit" ? "disabled" : null)">
                 <option value="True">Unlockable</option>
                 <option value="False">Default</option>
             </select>
@@ -175,7 +175,7 @@
                                         <label asp-for="Layers" class="col-form-label">Layer</label>
                                         <select id="layerId"
                                                 asp-items="Model.Layers"
-                                                class="form-control">
+                                                class="form-select">
                                             <option value="">All Layers</option>
                                         </select>
                                     </div>

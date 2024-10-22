@@ -86,7 +86,7 @@
     <div class="mb-3">
         <label asp-for="Performer.PhonePreferred" class="col-sm-3 col-form-label required-field"></label>
         <div class="col-sm-9">
-            <select asp-for="Performer.PhonePreferred" class="form-control">
+            <select asp-for="Performer.PhonePreferred" class="form-select">
                 <option value="false">Email</option>
                 <option value="true">Phone</option>
             </select>
@@ -121,7 +121,7 @@
     <div class="mb-3">
         <label asp-for="Performer.HasFingerprintCard" class="col-sm-3 col-form-label required-field"></label>
         <div class="col-sm-9">
-            <select asp-for="Performer.HasFingerprintCard" class="form-control">
+            <select asp-for="Performer.HasFingerprintCard" class="form-select">
                 <option value="false">No</option>
                 <option value="true">Yes</option>
             </select>
@@ -134,7 +134,7 @@
         <div class="mb-3">
             <label asp-for="Performer.HasInsurance" class="col-sm-3 col-form-label required-field"></label>
             <div class="col-sm-9">
-                <select asp-for="Performer.HasInsurance" class="form-control">
+                <select asp-for="Performer.HasInsurance" class="form-select">
                     <option value="false">No</option>
                     <option value="true">Yes</option>
                 </select>
@@ -163,7 +163,7 @@
                     button-spinner>
                 Save Information
             </button>
-            <a asp-action="Performer" asp-route-id="@Model.Performer.Id" class="btn btn-lg btn-outline-secondary float-start" style="margin-right: 10px;">Return to Performer</a>
+            <a asp-action="Performer" asp-route-id="@Model.Performer.Id" class="btn btn-lg btn-outline-secondary float-start me-2">Return to Performer</a>
         </div>
     </div>
 </form>

@@ -72,7 +72,7 @@
             <label asp-for="Event.IsCommunityExperience"
                 class="col-form-label"></label>
             <select asp-for="Event.IsCommunityExperience"
-                class="form-control">
+                    class="form-select">
                 <option value="false">
                     Event</option>
                 <option value="true">
@@ -154,7 +154,7 @@
                     class="col-form-label"></label>
                 <select asp-for="SystemId"
                     asp-items="Model.SystemList"
-                    class="form-control"></select>
+                        class="form-select"></select>
                 <span asp-validation-for="SystemId"
                     class="text-danger"></span>
             </div>
@@ -171,7 +171,7 @@
                 </label>
                 <select asp-for="Event.AtBranchId"
                     asp-items="Model.BranchList"
-                    class="form-control">
+                        class="form-select">
                 </select>
                 <span asp-validation-for="Event.AtBranchId"
                     class="text-danger"></span>
@@ -194,7 +194,7 @@
             <div style="display:flex">
                 <select asp-for="Event.AtLocationId"
                     asp-items="Model.LocationList"
-                    class="form-control">
+                        class="form-select">
                 </select>
                 @if (Model.CanManageLocations)
                 {
@@ -218,7 +218,7 @@
             <label asp-for="Event.ProgramId"
                 class="col-form-label"></label>
             <select asp-for="Event.ProgramId"
-                asp-items="Model.ProgramList" class="form-control">
+                    asp-items="Model.ProgramList" class="form-select">
                 <option value="">
                     All Programs</option>
             </select>

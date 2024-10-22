@@ -46,7 +46,7 @@
             <select asp-for="Challenge.CategoryIds"
                     asp-items="Model.CategoryList"
                     autocomplete="off"
-                    class="form-control"
+                    class="form-select"
                     disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)"
                     multiple="multiple"
                     size="1"></select>
@@ -66,7 +66,7 @@
             <label asp-for="Challenge.LimitToSystemId" class="col-form-label"></label>
             <select asp-for="Challenge.LimitToSystemId"
                     asp-items="Model.SystemList"
-                    class="form-control">
+                    class="form-select">
                 <option value="">No</option>
             </select>
             <span asp-validation-for="Challenge.LimitToSystemId" class="text-danger"></span>
@@ -78,7 +78,7 @@
             <label asp-for="Challenge.LimitToBranchId" class="col-form-label"></label>
             <select asp-for="Challenge.LimitToBranchId"
                     asp-items="Model.BranchList"
-                    class="form-control">
+                    class="form-select">
                 <option value="">No</option>
             </select>
             <span asp-validation-for="Challenge.LimitToBranchId" class="text-danger"></span>
@@ -90,7 +90,7 @@
             <label asp-for="Challenge.AssociatedProgramId" class="col-form-label"></label>
             <select asp-for="Challenge.AssociatedProgramId"
                     asp-items="Model.ProgramList"
-                    class="form-control">
+                    class="form-select">
                 <option value="">No</option>
             </select>
             <span asp-validation-for="Challenge.AssociatedProgramId" class="text-danger"></span>

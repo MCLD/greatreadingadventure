@@ -2,7 +2,7 @@
 
 @await Html.PartialAsync("_RolesPartial")
 
-<div class="row" style="padding: 10px 0;">
+<div class="row my-4">
     <div class="col-12">
         <a class="btn btn-outline-primary"
            data-bs-toggle="modal"
@@ -10,7 +10,7 @@
     </div>
 </div>
 
-<div class="row" style="padding: 10px 0;">
+<div class="row my-4">
     <div class="col-12">
         @if (Model.AuthorizationCodes.Count() == 0)
         {
@@ -116,7 +116,7 @@
                                    class="col-form-label"></label>
                             <select id="addRole" asp-for="AuthorizationCode.RoleId"
                                     asp-items="Model.RoleList"
-                                    class="form-control"></select>
+                                    class="form-select"></select>
                             <span asp-validation-for="AuthorizationCode.RoleId"
                                   class="text-danger"></span>
                         </div>
@@ -143,7 +143,7 @@
                                   data-bs-toggle="tooltip"
                                   title="Single use codes may be used once and then are deactivated."></span>
                             <select id="addSingle" asp-for="AuthorizationCode.IsSingleUse"
-                                    class="form-control">
+                                    class="form-select">
                                 <option value="true">Single Use</option>
                                 <option value="false">Multiple Use</option>
                             </select>
@@ -159,7 +159,7 @@
                             <select id="addProgram"
                                     asp-for="AuthorizationCode.ProgramId"
                                     asp-items="Model.ProgramList"
-                                    class="form-control">
+                                    class="form-select">
                                 <option value="null" selected>None</option>
                             </select>
                         </div>
@@ -172,7 +172,7 @@
                             <select id="addBranch"
                                     asp-for="AuthorizationCode.BranchId"
                                     asp-items="Model.BranchList"
-                                    class="form-control">
+                                    class="form-select">
                                 <option value="null" selected>None</option>
                             </select>
                         </div>
@@ -184,7 +184,7 @@
                                   title="Use a shortened, single-page sign-up to join with this code."></span>
                             <select id="addSinglePage"
                                     asp-for="AuthorizationCode.SinglePageSignUp"
-                                    class="form-control">
+                                    class="form-select">
                                 <option value="False">No</option>
                                 <option value="True">Yes</option>
                             </select>
@@ -246,7 +246,7 @@
                             <select id="editRole"
                                     asp-for="AuthorizationCode.RoleId"
                                     asp-items="Model.RoleList"
-                                    class="form-control"></select>
+                                    class="form-select"></select>
                             <span asp-validation-for="AuthorizationCode.RoleId"
                                   class="text-danger"></span>
                         </div>
@@ -275,7 +275,7 @@
                                   title="Single use codes may be used once and then are deactivated."></span>
                             <select id="editSingle"
                                     asp-for="AuthorizationCode.IsSingleUse"
-                                    class="form-control">
+                                    class="form-select">
                                 <option value="true">Single Use</option>
                                 <option value="false">Multiple Use</option>
                             </select>
@@ -291,7 +291,7 @@
                             <select id="editProgram"
                                     asp-for="AuthorizationCode.ProgramId"
                                     asp-items="Model.ProgramList"
-                                    class="form-control">
+                                    class="form-select">
                                 <option value="null" selected>None</option>
                             </select>
                         </div>
@@ -304,7 +304,7 @@
                             <select id="editBranch"
                                     asp-for="AuthorizationCode.BranchId"
                                     asp-items="Model.BranchList"
-                                    class="form-control">
+                                    class="form-select">
                                 <option value="null" selected>None</option>
                             </select>
                         </div>
@@ -316,7 +316,7 @@
                                   title="Use a shortened, single-page sign-up to join with this code."></span>
                             <select id="editSinglePage"
                                     asp-for="AuthorizationCode.SinglePageSignUp"
-                                    class="form-control">
+                                    class="form-select">
                                 <option value="False">No</option>
                                 <option value="True">Yes</option>
                             </select>
