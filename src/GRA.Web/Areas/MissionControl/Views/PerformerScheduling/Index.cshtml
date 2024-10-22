@@ -82,9 +82,9 @@
                         <form asp-action="Schedule" method="get" role="form">
                             <div class="row" style="margin-bottom:2rem;">
                                 <div class="col-9">
-                                    <select name="id" asp-items="Model.BranchList" class="form-control"></select>
+                                    <select name="id" asp-items="Model.BranchList" class="form-select"></select>
                                 </div>
-                                <div class="col-3" style="margin-top: 10px;">
+                                <div class="col-3 mt-2">
                                     <button type="submit" class="btn btn-outline-primary">View</button>
                                 </div>
                             </div>
@@ -93,10 +93,10 @@
                     <p>
                         If you have any questions please contact <a href="@($"mailto:{Model.Settings.ContactEmail}")">@Model.Settings.ContactEmail</a>
                     </p>
-                    <div class="col-sm-6" style="margin-top: 10px;">
+                    <div class="col-sm-6 mt-2">
                         <a asp-action="Performers" class="btn btn-lg btn-outline-primary ">View Performers</a>
                     </div>
-                    <div class="col-sm-6" style="margin-top: 10px;">
+                    <div class="col-sm-6 mt-2">
                         <a asp-action="Kits" class="btn btn-lg btn-outline-primary">View Kits</a>
                     </div>
                 }

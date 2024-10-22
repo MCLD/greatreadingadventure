@@ -37,7 +37,7 @@
     <div class="col-12 col-sm-5 col-md-4">
         @if (Model.Performer.Images != null)
         {
-            <div class="row" style="padding-bottom:15px;">
+            <div class="row pb-4">
                 <div class="col-12">
                     <img src="~/@Model.ImagePath" class="img-fluid" style="margin: 0 auto;" />
                 </div>
@@ -45,7 +45,7 @@
         }
         @if (Model.Performer.Images.Count > 1)
         {
-            <div class="row" style="padding-bottom:15px;">
+            <div class="row pb-4">
                 <div class="col-12" style="text-align:center;">
                     <a asp-action="PerformerImages" asp-route-id="@Model.Performer.Id" class="btn btn-primary">View More Images</a>
                 </div>
@@ -53,7 +53,7 @@
         }
         @if (!string.IsNullOrEmpty(Model?.ReferencesPath))
         {
-            <div class="row" style="padding-bottom:15px;">
+            <div class="row pb-4">
                 <div class="col-12" style="text-align:center;">
                     <a aria-label="View References (Opens new window)"
                    href="~/@Model.ReferencesPath"
@@ -62,7 +62,7 @@
                 </div>
             </div>
         }
-        <div class="row" style="padding-bottom:15px;">
+        <div class="row pb-4">
             <div class="col-12" style="text-align:center;">
                 <a asp-action="Performers" asp-route-page="@Model.ReturnPage" class="btn btn-outline-secondary">Return to List</a>
             </div>
@@ -119,7 +119,7 @@
                 <strong>@(Model.Performer.AllBranches || Model.BranchAvailability.Count == Model.System.Branches.Count ? "all" : $"{Model.BranchAvailability.Count} of {Model.System.Branches.Count}")</strong>
                 libraries in your system.
             </div>
-            <button type="button" class="btn btn-outline-primary" style="margin-top:10px;" data-bs-toggle="modal" data-bs-target="#branchModal">View Locations</button>
+            <button type="button" class="btn btn-outline-primary mt-2" data-bs-toggle="modal" data-bs-target="#branchModal">View Locations</button>
         </div>
     </div>
 

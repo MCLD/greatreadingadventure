@@ -2,7 +2,7 @@
 
 <div class="row">
     <div class="col-12">
-        <ul class="nav nav-pills" style="padding: 10px 0;">
+        <ul class="nav nav-pills my-4">
             <li class="nav-item">
                 <a ActiveBy routeKey="Archived" 
                 value=",false"
@@ -22,13 +22,13 @@
     </div>
 </div>
 
-<div class="row" style="padding: 10px 0;">
+<div class="row mb-4">
     <div class="col-12">
         <a asp-controller="Dashboard" asp-action="Create" class="btn btn-outline-primary">Add Dashboard Content</a>
     </div>
 </div>
 
-<div class="row" style="padding: 10px 0;">
+<div class="row">
     <div class="col-12">
         @if (Model.DashboardContents.Count() == 0)
         {

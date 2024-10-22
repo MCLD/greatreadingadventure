@@ -1,6 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Drawing.DrawingDetailViewModel
 
-<div style="font-size:large; padding-top:10px;">
+<div class="pt-2" style="font-size:large;">
     Created By:
     @if (Model.CanViewParticipants)
     {
@@ -17,7 +17,7 @@
     on @Model.Drawing.CreatedAt
 </div>
 
-<div class="row" style="padding: 10px 0;">
+<div class="row my-2">
     <div class="col-12">
         <label class="col-form-label">Criteria</label>
         <input asp-for="Drawing.DrawingCriterion.Name" class="form-control" readonly />
