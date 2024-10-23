@@ -1,74 +1,98 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Events.EventsListViewModel
 
-<div class="row my-4">
-    <div class="col-12 mb-2">
-        <ul class="nav nav-pills flex-column flex-sm-row">
-            <li class="nav-item">
-                <a ActiveBy routeKey="Action" 
-                value="Index"
-                asp-action="Index" class="nav-link">Events</a></li>
-             <li class="nav-item">
-                <a  ActiveBy routeKey="Action"
-                value="CommunityExperiences"
-                asp-action="CommunityExperiences" class="nav-link">Community Experiences</a>
-            </li>
-            @if (Model.CanManageLocations)
-            {
-                <li ActiveBy routeKey="Action"
-                    value="Locations"><a asp-action="Locations" class="nav-link">Locations</a></li>
-            }
-            <li class="nav-item">
-                <a ActiveBy routeKey="Action"
-                value="StreamingEvents" asp-action="StreamingEvents" class="nav-link">Streaming Events</a></li>
-        </ul>
-    </div>
-</div>
+@await Html.PartialAsync("_EventsPartial")
 
 <div class="row my-4">
-    <div class="col-12 mb-2">
+    <div class="col-12">
         <ul class="nav nav-pills flex-column flex-sm-row">
-            <li class="nav-item"><a asp-route-Search="@Model.Search" asp-route-ProgramId="@Model.ProgramId" class="nav-link @(Model.ActiveNav == "All" ? "active" : "")">All</a></li>
             <li class="nav-item">
-                <a class="dropdown-toggle nav-link @(Model.ActiveNav == "System" ? "active" : "")" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link @(Model.ActiveNav == "All" ? "active" : "")"
+                    asp-route-ProgramId="@Model.ProgramId"
+                    asp-route-Search="@Model.Search">All</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="dropdown-toggle nav-link @(Model.ActiveNav == "System" ? "active" : "")"
+                    data-bs-toggle="dropdown"
+                    href="#"
+                    role="button"
+                    aria-haspopup="true"
+                    aria-expanded="false">
                     @(Model.SystemName ?? "System") <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
                     @foreach (var system in Model.SystemList)
                     {
-                        <li><a asp-route-Search="@Model.Search" asp-route-SystemId="@system.Id" asp-route-ProgramId="@Model.ProgramId">@system.Name</a></li>
+                        <li>
+                            <a class="dropdown-item"
+                                asp-route-ProgramId="@Model.ProgramId"
+                                asp-route-Search="@Model.Search"
+                                asp-route-SystemId="@system.Id">@system.Name</a>
+                        </li>
                     }
                 </ul>
             </li>
-            <li class="nav-item">
-                <a class="dropdown-toggle nav-link @(Model.ActiveNav == "Branch" ? "active" : "")" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                    @(Model.BranchName ?? "Branch") <span class="caret"></span> 
+            <li class="nav-item dropdown">
+                <a class="dropdown-toggle nav-link @(Model.ActiveNav == "Branch" ? "active" : "")"
+                   data-bs-toggle="dropdown"
+                   href="#" role="button"
+                   aria-haspopup="true"
+                   aria-expanded="false">
+                    @(Model.BranchName ?? "Branch") <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
                     @foreach (var branch in Model.BranchList)
                     {
-                        <li><a asp-route-Search="@Model.Search" asp-route-BranchId="@branch.Id" asp-route-ProgramId="@Model.ProgramId">@branch.Name</a></li>
+                        <li>
+                            <a class="dropdown-item"
+                               asp-route-BranchId="@branch.Id" 
+                               asp-route-ProgramId="@Model.ProgramId"
+                               asp-route-Search="@Model.Search">@branch.Name</a>
+                        </li>
                     }
                 </ul>
             </li>
-            <li class="nav-item"><a asp-route-Search="@Model.Search" asp-route-ProgramId="@Model.ProgramId" asp-route-Mine="True" class="nav-link @(Model.ActiveNav == "Mine" ? "active" : "")">Mine</a></li>
-        </ul>
-    </div>
-</div>
-
-<div class="row my-4">
-    <div class="col-12">
-        <span class="dropdown-label">Limited to Program:</span>
-        <ul class="nav" style="display: inline-table;">
-            <li>
-                <a class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                    @(Model.ProgramName ?? "Show All") <span class="caret"></span>
+            <li class="nav-item">
+                <a asp-route-Search="@Model.Search"
+                   asp-route-Mine="True"
+                   asp-route-ProgramId="@Model.ProgramId"
+                   class="nav-link @(Model.ActiveNav == "Mine" ? "active" : "")">Mine</a>
+            </li>
+            <li class="nav-item d-none d-sm-block"><a class="nav-link disabled">|</a></li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle"
+                   data-bs-toggle="dropdown"
+                   href="#"
+                   role="button"
+                   aria-haspopup="true"
+                   aria-expanded="false">
+                    Limitations: @(Model.ProgramName) <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a asp-route-Search="@Model.Search" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-Mine="@Model.Mine">Show All</a></li>
-                    <li><a asp-route-Search="@Model.Search" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-Mine="@Model.Mine" asp-route-ProgramId="0">Not Limited</a></li>
+                    <li>
+                        <a asp-route-BranchId="@Model.BranchId" 
+                           asp-route-Mine="@Model.Mine"
+                           asp-route-Search="@Model.Search" 
+                           asp-route-SystemId="@Model.SystemId"
+                           class="dropdown-item">Show All</a>
+                    </li>
+                    <li>
+                        <a asp-route-BranchId="@Model.BranchId" 
+                           asp-route-Mine="@Model.Mine" 
+                           asp-route-ProgramId="0"
+                           asp-route-Search="@Model.Search" 
+                           asp-route-SystemId="@Model.SystemId"
+                           class="dropdown-item">Not Limited</a>
+                    </li>
                     @foreach (var program in Model.ProgramList)
                     {
-                        <li><a asp-route-Search="@Model.Search" asp-route-ProgramId="@program.Id" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-Mine="@Model.Mine">@program.Name</a></li>
+                        <li>
+                            <a asp-route-BranchId="@Model.BranchId" 
+                                asp-route-Mine="@Model.Mine"
+                                asp-route-ProgramId="@program.Id" 
+                                asp-route-Search="@Model.Search" 
+                                asp-route-SystemId="@Model.SystemId" 
+                                class="dropdown-item">@program.Name</a>
+                        </li>
                     }
                 </ul>
             </li>
@@ -76,10 +100,7 @@
     </div>
 </div>
 
-<form asp-controller="Events"
-      asp-action="@(Model.CommunityExperience ? "CommunityExperiences" : Model.Streaming ? "StreamingEvents" : "Index")"
-      method="get"
-      role="form">
+<form asp-controller="Events" asp-action="@Model.ActionTarget" method="get" role="form">
     @if (Model.SystemId.HasValue)
     {
         <input asp-for="SystemId" type="hidden" />
@@ -97,12 +118,25 @@
         <input asp-for="ProgramId" type="hidden" />
     }
     <div class="row my-4">
-        <div class="col-8">
+        <div class="col-12 col-sm-2">
+            <label class="col-form-label fs-5">Search:</label>
+        </div>
+        <div class="col-12 col-sm-10">
             <input asp-for="Search" class="form-control" />
         </div>
-        <div class="col-4">
-            <input type="submit" value="Search" class="btn btn-outline-primary" style="margin-right: 8px;" />
-            <a asp-action="Index" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-ProgramId="@Model.ProgramId" asp-route-Mine="@Model.Mine" class="btn btn-outline-secondary">Clear</a>
+    </div>
+    <div class="row my-4">
+        <div class="col-sm-6 col-lg-8 d-none d-sm-block">&nbsp;</div>
+        <div class="col-12 col-sm-3 col-lg-2 d-grid my-1">
+            <a asp-action="Index" 
+            asp-route-BranchId="@Model.BranchId" 
+            asp-route-Mine="@Model.Mine" 
+            asp-route-ProgramId="@Model.ProgramId" 
+            asp-route-SystemId="@Model.SystemId" 
+            class="btn btn-outline-secondary">Clear</a>
+        </div>
+        <div class="col-12 col-sm-3 col-lg-2 d-grid my-1">
+            <button type="submit" class="btn btn-outline-primary">Search</button>
         </div>
     </div>
 </form>

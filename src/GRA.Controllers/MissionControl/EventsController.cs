@@ -404,7 +404,7 @@ namespace GRA.Controllers.MissionControl
             {
                 var site = await GetCurrentSiteAsync();
                 var siteUrl = await _siteLookupService.GetSiteLinkAsync(site.Id);
-                viewModel.BadgeMakerUrl = GetBadgeMakerUrl(siteUrl.ToString(), 
+                viewModel.BadgeMakerUrl = GetBadgeMakerUrl(siteUrl.ToString(),
                     site.FromEmailAddress);
                 viewModel.UseBadgeMaker = await _siteLookupService.GetSiteSettingBoolAsync(site.Id,
                     SiteSettingKey.Badges.EnableBadgeMaker);
@@ -1121,7 +1121,11 @@ namespace GRA.Controllers.MissionControl
         }
 
         public async Task<IActionResult> Index(string search,
-                                                                                                                            int? systemId, int? branchId, bool? mine, int? programId, int page = 1)
+            int? systemId,
+            int? branchId,
+            bool? mine,
+            int? programId,
+            int page = 1)
         {
             var site = await GetCurrentSiteAsync();
             if (!string.IsNullOrEmpty(site.ExternalEventListUrl))
@@ -1176,6 +1180,7 @@ namespace GRA.Controllers.MissionControl
 
             var viewModel = new LocationsListViewModel
             {
+                CanManageLocations = UserHasPermission(Permission.ManageLocations),
                 Locations = locationList.Data,
                 PaginateModel = paginateModel,
             };
@@ -1232,7 +1237,11 @@ namespace GRA.Controllers.MissionControl
         }
 
         public async Task<IActionResult> StreamingEvents(string search,
-                            int? systemId, int? branchId, bool? mine, int? programId, int page = 1)
+                            int? systemId,
+                            int? branchId,
+                            bool? mine,
+                            int? programId,
+                            int page = 1)
         {
             var site = await GetCurrentSiteAsync();
             if (!string.IsNullOrEmpty(site.ExternalEventListUrl))
@@ -1266,8 +1275,13 @@ namespace GRA.Controllers.MissionControl
             }
         }
 
-        private async Task<EventsListViewModel> GetEventList(int? eventType, string search,
-            int? systemId, int? branchId, bool? mine, int? programId, int page = 1)
+        private async Task<EventsListViewModel> GetEventList(int? eventType,
+            string search,
+            int? systemId,
+            int? branchId,
+            bool? mine,
+            int? programId,
+            int page = 1)
         {
             var filter = new EventFilter(page)
             {
@@ -1366,17 +1380,22 @@ namespace GRA.Controllers.MissionControl
                         .ThenBy(_ => _.Name);
                 viewModel.ActiveNav = "All";
             }
+
             if (programId.HasValue)
             {
                 if (programId.Value > 0)
                 {
-                    viewModel.ProgramName =
-                        (await _siteService.GetProgramByIdAsync(programId.Value)).Name;
+                    var program = await _siteService.GetProgramByIdAsync(programId.Value);
+                    viewModel.ProgramName = $"Limited to {program.Name}";
                 }
                 else
                 {
-                    viewModel.ProgramName = "Not Limited";
+                    viewModel.ProgramName = "Not Limited to a Program";
                 }
+            }
+            else
+            {
+                viewModel.ProgramName = "All Programs";
             }
 
             return viewModel;

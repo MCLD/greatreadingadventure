@@ -5,10 +5,11 @@ namespace GRA.Controllers.ViewModel.MissionControl.Events
 {
     public class LocationsListViewModel
     {
-        public IEnumerable<GRA.Domain.Model.Location> Locations { get; set; }
-        public PaginateViewModel PaginateModel { get; set; }
-        public GRA.Domain.Model.Location Location { get; set; }
-        public bool ShowGeolocation { get; set; }
+        public bool CanManageLocations { get; set; }
         public string GoogleMapsAPIKey { get; set; }
+        public GRA.Domain.Model.Location Location { get; set; }
+        public IEnumerable<Domain.Model.Location> Locations { get; set; }
+        public PaginateViewModel PaginateModel { get; set; }
+        public bool ShowGeolocation { get; set; }
     }
 }
