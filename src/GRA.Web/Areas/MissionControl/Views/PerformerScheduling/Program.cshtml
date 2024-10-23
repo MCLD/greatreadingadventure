@@ -42,7 +42,7 @@
     <div class="col-12 col-sm-5 col-md-4">
         @if (!string.IsNullOrWhiteSpace(Model.Image))
         {
-            <div class="row" style="padding-bottom:15px;">
+            <div class="row pb-5">
                 <div class="col-12">
                     <img src="~/@Model.Image" class="img-fluid" style="margin: 0 auto;" />
                 </div>
@@ -50,7 +50,7 @@
         }
         @if (Model.Program.Images.Count > 1)
         {
-            <div class="row" style="padding-bottom:15px;">
+            <div class="row pb-5">
                 <div class="col-12" style="text-align:center;">
                     <a asp-action="ProgramImages" asp-route-id="@Model.Program.Id" asp-route-list="@Model.List" asp-route-ageGroup="@Model.AgeGroup" class="btn btn-primary">View More Images</a>
                 </div>
@@ -58,7 +58,7 @@
         }
         @if (Model.List == true)
         {
-            <div class="row" style="padding-bottom:15px;">
+            <div class="row pb-5">
                 <div class="col-12" style="text-align:center;">
                     <a aria-label="View Performer (Opens new window)"
                        asp-action="Performer"
@@ -67,7 +67,7 @@
                        target="_blank">View Performer</a>
                 </div>
             </div>
-            <div class="row" style="padding-bottom:15px;">
+            <div class="row pb-5">
                 <div class="col-12" style="text-align:center;">
                     <a asp-action="Programs" asp-route-page="@Model.ReturnPage" asp-route-ageGroup="@Model.AgeGroup" class="btn btn-outline-secondary">Return to List</a>
                 </div>
@@ -75,7 +75,7 @@
         }
         else
         {
-            <div class="row" style="padding-bottom:15px;">
+            <div class="row pb-5">
                 <div class="col-12" style="text-align:center;">
                     <a asp-action="Performer" asp-route-id="@Model.Program.PerformerId" class="btn btn-outline-secondary">Return to Performer</a>
                 </div>

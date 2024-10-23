@@ -104,7 +104,7 @@ else
                 <input asp-for="Program.MinimumCapacity" class="form-control form-control-lg" type="text" placeholder="" />
                 <span asp-validation-for="Program.MinimumCapacity" class="text-danger"></span>
             </div>
-            <div class="visible-xs" style="padding-bottom:10px;"></div>
+            <div class="visible-xs pb-4"></div>
             <label asp-for="Program.MaximumCapacity" class="col-sm-2 col-form-label required-field"></label>
             <div class="col-sm-2">
                 <input asp-for="Program.MaximumCapacity" class="form-control form-control-lg" type="text" placeholder="" />
@@ -137,7 +137,7 @@ else
                 <input asp-for="Program.ProgramLengthMinutes" class="form-control form-control-lg" type="text" placeholder="" />
                 <span asp-validation-for="Program.ProgramLengthMinutes" class="text-danger"></span>
             </div>
-            <div class="visible-xs" style="padding-bottom:10px;"></div>
+            <div class="visible-xs pb-4"></div>
             <label class="col-sm-2 col-form-label required-field">
                 Set-up Time
                 <span class="far fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="How much time needed before program begins."></span>
@@ -157,7 +157,7 @@ else
                 <input asp-for="Program.BreakdownTimeMinutes" class="form-control form-control-lg" type="text" placeholder="" />
                 <span asp-validation-for="Program.BreakdownTimeMinutes" class="text-danger"></span>
             </div>
-            <div class="visible-xs" style="padding-bottom:10px;"></div>
+            <div class="visible-xs pb-4"></div>
             <label class="col-sm-2 col-form-label required-field">
                 Time between back-to-back programs
                 <span class="far fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="If you are requested to do this program twice in a row, how much time do you require between them?"></span>
@@ -258,11 +258,11 @@ else
                 {
                     if (Model.EditingProgram)
                     {
-                        <a asp-action="ProgramDetails" asp-route-id="@Model.Program.Id" class="btn btn-lg btn-outline-secondary float-start" style="margin-right: 10px;">Return to Program</a>
+                        <a asp-action="ProgramDetails" asp-route-id="@Model.Program.Id" class="btn btn-lg btn-outline-secondary float-start my-4">Return to Program</a>
                     }
                     else
                     {
-                        <a asp-action="Dashboard" class="btn btn-lg btn-outline-secondary float-start" style="margin-right: 10px;">Return to Dashboard</a>
+                        <a asp-action="Dashboard" class="btn btn-lg btn-outline-secondary float-start my-4">Return to Dashboard</a>
                     }
                 }
             </div>
