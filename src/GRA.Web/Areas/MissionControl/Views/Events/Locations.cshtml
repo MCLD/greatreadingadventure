@@ -1,35 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Events.LocationsListViewModel
 
-<div class="row my-4">
-    <div class="col-12">
-        <ul class="nav nav-pills flex-column flex-sm-row">
-            <li ActiveBy routeKey="Action"
-                value="Index">
-                <a asp-action="Index"
-                class="nav-link">
-                Events</a>
-            </li>
-            <li ActiveBy routeKey="Action"
-                value="CommunityExperiences">
-                <a asp-action="CommunityExperiences"
-                class="nav-link">
-                Community Experiences</a>
-            </li>
-            <li ActiveBy routeKey="Action"
-                value="Locations">
-                <a asp-action="Locations"
-                class="nav-link active">
-                Locations</a>
-            </li>
-            <li ActiveBy routeKey="Action"
-                value="StreamingEvents">
-                <a asp-action="StreamingEvents"
-                class="nav-link">
-                Streaming Events</a>
-            </li>
-        </ul>
-    </div>
-</div>
+@await Html.PartialAsync("_EventsPartial")
 
 <div class="row my-4">
     <div class="col-12">
@@ -76,7 +47,7 @@
                                 </td>
                                 @if (Model.ShowGeolocation)
                                 {
-                                    <td>
+                                    <td class="text-center">
                                         @if (!string.IsNullOrWhiteSpace(location.Geolocation))
                                         {
                                             <span class="far fa-check-circle fa-lg text-success"></span>
@@ -92,48 +63,52 @@
                                         }
                                     </td>
                                 }
-                                <td>
-                                    <div class="btn-toolbar">
-                                        <button type="submit"
-                                                class="btn btn-outline-primary btn-sm"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#editModal"
-                                                data-id="@location.Id"
-                                                data-name="@location.Name"
-                                                data-address="@location.Address"
-                                                data-url="@location.Url"
-                                                data-telephone="@location.Telephone">
-                                            <span class="fas fa-fw fa-pencil-alt" aria-hidden="true"></span>
-                                        </button>
-                                        <button type="button"
-                                                class="btn btn-outline-danger btn-sm"
-                                                style="margin-left:16px;"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#deleteModal"
-                                                data-id="@location.Id"
-                                                data-name="@location.Name">
-                                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
-                                        </button>
-                                    </div>
+                                <td class="d-flex justify-content-evenly">
+                                    <button type="submit"
+                                            class="btn btn-outline-primary btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editModal"
+                                            data-id="@location.Id"
+                                            data-name="@location.Name"
+                                            data-address="@location.Address"
+                                            data-url="@location.Url"
+                                            data-telephone="@location.Telephone">
+                                        <span class="fas fa-fw fa-pencil-alt"
+                                              aria-hidden="true"></span>
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-outline-danger btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal"
+                                            data-id="@location.Id"
+                                            data-name="@location.Name">
+                                        <span class="fas fa-times fa-fw"
+                                              aria-hidden="true"></span>
+                                    </button>
                                 </td>
                             </tr>
                         }
                     </tbody>
                 </table>
             </div>
-            @if (Model.PaginateModel.MaxPage > 1)
-            {
-                <paginate paginateModel="@Model.PaginateModel"></paginate>
-            }
+            <paginate paginateModel="@Model.PaginateModel"></paginate>
         }
     </div>
 </div>
 
 
 <div class="row my-4">
-    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
-        <div class="modal-dialog" role="document">
-            <form asp-controller="Events" asp-action="AddLocation" method="post" role="form" style="display:inline">
+    <div class="modal fade"
+         id="addModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="addModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <form asp-action="AddLocation"
+                  asp-controller="Events"
+                  class="d-inline"
+                  method="post"
+                  role="form">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title h4" id="addModalLabel">Add location</h1>
@@ -141,7 +116,6 @@
                                 class="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="Close dialog">
-                            
                         </button>
                     </div>
                     <div class="modal-body">
@@ -151,14 +125,17 @@
                             <span asp-validation-for="Location.Name" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <label asp-for="Location.Address" class="col-form-label">Address (include city, state and zip)</label>
+                            <label asp-for="Location.Address" class="col-form-label">
+                                Address (include city, state and zip)
+                            </label>
                             <input asp-for="Location.Address" class="form-control addressInput" />
                             <span asp-validation-for="Location.Address" class="text-danger"></span>
-                        </div>
+                        </div>                       
                         @if (Model.ShowGeolocation)
                         {
-                            <div class="mb-3 hide mapContainer">
-                                <iframe height="180" width="400" frameborder="0" style="border:0"></iframe>
+                            <div class="mb-3 d-none mapContainer d-flex flex-column">
+                                <iframe frameborder="0" 
+                                    style="border:0; max-height: 200px"></iframe>
                             </div>
                         }
                         <div class="mb-3">
@@ -169,12 +146,19 @@
                         <div class="mb-3">
                             <label asp-for="Location.Telephone" class="col-form-label"></label>
                             <input asp-for="Location.Telephone" class="form-control" />
-                            <span asp-validation-for="Location.Telephone" class="text-danger"></span>
+                            <span asp-validation-for="Location.Telephone"
+                                  class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" class="btn btn-outline-primary float-end" aria-label="Confirm">
+                    <div class="modal-footer d-flex justify-content-end">
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-outline-primary float-end"
+                                aria-label="Confirm">
                             Add
                         </button>
                     </div>
@@ -190,12 +174,12 @@
          tabindex="-1"
          role="dialog"
          aria-labelledby="editModalLabel">
-        <div class="modal-dialog" role="document">
-            <form asp-controller="Events"
-                  asp-action="EditLocation"
+        <div class="modal-dialog modal-lg" role="document">
+            <form asp-action="EditLocation"
+                  asp-controller="Events"
+                  class="d-inline"
                   method="post"
-                  role="form"
-                  style="display:inline">
+                  role="form">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title h4" id="editModalLabel">Edit location</h1>
@@ -203,7 +187,6 @@
                                 class="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="Close dialog">
-                            
                         </button>
                     </div>
                     <div class="modal-body">
@@ -223,8 +206,9 @@
                         </div>
                         @if (Model.ShowGeolocation)
                         {
-                            <div class="mb-3 hide mapContainer">
-                                <iframe frameborder="0" style="border:0"></iframe>
+                            <div class="mb-3 d-none mapContainer d-flex flex-column">
+                                <iframe frameborder="0" 
+                                    style="border:0; max-height: 200px"></iframe>
                             </div>
                         }
                         <div class="mb-3">
@@ -239,15 +223,14 @@
                                   class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer d-flex justify-content-end">
                         <button type="button"
                                 class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal"
-                                style="margin-right: 1em;">
+                                data-bs-dismiss="modal">
                             Cancel
                         </button>
                         <button type="submit"
-                                class="btn btn-outline-primary float-end"
+                                class="btn btn-outline-primary"
                                 aria-label="Confirm">
                             Save
                         </button>
@@ -272,18 +255,17 @@
                             class="btn-close"
                             data-bs-dismiss="modal"
                             aria-label="Close dialog">
-                        
                     </button>
                 </div>
-                <div class="modal-body">
-                    <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
+                <div class="modal-body d-flex align-items-stretch">
+                    <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" 
+                            aria-hidden="true"></span>
                     <span id="modal-text"></span>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer d-flex justify-content-end">
                     <button type="button"
                             class="btn btn-outline-secondary"
-                            data-bs-dismiss="modal"
-                            style="margin-right: 1em;">
+                            data-bs-dismiss="modal">
                         Cancel
                     </button>
                     <form asp-controller="Events"
@@ -293,9 +275,8 @@
                           style="display:inline">
                         <input id="Id" name="Id" type="hidden" />
                         <button type="submit"
-                                class="btn btn-outline-danger float-end"
+                                class="btn btn-outline-danger"
                                 aria-label="Confirm">
-                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                             Delete
                         </button>
                     </form>
@@ -308,28 +289,30 @@
 @section scripts {
     <script>
         $('#editModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget);
-            var id = button.data('id');
-            var name = button.data('name');
-            var address = button.data('address');
-            var url = button.data('url');
-            var telephone = button.data('telephone');
-            var modal = $(this);
+            let modal = $(this);
+            let button = $(event.relatedTarget);
+            let address = button.data('address');
+            let id = button.data('id');
+            let name = button.data('name');
+            let telephone = button.data('telephone');
+            let url = button.data('url');
             modal.find('#editModalLabel').text('Edit location - "' + name + '"');
+            modal.find('#Location_Address').val(address);
             modal.find('#Location_Id').val(id);
             modal.find('#Location_Name').val(name);
-            modal.find('#Location_Address').val(address);
-            modal.find('#Location_Url').val(url);
             modal.find('#Location_Telephone').val(telephone);
+            modal.find('#Location_Url').val(url);
+            modal.find('.mapContainer').addClass('d-none');
+            modal.find('.mapContainer').children('iframe').attr('src', '');
         })
 
         $('#deleteModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget);
-            var id = button.data('id');
-            var name = button.data('name');
-            var modal = $(this);
-            modal.find('#modal-text').text('Are you sure you wish to delete the location "' + name + '" ?');
+            let modal = $(this);
+            let button = $(event.relatedTarget);
+            let id = button.data('id');
+            let name = button.data('name');
             modal.find('#Id').val(id);
+            modal.find('#modal-text').html('Are you sure you wish to delete the location <strong>' + name + '</strong>?');
         })
     </script>
 
@@ -342,7 +325,7 @@
             var mapsUrl = "https://www.google.com/maps/embed/v1/place?key=@Model.GoogleMapsAPIKey&q=";
 
             $(".geolocateButton").on("click", function () {
-                var button = $(this);
+                let button = $(this);
                 if (button.hasClass("disabled") == false) {
                     button.attr("disabled", "disabled");
                     button.children("span").removeClass("hidden");
@@ -365,14 +348,14 @@
             });
 
             $(".addressInput").on("change", function () {
-                var input = $(this);
-                var address = input.val();
-                var mapContainer = input.parent().siblings(".mapContainer");
+                console.info("Address change");
+                let input = $(this);
+                let address = input.val();
+                let mapContainer = input.parent().siblings(".mapContainer");
 
                 if (address.length == 0) {
                     mapContainer.addClass("d-none");
-                }
-                else {
+                } else {
                     mapContainer.removeClass("d-none");
                     mapContainer.children().attr("src", mapsUrl + address);
                 }

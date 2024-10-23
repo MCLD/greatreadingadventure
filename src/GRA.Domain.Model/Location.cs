@@ -4,25 +4,26 @@ namespace GRA.Domain.Model
 {
     public class Location : Abstract.BaseDomainEntity
     {
-        public int SiteId { get; set; }
-
+        [MaxLength(255)]
         [Required]
-        [MaxLength(255)]
-        public string Name { get; set; }
-
-        [MaxLength(255)]
-        public string Url { get; set; }
-
-        [Required]
-        [MaxLength(255)]
         public string Address { get; set; }
 
-        [MaxLength(50)]
-        public string Telephone { get; set; }
+        public int EventCount { get; set; }
 
         [MaxLength(50)]
         public string Geolocation { get; set; }
 
-        public int EventCount { get; set; }
+        [MaxLength(255)]
+        [Required]
+        public string Name { get; set; }
+
+        public int SiteId { get; set; }
+
+        [MaxLength(50)]
+        public string Telephone { get; set; }
+
+        [Display(Name = "Link to this location")]
+        [MaxLength(255)]
+        public string Url { get; set; }
     }
 }
