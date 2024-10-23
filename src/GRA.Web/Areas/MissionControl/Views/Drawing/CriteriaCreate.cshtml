@@ -1,7 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Drawing.CriterionDetailViewModel
 
 <form asp-controller="Drawing" asp-action="CriteriaCreate" method="post" role="form">
-    <div class="row" style="padding: 10px 0;">
+    <div class="row my-2">
         <div class="col-12">
             <label asp-for="Criterion.Name" class="col-form-label"></label>
             <input asp-for="Criterion.Name" class="form-control" />
@@ -12,7 +12,7 @@
     <div class="row row-spacing">
         <div class="col-12">
             <label asp-for="Criterion.SystemId" class="col-form-label"></label>
-            <select asp-for="Criterion.SystemId" asp-items="Model.SystemList" class="form-control">
+            <select asp-for="Criterion.SystemId" asp-items="Model.SystemList" class="form-select">
                 <option></option>
             </select>
             <span asp-validation-for="Criterion.SystemId" class="text-danger"></span>
@@ -22,7 +22,7 @@
     <div class="row row-spacing">
         <div class="col-12">
             <label asp-for="Criterion.BranchId" class="col-form-label"></label>
-            <select asp-for="Criterion.BranchId" asp-items="Model.BranchList" class="form-control">
+            <select asp-for="Criterion.BranchId" asp-items="Model.BranchList" class="form-select">
                 <option></option>
             </select>
             <span asp-validation-for="Criterion.BranchId" class="text-danger"></span>
@@ -33,7 +33,7 @@
         <div class="col-12">
             <label asp-for="Criterion.ProgramId" class="col-form-label"></label>
             <input asp-for="ProgramPlaceholder" class="form-control" />
-            <select asp-for="Criterion.ProgramIds" asp-items="Model.ProgramList" class="form-control hidden" multiple="multiple"></select>
+            <select asp-for="Criterion.ProgramIds" asp-items="Model.ProgramList" class="form-select hidden" multiple="multiple"></select>
             <span asp-validation-for="Criterion.ProgramId" class="text-danger"></span>
         </div>
     </div>
@@ -73,7 +73,7 @@
     <div class="row row-spacing">
         <div class="col-12">
             <label asp-for="Criterion.ReadABook" class="col-form-label"></label>
-            <select asp-for="Criterion.ReadABook" class="form-control">
+            <select asp-for="Criterion.ReadABook" class="form-select">
                 <option value="false">No</option>
                 <option value="true">Yes</option>
             </select>
@@ -84,7 +84,7 @@
     <div class="row row-spacing">
         <div class="col-12">
             <label asp-for="Criterion.ExcludePreviousWinners" class="col-form-label"></label>
-            <select asp-for="Criterion.ExcludePreviousWinners" class="form-control">
+            <select asp-for="Criterion.ExcludePreviousWinners" class="form-select">
                 <option value="false">No</option>
                 <option value="true">Yes</option>
             </select>
@@ -95,7 +95,7 @@
     <div class="row row-spacing">
         <div class="col-12">
             <label asp-for="Criterion.IncludeAdmin" class="col-form-label"></label>
-            <select asp-for="Criterion.IncludeAdmin" class="form-control">
+            <select asp-for="Criterion.IncludeAdmin" class="form-select">
                 <option value="false">No</option>
                 <option value="true">Yes</option>
             </select>

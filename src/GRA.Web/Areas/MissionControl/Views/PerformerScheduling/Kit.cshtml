@@ -33,7 +33,7 @@
     <div class="col-12 col-sm-5 col-md-4">
         @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
         {
-            <div class="row" style="padding-bottom:15px;">
+            <div class="row pb-4">
                 <div class="col-12">
                     <img src="~/@Model.ImagePath" class="img-fluid" style="margin: 0 auto;" />
                 </div>
@@ -41,13 +41,13 @@
         }
         @if (Model.Kit.Images.Count > 1)
         {
-            <div class="row" style="padding-bottom:15px;">
+            <div class="row pb-4">
                 <div class="col-12" style="text-align:center;">
                     <a asp-action="KitImages" asp-route-id="@Model.Kit.Id" class="btn btn-outline-primary">View More Images</a>
                 </div>
             </div>
         }
-        <div class="row" style="padding-bottom:15px;">
+        <div class="row pb-4">
             <div class="col-12" style="text-align:center;">
                 <a asp-action="Kits" asp-route-page="@Model.ReturnPage" class="btn btn-outline-secondary">Return to List</a>
             </div>
@@ -110,7 +110,7 @@
                     <div class="mb-3">
                         <label asp-for="BranchSelection.BranchId" class="col-sm-3 col-form-label required-field"></label>
                         <div class="col-sm-9">
-                            <select asp-for="BranchSelection.BranchId" asp-items="Model.BranchList" class="form-control">
+                            <select asp-for="BranchSelection.BranchId" asp-items="Model.BranchList" class="form-select">
                                 <option></option>
                             </select>
                             <span id="BranchValidationMessage" asp-validation-for="BranchSelection.BranchId" class="text-danger"></span>
@@ -119,7 +119,7 @@
                     <div class="mb-3">
                         <label asp-for="BranchSelection.AgeGroupId" class="col-sm-3 col-form-label required-field"></label>
                         <div class="col-sm-9">
-                            <select asp-for="BranchSelection.AgeGroupId" asp-items="Model.AgeGroupList" class="form-control" disabled="disabled">
+                            <select asp-for="BranchSelection.AgeGroupId" asp-items="Model.AgeGroupList" class="form-select" disabled="disabled">
                                 <option></option>
                             </select>
                             <span asp-validation-for="BranchSelection.AgeGroupId" class="text-danger"></span>

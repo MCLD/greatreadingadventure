@@ -4,7 +4,7 @@
     var invalid = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
 }
 
-<div class="row" style="padding: 10px 0;">
+<div class="row my-4">
     <div class="col-12">
         @if (Model.Layers.Count() == 0)
         {
@@ -16,7 +16,7 @@
             {
                 <form asp-action="@nameof(AvatarsController.SetupAvatarZip)"
                       method="post"
-                      style="padding: 1em 0;">
+                      class="py-3">
                     <button type="submit" class="btn btn-outline-primary btn-spinner" button-spinner>
                         Import avatars.zip
                     </button>
@@ -26,7 +26,7 @@
             {
                 <form asp-action="@nameof(AvatarsController.SetupDefaultAvatars)"
                       method="post"
-                      style="padding: 1em 0;">
+                      class="py-3">
                     <button type="submit" class="btn btn-outline-primary btn-spinner" button-spinner>
                         Add default avatars
                     </button>

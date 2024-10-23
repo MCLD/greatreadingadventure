@@ -21,7 +21,7 @@
 
             <div class="mb-3">
                 <label asp-for="Post.CategoryId" class="col-form-label"></label>
-                <select asp-for="Post.CategoryId" asp-items="Model.Categories" class="form-control"></select>
+                <select asp-for="Post.CategoryId" asp-items="Model.Categories" class="form-select"></select>
                 <span asp-validation-for="Post.CategoryId" class="text-danger"></span>
             </div>
 
@@ -48,7 +48,7 @@
                 <div class="row row-spacing">
                     <div class="col-12">
                         <label asp-for="MarkUpdated" class="col-form-label"></label>
-                        <select asp-for="MarkUpdated" asp-items="Model.NoYes" class="form-control"></select>
+                        <select asp-for="MarkUpdated" asp-items="Model.NoYes" class="form-select"></select>
                     </div>
                 </div>
             }

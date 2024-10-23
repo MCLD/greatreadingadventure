@@ -160,7 +160,7 @@ else
     <div class="mb-3">
         <label asp-for="Performer.PhonePreferred" class="col-sm-3 col-form-label required-field"></label>
         <div class="col-sm-9">
-            <select asp-for="Performer.PhonePreferred" class="form-control">
+            <select asp-for="Performer.PhonePreferred" class="form-select">
                 <option value="false">Email</option>
                 <option value="true">Phone</option>
             </select>
@@ -201,7 +201,7 @@ else
     <div class="mb-3">
         <label asp-for="Performer.HasFingerprintCard" class="col-sm-3 col-form-label required-field"></label>
         <div class="col-sm-9">
-            <select asp-for="Performer.HasFingerprintCard" class="form-control">
+            <select asp-for="Performer.HasFingerprintCard" class="form-select">
                 <option value="false">No</option>
                 <option value="true">Yes</option>
             </select>
@@ -213,7 +213,7 @@ else
         <div class="mb-3">
             <label asp-for="Performer.HasInsurance" class="col-sm-3 col-form-label required-field"></label>
             <div class="col-sm-9">
-                <select asp-for="Performer.HasInsurance" class="form-control">
+                <select asp-for="Performer.HasInsurance" class="form-select">
                     <option value="false">No</option>
                     <option value="true">Yes</option>
                 </select>
@@ -254,7 +254,7 @@ else
                         button-spinner>
                     Update Information
                 </button>
-                <a asp-action="Dashboard" class="btn btn-lg btn-outline-secondary float-start" style="margin-right: 10px;">Return to Dashboard</a>
+                <a asp-action="Dashboard" class="btn btn-lg btn-outline-secondary float-start me-4">Return to Dashboard</a>
             }
 
         </div>

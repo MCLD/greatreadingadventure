@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="/css/performerregistration.min.css" />
 }
 
-<div class="row" style="padding: 10px 0;">
+<div class="row my-4">
     <div class="col-12">
         <table style="margin:0 auto;">
             <tr>
@@ -69,18 +69,18 @@
     <div class="col-12 col-sm-5 col-md-4">
         @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
         {
-            <div class="row" style="padding-bottom:15px;">
+            <div class="row mb-3" style="text-align:center;">
                 <div class="col-12">
                     <img src="~/@Model.ImagePath" class="img-fluid" style="margin: 0 auto;" />
                 </div>
             </div>
         }
-        <div class="row" style="padding-bottom:15px;">
+        <div class="row mb-3">
             <div class="col-12" style="text-align:center;">
                 <a asp-action="PerformerImages" asp-route-id="@Model.Performer.Id" class="btn btn-outline-primary">View/Manage Images</a>
             </div>
         </div>
-        <div class="row" style="padding-bottom:15px;">
+        <div class="row mb-3">
             <div class="col-12" style="text-align:center;">
                 <a aria-label="View References (Opens new window)"
                    href="~/@Model.ReferencesPath"
@@ -90,13 +90,13 @@
         </div>
         @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewParticipantDetails.ToString()))
         {
-            <div class="row" style="padding-bottom:15px;">
+            <div class="row mb-3">
                 <div class="col-12" style="text-align:center;">
                     <a asp-controller="Participants" asp-action="Detail" asp-route-id="@Model.Performer.UserId" class="btn btn-outline-primary">View Participant Profile</a>
                 </div>
             </div>
         }
-        <div class="row" style="padding-bottom:15px;">
+        <div class="row mb-3">
             <div class="col-12" style="text-align:center;">
                 <a asp-action="@nameof(PerformerManagementController.Performers)" asp-route-page="@Model.ReturnPage" class="btn btn-outline-secondary">Return to List</a>
             </div>

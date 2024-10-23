@@ -11,7 +11,7 @@
 <div id="schoolGroup" class="row row-spacing">
     <div class="col-12">
         <label class="col-form-label">@SharedLocalizer[GRA.Domain.Model.DisplayNames.School]</label>
-        <select asp-for="SchoolId" asp-items="Model.SchoolList" class="selectpicker form-control" data-live-search="true" data-none-selected-text="">
+        <select asp-for="SchoolId" asp-items="Model.SchoolList" class="selectpicker form-select" data-live-search="true" data-none-selected-text="">
             <option></option>
         </select>
         <span asp-validation-for="SchoolId" class="text-danger"></span>

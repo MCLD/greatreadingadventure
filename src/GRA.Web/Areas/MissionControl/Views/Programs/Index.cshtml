@@ -3,7 +3,7 @@
 @await Html.PartialAsync("_ProgramsPartial")
 
 <form method="get" role="form">
-    <div class="row row-spacing" style="padding-top: 10px;">
+    <div class="row row-spacing pt-2">
         <div class="col-8">
             <input asp-for="Search" class="form-control" />
         </div>
@@ -14,13 +14,13 @@
     </div>
 </form>
 
-<div class="row" style="padding: 10px 0;">
+<div class="row py-4">
     <div class="col-12">
         <a asp-action="Create" class="btn btn-outline-primary">Add a Program</a>
     </div>
 </div>
 
-<div class="row" style="padding: 10px 0;">
+<div class="row py-2">
     <div class="col-12">
         @if (Model.Programs.Count() == 0)
         {

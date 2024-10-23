@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="/css/markdown.min.css" />
 }
 
-<div class="row" style="padding: 1rem 0;">
+<div class="row my-4">
     <div class="col-12">
         <div class="mb-3">
             <label asp-for="HeaderName" class="col-form-label"></label>
@@ -18,7 +18,7 @@
 
         <div>
             <label for="Language" class="col-form-label">Language</label>
-            <select id="Language" name="Language" asp-items="Model.LanguageList" class="form-control"></select>
+            <select id="Language" name="Language" asp-items="Model.LanguageList" class="form-select"></select>
         </div>
     </div>
 </div>
@@ -97,7 +97,7 @@
 
             <div class="mb-3">
                 <label asp-for="Page.IsPublished" class="col-form-label"></label>
-                <select asp-for="Page.IsPublished" class="form-control">
+                <select asp-for="Page.IsPublished" class="form-select">
                     <option value="True">Yes</option>
                     <option value="False">No</option>
                 </select>

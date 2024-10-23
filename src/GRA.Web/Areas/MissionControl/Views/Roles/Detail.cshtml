@@ -1,6 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Roles.RoleDetailViewModel
 
-<form asp-action="@Model.Action" method="post" role="form" enctype="multipart/form-data" style="padding-top:10px;">
+<form asp-action="@Model.Action" method="post" role="form" enctype="multipart/form-data" class="pt-2">
     <input asp-for="Action" type="hidden" />
     @if (Model.Action == nameof(RolesController.Edit))
     {

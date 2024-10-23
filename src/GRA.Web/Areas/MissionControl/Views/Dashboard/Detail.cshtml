@@ -6,7 +6,7 @@
 
 @if (Model.Action == "Edit")
 {
-    <a asp-action="Preview" asp-route-id="@Model.DashboardContent.Id" class="btn btn-secondary" style="margin:10px 0;"> Full Preview</a>
+    <a asp-action="Preview" asp-route-id="@Model.DashboardContent.Id" class="btn btn-secondary my-4"> Full Preview</a>
 }
 
 <form asp-controller="Dashboard" asp-action="@Model.Action" method="post" role="form">
@@ -19,7 +19,7 @@
     <div class="row row-spacing">
         <div class="col-12">
             <label asp-for="DashboardContent.StartTime" class="col-form-label"></label>
-            <div class="mb-3 date" id="pickerStart">
+            <div class="date" id="pickerStart">
                 <input asp-for="DashboardContent.StartTime" type="datetime-local" class="form-control"/>
             </div>
             <span asp-validation-for="DashboardContent.StartTime" class="text-danger"></span>
@@ -27,7 +27,7 @@
     </div>
 
     <div class="row row-spacing">
-        <div class="col-12">
+        <div class="col-12 mb-2">
             <label asp-for="DashboardContent.Content" class="col-form-label"></label>
             <div id="wmd-button-bar"></div>
             <textarea asp-for="DashboardContent.Content" id="wmd-input" class="form-control wmd-input"> </textarea>

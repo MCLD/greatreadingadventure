@@ -636,7 +636,7 @@
             <select asp-for="Challenge.CategoryIds"
                     asp-items="Model.CategoryList"
                     autocomplete="off"
-                    class="form-control"
+                    class="form-select"
                     disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)"
                     multiple="multiple"
                     size="1"></select>
@@ -656,7 +656,7 @@
             <label asp-for="Challenge.LimitToSystemId" class="col-form-label"></label>
             <select asp-for="Challenge.LimitToSystemId"
                     asp-items="Model.SystemList"
-                    class="form-control"
+                    class="form-select"
                     disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)">
                 <option value="">No</option>
             </select>
@@ -669,7 +669,7 @@
             <label asp-for="Challenge.LimitToBranchId" class="col-form-label"></label>
             <select asp-for="Challenge.LimitToBranchId"
                     asp-items="Model.BranchList"
-                    class="form-control"
+                    class="form-select"
                     disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)">
                 <option value="">No</option>
             </select>
@@ -682,7 +682,7 @@
             <label asp-for="Challenge.AssociatedProgramId" class="col-form-label"></label>
             <select asp-for="Challenge.AssociatedProgramId"
                     asp-items="Model.ProgramList"
-                    class="form-control"
+                    class="form-select"
                     disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)">
                 <option value="">No</option>
             </select>
@@ -960,7 +960,7 @@
          role="dialog"
          aria-labelledby="badgeModalLabel">
         <div class="modal-content">
-            <div class="modal-body" style="padding: 30px;">
+            <div class="modal-body py-6">
                 <span class="close frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
                       data-bs-dismiss="modal"
                       alt="Close dialog."

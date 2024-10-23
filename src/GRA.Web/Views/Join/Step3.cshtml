@@ -80,7 +80,7 @@
                                 <label asp-for="IsFirstTime" class="col-form-label"></label>
                                 <select asp-for="IsFirstTime"
                                         asp-items="Model.AskFirstTime"
-                                        class="form-control"></select>
+                                        class="form-select"></select>
                                 <span asp-validation-for="IsFirstTime" class="text-danger"></span>
                             </div>
                         </div>
@@ -93,7 +93,7 @@
                                 <label asp-for="EmailSubscriptionRequested" class="col-form-label">@SharedLocalizer[Model.AskEmailSubscriptionText]</label>
                                 <select asp-for="EmailSubscriptionRequested"
                                         asp-items="Model.AskEmailSubscription"
-                                        class="form-control"></select>
+                                        class="form-select"></select>
                                 <span asp-validation-for="EmailSubscriptionRequested" class="text-danger"></span>
                             </div>
                         </div>

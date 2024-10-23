@@ -14,7 +14,7 @@
     </div>
 </form>
 
-<div class="row" style="padding: 10px 0;">
+<div class="row my-4">
     <div class="col-12">
         <a class="btn btn-outline-primary"
            data-bs-toggle="modal"
@@ -22,7 +22,7 @@
     </div>
 </div>
 
-<div class="row" style="padding: 10px 0;">
+<div class="row">
     <div class="col-12">
         @if (Model.SchoolDistricts.Count() == 0)
         {
@@ -46,7 +46,7 @@
                                     @district.Name
                                 </td>
                                 <td>
-                                    <div class="btn-group-sm">
+                                    <div class="btn-toolbar">
                                         <button type="button"
                                                 class="btn btn-outline-primary btn-sm"
                                                 data-bs-toggle="modal"

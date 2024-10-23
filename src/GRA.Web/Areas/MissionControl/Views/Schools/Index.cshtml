@@ -14,7 +14,7 @@
     </div>
 </form>
 
-<div class="row" style="padding: 10px 0;">
+<div class="row my-4">
     <div class="col-12">
         <a class="btn btn-outline-primary"
            data-bs-toggle="modal"
@@ -22,7 +22,7 @@
     </div>
 </div>
 
-<div class="row" style="padding: 10px 0;">
+<div class="row my-4">
     <div class="col-12">
         @if (Model.Schools.Count() == 0)
         {
@@ -50,7 +50,7 @@
                                     @school.SchoolDistrict.Name
                                 </td>
                                 <td class="gra-mc-icon">
-                                    <div class="btn-group-sm">
+                                    <div class="btn-toolbar">
                                         <button type="submit"
                                                 class="btn btn-outline-primary btn-sm"
                                                 data-bs-toggle="modal"
@@ -118,7 +118,7 @@
                             <label asp-for="School.SchoolDistrictId" class="col-form-label"></label>
                             <select id="addDistrict"
                                     asp-for="School.SchoolDistrictId"
-                                    class="form-control schoolDistrict">
+                                    class="form-select schoolDistrict">
                                 <option></option>
                                 @foreach (var district in Model.DistrictList)
                                 {
@@ -183,7 +183,7 @@
                             <label asp-for="School.SchoolDistrictId" class="col-form-label"></label>
                             <select id="editDistrict"
                                     asp-for="School.SchoolDistrictId"
-                                    class="form-control schoolDistrict">
+                                    class="form-select schoolDistrict">
                                 @foreach (var district in Model.DistrictList)
                                 {
                                     <option value="@district.Id">@district.Name</option>

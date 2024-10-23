@@ -109,7 +109,7 @@
                     class="col-form-label"></label>
                 <select asp-for="SystemId"
                     asp-items="Model.SystemList"
-                    class="form-control"></select>
+                        class="form-select"></select>
                 <span asp-validation-for="SystemId"
                     class="text-danger"></span>
             </div>
@@ -126,7 +126,7 @@
                 </label>
                 <select asp-for="Event.AtBranchId"
                     asp-items="Model.BranchList"
-                    class="form-control">
+                        class="form-select">
                 </select>
                 <span asp-validation-for="Event.AtBranchId"
                     class="text-danger"></span>
@@ -149,7 +149,7 @@
             <div style="display:flex">
                 <select asp-for="Event.AtLocationId"
                     asp-items="Model.LocationList"
-                    class="form-control">
+                        class="form-select">
                 </select>
                 @if (Model.CanManageLocations)
                 {
@@ -173,7 +173,7 @@
                 class="col-form-label"></label>
             <select asp-for="Event.ProgramId"
                 asp-items="Model.ProgramList"
-                class="form-control">
+                    class="form-select">
                 <option value="">All Programs</option>
             </select>
             <span asp-validation-for="Event.ProgramId"
@@ -405,7 +405,7 @@
     }
 
 
-    <div class="mb-3 mb-4">
+    <div class="my-4">
         <a asp-action="Index"
            class="btn btn-outline-secondary">
             Return to List</a>
@@ -572,7 +572,7 @@
                                         </div>
                                     </div>
                                     <div role="tabpanel" class="tab-pane" id="group">
-                                        <div class="row my-4" style="padding-top: 10px;">
+                                        <div class="row my-4">
                                             <div class="col-8">
                                                 <input id="groupSearchText"
                                                        class="form-control"

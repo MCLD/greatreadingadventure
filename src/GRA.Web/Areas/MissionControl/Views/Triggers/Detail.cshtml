@@ -324,7 +324,7 @@
                 <label asp-for="Trigger.LimitToSystemId" class="col-form-label"></label>
                 <select asp-for="Trigger.LimitToSystemId"
                         asp-items="Model.SystemList"
-                        class="form-control"
+                        class="form-select"
                         disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)">
                     <option value="">No</option>
                 </select>
@@ -335,7 +335,7 @@
                 <label asp-for="Trigger.LimitToBranchId" class="col-form-label"></label>
                 <select asp-for="Trigger.LimitToBranchId"
                         asp-items="Model.BranchList"
-                        class="form-control"
+                        class="form-select"
                         disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)">
                     <option value="">No</option>
                 </select>
@@ -346,7 +346,7 @@
                 <label asp-for="Trigger.LimitToProgramId" class="col-form-label"></label>
                 <select asp-for="Trigger.LimitToProgramId"
                         asp-items="Model.ProgramList"
-                        class="form-control"
+                        class="form-select"
                         disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)">
                     <option value="">No</option>
                 </select>
@@ -462,7 +462,7 @@
                     {
                         <select asp-for="Trigger.AwardVendorCodeTypeId"
                                 asp-items="Model.VendorCodeTypeList"
-                                class="form-control">
+                                class="form-select">
                             <option value="">No</option>
                         </select>
                     }
@@ -488,7 +488,7 @@
                     {
                         <select asp-for="Trigger.AwardAvatarBundleId"
                                 asp-items="Model.UnlockableAvatarBundleList"
-                                class="form-control">
+                                class="form-select">
                             <option value="">No</option>
                         </select>
                     }

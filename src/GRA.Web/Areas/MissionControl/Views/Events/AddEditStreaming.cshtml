@@ -114,7 +114,7 @@
     <div class="row my-4">
         <div class="col-12">
             <label asp-for="Event.IsStreamingEmbed" class="col-form-label"></label>
-            <select asp-for="Event.IsStreamingEmbed" class="form-control">
+            <select asp-for="Event.IsStreamingEmbed" class="form-select">
                 <option value="true">Streaming link data is an embed</option>
                 <option value="false">Streaming link data is an external link</option>
             </select>
@@ -139,7 +139,7 @@
     <div class="row my-4">
         <div class="col-12">
             <label asp-for="Event.ProgramId" class="col-form-label"></label>
-            <select asp-for="Event.ProgramId" asp-items="Model.ProgramList" class="form-control">
+            <select asp-for="Event.ProgramId" asp-items="Model.ProgramList" class="form-select">
                 <option value="">All Programs</option>
             </select>
             <span asp-validation-for="Event.ProgramId" class="text-danger"></span>
@@ -528,7 +528,7 @@
                                         </div>
                                     </div>
                                     <div role="tabpanel" class="tab-pane" id="group">
-                                        <div class="row my-4" style="padding-top: 10px;">
+                                        <div class="row my-4">
                                             <div class="col-8">
                                                 <input id="groupSearchText"
                                                        class="form-control"

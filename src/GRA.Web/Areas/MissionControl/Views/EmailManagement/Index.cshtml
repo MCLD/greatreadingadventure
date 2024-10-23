@@ -10,7 +10,7 @@
     </style>
 }
 
-<div class="row" style="margin: 1rem 0;">
+<div class="row my-4">
     <div class="col-12">
         <a class="btn btn-outline-success"
            asp-action="@nameof(EmailManagementController.CreateTemplate)">
@@ -23,17 +23,17 @@
             Import Template
         </a>
         <a asp-action="@nameof(EmailManagementController.Addresses)"
-           class="btn btn-secondary">
+           class="btn btn-outline-secondary">
             <span class="fas fa-list-alt"></span>
             Manage Lists
         </a>
-        <a class="btn btn-info"
+        <a class="btn btn-outline-info"
            asp-action="@nameof(EmailManagementController.BaseIndex)">
             Base Templates
         </a>
         @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.SendBulkEmails.ToString()))
         {
-            <a class="btn btn-secondary"
+            <a class="btn btn-outline-secondary"
                asp-action="@nameof(EmailManagementController.SetSpecialEmails)">
                 Set Special Emails
             </a>
@@ -41,7 +41,7 @@
     </div>
 </div>
 
-<div class="row" style="margin: 1rem 0;">
+<div class="row my-4">
     <div class="col-12">
         @if (Model.EmailTemplates.Count() == 0)
         {

@@ -8,7 +8,7 @@
       style="margin-top: 2rem; margin-bottom: 2rem;">
     <input asp-for="ReportId" type="hidden" />
 
-    <div class="row" style="padding: 10px 0;">
+    <div class="row my-4">
         <div class="col-12">
             <btn type="button" class="btn btn-secondary time-selector" data-start="null" data-end="null">Entire program</btn>
             <btn type="button" class="btn btn-secondary time-selector" data-start="@DateTime.Now.AddDays(-8).ToString("MM/dd/yyyy")" data-end="@DateTime.Now.AddDays(-1).ToString("MM/dd/yyyy")">Last 7 days</btn>
@@ -36,7 +36,7 @@
     <div class="mb-3">
         <div class="col-12">
             <label asp-for="SystemId" class="col-form-label"></label>
-            <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control">
+            <select asp-for="SystemId" asp-items="Model.SystemList" class="form-select">
                 <option value="">All systems</option>
             </select>
         </div>

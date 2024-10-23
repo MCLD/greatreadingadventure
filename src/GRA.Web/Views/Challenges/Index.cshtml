@@ -129,7 +129,7 @@
                                 <span style="font-size:large;">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Program]:</span>
                             </div>
                             <div class="col-12 col-sm-10">
-                                <select asp-for="Program" asp-items="Model.ProgramList" class="form-control">
+                                <select asp-for="Program" asp-items="Model.ProgramList" class="form-select">
                                     <option value="">@SharedLocalizer[GRA.Annotations.Interface.AllPrograms]</option>
                                 </select>
                             </div>
@@ -144,7 +144,7 @@
                                     <select asp-for="CategoryIds"
                                             asp-items="Model.CategoryList"
                                             autocomplete="off"
-                                            class="form-control"
+                                            class="form-select"
                                             multiple="multiple"
                                             size="1"></select>
                                 </div>
@@ -185,7 +185,7 @@
                                     <span style="font-size:large;">@SharedLocalizer[GRA.Annotations.Interface.Status]:</span>
                                 </div>
                                 <div class="col-12 col-sm-10">
-                                    <select asp-for="Status" class="form-control">
+                                    <select asp-for="Status" class="form-select">
                                         <option value="@ChallengesController.StatusUncompleted">@SharedLocalizer[GRA.Annotations.Interface.ViewUncompleted]</option>
                                         <option value="@ChallengesController.StatusCompleted">@SharedLocalizer[GRA.Annotations.Interface.ViewCompleted]</option>
                                         <option value="@ChallengesController.StatusAll">@SharedLocalizer[GRA.Annotations.Interface.ViewAll]</option>

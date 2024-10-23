@@ -42,7 +42,7 @@
     <div class="col-12 col-sm-5 col-md-4">
         @if (!string.IsNullOrWhiteSpace(Model.Image))
         {
-            <div class="row" style="padding-bottom:15px;">
+            <div class="row pb-5">
                 <div class="col-12">
                     <img src="~/@Model.Image" class="img-fluid" style="margin: 0 auto;" />
                 </div>
@@ -50,7 +50,7 @@
         }
         @if (Model.Program.Images.Count > 1)
         {
-            <div class="row" style="padding-bottom:15px;">
+            <div class="row pb-5">
                 <div class="col-12" style="text-align:center;">
                     <a asp-action="ProgramImages" asp-route-id="@Model.Program.Id" asp-route-list="@Model.List" asp-route-ageGroup="@Model.AgeGroup" class="btn btn-primary">View More Images</a>
                 </div>
@@ -58,7 +58,7 @@
         }
         @if (Model.List == true)
         {
-            <div class="row" style="padding-bottom:15px;">
+            <div class="row pb-5">
                 <div class="col-12" style="text-align:center;">
                     <a aria-label="View Performer (Opens new window)"
                        asp-action="Performer"
@@ -67,7 +67,7 @@
                        target="_blank">View Performer</a>
                 </div>
             </div>
-            <div class="row" style="padding-bottom:15px;">
+            <div class="row pb-5">
                 <div class="col-12" style="text-align:center;">
                     <a asp-action="Programs" asp-route-page="@Model.ReturnPage" asp-route-ageGroup="@Model.AgeGroup" class="btn btn-outline-secondary">Return to List</a>
                 </div>
@@ -75,7 +75,7 @@
         }
         else
         {
-            <div class="row" style="padding-bottom:15px;">
+            <div class="row pb-5">
                 <div class="col-12" style="text-align:center;">
                     <a asp-action="Performer" asp-route-id="@Model.Program.PerformerId" class="btn btn-outline-secondary">Return to Performer</a>
                 </div>
@@ -143,7 +143,7 @@
                 <strong>@(Model.AllBranches || Model.BranchAvailability.Count == Model.System.Branches.Count ? "all" : $"{Model.BranchAvailability.Count} of {Model.System.Branches.Count}")</strong>
                 libraries in your system.
             </div>
-            <button type="button" class="btn btn-outline-primary" style="margin-top:10px;" data-bs-toggle="modal" data-bs-target="#branchModal">View Locations</button>
+            <button type="button" class="btn btn-outline-primary mt-2" data-bs-toggle="modal" data-bs-target="#branchModal">View Locations</button>
         </div>
     </div>
 </div>
@@ -184,7 +184,7 @@
                         <div class="mb-3">
                             <label asp-for="BranchSelection.BranchId" class="col-sm-3 col-form-label required-field"></label>
                             <div class="col-sm-9">
-                                <select asp-for="BranchSelection.BranchId" asp-items="Model.BranchList" class="form-control">
+                                <select asp-for="BranchSelection.BranchId" asp-items="Model.BranchList" class="form-select">
                                     <option></option>
                                 </select>
                                 <span id="BranchValidationMessage" asp-validation-for="BranchSelection.BranchId" class="text-danger"></span>
@@ -193,7 +193,7 @@
                         <div class="mb-3">
                             <label asp-for="BranchSelection.AgeGroupId" class="col-sm-3 col-form-label required-field"></label>
                             <div class="col-sm-9">
-                                <select asp-for="BranchSelection.AgeGroupId" asp-items="Model.AgeGroupList" class="form-control" disabled="disabled">
+                                <select asp-for="BranchSelection.AgeGroupId" asp-items="Model.AgeGroupList" class="form-select" disabled="disabled">
                                     <option></option>
                                 </select>
                                 <span asp-validation-for="BranchSelection.AgeGroupId" class="text-danger"></span>

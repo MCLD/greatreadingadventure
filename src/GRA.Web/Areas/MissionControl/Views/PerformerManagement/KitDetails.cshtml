@@ -90,7 +90,7 @@
             <label class="col-sm-3 col-form-label required-field">Age(s)</label>
             <div class="col-sm-9">
                 <input id="agePlaceholder" class="form-control" />
-                <select asp-for="AgeSelection" asp-items="Model.AgeList" class="form-control hidden" type="text" multiple="multiple"></select>
+                <select asp-for="AgeSelection" asp-items="Model.AgeList" class="form-select hidden" type="text" multiple="multiple"></select>
                 <span asp-validation-for="AgeSelection" class="text-danger"></span>
             </div>
         </div>
@@ -105,11 +105,11 @@
                 </button>
                 @if (Model.NewKit == false)
                 {
-                    <a asp-action="Kit" asp-route-id="@Model.Kit.Id" class="btn btn-lg btn-outline-secondary float-start" style="margin-right: 10px;">Return to Kit</a>
+                    <a asp-action="Kit" asp-route-id="@Model.Kit.Id" class="btn btn-lg btn-outline-secondary float-start me-2">Return to Kit</a>
                 }
                 else
                 {
-                    <a asp-action="Kits" class="btn btn-lg btn-outline-secondary float-start" style="margin-right: 10px;">Return to List</a>
+                    <a asp-action="Kits" class="btn btn-lg btn-outline-secondary float-start me-2">Return to List</a>
                 }
             </div>
         </div>

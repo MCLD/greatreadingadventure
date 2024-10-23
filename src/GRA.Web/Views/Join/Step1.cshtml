@@ -54,7 +54,7 @@
                         <div class="row row-spacing">
                             <div class="col-12">
                                 <label asp-for="SystemId" class="col-form-label"></label>
-                                <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control">
+                                <select asp-for="SystemId" asp-items="Model.SystemList" class="form-select">
                                     <option></option>
                                 </select>
                                 <span asp-validation-for="SystemId" class="text-danger"></span>
@@ -77,7 +77,7 @@
                                 <label asp-for="BranchId" class="col-form-label"></label>
                                 <select asp-for="BranchId"
                                         asp-items="Model.BranchList"
-                                        class="form-control"></select>
+                                        class="form-select"></select>
                                 <span asp-validation-for="BranchId" class="text-danger"></span>
                             </div>
                         </div>

@@ -80,7 +80,7 @@
                                 <label asp-for="SystemId" class="col-form-label"></label>
                                 <select asp-for="SystemId"
                                         asp-items="Model.SystemList"
-                                        class="form-control">
+                                        class="form-select">
                                     <option></option>
                                 </select>
                                 <span asp-validation-for="SystemId" class="text-danger"></span>
@@ -102,7 +102,7 @@
                                 <label asp-for="BranchId" class="col-form-label"></label>
                                 <select asp-for="BranchId"
                                         asp-items="Model.BranchList"
-                                        class="form-control"></select>
+                                        class="form-select"></select>
                                 <span asp-validation-for="BranchId" class="text-danger"></span>
                             </div>
                         </div>
@@ -115,7 +115,7 @@
                                 <label asp-for="ProgramId" class="col-form-label"></label>
                                 <select asp-for="ProgramId"
                                         asp-items="Model.ProgramList"
-                                        class="form-control">
+                                        class="form-select">
                                     <option></option>
                                 </select>
                                 <span asp-validation-for="ProgramId" class="text-danger"></span>
@@ -172,7 +172,7 @@
                                 <label asp-for="IsFirstTime" class="col-form-label"></label>
                                 <select asp-for="IsFirstTime"
                                         asp-items="Model.AskFirstTime"
-                                        class="form-control"></select>
+                                        class="form-select"></select>
                                 <span asp-validation-for="IsFirstTime" class="text-danger"></span>
                             </div>
                         </div>
@@ -185,7 +185,7 @@
                                 <label asp-for="EmailSubscriptionRequested" class="col-form-label">@Model.AskEmailSubscriptionText</label>
                                 <select asp-for="EmailSubscriptionRequested"
                                         asp-items="Model.AskEmailSubscription"
-                                        class="form-control"></select>
+                                        class="form-select"></select>
                                 <span asp-validation-for="EmailSubscriptionRequested" class="text-danger"></span>
                             </div>
                         </div>

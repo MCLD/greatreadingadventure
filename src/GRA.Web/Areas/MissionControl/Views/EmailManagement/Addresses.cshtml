@@ -18,7 +18,7 @@
             <label asp-for="SignUpSource" class="col-form-label">Mailing list</label>
             <select asp-for="SignUpSource"
                     asp-items="@Model.SignUpSources"
-                    class="form-control">
+                    class="form-select">
                 @if (!@Model.HasSources)
                 {
                     <option>No lists available</option>
@@ -68,7 +68,7 @@
             <label asp-for="SignUpSource" class="col-form-label">Mailing list</label>
             <select asp-for="SignUpSource"
                     asp-items="@GRA.Controllers.ViewModel.MissionControl.EmailManagement.EmailAddressesViewModel.AllSources"
-                    class="form-control">
+                    class="form-select">
             </select>
             <span asp-validation-for="SignUpSource" class="text-danger"></span>
         </div>

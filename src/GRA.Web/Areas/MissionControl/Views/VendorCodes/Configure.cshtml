@@ -97,7 +97,7 @@
                 <description gra-description-for="VendorCodeType.AwardPrizeOnShipDate"></description>
                 <select asp-for="VendorCodeType.AwardPrizeOnShipDate"
                         asp-items="VendorCodesController.ShipDateOptions"
-                        class="form-control">
+                        class="form-select">
                 </select>
                 <span asp-validation-for="VendorCodeType.AwardPrizeOnShipDate" class="text-danger"></span>
             </div>
@@ -110,7 +110,7 @@
                 <description gra-description-for="VendorCodeType.AwardPrizeOnPackingSlip"></description>
                 <select asp-for="VendorCodeType.AwardPrizeOnPackingSlip"
                         asp-items="VendorCodesController.PackingSlipOptions"
-                        class="form-control">
+                        class="form-select">
                 </select>
                 <span asp-validation-for="VendorCodeType.AwardPrizeOnPackingSlip" class="text-danger"></span>
             </div>
@@ -235,7 +235,7 @@
                     <description gra-description-for="VendorCodeType.ReadyForPickupEmailTemplateId"></description>
                     <select asp-for="VendorCodeType.ReadyForPickupEmailTemplateId"
                         asp-items="VendorCodesController.GetSelectList(Model.DirectEmailTemplates)"
-                            class="form-control">
+                            class="form-select">
                         <option value="">None</option>
                     </select>
                     <span asp-validation-for="VendorCodeType.ReadyForPickupEmailTemplateId" class="text-danger"></span>
@@ -243,7 +243,7 @@
             </div>
         </div>
     }
-    <div class="row row-spacing">
+    <div class="row my-3">
         <div class="col-12 text-right">
             @if (Model.VendorCodeType.Id > 0)
             {
