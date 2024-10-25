@@ -15,19 +15,19 @@
     <div class="col-12 col-sm-5 col-md-4">
         @if (!string.IsNullOrWhiteSpace(Model.Image))
         {
-            <div class="row mb-3" style="text-align:center;">
+            <div class="row mb-3 text-center">
                 <div class="col-12">
                     <img src="~/@Model.Image" class="img-fluid" style="margin: 0 auto;" />
                 </div>
             </div>
         }
         <div class="row mb-3">
-            <div class="col-12" style="text-align:center;">
+            <div class="col-12 text-center">
                 <a asp-action="ProgramImages" asp-route-id="@Model.Program.Id" class="btn btn-primary">View/Manage Images</a>
             </div>
         </div>
         <div class="row mb-3">
-            <div class="col-12" style="text-align:center;">
+            <div class="col-12 text-center">
                 <a asp-action="Performer" asp-route-id="@Model.Program.PerformerId" class="btn btn-outline-secondary">Return to Performer</a>
             </div>
         </div>

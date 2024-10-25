@@ -46,7 +46,7 @@
         @if (Model.Performer.Images.Count > 1)
         {
             <div class="row pb-4">
-                <div class="col-12" style="text-align:center;">
+                <div class="col-12 text-center">
                     <a asp-action="PerformerImages" asp-route-id="@Model.Performer.Id" class="btn btn-primary">View More Images</a>
                 </div>
             </div>
@@ -54,7 +54,7 @@
         @if (!string.IsNullOrEmpty(Model?.ReferencesPath))
         {
             <div class="row pb-4">
-                <div class="col-12" style="text-align:center;">
+                <div class="col-12 text-center">
                     <a aria-label="View References (Opens new window)"
                    href="~/@Model.ReferencesPath"
                    target="_blank"
@@ -63,7 +63,7 @@
             </div>
         }
         <div class="row pb-4">
-            <div class="col-12" style="text-align:center;">
+            <div class="col-12 text-center">
                 <a asp-action="Performers" asp-route-page="@Model.ReturnPage" class="btn btn-outline-secondary">Return to List</a>
             </div>
         </div>
