@@ -9,16 +9,16 @@
 }
 
 <div class="row">
-    <div class="col-12">
+    <div class="col-12 my-4">
         <h1>
             Images for Kit: @Model.KitName
-            <a asp-action="Kit" asp-route-id="@Model.KitId" class="btn btn-lg btn-outline-secondary" style="margin-bottom: 0.5rem;">Return to Kit</a>
+            <a asp-action="Kit" asp-route-id="@Model.KitId" class="btn btn-lg btn-outline-secondary my-4">Return to Kit</a>
         </h1>
     </div>
     <form asp-action="KitImages" class="form-horizontal col-12" method="post" role="form" enctype="multipart/form-data">
         <input asp-for="KitId" type="hidden" />
         <div class="row">
-            <div class="col-sm-9 offset-sm-3">
+            <div class="text-center">
                 <p>
                     Additional images can be added here. For best results please
                     use images that are at least 1,000px by 1,000px, uploads are limited to @(Model.MaxUploadMB)MB total.
@@ -48,14 +48,13 @@
         </div>
 
         <div class="row">
-            <div class="col-sm-9 offset-sm-3" style="margin-top: 1em;margin-bottom: 1em;">
+            <div class="text-center my-4">
                 <button type="submit"
-                        class="btn btn-lg btn-outline-success btn-spinner"
-                        style="margin-bottom: 0.5rem;"
+                        class="btn btn-lg btn-outline-success btn-spinner mb-4 me-3"
                         button-spinner>
                     Upload Image(s)
                 </button>
-                <button id="deleteButton" type="button" class="btn btn-lg btn-outline-danger" style="margin-bottom: 0.5rem;" data-bs-toggle="modal" data-bs-target="#deleteModal" disabled>
+                <button id="deleteButton" type="button" class="btn btn-lg btn-outline-danger mb-4 me-3" data-bs-toggle="modal" data-bs-target="#deleteModal" disabled>
                     Delete Selected Image(s)
                 </button>
             </div>

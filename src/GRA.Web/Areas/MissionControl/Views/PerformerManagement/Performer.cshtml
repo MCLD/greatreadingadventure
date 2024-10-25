@@ -156,7 +156,7 @@
                 <div>@(Model.Performer.HasInsurance ? "Yes" : "No")</div>
             </div>
         }
-        <div class="mb-3">
+        <div class="my-3">
             <label>Branches</label>
             <div>@(Model.Performer.AllBranches ? Model.Systems.SelectMany(_ => _.Branches).Count() : Model.Performer.Branches.Count) of @Model.Systems.SelectMany(_ => _.Branches).Count() Selected</div>
             <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#branchModal">View Selected Libraries</button>
