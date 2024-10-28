@@ -10,13 +10,13 @@ else
         <table class="table table-sm table-bordered table-striped">
             <thead>
                 <tr>
-                    <td>Name</td>
-                    <td>Badge</td>
+                    <th>Name</th>
                     @if (Model.ShowActive)
                     {
-                        <td style="min-width: 50px;">Active</td>
+                        <th style="width: 75px">Active</th>
                     }
-                    <td style="min-width: 50px;">&nbsp;</td>
+                    <th style="width: 75px">Badge</th>
+                    <th style="width: 75px">&nbsp;</th>
                 </tr>
             </thead>
             <tbody>
@@ -40,17 +40,6 @@ else
                                    target="_blank">@challenge.Name</a>
                             }
                         </td>
-                        <td class="text-center align-middle">
-                            @if (!string.IsNullOrWhiteSpace(challenge.BadgeFilename))
-                            {
-                                <img class="img-thumbnail badge-xs"
-                                     src="~/@challenge.BadgeFilename?@DateTime.Now.ToString("yyMMddHHmmss")" />
-                            }
-                            else
-                            {
-                                <text>&nbsp;</text>
-                            }
-                        </td>
                         @if (Model.ShowActive)
                         {
                             <td class="text-center align-middle">
@@ -64,6 +53,17 @@ else
                                 }
                             </td>
                         }
+                        <td class="text-center align-middle">
+                            @if (!string.IsNullOrWhiteSpace(challenge.BadgeFilename))
+                            {
+                                <img class="img-thumbnail badge-xs"
+                                     src="~/@challenge.BadgeFilename?@DateTime.Now.ToString("yyMMddHHmmss")" />
+                            }
+                            else
+                            {
+                                <text>&nbsp;</text>
+                            }
+                        </td>
                         <td class="text-center align-middle">
                             <button type="button"
                                     class="btn btn-outline-success btn-sm addChallengeButton"

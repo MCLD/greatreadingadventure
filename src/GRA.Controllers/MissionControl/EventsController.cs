@@ -57,6 +57,14 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Events";
         }
 
+        public static string Name
+        {
+            get
+            {
+                return "Events";
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddEditStreaming(EventsDetailViewModel model)
         {
@@ -274,7 +282,9 @@ namespace GRA.Controllers.MissionControl
 
         [Authorize(Policy = Policy.ManageLocations)]
         public async Task<JsonResult> AddLocationReturnList(string name,
-            string address, string url, string telephone)
+            string address,
+            string url,
+            string telephone)
         {
             if (!string.IsNullOrWhiteSpace(url))
             {
@@ -287,6 +297,7 @@ namespace GRA.Controllers.MissionControl
                     return Json(new { success = false, message = "Invalid URL" });
                 }
             }
+
             var location = new Location
             {
                 Name = name,
@@ -294,6 +305,7 @@ namespace GRA.Controllers.MissionControl
                 Url = url,
                 Telephone = telephone
             };
+
             location = await _eventService.AddLocationAsync(location);
 
             string message = null;
