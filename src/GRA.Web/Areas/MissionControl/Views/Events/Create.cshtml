@@ -469,27 +469,28 @@
                                 </div>
                                 <div class="row mb-2">
                                     <div class="col-12">
-                                        <div class="input-group">
-                                            <input id="challengeSearchText"
-                                                   class="form-control"
-                                                   placeholder="Enter text to search for a challenge here" />
-                                            <button type="button"
-                                                    id="challengeClearButton"
-                                                    class="btn btn-outline-secondary">
-                                                Clear
-                                            </button>
-                                            <button type="button"
-                                                    id="challengeSearchButton"
-                                                    class="btn btn-outline-primary">
-                                                Search
-                                            </button>
-                                        </div>
+                                        <form class="d-inline" onsubmit="return false;">
+                                            <div class="input-group">
+                                                <input id="challengeSearchText"
+                                                       class="form-control"
+                                                       placeholder="Enter text to search for a challenge here" />
+                                                <button type="button"
+                                                        id="challengeClearButton"
+                                                        class="btn btn-outline-secondary">
+                                                    Clear
+                                                </button>
+                                                <input type="submit"
+                                                       id="challengeSearchButton"
+                                                       class="btn btn-outline-primary"
+                                                       value="Search" />
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
                                 <div id="challengeSearchMessage" class="row d-none">
                                     <div class="col-12">
-                                        <p class="mb-0">
-                                            Searching for '<strong id="challengeSearchTerm"></strong>'
+                                        <p class="mb-0 pt-1 ps-2">
+                                            Searching for: <strong id="challengeSearchTerm"></strong>
                                         </p>
                                     </div>
                                 </div>
@@ -500,33 +501,29 @@
                             </div>
                             <div role="tabpanel" class="tab-pane" id="group">
                                 <div class="row my-2">
-                                    <div class="col-8">
-                                        <input id="groupSearchText"
-                                               class="form-control"
-                                               placeholder="Enter text to search for a challenge group here" />
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="col-6">
-                                            <button type="button"
-                                                    id="groupSearchButton"
-                                                    class="btn btn-outline-primary"
-                                                    style="margin-right: 8px;">
-                                                Search
-                                            </button>
-                                        </div>
-                                        <div class="col-6">
-                                            <button type="button"
-                                                    id="groupClearButton"
-                                                    class="btn btn-outline-secondary">
-                                                Clear
-                                            </button>
-                                        </div>
+                                    <div class="col-12">
+                                        <form class="d-inline" onsubmit="return false;">
+                                            <div class="input-group">
+                                                <input id="groupSearchText"
+                                                       class="form-control"
+                                                       placeholder="Enter text to search for a challenge group here" />
+                                                <button type="button"
+                                                        id="groupClearButton"
+                                                        class="btn btn-outline-secondary">
+                                                    Clear
+                                                </button>
+                                                <input type="submit"
+                                                       id="groupSearchButton"
+                                                       class="btn btn-outline-primary"
+                                                       value="Search" />
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
                                 <div id="groupSearchMessage" class="row d-none">
                                     <div class="col-12">
-                                        <p class="alert-sm alert-info">
-                                            Searching for '<strong id="groupSearchTerm"></strong>'
+                                        <p class="mb-0 pt-1 ps-2">
+                                            Searching for: <strong id="groupSearchTerm"></strong>
                                         </p>
                                     </div>
                                 </div>
@@ -817,32 +814,6 @@
                 $(".secretCodeField").addClass("ignore");
             });
 
-            $(':file').on('fileselect', function (event, numFiles, label) {
-                let input = $(this).parents('.input-group').find(':text'),
-                    log = numFiles > 1 ? numFiles = ' files selected' : label;
-
-                if (input.length) {
-                    input.val(log);
-                    $('.btn-file').removeClass('btn-secondary');
-                    $('.btn-file').addClass('btn-outline-success');
-                    $("#badgeImage").removeAttr("src");
-                    $("#badgeImage").height(200);
-                    $("#BadgeMakerImage").val("");
-                }
-                else {
-                    input.val('');
-                    $('.btn-file').addClass('btn-secondary');
-                    $('.btn-file').removeClass('btn-outline-success');
-                }
-            });
-
-            $(document).on('change', ':file', function () {
-                let input = $(this),
-                    numFiles = input.get(0).files ? input.get(0).files.length : 1,
-                    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-                input.trigger('fileselect', [numFiles, label]);
-            });
-
             $("#badgeTab").on('show.bs.tab', function () {
                 $("#UseBadgeMaker").val("true");
             });
@@ -958,17 +929,13 @@
 
             $("#addButton").on('click', function (e) {
                 $("#listModal").modal("show");
-                if ($("#challenge").hasClass("active")) {
-                    if (challengesLoaded == false) {
-                        UpdateChallengeList();
-                        challengesLoaded = true;
-                    }
+                if (challengesLoaded == false) {
+                    UpdateChallengeList();
+                    challengesLoaded = true;
                 }
-                else {
-                    if (groupsLoaded == false) {
-                        UpdateGroupList();
-                        groupsLoaded = true;
-                    }
+                if (groupsLoaded == false) {
+                    UpdateGroupList();
+                    groupsLoaded = true;
                 }
             });
 

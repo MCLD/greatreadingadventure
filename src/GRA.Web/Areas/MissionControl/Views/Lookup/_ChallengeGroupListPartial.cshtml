@@ -13,7 +13,7 @@ else
                     <td>Name</td>
                     <td>Description</td>
                     <td>Link</td>
-                    <td width="42px">&nbsp;</td>
+                    <td width="75px">&nbsp;</td>
                 </tr>
             </thead>
             <tbody>
@@ -23,7 +23,10 @@ else
                         <td>
                             @if (Model.CanEditGroups)
                             {
-                                <a asp-controller="Challenges" asp-action="EditGroup" asp-route-id="@group.Id" target="_blank">@group.Name</a>
+                                <a asp-controller="Challenges"
+                                   asp-action="EditGroup"
+                                   asp-route-id="@group.Id"
+                                   target="_blank">@group.Name</a>
                             }
                             else
                             {
@@ -34,13 +37,17 @@ else
                             @group.Description
                         </td>
                         <td>
-                            <a asp-area="" asp-controller="Challenges" asp-action="List" asp-route-id="@group.Stub" target="_blank">@group.Stub</a>
+                            <a asp-area=""
+                               asp-controller="Challenges"
+                               asp-action="List"
+                               asp-route-id="@group.Stub"
+                               target="_blank">@group.Stub</a>
                         </td>
-                        <td class="gra-mc-icon">
+                        <td class="text-center align-middle">
                             <button type="button"
-                                    class="btn btn-link btn-sm addGroupButton"
+                                    class="btn btn-outline-success btn-sm addGroupButton"
                                     data-id="@group.Id">
-                                <span class="fas fa-2x fa-plus-circle text-success" aria-hidden="true"></span>
+                                <span class="fas fa-plus fa-fw" aria-hidden="true"></span>
                             </button>
                         </td>
                     </tr>
@@ -48,8 +55,5 @@ else
             </tbody>
         </table>
     </div>
-    @if (Model.PaginateModel.MaxPage > 1)
-    {
-        <paginate paginateModel="@Model.PaginateModel" asButtons="true"></paginate>
-    }
+    <paginate paginateModel="@Model.PaginateModel" asButtons="true"></paginate>
 }

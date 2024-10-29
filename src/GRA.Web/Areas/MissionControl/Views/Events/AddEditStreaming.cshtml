@@ -76,14 +76,14 @@
     </div>
 
     <div class="row">
-        <div class="col-12 col-sm-6 row-spacing">
+        <div class="col-12 col-sm-6">
             <label asp-for="Event.StartDate" class="col-form-label"></label>
             <div class="mb-3 date" id="pickerStart">
                 <input asp-for="Event.StartDate" type="date" class="form-control" />
             </div>
             <span asp-validation-for="Event.StartDate" class="text-danger"></span>
         </div>
-        <div class="col-12 col-sm-6 row-spacing">
+        <div class="col-12 col-sm-6">
             <label asp-for="Event.StreamingAccessEnds" class="col-form-label"></label>
             <div class="mb-3 date" id="pickerEnd">
                 <input asp-for="Event.StreamingAccessEnds"
@@ -444,167 +444,168 @@
         </div>
     }
 
-    <div class="mb-3 my-2">
-        <a asp-action="StreamingEvents" class="btn btn-outline-secondary">Return to List</a>
-        <button type="submit" class="btn btn-outline-primary" button-spinner>
-            <span class="buttonText">
-                @if (Model.Editing)
-                {
-                    @:Save Changes
-                }
-                else
-                {
-                    @:Create Streaming Event
-                }
-            </span>
-        </button>
+    <div class="row mt-4">
+        <div class="col-12 d-flex justify-content-end">
+            <a asp-action="StreamingEvents" class="btn btn-outline-secondary me-2">
+                Return to List
+            </a>
+            <button button-spinner
+                    class="btn btn-outline-primary"
+                    type="submit">
+                <span class="buttonText">
+                    @if (Model.Editing)
+                    {
+                        @:Save Changes
+                    }
+                    else
+                    {
+                        @:Create Streaming Event
+                    }
+                </span>
+            </button>
+        </div>
     </div>
 </form>
 
 @if (Model.CanRelateChallenge)
 {
-    <div class="row my-2">
-        <div class="modal fade"
-             id="listModal"
-             tabindex="-1"
-             role="dialog"
-             aria-labelledby="listModalLabel">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="row">
-                    <div class="col-12 col-sm-10 offset-sm-1">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title h4">
-                                    <span class="relatedText">
-                                        @(Model.Event?.Challenge != null || Model.Event?.ChallengeGroup != null ? "Change" : "Add")
-                                    </span> challenge/group
-                                </h1>
-                            </div>
-                            <div class="modal-body">
-                                <ul class="nav nav-tabs" role="tablist">
-                                    <li role="presentation" class="active" )>
-                                        <a id="challengeTab"
-                                           href="#challenge"
-                                           aria-controls="challenge"
-                                           role="tab"
-                                           data-bs-toggle="tab">Challenge</a>
-                                    </li>
-                                    <li role="presentation" class="">
-                                        <a id="groupTab"
-                                           href="#group"
-                                           aria-controls="group"
-                                           role="tab"
-                                           data-bs-toggle="tab">
-                                            Challenge Group
-                                        </a>
-                                    </li>
-                                </ul>
-
-                                <div class="tab-content">
-                                    <div role="tabpanel" class="tab-pane active" id="challenge">
-                                        <div class="row my-2">
-                                            <div class="col-12 mb-2">
-                                                <ul class="nav nav-pills flex-column flex-sm-row">
-                                                    <li id="All" class="nav-item challengeScope">
-                                                        <a class="nav-link active">All</a>
-                                                    </li>
-                                                    <li id="System" class="nav-item challengeScope">
-                                                        <a class="nav-link">My System</a>
-                                                    </li>
-                                                    <li id="Branch" class="nav-item challengeScope">
-                                                        <a class="nav-link">My Branch</a>
-                                                    </li>
-                                                    <li id="Mine" class="nav-item challengeScope">
-                                                        <a class="nav-link">Mine</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-
-                                        <div class="row my-2">
-                                            <div class="col-8">
+    <div aria-labelledby="listModalLabel"
+         class="modal fade"
+         data-bs-backdrop="static"
+         data-bs-keyboard="false"
+         id="listModal"
+         role="dialog"
+         tabindex="-1">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h1 class="h4 modal-title lead">
+                            <span class="relatedText">
+                                @(Model.Event?.Challenge != null || Model.Event?.ChallengeGroup != null ? "Change" : "Add")
+                            </span> challenge/group
+                        </h1>
+                    </div>
+                    <div class="card-body">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="nav-item">
+                                <button class="nav-link active"
+                                        id="challengeTab"
+                                        data-bs-toggle="tab"
+                                        data-bs-target="#challenge"
+                                        type="button"
+                                        role="tab"
+                                        aria-controls="challenge"
+                                        aria-selected="true">
+                                    Challenge
+                                </button>
+                            </li>
+                            <li role="presentation" class="nav-item">
+                                <button aria-controls="group"
+                                        aria-selected="false"
+                                        class="nav-link"
+                                        data-bs-target="#group"
+                                        data-bs-toggle="tab"
+                                        id="profile-tab"
+                                        role="tab"
+                                        type="button">
+                                    Challenge Group
+                                </button>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="challenge">
+                                <div class="row">
+                                    <div class="col-12 mb-2">
+                                        <ul class="nav nav-pills">
+                                            <li id="All" class="nav-item challengeScope">
+                                                <a class="nav-link active">All</a>
+                                            </li>
+                                            <li id="System" class="nav-item challengeScope">
+                                                <a class="nav-link">My System</a>
+                                            </li>
+                                            <li id="Branch" class="nav-item challengeScope">
+                                                <a class="nav-link">My Branch</a>
+                                            </li>
+                                            <li id="Mine" class="nav-item challengeScope">
+                                                <a class="nav-link">Mine</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row my-2">
+                                    <div class="col-12">
+                                        <form class="d-inline" onsubmit="return false;">
+                                            <div class="input-group">
                                                 <input id="challengeSearchText"
                                                        class="form-control"
                                                        placeholder="Enter text to search for a challenge here" />
+                                                <button type="button"
+                                                        id="challengeClearButton"
+                                                        class="btn btn-outline-secondary">
+                                                    Clear
+                                                </button>
+                                                <input type="submit"
+                                                       id="challengeSearchButton"
+                                                       class="btn btn-outline-primary"
+                                                       value="Search" />
                                             </div>
-                                            <div class="col-4">
-                                                <div class="col-6">
-                                                    <button type="button"
-                                                            id="challengeSearchButton"
-                                                            class="btn btn-outline-primary"
-                                                            style="margin-right: 8px;">
-                                                        Search
-                                                    </button>
-                                                </div>
-                                                <div class="col-6">
-                                                    <button type="button"
-                                                            id="challengeClearButton"
-                                                            class="btn btn-outline-secondary">
-                                                        Clear
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div id="challengeSearchMessage" class="row d-none">
-                                            <div class="col-12">
-                                                <p class="alert-sm alert-info">
-                                                    Searching for '<strong id="challengeSearchTerm"></strong>'
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="row my-2">
-                                            <div id="modalChallengeList" class="col-12">
-                                            </div>
-                                        </div>
+                                        </form>
                                     </div>
-                                    <div role="tabpanel" class="tab-pane" id="group">
-                                        <div class="row my-2">
-                                            <div class="col-8">
-                                                <input id="groupSearchText"
-                                                       class="form-control"
-                                                       placeholder="Enter text to search for a challenge group here" />
-                                            </div>
-                                            <div class="col-4">
-                                                <div class="col-6">
-                                                    <button type="button"
-                                                            id="groupSearchButton"
-                                                            class="btn btn-outline-primary"
-                                                            style="margin-right: 8px;">
-                                                        Search
-                                                    </button>
-                                                </div>
-                                                <div class="col-6">
-                                                    <button type="button"
-                                                            id="groupClearButton"
-                                                            class="btn btn-outline-secondary">
-                                                        Clear
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div id="groupSearchMessage" class="row d-none">
-                                            <div class="col-12">
-                                                <p class="alert-sm alert-info">
-                                                    Searching for '<strong id="groupSearchTerm"></strong>'
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="row my-2">
-                                            <div id="modalGroupList" class="col-12">
-                                            </div>
+                                    <div id="challengeSearchMessage" class="row d-none">
+                                        <div class="col-12">
+                                            <p class="mb-0 pt-1 ps-2">
+                                                Searching for: <strong id="challengeSearchTerm"></strong>
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row my-2">
+                                    <div id="modalChallengeList" class="col-12">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button"
-                                        class="btn btn-outline-secondary"
-                                        data-bs-dismiss="modal"
-                                        style="margin-right: 1em;">
-                                    Close
-                                </button>
+                            <div role="tabpanel" class="tab-pane" id="group">
+                                <div class="row my-2">
+                                    <div class="col-12">
+                                        <form class="d-inline" onsubmit="return false;">
+                                            <div class="input-group">
+                                                <input id="groupSearchText"
+                                                       class="form-control"
+                                                       placeholder="Enter text to search for a challenge group here" />
+                                                <button type="button"
+                                                        id="groupClearButton"
+                                                        class="btn btn-outline-secondary">
+                                                    Clear
+                                                </button>
+                                                <input type="submit"
+                                                       id="groupSearchButton"
+                                                       class="btn btn-outline-primary"
+                                                       value="Search" />
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div id="groupSearchMessage" class="row d-none">
+                                    <div class="col-12">
+                                        <p class="mb-0 pt-1 ps-2">
+                                            Searching for: <strong id="groupSearchTerm"></strong>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="row my-2">
+                                    <div id="modalGroupList" class="col-12">
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">
+                            Close
+                        </button>
                     </div>
                 </div>
             </div>
@@ -629,7 +630,7 @@
                         <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
                         <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
                     </span>
-                    <iframe id="badgeMaker" class="badge-maker"></iframe>
+                    <23457890frame id="badgeMaker" class="badge-maker"></23457890frame>
                 </div>
             </div>
         </div>
@@ -639,10 +640,17 @@
 @section scripts {
     <script>
         $("#Event_AllDay").on("change", function () {
-            $("#pickerStart").data("DateTimePicker").format("MM/DD/YYYY hh:mm A");
-            $("#pickerEnd").data("DateTimePicker").format("MM/DD/YYYY hh:mm A");
+            if ($("#Event_AllDay").is(":checked")) {
+                $("#Event_StartDate").attr("type", "date");
+                $("#Event_EndDate").attr("type", "date");
+            }
+            else {
+                $("#Event_StartDate").attr("type", "datetime-local");
+                $("#Event_EndDate").attr("type", "datetime-local");
+            }
         });
     </script>
+
     @if (Model.CanAddSecretCode)
     {
         <script>
@@ -662,31 +670,6 @@
                 $(".secretCodeField").addClass("ignore");
             });
 
-            $(':file').on('fileselect', function (event, numFiles, label) {
-                var input = $(this).parents('.input-group').find(':text'),
-                    log = numFiles > 1 ? numFiles = ' files selected' : label;
-
-                if (input.length) {
-                    input.val(log);
-                    $('.btn-file').removeClass('btn-secondary');
-                    $('.btn-file').addClass('btn-outline-success');
-                    $("#badgeImage").removeAttr("src");
-                    $("#badgeImage").height(200);
-                    $("#BadgeMakerImage").val("");
-                }
-                else {
-                    input.val('');
-                    $('.btn-file').addClass('btn-secondary');
-                    $('.btn-file').removeClass('btn-outline-success');
-                }
-            });
-
-            $(document).on('change', ':file', function () {
-                var input = $(this),
-                    numFiles = input.get(0).files ? input.get(0).files.length : 1,
-                    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-                input.trigger('fileselect', [numFiles, label]);
-            });
 
             $("#badgeTab").on('show.bs.tab', function () {
                 $("#UseBadgeMaker").val("true");
@@ -752,15 +735,15 @@
     @if (Model.CanRelateChallenge)
     {
         <script>
-            var challengesUrl = "@Url.Action("GetChallengeList", "Lookup")";
-            var groupsUrl = "@Url.Action("GetChallengeGroupList", "Lookup")";
             var challengePage = 1;
             var challengeScope = "All";
             var challengeSearch = "";
+            var challengesLoaded = false;
+            var challengesUrl = "@Url.Action(nameof(LookupController.GetChallengeList), LookupController.Name)";
             var groupPage = 1;
             var groupSearch = "";
-            var challengesLoaded = false;
             var groupsLoaded = false;
+            var groupsUrl = "@Url.Action(nameof(LookupController.GetChallengeGroupList), LookupController.Name)";
 
             function UpdateChallengeList() {
                 $.get(challengesUrl,
@@ -774,6 +757,7 @@
                         $("#modalChallengeList").html(response);
                     });
             }
+
             function UpdateGroupList() {
                 $.get(groupsUrl,
                     {
@@ -802,17 +786,13 @@
 
             $("#addButton").on('click', function (e) {
                 $("#listModal").modal("show");
-                if ($("#challenge").hasClass("active")) {
-                    if (challengesLoaded == false) {
-                        UpdateChallengeList();
-                        challengesLoaded = true;
-                    }
+                if (challengesLoaded == false) {
+                    UpdateChallengeList();
+                    challengesLoaded = true;
                 }
-                else {
-                    if (groupsLoaded == false) {
-                        UpdateGroupList();
-                        groupsLoaded = true;
-                    }
+                if (groupsLoaded == false) {
+                    UpdateGroupList();
+                    groupsLoaded = true;
                 }
             });
 
@@ -820,10 +800,10 @@
                 if (!$(this).hasClass("disabled")) {
                     var row = $(this).parent().parent().clone();
                     var addedItem = row.find(".addChallengeButton, .addGroupButton");
-                    addedItem.removeClass("addChallengeButton addGroupButton")
-                    addedItem.children().removeClass("fa-plus-circle text-primary");
-                    addedItem.children().addClass("fa-minus-circle text-danger");
-                    addedItem.addClass("removeRelatedButton");
+                    addedItem.removeClass("addChallengeButton addGroupButton btn-outline-success")
+                    addedItem.children().removeClass("fa-plus-circle");
+                    addedItem.children().addClass("fa-times");
+                    addedItem.addClass("btn-outline-danger removeRelatedButton");
 
                     $("#noRelated").addClass("d-none");
 
@@ -868,7 +848,7 @@
                 e.preventDefault();
                 $(this).siblings().removeClass("active");
                 $(this).addClass().addClass("active");
-                scope = $(this).attr("id");
+                challengeScope = $(this).attr("id");
                 page = 1;
                 UpdateChallengeList();
             });
