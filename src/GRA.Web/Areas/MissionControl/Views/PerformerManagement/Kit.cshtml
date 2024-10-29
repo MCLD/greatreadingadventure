@@ -31,7 +31,7 @@
     </div>
 
     <div class="col-12 mb-3">
-        <a asp-action="KitDetails" asp-route-id="@Model.Kit.Id" class="btn btn-outline-primary">Edit Kit</a>
+        <a asp-action="KitDetails" asp-route-id="@Model.Kit.Id" class="btn btn-lg btn-outline-primary">Edit Kit</a>
         @if (Model.SchedulingStage >= GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
         {
             <a asp-action="KitSelections" asp-route-id="@Model.Kit.Id" class="btn btn-lg btn-outline-primary float-end">View Selections</a>
@@ -40,19 +40,19 @@
     <div class="col-12 col-sm-5 col-md-4">
         @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
         {
-            <div class="row mb-3" style="text-align:center;">
+            <div class="row mb-3 text-center">
                 <div class="col-12">
                     <img src="~/@Model.ImagePath" class="img-fluid" style="margin: 0 auto;" />
                 </div>
             </div>
         }
         <div class="row mb-3">
-            <div class="col-12" style="text-align:center;">
+            <div class="col-12 text-center">
                 <a asp-action="KitImages" asp-route-id="@Model.Kit.Id" class="btn btn-outline-primary">View/Manage Images</a>
             </div>
         </div>
         <div class="row mb-3">
-            <div class="col-12" style="text-align:center;">
+            <div class="col-12 text-center">
                 <a asp-action="Kits" asp-route-page="@Model.ReturnPage" class="btn btn-outline-secondary">Return to List</a>
             </div>
         </div>
