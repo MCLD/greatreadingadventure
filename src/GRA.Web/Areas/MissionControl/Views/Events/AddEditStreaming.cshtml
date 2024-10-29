@@ -3,15 +3,11 @@
 @section styles {
     <style>
         .tab-pane {
-            border-left: 1px solid #ddd;
-            border-right: 1px solid #ddd;
             border-bottom: 1px solid #ddd;
-            border-radius: 0px 0px 5px 5px;
-            padding: 10px;
-        }
-
-        .nav-tabs {
-            margin-bottom: 0;
+            border-left: 1px solid #ddd;
+            border-radius: 0px 0px 6px 6px;
+            border-right: 1px solid #ddd;
+            padding: 1rem;
         }
     </style>
 }
@@ -26,8 +22,7 @@
     @if (Model.Editing)
     {
         <input name="Event.Id" value="@Model.Event.Id" type="hidden" />
-        <input name="Event.CreatedBy" value="@Model.Event.CreatedBy"
-               type="hidden" />
+        <input name="Event.CreatedBy" value="@Model.Event.CreatedBy" type="hidden" />
         <input name="Editing" value="true" type="hidden" />
 
         <input asp-for="Event.IsActive" type="hidden" />
@@ -57,7 +52,7 @@
             <input asp-for="CanAddSecretCode" type="hidden" />
             @if (Model.Event.RelatedTriggerId.HasValue)
             {
-                <div class="row my-4">
+                <div class="row my-2">
                     <div class="col-12">
                         <a asp-controller="Triggers"
                            asp-action="Edit"
@@ -72,7 +67,7 @@
         }
     }
 
-    <div class="row my-4">
+    <div class="row my-2">
         <div class="col-12">
             <label asp-for="Event.Name" class="col-form-label"></label>
             <input asp-for="Event.Name" class="form-control event-name-field" />
@@ -80,30 +75,27 @@
         </div>
     </div>
 
-    <div class="row my-4">
-        <div class="col-8 col-sm-10 ">
-            <div class="row">
-                <div class="col-12 col-sm-6 row-spacing">
-                    <label asp-for="Event.StartDate" class="col-form-label"></label>
-                    <div class="mb-3 date" id="pickerStart">
-                        <input asp-for="Event.StartDate" type="date" class="form-control"/>
-                    </div>
-                    <span asp-validation-for="Event.StartDate" class="text-danger"></span>
-                </div>
-                <div class="col-12 col-sm-6 row-spacing">
-                    <label asp-for="Event.StreamingAccessEnds" class="col-form-label"></label>
-                    <div class="mb-3 date" id="pickerEnd">
-
-                        <input asp-for="Event.StreamingAccessEnds" type="date" class="form-control"/>
-                    </div>
-                    <span asp-validation-for="Event.StreamingAccessEnds"
-                          class="text-danger"></span>
-                </div>
+    <div class="row">
+        <div class="col-12 col-sm-6">
+            <label asp-for="Event.StartDate" class="col-form-label"></label>
+            <div class="mb-3 date" id="pickerStart">
+                <input asp-for="Event.StartDate" type="date" class="form-control" />
             </div>
+            <span asp-validation-for="Event.StartDate" class="text-danger"></span>
+        </div>
+        <div class="col-12 col-sm-6">
+            <label asp-for="Event.StreamingAccessEnds" class="col-form-label"></label>
+            <div class="mb-3 date" id="pickerEnd">
+                <input asp-for="Event.StreamingAccessEnds"
+                       type="date"
+                       class="form-control" />
+            </div>
+            <span asp-validation-for="Event.StreamingAccessEnds"
+                  class="text-danger"></span>
         </div>
     </div>
 
-    <div class="row my-4">
+    <div class="row my-2">
         <div class="col-12">
             <label asp-for="Event.Description" class="col-form-label"></label>
             <textarea asp-for="Event.Description" class="form-control" rows="5"> </textarea>
@@ -111,7 +103,7 @@
         </div>
     </div>
 
-    <div class="row my-4">
+    <div class="row my-2">
         <div class="col-12">
             <label asp-for="Event.IsStreamingEmbed" class="col-form-label"></label>
             <select asp-for="Event.IsStreamingEmbed" class="form-select">
@@ -121,7 +113,7 @@
         </div>
     </div>
 
-    <div class="row my-4">
+    <div class="row my-2">
         <div class="col-12">
             <label asp-for="Event.StreamingLinkData" class="col-form-label"></label>
             <small>
@@ -136,7 +128,7 @@
         </div>
     </div>
 
-    <div class="row my-4">
+    <div class="row my-2">
         <div class="col-12">
             <label asp-for="Event.ProgramId" class="col-form-label"></label>
             <select asp-for="Event.ProgramId" asp-items="Model.ProgramList" class="form-select">
@@ -148,18 +140,19 @@
 
     @if (Model.Editing && (Model.CanRelateChallenge || Model.Event.Challenge != null || Model.Event.ChallengeGroup != null))
     {
-        <div class="row my-4">
+        <div class="row my-2">
             <div class="col-12">
                 <label class="col-form-label">Related Challenge/Group</label>
-                <table id="challengeTable" class="table table-sm table-bordered table-striped @(Model.Event.Challenge == null ? "d-none" : "")">
+                <table id="challengeTable"
+                       class="table table-sm table-bordered table-striped @(Model.Event.Challenge == null ? "d-none" : "")">
                     <thead>
                         <tr>
                             <th>Challenge Name</th>
-                            <th>Badge</th>
-                            <th width="44px">Active</th>
+                            <th style="width: 75px">Active</th>
+                            <th style="width: 75px">Badge</th>
                             @if (Model.CanRelateChallenge)
                             {
-                                <th width="44px">&nbsp;</th>
+                                <th style="width: 75px">&nbsp;</th>
                             }
                         </tr>
                     </thead>
@@ -169,8 +162,10 @@
                             <tr>
                                 <td>
                                     <a asp-action="Edit"
-                                    asp-controller="@ChallengesController.Name" 
-                                    asp-route-id="@Model.Event.Challenge.Id" target="_blank">@Model.Event.Challenge.Name</a>
+                                       asp-controller="@ChallengesController.Name"
+                                       asp-route-id="@Model.Event.Challenge.Id" target="_blank">
+                                        @Model.Event.Challenge.Name
+                                    </a>
                                 </td>
                                 <td>
                                     @if (!string.IsNullOrWhiteSpace(Model.Event.Challenge.BadgeFilename))
@@ -197,8 +192,10 @@
                                 @if (Model.CanRelateChallenge)
                                 {
                                     <td class="gra-mc-icon">
-                                        <button type="button" class="btn btn-link btn-sm removeRelatedButton">
-                                            <span class="fas fa-2x fa-minus-circle text-danger" aria-hidden="true"></span>
+                                        <button type="button"
+                                                class="btn btn-link btn-sm removeRelatedButton">
+                                            <span class="fas fa-2x fa-minus-circle text-danger"
+                                                  aria-hidden="true"></span>
                                         </button>
                                     </td>
                                 }
@@ -206,7 +203,8 @@
                         }
                     </tbody>
                 </table>
-                <table id="groupTable" class="table table-sm table-bordered table-striped @(Model.Event.ChallengeGroup == null ? "d-none" : "")">
+                <table id="groupTable"
+                       class="table table-sm table-bordered table-striped @(Model.Event.ChallengeGroup == null ? "d-none" : "")">
                     <thead>
                         <tr>
                             <th>Group Name</th>
@@ -214,7 +212,7 @@
                             <th>Link</th>
                             @if (Model.CanRelateChallenge)
                             {
-                                <th width="44px">&nbsp;</th>
+                                <th style="width: 75px">&nbsp;</th>
                             }
                         </tr>
                     </thead>
@@ -225,7 +223,12 @@
                                 <td>
                                     @if (Model.CanEditGroups)
                                     {
-                                        <a asp-controller="Challenges" asp-action="EditGroup" asp-route-id="@Model.Event.ChallengeGroup.Id" target="_blank">@Model.Event.ChallengeGroup.Name</a>
+                                        <a asp-controller="Challenges"
+                                           asp-action="EditGroup"
+                                           asp-route-id="@Model.Event.ChallengeGroup.Id"
+                                           target="_blank">
+                                            @Model.Event.ChallengeGroup.Name
+                                        </a>
                                     }
                                     else
                                     {
@@ -236,7 +239,11 @@
                                     @Model.Event.ChallengeGroup.Description
                                 </td>
                                 <td>
-                                    <a asp-area="" asp-controller="Challenges" asp-action="List" asp-route-id="@Model.Event.ChallengeGroup.Stub" target="_blank">@Model.Event.ChallengeGroup.Stub</a>
+                                    <a asp-area=""
+                                       asp-controller="Challenges"
+                                       asp-action="List"
+                                       asp-route-id="@Model.Event.ChallengeGroup.Stub"
+                                       target="_blank">@Model.Event.ChallengeGroup.Stub</a>
                                 </td>
                                 @if (Model.CanRelateChallenge)
                                 {
@@ -244,7 +251,8 @@
                                         <button type="button"
                                                 class="btn btn-link btn-sm removeRelatedButton"
                                                 data-id="@Model.Event.ChallengeGroup.Id">
-                                            <span class="fas fa-2x fa-minus-circle text-danger" aria-hidden="true"></span>
+                                            <span class="fas fa-2x fa-minus-circle text-danger"
+                                                  aria-hidden="true"></span>
                                         </button>
                                     </td>
                                 }
@@ -258,7 +266,13 @@
                     <input asp-for="CanRelateChallenge" type="hidden" />
                     <input asp-for="Event.ChallengeId" type="hidden" />
                     <input asp-for="Event.ChallengeGroupId" type="hidden" />
-                    <button type="button" id="addButton" class="btn btn-outline-primary" style="display: block"><span class="relatedText">@(Model.Event.Challenge != null || Model.Event.ChallengeGroup != null ? "Change" : "Add")</span> Related Challenge</button>
+                    <button type="button"
+                            id="addButton"
+                            class="btn btn-outline-primary"
+                            style="display: block">
+                        <span class="relatedText">@(Model.Event.Challenge != null || Model.Event.ChallengeGroup != null ? "Change" : "Add")</span>
+                        Related Challenge
+                    </button>
                 }
             </div>
         </div>
@@ -268,16 +282,17 @@
         <input asp-for="CanRelateChallenge" type="hidden" />
         <input asp-for="Event.ChallengeId" type="hidden" />
         <input asp-for="Event.ChallengeGroupId" type="hidden" />
-        <div class="row my-4">
+        <div class="row my-2">
             <div class="col-12">
                 <label class="col-form-label">Related Challenge/Group</label>
-                <table id="challengeTable" class="table table-sm table-bordered table-striped d-none">
+                <table id="challengeTable"
+                       class="table table-sm table-bordered table-striped d-none">
                     <thead>
                         <tr>
                             <th>Challenge Name</th>
-                            <th>Badge</th>
-                            <th width="44px">Active</th>
-                            <th width="44px">&nbsp;</th>
+                            <th style="width: 75px">Active</th>
+                            <th style="width: 75px">Badge</th>
+                            <th style="width: 75px">&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody id="challengeList"></tbody>
@@ -288,13 +303,23 @@
                             <th>Group Name</th>
                             <th>Description</th>
                             <th>Link</th>
-                            <th width="44px">&nbsp;</th>
+                            <th style="width: 75px">&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody id="groupList"></tbody>
                 </table>
-                <div id="noRelated" class="alert alert-warning" style="margin-bottom: 0.5rem;">No related challenges or challenge groups.</div>
-                <button type="button" id="addButton" class="btn btn-outline-primary" style="display: block"><span class="relatedText">@(Model.Event?.Challenge != null || Model.Event?.ChallengeGroup != null ? "Change" : "Add")</span> Related Challenge</button>
+                <div id="noRelated"
+                     class="alert alert-warning"
+                     style="margin-bottom: 0.5rem;">
+                    No related challenges or challenge groups.
+                </div>
+                <button type="button"
+                        id="addButton"
+                        class="btn btn-outline-primary"
+                        style="display: block">
+                    <span class="relatedText">@(Model.Event?.Challenge != null || Model.Event?.ChallengeGroup != null ? "Change" : "Add")</span>
+                    Related Challenge
+                </button>
             </div>
         </div>
     }
@@ -306,8 +331,10 @@
         <input asp-for="UseBadgeMaker" type="hidden" />
         <input asp-for="BadgeMakerUrl" type="hidden" />
         <input asp-for="BadgeMakerImage" type="hidden" />
-
-        <div class="list-group" id="accordionSecretCode" role="tablist" aria-multiselectable="true">
+        <div class="list-group mt-4"
+             id="accordionSecretCode"
+             role="tablist"
+             aria-multiselectable="true">
             <div class="card">
                 <div class="card-header @(Model.RequireSecretCode ? "bg-warning-subtle" : "bg-info-subtle")" role="tab" id="headingSecretCode">
                     <h4 class="card-title">
@@ -317,95 +344,98 @@
                         }
                         else
                         {
-                            <a role="button" data-bs-toggle="collapse" data-bs-parent="#accordionSecretCode" href="#collapseSecretCode" aria-expanded="true" aria-controls="collapseSecretCode">
-                                <span id="secretCodeIcon" class="fas fa-lg @(Model.IncludeSecretCode ? "fa-caret-down" : "fa-caret-right")"></span>
+                            <a role="button"
+                               data-bs-toggle="collapse"
+                               data-bs-parent="#accordionSecretCode"
+                               href="#collapseSecretCode"
+                               aria-expanded="true"
+                               aria-controls="collapseSecretCode">
+                                <span id="secretCodeIcon"
+                                      class="fas fa-lg @(Model.IncludeSecretCode ? "fa-caret-down" : "fa-caret-right")"></span>
                                 Add Secret Code to this event
                             </a>
                         }
                     </h4>
                 </div>
-                <div id="collapseSecretCode" class="collapse" role="tabpanel" aria-labelledby="headingSecretCode">
+                <div id="collapseSecretCode"
+                     class="card-collapse collapse+@(Model.IncludeSecretCode ? "-show" : "")"
+                     role="tabpanel"
+                     aria-labelledby="headingSecretCode">
                     <div class="card-body">
-                        <div class="row my-4">
+                        <div class="row my-2">
                             <div class="col-12">
                                 <label asp-for="SecretCode" class="col-form-label"></label>
                                 <span id="SecretCode-Icon" class="fa colored-icon d-none"></span>
-                                <input asp-for="SecretCode" class="form-control secretCodeField @(Model.IncludeSecretCode ? "" : "ignore")" />
-                                <span id="SecretCode-Validation" asp-validation-for="SecretCode" class="text-danger"></span>
+                                <input asp-for="SecretCode"
+                                       class="form-control secretCodeField @(Model.IncludeSecretCode ? "" : "ignore")" />
+                                <span id="SecretCode-Validation"
+                                      asp-validation-for="SecretCode"
+                                      class="text-danger"></span>
                             </div>
                         </div>
 
-                        <div class="row my-4">
+                        <div class="row my-2">
                             <div class="col-12">
                                 <label asp-for="AwardMessage" class="col-form-label"></label>
-                                <textarea asp-for="AwardMessage" class="form-control secretCodeField @(Model.IncludeSecretCode ? "" : "ignore")"></textarea>
+                                <textarea asp-for="AwardMessage"
+                                          class="form-control secretCodeField @(Model.IncludeSecretCode ? "" : "ignore")"></textarea>
                                 <span asp-validation-for="AwardMessage" class="text-danger"></span>
                             </div>
                         </div>
 
-                        <div class="row my-4">
+                        <div class="row my-2">
                             <div class="col-12">
                                 <label asp-for="AwardPoints" class="col-form-label"></label>
-                                <input asp-for="AwardPoints" min="0" class="form-control secretCodeField @(Model.IncludeSecretCode ? "" : "ignore")" />
+                                <small>@Model.MaxPointLimitMessage</small>
+                                <input asp-for="AwardPoints"
+                                       min="0"
+                                       class="form-control secretCodeField @(Model.IncludeSecretCode ? "" : "ignore")" />
                                 <span asp-validation-for="AwardPoints" class="text-danger"></span>
                             </div>
                         </div>
 
-                        <div class="row my-4">
+                        <div class="row my-2">
                             <div class="col-12">
-                                <label class="col-form-label">Award Badge</label>
+                                @if (!string.IsNullOrWhiteSpace(Model.BadgeMakerImage))
+                                {
+                                    <label class="col-form-label">Edit badge image</label>
+                                }
+                                else
+                                {
+                                    <label class="col-form-label">Add a badge</label>
+                                }
                             </div>
-
                             <div class="col-12 col-sm-4 col-md-3">
-                                <img id="badgeImage" class="img-thumbnail badge-lg" src="@Model.BadgeMakerImage" style="height:210px;" />
-                                <span asp-validation-for="BadgeMakerImage" class="text-danger" style="display:block;"></span>
+                                <img id="badgeImage"
+                                     class="img-thumbnail badge-lg"
+                                     src="~/@Model.BadgeMakerImage?@DateTime.Now.ToString("yyMMddHHmmss")" />
+                                <span asp-validation-for="BadgeMakerImage"
+                                      class="text-danger"
+                                      style="display:block;"></span>
                             </div>
-
                             <div class="col-12 col-sm-8 col-md-9">
-                                <ul class="nav nav-tabs" role="tablist">
-                                    @if (Model.UseBadgeMaker)
-                                    {
-                                    <li role="presentation" class=@(Model.UseBadgeMaker ? "active" : "")>
-                                        <a id="badgeTab" href="#badge" aria-controls="badge" role="tab" data-bs-toggle="tab">Badge Maker</a>
-                                    </li>
-                                    }
-                                    <li role="presentation" class=@(Model.UseBadgeMaker ? "" : "active")>
-                                        <a id="uploadTab" href="#upload" aria-controls="upload" role="tab" data-bs-toggle="tab">Upload an Image</a>
-                                    </li>
-                                </ul>
-
-                                <div class="tab-content">
-                                    <div role="tabpanel" class="tab-pane @(Model.UseBadgeMaker ? "active" : "")" id="badge">
-                                        <button id="openMaker" type="button" class="btn btn-outline-primary">
-                                            <span class="fas fa-certificate"></span> Create a Badge
-                                        </button>
-                                    </div>
-                                    <div role="tabpanel" class="tab-pane @(Model.UseBadgeMaker ? "" : "active")" id="upload">
-                                        <p>Upload a badge image. Badge images must be square.</p>
-                                        <div class="input-group">
-                                            <label class="input-group-text">
-                                                <span class="btn btn-secondary btn-file">
-                                                    <span class="far fa-file-image"></span> Select an image<input type="file" asp-for="BadgeUploadImage" accept=".png,.jpg,.jpeg" style="display: none;" />
-                                                </span>
-                                            </label>
-                                            <input type="text" class="form-control" readonly id="selectedFile">
-                                        </div>
-                                        <div>
-                                            <span asp-validation-for="BadgeUploadImage" class="text-danger"></span>
-                                        </div>
-                                    </div>
+                                <label asp-for="BadgeUploadImage" class="col-form-label"></label>
+                                <div class="input-group mb-3">
+                                    <input type="file"
+                                           class="form-control"
+                                           asp-for="BadgeUploadImage"
+                                           accept=".jpg,.png" />
+                                    <button class="btn btn-outline-secondary"
+                                            type="button"
+                                            onclick="$('#BadgeUploadImage').val('')">
+                                        Clear selection
+                                    </button>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row my-4">
-                            <div class="col-12">
-                                <label asp-for="BadgeAltText" class="col-form-label"></label>
-                                <span class="fas fa-info-circle wide-tooltip"
-                                      title="How should this badge be described to someone who can't see it?"
-                                      data-bs-toggle="tooltip"
-                                      data-bs-placement="top"></span>
-                                <textarea asp-for="BadgeAltText" class="form-control"></textarea>
-                                <span asp-validation-for="BadgeAltText" class="text-danger"></span>
+                                <span asp-validation-for="BadgeUploadImage" class="text-danger mb-3"></span>
+                                <div action="mb-3">
+                                    <label asp-for="BadgeAltText" class="col-form-label"></label>
+                                    <span class="fas fa-info-circle wide-tooltip"
+                                          title="How should this badge be described to someone who can't see it?"
+                                          data-bs-toggle="tooltip"
+                                          data-bs-placement="top"></span>
+                                    <textarea asp-for="BadgeAltText" class="form-control"></textarea>
+                                    <span asp-validation-for="BadgeAltText" class="text-danger"></span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -414,167 +444,168 @@
         </div>
     }
 
-    <div class="mb-3 my-4">
-        <a asp-action="StreamingEvents" class="btn btn-outline-secondary">Return to List</a>
-        <button type="submit" class="btn btn-outline-primary" button-spinner>
-            <span class="buttonText">
-                @if (Model.Editing)
-                {
-                    @:Save Changes
-                }
-                else
-                {
-                    @:Create Streaming Event
-                }
-            </span>
-        </button>
+    <div class="row mt-4">
+        <div class="col-12 d-flex justify-content-end">
+            <a asp-action="StreamingEvents" class="btn btn-outline-secondary me-2">
+                Return to List
+            </a>
+            <button button-spinner
+                    class="btn btn-outline-primary"
+                    type="submit">
+                <span class="buttonText">
+                    @if (Model.Editing)
+                    {
+                        @:Save Changes
+                    }
+                    else
+                    {
+                        @:Create Streaming Event
+                    }
+                </span>
+            </button>
+        </div>
     </div>
 </form>
 
 @if (Model.CanRelateChallenge)
 {
-    <div class="row my-4">
-        <div class="modal fade"
-             id="listModal"
-             tabindex="-1"
-             role="dialog"
-             aria-labelledby="listModalLabel">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="row">
-                    <div class="col-12 col-sm-10 offset-sm-1">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title h4">
-                                    <span class="relatedText">
-                                        @(Model.Event?.Challenge != null || Model.Event?.ChallengeGroup != null ? "Change" : "Add")
-                                    </span> challenge/group
-                                </h1>
-                            </div>
-                            <div class="modal-body">
-                                <ul class="nav nav-tabs" role="tablist">
-                                    <li role="presentation" class="active" )>
-                                        <a id="challengeTab"
-                                           href="#challenge"
-                                           aria-controls="challenge"
-                                           role="tab"
-                                           data-bs-toggle="tab">Challenge</a>
-                                    </li>
-                                    <li role="presentation" class="">
-                                        <a id="groupTab"
-                                           href="#group"
-                                           aria-controls="group"
-                                           role="tab"
-                                           data-bs-toggle="tab">
-                                            Challenge Group
-                                        </a>
-                                    </li>
-                                </ul>
-
-                                <div class="tab-content">
-                                    <div role="tabpanel" class="tab-pane active" id="challenge">
-                                        <div class="row my-4">
-                                            <div class="col-12 mb-2">
-                                                <ul class="nav nav-pills flex-column flex-sm-row">
-                                                    <li id="All" class="nav-item challengeScope">
-                                                        <a class="nav-link active">All</a>
-                                                    </li>
-                                                    <li id="System" class="nav-item challengeScope">
-                                                        <a class="nav-link">My System</a>
-                                                    </li>
-                                                    <li id="Branch" class="nav-item challengeScope">
-                                                        <a class="nav-link">My Branch</a>
-                                                    </li>
-                                                    <li id="Mine" class="nav-item challengeScope">
-                                                        <a class="nav-link">Mine</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-
-                                        <div class="row my-4">
-                                            <div class="col-8">
+    <div aria-labelledby="listModalLabel"
+         class="modal fade"
+         data-bs-backdrop="static"
+         data-bs-keyboard="false"
+         id="listModal"
+         role="dialog"
+         tabindex="-1">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h1 class="h4 modal-title lead">
+                            <span class="relatedText">
+                                @(Model.Event?.Challenge != null || Model.Event?.ChallengeGroup != null ? "Change" : "Add")
+                            </span> challenge/group
+                        </h1>
+                    </div>
+                    <div class="card-body">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="nav-item">
+                                <button class="nav-link active"
+                                        id="challengeTab"
+                                        data-bs-toggle="tab"
+                                        data-bs-target="#challenge"
+                                        type="button"
+                                        role="tab"
+                                        aria-controls="challenge"
+                                        aria-selected="true">
+                                    Challenge
+                                </button>
+                            </li>
+                            <li role="presentation" class="nav-item">
+                                <button aria-controls="group"
+                                        aria-selected="false"
+                                        class="nav-link"
+                                        data-bs-target="#group"
+                                        data-bs-toggle="tab"
+                                        id="profile-tab"
+                                        role="tab"
+                                        type="button">
+                                    Challenge Group
+                                </button>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="challenge">
+                                <div class="row">
+                                    <div class="col-12 mb-2">
+                                        <ul class="nav nav-pills">
+                                            <li id="All" class="nav-item challengeScope">
+                                                <a class="nav-link active">All</a>
+                                            </li>
+                                            <li id="System" class="nav-item challengeScope">
+                                                <a class="nav-link">My System</a>
+                                            </li>
+                                            <li id="Branch" class="nav-item challengeScope">
+                                                <a class="nav-link">My Branch</a>
+                                            </li>
+                                            <li id="Mine" class="nav-item challengeScope">
+                                                <a class="nav-link">Mine</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row my-2">
+                                    <div class="col-12">
+                                        <form class="d-inline" onsubmit="return false;">
+                                            <div class="input-group">
                                                 <input id="challengeSearchText"
                                                        class="form-control"
-                                                       placeholder="Enter text to search for an challenge here" />
+                                                       placeholder="Enter text to search for a challenge here" />
+                                                <button type="button"
+                                                        id="challengeClearButton"
+                                                        class="btn btn-outline-secondary">
+                                                    Clear
+                                                </button>
+                                                <input type="submit"
+                                                       id="challengeSearchButton"
+                                                       class="btn btn-outline-primary"
+                                                       value="Search" />
                                             </div>
-                                            <div class="col-4">
-                                                <div class="col-6">
-                                                    <button type="button"
-                                                            id="challengeSearchButton"
-                                                            class="btn btn-outline-primary"
-                                                            style="margin-right: 8px;">
-                                                        Search
-                                                    </button>
-                                                </div>
-                                                <div class="col-6">
-                                                    <button type="button"
-                                                            id="challengeClearButton"
-                                                            class="btn btn-outline-secondary">
-                                                        Clear
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div id="challengeSearchMessage" class="row d-none">
-                                            <div class="col-12">
-                                                <p class="alert-sm alert-info">
-                                                    Searching for '<strong id="challengeSearchTerm"></strong>'
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="row my-4">
-                                            <div id="modalChallengeList" class="col-12">
-                                            </div>
-                                        </div>
+                                        </form>
                                     </div>
-                                    <div role="tabpanel" class="tab-pane" id="group">
-                                        <div class="row my-4">
-                                            <div class="col-8">
-                                                <input id="groupSearchText"
-                                                       class="form-control"
-                                                       placeholder="Enter text to search for an challenge group here" />
-                                            </div>
-                                            <div class="col-4">
-                                                <div class="col-6">
-                                                    <button type="button"
-                                                            id="groupSearchButton"
-                                                            class="btn btn-outline-primary"
-                                                            style="margin-right: 8px;">
-                                                        Search
-                                                    </button>
-                                                </div>
-                                                <div class="col-6">
-                                                    <button type="button"
-                                                            id="groupClearButton"
-                                                            class="btn btn-outline-secondary">
-                                                        Clear
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div id="groupSearchMessage" class="row d-none">
-                                            <div class="col-12">
-                                                <p class="alert-sm alert-info">
-                                                    Searching for '<strong id="groupSearchTerm"></strong>'
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="row my-4">
-                                            <div id="modalGroupList" class="col-12">
-                                            </div>
+                                    <div id="challengeSearchMessage" class="row d-none">
+                                        <div class="col-12">
+                                            <p class="mb-0 pt-1 ps-2">
+                                                Searching for: <strong id="challengeSearchTerm"></strong>
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row my-2">
+                                    <div id="modalChallengeList" class="col-12">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button"
-                                        class="btn btn-outline-secondary"
-                                        data-bs-dismiss="modal"
-                                        style="margin-right: 1em;">
-                                    Close
-                                </button>
+                            <div role="tabpanel" class="tab-pane" id="group">
+                                <div class="row my-2">
+                                    <div class="col-12">
+                                        <form class="d-inline" onsubmit="return false;">
+                                            <div class="input-group">
+                                                <input id="groupSearchText"
+                                                       class="form-control"
+                                                       placeholder="Enter text to search for a challenge group here" />
+                                                <button type="button"
+                                                        id="groupClearButton"
+                                                        class="btn btn-outline-secondary">
+                                                    Clear
+                                                </button>
+                                                <input type="submit"
+                                                       id="groupSearchButton"
+                                                       class="btn btn-outline-primary"
+                                                       value="Search" />
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div id="groupSearchMessage" class="row d-none">
+                                    <div class="col-12">
+                                        <p class="mb-0 pt-1 ps-2">
+                                            Searching for: <strong id="groupSearchTerm"></strong>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="row my-2">
+                                    <div id="modalGroupList" class="col-12">
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">
+                            Close
+                        </button>
                     </div>
                 </div>
             </div>
@@ -584,7 +615,7 @@
 
 @if (Model.CanAddSecretCode)
 {
-    <div class="row my-4">
+    <div class="row my-2">
         <div class="modal fade frame-modal"
              id="badgeModal"
              tabindex="-1"
@@ -599,7 +630,7 @@
                         <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
                         <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
                     </span>
-                    <iframe id="badgeMaker" class="badge-maker"></iframe>
+                    <23457890frame id="badgeMaker" class="badge-maker"></23457890frame>
                 </div>
             </div>
         </div>
@@ -608,72 +639,52 @@
 
 @section scripts {
     <script>
-        $("#Event_AllDay").on("change", function() {
-            $("#pickerStart").data("DateTimePicker").format("MM/DD/YYYY hh:mm A");
-            $("#pickerEnd").data("DateTimePicker").format("MM/DD/YYYY hh:mm A");
+        $("#Event_AllDay").on("change", function () {
+            if ($("#Event_AllDay").is(":checked")) {
+                $("#Event_StartDate").attr("type", "date");
+                $("#Event_EndDate").attr("type", "date");
+            }
+            else {
+                $("#Event_StartDate").attr("type", "datetime-local");
+                $("#Event_EndDate").attr("type", "datetime-local");
+            }
         });
+    </script>
 
-        @if (Model.CanAddSecretCode)
-        {
-        <text>
+    @if (Model.CanAddSecretCode)
+    {
+        <script>
             $.validator.setDefaults({
                 ignore: ".ignore"
             });
 
-            $("#collapseSecretCode").on("show.bs.collapse", function() {
+            $("#collapseSecretCode").on("show.bs.collapse", function () {
                 $("#IncludeSecretCode").val("true");
                 $("#secretCodeIcon").removeClass("fa-caret-right").addClass("fa-caret-down");
                 $(".secretCodeField").removeClass("ignore");
             });
 
-            $("#collapseSecretCode").on("hide.bs.collapse", function() {
+            $("#collapseSecretCode").on("hide.bs.collapse", function () {
                 $("#IncludeSecretCode").val("false");
                 $("#secretCodeIcon").removeClass("fa-caret-down").addClass("fa-caret-right");
                 $(".secretCodeField").addClass("ignore");
             });
 
-            $(':file').on('fileselect', function(event, numFiles, label) {
-                var input = $(this).parents('.input-group').find(':text'),
-                    log = numFiles > 1 ? numFiles = ' files selected' : label;
 
-                if (input.length)
-                {
-                    input.val(log);
-                    $('.btn-file').removeClass('btn-secondary');
-                    $('.btn-file').addClass('btn-outline-success');
-                    $("#badgeImage").removeAttr("src");
-                    $("#badgeImage").height(200);
-                    $("#BadgeMakerImage").val("");
-                }
-                else
-                {
-                    input.val('');
-                    $('.btn-file').addClass('btn-secondary');
-                    $('.btn-file').removeClass('btn-outline-success');
-                }
-            });
-
-            $(document).on('change', ':file', function() {
-                var input = $(this),
-                    numFiles = input.get(0).files ? input.get(0).files.length : 1,
-                    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-                input.trigger('fileselect', [numFiles, label]);
-            });
-
-            $("#badgeTab").on('show.bs.tab', function() {
+            $("#badgeTab").on('show.bs.tab', function () {
                 $("#UseBadgeMaker").val("true");
             });
 
-            $("#uploadTab").on('show.bs.tab', function() {
+            $("#uploadTab").on('show.bs.tab', function () {
                 $("#UseBadgeMaker").val("false");
             });
 
-            $("#openMaker").on("click", function() {
+            $("#openMaker").on("click", function () {
                 $("#badgeMaker").attr("src", "@Html.Raw(@Model.BadgeMakerUrl)");
                 $("#badgeModal").modal("show");
             });
 
-            $(window).on("message", function(e) {
+            $(window).on("message", function (e) {
                 $("#badgeModal").modal("hide");
                 var data = e.originalEvent.data;
                 $("#badgeImage").attr("src", data);
@@ -681,7 +692,7 @@
                 $("#BadgeMakerImage").val(data);
                 $('#BadgeUploadImage').val('');
                 $('.btn-file').addClass('btn-secondary');
-                    $('.btn-file').removeClass('btn-outline-success');
+                $('.btn-file').removeClass('btn-outline-success');
                 $('#selectedFile').val('');
             });
 
@@ -709,7 +720,7 @@
                             $("#SecretCode-Validation").removeClass("text-danger");
                             $("#SecretCode-Validation").addClass("text-success");
                             icon.removeClass("fa-spinner fa-spin");
-                    icon.addClass("fa-check");
+                            icon.addClass("fa-check");
                         }
                     });
                 }
@@ -718,21 +729,21 @@
             $("#SecretCode").on("keypress", function () {
                 $("#SecretCode-Icon").addClass("d-none");
             });
-        </text>
-        }
+        </script>
+    }
 
-        @if (Model.CanRelateChallenge)
-        {
-            <text>
-            var challengesUrl = "@Url.Action("GetChallengeList", "Lookup")";
-            var groupsUrl = "@Url.Action("GetChallengeGroupList", "Lookup")";
+    @if (Model.CanRelateChallenge)
+    {
+        <script>
             var challengePage = 1;
             var challengeScope = "All";
             var challengeSearch = "";
+            var challengesLoaded = false;
+            var challengesUrl = "@Url.Action(nameof(LookupController.GetChallengeList), LookupController.Name)";
             var groupPage = 1;
             var groupSearch = "";
-            var challengesLoaded = false;
             var groupsLoaded = false;
+            var groupsUrl = "@Url.Action(nameof(LookupController.GetChallengeGroupList), LookupController.Name)";
 
             function UpdateChallengeList() {
                 $.get(challengesUrl,
@@ -742,10 +753,11 @@
                         search: challengeSearch,
                         showActive: true,
                         page: challengePage
-                    }, function(response) {
+                    }, function (response) {
                         $("#modalChallengeList").html(response);
                     });
             }
+
             function UpdateGroupList() {
                 $.get(groupsUrl,
                     {
@@ -772,19 +784,15 @@
                 }
             });
 
-            $("#addButton").on('click', function(e) {
+            $("#addButton").on('click', function (e) {
                 $("#listModal").modal("show");
-                if ($("#challenge").hasClass("active")) {
-                    if (challengesLoaded == false) {
-                        UpdateChallengeList();
-                        challengesLoaded = true;
-                    }
+                if (challengesLoaded == false) {
+                    UpdateChallengeList();
+                    challengesLoaded = true;
                 }
-                else {
-                    if (groupsLoaded == false) {
-                        UpdateGroupList();
-                        groupsLoaded = true;
-                    }
+                if (groupsLoaded == false) {
+                    UpdateGroupList();
+                    groupsLoaded = true;
                 }
             });
 
@@ -792,10 +800,10 @@
                 if (!$(this).hasClass("disabled")) {
                     var row = $(this).parent().parent().clone();
                     var addedItem = row.find(".addChallengeButton, .addGroupButton");
-                    addedItem.removeClass("addChallengeButton addGroupButton")
-                    addedItem.children().removeClass("fa-plus-circle text-primary");
-                    addedItem.children().addClass("fa-minus-circle text-danger");
-                    addedItem.addClass("removeRelatedButton");
+                    addedItem.removeClass("addChallengeButton addGroupButton btn-outline-success")
+                    addedItem.children().removeClass("fa-plus-circle");
+                    addedItem.children().addClass("fa-times");
+                    addedItem.addClass("btn-outline-danger removeRelatedButton");
 
                     $("#noRelated").addClass("d-none");
 
@@ -836,31 +844,29 @@
                 groupsLoaded = false;
             });
 
-            $(".challengeScope").on("click", function(e) {
+            $(".challengeScope").on("click", function (e) {
                 e.preventDefault();
                 $(this).siblings().removeClass("active");
                 $(this).addClass().addClass("active");
-                scope = $(this).attr("id");
+                challengeScope = $(this).attr("id");
                 page = 1;
                 UpdateChallengeList();
             });
 
             $("#challengeSearchButton").on("click", function () {
                 challengeSearch = $("#challengeSearchText").val();
-                if (challengeSearch != "")
-                {
+                if (challengeSearch != "") {
                     $("#challengeSearchMessage").removeClass("d-none");
                     $("#challengeSearchTerm").html(challengeSearch);
                 }
-                else
-                {
+                else {
                     $("#challengeSearchMessage").addClass("d-none");
                 }
                 challengePage = 1;
                 UpdateChallengeList();
             })
 
-            $("#challengeClearButton").on("click", function() {
+            $("#challengeClearButton").on("click", function () {
                 $("#challengeSearchText").val("");
                 challengeSearch = "";
                 $("#challengeSearchMessage").addClass("d-none");
@@ -908,7 +914,6 @@
                     $("#Event_AtBranchId>option:eq(1)").prop('selected', true);
                 }
             })
-            </text>
-        }
-    </script>
+        </script>
+    }
 }
