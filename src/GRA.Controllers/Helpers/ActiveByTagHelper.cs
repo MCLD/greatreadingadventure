@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+using System.Text;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -11,48 +11,66 @@ namespace GRA.Controllers.Helper
     [HtmlTargetElement(Attributes = "ActiveBy, routeKey, value")]
     public class ActiveByTagHelper : TagHelper
     {
+        private const string ActiveClass = "active";
+        private const string ClassAttribute = "class";
         private readonly IUrlHelperFactory _urlHelperFactory;
 
         public ActiveByTagHelper(IUrlHelperFactory urlHelperFactory)
         {
-            _urlHelperFactory = urlHelperFactory
-                ?? throw new ArgumentNullException(nameof(urlHelperFactory));
+            ArgumentNullException.ThrowIfNull(urlHelperFactory);
+
+            _urlHelperFactory = urlHelperFactory;
         }
+
+        [HtmlAttributeName("appendClass")]
+        public string AppendClass { get; set; }
+
+        [HtmlAttributeName("inactiveClass")]
+        public string InactiveClass { get; set; }
+
+        [HtmlAttributeName("routeKey")]
+        public string RouteKey { get; set; }
+
+        [HtmlAttributeName("value")]
+        public string Value { get; set; }
 
         [ViewContext]
         [HtmlAttributeNotBound]
         public ViewContext ViewContextData { get; set; }
 
-        [HtmlAttributeName("routeKey")]
-        public string routeKey { get; set; }
-
-        [HtmlAttributeName("value")]
-        public string value { get; set; }
-
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            IUrlHelper url = _urlHelperFactory.GetUrlHelper(ViewContextData);
+            ArgumentNullException.ThrowIfNull(output);
+
+            var url = _urlHelperFactory.GetUrlHelper(ViewContextData);
             var routeData = url.ActionContext.RouteData.Values;
-            string routeValue = routeData[routeKey] as string ?? url.ActionContext.HttpContext.Request.Query[routeKey].ToString();
+            var routeValue = routeData[RouteKey] as string
+                ?? url.ActionContext.HttpContext.Request.Query[RouteKey].ToString();
 
-            string[] valueList = value.Split(',');
+            string addClass = null;
 
-            foreach (var item in valueList)
+            if (Value.Split(',').Contains(routeValue))
             {
-                if (string.Equals(item.Trim(), routeValue, StringComparison.OrdinalIgnoreCase))
-                {
-                    var existingClass = output.Attributes.FirstOrDefault(f => f.Name == "class");
-                    var cssClass = string.Empty;
-                    if (existingClass != null)
-                    {
-                        cssClass = existingClass.Value.ToString();
-                        output.Attributes.Remove(existingClass);
-                    }
-                    cssClass = cssClass + " active";
-                    var ta = new TagHelperAttribute("class", cssClass);
-                    output.Attributes.Add(ta);
-                }
+                addClass = string.IsNullOrEmpty(AppendClass) ? ActiveClass : AppendClass;
             }
+            else if (!string.IsNullOrEmpty(InactiveClass))
+            {
+                addClass = InactiveClass;
+            }
+
+            if (!string.IsNullOrEmpty(addClass))
+            {
+                var cssClass = new StringBuilder();
+                var existingClass = output.Attributes.FirstOrDefault(_ => _.Name == ClassAttribute);
+                if (existingClass != null)
+                {
+                    cssClass.Append(existingClass.Value.ToString());
+                    output.Attributes.Remove(existingClass);
+                }
+                cssClass.Append(' ').Append(addClass);
+                output.Attributes.Add(new TagHelperAttribute(ClassAttribute, cssClass.ToString()));
+            }
+
             output.Attributes.Remove(new TagHelperAttribute("ActiveBy"));
         }
     }

@@ -1,10 +1,22 @@
-﻿<div class="row row-spacing">
-    <div class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 join-header">
-        <div class="col-6 sign-up-step" ActiveBy routeKey="Action" value="Step1">
-            <p>@SharedLocalizer["Step {0}", 1]</p>
-        </div>
-        <div class="col-6 sign-up-step" ActiveBy routeKey="Action" value="Step3">
-            <p>@SharedLocalizer["Step {0}", 2]</p>
-        </div>
+﻿<div class="row mb-3 text-center">
+    <div class="col-12 col-sm-6 px-3 py-1">
+        <span class="fs-6 w-100 badge rounded-pill"
+              ActiveBy
+              routeKey="Action"
+              value="Step1"
+              appendClass="bg-success"
+              inactiveClass="bg-secondary">
+            @SharedLocalizer["Step {0}", 1]
+        </span>
+    </div>
+    <div class="col-12 col-sm-6 px-3 py-1">
+        <span class="fs-6 w-100 badge rounded-pill"
+              ActiveBy
+              routeKey="Action"
+              value="Step2"
+              appendClass="bg-success"
+              inactiveClass="bg-secondary">
+            @SharedLocalizer["Step {0}", 2]
+        </span>
     </div>
 </div>

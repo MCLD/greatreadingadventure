@@ -17,7 +17,8 @@
                     {
                         <partial name="_TwoStepPartial" />
                         TempData.Keep("TwoStepSignUp");
-                    } else 
+                    }
+                    else
                     {
                         <partial name="_MultiStepPartial" />
                     }
@@ -54,7 +55,9 @@
                         <div class="row row-spacing">
                             <div class="col-12">
                                 <label asp-for="SystemId" class="col-form-label"></label>
-                                <select asp-for="SystemId" asp-items="Model.SystemList" class="form-select">
+                                <select asp-for="SystemId"
+                                        asp-items="Model.SystemList"
+                                        class="form-select">
                                     <option></option>
                                 </select>
                                 <span asp-validation-for="SystemId" class="text-danger"></span>
@@ -83,14 +86,13 @@
                         </div>
                     }
                 </div>
-                <div class="card-footer clearfix">
-                    <div class="float-end">
-                        <button type="submit"
-                                class="btn btn-primary btn-lg btn-spinner"
-                                button-spinner>
-                            @SharedLocalizer[GRA.Domain.Model.DisplayNames.NextStep] <span class="fas fa-arrow-right"></span>
-                        </button>
-                    </div>
+                <div class="card-footer d-flex justify-content-end">
+                    <button type="submit"
+                            class="btn btn-outline-primary btn-lg"
+                            button-spinner>
+                        @SharedLocalizer[GRA.Domain.Model.DisplayNames.NextStep]
+                        <span class="fas fa-arrow-right"></span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -99,19 +101,18 @@
 
 @section scripts {
     <script>
-        $("#SystemId").on("change", function() {
+        $("#SystemId").on("change", function () {
             var systemId = $(this).val();
             var branchList = $("#BranchId");
             var branchId = branchList.val();
             var url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
 
-            $.getJSON(url, { systemId: systemId, branchId: branchId }, function(response) {
+            $.getJSON(url, { systemId: systemId, branchId: branchId }, function (response) {
                 branchList.empty();
-                if (response.length > 1)
-                {
+                if (response.length > 1) {
                     branchList.append(new Option("", ""));
                 }
-                $.each(response, function(index, item) {
+                $.each(response, function (index, item) {
                     branchList.append(new Option(item.text, item.value, item.selected, item.selected))
                 });
             });

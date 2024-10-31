@@ -10,14 +10,19 @@
                 <div class="card-body">
                     <div class="mb-3 mb-3-lg">
                         <label asp-for="AuthorizationCode" class="h4"></label>
-                        <input asp-for="AuthorizationCode" class="form-control form-control-lg" type="password" autofocus required>
+                        <input asp-for="AuthorizationCode"
+                               class="form-control form-control-lg"
+                               type="password"
+                               autofocus
+                               required>
                         <span asp-validation-for="AuthorizationCode" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="card-footer clearfix">
-                    <div class="float-end">
-                        <button class="btn btn-lg btn-outline-primary " type="submit">@SharedLocalizer["Validate code"]</button>
-                    </div>
+                <div class="card-footer d-flex justify-content-end">
+                    <button class="btn btn-lg btn-outline-primary"
+                            type="submit">
+                        @SharedLocalizer["Validate code"]
+                    </button>
                 </div>
             </div>
         </div>
