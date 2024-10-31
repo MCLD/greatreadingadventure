@@ -1,36 +1,44 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.ReportCriteriaViewModel
 
-<form asp-controller="Reporting" asp-action="Run" method="post" role="form" class="form-horizontal" style="margin-top: 2rem; margin-bottom: 2rem;">
+<form asp-action="@nameof(ReportingController.Run)"
+    asp-controller="@ReportingController.Name" 
+    class="form-horizontal"
+    method="post" 
+    role="form">
     <input asp-for="ReportId" type="hidden" />
     <input asp-for="BadgeRequiredList" type="hidden" />
     <input asp-for="ChallengeRequiredList" type="hidden" />
 
-    <div class="row my-4">
+    <div class="row mt-4">
         <div class="col-12">
-            <btn type="button" class="btn btn-secondary time-selector" data-start="null" data-end="null">Entire program</btn>
-            <btn type="button" class="btn btn-secondary time-selector" data-start="@DateTime.Now.AddDays(-8).ToString("MM/dd/yyyy")" data-end="@DateTime.Now.AddDays(-1).ToString("MM/dd/yyyy")">Last 7 days</btn>
+            <button type="button"
+                    class="btn btn-outline-secondary"
+                    id="entireProgram">
+                Entire program
+            </button>
+            <button type="button"
+                    class="btn btn-outline-secondary"
+                    id="thisWeek">
+                Last 7 days
+            </button>
         </div>
     </div>
 
-    <div class="mb-3">
-        <div class="col-6">
+    <div class="row">
+        <div class="col-12 col-sm-6 my-2">
             <label asp-for="StartDate" class="col-form-label"></label>
-            <div class="mb-3 date" id="pickerStart">
-                <input asp-for="StartDate" type="date" class="form-control"/>
-            </div>
+            <input asp-for="StartDate" type="datetime-local" class="form-control" />
             <span asp-validation-for="StartDate" class="text-danger"></span>
         </div>
 
-        <div class="col-6">
+        <div class="col-12 col-sm-6 my-2">
             <label asp-for="EndDate" class="col-form-label"></label>
-            <div class="mb-3 date" id="pickerEnd">
-                <input asp-for="EndDate" type="date" class="form-control"/>
-            </div>
+            <input asp-for="EndDate" type="datetime-local" class="form-control" />
             <span asp-validation-for="EndDate" class="text-danger"></span>
         </div>
     </div>
 
-    <div class="mb-3">
+    <div class="row my-2">
         <div class="col-12">
             <label asp-for="SystemId" class="col-form-label"></label>
             <select asp-for="SystemId" asp-items="Model.SystemList" class="form-select">
@@ -39,70 +47,75 @@
         </div>
     </div>
 
-    <div style="margin-top: 2rem;">
-        <div class="card">
-            <div class="card-header bg-warning-subtle">
-                <h3 class="card-title">Badges</h3>
-            </div>
-            <div class="card-body">
-                <div>
-                    <table class="table table-sm table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th width="44px">Type</th>
-                                <th width="75px">Badge</th>
-                                <th width="44px">&nbsp;</th>
-                            </tr>
-                        </thead>
-                        <tbody id="requirementList">
-                            <tr id="noRequirements" class="@(Model.ReportBadges?.Count > 0 ? "d-none" : "")">
-                                <td colspan="4"><em>No badges reported</em></td>
-                            </tr>
-                            @if (Model.ReportBadges != null)
-                            {
-                                foreach (var requirement in Model.ReportBadges)
-                                {
-                                    <tr>
-                                        <td>
-                                            @requirement.Name
-                                        </td>
-                                        <td style="text-align:center;">
-                                            <span class="fa fa-2x @requirement.Icon" title="@requirement.IconDescription"></span>
-                                        </td>
-                                        <td>
-                                            @if (!string.IsNullOrWhiteSpace(requirement.BadgePath))
-                                            {
-                                                <img class="img-thumbnail" style="height: auto; width: 64px;"
-                                                     src="~/@requirement.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")"
-                                                     asp-append-version="true" />
-                                            }
-                                            else
-                                            {
-                                                <text>&nbsp;</text>
-                                            }
-                                        </td>
-                                        <td>
-                                            <button type="button"
-                                                    id="removeRequirementButton"
-                                                    class="btn btn-link btn-sm"
-                                                    data-badgeid="@requirement.BadgeId"
-                                                    data-challengeid="@requirement.ChallengeId">
-                                                <span class="fas fa-2x fa-minus-circle text-danger" aria-hidden="true"></span>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                        </tbody>
-                    </table>
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-info-subtle">
+                    <h3 class="card-title">Badges</h3>
                 </div>
-                <button type="button" id="addButton" class="btn btn-outline-primary">Add Badge</button>
+                <div class="card-body">
+                        <table class="table table-sm table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th width="75px">Type</th>
+                                    <th width="75px">Badge</th>
+                                    <th width="75px">&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody id="requirementList">
+                                <tr id="noRequirements" class="@(Model.ReportBadges?.Count > 0 ? "d-none" : "")">
+                                    <td colspan="4"><em>No badges selected.</em></td>
+                                </tr>
+                                @if (Model.ReportBadges != null)
+                                {
+                                    foreach (var requirement in Model.ReportBadges)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @requirement.Name
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="fa fa-2x @requirement.Icon"
+                                                      title="@requirement.IconDescription"></span>
+                                            </td>
+                                            <td>
+                                                @if (!string.IsNullOrWhiteSpace(requirement.BadgePath))
+                                                {
+                                                    <img class="img-thumbnail badge-xs"
+                                                         src="~/@requirement.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")" />
+                                                }
+                                                else
+                                                {
+                                                    <text>&nbsp;</text>
+                                                }
+                                            </td>
+                                            <td>
+                                                <button type="button"
+                                                        id="removeRequirementButton"
+                                                        class="btn btn-link btn-sm"
+                                                        data-badgeid="@requirement.BadgeId"
+                                                        data-challengeid="@requirement.ChallengeId">
+                                                    <span class="fas fa-2x fa-minus-circle text-danger"
+                                                          aria-hidden="true"></span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    <button type="button"
+                            id="addButton"
+                            class="btn btn-outline-primary">
+                        Add Badge
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="mb-3">
+    <div class="row mt-4">
         <div class="col-12">
             <button type="submit" class="btn btn-outline-primary">
                 <span class="fas fa-file-alt"></span>
@@ -112,83 +125,77 @@
     </div>
 </form>
 
-<div class="row">
-    <div class="modal fade"
-         id="listModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="listModalLabel">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="row">
-                <div class="col-12 col-sm-10 offset-sm-1">
-                    <div class="card">
-                        <div class="card-header">
-                            <h1 class="h4 modal-title lead">Add badge</h1>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-12">
-                                    <ul class="nav nav-pills py-2">
-                                        <li id="All" class="active requirementScope">
-                                            <a>All</a>
-                                        </li>
-                                        <li id="System" class="requirementScope">
-                                            <a>My System</a>
-                                        </li>
-                                        <li id="Branch" class="requirementScope">
-                                            <a>My Branch</a>
-                                        </li>
-                                        <li id="Mine" class="requirementScope">
-                                            <a>Mine</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="row row-spacing">
-                                <div class="col-8">
-                                    <input id="searchText" class="form-control"
-                                           placeholder="Enter text to search for an event here" />
-                                </div>
-                                <div class="col-4">
-                                    <div class="col-6">
-                                        <button type="button"
-                                                id="searchButton"
-                                                class="btn btn-outline-primary"
-                                                style="margin-right: 8px;">
-                                            Search
-                                        </button>
-                                    </div>
-                                    <div class="col-6">
-                                        <button type="button"
-                                                id="clearButton"
-                                                class="btn btn-outline-secondary ">
-                                            Clear
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="searchMessage" class="row d-none">
-                                <div class="col-12">
-                                    <p class="alert-sm alert-info">
-                                        Searching for '<strong id="searchTerm"></strong>'
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div id="modalRequirementList" class="col-12">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button"
-                                    class="btn btn-outline-secondary"
-                                    data-bs-dismiss="modal"
-                                    style="margin-right: 1em;">
-                                Close
-                            </button>
+<div aria-labelledby="listModalLabel"
+     class="modal fade"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     id="listModal"
+     role="dialog"
+     tabindex="-1">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="h4 modal-title lead">Add badge</h1>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <ul class="nav nav-pills">
+                                <li id="All" class="nav-item requirementScope">
+                                    <a class="nav-link active">All</a>
+                                </li>
+                                <li id="System" class="nav-item requirementScope">
+                                    <a class="nav-link">My System</a>
+                                </li>
+                                <li id="Branch" class="nav-item requirementScope">
+                                    <a class="nav-link">My Branch</a>
+                                </li>
+                                <li id="Mine" class="nav-item requirementScope">
+                                    <a class="nav-link">Mine</a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
+
+                    <div class="row my-2">
+                        <div class="col-12">
+                            <form class="d-inline" onsubmit="return false;">
+                                <div class="input-group">
+                                    <input id="searchText"
+                                           class="form-control"
+                                           placeholder="Enter text to search for an event here" />
+                                    <button type="button"
+                                            id="clearButton"
+                                            class="btn btn-outline-secondary">
+                                        Clear
+                                    </button>
+                                    <input type="submit"
+                                           id="searchButton"
+                                           class="btn btn-outline-primary"
+                                           value="Search" />
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div id="searchMessage" class="row d-none">
+                        <div class="col-12">
+                            <p class="mb-0 pt-1 ps-2">
+                                Searching for: <strong id="searchTerm"></strong>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row my-2">
+                        <div id="modalRequirementList" class="col-12">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
+                        Close
+                    </button>
                 </div>
             </div>
         </div>
@@ -200,8 +207,8 @@
     <script>
         var badgeIds = $("#BadgeRequiredList").val().split(',').filter(function (x) { return x }).map(Number);
         var challengeIds = $("#ChallengeRequiredList").val().split(',').filter(function (x) { return x }).map(Number);
-        var requirementsUrl = "@Url.Action("GetRequirementList", "Lookup")";
         var page = 1;
+        var requirementsUrl = "@Url.Action(nameof(LookupController.GetRequirementList), LookupController.Name)";
         var scope = "All";
         var search = "";
 
@@ -213,49 +220,51 @@
                     scope: scope,
                     search: search,
                     page: page
-                }, function(response) {
+                }, function (response) {
                     $("#modalRequirementList").html(response);
                 });
         }
 
-        $("#addButton").on('click', function(e) {
+        $("#addButton").on('click', function (e) {
             $("#listModal").modal("show");
             UpdateRequirementsList();
         });
 
         $(document).on("click", ".addRequirementButton", function () {
             if (!$(this).hasClass("disabled")) {
-                var badgeId = $(this).data("badgeid");
-                var challengeId = $(this).data("challengeid");
+                let badgeId = $(this).data("badgeid");
+                let challengeId = $(this).data("challengeid");
 
                 if (challengeId != "") {
                     challengeIds.push(challengeId);
                     $("#ChallengeRequiredList").val(challengeIds.join(','));
                 }
+
                 else if (badgeId != "") {
                     badgeIds.push(badgeId);
                     $("#BadgeRequiredList").val(badgeIds.join(','));
                 }
+
                 $("#noRequirements").addClass("d-none");
 
-                var row = $(this).parent().parent().clone();
-                var addedItem = row.find(".addRequirementButton");
-                addedItem.removeClass("addRequirementButton")
-                addedItem.children().removeClass("fa-plus-circle text-primary");
-                addedItem.children().addClass("fa-minus-circle text-danger");
+                let row = $(this).parent().parent().clone();
+                let addedItem = row.find(".addRequirementButton");
+                addedItem.removeClass("addRequirementButton btn-outline-success")
+                addedItem.children().removeClass("fa-plus-circle");
+                addedItem.children().addClass("fa-times");
+                addedItem.addClass("btn-outline-danger");
                 addedItem.attr("id", "removeRequirementButton");
                 $("#requirementList").append(row);
 
                 $(".addRequirementButton").addClass("disabled");
 
                 UpdateRequirementsList();
-
             }
         });
 
         $(document).on("click", "#removeRequirementButton", function () {
-            var badgeId = $(this).data("badgeid");
-            var challengeId = $(this).data("challengeid");
+            let badgeId = $(this).data("badgeid");
+            let challengeId = $(this).data("challengeid");
 
             if (challengeId != "") {
                 challengeIds.splice(challengeIds.indexOf(challengeId), 1);
@@ -266,36 +275,35 @@
                 $("#BadgeRequiredList").val(badgeIds.join(','));
             }
             $(this).parent().parent().remove();
+
             if (badgeIds == "" && challengeIds == "") {
                 $("#noRequirements").removeClass("d-none");
             }
         });
 
-        $(".requirementScope").on("click", function(e) {
+        $(".requirementScope").on("click", function (e) {
             e.preventDefault();
-            $(this).siblings().removeClass("active");
-            $(this).addClass().addClass("active");
+            $(this).siblings().children().removeClass("active");
+            $(this).children().addClass("active");
             scope = $(this).attr("id");
             page = 1;
             UpdateRequirementsList();
         });
 
-        $("#searchButton").on("click", function() {
+        $("#searchButton").on("click", function () {
             search = $("#searchText").val();
-            if (search != "")
-            {
+            if (search != "") {
                 $("#searchMessage").removeClass("d-none");
                 $("#searchTerm").html(search);
             }
-            else
-            {
+            else {
                 $("#searchMessage").addClass("d-none");
             }
             page = 1;
             UpdateRequirementsList();
         })
 
-        $("#clearButton").on("click", function() {
+        $("#clearButton").on("click", function () {
             $("#searchText").val("");
             search = "";
             $("#searchMessage").addClass("d-none");
@@ -303,24 +311,32 @@
             UpdateRequirementsList();
         })
 
-        $(document).on("click", ".page-button", function() {
-            if (!$(this).hasClass("disabled"))
-            {
+        $(document).on("click", ".page-button", function () {
+            if (!$(this).hasClass("disabled")) {
                 page = $(this).data("page");
                 UpdateRequirementsList();
             }
         });
 
-        $("#pickerStart").data("DateTimePicker").defaultDate(moment(new Date()).subtract(2, "d").format("MM/DD/YYYY"));
-        $("#pickerEnd").data("DateTimePicker").defaultDate(moment(new Date()).subtract(1, "d").format("MM/DD/YYYY"));
+        document.getElementById("entireProgram").addEventListener("click", _ => {
+            document.getElementById('EndDate').value = null;
+            document.getElementById('StartDate').value = null;
+        });
 
-        $(".time-selector").on("click", function() {
-            $("#pickerStart").data("DateTimePicker").date($(this).data("start"));
-            var end = $(this).data("end");
-            if (end === "now") {
-                end = new Date();
-            }
-            $("#pickerEnd").data("DateTimePicker").date(end);
+        document.getElementById("thisWeek").addEventListener("click", _ => {
+            let defaultDateTime = graGetLocalDate();
+            defaultDateTime.setDate(defaultDateTime.getDate() - 1);
+            document.getElementById('EndDate').value = defaultDateTime.toISOString().slice(0, 16);
+            defaultDateTime.setDate(defaultDateTime.getDate() - 7);
+            document.getElementById('StartDate').value = defaultDateTime.toISOString().slice(0, 16);
+        });
+
+        $().ready(function () {
+            let defaultDateTime = graGetLocalDate();
+            defaultDateTime.setDate(defaultDateTime.getDate() - 1);
+            document.getElementById('EndDate').value = defaultDateTime.toISOString().slice(0, 16);
+            defaultDateTime.setDate(defaultDateTime.getDate() - 1);
+            document.getElementById('StartDate').value = defaultDateTime.toISOString().slice(0, 16);
         });
 
         $("form").on("submit", function (e) {

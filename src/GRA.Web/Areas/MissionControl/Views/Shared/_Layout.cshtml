@@ -242,18 +242,18 @@
         && ViewData[GRA.Controllers.ViewDataKey.TitleHtml] != null)
         {
             <div class="row">
-                <div class="col-12">
-                    @RenderSection("inHeading", required: false)
+                <div class="col-12 d-flex align-items-center">
                     <span class="h2">@Html.Raw(ViewData[GRA.Controllers.ViewDataKey.TitleHtml])</span>
+                    @RenderSection("inHeading", required: false)
                 </div>
             </div>
         }
         else if (ViewData.ContainsKey(GRA.Controllers.ViewDataKey.Title))
         {
             <div class="row mc-page-title">
-                <div class="col-12">
-                    @RenderSection("inHeading", required: false)
+                <div class="col-12 d-flex align-items-center">
                     <span class="h2">@ViewData[GRA.Controllers.ViewDataKey.Title]</span>
+                    @RenderSection("inHeading", required: false)
                 </div>
             </div>
         }

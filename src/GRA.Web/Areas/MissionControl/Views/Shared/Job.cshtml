@@ -1,21 +1,29 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Shared.JobViewModel
 
-<div class="modal fade" tabindex="-1" role="dialog" id="wsModal">
-    <div class="modal-dialog" role="document">
+<div class="modal fade" 
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    id="wsModal"
+    role="dialog" 
+    tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title h4" id="wsTitle">Loading...</h1>
             </div>
             <div class="modal-body">
-                <div class="progress">
-                    <div class="progress-bar progress-bar-striped"
-                         role="progressbar"
-                         id="wsProgress"
-                         aria-valuenow="100"
-                         aria-valuemin="0"
-                         aria-valuemax="100" style="width: 100%;"></div>
+                <div aria-label="Job progress"
+                    aria-valuemax="100"
+                    aria-valuemin="0"
+                    aria-valuenow="0"
+                    class="progress mb-3"
+                    id="wsProgressContainer"
+                    role="progressbar"
+                    style="height: 1.5rem;">
+                    <div class="progress-bar progress-bar-striped"                        
+                         id="wsProgress"></div>
                 </div>
-                <p id="wsStatus"></p>
+                <p class="mb-0" id="wsStatus"></p>
             </div>
             <div class="modal-footer">
                 <div class="form-control-plaintext float-start" style="width: 2rem;">
@@ -144,6 +152,8 @@
                         if (incoming.PercentComplete) {
                             document.title = wsPageTitle + ' - ' + incoming.PercentComplete + '%';
                             $('#wsProgress').width(incoming.PercentComplete + '%');
+                            $('#wsProgressContainer')
+                                .attr('aria-valuenow', incoming.PercentComplete);
                             if (incoming.PercentComplete > 4) {
                                 $('#wsProgress').text(incoming.PercentComplete + '%');
                             }
@@ -208,10 +218,7 @@
         $('#wsProgress').removeClass('progress-bar-success');
         $('#cancelWs').text('Cancel ' + wsFunction);
             $('#cancelWs').addClass('btn-outline-danger');
-        $('#wsModal').modal({
-            backdrop: 'static',
-            keyboard: false
-        });
+        $("#wsModal").modal("show");
         wsTryingToConnect = true;
         webSocket = new WebSocket(wsUrl);
         webSocket.onerror = updateState;
