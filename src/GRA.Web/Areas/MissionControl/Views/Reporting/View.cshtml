@@ -1,18 +1,16 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.ReportResultsViewModel
 @section inHeading {
-    <div class="float-end">
         <a asp-action="Download"
            asp-route-id="@Model.ReportResultId"
-           class="btn btn-outline-primary">
+           class="btn btn-outline-primary ms-auto">
             <span class="far fa-file-excel"></span>
             Download Excel spreadsheet
         </a>
-    </div>
 }
 
-<div class="row my-4">
+<div class="row mt-4">
     <div class="col-12">
-        <table class="table table-bordered" style="border: none;margin-bottom:0; width:auto;">
+        <table class="table table-bordered" style="width: auto;">
             @if (Model.StartDate.HasValue)
             {
                 <tr>
@@ -90,8 +88,7 @@
             </div>
         }
         <div class="col-12">
-            <table class="table table-sm table-bordered table-striped"
-                   style="margin-top: 2rem; margin-bottom: 0.5rem;">
+            <table class="table table-sm table-bordered table-striped">
                 @if (report.HeaderRow != null)
                 {
                     <thead>
@@ -124,9 +121,10 @@
                     </tfoot>
                 }
             </table>
+
             @if (report.FooterText != null)
             {
-                <div style="margin-bottom: 2rem;">
+                <div class="mb-3">
                     @foreach (var data in report.FooterText)
                     {
                         <p>@data</p>
@@ -135,7 +133,7 @@
             }
             else
             {
-                <div style="margin-bottom: 2rem;">This report was run on @report.AsOf.ToString("g").</div>
+                <div class="mb-3">This report was run on @report.AsOf.ToString("g").</div>
             }
         </div>
     </div>

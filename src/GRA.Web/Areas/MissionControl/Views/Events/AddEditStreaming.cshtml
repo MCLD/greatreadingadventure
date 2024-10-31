@@ -846,8 +846,8 @@
 
             $(".challengeScope").on("click", function (e) {
                 e.preventDefault();
-                $(this).siblings().removeClass("active");
-                $(this).addClass().addClass("active");
+                $(this).siblings().children().removeClass("active");
+                $(this).children().addClass("active");
                 challengeScope = $(this).attr("id");
                 page = 1;
                 UpdateChallengeList();

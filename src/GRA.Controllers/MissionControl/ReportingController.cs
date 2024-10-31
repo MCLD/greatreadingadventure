@@ -60,6 +60,14 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Reporting";
         }
 
+        public static string Name
+        {
+            get
+            {
+                return "Reporting";
+            }
+        }
+
         [HttpGet]
         public async Task<IActionResult> Configure(int id)
         {

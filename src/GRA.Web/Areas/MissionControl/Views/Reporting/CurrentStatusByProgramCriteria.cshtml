@@ -1,21 +1,21 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.ReportCriteriaViewModel
 
-<form asp-controller="Reporting"
-      asp-action="Run" method="post"
-      role="form"
+<form asp-action="@nameof(ReportingController.Run)"
+      asp-controller="@ReportingController.Name"
       class="form-horizontal"
-      style="margin-top: 2rem; margin-bottom: 2rem;">
+      method="post"
+      role="form">
     <input asp-for="ReportId" type="hidden" />
-    <div class="mb-3">
+
+    <div class="row">
         <div class="col-12">
             <label asp-for="EndDate" class="col-form-label"></label>
-            <div class="mb-3 date" id="pickerEnd">
-                <input asp-for="EndDate" type="date" class="form-control"/>
-            </div>
+            <input asp-for="EndDate" type="datetime-local" class="form-control" />
             <span asp-validation-for="EndDate" class="text-danger"></span>
         </div>
     </div>
-    <div class="mb-3">
+
+    <div class="row mt-4">
         <div class="col-12">
             <button type="submit" class="btn btn-outline-primary">
                 <span class="fas fa-file-alt"></span>

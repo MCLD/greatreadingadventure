@@ -1,42 +1,13 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.ReportCriteriaViewModel
 
-<form asp-controller="Reporting" asp-action="Run" method="post" role="form" class="form-horizontal" style="margin-top: 2rem; margin-bottom: 2rem;">
+<form asp-action="@nameof(ReportingController.Run)"
+    asp-controller="@ReportingController.Name" 
+    class="form-horizontal"
+    method="post" 
+    role="form">
     <input asp-for="ReportId" type="hidden" />
 
-    <!-- TODO Fix for reporting over a time period
-    <div class="row" style="padding: 10px 0;">
-        <div class="col-12">
-            <btn type="button" class="btn btn-secondary time-selector" data-start="null" data-end="null">Entire program</btn>
-            <btn type="button" class="btn btn-secondary time-selector" data-start="@DateTime.Now.AddDays(-8).ToString("MM/dd/yyyy")" data-end="@DateTime.Now.AddDays(-1).ToString("MM/dd/yyyy")">Last 7 days</btn>
-        </div>
-    </div>
-
-    <div class="mb-3">
-        <div class="col-6">
-            <label asp-for="StartDate" class="col-form-label"></label>
-            <div class="input-group date" id="pickerStart">
-                <span class="input-group-addon">
-                    <span class="fas fa-calendar-alt"></span>
-                </span>
-                <input asp-for="StartDate" type="text" class="form-control" />
-            </div>
-            <span asp-validation-for="StartDate" class="text-danger"></span>
-        </div>
-
-        <div class="col-6">
-            <label asp-for="EndDate" class="col-form-label"></label>
-            <div class="input-group date" id="pickerEnd">
-                <span class="input-group-addon">
-                    <span class="fas fa-calendar-alt"></span>
-                </span>
-                <input asp-for="EndDate" type="text" class="form-control" />
-            </div>
-            <span asp-validation-for="EndDate" class="text-danger"></span>
-        </div>
-    </div>
-     -->
-
-    <div class="mb-3">
+    <div class="my-4">
         <div class="col-12">
             <label asp-for="SystemId" class="col-form-label"></label>
             <select asp-for="SystemId" asp-items="Model.SystemList" class="form-select">
@@ -45,7 +16,7 @@
         </div>
     </div>
 
-    <div class="mb-3">
+    <div class="row mt-4">
         <div class="col-12">
             <button type="submit" class="btn btn-outline-primary">
                 <span class="fas fa-file-alt"></span>
@@ -54,20 +25,3 @@
         </div>
     </div>
 </form>
-
-@section scripts
-    {
-    <script>
-        $("#pickerStart").data("DateTimePicker").defaultDate(moment(new Date()).subtract(2, "d").format("MM/DD/YYYY"));
-        $("#pickerEnd").data("DateTimePicker").defaultDate(moment(new Date()).subtract(1, "d").format("MM/DD/YYYY"));
-
-        $(".time-selector").on("click", function() {
-            $("#pickerStart").data("DateTimePicker").date($(this).data("start"));
-            var end = $(this).data("end");
-            if (end === "now") {
-                end = new Date();
-            }
-            $("#pickerEnd").data("DateTimePicker").date(end);
-        });
-    </script>
-}

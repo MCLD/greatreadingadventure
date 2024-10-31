@@ -1125,7 +1125,7 @@
             $("#All").on("click", function () {
                 if (systemId != null) {
                     $(this).siblings().removeClass("active");
-                    $(this).addClass().addClass("active");
+                    $(this).addClass("active");
                     $("#systemText").text("System");
                     $("#branchText").text("Branch");
                     if (systemId != defaultSystemId) {
@@ -1144,7 +1144,7 @@
                     if (systemId == null || branchId != null) {
                         var navPill = $(this).parent().parent().parent();
                         navPill.siblings().removeClass("active");
-                        navPill.addClass().addClass("active");
+                        navPill.addClass("active");
                         if (branchId != null) {
                             $("#branchText").text("Branch");
                         }
@@ -1166,7 +1166,7 @@
                     if (branchId == null) {
                         var navPill = $(this).parent().parent().parent();
                         navPill.siblings().removeClass("active");
-                        navPill.addClass().addClass("active");
+                        navPill.addClass("active");
                         if (systemId == null) {
                             systemId = defaultSystemId;
                             $("#systemText").text($(".system-selector").first().text());

@@ -45,6 +45,10 @@ a.rowlink {
     margin-bottom: 1rem;
 }
 
+.nav-item {
+    cursor: pointer;
+}
+
 .navbar.bg-light .nav-item.active > a.nav-link {
     background-color: #66CCFF;
 }
