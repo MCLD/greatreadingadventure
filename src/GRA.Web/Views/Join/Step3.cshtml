@@ -12,7 +12,8 @@
                     @if (TempData.ContainsKey("TwoStepSignUp"))
                     {
                         <partial name="_TwoStepPartial" />
-                    } else
+                    }
+                    else
                     {
                         <partial name="_MultiStepPartial" />
                     }
@@ -90,7 +91,9 @@
                     {
                         <div class="row row-spacing">
                             <div class="col-12">
-                                <label asp-for="EmailSubscriptionRequested" class="col-form-label">@SharedLocalizer[Model.AskEmailSubscriptionText]</label>
+                                <label asp-for="EmailSubscriptionRequested" class="col-form-label">
+                                    @SharedLocalizer[Model.AskEmailSubscriptionText]
+                                </label>
                                 <select asp-for="EmailSubscriptionRequested"
                                         asp-items="Model.AskEmailSubscription"
                                         class="form-select"></select>
@@ -106,22 +109,23 @@
                                 <label asp-for="DailyPersonalGoal" class="col-form-label"></label>
                                 <div>
                                     @SharedLocalizer["I will {0}", Model.TranslationDescriptionPastTense]
-                                    <input asp-for="DailyPersonalGoal" class="form-control" style="display:inline-block; width:75px;" />
+                                    <input asp-for="DailyPersonalGoal"
+                                           class="form-control"
+                                           style="display:inline-block; width:75px;" />
                                     @SharedLocalizer["{0} a day", Model.ActivityDescriptionPlural]
                                 </div>
-                                <span asp-validation-for="DailyPersonalGoal" class="text-danger"></span>
+                                <span asp-validation-for="DailyPersonalGoal"
+                                      class="text-danger"></span>
                             </div>
                         </div>
                     }
                 </div>
-                <div class="card-footer clearfix">
-                    <div class="float-end">
-                        <button type="submit"
-                                class="btn btn-primary btn-lg btn-spinner"
-                                button-spinner>
-                            <span class="fas fa-book"></span> @SharedLocalizer["Join!"]
-                        </button>
-                    </div>
+                <div class="card-footer d-flex justify-content-end">
+                    <button type="submit"
+                            class="btn btn-outline-primary btn-lg"
+                            button-spinner>
+                        <span class="fas fa-book"></span> @SharedLocalizer["Join!"]
+                    </button>
                 </div>
             </div>
         </div>

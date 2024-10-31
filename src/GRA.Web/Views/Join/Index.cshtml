@@ -95,7 +95,8 @@
                     @if (Model.BranchList != null && Model.BranchList.Count() < 1)
                     {
                         <input asp-for="BranchId" type="hidden" />
-                    } else
+                    }
+                    else
                     {
                         <div class="row row-spacing">
                             <div class="col-12">
@@ -206,14 +207,13 @@
                         </div>
                     }
                 </div>
-                <div class="card-footer clearfix">
-                    <div class="float-end">
-                        <button type="submit"
-                                class="btn btn-primary btn-lg btn-spinner"
-                                button-spinner>
-                            <span class="fas fa-book"></span> @SharedLocalizer[GRA.Domain.Model.DisplayNames.JoinNow]
-                        </button>
-                    </div>
+                <div class="card-footer d-flex justify-content-end">
+                    <button type="submit"
+                            class="btn btn-outline-primary btn-lg"
+                            button-spinner>
+                        <span class="fas fa-book"></span>
+                        @SharedLocalizer[GRA.Domain.Model.DisplayNames.JoinNow]
+                    </button>
                 </div>
             </div>
         </div>

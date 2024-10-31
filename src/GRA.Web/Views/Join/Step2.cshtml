@@ -14,7 +14,9 @@
                     <div class="row row-spacing">
                         <div class="col-12">
                             <label asp-for="ProgramId" class="col-form-label"></label>
-                            <select asp-for="ProgramId" asp-items="Model.ProgramList" class="form-select">
+                            <select asp-for="ProgramId"
+                                    asp-items="Model.ProgramList"
+                                    class="form-select">
                                 <option></option>
                             </select>
                             <span asp-validation-for="ProgramId" class="text-danger"></span>
@@ -25,7 +27,9 @@
                         <div class="col-12">
                             <label asp-for="Age" class="col-form-label"></label>
                             <input asp-for="Age" class="form-control" type="text" />
-                            <span id="ageMessage" asp-validation-for="Age" class="text-danger"></span>
+                            <span id="ageMessage"
+                                  asp-validation-for="Age"
+                                  class="text-danger"></span>
                         </div>
                     </div>
 
@@ -33,15 +37,13 @@
                         @await Html.PartialAsync("_SchoolSelectionPartial", Model)
                     </div>
                 </div>
-
-                <div class="card-footer clearfix">
-                    <div class="float-end">
-                        <button type="submit"
-                                class="btn btn-primary btn-lg btn-spinner"
-                                button-spinner>
-                            @SharedLocalizer[GRA.Domain.Model.DisplayNames.FinalStep] <span class="fas fa-arrow-right"></span>
-                        </button>
-                    </div>
+                <div class="card-footer d-flex justify-content-end">
+                    <button type="submit"
+                            class="btn btn-outline-primary btn-lg"
+                            button-spinner>
+                        @SharedLocalizer[GRA.Domain.Model.DisplayNames.FinalStep]
+                        <span class="fas fa-arrow-right"></span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -51,39 +53,34 @@
 @section scripts {
     <script>
         var programs = JSON.parse('@Html.Raw(Model.ProgramJson)');
-        var selectedProgram = $.grep(programs, function(obj) {
+        var selectedProgram = $.grep(programs, function (obj) {
             return obj.Id == $("#ProgramId").val();
         })[0];
 
-        $("#ProgramId").on("change", function() {
+        $("#ProgramId").on("change", function () {
             var programId = $(this).val();
-            selectedProgram = $.grep(programs, function(obj) {
+            selectedProgram = $.grep(programs, function (obj) {
                 return obj.Id == programId;
             })[0];
-            if (selectedProgram != null)
-            {
-                if (selectedProgram.AskAge)
-                {
+            if (selectedProgram != null) {
+                if (selectedProgram.AskAge) {
                     $("#ageField").removeClass("d-none");
                     validateAge();
                 }
-                else
-                {
+                else {
                     $("#ageField").addClass("d-none");
                 }
 
-                if (selectedProgram.AskSchool)
-                {
+                if (selectedProgram.AskSchool) {
                     $("#schoolFields").removeClass("d-none");
                 }
-                else
-                {
+                else {
                     $("#schoolFields").addClass("d-none");
                 }
             }
         });
 
-        $("#Age").on("change", function() {
+        $("#Age").on("change", function () {
             validateAge();
         });
 
@@ -91,22 +88,19 @@
             var age = $("#Age").val();
             var message = $("#ageMessage");
             if (age != "" && ((age > selectedProgram.AgeMaximum && selectedProgram.AgeMaximum != null)
-                || (age < selectedProgram.AgeMinimum && selectedProgram.AgeMinimum != null)))
-            {
-                var program = $.grep(programs, function(obj) {
+                || (age < selectedProgram.AgeMinimum && selectedProgram.AgeMinimum != null))) {
+                var program = $.grep(programs, function (obj) {
                     return ((obj.AgeMaximum >= age || obj.AgeMaximum == null)
-                            && (obj.AgeMinimum <= age || obj.AgeMinimum == null));
+                        && (obj.AgeMinimum <= age || obj.AgeMinimum == null));
                 })[0];
-                if (program != null)
-                {
+                if (program != null) {
                     message.removeClass('field-validation-valid field-validation-error text-danger');
                     message.addClass('text-primary');
                     $("#Age").removeClass("input-validation-error")
                     message.html("@SharedLocalizer[GRA.Annotations.Info.BetterSuitedOption] " + program.Name)
                 }
             }
-            else
-            {
+            else {
                 message.text("");
             }
         }
