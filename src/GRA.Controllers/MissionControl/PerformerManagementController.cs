@@ -111,15 +111,15 @@ namespace GRA.Controllers.MissionControl
 
                 if (branchPercent < 50)
                 {
-                    card.Add(system.Id, "list-group-item-danger");
+                    card.Add(system.Id, "danger");
                 }
                 else if (branchPercent < 100)
                 {
-                    card.Add(system.Id, "list-group-item-warning");
+                    card.Add(system.Id, "warning");
                 }
                 else
                 {
-                    card.Add(system.Id, "list-group-item-success");
+                    card.Add(system.Id, "success");
                 }
             }
 
