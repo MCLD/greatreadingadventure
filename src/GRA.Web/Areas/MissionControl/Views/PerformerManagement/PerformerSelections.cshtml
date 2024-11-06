@@ -113,13 +113,13 @@
                                     @branchSelection.ScheduleStartTime.ToShortTimeString() &ndash; @branchSelection.ScheduleStartTime.AddMinutes(branchSelection.ScheduleDuration).ToShortTimeString()
                                     <div>
                                         (@branchSelection.RequestedStartTime.ToShortTimeString()@(branchSelection.BackToBackProgram ? $", {branchSelection.RequestedStartTime.AddMinutes(branchSelection.Program.ProgramLengthMinutes + branchSelection.Program.BackToBackMinutes).ToShortTimeString()} start times" : " start time"))
-                                        <div>
                                             @if(branchSelection.BackToBackProgram)
                                             {
-                                            <span class="fas fa-plus-circle text-success" aria-hidden="true"></span>
-                                            <span class="fw-bold">Back-to-back programs</span>
+                                            <div>
+                                                <span class="fas fa-plus-circle text-success" aria-hidden="true"></span>
+                                                <span class="fw-bold">Back-to-back programs</span>
+                                            </div>
                                             }
-                                        </div>
                                     </div>
                                 </td>
                                 <td>
