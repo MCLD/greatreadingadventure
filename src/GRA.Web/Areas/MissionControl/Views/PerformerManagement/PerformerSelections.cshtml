@@ -114,8 +114,11 @@
                                     <div>
                                         (@branchSelection.RequestedStartTime.ToShortTimeString()@(branchSelection.BackToBackProgram ? $", {branchSelection.RequestedStartTime.AddMinutes(branchSelection.Program.ProgramLengthMinutes + branchSelection.Program.BackToBackMinutes).ToShortTimeString()} start times" : " start time"))
                                         <div>
-                                            <span class="fas fa-plus-circle text-success @(!branchSelection.BackToBackProgram ? "d-none" : "")" aria-hidden="true"></span>
-                                            <span class="fw-bold @(!branchSelection.BackToBackProgram ? "d-none" : "")">Back-to-back programs</span>
+                                            @if(branchSelection.BackToBackProgram)
+                                            {
+                                            <span class="fas fa-plus-circle text-success" aria-hidden="true"></span>
+                                            <span class="fw-bold">Back-to-back programs</span>
+                                            }
                                         </div>
                                     </div>
                                 </td>
