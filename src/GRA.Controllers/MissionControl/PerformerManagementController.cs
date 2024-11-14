@@ -192,7 +192,8 @@ namespace GRA.Controllers.MissionControl
                     "Scheduled By Phone",
                     "On-site Contact Name",
                     "On-site Contact Email",
-                    "On-site Contact Phone"
+                    "On-site Contact Phone",
+                    "Back-to-back Program" 
                 }
             };
 
@@ -237,8 +238,9 @@ namespace GRA.Controllers.MissionControl
                     _.CreatedByUser.PhoneNumber ?? string.Empty,
                     _.OnSiteContactName ?? string.Empty,
                     _.OnSiteContactEmail ?? string.Empty,
-                    _.OnSiteContactPhone ?? string.Empty
-                });
+                    _.OnSiteContactPhone ?? string.Empty,
+                    _.BackToBackProgram ? "X" : string.Empty
+                    });
 
             var memoryStream = ExcelExport.GenerateWorkbook(new[] { storedReport },
                 criteriaDictionary,
