@@ -93,12 +93,20 @@
                 {
                     if (i != 0 || !string.IsNullOrWhiteSpace(Model.DayScheduleModel.StartTime))
                     {
-                        @Html.Raw($"&ndash; {Model.DayScheduleModel.BranchSelections[i].ScheduleStartTime.ToLongTimeString()}</li>")
+                        @Html.Raw($"&ndash; {Model.DayScheduleModel.BranchSelections[i].ScheduleStartTime}</li>")
                     }
-                    <li>Booked: @Model.DayScheduleModel.BranchSelections[i].ScheduleStartTime.ToLongTimeString() &ndash; @Model.DayScheduleModel.BranchSelections[i].ScheduleStartTime.AddMinutes(Model.DayScheduleModel.BranchSelections[i].ScheduleDuration).ToLongTimeString() @@ @Model.DayScheduleModel.BranchSelections[i].Branch.Name <a href="https://www.google.com/maps/search/@Model.DayScheduleModel.BranchSelections[i].Branch.Address" target="_blank"><span class="far fa-map"></span></a></li>
-                    if (i != Model.DayScheduleModel.BranchSelections.Count - 1 || !string.IsNullOrWhiteSpace(Model.DayScheduleModel.EndTime))
+                   <li>
+    Booked: @Model.DayScheduleModel.BranchSelections[i].ScheduleStartTime.ToShortTimeString()
+    &ndash;
+    @Model.DayScheduleModel.BranchSelections[i].ScheduleStartTime.AddMinutes(Model.DayScheduleModel.BranchSelections[i].ScheduleDuration).ToShortTimeString()
+    @@ @Model.DayScheduleModel.BranchSelections[i].Branch.Name
+    <a href="https://www.google.com/maps/search/@Model.DayScheduleModel.BranchSelections[i].Branch.Address" target="_blank">
+        <span class="far fa-map"></span>
+    </a>
+</li>
+if (i != Model.DayScheduleModel.BranchSelections.Count - 1 || !string.IsNullOrWhiteSpace(Model.DayScheduleModel.EndTime))
                     {
-                        @Html.Raw($"<li>Available: {Model.DayScheduleModel.BranchSelections[i].ScheduleStartTime.AddMinutes(Model.DayScheduleModel.BranchSelections[i].ScheduleDuration).ToLongTimeString()}")
+                        @Html.Raw($"<li>Available: {Model.DayScheduleModel.BranchSelections[i].ScheduleStartTime.AddMinutes(Model.DayScheduleModel.BranchSelections[i].ScheduleDuration)}")
                     }
                 }
                 @if (!string.IsNullOrWhiteSpace(Model.DayScheduleModel.EndTime))
@@ -137,7 +145,7 @@
 
         <div class="row">
             <div class="col-12 col-sm-6">
-                <button id="scheduleProgram" type="button" class="btn btn-success hidden">Save Selection</button>
+                <button id="scheduleProgram" type="button" class="btn btn-outline-success hidden">Save Selection</button>
             </div>
         </div>
     </div>
@@ -149,55 +157,71 @@
 </form>
 
 <script>
-        var dayScheduleUrl = "@Url.Action(nameof(PerformerManagementController.GetPerformerDaySchedule))";
-        var checkTimeUrl = "@Url.Action(nameof(PerformerManagementController.CheckProgramTimeAvailability))";
-        var scheduleBranchProgramUrl = "@Url.Action(nameof(PerformerManagementController.EditBranchProgramSelection))";
-        var backToBack = @Model.BranchSelection.BackToBackProgram.ToString().ToLower();
-        var selectedDate = "@Model.BranchSelection.RequestedStartTime.ToString("yyyy-M-d")";
-        var startTime = "@Model.DayScheduleModel.StartTime";
-        var startDateTime;
+    var dayScheduleUrl = "@Url.Action(nameof(PerformerManagementController.GetPerformerDaySchedule))";
+    var checkTimeUrl = "@Url.Action(nameof(PerformerManagementController.CheckProgramTimeAvailability))";
+    var scheduleBranchProgramUrl = "@Url.Action(nameof(PerformerManagementController.EditBranchProgramSelection))";
+    var backToBack = @Model.BranchSelection.BackToBackProgram.ToString().ToLower();
+    var selectedDate = "@Model.BranchSelection.RequestedStartTime.ToString("yyyy-M-d")";
+    var startTime = "@Model.DayScheduleModel.StartTime";
+    var startDateTime;
 
-        $(".selectable").on("click", function () {
-            $(".selected-date").removeClass("selected-date");
-            $(this).children().addClass("selected-date");
-            selectedDate = $(this).data("year") + "-" + $(this).data("month") + "-" + $(this).data("date");
-            startTime = $(this).data("start");
+    $(".selectable").on("click", function () {
+        $(".selected-date").removeClass("selected-date");
+        $(this).children().addClass("selected-date");
+        selectedDate = $(this).data("year") + "-" + $(this).data("month") + "-" + $(this).data("date");
+        startTime = $(this).data("start");
 
-            $("#checkAlert").addClass("hidden");
-            $("#scheduleProgram").addClass("hidden");
-            $.get(dayScheduleUrl, { performerId: "@Model.Performer.Id", date: selectedDate }, function (response) {
-                $("#daySchedule").html(response);
-                $("#startTime").val("").removeAttr("disabled");
-                $("#checkTime").attr("disabled", "disabled");
-            });
+        $("#checkAlert").addClass("hidden");
+        $("#scheduleProgram").addClass("hidden");
+        $.get(dayScheduleUrl, { performerId: "@Model.Performer.Id", date: selectedDate }, function (response) {
+            $("#daySchedule").html(response);
+            $("#startTime").val("").removeAttr("disabled");
+            $("#checkTime").attr("disabled", "disabled");
         });
+    });
 
-        $("#pickerStart").on("dp.show", function () {
-            if ($("#startTime").val() == "") {
-                $(this).data("DateTimePicker").date(startTime);
-            }
-        });
+    $("#startTime").on("input change", function () {
+        var timeInput = $(this).val();
+        if (timeInput !== "") {
+            $("#checkTime").removeAttr("disabled");
 
-        $("#pickerStart").on("dp.change", function () {
-            if ($("#pickerStart").data("DateTimePicker").date() != null) {
-                $("#checkTime").removeAttr("disabled");
-                var scheduleStartTime = $("#pickerStart").data("DateTimePicker").date().subtract(@Model.BranchSelection.Program.SetupTimeMinutes, "minutes").format("hh:mm A");
-                var scheduleEndTime = $("#pickerStart").data("DateTimePicker").date().add(@Model.BranchSelection.Program.ProgramLengthMinutes + @Model.BranchSelection.Program.BreakdownTimeMinutes, "minutes");
-                if (backToBack == true) {
-                    scheduleEndTime.add(@Model.BranchSelection.Program.ProgramLengthMinutes + @Model.BranchSelection.Program.BackToBackMinutes, "minutes");
+            var timeParts = timeInput.split(":");
+            if (timeParts.length === 2) {
+                var hours = parseInt(timeParts[0]);
+                var minutes = parseInt(timeParts[1]);
+
+                var scheduleStartTime = new Date();
+                scheduleStartTime.setHours(hours, minutes, 0, 0);
+                scheduleStartTime.setMinutes(scheduleStartTime.getMinutes() - @Model.BranchSelection.Program.SetupTimeMinutes);
+
+                var scheduleEndTime = new Date();
+                scheduleEndTime.setHours(hours, minutes, 0, 0);
+                scheduleEndTime.setMinutes(scheduleEndTime.getMinutes() + @Model.BranchSelection.Program.ProgramLengthMinutes + @Model.BranchSelection.Program.BreakdownTimeMinutes);
+
+                if (backToBack === "true") {
+                    scheduleEndTime.setMinutes(scheduleEndTime.getMinutes() + @Model.BranchSelection.Program.ProgramLengthMinutes + @Model.BranchSelection.Program.BackToBackMinutes);
                 }
-                scheduleEndTime = scheduleEndTime.format("hh:mm A");
-                $("#programDuration").text(scheduleStartTime + " – " + scheduleEndTime);
-            }
-            else {
-                $("#programDuration").text();
-            }
-            $("#checkAlert").addClass("hidden");
-            $("#scheduleProgram").addClass("hidden");
-        });
 
-        $("#checkTime").on("click", function () {
-            var time = $("#pickerStart").data("DateTimePicker").date().format("HH:mm");
+                var formattedScheduleStartTime = scheduleStartTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+                var formattedScheduleEndTime = scheduleEndTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+                $("#programDuration").text(formattedScheduleStartTime + " – " + formattedScheduleEndTime);
+            } 
+            else {
+                $("#checkTime").attr("disabled", "disabled");
+                $("#programDuration").text("");
+            }
+        } 
+        else {
+            $("#checkTime").attr("disabled", "disabled");
+            $("#programDuration").text("");
+        }
+        $("#checkAlert").addClass("hidden");
+        $("#scheduleProgram").addClass("hidden");
+    });
+
+    $("#checkTime").on("click", function () {
+        var time = $("#startTime").val();
+        if (time !== "") {
             startDateTime = selectedDate + "T" + time;
             $.getJSON(checkTimeUrl, { selectionId: "@Model.BranchSelection.Id", programId: "@Model.BranchSelection.ProgramId", dateTime: startDateTime, backToBack: backToBack }, function (response) {
                 var checkAlert = $("#checkAlert");
@@ -205,32 +229,33 @@
                 if (response.success == true) {
                     if (response.message != null) {
                         checkAlert.addClass("alert-warning").text(response.message);
-                    }
+                    } 
                     else {
                         checkAlert.addClass("alert-success").text("The performer is available at that time.");
                     }
-                }
+                } 
                 else {
                     checkAlert.addClass("alert-danger").text(response.message);
                 }
                 $("#scheduleProgram").removeClass("hidden");
             });
-        });
+        }
+    });
 
-        $("#scheduleProgram").on("click", function () {
-            if ($(this).hasClass("hidden") == false) {
-                $("#BranchSelection_RequestedStartTime").val(startDateTime);
-                var data = $("#editSelectionForm").serializeArray().reduce(function (m, o) { m[o.name] = o.value; return m; }, {})
-                $.post(scheduleBranchProgramUrl, { branchSelection: data }, function (response) {
-                    if (response.success) {
-                        window.location.href = "@Url.Action(nameof(PerformerManagementController.PerformerSelections), new { id = Model.Performer.Id})";
-                    }
-                    else {
-                        $("#checkAlert").addClass("hidden");
-                        $("#scheduleProgram").addClass("hidden");
-                        alert(response.message);
-                    }
-                });
-            }
-        });
+    $("#scheduleProgram").on("click", function () {
+        if ($(this).hasClass("hidden") == false) {
+            $("#BranchSelection_RequestedStartTime").val(startDateTime);
+            var data = $("#editSelectionForm").serializeArray().reduce(function (m, o) { m[o.name] = o.value; return m; }, {});
+            $.post(scheduleBranchProgramUrl, { branchSelection: data }, function (response) {
+                if (response.success) {
+                    window.location.href = "@Url.Action(nameof(PerformerManagementController.PerformerSelections), new { id = Model.Performer.Id})";
+                } 
+                else {
+                    $("#checkAlert").addClass("hidden");
+                    $("#scheduleProgram").addClass("hidden");
+                    alert(response.message);
+                }
+            });
+        }
+    });
 </script>
