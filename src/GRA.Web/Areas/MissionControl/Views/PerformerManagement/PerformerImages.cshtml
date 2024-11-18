@@ -10,25 +10,31 @@
 
 <div class="row">
     <div class="col-12">
-        <h1>
+        <div class="d-flex justify-content-center my-4">
+            <h1>
             Images for Performer: @Model.PerformerName
-            <a asp-action="Performer" asp-route-id="@Model.PerformerId" class="btn btn-lg btn-outline-secondary" style="margin-bottom: 0.5rem;">Return to Performer</a>
-        </h1>
+            </h1>
+        </div>
     </div>
     <form asp-action="PerformerImages" class="form-horizontal col-12" method="post" role="form" enctype="multipart/form-data">
         <input asp-for="PerformerId" type="hidden" />
         <div class="row">
-            <div class="col-sm-9 offset-sm-3">
+            <div class="d-flex justify-content-center">
+                <div class="col-sm-9 text-center">
                 <p>
                     Additional images can be added here. For best results please
                     use images that are at least 1,000px by 1,000px, uploads are limited to @(Model.MaxUploadMB)MB total.
                     Multiple images can be selected by holding the CTRL key.
                 </p>
             </div>
+            </div>
         </div>
 
         <div class="mb-3">
-            <label class="col-sm-3 col-form-label">Upload photos</label>
+            <div class="d-flex justify-content-center">
+            <h2 class="mb-4">Upload photos</h2>
+            </div>
+            <div class="d-flex justify-content-center">
             <div class="col-sm-9">
                 <div class="input-group">
                     <label class="input-group-text">
@@ -45,12 +51,13 @@
                 </div>
                 <span asp-validation-for="Images" class="text-danger"></span>
             </div>
+            </div>
         </div>
 
         <div class="row">
-            <div class="col-sm-9 offset-sm-3" style="margin-top: 1em;margin-bottom: 1em;">
+            <div class="text-center my-3">
                 <button type="submit"
-                        class="btn btn-lg btn-outline-success btn-spinner"
+                        class="btn btn-lg btn-outline-success btn-spinner me-4"
                         style="margin-bottom: 0.5rem;"
                         button-spinner>
                     Upload Image(s)
@@ -72,12 +79,16 @@
             {
                 if (i % 3 == 0)
                 {
-                    @Html.Raw("<div class=\"row\">");
+                    @Html.Raw("<div class=\"row d-flex justify-content-center\">");
                 }
                 <div class="col-12 col-md-4 mb-6">
-                    <div style="padding:10px;border:1px solid black;">
-                        <img src="~/@Model.PerformerImages[i].Filename" class="img-fluid" style="margin: 0 auto;" />
-                        <input class="deleteSelection form-control" type="checkbox" data-id="@Model.PerformerImages[i].Id" />
+                    <div class="border border-dark py-3">
+                        <div class="d-flex justify-content-center">
+                        <img src="~/@Model.PerformerImages[i].Filename" class="img-fluid "/>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                        <input class="deleteSelection form-check mt-3 w-25" type="checkbox" data-id="@Model.PerformerImages[i].Id" />
+                        </div>
                     </div>
                 </div>
                 if (i % 3 == 2)
@@ -90,7 +101,10 @@
                 @Html.Raw("</div>");
             }
         }
-    </div>
+</div>
+
+<div class="d-flex justify-content-center">
+    <a asp-action="Performer" asp-route-id="@Model.PerformerId" class="btn btn-lg btn-outline-secondary my-4">Return to Performer</a>
 </div>
 
 <div class="row">
@@ -141,6 +155,7 @@
             </div>
         </div>
     </div>
+</div>
 </div>
 
 @section scripts {

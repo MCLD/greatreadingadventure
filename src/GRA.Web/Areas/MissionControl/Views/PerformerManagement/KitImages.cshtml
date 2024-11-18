@@ -9,10 +9,9 @@
 }
 
 <div class="row">
-    <div class="col-12 my-4">
+    <div class="col-12 my-4 d-flex justify-content-center">
         <h1>
             Images for Kit: @Model.KitName
-            <a asp-action="Kit" asp-route-id="@Model.KitId" class="btn btn-lg btn-outline-secondary my-4">Return to Kit</a>
         </h1>
     </div>
     <form asp-action="KitImages" class="form-horizontal col-12" method="post" role="form" enctype="multipart/form-data">
@@ -28,7 +27,10 @@
         </div>
 
         <div class="mb-3">
-            <label class="col-sm-3 col-form-label">Upload photos</label>
+            <div class="d-flex justify-content-center">
+                <h2 class="mb-4">Upload photos</h2>
+            </div>
+            <div class="d-flex justify-content-center">
             <div class="col-sm-9">
                 <div class="input-group">
                     <label class="input-group-text">
@@ -44,17 +46,18 @@
                     <input type="text" class="form-control @(ViewData.ModelState.GetValidationState("Images") == invalid ? "input-validation-error" : "")" readonly />
                 </div>
                 <span asp-validation-for="Images" class="text-danger"></span>
+                </div>
             </div>
         </div>
 
         <div class="row">
-            <div class="text-center my-4">
+            <div class="text-center my-3">
                 <button type="submit"
-                        class="btn btn-lg btn-outline-success btn-spinner mb-4 me-3"
+                        class="btn btn-lg btn-outline-success btn-spinner mb-3 me-3"
                         button-spinner>
                     Upload Image(s)
                 </button>
-                <button id="deleteButton" type="button" class="btn btn-lg btn-outline-danger mb-4 me-3" data-bs-toggle="modal" data-bs-target="#deleteModal" disabled>
+                <button id="deleteButton" type="button" class="btn btn-lg btn-outline-danger mb-3 me-3" data-bs-toggle="modal" data-bs-target="#deleteModal" disabled>
                     Delete Selected Image(s)
                 </button>
             </div>
@@ -71,12 +74,16 @@
             {
                 if (i % 3 == 0)
                 {
-                    @Html.Raw("<div class=\"row\">");
+                    @Html.Raw("<div class=\"row d-flex justify-content-center\">");
                 }
                 <div class="col-12 col-md-4 mb-6">
-                    <div style="padding:10px;border:1px solid black;">
-                        <img src="~/@Model.KitImages[i].Filename" class="img-fluid" style="margin: 0 auto;" />
-                        <input class="deleteSelection form-control" type="checkbox" data-id="@Model.KitImages[i].Id" />
+                    <div class="border border-dark">
+                        <div class="d-flex justify-content-center">
+                        <img src="~/@Model.KitImages[i].Filename" class="img-fluid my-3" />
+                        </div>
+                        <div class="d-flex justify-content-center mb-3">
+                        <input class="deleteSelection form-check w-25" type="checkbox" data-id="@Model.KitImages[i].Id" />
+                        </div>
                     </div>
                 </div>
                 if (i % 3 == 2)
@@ -90,6 +97,10 @@
             }
         }
     </div>
+</div>
+
+<div class="d-flex justify-content-center">
+    <a asp-action="Kit" asp-route-id="@Model.KitId" class="btn btn-lg btn-outline-secondary my-4">Return to Kit</a>
 </div>
 
 <div class="row">
