@@ -13,7 +13,7 @@
 </div>
 
 <div class="row">
-    <div class="col-12">
+    <div class="col-12 col-md-8 offset-md-2">
         @if (Model.Kits.Count == 0)
         {
             <div class="alert alert-warning">No kits found.</div>
@@ -26,12 +26,12 @@
                         <th>Name</th>
                         @if (Model.SchedulingStage <= GRA.Domain.Model.PsSchedulingStage.SchedulingPreview)
                         {
-                            <th width="44px;">&nbsp;</th>
+                            <th width="75px;">&nbsp;</th>
                         }
                         else
                         {
-                            <th width="85px;">Selections</th>
-                            <th width="110px;">&nbsp;</th>
+                            <th width="75px;">Selections</th>
+                            <th width="75px;">&nbsp;</th>
 
                         }
                     </tr>
@@ -61,8 +61,10 @@
                             else
                             {
                                 <td>@kit.SelectionsCount</td>
-                                <td class="on-top">
-                                    <a asp-action="KitSelections" asp-route-id="@kit.Id" class="btn btn-sm btn-outline-primary">View Selections</a>
+                                <td class="on-top text-center">
+                                    <a asp-action="KitSelections"
+                                       asp-route-id="@kit.Id"
+                                       class="btn btn-sm btn-outline-primary">Selections</a>
                                 </td>
                             }
                         </tr>
@@ -94,7 +96,6 @@
                                 class="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="Close dialog">
-                            
                         </button>
                     </div>
                     <div class="modal-body">
@@ -148,14 +149,14 @@
         @if (Model.SchedulingStage < GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
         {
             <text>
-            $("#deleteModal").on("show.bs.modal", function(event) {
-                var button = $(event.relatedTarget);
-                var id = button.data("id");
-                var name = button.data("name");
-                $(this).find("#modal-text").text('Are you sure you want to delete the kit "' + name + '"?');
-                $(this).find("#KitToDelete_Id").val(id);
-                $(this).find("#KitToDelete_Name").val(name);
-            });
+                    $("#deleteModal").on("show.bs.modal", function(event) {
+                            var button = $(event.relatedTarget);
+                    var id = button.data("id");
+                    var name = button.data("name");
+                    $(this).find("#modal-text").text('Are you sure you want to delete the kit "' + name + '"?');
+                    $(this).find("#KitToDelete_Id").val(id);
+                    $(this).find("#KitToDelete_Name").val(name);
+                        });
             </text>
         }
     </script>

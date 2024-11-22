@@ -3,12 +3,19 @@
 @section styles {
     <link rel="stylesheet" href="/css/performerregistration.min.css" />
 }
+@section inHeading {
+    <a asp-action="Performer"
+       asp-route-id="@Model.Program.PerformerId"
+       class="btn btn-outline-secondary ms-auto d-print-none">Return to Performer</a>
+}
 
 <div class="row">
     <div class="col-12">
         <h1>
-            Program
-            <a asp-action="ProgramDetails" asp-route-id="@Model.Program.Id" class="btn btn-outline-primary" style="display:inline-block">Edit Program</a>
+            @Model.Program.Title
+            <a asp-action="ProgramDetails" 
+            asp-route-id="@Model.Program.Id" 
+            class="btn btn-outline-primary">Edit Program</a>
         </h1>
     </div>
 
@@ -23,12 +30,9 @@
         }
         <div class="row mb-3">
             <div class="col-12 text-center">
-                <a asp-action="ProgramImages" asp-route-id="@Model.Program.Id" class="btn btn-outline-primary">View/Manage Images</a>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-12 text-center">
-                <a asp-action="Performer" asp-route-id="@Model.Program.PerformerId" class="btn btn-outline-secondary">Return to Performer</a>
+                <a asp-action="ProgramImages" 
+                asp-route-id="@Model.Program.Id" 
+                class="btn btn-outline-primary">View/Manage Images</a>
             </div>
         </div>
     </div>

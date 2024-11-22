@@ -72,17 +72,7 @@ The Great Reading Adventure uses open source components. You can find informatio
 ### Bootstrap
 
 - A sleek, intuitive, and powerful mobile first front-end framework for faster and easier web development.
-- Source on GitHub [twbs/bootstrap](https://github.com/twbs/bootstrap/tree/v3.3.7) - [MIT License](https://github.com/twbs/bootstrap/blob/v3.3.7/LICENSE)
-
-### Bootstrap-DatetimePicker
-
-- Date/time picker widget based on twitter bootstrap [Bootstrap-DatetimePicker](http://eonasdan.github.io/bootstrap-datetimepicker/)
-- Source on GitHub: [Eonasdan/bootstrap-datetimepicker](https://github.com/Eonasdan/bootstrap-datetimepicker) - [MIT License](https://github.com/Eonasdan/bootstrap-datetimepicker/blob/master/LICENSE)
-
-### Bootstrap-Multiselect
-
-- JQuery multiselect plugin based on Twitter Bootstrap [Bootstrap-Multiselect](http://davidstutz.github.io/bootstrap-multiselect/)
-- Source on GitHub: [davidstutz/bootstrap-multiselect](https://github.com/davidstutz/bootstrap-multiselect) - [Apache License, Version 2.0 & BSD-3-Clause](https://github.com/davidstutz/bootstrap-multiselect/blob/master/LICENSE.md)
+- Source on GitHub [twbs/bootstrap](https://github.com/twbs/bootstrap) - [MIT License](https://github.com/twbs/bootstrap/blob/main/LICENSE)
 
 ### buildscript
 
@@ -133,6 +123,11 @@ The Great Reading Adventure uses open source components. You can find informatio
 
 - Scalable vector icons that can instantly be customized — size, color, drop shadow, and anything that can be done with the power of CSS.
 - Source on GitHub: [FortAwesome/FontAwesome](https://github.com/FortAwesome/Font-Awesome/releases/tag/v4.7.0) - [SIL OFL and MIT Licenses](https://github.com/FortAwesome/Font-Awesome/tree/v4.7.0#license)
+
+### Gwendolyn
+
+- Font designed by Robert Leuschke
+- Source on GitHub: [googlefonts/Gwendolyn](https://fonts.google.com/specimen/Gwendolyn/) - [SIL OPEN FONT LICENSE Version 1.1](https://fonts.google.com/specimen/Gwendolyn/license)
 
 ### ImageSharp
 
@@ -188,4 +183,4 @@ The Great Reading Adventure uses open source components. You can find informatio
 ### tom-select
 
 - Tom Select is a lightweight (~16kb gzipped) hybrid of a textbox and select box [tom-select](https://github.com/orchidjs/tom-select)
-- Source on GitHub: [orchidjs/tom-select](https://github.com/orchidjs/tom-select) - [Apache License, Version 2.0](https://github.com/orchidjs/tom-select/blob/master/LICENSE) 
+- Source on GitHub: [orchidjs/tom-select](https://github.com/orchidjs/tom-select) - [Apache License, Version 2.0](https://github.com/orchidjs/tom-select/blob/master/LICENSE)

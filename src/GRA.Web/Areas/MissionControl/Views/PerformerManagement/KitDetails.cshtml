@@ -1,7 +1,18 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.KitDetailsViewModel
 
-@{
-    var invalid = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
+@section inHeading {
+    @if (Model.NewKit == false)
+    {
+        <a asp-action="@nameof(PerformerManagementController.Kit)"
+           asp-route-id="@Model.Kit.Id"
+           class="btn btn-outline-secondary ms-auto d-print-none">Return to Kit</a>
+    }
+    else
+    {
+        <a asp-action="@nameof(PerformerManagementController.Kits)"
+           class="btn btn-outline-secondary ms-auto d-print-none">Return to List</a>
+
+    }
 }
 
 @section styles {
@@ -12,123 +23,96 @@
     <div class="col-12">
         <h1>@(Model.NewKit ? "Add Kit" : $"Edit Kit: {Model.Kit.Name}")</h1>
     </div>
+</div>
 
-    <div class="col-sm-9 offset-sm-3">
-        <p>
-            <span class="text-danger small" style="font-weight: bold;">Fields marked with an asterisk (*) are required.</span>
-        </p>
+<div class="mb-3">
+    <strong class="text-danger">
+        Fields marked with an asterisk (*) are required.
+    </strong>
+</div>
+
+<form asp-action="KitDetails"
+      class="form-horizontal col-12"
+      method="post"
+      role="form"
+      enctype="multipart/form-data">
+    <input asp-for="NewKit" type="hidden" />
+    @if (Model.NewKit == false)
+    {
+        <input asp-for="Kit.Id" type="hidden" />
+    }
+
+    <div class="mb-3">
+        <label asp-for="Kit.Name" class="form-label required-field"></label>
+        <input asp-for="Kit.Name" class="form-control" placeholder="" />
+        <span asp-validation-for="Kit.Name" class="text-danger"></span>
     </div>
 
-    <form asp-action="KitDetails" class="form-horizontal col-12" method="post" role="form" enctype="multipart/form-data">
-        <input asp-for="NewKit" type="hidden" />
-        @if (Model.NewKit == false)
-        {
-            <input asp-for="Kit.Id" type="hidden" />
-        }
-
+    @if (Model.NewKit)
+    {
         <div class="mb-3">
-            <label asp-for="Kit.Name" class="col-sm-3 col-form-label required-field"></label>
-            <div class="col-sm-9">
-                <input asp-for="Kit.Name" class="form-control" placeholder="" />
-                <span asp-validation-for="Kit.Name" class="text-danger"></span>
-            </div>
-        </div>
-
-        @if (Model.NewKit)
-        {
-            <div class="col-sm-9 offset-sm-3">
-                <p>
-                    For best results please use images that are at least 1,000px by 1,000px,
-                    uploads are limited to @(Model.MaxUploadMB)MB total.
-                    Multiple images can be selected by holding the CTRL key.
-                </p>
-            </div>
-
-            <div class="mb-3">
-                <label class="col-sm-3 col-form-label required-field">Upload photos</label>
-                <div class="col-sm-9">
-                    <div class="input-group">
-                        <label class="input-group-text">
-                            <span class="btn btn-secondary btn-file">
-                                <span class="far fa-file-image"></span> Select file(s)...
-                                <input type="file"
-                                       multiple="multiple"
-                                       asp-for="Images"
-                                       accept=".png,.jpg,.jpeg"
-                                       style="display: none;" />
-                            </span>
-                        </label>
-                        <input type="text" class="form-control @(ViewData.ModelState.GetValidationState("Images") == invalid ? "input-validation-error" : "")" readonly />
-                    </div>
-                    <span asp-validation-for="Images" class="text-danger"></span>
-                </div>
-            </div>
-        }
-
-        <div class="mb-3">
-            <label asp-for="Kit.Website" class="col-sm-3 col-form-label"></label>
-            <div class="col-sm-9">
-                <input asp-for="Kit.Website" class="form-control" placeholder="" />
-                <span asp-validation-for="Kit.Website" class="text-danger"></span>
-            </div>
+            For best results please use images that are at least 1,000px by 1,000px,
+            uploads are limited to @(Model.MaxUploadMB)MB total.
+            Multiple images can be selected by holding the CTRL key.
         </div>
 
         <div class="mb-3">
-            <label asp-for="Kit.Description" class="col-sm-3 col-form-label required-field"></label>
-            <div class="col-sm-9">
-                <textarea asp-for="Kit.Description" class="form-control" rows="6"></textarea>
-                <span asp-validation-for="Kit.Description" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="mb-3">
-            <div class="col-12 col-sm-9 offset-sm-3">
-                <p>
-                    Please select which age groups the kit is suited for.
-                </p>
-            </div>
-            <label class="col-sm-3 col-form-label required-field">Age(s)</label>
-            <div class="col-sm-9">
-                <input id="agePlaceholder" class="form-control" />
-                <select asp-for="AgeSelection" asp-items="Model.AgeList" class="form-select hidden" type="text" multiple="multiple"></select>
-                <span asp-validation-for="AgeSelection" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="row my-4">
-            <div class="col-sm-9 offset-sm-3 my-4">
-                <button type="submit"
-                        class="btn btn-lg btn-outline-success btn-spinner my-4"
-                        button-spinner>
-                    Save Kit
+            <div class="input-group mb-3">
+                <input accept=".png,.jpg,.jpeg"
+                       asp-for="Images"
+                       class="form-control"
+                       multiple="multiple"
+                       type="file" />
+                <button class="btn btn-outline-secondary"
+                        id="imagesClearButton"
+                        type="button">
+                    Clear selection
                 </button>
-                @if (Model.NewKit == false)
-                {
-                    <a asp-action="Kit" asp-route-id="@Model.Kit.Id" class="btn btn-lg btn-outline-secondary float-start me-2">Return to Kit</a>
-                }
-                else
-                {
-                    <a asp-action="Kits" class="btn btn-lg btn-outline-secondary float-start me-2">Return to List</a>
-                }
             </div>
+            <span asp-validation-for="Images" class="text-danger mb-3"></span>
         </div>
-    </form>
+    }
 
-</div>
+    <div class="mb-3">
+        <label asp-for="Kit.Website" class="form-label"></label>
+        <input asp-for="Kit.Website" class="form-control" placeholder="" />
+        <span asp-validation-for="Kit.Website" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Kit.Description"
+               class="form-label required-field"></label>
+        <textarea asp-for="Kit.Description" class="form-control" rows="6"></textarea>
+        <span asp-validation-for="Kit.Description" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <p>
+            Please select which age groups the kit is suited for.
+        </p>
+        <label class="form-label required-field">Age(s)</label>
+        <select asp-for="AgeSelection"
+                asp-items="Model.AgeList"
+                size="@Model.AgeList.Count()"
+                class="form-select"
+                type="text"
+                multiple="multiple"></select>
+        <span asp-validation-for="AgeSelection" class="text-danger"></span>
+    </div>
+
+    <div class="text-center">
+        <button type="submit"
+                class="btn btn-lg btn-outline-success btn-spinner my-4"
+                button-spinner>
+            Save Kit
+        </button>
+    </div>
+</form>
 
 @section scripts {
     <script src="/js/performerregistration.min.js"></script>
 
     <script>
         $("#agePlaceholder").remove();
-        $("#AgeSelection")
-            .removeClass("hidden")
-            .multiselect({
-                inheritClass: true,
-                buttonWidth: "100%",
-                nonSelectedText: "",
-                includeSelectAllOption: true,
-                numberDisplayed: 4
-            });
     </script>
 }

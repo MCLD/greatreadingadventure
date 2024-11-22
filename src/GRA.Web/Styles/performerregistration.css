@@ -32,21 +32,21 @@ h1 {
     font-weight: bold;
 }
 
-.calendar-cell {
+td.calendar-cell {
     padding: 0 !important;
 }
 
-.selectable {
+td.selectable {
     cursor: pointer;
     padding: 0 !important;
 }
 
-.unselectable {
+td.unselectable {
     cursor: not-allowed;
     padding: 0 !important;
 }
 
-.available {
+td.available {
     background-color: lightgreen;
 }
 
@@ -58,11 +58,11 @@ h1 {
     background-color: deepskyblue;
 }
 
-.unavailable {
+td.unavailable {
     background-color: red;
 }
 
-.unavailable-text {
+td.unavailable-text {
     color: red;
 }
 
@@ -70,11 +70,11 @@ h1 {
     font-weight: bold;
 }
 
-.time {
+td.time {
     background-color: orange;
 }
 
-.time-text {
+td.time-text {
     color: orange;
 }
 
@@ -90,7 +90,7 @@ h1 {
     background-color: rgba(0, 0, 0, 0.3);
 }
 
-.blackout {
+td.blackout {
     background-color: #333333;
     color: white;
 }

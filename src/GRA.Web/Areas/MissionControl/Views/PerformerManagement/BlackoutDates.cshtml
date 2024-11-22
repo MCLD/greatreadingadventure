@@ -3,7 +3,7 @@
 @await Html.PartialAsync("_PerformerManagementPartial")
 
 <div class="row my-4">
-    <div class="col-12">
+    <div class="col-12 col-md-8 offset-md-2 col-xl-6 offset-xl-3">
         <a class="btn btn-outline-primary"
            data-bs-toggle="modal"
            data-bs-target="#addModal">Add a Blackout Date</a>
@@ -11,7 +11,7 @@
 </div>
 
 <div class="row">
-    <div class="col-12">
+    <div class="col-12 col-md-8 offset-md-2 col-xl-6 offset-xl-3">
         @if (Model.BlackoutDates.Count == 0)
         {
             <div class="alert alert-warning">No Blackout Dates</div>
@@ -24,7 +24,7 @@
                         <tr>
                             <th>Date</th>
                             <th>Reason</th>
-                            <th width="100">&nbsp;</th>
+                            <th style="width: 75px;">&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -37,14 +37,14 @@
                                 <td>
                                     @blackoutDate.Reason
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     <button type="button"
                                             class="btn btn-outline-danger btn-sm"
                                             data-bs-toggle="modal"
                                             data-bs-target="#deleteModal"
                                             data-id="@blackoutDate.Id"
                                             data-name="@blackoutDate.Reason">
-                                        <span class="fas fa-2x fa-times fa-fw" aria-hidden="true"></span>
+                                        <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                                     </button>
                                 </td>
                             </tr>
@@ -52,10 +52,7 @@
                     </tbody>
                 </table>
             </div>
-            @if (Model.PaginateModel.MaxPage > 1)
-            {
-                <paginate paginateModel="@Model.PaginateModel"></paginate>
-            }
+            <paginate paginateModel="@Model.PaginateModel"></paginate>
         }
     </div>
 </div>
@@ -80,36 +77,36 @@
                                 class="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="Close dialog">
-                            
                         </button>
                     </div>
                     <div class="modal-body">
                         <div class="row mb-3">
                             <div class="col-12">
                                 <label asp-for="BlackoutDate.Date" class="col-form-label"></label>
-                                <div class="input-group date">
-                                    <input asp-for="BlackoutDate.Date" type="date" class="form-control"/>
-                                </div>
+                                <input asp-for="BlackoutDate.Date"
+                                       type="date"
+                                       class="form-control" />
                                 <span asp-validation-for="BlackoutDate.Date"
                                       class="text-danger"></span>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label asp-for="BlackoutDate.Reason" class="col-form-label"></label>
-                            <input asp-for="BlackoutDate.Reason" class="form-control" />
-                            <span asp-validation-for="BlackoutDate.Reason"
-                                  class="text-danger"></span>
+                        <div class="row">
+                            <div class="mb-3">
+                                <label asp-for="BlackoutDate.Reason" class="col-form-label"></label>
+                                <input asp-for="BlackoutDate.Reason" class="form-control" />
+                                <span asp-validation-for="BlackoutDate.Reason"
+                                      class="text-danger"></span>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button"
                                 class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal"
-                                style="margin-right: 1em;">
+                                data-bs-dismiss="modal">
                             Cancel
                         </button>
                         <button type="submit"
-                                class="btn btn-outline-primary btn-spinner float-end"
+                                class="btn btn-outline-primary"
                                 aria-label="Confirm"
                                 button-spinner>
                             Add
@@ -146,23 +143,23 @@
                                 class="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="Close dialog">
-                            
                         </button>
-
                     </div>
-                    <div class="modal-body">
-                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
-                        <span id="modal-text"></span>
+                    <div class="modal-body p-0">
+                        <div class="modal-body d-flex align-items-stretch">
+                            <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                                  aria-hidden="true"></span>
+                            <span id="modal-text"></span>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button"
                                 class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal"
-                                style="margin-right: 1em;">
+                                data-bs-dismiss="modal">
                             Cancel
                         </button>
                         <button type="submit"
-                                class="btn btn-outline-danger btn-spinner float-end"
+                                class="btn btn-outline-danger"
                                 aria-label="Confirm"
                                 button-spinner>
                             <span class="fas fa-times fa-fw" aria-hidden="true"></span>
@@ -178,11 +175,11 @@
 @section scripts {
     <script>
         $("#deleteModal").on("show.bs.modal", function (e) {
-            var button = $(e.relatedTarget);
-            var id = button.data("id");
-            var reason = button.data("reason");
-            var modal = $(this);
-            modal.find("#modal-text").text("Are you sure you wish to delete the Blackout Date \"" + reason + "\"?");
+            let button = $(e.relatedTarget);
+            let id = button.data("id");
+            let reason = button.data("name");
+            let modal = $(this);
+            modal.find("#modal-text").html("Are you sure you wish to delete the Blackout Date: <strong>" + reason + "</strong>?");
             modal.find("#BlackoutDate_Id").val(id);
             modal.find("#BlackoutDate_Reason").val(reason);
         });

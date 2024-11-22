@@ -4,30 +4,37 @@
     <link rel="stylesheet" href="/css/performerregistration.min.css" />
 }
 
-<div class="row">
-    <div class="col-12">
-        <table style="margin:0 auto;">
-            <tr>
+@section inHeading {
+    <a asp-action="Kits"
+       asp-route-page="@Model.ReturnPage"
+       class="btn btn-outline-secondary ms-auto d-print-none">Return to List</a>
+}
+
+<div class="row mt-3">
+    <div class="col-12 border-bottom border-top py-2 mb-3">
+        <div class="d-flex justify-content-between">
+            <div class="h2 d-print-none" style="width: 2rem;">
                 @if (Model.PrevKit.HasValue)
                 {
-                    <td style="position:absolute;">
-                        <h1>
-                            <a asp-action="Kit" asp-route-id="@Model.PrevKit" style="margin-left:-125px;"><span class="fas fa-chevron-left"></span></a>
-                        </h1>
-                    </td>
+                    <a asp-action="@nameof(PerformerManagementController.Kit)"
+                       asp-route-id="@Model.PrevKit">
+                        <span class="fas fa-chevron-left"></span>
+                    </a>
                 }
-                <td><h1>Kit</h1></td>
+            </div>
+            <div class="flex-grow-1 text-center h2">
+                Kit
+            </div>
+            <div class="h2 d-print-none text-end" style="width: 2rem;">
                 @if (Model.NextKit.HasValue)
                 {
-                    <td style="position:absolute;">
-                        <h1>
-                            <a asp-action="Kit" asp-route-id="@Model.NextKit" style="margin-left:50px;"><span class="fas fa-chevron-right"></span></a>
-                        </h1>
-                    </td>
+                    <a asp-action="@nameof(PerformerManagementController.Kit)"
+                       asp-route-id="@Model.NextKit">
+                        <span class="fas fa-chevron-right"></span>
+                    </a>
                 }
-            </tr>
-        </table>
-        <hr />
+            </div>
+        </div>
     </div>
 
     <div class="col-12 mb-3">
@@ -49,11 +56,6 @@
         <div class="row mb-3">
             <div class="col-12 text-center">
                 <a asp-action="KitImages" asp-route-id="@Model.Kit.Id" class="btn btn-outline-primary">View/Manage Images</a>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-12 text-center">
-                <a asp-action="Kits" asp-route-page="@Model.ReturnPage" class="btn btn-outline-secondary">Return to List</a>
             </div>
         </div>
     </div>

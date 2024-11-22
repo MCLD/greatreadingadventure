@@ -6,6 +6,8 @@ namespace GRA.Controllers.ViewModel.MissionControl.PerformerManagement
 {
     public class StatusViewModel : PerformerManagementPartialViewModel
     {
+        public ICollection<PsAgeGroup> AgeGroups { get; set; }
+
         public DateTime Now { get; set; }
         public PsSettings Settings { get; set; }
         public ICollection<Domain.Model.System> Systems { get; set; }

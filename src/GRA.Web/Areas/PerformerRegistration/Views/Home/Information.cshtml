@@ -7,19 +7,7 @@
 @if (Model.Performer?.RegistrationCompleted != true)
 {
     @section nav {
-        <div class="row row-spacing">
-            <div class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 join-header">
-                <div class="col-4 sign-up-step active">
-                    <p>Information</p>
-                </div>
-                <div class="col-4 sign-up-step">
-                    <p>Schedule</p>
-                </div>
-                <div class="col-4 sign-up-step">
-                    <p>Program</p>
-                </div>
-            </div>
-        </div>
+    @await Html.PartialAsync("_SignupStepPartial")
     }
 }
 else
@@ -34,31 +22,34 @@ else
 }
 
 <div class="row">
-    <div class="col-sm-9 offset-sm-3">
+    <div class="col-12">
         <p>
             @if (Model.Performer?.RegistrationCompleted != true)
             {
                 <text>
                     Please provide details about yourself as a performer.
                     On the next page you will provide details about your programs.
-                    <br />
                 </text>
             }
-            <span class="text-danger small" style="font-weight: bold;">
+            <strong class="text-danger d-block">
                 Fields marked with an asterisk (*) are required.
-            </span>
+            </strong>
         </p>
     </div>
 </div>
 
-<form asp-action="Information" class="form-horizontal" method="post" role="form" enctype="multipart/form-data">
+<form asp-action="Information"
+      class="form-horizontal"
+      enctype="multipart/form-data"
+      method="post"
+      role="form">
     <input asp-for="BranchAvailabilityString" type="hidden" />
     @if (Model.Performer?.RegistrationCompleted == true)
     {
         <input asp-for="Performer.RegistrationCompleted" type="hidden" />
     }
 
-    <div class="mb-3">
+    <div class="row mb-3">
         <label asp-for="Performer.Name" class="col-sm-3 col-form-label required-field"></label>
         <div class="col-sm-9">
             <input asp-for="Performer.Name" class="form-control" placeholder="" />
@@ -68,8 +59,8 @@ else
 
     @if (Model.Performer?.RegistrationCompleted != true)
     {
-        <div class="row">
-            <div class="col-sm-9 offset-sm-3">
+        <div class="row mb-3">
+            <div class="col-12">
                 <p>
                     In order to promote your programming, please upload one or more
                     <strong>photos of yourself</strong>
@@ -81,7 +72,7 @@ else
             </div>
         </div>
 
-        <div class="mb-3">
+        <div class="row mb-3">
             <label class="col-sm-3 col-form-label required-field">Upload photos</label>
             <div class="col-sm-9">
                 <div class="input-group">
@@ -95,7 +86,9 @@ else
                                    style="display: none;" />
                         </span>
                     </label>
-                    <input type="text" class="form-control @(ViewData.ModelState.GetValidationState("Images") == invalid ? "input-validation-error" : "")" readonly />
+                    <input type="text"
+                           class="form-control @(ViewData.ModelState.GetValidationState("Images") == invalid ? "input-validation-error" : "")"
+                           readonly />
                 </div>
                 <span asp-validation-for="Images" class="text-danger"></span>
             </div>
@@ -103,7 +96,7 @@ else
     }
 
     <div class="row">
-        <div class="col-sm-9 offset-sm-3">
+        <div class="col-12">
             @if (Model.Performer?.RegistrationCompleted != true)
             {
                 <p>
@@ -121,8 +114,8 @@ else
         </div>
     </div>
 
-    <div class="mb-3">
-        <label class="col-sm-3 col-form-label @(Model.Performer?.RegistrationCompleted != true ? "required-field": "")">Upload PDF</label>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label @(Model.Performer?.RegistrationCompleted != true ? "required-field": "")">Upload references PDF</label>
         <div class="col-sm-9">
             <div class="input-group">
                 <label class="input-group-text">
@@ -140,7 +133,7 @@ else
         </div>
     </div>
 
-    <div class="mb-3">
+    <div class="row mb-3">
         <label asp-for="Performer.BillingAddress" class="col-sm-3 col-form-label required-field"></label>
         <div class="col-sm-9">
             <textarea asp-for="Performer.BillingAddress" class="form-control"></textarea>
@@ -149,7 +142,7 @@ else
     </div>
 
 
-    <div class="mb-3">
+    <div class="row mb-3">
         <label asp-for="Performer.Website" class="col-sm-3 col-form-label"></label>
         <div class="col-sm-9">
             <input asp-for="Performer.Website" class="form-control" placeholder="" />
@@ -157,7 +150,7 @@ else
         </div>
     </div>
 
-    <div class="mb-3">
+    <div class="row mb-3">
         <label asp-for="Performer.PhonePreferred" class="col-sm-3 col-form-label required-field"></label>
         <div class="col-sm-9">
             <select asp-for="Performer.PhonePreferred" class="form-select">
@@ -168,7 +161,7 @@ else
         </div>
     </div>
 
-    <div class="mb-3">
+    <div class="row mb-3">
         <label asp-for="Performer.Email" class="col-sm-3 col-form-label required-field">Email</label>
         <div class="col-sm-9">
             <input asp-for="Performer.Email" class="form-control" placeholder="" />
@@ -176,7 +169,7 @@ else
         </div>
     </div>
 
-    <div class="mb-3">
+    <div class="row mb-3">
         <label asp-for="Performer.Phone" class="col-sm-3 col-form-label required-field"></label>
         <div class="col-sm-9">
             <input asp-for="Performer.Phone" class="form-control" placeholder="" />
@@ -184,7 +177,7 @@ else
         </div>
     </div>
 
-    <div class="mb-3">
+    <div class="row mb-3">
         <label asp-for="Performer.VendorId" class="col-sm-3 col-form-label required-field">
             @Model.Settings.VendorIdPrompt
             @if (!string.IsNullOrWhiteSpace(Model.Settings.VendorCodeFormat))
@@ -198,7 +191,7 @@ else
         </div>
     </div>
 
-    <div class="mb-3">
+    <div class="row mb-3">
         <label asp-for="Performer.HasFingerprintCard" class="col-sm-3 col-form-label required-field"></label>
         <div class="col-sm-9">
             <select asp-for="Performer.HasFingerprintCard" class="form-select">
@@ -209,8 +202,9 @@ else
         </div>
     </div>
 
-    @if (Model.EnablePerformerInsuranceQuestion){
-        <div class="mb-3">
+    @if (Model.EnablePerformerInsuranceQuestion)
+    {
+        <div class="row mb-3">
             <label asp-for="Performer.HasInsurance" class="col-sm-3 col-form-label required-field"></label>
             <div class="col-sm-9">
                 <select asp-for="Performer.HasInsurance" class="form-select">
@@ -222,39 +216,51 @@ else
         </div>
     }
 
-    <div class="mb-3">
-        <div class="col-sm-9 offset-sm-3">
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label required-field">Select libraries</label>
+        <div class="col-sm-9">
             <p>
                 Please let us know at which locations you are willing to perform:
-                <strong><span id="branchCount">@(Model.BranchAvailability?.Count ?? 0)</span> of @Model.BranchCount Selected</strong>
+                <strong>
+                    <span id="branchCount">@(Model.BranchAvailability?.Count ?? 0)</span>
+                    of @Model.BranchCount Selected
+                </strong>
             </p>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#branchModal">Select Libraries</button>
-            <span id="branchValidator" asp-validation-for="BranchAvailability" class="field-validation-error text-danger">Please select the libraries where you are willing to perform.</span>
+            <button type="button"
+                    class="btn btn-outline-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#branchModal">
+                Select Libraries
+            </button>
+            <span id="branchValidator"
+                  asp-validation-for="BranchAvailability"
+                  class="field-validation-error text-danger">
+                Please select the libraries where you are willing to perform.
+            </span>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-12 col-sm-9 offset-sm-3">
-
+        <div class="col-12 text-center">
             @if (Model.Performer?.RegistrationCompleted != true)
             {
                 <button id="submitButton"
                         type="submit"
-                        class="btn btn-lg btn-success"
+                        class="btn btn-lg btn-outline-success"
                         button-spinner>
-                    Next: Schedule
+                    Next step: Schedule
                 </button>
             }
             else
             {
+                <a asp-action="Dashboard"
+                   class="btn btn-lg btn-outline-secondary me-4">Return to Dashboard</a>
                 <button id="submitButton"
                         type="submit"
-                        class="btn btn-lg btn-success"
-                        style="margin-bottom: 0.5rem;"
+                        class="btn btn-lg btn-outline-success"
                         button-spinner>
                     Update Information
                 </button>
-                <a asp-action="Dashboard" class="btn btn-lg btn-outline-secondary float-start me-4">Return to Dashboard</a>
             }
 
         </div>
@@ -267,13 +273,14 @@ else
          tabindex="-1"
          role="dialog"
          aria-labelledby="branchModalLabel">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title h4" id="branchModalLabel">Branch Selection</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        
-                    </button>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"></button>
                 </div>
                 <div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y:auto;">
                     <p>
@@ -321,8 +328,7 @@ else
                 <div class="modal-footer">
                     <button type="button"
                             class="btn btn-outline-primary"
-                            data-bs-dismiss="modal"
-                            style="margin-right: 1em;">
+                            data-bs-dismiss="modal">
                         Confirm
                     </button>
                 </div>

@@ -85,7 +85,7 @@
         <div class="col-12">
             <label asp-for="Settings.ScheduleStartDate" class="col-form-label required-field"></label>
             <div class="mb-3 date">
-                <input asp-for="Settings.ScheduleStartDate" type="datetime-local" class="form-control"/>
+                <input asp-for="Settings.ScheduleStartDate" type="date" class="form-control"/>
             </div>
             <span asp-validation-for="Settings.ScheduleStartDate" class="text-danger"></span>
         </div>
@@ -94,7 +94,7 @@
         <div class="col-12">
             <label asp-for="Settings.ScheduleEndDate" class="col-form-label required-field"></label>
             <div class="mb-3 date">
-                <input asp-for="Settings.ScheduleEndDate" type="datetime-local" class="form-control"  />
+                <input asp-for="Settings.ScheduleEndDate" type="date" class="form-control"  />
             </div>
             <span asp-validation-for="Settings.ScheduleEndDate" class="text-danger"></span>
         </div>
