@@ -13,8 +13,8 @@
 }
 
 .rowlink:hover::before {
-    background-color: #EAEAEA;
-    background-color: rgba(51, 51, 51, .1);
+    background-color: #eaeaea;
+    background-color: rgba(51, 51, 51, 0.1);
     cursor: pointer;
 }
 
@@ -50,7 +50,7 @@ a.rowlink {
 }
 
 .navbar.bg-light .nav-item.active > a.nav-link {
-    background-color: #66CCFF;
+    background-color: #66ccff;
 }
 
 .navbar.bg-dark .nav-item.active > a.nav-link {
@@ -109,7 +109,7 @@ footer p {
     position: relative;
 }
 
-    .btn-file input[type=file] {
+    .btn-file input[type="file"] {
         background: white;
         cursor: inherit;
         display: block;
@@ -208,7 +208,7 @@ input.form-check {
     margin: 0;
 }
 
-input:read-only:not([type=checkbox]):not([type=radio]):not([type="submit"]):not([type="color"]):not([type="file"]) {
+input:read-only:not([type="checkbox"]):not([type="radio"]):not( [type="submit"] ):not([type="color"]):not([type="file"]) {
     cursor: not-allowed;
 }
 
@@ -376,11 +376,11 @@ input:read-only:not([type=checkbox]):not([type=radio]):not([type="submit"]):not(
 }
 
     .favorite-checkbox + label:before {
-        color: #DDB500;
+        color: #ddb500;
         content: "\f005";
         cursor: pointer;
         display: inline-block;
-        font-family: 'Font Awesome 5 Free';
+        font-family: "Font Awesome 5 Free";
         font-size: 24px;
         font-weight: 500;
     }
@@ -395,7 +395,7 @@ input:read-only:not([type=checkbox]):not([type=radio]):not([type="submit"]):not(
 }
 
     .favorite-button.fa-star {
-        color: #DDB500;
+        color: #ddb500;
     }
 
 .task-description p {
@@ -407,13 +407,13 @@ p.password-note {
 }
 
 .mail-thread-container {
-    background-color: #FFF;
-    border: 1px solid #DDD;
+    background-color: #fff;
+    border: 1px solid #ddd;
     border-radius: 4px;
-    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
     margin-bottom: 2px;
-    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
-    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
 }
 
 .mail-thread-header {
@@ -461,14 +461,14 @@ p.password-note {
         }
 
         .school-selection-checkbox + label:active {
-            box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+            box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
             outline: 0;
-            -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+            -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
         }
 
         .school-selection-checkbox + label::before {
             content: "\f0c8";
-            font-family: 'Font Awesome 5 Free';
+            font-family: "Font Awesome 5 Free";
             margin-right: 6px;
         }
 
@@ -565,12 +565,12 @@ p.password-note {
     height: 100%;
     image-rendering: -webkit-optimize-contrast;
     left: 40px;
-    -moz-transition: .3s ease-in-out;
-    -o-transition: .3s ease-in-out;
+    -moz-transition: 0.3s ease-in-out;
+    -o-transition: 0.3s ease-in-out;
     position: absolute;
     top: 0;
-    transition: .3s ease-in-out;
-    -webkit-transition: .3s ease-in-out;
+    transition: 0.3s ease-in-out;
+    -webkit-transition: 0.3s ease-in-out;
     width: auto;
 }
 
@@ -683,7 +683,7 @@ p.password-note {
     }
 }
 
-@media only screen and (min-width : 992px) {
+@media only screen and (min-width: 992px) {
     .avatar-item-selector {
         margin-left: 14px;
         margin-right: 14px;
@@ -705,7 +705,7 @@ p.password-note {
     }
 }
 
-@media only screen and (min-width : 1200px) {
+@media only screen and (min-width: 1200px) {
     .avatar-item-selector {
         margin-left: 5px;
         margin-right: 5px;
@@ -777,7 +777,7 @@ p.password-note {
 }
 
     .gra-carousel-modal:before {
-        content: '';
+        content: "";
         display: inline-block;
         height: 100%;
         margin-right: -4px; /* Adjusts for spacing */
@@ -803,7 +803,7 @@ p.password-note {
 .dropdown-label {
     font-size: large;
     position: relative;
-    top: .6rem;
+    top: 0.6rem;
     vertical-align: top;
 }
 
@@ -814,7 +814,7 @@ p.password-note {
 
 .nav-pills > li + li {
     margin-left: 10px;
-} 
+}
 
 .gra-landing-content {
     font-size: larger;

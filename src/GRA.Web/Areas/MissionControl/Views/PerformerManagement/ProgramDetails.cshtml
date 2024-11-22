@@ -1,9 +1,5 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.ProgramDetailsViewModel
 
-@{
-    var invalid = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
-}
-
 @section styles {
     <link rel="stylesheet" href="/css/performerregistration.min.css" />
     <noscript>
@@ -15,18 +11,36 @@
     </noscript>
 }
 
+@section inHeading {
+    @if (Model.PerformerId.HasValue)
+    {
+        <a asp-action="@nameof(PerformerManagementController.Performer)"
+           asp-route-id="@Model.PerformerId"
+           class="btn btn-outline-secondary ms-auto d-print-none">Return to Performer</a>
+    }
+    else
+    {
+        <a asp-action="@nameof(PerformerManagementController.Program)"
+           asp-route-id="@Model.AddPerformerId"
+           class="btn btn-outline-secondary ms-auto d-print-none">Return to Program</a>
+    }
+}
+
 <div class="row">
     <div class="col-12">
         <h1>@(Model.PerformerId.HasValue ? $"Add Program for: {Model.PerformerName}" : $"Edit Program: {Model.Program.Title}")</h1>
     </div>
 
-    <div class="col-sm-9 offset-sm-3">
-        <p>
-            <span class="text-danger small" style="font-weight: bold;">Fields marked with an asterisk (*) are required.</span>
-        </p>
+    <div class="col-12">
+        <strong class="text-danger">
+            Fields marked with an asterisk (*) are required.
+        </strong>
     </div>
 
-    <form asp-action="ProgramDetails" class="form-horizontal col-12" method="post" role="form" enctype="multipart/form-data">
+    <form asp-action="@nameof(PerformerManagementController.ProgramDetails)"
+          method="post"
+          role="form"
+          enctype="multipart/form-data">
         @if (Model.PerformerId.HasValue)
         {
             <input asp-for="PerformerId" type="hidden" />
@@ -37,196 +51,209 @@
         }
 
         <div class="mb-3">
-            <label asp-for="Program.Title" class="col-sm-3 col-form-label required-field"></label>
-            <div class="col-sm-9">
-                <input asp-for="Program.Title" class="form-control" placeholder="" />
-                <span asp-validation-for="Program.Title" class="text-danger"></span>
-            </div>
+            <label asp-for="Program.Title" class="form-label required-field"></label>
+            <input asp-for="Program.Title" class="form-control" placeholder="" />
+            <span asp-validation-for="Program.Title" class="text-danger"></span>
         </div>
 
         @if (Model.PerformerId.HasValue)
         {
-            <div class="col-sm-9 offset-sm-3">
-                <p>
-                    For best results please use images that are at least 1,000px by 1,000px,
-                    uploads are limited to @(Model.MaxUploadMB)MB total.
-                    Multiple images can be selected by holding the CTRL key.
-                </p>
+            <div class="mb-3">
+                For best results please use images that are at least 1,000px by 1,000px,
+                uploads are limited to @(Model.MaxUploadMB) MB total.
+                Multiple images can be selected by holding the CTRL key.
             </div>
 
-            <div class="mb-3">
-                <label class="col-sm-3 col-form-label">Upload photos</label>
-                <div class="col-sm-9">
-                    <div class="input-group">
-                        <label class="input-group-text">
-                            <span class="btn btn-secondary btn-file">
-                                <span class="far fa-file-image"></span> Select file(s)...
-                                <input type="file"
-                                       multiple="multiple"
-                                       asp-for="Images"
-                                       accept=".png,.jpg,.jpeg"
-                                       style="display: none;" />
-                            </span>
-                        </label>
-                        <input type="text" class="form-control @(ViewData.ModelState.GetValidationState("Images") == invalid ? "input-validation-error" : "")" readonly />
-                    </div>
-                    <span asp-validation-for="Images" class="text-danger"></span>
-                </div>
+            <div class="input-group mb-3">
+                <input accept=".png,.jpg,.jpeg"
+                       asp-for="Images"
+                       class="form-control"
+                       multiple="multiple"
+                       type="file" />
+                <button class="btn btn-outline-secondary"
+                        id="imagesClearButton"
+                        type="button">
+                    Clear selection
+                </button>
             </div>
+            <span asp-validation-for="Images" class="text-danger"></span>
         }
 
         <div class="mb-3">
-            <label asp-for="Program.MinimumCapacity" class="col-sm-2 offset-sm-3 col-form-label required-field"></label>
-            <div class="col-sm-2">
-                <input asp-for="Program.MinimumCapacity" class="form-control form-control-lg" type="text" placeholder="" />
-                <span asp-validation-for="Program.MinimumCapacity" class="text-danger"></span>
-            </div>
-            <div class="visible-xs mb-2"></div>
-            <label asp-for="Program.MaximumCapacity" class="col-sm-2 col-form-label required-field"></label>
-            <div class="col-sm-2">
-                <input asp-for="Program.MaximumCapacity" class="form-control form-control-lg" type="text" placeholder="" />
-                <span asp-validation-for="Program.MaximumCapacity" class="text-danger"></span>
-            </div>
+            <label asp-for="Program.MinimumCapacity" class="form-label required-field"></label>
+            <input asp-for="Program.MinimumCapacity"
+                   class="form-control"
+                   type="number"
+                   style="width: 8rem;"
+                   placeholder="" />
+            <span asp-validation-for="Program.MinimumCapacity" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <div class="col-12 col-sm-9 offset-sm-3">
-                <p>
-                    Please select which age groups the program is suited for.
-                </p>
-            </div>
-            <label class="col-sm-3 col-form-label required-field">Age(s)</label>
-            <div class="col-sm-9">
-                <input id="agePlaceholder" class="form-control" />
-                <select asp-for="AgeSelection" asp-items="Model.AgeList" class="form-select hidden" type="text" multiple="multiple"></select>
-                <span asp-validation-for="AgeSelection" class="text-danger"></span>
-            </div>
+            <label asp-for="Program.MaximumCapacity"
+                   class="form-label required-field"></label>
+            <input asp-for="Program.MaximumCapacity"
+                   class="form-control"
+                   style="width: 8rem;"
+                   type="number"
+                   placeholder="" />
+            <span asp-validation-for="Program.MaximumCapacity" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <div class="col-12 col-sm-9 offset-sm-3">
-                <p>
-                    Please list all times in minutes.
-                </p>
-            </div>
-            <label asp-for="Program.ProgramLengthMinutes" class="offset-sm-3 col-sm-2 col-form-label required-field"></label>
-            <div class="col-sm-2">
-                <input asp-for="Program.ProgramLengthMinutes" class="form-control form-control-lg" type="text" placeholder="" />
-                <span asp-validation-for="Program.ProgramLengthMinutes" class="text-danger"></span>
-            </div>
-            <div class="visible-xs mb-2"></div>
-            <label asp-for="Program.SetupTimeMinutes" class="col-sm-2 col-form-label required-field"></label>
-            <div class="col-sm-2">
-                <input asp-for="Program.SetupTimeMinutes" class="form-control form-control-lg" type="text" placeholder="" />
-                <span asp-validation-for="Program.SetupTimeMinutes" class="text-danger"></span>
-            </div>
+            <label class="col-form-label required-field">Age(s)</label>
+            <small><em>(use SHIFT or CTRL to select multiple age groups)</em></small>
         </div>
 
         <div class="mb-3">
-            <label asp-for="Program.BreakdownTimeMinutes" class="offset-sm-3 col-sm-2 col-form-label required-field"></label>
-            <div class="col-sm-2">
-                <input asp-for="Program.BreakdownTimeMinutes" class="form-control form-control-lg" type="text" placeholder="" />
-                <span asp-validation-for="Program.BreakdownTimeMinutes" class="text-danger"></span>
-            </div>
-            <div class="visible-xs mb-2"></div>
-            <label asp-for="Program.BackToBackMinutes" class="col-sm-2 col-form-label required-field"></label>
-            <div class="col-sm-2">
-                <select asp-for="Program.BackToBackMinutes" asp-items="Model.BackToBackSelection" class="form-select" type="text"></select>
-                <span asp-validation-for="Program.BackToBackMinutes" class="text-danger"></span>
-            </div>
+            <select asp-for="AgeSelection"
+                    asp-items="Model.AgeList"
+                    class="form-select"
+                    size="@Model.AgeList.Count()"
+                    multiple="multiple"
+                    type="text"></select>
+            <span asp-validation-for="AgeSelection" class="text-danger"></span>
         </div>
+
+        <div class="mb-3">
+            <label asp-for="Program.ProgramLengthMinutes"
+                   class="form-label required-field"></label>
+            <div class="input-group" style="width: 16rem;">
+                <input asp-for="Program.ProgramLengthMinutes"
+                       class="form-control form-control-lg"
+                       placeholder=""
+                       type="number" />
+                <span class="input-group-text">minutes</span>
+            </div>
+            <span asp-validation-for="Program.ProgramLengthMinutes" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label required-field">
+                Set-up Time
+                <span class="far fa-question-circle"
+                      data-bs-placement="top"
+                      data-bs-toggle="tooltip"
+                      title="How much time needed before program begins."></span>
+            </label>
+            <div class="input-group" style="width: 16rem;">
+                <input asp-for="Program.SetupTimeMinutes"
+                       class="form-control form-control-lg"
+                       placeholder=""
+                       type="number" />
+                <span class="input-group-text">minutes</span>
+            </div>
+            <span asp-validation-for="Program.SetupTimeMinutes" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label required-field">
+                Breakdown Time
+                <span class="far fa-question-circle"
+                      data-bs-placement="top"
+                      data-bs-toggle="tooltip"
+                      title="How much time needed after program ends."></span>
+            </label>
+            <div class="input-group" style="width: 16rem;">
+                <input asp-for="Program.BreakdownTimeMinutes"
+                       class="form-control form-control-lg"
+                       placeholder=""
+                       type="number" />
+                <span class="input-group-text">minutes</span>
+            </div>
+            <span asp-validation-for="Program.BreakdownTimeMinutes" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label required-field">
+                Time between back-to-back programs
+                <span class="far fa-question-circle"
+                      data-bs-placement="top"
+                      data-bs-toggle="tooltip"
+                      title="If you are requested to do this program twice in a row, how much time do you require between them?"></span>
+            </label>
+            <div class="input-group" style="width: 16rem;">
+                <select asp-for="Program.BackToBackMinutes"
+                        asp-items="Model.BackToBackSelection"
+                        class="form-select"
+                        type="text"></select>
+                <span class="input-group-text">minutes</span>
+            </div>
+            <span asp-validation-for="Program.BackToBackMinutes" class="text-danger"></span>
+        </div>
+
 
         <div class="mb-3">
             <label asp-for="Program.Description" class="col-sm-3 col-form-label required-field"></label>
-            <div class="col-sm-9">
-                <textarea asp-for="Program.Description" class="form-control" maxlength="375" rows="4"></textarea>
-                <span id="descriptionCounter" class="float-end">
-                    <span id="descriptionCount">@(Model.Program?.Description?.Length ?? 0)</span> / 375
-                </span>
-                <span asp-validation-for="Program.Description" class="text-danger"></span>
-            </div>
+            <textarea asp-for="Program.Description" class="form-control" maxlength="375" rows="4"></textarea>
+            <span id="descriptionCounter" class="float-end">
+                <span id="descriptionCount">@(Model.Program?.Description?.Length ?? 0)</span> / 375
+            </span>
+            <span asp-validation-for="Program.Description" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <label class="col-sm-3 col-form-label required-field">
+            <label class="form-label required-field">
                 Inclusive cost
-                <span class="far fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Includes mileage, supplies, etc."></span>
+                <span class="far fa-question-circle"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title="Includes mileage, supplies, etc."></span>
             </label>
-
-            <div class="col-sm-9">
-                <div class="input-group">
-                    <span class="input-group-text">$</span>
-                    <input asp-for="Program.Cost" class="form-control" placeholder="" />
-                </div>
-                <span asp-validation-for="Program.Cost" class="text-danger"></span>
+            <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input asp-for="Program.Cost" class="form-control" placeholder="" />
             </div>
+            <span asp-validation-for="Program.Cost" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <div class="col-sm-3">
-                <div class="row">
-                    <label asp-for="Program.Setup" class="col-12 col-form-label required-field"></label>
-                    @if (!string.IsNullOrWhiteSpace(Model.SetupSupplementalText))
-                    {
-                        <label class="col-12 col-form-label" style="font-size:small;"><em>@Model.SetupSupplementalText</em></label>
-                    }
-                </div>
-            </div>
-            <div class="col-sm-9">
-                <textarea asp-for="Program.Setup" class="form-control" rows="3"></textarea>
-                <span asp-validation-for="Program.Setup" class="text-danger"></span>
-            </div>
+            <label asp-for="Program.Setup"
+                   class="form-label required-field"></label>
+            @if (!string.IsNullOrWhiteSpace(Model.SetupSupplementalText))
+            {
+                <small>
+                    <em>@Model.SetupSupplementalText</em>
+                </small>
+            }
+            <textarea asp-for="Program.Setup" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Program.Setup" class="text-danger"></span>
         </div>
 
         @if (Model.EnablePerformerLivestreamQuestions)
         {
             <div class="mb-3">
-                <div class="col-12 col-sm-9 offset-sm-3">
-                    <p>
-                        Are you willing to allow the library to livestream your program online?<span class="required-field"></span>
-                    </p>
-                </div>
-                <div class="col-sm-9 offset-sm-3">
-                    <select asp-for="Program.AllowStreaming" class="form-select">
-                        <option value="true">Yes</option>
-                        <option value="false">No</option>
-                    </select>
-                    <span asp-validation-for="Program.AllowStreaming" class="text-danger"></span>
-                </div>
+                <label>
+                    Are you willing to allow the library to livestream your program
+                    online?<span class="required-field"></span>
+                </label>
+                <select asp-for="Program.AllowStreaming" class="form-select">
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
+                <span asp-validation-for="Program.AllowStreaming" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
-                <div class="col-12 col-sm-9 offset-sm-3">
-                    <p>
-                        Are you willing to allow the library to save and share the archive of your event, if livestreamed or recorded?<span class="required-field"></span>
-                    </p>
-                </div>
-                <div class="col-sm-9 offset-sm-3">
-                    <select asp-for="Program.AllowArchiving" class="form-select">
-                        <option value="true">Yes</option>
-                        <option value="false">No</option>
-                    </select>
-                    <span asp-validation-for="Program.AllowArchiving" class="text-danger"></span>
-                </div>
+                <label>
+                    Are you willing to allow the library to save and share the archive of your
+                    event, if livestreamed or recorded?<span class="required-field"></span>
+                </label>
+                <select asp-for="Program.AllowArchiving" class="form-select">
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
+                <span asp-validation-for="Program.AllowArchiving" class="text-danger"></span>
             </div>
         }
-        
+
         <div class="row">
-            <div class="col-sm-9 offset-sm-3" style="margin-top: 1em;">
+            <div class="col-12 d-flex justify-content-end">
                 <button type="submit"
-                        class="btn btn-lg btn-outline-success btn-spinner"
-                        style="margin-bottom: 0.5rem;"
+                        class="btn btn-lg btn-outline-success"
                         button-spinner>
                     Save Program
                 </button>
-                @if (Model.PerformerId.HasValue)
-                {
-                    <a asp-action="Performer" asp-route-id="@Model.PerformerId" class="btn btn-lg btn-outline-secondary float-start me-2">Return to Dashboard</a>
-                }
-                else
-                {
-                    <a asp-action="Program" asp-route-id="@Model.Program.Id" class="btn btn-lg btn-outline-secondary float-start me-2">Return to Program</a>
-                }
             </div>
         </div>
     </form>
@@ -237,16 +264,20 @@
     <script src="/js/performerregistration.min.js"></script>
 
     <script>
-        $("#agePlaceholder").remove();
-        $("#AgeSelection")
-            .removeClass("hidden")
-            .multiselect({
-                inheritClass: true,
-                buttonWidth: "100%",
-                nonSelectedText: "",
-                includeSelectAllOption: true,
-                numberDisplayed: 3
-            });
+        $("#imagesClearButton").on("click", function (e) {
+            $('#Images').val('');
+            imagesSelectionChanged(e.currentTarget.previousElementSibling);
+        });
+
+        $("#Images").on("change", function (e) {
+            imagesSelectionChanged(e.currentTarget);
+        })
+
+        $(".imageSelection").on("click", function (e) {
+            let element = e.currentTarget.nextElementSibling;
+            element.checked = !element.checked;
+            checkStatusChanged(element);
+        });
 
         $("#Program_Description").on("input propertychange", function () {
             $("#descriptionCount").text($(this).val().length);

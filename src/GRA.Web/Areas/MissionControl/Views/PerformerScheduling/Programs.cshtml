@@ -9,48 +9,53 @@
         <ul class="nav nav-pills flex-column flex-sm-row">
             <li class="nav-item">
                 <a ActiveBy routeKey="Action"
-                value="Performers"
-                asp-action="Performers"
-                class="nav-link">
-                Performers</a>
+                   value="Performers"
+                   asp-action="Performers"
+                   class="nav-link">
+                    Performers
+                </a>
             </li>
             <li class="nav-item">
                 <a ActiveBy routeKey="Action"
-                value="Programs" 
-                asp-action="Programs"
-                class="nav-link">
-                Programs</a>
+                   value="Programs"
+                   asp-action="Programs"
+                   class="nav-link">
+                    Programs
+                </a>
             </li>
             <li class="nav-item">
                 <a ActiveBy routeKey="Action"
-                value="Kits"
-                asp-action="Kits"
-                class="nav-link">
-                Kits</a>
+                   value="Kits"
+                   asp-action="Kits"
+                   class="nav-link">
+                    Kits
+                </a>
             </li>
-        </ul>
-    </div>
-</div>
-
-<div class="row row-spacing">
-    <div class="col-12">
-        <span class="dropdown-label">Age Groups:</span>
-        <ul class="nav" style="display: inline-table">
-            <li>
-                <a class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                    @(Model.AgeGroups.Where(_ => _.Id == Model.AgeGroupId).FirstOrDefault()?.Name ?? "Show All") <span class="caret"></span>
+            <li class="nav-item d-none d-sm-block"><a class="nav-link disabled">|</a></li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle"
+                   data-bs-toggle="dropdown"
+                   href="#"
+                   role="button"
+                   aria-haspopup="true"
+                   aria-expanded="false">
+                    Age Group: @(Model.AgeGroups.Where(_ => _.Id == Model.AgeGroupId).FirstOrDefault()?.Name ?? "Show All") <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a asp-route-ageGroup="">Show All</a></li>
+                    <li><a asp-route-ageGroup="" class="dropdown-item">Show All</a></li>
                     @foreach (var ageGroup in Model.AgeGroups)
                     {
-                        <li><a asp-route-ageGroup="@ageGroup.Id">@ageGroup.Name</a></li>
+                        <li>
+                            <a asp-route-ageGroup="@ageGroup.Id"
+                               class="dropdown-item">@ageGroup.Name</a>
+                        </li>
                     }
                 </ul>
             </li>
         </ul>
     </div>
 </div>
+
 <div class="row">
     <div class="col-12">
         @if (Model.Programs.Count == 0)

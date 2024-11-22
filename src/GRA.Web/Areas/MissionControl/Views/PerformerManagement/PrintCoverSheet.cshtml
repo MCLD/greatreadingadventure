@@ -21,29 +21,29 @@
     <div class="row">
         <table class="col-12">
             <tr>
-                <th class="col-3 text-right" style="vertical-align: middle;">
+                <th class="col-3 pe-2 text-end align-middle">
                     Library Branch:
                 </th>
-                <td class="col-9">
+                <td class="col-9 ps-2 align-middle">
                     @Model.LibraryBranch
                 </td>
             </tr>
             <tr>
-                <th class="col-3 text-right" style="vertical-align: middle;">
+                <th class="col-3 pe-2 text-end align-middle">
                     Staff Contact:
                 </th>
-                <td class="col-9">
+                <td class="col-9 ps-2 align-middle">
                     @Model.StaffContact
                 </td>
             </tr>
         </table>
     </div>
 
-    <div class="row coversheet-row-spacing">
-        <div class="col-3 text-right" style="vertical-align: middle;">
+    <div class="row py-2">
+        <div class="col-3 pe-2 text-end align-middle">
             <strong>Funding Source:</strong>
         </div>
-        <div class="col-9">
+        <div class="col-9 ps-2 align-middle">
             <input type="checkbox" checked /> Summer Reading Program Budget
         </div>
     </div>
@@ -51,86 +51,88 @@
     <div class="row">
         <table class="col-12">
             <tr>
-                <th class="col-3 text-right"></th>
-                <td class="col-9 coversheet-table-subheading" colspan="3">
+                <th class="col-3 pe-2 text-end"></th>
+                <td class="col-9 ps-2 coversheet-table-subheading" colspan="3">
                     Program Info
                 </td>
             </tr>
             <tr>
-                <th class="col-3 text-right">
+                <th class="col-3 pe-2 text-end">
                     Description:
                 </th>
-                <td class="col-9 pre-wrap" colspan="3">@Model.Description</td>
+                <td class="col-9 ps-2 pre-wrap" colspan="3">@Model.Description</td>
             </tr>
             <tr>
-                <th class="col-3 text-right" style="vertical-align: middle;">
+                <th class="col-3 pe-2 text-end align-middle">
                     Cost:
                 </th>
-                <td class="col-4" colspan="3">
+                <td class="col-4 ps-2" colspan="3">
                     @Model.Cost.ToString("C")
                 </td>
             </tr>
             <tr>
-                <th class="col-3 text-right" style="vertical-align: middle;">
+                <th class="col-3 pe-2 text-end align-middle">
                     Vendor #:
                 </th>
-                <td class="col-4">
+                <td class="col-4 ps-2">
                     @Model.VendorId
                 </td>
-                <td class="col-2 text-right" style="vertical-align: middle;">
+                <td class="col-2 pe-2 text-end align-middle">
                     <strong>Invoice #:</strong>
                 </td>
-                <td class="col-3">
+                <td class="col-3 ps-2">
                     @Model.InvoiceNumber
                 </td>
             </tr>
             <tr>
-                <th class="col-3 text-right">
+                <th class="col-3 pe-2 text-end">
                     Payable To:
                 </th>
                 @* Don't reformat this line, set to white-space:pre-wrap *@
-                <td class="col-9 pre-wrap" colspan="3">@Model.PayToName<br />@Model.PayToAddress</td>
+                <td class="col-9 ps-2 pre-wrap" colspan="3">@Model.PayToName<br />@Model.PayToAddress</td>
             </tr>
         </table>
     </div>
 
-    <div class="row coversheet-row-spacing">
-        <div class="col-3 text-right" style="vertical-align: middle;">
+    <div class="row py-3">
+        <div class="col-3 pe-2 text-end align-middle">
             <strong>Payment Method:</strong>
         </div>
-        <span class="coversheet-radio-button">
+        <div class="col-9 ps-2">
             <input type="radio" name="payMethod" />&nbsp;<label>Mail Check</label>
-        </span>
-        <span class="coversheet-radio-button">
-            <input type="radio" name="payMethod" />&nbsp;<label>eCheck</label>
-        </span>
+            <span class="ps-4">
+                <input type="radio" name="payMethod" />&nbsp;<label>eCheck</label>
+            </span>
+        </div>
     </div>
 
     <div class="row mb-3">
         <table class="col-12">
             <tr>
-                <th class="col-3 text-right"></th>
-                <td class="col-9 coversheet-table-subheading" colspan="3">
+                <th class="col-3 pe-2 text-end"></th>
+                <td class="col-9 ps-2 coversheet-table-subheading" colspan="3">
                     Signatures of Approval
                 </td>
             </tr>
             <tr>
-                <th class="col-3 text-right" style="vertical-align: middle;">
+                <th class="col-3 pe-2 text-end align-middle">
                     Services Team
                 </th>
-                <td class="col-9" colspan="3">
-                    &nbsp;
+                <td class="col-9 ps-2 coversheet-signature" colspan="3">
+                    @Model.StaffContact
                 </td>
             </tr>
         </table>
     </div>
 
-    <div class="row d-print-none coversheet-row-spacing">
-        <div class="text-center coversheet-row-spacing">
+    <div class="row d-print-none py-2">
+        <div class="text-center py-2">
             <a class="link-unstyled" asp-controller="PerformerManagement" asp-action="Performers">
                 <button class="btn btn-outline-secondary">Back to Performers</button>
             </a>
-            <button id="print-button" class="btn btn-outline-primary coversheet-print-button">Print</button>
+            <button id="print-button" class="btn btn-outline-primary coversheet-print-button">
+                Print
+            </button>
         </div>
     </div>
 

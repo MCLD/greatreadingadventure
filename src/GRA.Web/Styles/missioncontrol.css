@@ -22,53 +22,36 @@
     font-size: 1.6rem;
 }
 
-.ataglance-pill {
-    border: 1px solid;
-    border-radius: 1rem;
-    padding: 1rem;
-    margin-bottom: 0.25rem;
-    margin-top: 0.75rem;
-    background-color: dimgray;
-    color: white;
-}
-
-@media only screen and (min-width : 768px) {
-    .ataglance-pill {
-        font-size: 1.2rem;
-    }
-}
-
-
-.ataglance-pill-filtered {
-    background-color: rebeccapurple;
-    color: white;
-}
-
-.ataglance-pill-site {
-    background-color: teal;
-    color: white;
-}
-
-.ataglance-filtered, .ataglance-filtered .list-group-item {
+.ataglance-filtered,
+.ataglance-filtered .list-group-item {
     border-color: rebeccapurple;
     color: rebeccapurple;
 }
 
-    .ataglance-filtered .card-header, .ataglance-filtered .card-footer {
+    .ataglance-filtered .card-header,
+    .ataglance-filtered .card-footer {
         background-color: rebeccapurple;
         color: white;
     }
 
-.ataglance-site, .ataglance-site .list-group-item {
+.ataglance-site,
+.ataglance-site .list-group-item {
     border-color: teal;
     color: teal;
 }
 
-    .ataglance-site .card-header, .ataglance-site .card-footer {
+    .ataglance-site .card-header,
+    .ataglance-site .card-footer {
         background-color: teal;
         color: white;
     }
 
+.ataglance-summary {
+    border-radius: 1rem;
+    border-style: solid;
+    border-width: 0.25rem;
+    height: 7rem;
+}
 
 .badge-maker {
     position: relative;
@@ -130,7 +113,8 @@ table > tbody > tr > td.gra-mc-icon {
     padding: 5px 15px;
 }
 
-.mc-filtered-asof-container, .mc-site-asof-container {
+.mc-filtered-asof-container,
+.mc-site-asof-container {
     font-size: smaller;
 }
 

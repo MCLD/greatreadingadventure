@@ -1,41 +1,48 @@
-﻿.performer-coversheet-container {
+﻿/* gwendolyn-regular - latin */
+@font-face {
+    font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+    font-family: "Gwendolyn";
+    font-style: normal;
+    font-weight: 400;
+    src: url("../fonts/gwendolyn-v7-latin-regular.woff2") format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+.performer-coversheet-container {
     margin: 2rem 0;
 }
 
-.performer-coversheet-container h1 {
-    margin-bottom: 2.5rem;
-}
+    .performer-coversheet-container h1 {
+        margin-bottom: 2.5rem;
+    }
 
-.performer-coversheet-container th {
-  vertical-align: top;
-}
+    .performer-coversheet-container th {
+        vertical-align: top;
+    }
 
-.performer-coversheet-container td {
-    height: 4rem;
-    line-height: 2.5rem;
-    border: 1px solid black;
-}
+    .performer-coversheet-container td {
+        height: 2.5rem;
+        line-height: 1.5rem;
+        border: 1px solid black;
+    }
 
-.coversheet-radio-button {
-    margin-left: 1.5rem;
-}
+    .performer-coversheet-container .coversheet-table-subheading {
+        font-weight: bold;
+        font-style: italic;
+        text-align: center;
+        background: lightgray !important;
+        line-height: 2.2rem;
+    }
 
-.coversheet-row-spacing {
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-}
-
-.performer-coversheet-container .coversheet-table-subheading {
-    font-weight: bold;
-    font-style: italic;
-    text-align: center;
-    background: lightgray !important;
-    line-height: 2.2rem;
-}
-
-.link-unstyled, .link-unstyled:hover {
+.link-unstyled,
+.link-unstyled:hover {
     color: inherit;
     text-decoration: none;
+}
+
+td.coversheet-signature {
+    height: 3.5rem;
+    font-family: "Gwendolyn";
+    font-size: 2rem;
 }
 
 .coversheet-print-button {
@@ -47,7 +54,7 @@
 .coversheet-footer {
     position: fixed;
     bottom: 1rem;
-    font-size: 1.2rem;
+    font-size: 1rem;
     left: 50%;
     transform: translate(-50%);
     white-space: nowrap;
@@ -55,6 +62,10 @@
 
 .pre-wrap {
     white-space: pre-wrap;
+}
+
+footer {
+    display: none;
 }
 
 @media print {

@@ -6,37 +6,49 @@
 
 @await Html.PartialAsync("_PerformerManagementPartial")
 
-<div class="row text-center">
-    <div class="col-md-2 offset-md-2 mb-1">
-        <div class="badge text-bg-primary w-100 d-flex flex-column align-items-center"
-             style="min-height: 5rem;">
-            <div class="fs-5 pt-3" id="psPerformerCount">@Model.PerformerCount</div>
-            <div class="fs-6 pt-1 pb-3">Peformers</div>
+<div class="row mb-2 d-none" id="UpdatedStatsAlert">
+    <div class="col-md-8 offset-md-2">
+        <div class="alert alert-info">
+            Stats have updated, refresh the page to view the details in the progress bar and table below.
         </div>
     </div>
-    <div class="col-md-2 mb-1">
-        <div class="badge text-bg-primary w-100 d-flex flex-column align-items-center"
-             style="min-height: 5rem;">
-            <div class="fs-5 pt-3" id="psProgramCount">
+</div>
+
+<div class="row text-center">
+    <div class="col-12 col-md-4 offset-md-2 col-lg-2 offset-lg-2 mb-2">
+        <div class="border border-3 border-secondary rounded text-bg-light w-100 d-flex flex-column align-items-center"
+             style="height: 5.2rem;"
+             id="performerCountBox">
+            <div class="fs-5 pt-2" id="psPerformerCount">@Model.PerformerCount</div>
+            <div class="fs-6 pt-0">Peformers</div>
+        </div>
+    </div>
+    <div class="col-12 col-md-4 col-lg-2 mb-2">
+        <div class="border border-3 border-secondary rounded text-bg-light w-100 d-flex flex-column align-items-center"
+             style="height: 5.2rem;"
+             id="programCountBox">
+            <div class="fs-5 pt-2" id="psProgramCount">
                 @Model.ProgramCount
             </div>
-            <div class="fs-6 pt-1 pb-3">Programs</div>
+            <div class="fs-6 pt-0">Programs</div>
         </div>
     </div>
-    <div class="col-md-2 mb-1">
-        <div class="badge text-bg-primary w-100 d-flex flex-column align-items-center"
-             style="min-height: 5rem;">
-            <div class="fs-5 pt-3" id="psKitCount">
+    <div class="col-12 col-md-4 offset-md-2 col-lg-2 offset-lg-0 mb-2">
+        <div class="border border-3 border-secondary rounded text-bg-light w-100 d-flex flex-column align-items-center"
+             style="height: 5.2rem;"
+             id="kitCountBox">
+            <div class="fs-5 pt-2" id="psKitCount">
                 @Model.KitCount
             </div>
-            <div class="fs-6 pt-1 pb-3">Kits</div>
+            <div class="fs-6 pt-0">Kits</div>
         </div>
     </div>
-    <div class="col-md-2 mb-1">
-        <div class="badge text-bg-primary w-100 d-flex flex-column align-items-center"
-             style="min-height: 5rem;">
-            <div class="fs-6 pt-3">Stage:</div>
-            <div class="pt-2 pb-3" id="psSchedulingStage">
+    <div class="col-12 col-md-4 col-lg-2 mb-2">
+        <div class="border border-3 border-secondary rounded text-bg-light w-100 d-flex flex-column align-items-center"
+             style="height: 5.2rem;"
+             id="stageBox">
+            <div class="fs-5 pt-2">Stage:</div>
+            <div class="fs-6 pt-0" id="psSchedulingStage">
                 @Model.SchedulingStage
             </div>
         </div>
@@ -53,7 +65,7 @@
              role="progressbar"
              style="height: 2.5rem;">
             <div class="progress-bar progress-bar-striped"
-                 style="width: @Model.SummaryPercent; min-width: 2em;">
+                 style="width: @Model.SummaryPercent; min-width: 3rem;">
                 <strong class="fs-6">@Model.SummaryPercent</strong>
             </div>
         </div>
@@ -96,7 +108,7 @@
                                  role="progressbar"
                                  style="height: 1.25rem;">
                                 <div class="progress-bar bg-@Model.Panel[system.Id]"
-                                     style="width: @Model.Percent[system.Id]; min-width: 2em;">
+                                     style="width: @Model.Percent[system.Id]; min-width: 2rem;">
                                     @Model.Percent[system.Id]
                                 </div>
                             </div>
@@ -143,7 +155,7 @@
                                                 @if (selection.KitId.HasValue)
                                                 {
                                                     <span class="fas fa-square fa-stack-2x age-group-id-@selection.AgeGroupId"></span>
-                                                    <span class="fa-stack-2x" style="color: white; font-size: small;">KIT</span>
+                                                    <span class="fa-stack-2x fw-bold fs-4" style="color: white;">K</span>
                                                 }
                                                 else
                                                 {
@@ -173,6 +185,29 @@
                 </div>
             </div>
         }
+        <div class="d-flex flex-wrap justify-content-center fs-5 fw-bold mt-3">
+            @foreach (var ageGroup in Model.AgeGroups)
+            {
+                <span style="color: @ageGroup.IconColor"
+                      class="text-nowrap d-block mb-2 me-4">
+                    <span class="fas fa-square"></span>
+                    @ageGroup.Name
+                </span>
+            }
+            <span class="text-nowrap d-block mb-2 me-4">
+                <span class="fa-stack me-1"
+                      style="width: 1rem; height: 1rem; line-height: 0.7rem;">
+                    <span class="fas fa-square fa-stack-1x"></span>
+                    <span class="fa-stack-1x fs-6"
+                          style="color: white;">K</span>
+                </span>
+                <span class="fst-italic">Kit</span>
+            </span>
+            <span class="text-nowrap d-block mb-2 me-4">
+                <span class="fas fa-plus-square"></span>
+                <span class="fst-italic">Back-to-back</span>
+            </span>
+        </div>
     </div>
 </div>
 
@@ -312,7 +347,7 @@
                             </div>
                             <div>
                                 <button id="editcontactinfo" class="btn btn-outline-primary btn-sm on-site-contact-button on-site-contact-edit">
-                                    <span class="fas fa-edit"></span>
+                                    <span class="fas fa-pencil-alt fa-fw"></span>
                                 </button>
                             </div>
                         </td>
@@ -320,7 +355,11 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal">
+                    Close
+                </button>
             </div>
         </div>
     </div>
@@ -328,10 +367,11 @@
 
 @section Scripts {
     <script>
-        var performerBaseLink = '@Url.Action(nameof(PerformerSchedulingController.Performer))'
-        var programBaseLink = '@Url.Action(nameof(PerformerSchedulingController.Program))'
-        var kitBaseLink = '@Url.Action(nameof(PerformerSchedulingController.Kit))'
-        var contactUpdateLink = '@Url.Action(nameof(PerformerManagementController.EditBranchProgramContact))'
+        const checkAlert = document.querySelector("#checkAlert");
+        const performerBaseLink = '@Url.Action(nameof(PerformerSchedulingController.Performer))'
+        const programBaseLink = '@Url.Action(nameof(PerformerSchedulingController.Program))'
+        const kitBaseLink = '@Url.Action(nameof(PerformerSchedulingController.Kit))'
+        const contactUpdateLink = '@Url.Action(nameof(PerformerManagementController.EditBranchProgramContact))'
 
         var prevContactInfo = {};
         var branchSelectionId;
@@ -340,12 +380,12 @@
         var contactInfoButtons = document.querySelectorAll(".on-site-contact-button");
         var contactInfoInputs = document.querySelectorAll(".on-site-contact-input");
 
-        function allInputsValid() {
+        var alertTimerId = null;
 
+        function allInputsValid() {
             for (const input of contactInfoInputs) {
                 if (!input.checkValidity()) return false;
             };
-
             return true;
         }
 
@@ -353,25 +393,29 @@
             contactInfoInputs.forEach(function (input) {
                 input.disabled = true;
             })
-
             contactInfoButtons.forEach(function (button) {
-                button.id === "editcontactinfo" ? button.classList.remove("d-none") : button.classList.add('d-none');
+                button.id === "editcontactinfo" 
+                    ? button.classList.remove("d-none") 
+                    : button.classList.add('d-none');
             })
         }
 
         function startEditContactInfo() {
+            clearAlert();
             contactInfoInputs.forEach(function (input) {
+                prevContactInfo[input.id] = input.value
                 input.disabled = false;
-            })
-
+            });
             contactInfoButtons.forEach(function (button) {
-                button.id === "editcontactinfo" ? button.classList.add('d-none') : button.classList.remove('d-none');
-            })
+                button.id === "editcontactinfo" 
+                    ? button.classList.add('d-none') 
+                    : button.classList.remove('d-none');
+            });
         }
 
         function cancelEditContactInfo() {
-            contactInfoInputs.forEach(input => {
-                input.value = prevContactInfo[input.id];
+            contactInfoInputs.forEach(_ => {
+                _.value = prevContactInfo[_.id];
             })
 
             document.querySelector("#submitcontactinfo").disabled = true;
@@ -379,15 +423,27 @@
             hideEditContactInfo();
         }
 
+        function clearAlert() {
+            checkAlert.classList.add('d-none');
+            checkAlert.classList.remove('alert-success');
+            checkAlert.classList.remove('alert-danger');
+            checkAlert.innerText = '';
+            if(alertTimerId != null) {
+                clearTimeout(alertTimerId);
+                alertTimerId = null;
+            }
+        }
+
         function setAlert(alertType, message) {
-            var checkAlert = document.querySelector("#checkAlert");
+            if(message.length = 0) {
+                clearAlert(alertType, checkAlert);
+                return;
+            }
             checkAlert.classList.add(alertType);
             checkAlert.innerText = message;
             checkAlert.classList.remove('d-none');
-            setTimeout(function () {
-                checkAlert.classList.add('d-none');
-                checkAlert.classList.remove(alertType);
-                checkAlert.innerText = '';
+            alertTimerId = setTimeout(() => {
+                clearAlert(checkAlert);
             }, 5000);
         }
 
@@ -483,14 +539,11 @@
             });
 
         document.querySelector("#editcontactinfo").addEventListener("click", startEditContactInfo);
-
         document.querySelector("#cancelcontactinfo").addEventListener("click", cancelEditContactInfo)
-
         document.querySelector("#submitcontactinfo").addEventListener("click", async () => {
-            var OnSiteContactName = document.querySelector("#onsitecontactname").value;
-            var OnSiteContactEmail = document.querySelector("#onsitecontactemail").value;
-            var OnSiteContactPhone = document.querySelector("#onsitecontactphone").value;
-
+            let OnSiteContactName = document.querySelector("#onsitecontactname").value;
+            let OnSiteContactEmail = document.querySelector("#onsitecontactemail").value;
+            let OnSiteContactPhone = document.querySelector("#onsitecontactphone").value;
             try {
                 fetch(contactUpdateLink, {
                     method: 'POST',
@@ -525,17 +578,33 @@
         })
 
         setInterval(function () {
+            let priorCount = $("#psProgramCount").text().trim();
+            let priorPerf = $("#psPerformerCount").text().trim();
+            let priorKit = $("#psKitCount").text().trim();
+            let priorStage = $("#psSchedulingStage").text().trim();
+
             $("#psProgramCount").html("<span class=\"fas fa-spinner fa-spin\"></span>");
             $("#psPerformerCount").html("<span class=\"fas fa-spinner fa-spin\"></span>");
             $("#psKitCount").html("<span class=\"fas fa-spinner fa-spin\"></span>");
             $("#psSchedulingStage").html("<span class=\"fas fa-spinner fa-spin\"></span>");
+
             $.ajax("@Url.Action(nameof(PerformerManagementController.GetPerformerStatus))")
                 .done(function (performerStatus) {
-                    $("#psProgramCount").text(performerStatus.programCount);
-                    $("#psPerformerCount").text(performerStatus.performerCount);
-                    $("#psKitCount").text(performerStatus.kitCount);
-                    $("#psSchedulingStage").text(performerStatus.schedulingStage);
+                    doUpdate("#psProgramCount", "#programCountBox", priorCount, performerStatus.programCount);
+                    doUpdate("#psPerformerCount", "#performerCountBox", priorPerf, performerStatus.performerCount);
+                    doUpdate("#psKitCount", "#kitCountBox", priorKit, performerStatus.kitCount);
+                    doUpdate("#psSchedulingStage", "#stageBox", priorStage, performerStatus.schedulingStage);
                 });
-        }, 300000)
+        }, 10000);
+
+        function doUpdate(elementId, containerId, oldValue, newValue) {
+            $(elementId).text(newValue);
+            if(oldValue != newValue) {
+                $(containerId)
+                    .addClass("border-info")
+                    .removeClass("border-secondary");
+                $("#UpdatedStatsAlert").removeClass("d-none");
+            }
+        }
     </script>
 }
