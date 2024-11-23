@@ -17,7 +17,7 @@
             <div class="card-body">
                 @if (Model.SchedulingStage < GRA.Domain.Model.PsSchedulingStage.SchedulingPreview)
                 {
-                    <p class="mb-3 mt-0 lh-base">
+                    <p class="mb-2 mt-0 lh-base">
                         The available programs and kits will be available to view starting on
                         @Model.Settings.SchedulingPreview.Value.ToLongDateString().
                         Please come back then!
@@ -25,7 +25,7 @@
                 }
                 else if (Model.SchedulingStage == GRA.Domain.Model.PsSchedulingStage.SchedulingPreview)
                 {
-                    <p class="mb-3 mt-0 lh-base">
+                    <p class="mb-4 mt-0 lh-base">
                         The available programs and kits are available for preview until selection
                         begins on @Model.Settings.SchedulingOpen.Value.ToLongDateString() at
                         @Model.Settings.SchedulingOpen.Value.ToShortTimeString().
@@ -45,7 +45,7 @@
                 {
                     @if (Model.CanSchedule)
                     {
-                        <p class="mb-3 mt-0 lh-base">
+                        <p class="mb-4 mt-0 lh-base">
                             Scheduling has begun! You have until
                             @Model.Settings.SchedulingClosed.Value.ToLongDateString() at
                             @Model.Settings.SchedulingClosed.Value.ToShortTimeString()
@@ -64,7 +64,7 @@
                     }
                     else
                     {
-                        <p class="mb-3 mt-0 lh-base">
+                        <p class="mb-4 mt-0 lh-base">
                             Scheduling has begun! Selections need to be compeleted by
                             @Model.Settings.SchedulingClosed.Value.ToLongDateString() at
                             @Model.Settings.SchedulingClosed.Value.ToShortTimeString().
@@ -83,12 +83,14 @@
                 }
                 else if (Model.SchedulingStage == GRA.Domain.Model.PsSchedulingStage.SchedulingClosed)
                 {
-                    <p class="mb-3 mt-0 lh-base">
+                    <p class="mb-4 mt-0 lh-base">
                         Scheduling has closed, the finalized schedule will be posted on
                         @Model.Settings.SchedulePosted.Value.ToLongDateString() at
                         @Model.Settings.SchedulePosted.Value.ToShortTimeString().
                         If you have any questions please contact
-                        <a href="mailto:@Model.Settings.ContactEmail">@Model.Settings.ContactEmail</a>
+                        <a href="mailto:@Model.Settings.ContactEmail">
+                            @Model.Settings.ContactEmail
+                        </a>.
                     </p>
                     <div class="d-flex justify-content-around mb-3 d-print-none">
                         <a asp-action="Performers" class="btn btn-lg btn-outline-primary">
@@ -109,24 +111,22 @@
                             View finalized schedule for branch:
                         </p>
                         <form asp-action="Schedule" method="get" role="form">
-                            <div class="row mb-3 d-print-none">
-                                <div class="col-9">
-                                    <select name="id"
-                                            asp-items="Model.BranchList"
-                                            class="form-select"></select>
-                                </div>
-                                <div class="col-3">
-                                    <button type="submit"
-                                            class="btn btn-outline-primary">
-                                        View
-                                    </button>
-                                </div>
+                            <div class="d-flex justify-content-around d-print-none my-3">
+                                <select name="id"
+                                        asp-items="Model.BranchList"
+                                        class="form-select"></select>
+                                <button type="submit"
+                                        class="btn btn-outline-primary ms-2">
+                                    View
+                                </button>
                             </div>
                         </form>
                     }
                     <p class="mb-4 mt-0 d-print-none lh-base">
                         If you have any questions please contact
-                        <a href="mailto:@Model.Settings.ContactEmail">@Model.Settings.ContactEmail</a>
+                        <a href="mailto:@Model.Settings.ContactEmail">
+                            @Model.Settings.ContactEmail
+                        </a>
                     </p>
                     <div class="d-flex d-print-none justify-content-around mb-4">
                         <a asp-action="Performers" class="btn btn-lg btn-outline-primary">

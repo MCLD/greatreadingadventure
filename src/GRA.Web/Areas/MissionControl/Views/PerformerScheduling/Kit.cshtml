@@ -96,68 +96,84 @@
 
 @if (Model.SchedulingOpen && Model.CanSchedule)
 {
-    <div class="row">
-        <div class="col-12">
-            <div class="row">
-                <div class="col-12">
-                    <hr />
-                    <h2>
-                        Select Kit
-                    </h2>
+    <form asp-action="SelectKit" method="post" role="form">
+        <input asp-for="BranchSelection.KitId"
+               value="@Model.Kit.Id"
+               type="hidden" />
+        <div class="row my-4">
+            <div class="col-12 col-lg-8 offset-lg-2">
+                <div class="card">
+                    <div class="card-header">Select This Kit</div>
+                    <div class="card-body">
+                        <div class="row mb-1">
+                            <label asp-for="BranchSelection.BranchId"
+                                   class="col-sm-3 col-form-label required-field"></label>
+                            <div class="col-sm-9">
+                                <select asp-for="BranchSelection.BranchId"
+                                        asp-items="Model.BranchList"
+                                        class="form-select">
+                                    <option></option>
+                                </select>
+                                <span id="BranchValidationMessage"
+                                      asp-validation-for="BranchSelection.BranchId"
+                                      class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label asp-for="BranchSelection.AgeGroupId"
+                                   class="col-sm-3 col-form-label required-field"></label>
+                            <div class="col-sm-9">
+                                <select asp-for="BranchSelection.AgeGroupId"
+                                        asp-items="Model.AgeGroupList"
+                                        class="form-select"
+                                        disabled="disabled">
+                                    <option></option>
+                                </select>
+                                <span asp-validation-for="BranchSelection.AgeGroupId"
+                                      class="text-danger"></span>
+                                <em>
+                                    Age groups which are not available or have already been 
+                                    scheduled are not shown.
+                                </em>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex justify-content-end">
+                        <button class="btn btn-outline-primary"
+                                button-spinner
+                                disabled
+                                id="selectKitButton"
+                                type="submit">
+                            Select this kit in place of a program
+                        </button>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <form asp-action="SelectKit" class="form-horizontal col-12" method="post" role="form">
-                    <input asp-for="BranchSelection.KitId" value="@Model.Kit.Id" type="hidden" />
-                    <div class="mb-3">
-                        <label asp-for="BranchSelection.BranchId" class="col-sm-3 col-form-label required-field"></label>
-                        <div class="col-sm-9">
-                            <select asp-for="BranchSelection.BranchId" asp-items="Model.BranchList" class="form-select">
-                                <option></option>
-                            </select>
-                            <span id="BranchValidationMessage" asp-validation-for="BranchSelection.BranchId" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="BranchSelection.AgeGroupId" class="col-sm-3 col-form-label required-field"></label>
-                        <div class="col-sm-9">
-                            <select asp-for="BranchSelection.AgeGroupId" asp-items="Model.AgeGroupList" class="form-select" disabled="disabled">
-                                <option></option>
-                            </select>
-                            <span asp-validation-for="BranchSelection.AgeGroupId" class="text-danger"></span>
-                            <em>Age groups which are not available or have already been scheduled are not shown.</em>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-sm-6 offset-sm-3" style="margin-top: 1em;">
-                            <button type="submit"
-                                    class="btn btn-lg btn-success btn-spinner"
-                                    style="margin-bottom: 0.5rem;"
-                                    button-spinner>
-                                Select this kit in place of a program
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
         </div>
-    </div>
+    </form>
+
 }
 
 @section Scripts {
     <script>
         var availableAgeGroupsUrl = "@Url.Action(nameof(PerformerSchedulingController.GetKitAvailableAgeGroups))";
+
         $("#BranchSelection_BranchId").on("change", function () {
-            $("#BranchValidationMessage").addClass("field-validation-valid").removeClass("field-validation-error").text("");
-            var branchId = $(this).val();
+            $("#BranchValidationMessage")
+                .addClass("field-validation-valid")
+                .removeClass("field-validation-error")
+                .text("");
+            let branchId = $(this).val();
             if (branchId == "") {
-                $("#BranchSelection_AgeGroupId").val("").attr("disabled", "disabled");
+                $("#BranchSelection_AgeGroupId").val("").prop("disabled", true);
             }
             else {
-                $.getJSON(availableAgeGroupsUrl, { branchId: $(this).val(), kitId: "@Model.Kit.Id" }, function (response) {
+                $.getJSON(availableAgeGroupsUrl, {
+                    branchId: $(this).val(),
+                    kitId: "@Model.Kit.Id"
+                }, function (response) {
                     if (response.success == true) {
-                        $("#BranchSelection_AgeGroupId").removeAttr("disabled", "disabled");
+                        $("#BranchSelection_AgeGroupId").prop("disabled", false);
                         $("#BranchSelection_AgeGroupId > option").each(function () {
                             var option = $(this);
                             if (option.val() != "") {
@@ -171,10 +187,17 @@
                         });
                     }
                     else {
-                        $("#BranchValidationMessage").removeClass("field-validation-valid").addClass("field-validation-error").text(response.message);
+                        $("#BranchValidationMessage")
+                            .removeClass("field-validation-valid")
+                            .addClass("field-validation-error")
+                            .text(response.message);
                     }
                 });
             }
         });
+
+        $("#BranchSelection_AgeGroupId").on("change", function () {
+            $("#selectKitButton").prop("disabled", $(this).val() == "");
+        })
     </script>
 }
