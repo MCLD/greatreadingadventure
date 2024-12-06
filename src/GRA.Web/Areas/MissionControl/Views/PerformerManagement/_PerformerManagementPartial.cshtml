@@ -2,8 +2,8 @@
 
 @if (Model.PerformerSchedulingEnabled)
 {
-    <div class="row my-4">
-        <div class="col-12 col-md-11 mb-2">
+    <div class="row my-4 text-nowrap">
+        <div class="col-9 mb-2">
             <ul class="nav nav-pills">
                 <li class="nav-item">
                     <a ActiveBy routeKey="Action"
@@ -63,11 +63,16 @@
                 </li>
             </ul>
         </div>
-        <div class="col-12 col-md-1 text-end">
+        <div class="col-12 col-sm-2">
+                        <a asp-action="@nameof(PerformerManagementController.PerformerExport)"
+               class="btn btn-outline-primary btn-sm mt-1 text-nowrap">
+                <span class="fas fa-file-excel fa-fw"></span>
+                Export Performers
+            </a>
             <a asp-action="@nameof(PerformerManagementController.ScheduleExport)"
                class="btn btn-outline-primary btn-sm mt-1 text-nowrap">
                 <span class="fas fa-file-excel fa-fw"></span>
-                Export
+                Export Schedule
             </a>
         </div>
     </div>

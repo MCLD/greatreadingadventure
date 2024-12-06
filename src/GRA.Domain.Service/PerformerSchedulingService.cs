@@ -656,6 +656,12 @@ namespace GRA.Domain.Service
             return await _psAgeGroupRepository.GetAllAsync();
         }
 
+        public async Task<ICollection<PsPerformer>> GetAllPerformersAsync()
+        {
+            VerifyManagementPermission();
+            return await _psPerformerRepository.GetAllAsync();
+        }
+
         public async Task<ICollection<PsKit>> GetAllKitsAsync()
         {
             VerifyManagementPermission();

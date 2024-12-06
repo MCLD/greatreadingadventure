@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
+using DocumentFormat.OpenXml.Office2016.Presentation.Command;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
@@ -82,6 +83,14 @@ namespace GRA.Data.Repository
             return await performers
                 .OrderBy(_ => _.Name)
                 .Select(_ => _.Id)
+                .ToListAsync();
+        }
+
+        public async Task<ICollection<PsPerformer>> GetAllAsync()
+        {
+            return await DbSet
+                .AsNoTracking()
+                .ProjectTo<PsPerformer>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
