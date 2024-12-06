@@ -1,26 +1,27 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Shared.JobViewModel
 
-<div class="modal fade" 
-    data-bs-backdrop="static"
-    data-bs-keyboard="false"
-    id="wsModal"
-    role="dialog" 
-    tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+<div class="modal fade"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     id="wsModal"
+     role="dialog"
+     tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl"
+         role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title h4" id="wsTitle">Loading...</h1>
             </div>
             <div class="modal-body">
                 <div aria-label="Job progress"
-                    aria-valuemax="100"
-                    aria-valuemin="0"
-                    aria-valuenow="0"
-                    class="progress mb-3"
-                    id="wsProgressContainer"
-                    role="progressbar"
-                    style="height: 1.5rem;">
-                    <div class="progress-bar progress-bar-striped"                        
+                     aria-valuemax="100"
+                     aria-valuemin="0"
+                     aria-valuenow="0"
+                     class="progress mb-3"
+                     id="wsProgressContainer"
+                     role="progressbar"
+                     style="height: 1.5rem;">
+                    <div class="progress-bar progress-bar-striped"
                          id="wsProgress"></div>
                 </div>
                 <p class="mb-0" id="wsStatus"></p>
@@ -41,197 +42,197 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
 @section scripts {
     <script>
-    var wsStarted = false;
-    var wsFinished = false;
-    var wsCancel = false;
-    var wsError = false;
-    var wsTryingToConnect = false;
-    var wsPageTitle = '@Model.Title';
-    var webSocket;
-    var wsPing;
-    var wsPingOnce;
-    var wsFunction = 'job';
-    var wsScheme = document.location.protocol == "https:" ? "wss" : "ws";
-    var wsPort = document.location.port ? (":" + document.location.port) : "";
-    var wsUrl = wsScheme + "://" + document.location.hostname + wsPort + "/runjob/@Model.JobToken";
-    var wsSuccessUrl = '@Model.SuccessUrl';
-    var wsSuccessRedirect = '@Model.SuccessRedirectUrl';
-    var wsCompleteButton = '@Model.CompleteButton';
-    var wsCancelUrl = '@Model.CancelUrl';
+        const wsCompleteButton = '@Model.CompleteButton';
+        const wsFunction = 'job';
+        const wsPingInterval = @(Model.PingSeconds * 1000);
+        const wsPort = document.location.port ? (":" + document.location.port) : "";
+        const wsScheme = document.location.protocol == "https:" ? "wss" : "ws";
+        const wsUrl = wsScheme + "://" + document.location.hostname + wsPort + "/runjob/@Model.JobToken";
 
-    function updateState(e) {
-        if (!webSocket) {
-            $('#wsStatus').text('Cannot communicate with server.');
-        } else if (!wsCancel) {
-            switch (webSocket.readyState) {
-                case WebSocket.CLOSED:
-                    clearPing();
-                    if (wsStarted && wsFinished) {
-                        console.log("Socket closed, error status: " + wsError);
-                        if (wsSuccessRedirect.length > 0 && !wsError) {
-                            window.location.href = wsSuccessRedirect;
-                        }
-                        else
-                        {
-                            $('#cancelWs').text(wsCompleteButton);
+        var webSocket;
+        var wsCancel = false;
+        var wsCancelUrl = '@Model.CancelUrl';
+        var wsError = false;
+        var wsFinished = false;
+        var wsPageTitle = '@Model.Title';
+        var wsPing;
+        var wsPingOnce;
+        var wsStarted = false;
+        var wsSuccessRedirect = '@Model.SuccessRedirectUrl';
+        var wsSuccessUrl = '@Model.SuccessUrl';
+        var wsTryingToConnect = false;
+
+        function updateState(e) {
+            if (!webSocket) {
+                $('#wsStatus').text('Cannot communicate with server.');
+            } else if (!wsCancel) {
+                switch (webSocket.readyState) {
+                    case WebSocket.CLOSED:
+                        clearPing();
+                        if (wsStarted && wsFinished) {
+                            console.log("Socket closed, error status: " + wsError);
+                            if (wsSuccessRedirect.length > 0 && !wsError) {
+                                window.location.href = wsSuccessRedirect;
+                            }
+                            else {
+                                $('#cancelWs').text(wsCompleteButton);
                                 $('#cancelWs').removeClass('btn-outline-danger');
-                            $('#cancelWs').addClass('btn-secondary');
-                            $('#cancelWs').on('click', function () {
-                                window.location.href = wsError ? wsCancelUrl : wsSuccessUrl;
-                                return false;
+                                $('#cancelWs').addClass('btn-outline-secondary');
+                                $('#cancelWs').on('click', function () {
+                                    window.location.href = wsError ? wsCancelUrl : wsSuccessUrl;
+                                    return false;
+                                });
+                            }
+                        } else if (wsStarted && !wsFinished) {
+                            $('#cancelWs').text('Close window');
+                            $('#cancelWs').addClass('btn-outline-danger');
+                            $('#wsProgress').removeClass('active');
+                            $('#wsProgress').addClass('progress-bar-danger');
+                            $('#wsStatus').text('The server disconnected while running the ' + wsFunction + '.');
+                        } else if (wsTryingToConnect) {
+                            $('#cancelWs').text('Close window');
+                            $('#cancelWs').addClass('btn-outline-danger');
+                            $('#wsProgress').removeClass('active');
+                            $('#wsProgress').addClass('progress-bar-danger');
+                            $('#wsStatus').text('Unable to connect to the server to run the ' + wsFunction + '.');
+                            $('#recvWs').fadeOut(1);
+                            $('#sendWs').fadeOut(1);
+                            console.log("Failure while trying to connect to: " + wsUrl);
+                        }
+                        break;
+                    case WebSocket.CLOSING:
+                        if (wsStarted) {
+                            $('#wsStatus').text('Connection closing...');
+                        }
+                        break;
+                    case WebSocket.CONNECTING:
+                        $('#wsStatus').text('Connecting...');
+                        break;
+                    case WebSocket.OPEN:
+                        wsTryingToConnect = false;
+                        if (e && e.data) {
+                            var incoming = JSON.parse(e.data);
+                            $('#recvWs').fadeIn(500, function () {
+                                $('#recvWs').fadeOut(500);
                             });
-                        }
-                    } else if (wsStarted && !wsFinished) {
-                        $('#cancelWs').text('Close window');
-                            $('#cancelWs').addClass('btn-outline-danger');
-                        $('#wsProgress').removeClass('active');
-                        $('#wsProgress').addClass('progress-bar-danger');
-                        $('#wsStatus').text('The server disconnected while running the ' + wsFunction + '.');
-                    } else if (wsTryingToConnect) {
-                        $('#cancelWs').text('Close window');
-                            $('#cancelWs').addClass('btn-outline-danger');
-                        $('#wsProgress').removeClass('active');
-                        $('#wsProgress').addClass('progress-bar-danger');
-                        $('#wsStatus').text('Unable to connect to the server to run the ' + wsFunction + '.');
-                        $('#recvWs').fadeOut(1);
-                        $('#sendWs').fadeOut(1);
-                        console.log("Failure while trying to connect to: " + wsUrl);
-                    }
-                    break;
-                case WebSocket.CLOSING:
-                    if (wsStarted) {
-                        $('#wsStatus').text('Connection closing...');
-                    }
-                    break;
-                case WebSocket.CONNECTING:
-                    $('#wsStatus').text('Connecting...');
-                    break;
-                case WebSocket.OPEN:
-                    wsTryingToConnect = false;
-                    if (e && e.data) {
-                        var incoming = JSON.parse(e.data);
-                        $('#recvWs').fadeIn(500, function () {
-                            $('#recvWs').fadeOut(500);
-                        });
-                        if (incoming.Title) {
-                            if (wsPageTitle != incoming.Title) {
-                                wsPageTitle = incoming.Title;
-                                $('#wsTitle').html(wsPageTitle);
-                                console.log("Job title: " + wsPageTitle);
-                            }
-                        }
-                        if (incoming.SuccessUrl) {
-                            if (incoming.SuccessRedirect) {
-                                if (incoming.SuccessUrl != wsSuccessRedirect) {
-                                    wsSuccessUrl = '';
-                                    wsSuccessRedirect = incoming.SuccessUrl;
-                                    console.log("On success, redirect to: " + wsSuccessRedirect);
+                            if (incoming.Title) {
+                                if (wsPageTitle != incoming.Title) {
+                                    wsPageTitle = incoming.Title;
+                                    $('#wsTitle').html(wsPageTitle);
+                                    console.log("Job title: " + wsPageTitle);
                                 }
                             }
-                            else
-                            {
-                                if (incoming.SuccessUrl != wsSuccessUrl) {
-                                    wsSuccessUrl = incoming.SuccessUrl;
-                                    wsSuccessRedirect = '';
-                                    console.log("On success, link to: " + wsSuccessUrl);
+                            if (incoming.SuccessUrl) {
+                                if (incoming.SuccessRedirect) {
+                                    if (incoming.SuccessUrl != wsSuccessRedirect) {
+                                        wsSuccessUrl = '';
+                                        wsSuccessRedirect = incoming.SuccessUrl;
+                                        console.log("On success, redirect to: " + wsSuccessRedirect);
+                                    }
+                                }
+                                else {
+                                    if (incoming.SuccessUrl != wsSuccessUrl) {
+                                        wsSuccessUrl = incoming.SuccessUrl;
+                                        wsSuccessRedirect = '';
+                                        console.log("On success, link to: " + wsSuccessUrl);
+                                    }
                                 }
                             }
-                        }
-                        if (incoming.CancelUrl) {
-                            if (incoming.CancelUrl != wsCancelUrl) {
-                                wsCancelUrl = incoming.CancelUrl;
-                                console.log("On cancel, link to: " + wsCancelUrl);
+                            if (incoming.CancelUrl) {
+                                if (incoming.CancelUrl != wsCancelUrl) {
+                                    wsCancelUrl = incoming.CancelUrl;
+                                    console.log("On cancel, link to: " + wsCancelUrl);
+                                }
                             }
-                        }
-                        if (incoming.Status) {
-                            $('#wsStatus').html(incoming.Status);
-                        }
-                        if (incoming.PercentComplete) {
-                            document.title = wsPageTitle + ' - ' + incoming.PercentComplete + '%';
-                            $('#wsProgress').width(incoming.PercentComplete + '%');
-                            $('#wsProgressContainer')
-                                .attr('aria-valuenow', incoming.PercentComplete);
-                            if (incoming.PercentComplete > 4) {
-                                $('#wsProgress').text(incoming.PercentComplete + '%');
+                            if (incoming.Status) {
+                                $('#wsStatus').html(incoming.Status);
                             }
-                            else
-                            {
-                                $('#wsProgress').text('');
+                            if (incoming.PercentComplete) {
+                                document.title = wsPageTitle + ' - ' + incoming.PercentComplete + '%';
+                                $('#wsProgress').width(incoming.PercentComplete + '%');
+                                $('#wsProgressContainer')
+                                    .attr('aria-valuenow', incoming.PercentComplete);
+                                if (incoming.PercentComplete > 4) {
+                                    $('#wsProgress').text(incoming.PercentComplete + '%');
+                                }
+                                else {
+                                    $('#wsProgress').text('');
+                                }
                             }
-                        }
-                        if (incoming.Error) {
-                            wsError = true;
-                        }
-                        if (incoming.Complete) {
-                            wsFinished = true;
-                            if (wsError) {
-                                console.log("Complete with error");
-                                $('#cancelWs').text('Close window');
-                                $('#wsProgress').removeClass('active');
-                                $('#wsProgress').addClass('progress-bar-danger');
+                            if (incoming.Error) {
+                                wsError = true;
                             }
-                            else
-                            {
-                                console.log("Complete");
-                                $('#cancelWs').text('Close window');
+                            if (incoming.Complete) {
+                                wsFinished = true;
+                                if (wsError) {
+                                    console.log("Complete with error");
+                                    $('#cancelWs').text('Close window');
+                                    $('#wsProgress').removeClass('active');
+                                    $('#wsProgress').addClass('progress-bar-danger');
+                                }
+                                else {
+                                    console.log("Complete");
+                                    $('#cancelWs').text('Close window');
                                     $('#cancelWs').removeClass('btn-outline-danger');
-                                $('#cancelWs').addClass('btn-secondary');
-                                $('#wsProgress').removeClass('active');
-                                $('#wsProgress').addClass('progress-bar-success');
+                                    $('#cancelWs').addClass('btn-outline-secondary');
+                                    $('#wsProgress').removeClass('active');
+                                    $('#wsProgress').addClass('progress-bar-success');
+                                }
+                                webSocket.close();
+                                clearPing();
                             }
-                            webSocket.close();
-                            clearPing();
                         }
-                    }
-                    break;
-                default:
-                    $('#wsStatus').text('Unknown state: ' + webSocket.readyState);
-                    break;
+                        break;
+                    default:
+                        $('#wsStatus').text('Unknown state: ' + webSocket.readyState);
+                        break;
+                }
             }
         }
-    }
 
-    function doPing() {
-        if (webSocket && webSocket.readyState == WebSocket.OPEN && !wsFinished) {
-            webSocket.send(String.fromCharCode(6));
-            $('#sendWs').fadeIn(500, function () {
-                $('#sendWs').fadeOut(500);
-            });
+        function doPing() {
+            if (webSocket && webSocket.readyState == WebSocket.OPEN && !wsFinished) {
+                webSocket.send(String.fromCharCode(6));
+                $('#sendWs').fadeIn(500, function () {
+                    $('#sendWs').fadeOut(500);
+                });
+            }
         }
-    }
 
-    function clearPing() {
-        if (wsPing) {
-            clearInterval(wsPing);
+        function clearPing() {
+            if (wsPing) {
+                clearInterval(wsPing);
+            }
         }
-    }
 
-    $().ready(function () {
-        wsCancel = false;
-        $('#recvWs').fadeOut(1);
-        $('#sendWs').fadeOut(1)
-        $('#wsProgress').removeClass('active');
-        $('#wsProgress').removeClass('progress-bar-danger');
-        $('#wsProgress').removeClass('progress-bar-success');
-        $('#cancelWs').text('Cancel ' + wsFunction);
+        $().ready(function () {
+            wsCancel = false;
+            $('#recvWs').fadeOut(1);
+            $('#sendWs').fadeOut(1);
+            $('#wsProgress').removeClass('active');
+            $('#wsProgress').removeClass('progress-bar-danger');
+            $('#wsProgress').removeClass('progress-bar-success');
+            $('#cancelWs').text('Cancel ' + wsFunction);
             $('#cancelWs').addClass('btn-outline-danger');
-        $("#wsModal").modal("show");
-        wsTryingToConnect = true;
-        webSocket = new WebSocket(wsUrl);
-        webSocket.onerror = updateState;
-        webSocket.onopen = function (e) {
-            $('#wsProgress').addClass('active');
-            wsStarted = true;
-        }
-        webSocket.onclose = updateState;
-        webSocket.onmessage = updateState;
-        wsPingOnce = setTimeout(doPing, 900);
-        wsPing = setInterval(doPing, @(Model.PingSeconds * 1000));
-        console.log("Client set to ping server every @Model.PingSeconds seconds");
-        return false;
+            $("#wsModal").modal("show");
+            wsTryingToConnect = true;
+            webSocket = new WebSocket(wsUrl);
+            webSocket.onerror = updateState;
+            webSocket.onopen = function (e) {
+                $('#wsProgress').addClass('active');
+                wsStarted = true;
+            }
+            webSocket.onclose = updateState;
+            webSocket.onmessage = updateState;
+            wsPingOnce = setTimeout(doPing, 900);
+            wsPing = setInterval(doPing, wsPingInterval);
+            if(wsPageTitle !== '') {
+                $('#wsTitle').text(wsPageTitle);
+            }
+            console.log("Client set to ping server every @Model.PingSeconds seconds");
+            return false;
         });
 
         $('#cancelWs').click(function () {

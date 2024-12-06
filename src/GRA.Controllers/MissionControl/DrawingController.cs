@@ -10,7 +10,6 @@ using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Logging;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -19,27 +18,30 @@ namespace GRA.Controllers.MissionControl
     public class DrawingController : Base.MCController
     {
         private readonly DrawingService _drawingService;
-        private readonly ILogger<DrawingController> _logger;
         private readonly PrizeWinnerService _prizeWinnerService;
         private readonly SiteService _siteService;
         private readonly UserService _userService;
 
-        public DrawingController(ILogger<DrawingController> logger,
-            ServiceFacade.Controller context,
+        public DrawingController(ServiceFacade.Controller context,
             DrawingService drawingService,
             PrizeWinnerService prizeWinnerService,
             SiteService siteService,
             UserService userService) : base(context)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _drawingService = drawingService
-                ?? throw new ArgumentNullException(nameof(drawingService));
-            _prizeWinnerService = prizeWinnerService
-                ?? throw new ArgumentNullException(nameof(prizeWinnerService));
-            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            ArgumentNullException.ThrowIfNull(drawingService);
+            ArgumentNullException.ThrowIfNull(prizeWinnerService);
+            ArgumentNullException.ThrowIfNull(siteService);
+            ArgumentNullException.ThrowIfNull(userService);
+
+            _drawingService = drawingService;
+            _prizeWinnerService = prizeWinnerService;
+            _siteService = siteService;
+            _userService = userService;
+
             PageTitle = "Drawing";
         }
+
+        public static string Name { get { return "Drawing"; } }
 
         public async Task<IActionResult> Criteria(string search,
             int? systemId, int? branchId, bool? mine, int? programId, int page = 1)
@@ -80,7 +82,7 @@ namespace GRA.Controllers.MissionControl
 
             var criterionList = await _drawingService.GetPaginatedCriterionListAsync(filter);
 
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel()
             {
                 ItemCount = criterionList.Count,
                 CurrentPage = page,
@@ -98,7 +100,7 @@ namespace GRA.Controllers.MissionControl
             var systemList = (await _siteService.GetSystemList())
                 .OrderByDescending(_ => _.Id == GetId(ClaimType.SystemId)).ThenBy(_ => _.Name);
 
-            CriterionListViewModel viewModel = new CriterionListViewModel()
+            var viewModel = new CriterionListViewModel()
             {
                 Criteria = criterionList.Data,
                 PaginateModel = paginateModel,
@@ -122,7 +124,7 @@ namespace GRA.Controllers.MissionControl
                 var branch = await _siteService.GetBranchByIdAsync(branchId.Value);
                 viewModel.BranchName = branch.Name;
                 viewModel.SystemName = systemList
-                    .Where(_ => _.Id == branch.SystemId).SingleOrDefault().Name;
+                    .SingleOrDefault(_ => _.Id == branch.SystemId).Name;
                 viewModel.BranchList = (await _siteService.GetBranches(branch.SystemId))
                     .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
                     .ThenBy(_ => _.Name);
@@ -131,7 +133,7 @@ namespace GRA.Controllers.MissionControl
             else if (systemId.HasValue)
             {
                 viewModel.SystemName = systemList
-                    .Where(_ => _.Id == systemId.Value).SingleOrDefault().Name;
+                    .SingleOrDefault(_ => _.Id == systemId.Value).Name;
                 viewModel.BranchList = (await _siteService.GetBranches(systemId.Value))
                     .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
                     .ThenBy(_ => _.Name);
@@ -164,7 +166,7 @@ namespace GRA.Controllers.MissionControl
         {
             PageTitle = "Drawing Criteria";
 
-            CriterionDetailViewModel viewModel = new CriterionDetailViewModel()
+            var viewModel = new CriterionDetailViewModel()
             {
                 SystemList = new SelectList(await _siteService.GetSystemList(), "Id", "Name"),
                 BranchList = new SelectList(await _siteService.GetAllBranches(), "Id", "Name"),
@@ -177,6 +179,8 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> CriteriaCreate(CriterionDetailViewModel model,
             string Drawing)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             if (ModelState.IsValid)
             {
                 if (model.Criterion.ProgramIds?.Count == 1)
@@ -230,7 +234,7 @@ namespace GRA.Controllers.MissionControl
                 }
                 var site = await GetCurrentSiteAsync();
                 var programs = await _siteService.GetProgramList();
-                CriterionDetailViewModel viewModel = new CriterionDetailViewModel()
+                var viewModel = new CriterionDetailViewModel()
                 {
                     Criterion = criterion,
                     CreatedByName = await _userService.GetUsersNameByIdAsync(criterion.CreatedBy),
@@ -265,6 +269,8 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> CriteriaDetail(CriterionDetailViewModel model,
             string Drawing)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             if (ModelState.IsValid)
             {
                 if (model.Criterion.ProgramIds?.Count == 1)
@@ -308,14 +314,14 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> Detail(int id, int page = 1)
         {
-            int take = 15;
+            const int take = 15;
             int skip = take * (page - 1);
 
             try
             {
                 var drawing = await _drawingService.GetDetailsAsync(id, skip, take);
 
-                PaginateViewModel paginateModel = new PaginateViewModel()
+                var paginateModel = new PaginateViewModel()
                 {
                     ItemCount = drawing.Count,
                     CurrentPage = page,
@@ -327,12 +333,12 @@ namespace GRA.Controllers.MissionControl
                     return RedirectToRoute(
                         new
                         {
-                            id = id,
+                            id,
                             page = paginateModel.LastPage ?? 1
                         });
                 }
 
-                DrawingDetailViewModel viewModel = new DrawingDetailViewModel()
+                var viewModel = new DrawingDetailViewModel()
                 {
                     Drawing = drawing.Data,
                     CreatedByName = await _userService.GetUsersNameByIdAsync(drawing.Data.CreatedBy),
@@ -392,7 +398,7 @@ namespace GRA.Controllers.MissionControl
 
             var drawingList = await _drawingService.GetPaginatedDrawingListAsync(filter);
 
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel()
             {
                 ItemCount = drawingList.Count,
                 CurrentPage = page,
@@ -411,7 +417,7 @@ namespace GRA.Controllers.MissionControl
             var systemList = (await _siteService.GetSystemList())
                 .OrderByDescending(_ => _.Id == GetId(ClaimType.SystemId)).ThenBy(_ => _.Name);
 
-            DrawingListViewModel viewModel = new DrawingListViewModel()
+            var viewModel = new DrawingListViewModel()
             {
                 Drawings = drawingList.Data,
                 PaginateModel = paginateModel,
@@ -437,7 +443,7 @@ namespace GRA.Controllers.MissionControl
                 var branch = await _siteService.GetBranchByIdAsync(branchId.Value);
                 viewModel.BranchName = branch.Name;
                 viewModel.SystemName = systemList
-                    .Where(_ => _.Id == branch.SystemId).SingleOrDefault().Name;
+                    .SingleOrDefault(_ => _.Id == branch.SystemId).Name;
                 viewModel.BranchList = (await _siteService.GetBranches(branch.SystemId))
                     .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
                     .ThenBy(_ => _.Name);
@@ -446,7 +452,7 @@ namespace GRA.Controllers.MissionControl
             else if (systemId.HasValue)
             {
                 viewModel.SystemName = systemList
-                    .Where(_ => _.Id == systemId.Value).SingleOrDefault().Name;
+                    .SingleOrDefault(_ => _.Id == systemId.Value).Name;
                 viewModel.BranchList = (await _siteService.GetBranches(systemId.Value))
                     .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
                     .ThenBy(_ => _.Name);
@@ -486,7 +492,7 @@ namespace GRA.Controllers.MissionControl
                 };
                 drawing.DrawingCriterion.EligibleCount = await _drawingService.GetEligibleCountAsync(id);
 
-                DrawingNewViewModel viewModel = new DrawingNewViewModel()
+                var viewModel = new DrawingNewViewModel()
                 {
                     Drawing = drawing,
                     CanSendMail = UserHasPermission(Permission.MailParticipants)
@@ -504,6 +510,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> New(DrawingNewViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             if (string.IsNullOrWhiteSpace(model.Drawing.NotificationSubject)
                 && !string.IsNullOrWhiteSpace(model.Drawing.NotificationMessage))
             {

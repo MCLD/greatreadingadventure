@@ -1,59 +1,109 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Drawing.CriterionListViewModel
 
-<div class="row">
-    <div class="col-12 mt-4 mb-1">
-        <a asp-action="Index" class="btn btn-outline-secondary">Drawings</a>
-        <a asp-action="CriteriaCreate" class="btn btn-outline-primary">Create Criteria</a>
+@section inHeading {
+    <div class="ms-auto">
+        <a asp-action="@nameof(DrawingController.Index)"
+           class="btn btn-outline-primary">Drawing List</a>
+        <a asp-action="@nameof(DrawingController.CriteriaCreate)"
+           class="btn btn-outline-success">
+            <span class="fas fa-plus-circle"></span>
+            Create Criteria
+        </a>
     </div>
-</div>
+}
 
-<div class="row">
-    <div class="col-12 mb-2">
-        <ul class="nav nav-pills flex-column flex-sm-row my-4">
+<div class="row my-4">
+    <div class="col-12">
+        <ul class="nav nav-pills flex-column flex-sm-row">
             <li class="nav-item">
-                <a asp-route-Search="@Model.Search" asp-route-ProgramId="@Model.ProgramId" class="nav-link @(Model.ActiveNav == "All" ? "active" : "")">All</a>
+                <a asp-route-Search="@Model.Search"
+                   asp-route-ProgramId="@Model.ProgramId"
+                   class="nav-link @(Model.ActiveNav == "All" ? "active" : null)">All</a>
             </li>
-            <li class="nav-item">
-                <a class="dropdown-toggle nav-link @(Model.ActiveNav == "System" ? "active" : "")" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+            <li class="nav-item dropdown">
+                <a class="dropdown-toggle nav-link @(Model.ActiveNav == "System" ? "active" : null)"
+                   data-bs-toggle="dropdown"
+                   href="#"
+                   role="button"
+                   aria-haspopup="true"
+                   aria-expanded="false">
                     @(Model.SystemName ?? "System") <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
                     @foreach (var system in Model.SystemList)
                     {
-                        <li><a asp-route-Search="@Model.Search" asp-route-SystemId="@system.Id" asp-route-ProgramId="@Model.ProgramId">@system.Name</a></li>
+                        <li>
+                            <a asp-route-Search="@Model.Search"
+                               asp-route-SystemId="@system.Id"
+                               asp-route-ProgramId="@Model.ProgramId"
+                               class="dropdown-item">@system.Name</a>
+                        </li>
                     }
                 </ul>
             </li>
-            <li class="nav-item">
-                <a class="dropdown-toggle nav-link @(Model.ActiveNav == "Branch" ? "active" : "")" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+            <li class="nav-item dropdown">
+                <a class="dropdown-toggle nav-link @(Model.ActiveNav == "Branch" ? "active" : null)"
+                   data-bs-toggle="dropdown"
+                   href="#"
+                   role="button"
+                   aria-haspopup="true"
+                   aria-expanded="false">
                     @(Model.BranchName ?? "Branch") <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
                     @foreach (var branch in Model.BranchList)
                     {
-                        <li><a asp-route-Search="@Model.Search" asp-route-BranchId="@branch.Id" asp-route-ProgramId="@Model.ProgramId">@branch.Name</a></li>
+                        <li>
+                            <a asp-route-Search="@Model.Search"
+                               asp-route-BranchId="@branch.Id"
+                               asp-route-ProgramId="@Model.ProgramId"
+                               class="dropdown-item">@branch.Name</a>
+                        </li>
                     }
                 </ul>
             </li>
-            <li class="nav-item"><a asp-route-Search="@Model.Search" asp-route-ProgramId="@Model.ProgramId" asp-route-Mine="True" class="nav-link @(Model.ActiveNav == "Mine" ? "active" : "")">Mine</a></li>
-        </ul>
-    </div>
-</div>
-
-<div class="row row-spacing">
-    <div class="col-12 mb-2">
-        <span class="dropdown-label">Limited to Program:</span>
-        <ul class="nav" style="display: inline-table;">
-            <li>
-                <a class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                    @(Model.ProgramName ?? "Show All") <span class="caret"></span>
+            <li class="nav-item">
+                <a asp-route-Search="@Model.Search"
+                   asp-route-ProgramId="@Model.ProgramId"
+                   asp-route-Mine="True"
+                   class="nav-link @(Model.ActiveNav == "Mine" ? "active" : null)">Mine</a>
+            </li>
+            <li class="nav-item d-none d-sm-block"><a class="nav-link disabled">|</a></li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle"
+                   data-bs-toggle="dropdown"
+                   href="#"
+                   role="button"
+                   aria-haspopup="true"
+                   aria-expanded="false">
+                    Limitations: @(Model.ProgramName ?? "All Criteria") <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a asp-route-Search="@Model.Search" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-Mine="@Model.Mine">Show All</a></li>
-                    <li><a asp-route-Search="@Model.Search" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-Mine="@Model.Mine" asp-route-ProgramId="0">Not Limited</a></li>
+                    <li>
+                        <a class="dropdown-item"
+                           asp-route-Search="@Model.Search"
+                           asp-route-SystemId="@Model.SystemId"
+                           asp-route-BranchId="@Model.BranchId"
+                           asp-route-Mine="@Model.Mine">Show All</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item"
+                           asp-route-Search="@Model.Search"
+                           asp-route-SystemId="@Model.SystemId"
+                           asp-route-BranchId="@Model.BranchId"
+                           asp-route-Mine="@Model.Mine"
+                           asp-route-ProgramId="0">Not Limited</a>
+                    </li>
                     @foreach (var program in Model.ProgramList)
                     {
-                        <li><a asp-route-Search="@Model.Search" asp-route-ProgramId="@program.Id" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-Mine="@Model.Mine">@program.Name</a></li>
+                        <li>
+                            <a class="dropdown-item"
+                               asp-route-Search="@Model.Search"
+                               asp-route-ProgramId="@program.Id"
+                               asp-route-SystemId="@Model.SystemId"
+                               asp-route-BranchId="@Model.BranchId"
+                               asp-route-Mine="@Model.Mine">@program.Name</a>
+                        </li>
                     }
                 </ul>
             </li>
@@ -78,14 +128,18 @@
     {
         <input asp-for="ProgramId" type="hidden" />
     }
-
-    <div class="row row-spacing">
-        <div class="col-8 my-2">
-            <input asp-for="Search" class="form-control" />
-        </div>
-        <div class="col-4">
-            <input type="submit" value="Search" class="btn btn-outline-primary" style="margin-right: 8px;" />
-            <a asp-action="Criteria" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-ProgramId="@Model.ProgramId" asp-route-Mine="@Model.Mine" class="btn btn-outline-secondary">Clear</a>
+    <div class="row my-3">
+        <div class="col-12 input-group">
+            <input asp-for="Search"
+                   class="form-control"
+                   placeholder="Search drawing criteria" />
+            <a asp-action="@nameof(DrawingController.Criteria)"
+               asp-route-SystemId="@Model.SystemId"
+               asp-route-BranchId="@Model.BranchId"
+               asp-route-ProgramId="@Model.ProgramId"
+               asp-route-Mine="@Model.Mine"
+               class="btn btn-outline-secondary">Clear</a>
+            <input type="submit" value="Search" class="btn btn-outline-primary" />
         </div>
     </div>
 </form>
@@ -112,7 +166,9 @@
                         {
                             <tr>
                                 <td class="td-class">
-                                    <a asp-action="CriteriaDetail" asp-route-id="@criterion.Id" class="rowlink">
+                                    <a asp-action="CriteriaDetail"
+                                       asp-route-id="@criterion.Id"
+                                       class="rowlink">
                                         @criterion.Name
                                     </a>
                                 </td>
@@ -123,25 +179,22 @@
                     </tbody>
                 </table>
             </div>
-            @if (Model.PaginateModel.MaxPage > 1)
-            {
-                <paginate paginateModel="@Model.PaginateModel"></paginate>
-            }
+            <paginate paginateModel="@Model.PaginateModel"></paginate>
         }
     </div>
 </div>
 
 @section scripts
-    {
+{
     <script>
-        $(document).ready(function() {
-            $('.td-class').each(function() {
-                $(this).children('a.rowlink').height($(this).height() + 11);
+        $(document).ready(function () {
+            $('.td-class').each(function () {
+                $(this).children("a.rowlink").height($(this).outerHeight());
             });
         });
-        $(window).resize(function() {
-            $('.td-class').each(function() {
-                $(this).children('a.rowlink').height($(this).height() + 11);
+        $(window).resize(function () {
+            $('.td-class').each(function () {
+                $(this).children("a.rowlink").height($(this).outerHeight());
             });
         });
     </script>

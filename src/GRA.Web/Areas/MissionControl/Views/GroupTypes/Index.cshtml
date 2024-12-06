@@ -1,72 +1,75 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.GroupTypes.GroupTypesListViewModel
 
-@if (Model.MaximumHouseholdMembers == null)
-{
-    <div class="row row-spacing" style="margin-top: 1rem;">
-        <div class="col-sm-8 offset-sm-2">
-            <div class="alert alert-danger">
-                <table>
-                    <tr>
-                        <td>
-                            <span class="fas fa-exclamation-triangle text-danger fa-2x float-start py-4"></span>
-                        </td>
-                        <td>
-                            No maximum number of family members is configured for this site so
-                            groups will not be used even if group types are configured below.
-                            <strong>
-                                This setting can be changed in
-                                <a asp-area="MissionControl" asp-controller="Sites" asp-action="Settings" asp-route-id="@Model.SiteId" asp-fragment="Users">Site management</a>.
-                            </strong>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    </div>
-}
-else
-{
-    <div class="row row-spacing" style="margin-top: 1rem;">
-        <div class="col-sm-8 offset-sm-2">
-            <div class="alert alert-info">
-                <table>
-                    <tr>
-                        <td>
-                            <span class="fas fa-info-circle fa-2x float-start py-4"></span>
-                        </td>
-                        <td>
-                            Families will be prompted to upgrade to a group when they exceed
-                            <strong>@Model.MaximumHouseholdMembers members</strong> and one or more
-                            group types are configured below. <strong>
-                                This setting can be changed in
-                                <a asp-area="MissionControl" asp-controller="Sites" asp-action="Settings" asp-route-id="@Model.SiteId" asp-fragment="Users">Site management</a>.
-                            </strong>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    </div>
-}
-
-<div class="row row-spacing">
-    <div class="col-12">
-        <a class="btn btn-outline-primary my-3"
+@section inHeading {
+    <div class="ms-auto">
+        <a class="btn btn-outline-success"
            data-bs-toggle="modal"
            data-bs-target="#addModal">
             <span class="fas fa-plus-circle"></span>
             Add a group type
         </a>
     </div>
-</div>
+}
 
-<div class="row row-spacing">
+@if (Model.MaximumHouseholdMembers == null)
+{
+    <div class="row my-2">
+        <div class="col-sm-8 offset-sm-2">
+            <div class="alert alert-danger mb-2">
+                <div class="d-flex align-items-stretch">
+                    <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                          aria-hidden="true"></span>
+                    <span>
+                        No maximum number of family members is configured for this site so
+                        groups will not be used even if group types are configured below.
+                        <strong>
+                            This setting can be changed in
+                            <a asp-area="@SitesController.Area"
+                               asp-controller="@SitesController.Name"
+                               asp-action="@nameof(SitesController.Settings)"
+                               asp-route-id="@Model.SiteId"
+                               asp-fragment="Users">Site management</a>.
+                        </strong>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row my-2">
+        <div class="col-sm-8 offset-sm-2">
+            <div class="alert alert-info mb-2">
+                <div class="d-flex align-items-stretch">
+                    <span class="fas fa-info-circle fa-lg pt-2 me-3"
+                          aria-hidden="true"></span>
+                    <span>
+                        Families will be prompted to upgrade to a group when they exceed
+                        <strong>@Model.MaximumHouseholdMembers members</strong> and one or more
+                        group types are configured below.
+                        <strong>
+                            This setting can be changed in
+                            <a asp-area="@SitesController.Area"
+                               asp-controller="@SitesController.Name"
+                               asp-action="@nameof(SitesController.Settings)"
+                               asp-route-id="@Model.SiteId"
+                               asp-fragment="Users">Site management</a>.
+                        </strong>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row">
     <div class="col-12">
         @if (Model.GroupTypes.Count() == 0)
         {
             <div class="alert alert-warning">
                 No group types configured.
-                <a class="btn btn-outline-primary my-3"
+                <a class="btn btn-outline-success my-3 ms-4 d-inline"
                    data-bs-toggle="modal"
                    data-bs-target="#addModal">
                     <span class="fas fa-plus-circle"></span>
@@ -81,7 +84,7 @@ else
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th style="width: 9rem;">&nbsp;</th>
+                            <th style="width: 7rem;">&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -91,43 +94,38 @@ else
                                 <td>
                                     @groupType.Name
                                 </td>
-                                <td class="gra-mc-icon">
-                                    <div class="btn-group-sm">
-                                        <button type="submit"
-                                                class="btn btn-outline-primary btn-sm"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#editModal">
-                                            <span class="fas fa-pencil-alt fa-fw" aria-hidden="true"></span>
-                                        </button>
-                                        <button type="button"
-                                                class="btn btn-outline-danger btn-sm"
-                                                style="margin-left:16px;"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#deleteModal">
-                                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
-                                        </button>
-                                    </div>
+                                <td class="d-flex justify-content-evenly">
+                                    <button type="submit"
+                                            class="btn btn-outline-primary btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editModal">
+                                        <span class="fas fa-pencil-alt fa-fw"
+                                              aria-hidden="true"></span>
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-outline-danger btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal">
+                                        <span class="fas fa-times fa-fw"
+                                              aria-hidden="true"></span>
+                                    </button>
                                 </td>
                             </tr>
                         }
                     </tbody>
                 </table>
             </div>
-            @if (Model.PaginateModel.MaxPage > 1)
-            {
-                <paginate paginateModel="@Model.PaginateModel"></paginate>
-            }
+            <paginate paginateModel="@Model.PaginateModel"></paginate>
         }
     </div>
 </div>
 
 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
     <div class="modal-dialog" role="document">
-        <form asp-controller="GroupTypes"
-              asp-action="Add"
+        <form asp-controller="@GroupTypesController.Name"
+              asp-action="@nameof(GroupTypesController.Add)"
               method="post"
-              role="form"
-              style="display:inline">
+              role="form">
             <input type="hidden" asp-for="PaginateModel.CurrentPage" id="AddCurrentPage" />
             <div class="modal-content">
                 <div class="modal-header">
@@ -136,7 +134,6 @@ else
                             class="btn-close"
                             data-bs-dismiss="modal"
                             aria-label="Close dialog">
-                        
                     </button>
                 </div>
                 <div class="modal-body">
@@ -151,12 +148,11 @@ else
                 <div class="modal-footer">
                     <button type="button"
                             class="btn btn-outline-secondary"
-                            data-bs-dismiss="modal"
-                            style="margin-right: 1em;">
+                            data-bs-dismiss="modal">
                         Cancel
                     </button>
                     <button type="submit"
-                            class="btn btn-outline-primary btn-spinner float-end"
+                            class="btn btn-outline-success"
                             aria-label="Confirm"
                             button-spinner>
                         Add
@@ -180,35 +176,34 @@ else
                         class="btn-close"
                         data-bs-dismiss="modal"
                         aria-label="Close dialog">
-                    
                 </button>
             </div>
-            <div class="modal-body">
-                <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
-                <span id="deleteModalText"></span>
+            <div class="modal-body p-0">
+                <div class="modal-body d-flex align-items-stretch">
+                    <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
+                    <span id="deleteModalText"></span>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button"
                         class="btn btn-outline-secondary"
-                        data-bs-dismiss="modal"
-                        style="margin-right: 1em;">
+                        data-bs-dismiss="modal">
                     Cancel
                 </button>
-                <form asp-controller="GroupTypes"
-                      asp-action="Delete"
+                <form asp-controller="@GroupTypesController.Name"
+                      asp-action="@nameof(GroupTypesController.Delete)"
+                      class="d-inline"
                       method="post"
-                      role="form"
-                      style="display:inline">
+                      role="form">
                     <input type="hidden"
                            asp-for="PaginateModel.CurrentPage"
                            id="DeleteCurrentPage" />
                     <input asp-for="GroupType.Id" id="deleteGroupTypeId" type="hidden" />
                     <input asp-for="GroupType.Name" id="deleteGroupTypeName" type="hidden" />
                     <button type="submit"
-                            class="btn btn-outline-danger btn-spinner float-end"
+                            class="btn btn-outline-danger"
                             aria-label="Confirm"
                             button-spinner>
-                        <span class="fas fa-timeschool-selection-checkbox fa-fw" aria-hidden="true"></span>
                         Delete
                     </button>
                 </form>
@@ -227,8 +222,7 @@ else
             <form asp-controller="GroupTypes"
                   asp-action="Edit"
                   method="post"
-                  role="form"
-                  style="display:inline">
+                  role="form">
                 <input type="hidden" asp-for="PaginateModel.CurrentPage" id="EditCurrentPage" />
                 <input asp-for="GroupType.Id" id="editGroupTypeId" type="hidden" />
                 <div class="modal-content">
@@ -238,7 +232,6 @@ else
                                 class="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="Close dialog">
-                            
                         </button>
                     </div>
                     <div class="modal-body">
@@ -253,12 +246,11 @@ else
                     <div class="modal-footer">
                         <button type="button"
                                 class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal"
-                                style="margin-right: 1em;">
+                                data-bs-dismiss="modal">
                             Cancel
                         </button>
                         <button type="submit"
-                                class="btn btn-outline-primary btn-spinner float-end"
+                                class="btn btn-outline-primary"
                                 aria-label="Confirm"
                                 button-spinner>
                             Save
@@ -272,31 +264,29 @@ else
 
 
 @section scripts
-    {
+{
     <script>
         $('#addModal').on('shown.bs.modal', function (event) {
             $('#addGroupTypeName').focus();
         });
 
         $('#deleteModal').on('show.bs.modal', function (event) {
-            var dataElement = $(event.relatedTarget).closest('[data-id]');
-            var name = dataElement.data('name');
-            $('#deleteModalText').text('Are you sure you wish to delete the group type: ' + name + '?');
+            let dataElement = $(event.relatedTarget).closest('[data-id]');
+            let name = dataElement.data('name');
+            $('#deleteModalText').html('Are you sure you wish to delete the group type: <strong>' + name + '</strong>?');
             $('#deleteGroupTypeId').val(dataElement.data('id'));
             $('#deleteGroupTypeName').val(name);
         });
 
         $('#editModal').on('show.bs.modal', function (event) {
-            console.log(event);
-            console.log($(event.relatedTarget));
-            var dataElement = $(event.relatedTarget).closest('[data-id]');
-            var name = dataElement.data('name');
+            let dataElement = $(event.relatedTarget).closest('[data-id]');
+            let name = dataElement.data('name');
             $('#editModalLabel').text("Edit group type: " + name);
             $('#editGroupTypeId').val(dataElement.data('id'));
             $('#editGroupTypeName').val(name);
         });
 
-        $('#editModal').on('shown.bs.modal', function (event) {
+        $('#editModal').on('shown.bs.modal', function () {
             $('#editGroupTypeName').focus();
         });
     </script>

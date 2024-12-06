@@ -1,13 +1,15 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.EmailManagement.EmailBaseIndexViewModel
 
-<div class="row" style="margin: 1rem 0;">
-    <div class="col-12">
-        <a class="btn btn-outline-secondary"
-           asp-action="@nameof(EmailManagementController.Index)">
-            Return to Template List
-        </a>
+@section inHeading {
+    <div class="ms-auto">
+        <a asp-action="@nameof(EmailManagementController.Index)"
+           class="btn btn-outline-secondary d-print-none">Return to Email Management</a>
+    </div>
+}
 
-        <a class="btn btn-info"
+<div class="row my-2">
+    <div class="col-12">
+        <a class="btn btn-outline-primary"
            asp-action="@nameof(EmailManagementController.CreateBaseTemplate)">
             <span class="fas fa-plus-circle"></span>
             Create Base Template
@@ -15,12 +17,11 @@
     </div>
 </div>
 
-<div class="row" style="margin: 1rem 0;">
+<div class="row mt-4">
     <div class="col-12">
         @if (Model.EmailBases?.Any() != true)
         {
-            <div class="alert alert-warning"
-             style="margin-top: 2rem;">
+            <div class="alert alert-warning">
                 No base email templates.
             </div>
         }
@@ -32,7 +33,7 @@
                         <tr>
                             <th>Name</th>
                             <th>Is Default</th>
-                            <th>Actions</th>
+                            <th>Template(s)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -49,9 +50,9 @@
                                     @foreach (var language in emailBase.ConfiguredLanguages)
                                     {
                                         <a asp-action="@nameof(EmailManagementController.EditBaseTemplate)"
-                               asp-route-emailBaseId="@emailBase.Id"
-                               asp-route-languageId="@language"
-                               class="btn btn-file btn-secondary btn-sm gra-button-buffer">@Model.LanguageNames[language]</a>
+                                           asp-route-emailBaseId="@emailBase.Id"
+                                           asp-route-languageId="@language"
+                                           class="btn btn-outline-secondary btn-sm">@Model.LanguageNames[language]</a>
                                     }
                                 </td>
                             </tr>

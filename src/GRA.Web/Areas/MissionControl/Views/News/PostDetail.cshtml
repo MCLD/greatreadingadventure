@@ -4,6 +4,15 @@
     <link rel="stylesheet" href="/css/markdown.min.css" />
 }
 
+@section inHeading {
+    <div class="ms-auto">
+        <a asp-action="@nameof(NewsController.Index)"
+           class="btn btn-outline-secondary">
+            Return to list
+        </a>
+    </div>
+}
+
 <form asp-action="@Model.Action" method="post" role="form">
     <input asp-for="Action" type="hidden" />
     @if (Model.Action == nameof(NewsController.EditPost))
@@ -21,7 +30,9 @@
 
             <div class="mb-3">
                 <label asp-for="Post.CategoryId" class="col-form-label"></label>
-                <select asp-for="Post.CategoryId" asp-items="Model.Categories" class="form-select"></select>
+                <select asp-for="Post.CategoryId" 
+                    asp-items="Model.Categories" 
+                    class="form-select"></select>
                 <span asp-validation-for="Post.CategoryId" class="text-danger"></span>
             </div>
 
@@ -29,7 +40,9 @@
                 <div class="col-12">
                     <label asp-for="Post.Content" class="col-form-label"></label>
                     <div id="wmd-button-bar"></div>
-                    <textarea asp-for="Post.Content" id="wmd-input" class="form-control wmd-input"> </textarea>
+                    <textarea asp-for="Post.Content" 
+                    id="wmd-input" 
+                    class="form-control wmd-input"> </textarea>
                     <br />
                     <label class="col-form-label">Preview</label>
                     <div id="preview"></div>
@@ -48,16 +61,17 @@
                 <div class="row row-spacing">
                     <div class="col-12">
                         <label asp-for="MarkUpdated" class="col-form-label"></label>
-                        <select asp-for="MarkUpdated" asp-items="Model.NoYes" class="form-select"></select>
+                        <select asp-for="MarkUpdated" 
+                        asp-items="Model.NoYes" 
+                        class="form-select"></select>
                     </div>
                 </div>
             }
 
             <div class="mb-3">
-                <a asp-action="Index" class="btn btn-outline-secondary">Return to List</a>
                 @if (Model.Post?.PublishedAt != null)
                 {
-                    <button type="submit" class="btn btn-outline-primary btn-spinner" button-spinner>
+                    <button type="submit" class="btn btn-outline-primary" button-spinner>
                         <span class="buttonText">Update Post</span>
                     </button>
                 }
@@ -66,14 +80,14 @@
                     <button type="submit"
                             name="Publish"
                             value="False"
-                            class="btn btn-outline-primary btn-spinner"
+                            class="btn btn-outline-primary"
                             button-spinner>
                         <span class="buttonText">Save as Draft</span>
                     </button>
                     <button type="submit"
                             name="Publish"
                             value="True"
-                            class="btn btn-outline-info btn-spinner"
+                            class="btn btn-outline-info"
                             button-spinner>
                         <span class="buttonText">Save and Publish</span>
                     </button>

@@ -1,32 +1,37 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Avatar.ItemsListViewModel
 
+@section inHeading {
+    <a asp-action="@nameof(AvatarsController.Index)"
+       class="btn btn-outline-secondary ms-auto d-print-none">Return to List</a>
+}
+
 <div class="row">
     <div class="col-12 my-4">
         <ul class="nav nav-pills flex-column flex-sm-row">
             <li class="nav-item">
-                <a asp-route-search="@Model.Search" 
-                    class="nav-link @(!Model.Available && !Model.Unavailable && !Model.Unlockable ? "active" : "")">
+                <a asp-route-search="@Model.Search"
+                   class="nav-link @(!Model.Available && !Model.Unavailable && !Model.Unlockable ? "active" : "")">
                     All
                 </a>
-             </li>
+            </li>
             <li class="nav-item">
-                <a asp-route-search="@Model.Search" 
-                    asp-route-available="True"
-                    class="nav-link @(Model.Available ? "active" : "")">
+                <a asp-route-search="@Model.Search"
+                   asp-route-available="True"
+                   class="nav-link @(Model.Available ? "active" : "")">
                     Available
                 </a>
             </li>
             <li class="nav-item">
-                <a asp-route-search="@Model.Search" 
-                    asp-route-unavailable="True"
-                    class="nav-link  @(Model.Unavailable ? "active" : "")">
+                <a asp-route-search="@Model.Search"
+                   asp-route-unavailable="True"
+                   class="nav-link  @(Model.Unavailable ? "active" : "")">
                     Unavailable
                 </a>
             </li>
             <li class="nav-item">
-                <a asp-route-search="@Model.Search" 
-                    asp-route-unlockable="True"
-                    class="nav-link  @(Model.Unlockable ? "active" : "")">
+                <a asp-route-search="@Model.Search"
+                   asp-route-unlockable="True"
+                   class="nav-link  @(Model.Unlockable ? "active" : "")">
                     Unlockable
                 </a>
             </li>
@@ -38,61 +43,84 @@
     <input asp-for="Available" type="hidden" />
     <input asp-for="Unavailable" type="hidden" />
     <input asp-for="Unlockable" type="hidden" />
-    <div class="row row-spacing">
-        <div class="col-8">
-            <input name="Search" value="@Model.Search" class="form-control" />
-        </div>
-        <div class="col-4 mb-3">
-            <input type="submit" value="Search" class="btn btn-outline-primary" style="margin-right: 8px;" />
-            <a asp-action="Layer" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Clear</a>
+    <div class="row mb-4">
+        <div class="col-12 input-group">
+            <input asp-for="Search"
+                   class="form-control"
+                   placeholder="Search for avatar parts" />
+            <a asp-action="Layer"
+               asp-route-id="@Model.Id"
+               class="btn btn-outline-secondary">Clear</a>
+            <input type="submit"
+                   value="Search"
+                   class="btn btn-outline-primary" />
         </div>
     </div>
 </form>
 
+@if (!string.IsNullOrEmpty(Model.Search))
+{
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="alert alert-info py-2 px-3">
+                Searching for: <strong>@Model.Search</strong>
+            </div>
+        </div>
+    </div>
+}
 
-<div class="row mb-2">
-    <div class="col-12">
-        <div class="row">
-            <form asp-controller="Avatars" method="post" role="form">
-                <input name="Id" value="@Model.Id" type="hidden" />
-                <input name="Search" value="@Model.Search" type="hidden" />
-                <input asp-for="Available" type="hidden" />
-                <input asp-for="Unavailable" type="hidden" />
-                <input asp-for="Unlockable" type="hidden" />
-                <input name="PaginateModel.CurrentPage" value="@Model.PaginateModel.CurrentPage" type="hidden" />
-                @foreach (var item in Model.Items)
-                {
-                    <div class="col-sm-3 mb-4 text-center">
-                        <img src="~/@item.Thumbnail"
-                            class="img-fluid img-thumbnail" />
-                        <div class="mb-4">
-                            @item.Name
-                        </div>
-                        <div class="btn-toolbar justify-content-center">
-                        <button 
-                            asp-action="@nameof(AvatarsController.DecreaseItemSort)" 
-                            name="ItemId" value="@item.Id" 
-                            class="btn btn-sm btn-outline-secondary me-2" 
-                            disabled="@(Model.PaginateModel.FirstPage == null && item == Model.Items.First() ? "disabled" : null)">
-                            <span
-                                class="fas fa-arrow-left fa-fw">
+@if (Model.Items.Count() == 0)
+{
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-warning">No results found.</div>
+        </div>
+    </div>
+}
+else
+{
+    <form asp-controller="Avatars" method="post" role="form">
+        <input name="Id" value="@Model.Id" type="hidden" />
+        <input name="Search" value="@Model.Search" type="hidden" />
+        <input asp-for="Available" type="hidden" />
+        <input asp-for="Unavailable" type="hidden" />
+        <input asp-for="Unlockable" type="hidden" />
+        <input name="PaginateModel.CurrentPage"
+               value="@Model.PaginateModel.CurrentPage"
+               type="hidden" />
+        <div class="row mb-4">
+            @foreach (var item in Model.Items)
+            {
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center">
+                    <img src="~/@item.Thumbnail"
+                         class="img-fluid img-thumbnail" />
+                    <div class="mb-2">
+                        @item.Name
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <button asp-action="@nameof(AvatarsController.DecreaseItemSort)"
+                                name="ItemId" value="@item.Id"
+                                class="btn btn-sm btn-outline-secondary me-2"
+                                disabled="@(Model.PaginateModel.FirstPage == null && item == Model.Items.First() ? "disabled" : null)">
+                            <span class="fas fa-arrow-left fa-fw">
                             </span>
                         </button>
                         @if (item.Unlockable)
                         {
-                            <button 
-                                asp-action="@nameof(AvatarsController.SetItemAvailable)" 
-                                name="ItemId" 
-                                value="@item.Id" 
-                                class="btn btn-sm btn-outline-primary me-2">
-                                <span 
-                                    class="fas fa-lock">
+                            <button asp-action="@nameof(AvatarsController.SetItemAvailable)"
+                                    name="ItemId"
+                                    value="@item.Id"
+                                    class="btn btn-sm btn-outline-primary me-2">
+                                <span class="fas fa-lock">
                                 </span>
                             </button>
                         }
                         else
                         {
-                            <button asp-action="@nameof(AvatarsController.SetItemUnlockable)" name="ItemId" value="@item.Id" class="btn btn-sm btn-outline-success me-2">
+                            <button asp-action="@nameof(AvatarsController.SetItemUnlockable)"
+                                    name="ItemId"
+                                    value="@item.Id"
+                                    class="btn btn-sm btn-outline-success me-2">
                                 <span class="fas fa-unlock-alt fa-fw"></span>
                             </button>
                         }
@@ -104,22 +132,22 @@
                                 data-name="@item.Name">
                             <span class="fas fa-times fa-fw"></span>
                         </button>
-                        <button asp-action="@nameof(AvatarsController.IncreaseItemSort)" name="ItemId" value="@item.Id" class="btn btn-sm btn-outline-secondary" style="margin-left: 6px;" disabled="@(Model.PaginateModel.LastPage == null && item == Model.Items.Last() ? "disabled" : null)">
+                        <button asp-action="@nameof(AvatarsController.IncreaseItemSort)"
+                                name="ItemId"
+                                value="@item.Id"
+                                class="btn btn-sm btn-outline-secondary"
+                                style="margin-left: 6px;"
+                                disabled="@(Model.PaginateModel.LastPage == null && item == Model.Items.Last() ? "disabled" : null)">
                             <span class="fas fa-arrow-right fa-fw"></span>
                         </button>
-                        </div>
                     </div>
-
-                }
-            </form>
+                </div>
+            }
         </div>
-        @if (Model.PaginateModel.MaxPage > 1)
-        {
-            <paginate paginateModel="@Model.PaginateModel"></paginate>
-        }
-        <a asp-action="Index" class="btn btn-outline-secondary">Return to List</a>
-    </div>
-</div>
+    </form>
+}
+
+<paginate paginateModel="@Model.PaginateModel"></paginate>
 
 <div class="row">
     <div class="modal fade"
@@ -130,8 +158,7 @@
         <div class="modal-dialog" role="document">
             <form asp-action="@nameof(AvatarsController.DeleteItem)"
                   method="post"
-                  role="form"
-                  style="display:inline">
+                  role="form">
                 <input name="Id" value="@Model.Id" type="hidden" />
                 <input name="Search" value="@Model.Search" type="hidden" />
                 <input asp-for="Available" type="hidden" />
@@ -148,13 +175,14 @@
                                 class="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="Close dialog">
-                            
                         </button>
-
                     </div>
-                    <div class="modal-body">
-                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
-                        <span id="modal-text"></span>
+                    <div class="modal-body p-0">
+                        <div class="modal-body d-flex align-items-stretch">
+                            <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                                  aria-hidden="true"></span>
+                            <span id="modal-text"></span>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button"
@@ -180,11 +208,11 @@
 @section scripts {
     <script>
         $("#deleteModal").on("show.bs.modal", function (e) {
-            var button = $(e.relatedTarget);
-            var id = button.data("id");
-            var name = button.data("name");
-            var modal = $(this);
-            modal.find("#modal-text").text("Are you sure you want to delete the item \"" + name + "\"?");
+            let button = $(e.relatedTarget);
+            let id = button.data("id");
+            let name = button.data("name");
+            let modal = $(this);
+            modal.find("#modal-text").html("Are you sure you want to delete the item: <strong>" + name + "</strong>?");
             modal.find("#ItemId").val(id);
         });
     </script>

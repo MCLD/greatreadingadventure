@@ -149,6 +149,7 @@ namespace GRA.Controllers.MissionControl
                 return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
                 {
                     CancelUrl = Url.Action(nameof(BulkCodeReassignment)),
+                    CompleteButton = "Return to Vendor Code Management",
                     JobToken = jobToken.ToString(),
                     PingSeconds = 5,
                     SuccessRedirectUrl = "",
@@ -365,6 +366,7 @@ namespace GRA.Controllers.MissionControl
             return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
             {
                 CancelUrl = Url.Action(nameof(Index)),
+                CompleteButton = "Back to Vendor Code Management",
                 JobToken = jobToken.ToString(),
                 PingSeconds = 5,
                 SuccessRedirectUrl = "",
@@ -503,6 +505,7 @@ namespace GRA.Controllers.MissionControl
                 return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
                 {
                     CancelUrl = Url.Action(nameof(ImportStatus)),
+                    CompleteButton = "Back to Vendor Code Management",
                     JobToken = jobToken.ToString(),
                     PingSeconds = 5,
                     SuccessRedirectUrl = "",
