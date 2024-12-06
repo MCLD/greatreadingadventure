@@ -57,7 +57,8 @@ namespace GRA.Data.Repository
         public async Task<int> GetCountAsync(BaseFilter filter)
         {
             ArgumentNullException.ThrowIfNull(filter);
-            return await ApplyFilters(filter).CountAsync();
+            var results = await ApplyFiltersAsync(filter);
+            return await results.CountAsync();
         }
 
         public async Task<int> GetEligibleUserCountAsync(int criterionId)
@@ -76,7 +77,8 @@ namespace GRA.Data.Repository
         {
             ArgumentNullException.ThrowIfNull(filter);
 
-            return await ApplyFilters(filter)
+            var filtered = await ApplyFiltersAsync(filter);
+            return await filtered
                 .OrderBy(_ => _.Name)
                 .ThenBy(_ => _.Id)
                 .ApplyPagination(filter)
@@ -219,30 +221,30 @@ namespace GRA.Data.Repository
             return pointUsers ?? (activityUsers ?? userIds);
         }
 
-        private IQueryable<Model.DrawingCriterion> ApplyFilters(BaseFilter filter)
+        private async Task<IQueryable<Model.DrawingCriterion>> ApplyFiltersAsync(BaseFilter filter)
         {
             var criterionList = DbSet
                 .AsNoTracking()
                 .Where(_ => _.SiteId == filter.SiteId);
 
-            if (filter.SystemIds?.Any() == true)
+            if (filter.SystemIds?.Count > 0)
             {
                 criterionList = criterionList
                     .Where(_ => filter.SystemIds.Contains(_.RelatedSystemId));
             }
 
-            if (filter.BranchIds?.Any() == true)
+            if (filter.BranchIds?.Count > 0)
             {
                 criterionList = criterionList
                     .Where(_ => filter.BranchIds.Contains(_.RelatedBranchId));
             }
 
-            if (filter.UserIds?.Any() == true)
+            if (filter.UserIds?.Count > 0)
             {
                 criterionList = criterionList.Where(_ => filter.UserIds.Contains(_.CreatedBy));
             }
 
-            if (filter.ProgramIds?.Any() == true)
+            if (filter.ProgramIds?.Count > 0)
             {
                 // list of non-null ints to filter by
                 var programIds = filter.ProgramIds.Where(_ => _.HasValue).Cast<int>().ToList();
@@ -265,9 +267,19 @@ namespace GRA.Data.Repository
 
             if (!string.IsNullOrWhiteSpace(filter.Search))
             {
-                criterionList = criterionList.Where(_ => _.Name.Contains(filter.Search))
-                    .Union(criterionList.Where(_ => _.System.Name.Contains(filter.Search)))
-                    .Union(criterionList.Where(_ => _.Branch.Name.Contains(filter.Search)));
+                var systemIds = await _context.Systems
+                    .Where(_ => _.Name.Contains(filter.Search))
+                    .Select(_ => _.Id)
+                    .ToListAsync();
+
+                var branchIds = await _context.Branches
+                    .Where(_ => _.Name.Contains(filter.Search))
+                    .Select(_ => _.Id)
+                    .ToListAsync();
+
+                criterionList = criterionList.Where(_ => _.Name.Contains(filter.Search)
+                    || (_.SystemId.HasValue && systemIds.Contains(_.SystemId.Value))
+                    || (_.BranchId.HasValue && branchIds.Contains(_.BranchId.Value)));
             }
 
             return criterionList;

@@ -1,5 +1,12 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Carousels.DetailViewModel
 
+@section inHeading {
+    <div class="ms-auto d-print-none">
+        <a asp-action="@nameof(CarouselsController.Index)"
+           class="btn btn-outline-secondary">Return to List</a>
+    </div>
+}
+
 @if (Model.PageAction == GRA.Controllers.ViewModel.PageAction.Edit
 && Model.Carousel.Items?.Any() != true)
 {
@@ -17,8 +24,7 @@
 <form asp-controller="Carousels"
       asp-action="@Model.PageAction"
       method="post"
-      role="form"
-      style="margin: 1rem 0;">
+      role="form">
     <input asp-for="PageAction" type="hidden" />
     @if (Model.PageAction == GRA.Controllers.ViewModel.PageAction.Edit)
     {
@@ -34,12 +40,7 @@
     <div class="mb-3">
         <label asp-for="Carousel.StartTime" class="col-form-label"></label>
         <description gra-description-for="Carousel.StartTime"></description>
-        <div class="mb-3 date" id="pickerStart">
-            <span class="input-group-text">
-                <i class="fas fa-calendar-alt"></i>
-            </span>
-            <input asp-for="Carousel.StartTime" type="datetime-local" class="form-control"/>
-        </div>
+        <input asp-for="Carousel.StartTime" type="datetime-local" class="form-control" />
         <span asp-validation-for="Carousel.StartTime" class="text-danger"></span>
     </div>
     <div class="mb-3">
@@ -48,10 +49,7 @@
         <input asp-for="Carousel.Heading" type="text" class="form-control" />
         <span asp-validation-for="Carousel.Heading" class="text-danger"></span>
     </div>
-
-
     <div class="mb-3">
-        <a asp-action="Index" class="btn btn-outline-secondary">Return to List</a>
         <button type="submit"
                 id="Submit"
                 name="Submit"
@@ -68,8 +66,7 @@
     {
         <a asp-action="AddItem"
            asp-route-id="@Model.Carousel.Id"
-           class="btn btn-outline-success btn-lg"
-           style="margin: 1rem 0;">
+           class="btn btn-outline-success btn-lg">
             <span class="fas fa-lg fa-plus-circle fa-fw"></span>
             Add item
         </a>
@@ -85,15 +82,18 @@
                 Add item
             </a>
         }
-
-        <div class="row gra-js-required" style="margin-top: 4rem;">
+        <hr class="mt-4" />
+        <div class="row gra-js-required">
             <div class="col-12">
+                <p>
+                    Carousel items are displayed below. Select an image or title to edit an item,
+                    use the "Delete" button under an item to remove it.
+                </p>
                 <div class="card">
                     @if (!string.IsNullOrEmpty(Model.Carousel.Heading))
                     {
                         <div class="card-header">
                             @Model.Carousel.Heading
-
                             <a asp-action="AddItem"
                                asp-route-id="@Model.Carousel.Id"
                                class="btn btn-sm btn-outline-success float-end">
@@ -112,14 +112,19 @@
                                        class="gra-carousel-link">
                                         <img src="@item.ImageUrl" />
                                         <p>@item.Title</p>
-                                    </a><br />
+                                    </a>
                                     <form asp-controller="Carousels"
                                           asp-action="DeleteItem"
                                           asp-route-id="@item.Id"
                                           method="post"
-                                          role="form"
-                                          class="d-flex flex-row align-items-center flex-wrap">
-                                        <button type="submit" class="btn btn-sm btn-outline-danger"><span class="far fa-times-circle fa-fw"></span> Delete</button>
+                                          role="form">
+                                        <div class="d-flex justify-content-center">
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-outline-danger">
+                                                <span class="far fa-times-circle fa-fw"></span>
+                                                Delete
+                                            </button>
+                                        </div>
                                     </form>
                                 </div>
                             }
@@ -132,3 +137,7 @@
 
 }
 
+@section scripts {
+    <link rel="stylesheet" type="text/css" href="/css/slick.min.css" />
+    <script type="text/javascript" src="/js/slick.min.js"></script>
+}

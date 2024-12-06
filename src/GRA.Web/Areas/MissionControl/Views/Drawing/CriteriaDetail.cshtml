@@ -1,5 +1,12 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Drawing.CriterionDetailViewModel
 
+@section inHeading {
+    <div class="ms-auto">
+        <a asp-action="@nameof(DrawingController.Criteria)"
+           class="btn btn-outline-secondary">Return to list</a>
+    </div>
+}
+
 <div style="font-size:large;">
     Created By:
     @if (Model.CanViewParticipants)
@@ -16,9 +23,11 @@
     on @Model.Criterion.CreatedAt
 </div>
 
-<form asp-controller="Drawing" asp-action="CriteriaDetail" method="post" role="form">
+<form asp-controller="@DrawingController.Name"
+      asp-action="@nameof(DrawingController.CriteriaDetail)"
+      method="post"
+      role="form">
     <input asp-for="Criterion.Id" type="hidden" />
-
     <div class="row">
         <div class="col-12">
             <label asp-for="Criterion.Name" class="col-form-label"></label>
@@ -26,8 +35,7 @@
             <span asp-validation-for="Criterion.Name" class="text-danger"></span>
         </div>
     </div>
-
-    <div class="row row-spacing">
+    <div class="row mb-2">
         <div class="col-12">
             <label asp-for="Criterion.SystemId" class="col-form-label"></label>
             <select asp-for="Criterion.SystemId" asp-items="Model.SystemList" class="form-select">
@@ -36,8 +44,7 @@
             <span asp-validation-for="Criterion.SystemId" class="text-danger"></span>
         </div>
     </div>
-
-    <div class="row row-spacing">
+    <div class="row mb-2">
         <div class="col-12">
             <label asp-for="Criterion.BranchId" class="col-form-label"></label>
             <select asp-for="Criterion.BranchId" asp-items="Model.BranchList" class="form-select">
@@ -46,17 +53,17 @@
             <span asp-validation-for="Criterion.BranchId" class="text-danger"></span>
         </div>
     </div>
-
-    <div class="row row-spacing">
+    <div class="row mb-2">
         <div class="col-12">
             <label asp-for="Criterion.ProgramId" class="col-form-label"></label>
-            <input asp-for="ProgramPlaceholder" class="form-control" />
-            <select asp-for="Criterion.ProgramIds" asp-items="Model.ProgramList" class="form-select hidden" multiple="multiple"></select>
+            <select asp-for="Criterion.ProgramIds"
+                    asp-items="Model.ProgramList"
+                    class="form-select"
+                    multiple="multiple"></select>
             <span asp-validation-for="Criterion.ProgramId" class="text-danger"></span>
         </div>
     </div>
-
-    <div class="row row-spacing">
+    <div class="row mb-2">
         <div class="col-6">
             <label asp-for="Criterion.PointsMinimum" class="col-form-label"></label>
             <input asp-for="Criterion.PointsMinimum" type="number" min="0" class="form-control" />
@@ -69,12 +76,13 @@
             <span asp-validation-for="Criterion.PointsMaximum" class="text-danger"></span>
         </div>
     </div>
-
-    <div class="row row-spacing">
+    <div class="row mb-2">
         <div class="col-6">
             <label asp-for="Criterion.StartOfPeriod" class="col-form-label"></label>
             <div class="mb-3 date" id="pickerStart">
-                <input asp-for="Criterion.StartOfPeriod" type="datetime-local" class="form-control"/>
+                <input asp-for="Criterion.StartOfPeriod"
+                       type="datetime-local"
+                       class="form-control" />
             </div>
             <span asp-validation-for="Criterion.StartOfPeriod" class="text-danger"></span>
         </div>
@@ -82,13 +90,12 @@
         <div class="col-6">
             <label asp-for="Criterion.EndOfPeriod" class="col-form-label"></label>
             <div class="mb-3 date" id="pickerEnd">
-                <input asp-for="Criterion.EndOfPeriod" type="datetime-local" class="form-control"/>
+                <input asp-for="Criterion.EndOfPeriod" type="datetime-local" class="form-control" />
             </div>
             <span asp-validation-for="Criterion.EndOfPeriod" class="text-danger"></span>
         </div>
     </div>
-
-    <div class="row row-spacing">
+    <div class="row mb-2">
         <div class="col-12">
             <label asp-for="Criterion.ReadABook" class="col-form-label"></label>
             <select asp-for="Criterion.ReadABook" class="form-select">
@@ -98,8 +105,7 @@
             <span asp-validation-for="Criterion.ReadABook" class="text-danger"></span>
         </div>
     </div>
-
-    <div class="row row-spacing">
+    <div class="row mb-2">
         <div class="col-12">
             <label asp-for="Criterion.ExcludePreviousWinners" class="col-form-label"></label>
             <select asp-for="Criterion.ExcludePreviousWinners" class="form-select">
@@ -109,8 +115,7 @@
             <span asp-validation-for="Criterion.ExcludePreviousWinners" class="text-danger"></span>
         </div>
     </div>
-
-    <div class="row row-spacing">
+    <div class="row mb-2">
         <div class="col-12">
             <label asp-for="Criterion.IncludeAdmin" class="col-form-label"></label>
             <select asp-for="Criterion.IncludeAdmin" class="form-select">
@@ -120,16 +125,13 @@
             <span asp-validation-for="Criterion.IncludeAdmin" class="text-danger"></span>
         </div>
     </div>
-
-    <div class="row row-spacing">
+    <div class="row mb-2">
         <div class="col-12">
             <label class="col-form-label">Eligible Participants (Click save to update)</label>
             <input asp-for="EligibleCount" type="text" class="form-control" readonly />
         </div>
     </div>
-
     <div class="mb-3">
-        <a asp-action="Criteria" class="btn btn-outline-secondary">Return to Criteria List</a>
         <button type="submit"
                 id="Submit"
                 name="Submit"
@@ -153,25 +155,26 @@
 {
     <script>
         $("#Criterion_SystemId").on("change", function () {
-            var systemId = $(this).val();
-            var branchList = $("#Criterion_BranchId");
-            var branchId = branchList.val();
-            var url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
+            let systemId = $(this).val();
+            let branchList = $("#Criterion_BranchId");
+            let branchId = branchList.val();
+            let url = "@Url.Action(nameof(GRA.Controllers.LookupController.GetBranches), GRA.Controllers.LookupController.Name, new { Area = string.Empty })";
 
-            $.getJSON(url, { systemId: systemId, branchId: branchId, listAll: "true", prioritize: "true" }, function (response) {
+            $.getJSON(url, {
+                systemId: systemId,
+                branchId: branchId,
+                listAll: "true",
+                prioritize: "true"
+            }, function (response) {
                 branchList.empty();
                 branchList.append(new Option("No", ""));
-                $.each(response, function (index, item) {
-                    branchList.append(new Option(item.text, item.value, item.selected, item.selected))
+                $.each(response, function (_, item) {
+                    branchList.append(new Option(item.text,
+                        item.value,
+                        item.selected,
+                        item.selected))
                 });
             });
-        });
-
-        $("#ProgramPlaceholder").remove();
-        $("#Criterion_ProgramIds").multiselect({
-            buttonClass: "form-control",
-            buttonWidth: "100%",
-            nonSelectedText: ""
         });
     </script>
 }

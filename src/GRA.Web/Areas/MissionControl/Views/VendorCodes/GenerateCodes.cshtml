@@ -2,26 +2,26 @@
 
 @await Html.PartialAsync("_VendorCodePartial")
 
-<div class="row" style="margin-top: 1rem; margin-bottom: 1rem;">
-    <div class="col-12">
+<div class="row my-1">
+    <div class="col-12 col-md-8 offset-md-2">
         <p>
-            Generate vendor codes for type: <strong>@Model</strong>
+            Generate vendor codes for vendor code type: <strong>@Model</strong>
         </p>
     </div>
 </div>
-
-<div class="row" style="margin-bottom: 1rem;">
-    <div class="col-12">
-        <form asp-action="@nameof(VendorCodesController.GenerateCodes)"
-              method="post"
-              role="form"
-              enctype="multipart/form-data"
-              class="d-flex flex-row align-items-center flex-wrap">
-            <div class="mb-3">
-                <label for="numberOfCodes">Generate vendor codes:</label>
+<form asp-action="@nameof(VendorCodesController.GenerateCodes)"
+      method="post"
+      role="form"
+      enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-12 col-md-8 offset-md-2">
+            <div class="input-group">
+                <label class="input-group-text" for="numberOfCodes">
+                    How many to generate:
+                </label>
                 <input type="number" name="numberOfCodes" class="form-control" placeholder="#" />
+                <button type="submit" class="btn btn-info">Generate</button>
             </div>
-            <button type="submit" class="btn btn-info">Generate</button>
-        </form>
+        </div>
     </div>
-</div>
+</form>

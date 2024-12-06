@@ -1,10 +1,31 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.News.CategoryListViewModel
 
-@await Html.PartialAsync("_NewsPartial")
+@section inHeading {
+    <div class="ms-auto">
+        <a asp-action="@nameof(NewsController.CreateCategory)"
+           class="btn btn-outline-success">
+            <span class="fas fa-plus-circle"></span>
+            Add category
+        </a>
+    </div>
+}
 
-<div class="row my-4" >
-    <div class="col-12">
-        <a asp-action="CreateCategory" class="btn btn-outline-primary">Add a Category</a>
+<div class="row my-2">
+    <div class="col-12 mb-2">
+        <ul class="nav nav-pills flex-column flex-sm-row">
+            <li class="nav-item">
+                <a asp-action="@nameof(NewsController.Index)"
+                   class="nav-link">
+                    Posts
+                </a>
+            </li>
+            <li class="nav-item">
+                <a asp-action="@nameof(NewsController.Categories)"
+                   class="nav-link active">
+                    Categories
+                </a>
+            </li>
+        </ul>
     </div>
 </div>
 
@@ -31,19 +52,19 @@
                             <tr>
                                 @if (category.IsDefault)
                                 {
-                                    <td>@category.Name</td>
+                                    <td class="pb-2 pt-1">@category.Name</td>
                                 }
                                 else
                                 {
                                     <td class="td-class">
-                                        <a asp-action="@nameof(NewsController.EditCategory)" asp-route-id="@category.Id" class="rowlink">
+                                        <a asp-action="@nameof(NewsController.EditCategory)" 
+                                           asp-route-id="@category.Id" 
+                                           class="rowlink">
                                             @category.Name
                                         </a>
                                     </td>
                                 }
-
                                 <td>@category.PostCount</td>
-
                                 @if (category.IsDefault)
                                 {
                                     <td>&nbsp;</td>
@@ -57,7 +78,8 @@
                                                 data-bs-target="#deleteModal"
                                                 data-id="@category.Id"
                                                 data-name="@category.Name">
-                                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
+                                            <span class="fas fa-times fa-fw" 
+                                                  aria-hidden="true"></span>
                                         </button>
                                     </td>
                                 }
@@ -66,10 +88,7 @@
                     </tbody>
                 </table>
             </div>
-            @if (Model.PaginateModel.MaxPage > 1)
-            {
-                <paginate paginateModel="@Model.PaginateModel"></paginate>
-            }
+            <paginate paginateModel="@Model.PaginateModel"></paginate>
         }
     </div>
 </div>
@@ -83,8 +102,7 @@
         <div class="modal-dialog" role="document">
             <form asp-action="@nameof(NewsController.DeleteCategory)"
                   method="post"
-                  role="form"
-                  style="display:inline">
+                  role="form">
                 <input asp-for="PaginateModel.CurrentPage" type="hidden" />
                 <input asp-for="Category.Id" type="hidden" />
                 <input asp-for="Category.Name" type="hidden" />
@@ -95,25 +113,24 @@
                                 class="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="Close dialog">
-                            
                         </button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body p-0">
+                      <div class="modal-body d-flex align-items-stretch">
                         <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
                         <span id="modal-text"></span>
+                      </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button"
                                 class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal"
-                                style="margin-right: 1em;">
+                                data-bs-dismiss="modal">
                             Cancel
                         </button>
                         <button type="submit"
-                                class="btn btn-outline-danger btn-spinner float-end"
+                                class="btn btn-outline-danger"
                                 aria-label="Confirm"
                                 button-spinner>
-                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                             Delete
                         </button>
                     </div>
@@ -131,19 +148,20 @@
             var id = button.data("id");
             var name = button.data("name");
             var modal = $(this);
-            modal.find("#modal-text").text("Are you sure you want to delete the category \"" + name + "\"?");
+            modal.find("#modal-text").html("Are you sure you want to delete the category: <strong>" + name + "</strong>?");
             modal.find("#Category_Id").val(id);
             modal.find("#Category_Name").val(name);
         });
 
         $(window).on("load", function () {
             $(".td-class").each(function () {
-                $(this).children("a.rowlink").height($(this).height() + 11);
+                $(this).children("a.rowlink").height($(this).outerHeight());
             });
         });
+
         $(window).resize(function () {
             $(".td-class").each(function () {
-                $(this).children("a.rowlink").height($(this).height() + 11);
+                $(this).children("a.rowlink").height($(this).outerHeight);
             });
         });
     </script>

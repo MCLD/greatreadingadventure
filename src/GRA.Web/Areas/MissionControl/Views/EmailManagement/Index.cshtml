@@ -1,15 +1,6 @@
 ﻿@using GRA.Controllers.ViewModel.MissionControl.EmailManagement
 @model EmailIndexViewModel
 
-@section Styles {
-    <style>
-        .gra-button-buffer {
-            margin-right: 0.25rem;
-            margin-bottom: 0.25rem;
-        }
-    </style>
-}
-
 <div class="row my-4">
     <div class="col-12">
         <a class="btn btn-outline-success"
@@ -27,7 +18,7 @@
             <span class="fas fa-list-alt"></span>
             Manage Lists
         </a>
-        <a class="btn btn-outline-info"
+        <a class="btn btn-outline-secondary"
            asp-action="@nameof(EmailManagementController.BaseIndex)">
             Base Templates
         </a>
@@ -79,8 +70,8 @@
                                     @template.EmailsSent
                                     @if (template.Id == Model.WelcomeEmailTemplateId)
                                     {
-                                       @:/
-                                       @Model.WelcomeEmailsTotal
+                                        @:/
+                                        @Model.WelcomeEmailsTotal
                                     }
                                 </td>
                                 <td style="vertical-align: middle;">
@@ -90,7 +81,8 @@
                                     }
                                     else
                                     {
-                                        <span class="text-danger" title="Emails have already been sent.">No</span>
+                                        <span class="text-danger"
+                                              title="Emails have already been sent.">No</span>
                                     }
                                 </td>
                                 <td style="vertical-align: middle;">
@@ -102,15 +94,15 @@
                                         <a asp-action="@nameof(EmailManagementController.EditTemplate)"
                                            asp-route-templateId="@template.Id"
                                            asp-route-languageId="@language"
-                                           class="btn btn-file btn-secondary btn-sm gra-button-buffer">@Model.LanguageNames[language]</a>
+                                           class="btn btn-outline-primary btn-sm my-1">@Model.LanguageNames[language]</a>
                                     }
                                 </td>
                                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.SendBulkEmails.ToString()))
                                 {
-                                    <td class="text-right">
+                                    <td class="text-center">
                                         @if (!template.IsSystem && Model.IsAnyoneSubscribed)
                                         {
-                                            <a class="btn btn-sm btn-warning sendEmail gra-button-buffer"
+                                            <a class="btn btn-sm btn-outline-primary sendEmail my-1"
                                                asp-action="@nameof(EmailManagementController.Send)"
                                                asp-route-templateId="@template.Id">
                                                 Send
@@ -123,10 +115,7 @@
                     </tbody>
                 </table>
             </div>
-            @if (Model.MaxPage > 1)
-            {
-                <paginate paginateModel="@Model"></paginate>
-            }
+            <paginate paginateModel="@Model"></paginate>
         }
     </div>
 </div>

@@ -1,12 +1,20 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.News.CategoryDetailViewModel
 
+@section inHeading {
+    <div class="ms-auto">
+        <a asp-action="@nameof(NewsController.Categories)"
+           class="btn btn-outline-secondary">
+            Return to list
+        </a>
+    </div>
+}
+
 <form asp-action="@Model.Action" method="post" role="form">
     <input asp-for="Action" type="hidden" />
     @if (Model.Action == nameof(NewsController.EditCategory))
     {
         <input asp-for="Category.Id" type="hidden" />
     }
-
     <div class="row">
         <div class="col-12">
             <div class="mb-3">
@@ -14,9 +22,7 @@
                 <input asp-for="Category.Name" class="form-control" />
                 <span asp-validation-for="Category.Name" class="text-danger"></span>
             </div>
-
             <div class="mb-3">
-                <a asp-action="Categories" class="btn btn-outline-secondary">Return to List</a>
                 <button type="submit" class="btn btn-outline-primary btn-spinner" button-spinner>
                     <span class="buttonText">Save Category</span>
                 </button>

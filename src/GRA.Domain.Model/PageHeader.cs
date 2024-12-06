@@ -6,17 +6,18 @@ namespace GRA.Domain.Model
 {
     public class PageHeader : Abstract.BaseDomainEntity
     {
-        [Required]
-        public int SiteId { get; set; }
+        public ICollection<string> PageLanguages { get; set; }
 
         [Required]
         [DisplayName("Page Name")]
         public string PageName { get; set; }
 
         [Required]
-        [MaxLength(255)]
-        public string Stub { get; set; }
+        public int SiteId { get; set; }
 
-        public ICollection<string> PageLanguages { get; set; }
+        [Required]
+        [MaxLength(255)]
+        [DisplayName("Slug")]
+        public string Stub { get; set; }
     }
 }

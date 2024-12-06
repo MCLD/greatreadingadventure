@@ -1,24 +1,28 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Drawing.DrawingNewViewModel
 
+@section inHeading {
+    <div class="ms-auto">
+        <a asp-action="@nameof(DrawingController.Criteria)"
+           class="btn btn-outline-secondary">Return to list</a>
+    </div>
+}
+
 <form asp-controller="Drawing" asp-action="New" method="post" role="form">
     <input asp-for="Drawing.DrawingCriterionId" type="hidden" />
-
     <div class="row">
         <div class="col-12">
             <label class="col-form-label">Criteria</label>
             <input asp-for="Drawing.DrawingCriterion.Name" class="form-control" readonly />
         </div>
     </div>
-
-    <div class="row row-spacing">
+    <div class="row mb-2">
         <div class="col-12">
             <label asp-for="Drawing.Name" class="col-form-label"></label>
             <input asp-for="Drawing.Name" class="form-control" />
             <span asp-validation-for="Drawing.Name" class="text-danger"></span>
         </div>
     </div>
-
-    <div class="row row-spacing">
+    <div class="row mb-2">
         <div class="col-6">
             <label asp-for="Drawing.WinnerCount" class="col-form-label"></label>
             <input asp-for="Drawing.WinnerCount" min="1" class="form-control" />
@@ -27,22 +31,23 @@
 
         <div class="col-6">
             <label class="col-form-label">Eligible Participants</label>
-            <input asp-for="Drawing.DrawingCriterion.EligibleCount" type="text" class="form-control" readonly />
+            <input asp-for="Drawing.DrawingCriterion.EligibleCount"
+                   type="text"
+                   class="form-control"
+                   readonly />
         </div>
     </div>
-
-    <div class="row row-spacing">
+    <div class="row mb-2">
         <div class="col-12">
             <label asp-for="Drawing.RedemptionInstructions" class="col-form-label"></label>
             <textarea asp-for="Drawing.RedemptionInstructions" class="form-control"></textarea>
             <span asp-validation-for="Drawing.RedemptionInstructions" class="text-danger"></span>
         </div>
     </div>
-
     @if (Model.CanSendMail)
     {
         <input asp-for="CanSendMail" type="hidden" />
-        <div class="row row-spacing">
+        <div class="row mb-2">
             <div class="col-12">
                 <label asp-for="Drawing.NotificationSubject" class="col-form-label"></label>
                 <input asp-for="Drawing.NotificationSubject" class="form-control" />
@@ -50,7 +55,7 @@
             </div>
         </div>
 
-        <div class="row row-spacing">
+        <div class="row mb-2">
             <div class="col-12">
                 <label asp-for="Drawing.NotificationMessage" class="col-form-label"></label>
                 <textarea asp-for="Drawing.NotificationMessage" class="form-control"></textarea>
@@ -59,7 +64,6 @@
         </div>
     }
     <div class="mb-3">
-        <a asp-action="Criteria" class="btn btn-outline-secondary">Return to Criteria List</a>
         <button type="submit"
                 id="Submit"
                 name="Submit"

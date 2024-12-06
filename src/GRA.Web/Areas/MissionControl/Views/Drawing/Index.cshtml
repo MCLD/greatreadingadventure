@@ -1,64 +1,122 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Drawing.DrawingListViewModel
 
-<div class="row">
-    <div class="col-12 my-4">
-        <a asp-action="Criteria" class="btn btn-outline-secondary">Drawing Criteria</a>
+@section inHeading {
+    <div class="ms-auto">
+        <a asp-action="@nameof(DrawingController.Criteria)"
+           class="btn btn-outline-primary">Criteria List</a>
         @if (Model.Archived == true)
         {
-            <a asp-action="Index" class="btn btn-outline-secondary">Drawing List</a>
+            <a asp-action="@nameof(DrawingController.Index)"
+               class="btn btn-outline-primary">Drawing List</a>
         }
         else
         {
-            <a asp-action="Index" asp-route-Archived="True" class="btn btn-outline-secondary">Archived Drawings</a>
+            <a asp-action="@nameof(DrawingController.Index)"
+               asp-route-Archived="True"
+               class="btn btn-outline-secondary">Archived Drawings</a>
         }
     </div>
-</div>
+}
 
-<div class="row">
-    <div class="col-12 mb-4">
+<div class="row my-4">
+    <div class="col-12">
         <ul class="nav nav-pills flex-column flex-sm-row">
-            <li class="nav-item"><a asp-route-Search="@Model.Search" asp-route-ProgramId="@Model.ProgramId" asp-route-Archived="@Model.Archived" class="nav-link @(Model.ActiveNav == "All" ? "active" : "")">All</a></li>
             <li class="nav-item">
-                <a class="dropdown-toggle nav-link @(Model.ActiveNav == "System" ? "active" : "")" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                <a asp-route-Search="@Model.Search"
+                   asp-route-ProgramId="@Model.ProgramId"
+                   asp-route-Archived="@Model.Archived"
+                   class="nav-link @(Model.ActiveNav == "All" ? "active" : null)">All</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="dropdown-toggle nav-link @(Model.ActiveNav == "System" ? "active" : null)"
+                   data-bs-toggle="dropdown"
+                   href="#"
+                   role="button"
+                   aria-haspopup="true"
+                   aria-expanded="false">
                     @(Model.SystemName ?? "System") <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
                     @foreach (var system in Model.SystemList)
                     {
-                        <li><a asp-route-Search="@Model.Search" asp-route-SystemId="@system.Id" asp-route-ProgramId="@Model.ProgramId" asp-route-Archived="@Model.Archived">@system.Name</a></li>
+                        <li>
+                            <a asp-route-Search="@Model.Search"
+                               asp-route-SystemId="@system.Id"
+                               asp-route-ProgramId="@Model.ProgramId"
+                               asp-route-Archived="@Model.Archived"
+                               class="dropdown-item">@system.Name</a>
+                        </li>
                     }
                 </ul>
             </li>
-            <li class="nav-item">
-                <a class="dropdown-toggle nav-link @(Model.ActiveNav == "Branch" ? "active" : "")" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+            <li class="nav-item dropdown">
+                <a class="dropdown-toggle nav-link @(Model.ActiveNav == "Branch" ? "active" : null)"
+                   data-bs-toggle="dropdown"
+                   href="#"
+                   role="button"
+                   aria-haspopup="true"
+                   aria-expanded="false">
                     @(Model.BranchName ?? "Branch") <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
                     @foreach (var branch in Model.BranchList)
                     {
-                        <li><a asp-route-Search="@Model.Search" asp-route-BranchId="@branch.Id" asp-route-ProgramId="@Model.ProgramId" asp-route-Archived="@Model.Archived">@branch.Name</a></li>
+                        <li>
+                            <a asp-route-Search="@Model.Search"
+                               asp-route-BranchId="@branch.Id"
+                               asp-route-ProgramId="@Model.ProgramId"
+                               asp-route-Archived="@Model.Archived"
+                               class="dropdown-item">@branch.Name</a>
+                        </li>
                     }
                 </ul>
             </li>
-            <li class="nav-item"><a asp-route-Search="@Model.Search" asp-route-ProgramId="@Model.ProgramId" asp-route-Mine="True" asp-route-Archived="@Model.Archived" class="nav-link @(Model.ActiveNav == "Mine" ? "active" : "")">Mine</a></li>
-        </ul>
-    </div>
-</div>
-
-<div class="row row-spacing">
-    <div class="col-12">
-        <span class="dropdown-label">Limited to Program:</span>
-        <ul class="nav" style="display: inline-table;">
-            <li>
-                <a class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                    @(Model.ProgramName ?? "Show All") <span class="caret"></span>
+            <li class="nav-item">
+                <a asp-route-Search="@Model.Search"
+                   asp-route-ProgramId="@Model.ProgramId"
+                   asp-route-Mine="True"
+                   asp-route-Archived="@Model.Archived"
+                   class="nav-link @(Model.ActiveNav == "Mine" ? "active" : null)">Mine</a>
+            </li>
+            <li class="nav-item d-none d-sm-block"><a class="nav-link disabled">|</a></li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle"
+                   data-bs-toggle="dropdown"
+                   href="#"
+                   role="button"
+                   aria-haspopup="true"
+                   aria-expanded="false">
+                    Limitations: @(Model.ProgramName ?? "All Drawings") <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a asp-route-Search="@Model.Search" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-Mine="@Model.Mine" asp-route-Archived="@Model.Archived">Show All</a></li>
-                    <li><a asp-route-Search="@Model.Search" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-Mine="@Model.Mine" asp-route-ProgramId="0" asp-route-Archived="@Model.Archived">Not Limited</a></li>
+                    <li>
+                        <a class="dropdown-item"
+                           asp-route-Search="@Model.Search"
+                           asp-route-SystemId="@Model.SystemId"
+                           asp-route-BranchId="@Model.BranchId"
+                           asp-route-Mine="@Model.Mine"
+                           asp-route-Archived="@Model.Archived">Show All</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item"
+                           asp-route-Search="@Model.Search"
+                           asp-route-SystemId="@Model.SystemId"
+                           asp-route-BranchId="@Model.BranchId"
+                           asp-route-Mine="@Model.Mine"
+                           asp-route-ProgramId="0"
+                           asp-route-Archived="@Model.Archived">Not Limited</a>
+                    </li>
                     @foreach (var program in Model.ProgramList)
                     {
-                        <li><a asp-route-Search="@Model.Search" asp-route-ProgramId="@program.Id" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-Mine="@Model.Mine" asp-route-Archived="@Model.Archived">@program.Name</a></li>
+                        <li>
+                            <a class="dropdown-item"
+                               asp-route-Search="@Model.Search"
+                               asp-route-ProgramId="@program.Id"
+                               asp-route-SystemId="@Model.SystemId"
+                               asp-route-BranchId="@Model.BranchId"
+                               asp-route-Mine="@Model.Mine"
+                               asp-route-Archived="@Model.Archived">@program.Name</a>
+                        </li>
                     }
                 </ul>
             </li>
@@ -66,7 +124,10 @@
     </div>
 </div>
 
-<form asp-controller="Drawing" asp-action="Index" method="get" role="form">
+<form asp-action="@nameof(DrawingController.Index)"
+      asp-controller="@DrawingController.Name"
+      method="get"
+      role="form">
     @if (Model.Archived == true)
     {
         <input asp-for="Archived" type="hidden" />
@@ -87,14 +148,19 @@
     {
         <input asp-for="ProgramId" type="hidden" />
     }
-
-    <div class="row row-spacing">
-        <div class="col-8">
-            <input asp-for="Search" class="form-control" />
-        </div>
-        <div class="col-4">
-            <input type="submit" value="Search" class="btn btn-outline-primary" style="margin-right: 8px;" />
-            <a asp-action="Index" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-ProgramId="@Model.ProgramId" asp-route-Mine="@Model.Mine" asp-route-Archived="@Model.Archived" class="btn btn-outline-secondary">Clear</a>
+    <div class="row my-3">
+        <div class="col-12 input-group">
+            <input asp-for="Search"
+                   class="form-control"
+                   placeholder="Search drawings" />
+            <a asp-action="@nameof(DrawingController.Index)"
+               asp-route-SystemId="@Model.SystemId"
+               asp-route-BranchId="@Model.BranchId"
+               asp-route-ProgramId="@Model.ProgramId"
+               asp-route-Mine="@Model.Mine"
+               asp-route-Archived="@Model.Archived"
+               class="btn btn-outline-secondary">Clear</a>
+            <input type="submit" value="Search" class="btn btn-outline-primary" />
         </div>
     </div>
 </form>
@@ -122,7 +188,9 @@
                         {
                             <tr>
                                 <td class="td-class">
-                                    <a asp-action="Detail" asp-route-id="@drawing.Id" class="rowlink">
+                                    <a asp-action="Detail"
+                                       asp-route-id="@drawing.Id"
+                                       class="rowlink">
                                         @drawing.Name
                                     </a>
                                 </td>
@@ -134,25 +202,22 @@
                     </tbody>
                 </table>
             </div>
-            @if (Model.PaginateModel.MaxPage > 1)
-            {
-                <paginate paginateModel="@Model.PaginateModel"></paginate>
-            }
+            <paginate paginateModel="@Model.PaginateModel"></paginate>
         }
     </div>
 </div>
 
 @section scripts
-    {
+{
     <script>
         $(document).ready(function () {
             $('.td-class').each(function () {
-                $(this).children('a.rowlink').height($(this).height() + 11);
+                $(this).children("a.rowlink").height($(this).outerHeight());
             });
         });
         $(window).resize(function () {
             $('.td-class').each(function () {
-                $(this).children('a.rowlink').height($(this).height() + 11);
+                $(this).children("a.rowlink").height($(this).outerHeight());
             });
         });
     </script>

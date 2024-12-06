@@ -1,37 +1,33 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.EmailManagement.DetailsViewModel
-@{
-    var invalid = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
+
+@section inHeading {
+    <div class="ms-auto">
+        <a asp-action="@nameof(EmailManagementController.Index)"
+           class="btn btn-outline-secondary d-print-none">Return to List</a>
+    </div>
 }
 
-@section Styles {
-    <style>
-        .d-none {
-            display: none;
-        }
-    </style>
-}
-
-    <form asp-action="@Model.Action"
+<form asp-action="@Model.Action"
       id="uploadTemplate"
       method="post"
       role="form"
       enctype="multipart/form-data"
       class="my-2">
-        <input asp-for="LanguageId" type="hidden" />
-        <div class="row">
-            <div class="col-12">
-                <div class="mb-3">
-                    <label asp-for="TemplateDescription" class="col-form-label"></label>
-                    <description gra-description-for="TemplateDescription"></description>
-                    <input asp-for="TemplateDescription" class="form-control" />
-                    <span asp-validation-for="TemplateDescription" class="text-danger"></span>
-                </div>
+    <input asp-for="LanguageId" type="hidden" />
+    <div class="row">
+        <div class="col-12">
+            <div class="mb-3">
+                <label asp-for="TemplateDescription" class="col-form-label"></label>
+                <description gra-description-for="TemplateDescription"></description>
+                <input asp-for="TemplateDescription" class="form-control" />
+                <span asp-validation-for="TemplateDescription" class="text-danger"></span>
+            </div>
 
-                <div class="mb-3">
-                    <label asp-for="EmailBaseId" class="col-form-label"></label>
-                    <description gra-description-for="EmailBaseId"></description>
+            <div class="mb-3">
+                <label asp-for="EmailBaseId" class="col-form-label"></label>
+                <description gra-description-for="EmailBaseId"></description>
                 <select class="form-select" asp-for="EmailBaseId">
-                        @foreach (var emailBase in Model.EmailBases.Where(_ => !_.Disabled))
+                    @foreach (var emailBase in Model.EmailBases.Where(_ => !_.Disabled))
                     {
                         <option value="@emailBase.Value">@emailBase.Text</option>
                     }
@@ -42,15 +38,14 @@
             @if (Model.Languages.Count() > 1)
             {
                 <div class="mb-3">
-                    <label asp-for="LanguageId" class="col-form-label"></label><br>
-                    <description gra-description-for="LanguageId"></description><br>
+                    <label asp-for="LanguageId" class="col-form-label"></label><br />
                     @foreach (var item in Model.Languages)
                     {
                         @if (item.Disabled)
                         {
                             <button disabled
-                        title="You must first create the template in the default language"
-                        class="btn btn-sm btn-secondary mt-1">
+                                    title="You must first create the template in the default language"
+                                    class="btn btn-sm btn-outline-secondary mt-1">
                                 @item.Text
                             </button>
                         }
@@ -59,13 +54,13 @@
                             if (Model.Action == nameof(EmailManagementController.EditTemplate))
                             {
                                 <a href="@Url.Action(Model.Action, new { templateId = Model.EmailTemplateId, languageId = item.Value })"
-                   class="btn btn-sm btn-secondary mt-1 @(item.Selected ? "active" : null)">@item.Text</a>
+                                   class="btn btn-sm btn-outline-primary mt-1 @(item.Selected ? "active" : null)">@item.Text</a>
                             }
                             else
                             {
                                 <button disabled
-                        title="You must first create the template in the default language"
-                        class="btn btn-sm btn-secondary mt-1 @(item.Selected ? "active" : null)">
+                                        title="You must first create the template in the default language"
+                                        class="btn btn-sm btn-outline-primary mt-1 @(item.Selected ? "active" : null)">
                                     @item.Text
                                 </button>
                             }
@@ -73,70 +68,30 @@
                     }
                 </div>
             }
-
             <div class="mb-4">
                 <label asp-for="UploadedFile">Upload a .json file with the template content.</label>
-                <div class="input-group">
-                    <label class="input-group-text">
-                        <span class="btn btn-secondary btn-file">
-                            <span class="far fa-file-image"></span>
-                            Select a .json file
-                            <input type="file"
-                                   asp-for="UploadedFile"
-                                   class="form-control"
-                                   accept=".json"
-                                   style="display: none;" />
-                        </span>
-                    </label>
-                    <input type="text"
+                <div class="input-group mb-3">
+                    <input accept=".json"
+                           asp-for="UploadedFile"
                            class="form-control"
-                           readonly
-                           id="selectedFile"
-                           @(ViewData.ModelState.GetValidationState("UploadedFile") == invalid ? "input-validation-error" : "")>
+                           multiple="multiple"
+                           type="file" />
+                    <button class="btn btn-outline-secondary"
+                            onclick="$('#UploadedFile').val('')"
+                            type="button">
+                        Clear selection
+                    </button>
                 </div>
-                <span asp-validation-for="UploadedFile" class="text-danger"></span>
+                <span asp-validation-for="UploadedFile" class="text-danger mb-3"></span>
             </div>
-
             <button type="submit"
                     id="Submit"
                     name="Submit"
                     value="Submit"
-                    class="btn btn-outline-primary btn-spinner gra-save-button"
+                    class="btn btn-outline-primary"
                     button-spinner>
                 <span class="buttonText">Upload and Save Template</span>
             </button>
         </div>
     </div>
 </form>
-
-@section scripts {
-    <script>
-        $(function() {
-            $(':file').on('fileselect', function(event, numFiles, label) {
-                var input = $(this).parents('.input-group').find(':text'),
-                    log = numFiles > 1 ? numFiles = ' files selected' : label;
-
-                if (input.length) {
-                    input.val(log);
-                    $('.btn-file').removeClass('btn-secondary');
-                    $('.btn-file').addClass('btn-outline-success');
-                    $("#badgeImage").removeAttr("src");
-                    $("#badgeImage").height(200);
-                    $("#BadgeMakerImage").val("");
-                }
-                else {
-                    input.val('');
-                    $('.btn-file').addClass('btn-secondary');
-                    $('.btn-file').removeClass('btn-outline-success');
-                }
-            });
-
-            $(document).on('change', ':file', function() {
-                var input = $(this),
-                    numFiles = input.get(0).files ? input.get(0).files.length : 1,
-                    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-                input.trigger('fileselect', [numFiles, label]);
-            });
-        });
-    </script>
-    }

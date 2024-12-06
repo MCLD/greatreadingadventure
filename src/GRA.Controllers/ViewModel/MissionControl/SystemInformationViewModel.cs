@@ -16,5 +16,15 @@ namespace GRA.Controllers.ViewModel.MissionControl
         public IDictionary<string, string> RuntimeSettings { get; }
         public IDictionary<string, string> Settings { get; }
         public string Version { get; set; }
+
+        public static string FormatVersion(string version)
+        {
+            if (version?.IndexOf('+', System.StringComparison.Ordinal) > 0)
+            {
+                return version.Replace("+", "<small>+", System.StringComparison.Ordinal)
+                    + "</small>";
+            }
+            return version;
+        }
     }
 }

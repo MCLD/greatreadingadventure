@@ -36,12 +36,24 @@ namespace GRA.Controllers.MissionControl
             IWebHostEnvironment webHostEnvironment)
             : base(context)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _avatarService = avatarService ?? throw new ArgumentNullException(nameof(avatarService));
-            _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
-            _webHostEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
+            ArgumentNullException.ThrowIfNull(logger);
+            ArgumentNullException.ThrowIfNull(avatarService);
+            ArgumentNullException.ThrowIfNull(jobService);
+            ArgumentNullException.ThrowIfNull(webHostEnvironment);
+
+            _logger = logger;
+            _avatarService = avatarService;
+            _jobService = jobService;
+            _webHostEnvironment = webHostEnvironment;
+
             PageTitle = "Avatars";
         }
+
+        public static string Area
+        { get { return nameof(MissionControl); } }
+
+        public static string Name
+        { get { return "Avatars"; } }
 
         public async Task<IActionResult> BundleCreate()
         {
@@ -58,6 +70,7 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> BundleCreate(BundlesDetailViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
             var itemList = new List<int>();
             if (!string.IsNullOrWhiteSpace(model.ItemsList))
             {
@@ -147,6 +160,7 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> BundleEdit(BundlesDetailViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
             var itemList = new List<int>();
             if (!string.IsNullOrWhiteSpace(model.ItemsList))
             {
@@ -222,6 +236,7 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> DecreaseItemSort(ItemsListViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
             await _avatarService.DescreaseItemSortAsync(model.ItemId);
             return RedirectToAction(nameof(Layer), new
             {
@@ -237,6 +252,7 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> DeleteItem(ItemsListViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
             try
             {
                 await _avatarService.DeleteItemAsync(model.ItemId);
@@ -306,6 +322,7 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> IncreaseItemSort(ItemsListViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
             await _avatarService.IncreaseItemSortAsync(model.ItemId);
             return RedirectToAction(nameof(Layer), new
             {
@@ -424,6 +441,7 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> SetItemAvailable(ItemsListViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
             try
             {
                 await _avatarService.SetItemAvailableAsync(model.ItemId);
@@ -447,6 +465,7 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> SetItemUnlockable(ItemsListViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
             try
             {
                 await _avatarService.SetItemUnlockableAsync(model.ItemId);
@@ -604,7 +623,7 @@ namespace GRA.Controllers.MissionControl
             return await RunImportJob(assetPath);
         }
 
-        private string LocateAvatarIndexPath(string assetPath)
+        private static string LocateAvatarIndexPath(string assetPath)
         {
             if (!System.IO.File.Exists(Path.Combine(assetPath, AvatarIndex)))
             {

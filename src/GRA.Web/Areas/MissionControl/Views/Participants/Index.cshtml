@@ -26,11 +26,12 @@
     <div class="col-12">
         <ul class="nav nav-pills flex-column flex-sm-row">
             <li class="nav-item">
-                <a class="nav-link @(Model.ActiveNav == "All" ? "active" : "")"
-                   asp-route-Search="@Model.Search" asp-route-ProgramId="@Model.ProgramId">All</a>
+                <a class="nav-link @(Model.ActiveNav == "All" ? "active" : null)"
+                   asp-route-Search="@Model.Search"
+                   asp-route-ProgramId="@Model.ProgramId">All</a>
             </li>
             <li class="nav-item dropdown">
-                <a class="dropdown-toggle nav-link @(Model.ActiveNav == "System" ? "active" : "")"
+                <a class="dropdown-toggle nav-link @(Model.ActiveNav == "System" ? "active" : null)"
                    data-bs-toggle="dropdown"
                    href="#"
                    role="button"
@@ -51,9 +52,10 @@
                 </ul>
             </li>
             <li class="nav-item dropdown">
-                <a class="dropdown-toggle nav-link @(Model.ActiveNav == "Branch" ? "active" : "")"
+                <a class="dropdown-toggle nav-link @(Model.ActiveNav == "Branch" ? "active" : null)"
                    data-bs-toggle="dropdown"
-                   href="#" role="button"
+                   href="#"
+                   role="button"
                    aria-haspopup="true"
                    aria-expanded="false">
                     @(Model.BranchName ?? "Branch") <span class="caret"></span>

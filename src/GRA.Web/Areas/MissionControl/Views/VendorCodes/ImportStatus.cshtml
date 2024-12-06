@@ -2,39 +2,42 @@
 
 @await Html.PartialAsync("_VendorCodePartial")
 
-<form asp-controller="VendorCodes"
-      asp-action="ImportStatus"
+<form asp-controller="@VendorCodesController.Name"
+      asp-action="@nameof(VendorCodesController.ImportStatus)"
       method="post"
       role="form"
       enctype="multipart/form-data">
-
     <div class="row">
-        <div class="mb-3">
+        <div class="col-12 col-md-8 offset-md-2 mb-3">
             <label for="vendorCodeTypeId">Vendor code:</label>
             <select id="vendorCodeTypeId"
                     name="vendorCodeTypeId"
                     asp-items="@Model"
                     class="form-select"></select>
         </div>
-        <div class="mb-3">
-            <label for="selectedFile">Select Excel file:</label>
-            <div class="input-group">
-                <label class="input-group-text">
-                    <span class="btn btn-secondary btn-file">
-                        <span class="far fa-file-image"></span>
-                        Select an Excel file<input type="file" name="excelFile" accept=".xls,.xlsx" />
-                    </span>
-                </label>
-                <input type="text" class="form-control" readonly id="selectedFile">
-                <span class="input-group-text">
-                    <button type="submit"
-                            class="btn btn-secondary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#importModal">
-                        <span class="fas fa-upload"></span>
-                    </button>
-                </span>
+        <div class="col-12 col-md-8 offset-md-2">
+            <label for="selectedFile">Select an Order Status Report file (.xls or .xlsx):</label>
+            <div class="input-group mb-3">
+                <input accept=".xls,.xlsx"
+                       id="excelFile"
+                       name="excelFile"
+                       class="form-control"
+                       type="file" />
+                <button class="btn btn-outline-secondary" onclick="$('#excelFile').val('')"
+                        type="button">
+                    Clear selection
+                </button>
             </div>
+        </div>
+        <div class="col-12 col-md-8 offset-md-2 d-flex justify-content-end">
+            <button type="submit"
+                    class="btn btn-outline-primary"
+                    button-spinner
+                    data-bs-toggle="modal"
+                    data-bs-target="#importModal">
+                <span class="fas fa-fw fa-upload"></span>
+                Upload status update
+            </button>
         </div>
     </div>
 </form>
@@ -60,30 +63,3 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-@section scripts
-{
-    <script>
-        $(':file').on('fileselect', function (event, numFiles, label) {
-            var input = $(this).parents('.input-group').find(':text'),
-                log = numFiles > 1 ? numFiles = ' files selected' : label;
-
-            if (input.length) {
-                input.val(log);
-                $('.btn-file').removeClass('btn-outline-secondary');
-                $('.btn-file').addClass('btn-outline-success');
-            }
-            else {
-                input.val('');
-                $('.btn-file').addClass('btn-outline-secondary');
-                $('.btn-file').removeClass('btn-outline-success');
-            }
-        });
-
-        $(document).on('change', ':file', function () {
-            var input = $(this),
-                numFiles = input.get(0).files ? input.get(0).files.length : 1,
-                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-            input.trigger('fileselect', [numFiles, label]);
-        });
-    </script>
-}

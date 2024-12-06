@@ -1,19 +1,15 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.EmailManagement.EmailAddressesViewModel
 
-@{
-    var invalid = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
+@section inHeading {
+    <div class="ms-auto">
+        <a asp-action="@nameof(EmailManagementController.Index)"
+           class="btn btn-outline-secondary d-print-none">Return to List</a>
+    </div>
 }
-
-<div class="row" style="margin: 1rem 0;">
-    <a asp-action="Index" class="btn btn-outline-secondary">
-        <span class="fas fa-envelope-open-text"></span>
-        Back to Email Management
-    </a>
-</div>
 
 <h3>Export</h3>
 <form asp-action="@nameof(EmailManagementController.ExportAddresses)" method="get">
-    <div class="row row-spacing">
+    <div class="row mb-3">
         <div class="col-12">
             <label asp-for="SignUpSource" class="col-form-label">Mailing list</label>
             <select asp-for="SignUpSource"
@@ -35,35 +31,29 @@
     </button>
 </form>
 
-<h3>Import</h3>
+<h3 class="mt-4">Import</h3>
 <form asp-action="@nameof(EmailManagementController.ImportAddresses)"
       method="post"
       enctype="multipart/form-data">
-    <div class="row row-spacing">
+    <div class="row mb-2">
         <div class="col-12">
             <label for="selectedFile">Select a .json file:</label>
             <div class="input-group">
-                <label class="input-group-text">
-                    <span class="btn btn-secondary btn-file">
-                        <span class="far fa-file-image"></span>
-                        Select a .json file
-                        <input type="file"
-                               asp-for="UploadedFile"
-                               class="form-control"
-                               accept=".json"
-                               style="display: none;" />
-                    </span>
-                </label>
-                <input type="text"
+                <input accept=".json"
+                       asp-for="UploadedFile"
                        class="form-control"
-                       readonly
-                       id="selectedFile"
-                       @(ViewData.ModelState.GetValidationState("UploadedFile") == invalid ? "input-validation-error" : "")>
+                       multiple="multiple"
+                       type="file" />
+                <button class="btn btn-outline-secondary"
+                        onclick="$('#UploadedFile').val('')"
+                        type="button">
+                    Clear selection
+                </button>
             </div>
-            <span asp-validation-for="UploadedFile" class="text-danger"></span>
+            <span asp-validation-for="UploadedFile" class="text-danger mb-3"></span>
         </div>
     </div>
-    <div class="row row-spacing">
+    <div class="row mb-3">
         <div class="col-12">
             <label asp-for="SignUpSource" class="col-form-label">Mailing list</label>
             <select asp-for="SignUpSource"
@@ -73,40 +63,10 @@
             <span asp-validation-for="SignUpSource" class="text-danger"></span>
         </div>
     </div>
-    <div class="row-spacing">
+    <div>
         <button class="btn btn-outline-primary btn-spinner" type="submit" button-spinner>
             <span class="fas fa-file-upload"></span>
             Upload
         </button>
     </div>
 </form>
-
-@section scripts {
-<script>
-    $(':file').on('fileselect', function (event, numFiles, label) {
-        var input = $(this).parents('.input-group').find(':text'),
-            log = numFiles > 1 ? numFiles = ' files selected' : label;
-
-        if (input.length) {
-            input.val(log);
-            $('.btn-file').removeClass('btn-secondary');
-            $('.btn-file').addClass('btn-outline-success');
-            $("#badgeImage").removeAttr("src");
-            $("#badgeImage").height(200);
-            $("#BadgeMakerImage").val("");
-        }
-        else {
-            input.val('');
-            $('.btn-file').addClass('btn-secondary');
-            $('.btn-file').removeClass('btn-outline-success');
-        }
-    });
-
-    $(document).on('change', ':file', function () {
-        var input = $(this),
-            numFiles = input.get(0).files ? input.get(0).files.length : 1,
-            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-        input.trigger('fileselect', [numFiles, label]);
-    });
-</script>
-}

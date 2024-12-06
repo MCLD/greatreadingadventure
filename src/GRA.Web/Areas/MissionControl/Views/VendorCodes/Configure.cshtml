@@ -6,7 +6,23 @@
     @await Html.PartialAsync("_VendorCodePartial")
 }
 
-<div class="row" style="margin-top: 1rem; margin-bottom: 1rem;">
+@section inHeading {
+    <div class="ms-auto">
+        @if (Model.VendorCodeType.Id > 0)
+        {
+            <a asp-action="@nameof(VendorCodesController.Index)"
+               class="btn btn-outline-secondary d-print-none">Return to summary</a>
+        }
+        else
+        {
+            <a asp-controller="@HomeController.Name"
+               asp-action="@nameof(HomeController.Index)"
+               class="btn btn-outline-secondary d-print-none">Cancel</a>
+        }
+    </div>
+}
+
+<div class="row my-1">
     <div class="col-12">
         @if (Model.VendorCodeType.Id == default)
         {
@@ -245,17 +261,6 @@
     }
     <div class="row my-3">
         <div class="col-12 text-right">
-            @if (Model.VendorCodeType.Id > 0)
-            {
-                <a asp-action="@nameof(VendorCodesController.Index)"
-                   class="btn btn-outline-secondary">Back</a>
-            }
-            else
-            {
-                <a asp-controller="@HomeController.Name"
-               asp-action="@nameof(HomeController.Index)"
-                   class="btn btn-outline-secondary">Cancel</a>
-            }
             <button type="submit" class="btn btn-outline-primary">Save vendor code</button>
         </div>
     </div>

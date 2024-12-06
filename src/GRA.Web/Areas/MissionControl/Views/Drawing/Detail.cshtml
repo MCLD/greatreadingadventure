@@ -1,5 +1,12 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Drawing.DrawingDetailViewModel
 
+@section inHeading {
+    <div class="ms-auto">
+        <a asp-action="@nameof(DrawingController.Index)"
+           class="btn btn-outline-secondary">Back to list</a>
+    </div>
+}
+
 <div class="pt-2" style="font-size:large;">
     Created By:
     @if (Model.CanViewParticipants)
@@ -16,23 +23,20 @@
     }
     on @Model.Drawing.CreatedAt
 </div>
-
 <div class="row my-2">
     <div class="col-12">
         <label class="col-form-label">Criteria</label>
         <input asp-for="Drawing.DrawingCriterion.Name" class="form-control" readonly />
     </div>
 </div>
-
-<div class="row row-spacing">
+<div class="row mb-2">
     <div class="col-12">
         <label asp-for="Drawing.Name" class="col-form-label"></label>
         <input asp-for="Drawing.Name" class="form-control" readonly />
         <span asp-validation-for="Drawing.Name" class="text-danger"></span>
     </div>
 </div>
-
-<div class="row row-spacing">
+<div class="row mb-2">
     <div class="col-6">
         <label asp-for="Drawing.WinnerCount" class="col-form-label"></label>
         <input asp-for="Drawing.WinnerCount" class="form-control" readonly />
@@ -41,31 +45,26 @@
 
     <div class="col-6">
         <label class="col-form-label">Eligible Participants</label>
-        <input asp-for="Drawing.DrawingCriterion.EligibleCount" type="text" class="form-control" readonly />
+        <input asp-for="Drawing.DrawingCriterion.EligibleCount"
+               type="text"
+               class="form-control"
+               readonly />
     </div>
 </div>
-
-<div class="row row-spacing">
+<div class="row mb-2">
     <div class="col-12">
         <label asp-for="Drawing.RedemptionInstructions" class="col-form-label"></label>
         <textarea asp-for="Drawing.RedemptionInstructions" class="form-control" readonly></textarea>
         <span asp-validation-for="Drawing.RedemptionInstructions" class="text-danger"></span>
     </div>
 </div>
-
-<div class="mb-3">
-    <a asp-action="Index" class="btn btn-outline-secondary">Return to Drawing List</a>
-</div>
-
-<hr />
-
-<table class="table table-sm table-bordered table-striped">
+<table class="table table-sm table-bordered table-striped mt-5">
     <thead>
         <tr>
             <th>Redeemed?</th>
             <th>Username</th>
             <th>Name</th>
-            <th>&nbsp;</th>
+            <th style="width: 4rem;">&nbsp;</th>
         </tr>
     </thead>
     <tbody>
@@ -75,12 +74,24 @@
                 <td>
                     @if (winner.RedeemedAt.HasValue)
                     {
-                        <form asp-controller="Drawing" asp-action="UndoRedemption" method="post" role="form">
+                        <form asp-controller="Drawing"
+                              asp-action="UndoRedemption"
+                              method="post"
+                              role="form">
                             <strong>Reedemed</strong> at @winner.RedeemedAt.Value.ToString()
 
-                            <input id="drawingId" name="drawingId" value="@Model.Drawing.Id" type="hidden" />
-                            <input id="prizeWinnerId" name="prizeWinnerId" value="@winner.Id" type="hidden" />
-                            <input id="page" name="page" value="@Model.PaginateModel.CurrentPage" type="hidden" />
+                            <input id="drawingId"
+                                   name="drawingId"
+                                   value="@Model.Drawing.Id"
+                                   type="hidden" />
+                            <input id="prizeWinnerId"
+                                   name="prizeWinnerId"
+                                   value="@winner.Id"
+                                   type="hidden" />
+                            <input id="page"
+                                   name="page"
+                                   value="@Model.PaginateModel.CurrentPage"
+                                   type="hidden" />
                             <button type="submit"
                                     style="margin-left:5px;"
                                     class="btn btn-outline-secondary btn-sm btn-spinner"
@@ -91,10 +102,22 @@
                     }
                     else
                     {
-                        <form asp-controller="Drawing" asp-action="RedeemWinner" method="post" role="form">
-                            <input id="drawingId" name="drawingId" value="@Model.Drawing.Id" type="hidden" />
-                            <input id="prizeWinnerId" name="prizeWinnerId" value="@winner.Id" type="hidden" />
-                            <input id="page" name="page" value="@Model.PaginateModel.CurrentPage" type="hidden" />
+                        <form asp-controller="Drawing"
+                              asp-action="RedeemWinner"
+                              method="post"
+                              role="form">
+                            <input id="drawingId"
+                                   name="drawingId"
+                                   value="@Model.Drawing.Id"
+                                   type="hidden" />
+                            <input id="prizeWinnerId"
+                                   name="prizeWinnerId"
+                                   value="@winner.Id"
+                                   type="hidden" />
+                            <input id="page"
+                                   name="page"
+                                   value="@Model.PaginateModel.CurrentPage"
+                                   type="hidden" />
                             <button type="submit"
                                     class="btn btn-outline-success btn-sm btn-spinner"
                                     button-spinner>
@@ -105,16 +128,20 @@
                     }
                 </td>
                 <td>
-                    <a asp-controller="Participants" asp-action="Detail" asp-route-id="@winner.UserId">
+                    <a asp-controller="Participants"
+                       asp-action="Detail"
+                       asp-route-id="@winner.UserId">
                         @winner.UserUsername
                     </a>
                 </td>
                 <td>
-                    <a asp-controller="Participants" asp-action="Detail" asp-route-id="@winner.UserId">
+                    <a asp-controller="Participants"
+                       asp-action="Detail"
+                       asp-route-id="@winner.UserId">
                         @winner.UserFirstName @winner.UserLastName
                     </a>
                 </td>
-                <td>
+                <td class="d-flex justify-content-evenly">
                     @if (!winner.RedeemedAt.HasValue)
                     {
                         <button type="button"
@@ -136,10 +163,7 @@
     </tbody>
 </table>
 
-@if (Model.PaginateModel.MaxPage > 1)
-{
-    <paginate paginateModel="@Model.PaginateModel"></paginate>
-}
+<paginate paginateModel="@Model.PaginateModel"></paginate>
 
 <div class="row">
     <div class="modal fade"
@@ -155,12 +179,14 @@
                             class="btn-close"
                             data-bs-dismiss="modal"
                             aria-label="Close dialog">
-                        
                     </button>
                 </div>
-                <div class="modal-body">
-                    <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
-                    <span id="modal-text"></span>
+                <div class="modal-body p-0">
+                    <div class="modal-body d-flex align-items-stretch">
+                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                              aria-hidden="true"></span>
+                        <span id="modal-text"></span>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button"
@@ -200,11 +226,11 @@
 {
     <script>
         $('#deleteModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget);
-            var id = button.data('id');
-            var name = button.data('name');
-            var modal = $(this);
-            modal.find('#modal-text').text('Are you sure you wish to remove the winner "' + name + '" ?');
+            let button = $(event.relatedTarget);
+            let id = button.data('id');
+            let name = button.data('name');
+            let modal = $(this);
+            modal.find('#modal-text').html('Are you sure you wish to remove the winner: <strong>' + name + '</strong>?');
             modal.find('#prizeWinnerId').val(id);
         });
     </script>
