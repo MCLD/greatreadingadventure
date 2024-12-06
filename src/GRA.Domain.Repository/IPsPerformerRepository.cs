@@ -11,6 +11,7 @@ namespace GRA.Domain.Repository
         Task<PsPerformer> GetByUserIdAsync(int userId);
         Task<DataWithCount<ICollection<PsPerformer>>> PageAsync(PerformerSchedulingFilter filter);
         Task<List<int>> GetIndexListAsync(bool onlyApproved = false);
+        Task<ICollection<PsPerformer>> GetAllAsync();
         Task<ICollection<PsAgeGroup>> GetPerformerAgeGroupsAsync(int performerId);
         Task<ICollection<Branch>> GetPerformerBranchesAsync(int performerId);
         Task<ICollection<int>> GetPerformerBranchIdsAsync(int performerId, int? systemId = null);

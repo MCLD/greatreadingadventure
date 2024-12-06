@@ -258,6 +258,44 @@ namespace GRA.Controllers.MissionControl
 
         #endregion ScheduleExport
 
+        #region PerformerExport
+
+        [HttpGet]
+        public async Task<IActionResult> PerformerExport()
+        {
+            ICollection<PsPerformer> performerList;
+            performerList = await _performerSchedulingService.GetAllPerformersAsync();
+
+            var report = new StoredReport
+            {
+                AsOf = _dateTimeProvider.Now,
+                Data = performerList
+                .Where(_ => _.IsApproved != false)
+                .OrderBy(_ => _.Name)
+                .Select(_ => new object[]
+                {
+                        _.Name,
+                        _.VendorId,
+                        _.BillingAddress,
+                        _.Email,
+                        _.Phone
+                }),
+                HeaderRow = new[] { "Name", "VendorID", "Address", "Email", "Phone" },
+                Title = "Email Award Addresses"
+            };
+
+            var fileName = $"{report.AsOf:yyyyMMdd}-PerformerList";
+
+            var ms = ExcelExport.GenerateWorkbook(new List<StoredReport> { report });
+
+            return new FileStreamResult(ms, ExcelExport.ExcelMimeType)
+            {
+                FileDownloadName = $"{fileName}.{ExcelExport.ExcelFileExtension}"
+            };
+        }
+
+        #endregion PerformerExport
+
         #region Performers
 
         public async Task<IActionResult> Performer(int id)
