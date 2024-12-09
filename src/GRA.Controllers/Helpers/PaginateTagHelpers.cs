@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using GRA.Controllers.ViewModel.Shared;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.AspNetCore.Routing;
 
-namespace GRA.Controllers.Helper
+namespace GRA.Controllers.Helpers
 {
     [HtmlTargetElement("paginate", Attributes = "paginateModel")]
     public class PaginateTagHelper : TagHelper
