@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace Baseline.Controllers.TagHelpers
+namespace GRA.Controllers.Helpers
 {
     /// <summary>
     /// Add the CSS class "active" to anchor and list item elements if the asp-action, asp-area, and
@@ -37,8 +37,9 @@ namespace Baseline.Controllers.TagHelpers
 
         public ActiveTagHelper(IUrlHelperFactory urlHelperFactory)
         {
-            _urlHelperFactory = urlHelperFactory
-                ?? throw new ArgumentNullException(nameof(urlHelperFactory));
+            ArgumentNullException.ThrowIfNull(urlHelperFactory);
+
+            _urlHelperFactory = urlHelperFactory;
         }
 
         [ViewContext]
