@@ -5,18 +5,20 @@
         <ul class="nav nav-pills flex-column flex-sm-row">
             <li class="nav-item">
                 <a ActiveBy routeKey="Unlockable"
-                value=",True"
-                asp-action="Bundles" 
-                class="nav-link">
-                Unlockable</a>
+                   value=",True"
+                   asp-action="Bundles"
+                   class="nav-link">
+                    Unlockable
+                </a>
             </li>
             <li class="nav-item">
                 <a ActiveBy routeKey="Unlockable"
-                value="False"
-                asp-action="Bundles" 
-                asp-route-Unlockable="False"
-                class="nav-link">
-                Default</a>
+                   value="False"
+                   asp-action="Bundles"
+                   asp-route-Unlockable="False"
+                   class="nav-link">
+                    Default
+                </a>
             </li>
         </ul>
     </div>
@@ -50,7 +52,9 @@
                         {
                             <tr>
                                 <td class="td-class">
-                                    <a asp-action="BundleEdit" asp-route-id="@bundle.Id" class="rowlink">
+                                    <a asp-action="BundleEdit"
+                                       asp-route-id="@bundle.Id"
+                                       class="rowlink">
                                         @bundle.Name
                                     </a>
                                 </td>
@@ -78,50 +82,47 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="modal fade"
-         id="deleteModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="deleteModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title h4" id="deleteModalLabel">Delete bundle</h1>
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close dialog">
-                        
-                    </button>
-
-                </div>
-                <div class="modal-body">
-                    <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
+<div class="modal fade"
+     id="deleteModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="deleteModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title h4" id="deleteModalLabel">Delete bundle</h1>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close dialog">
+                </button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="modal-body d-flex align-items-stretch">
+                    <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                          aria-hidden="true"></span>
                     <span id="modal-text"></span>
                 </div>
-                <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-outline-secondary"
-                            data-bs-dismiss="modal"
-                            style="margin-right: 1em;">
-                        Cancel
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal">
+                    Cancel
+                </button>
+                <form asp-controller="Avatars"
+                      asp-action="BundleDelete"
+                      asp-route-Unlockable="@Model.Unlockable"
+                      method="post"
+                      role="form">
+                    <input id="Id" name="Id" type="hidden" />
+                    <button type="submit"
+                            class="btn btn-outline-danger"
+                            aria-label="Confirm">
+                        <span class="fas fa-times fa-fw" aria-hidden="true"></span>
+                        Delete
                     </button>
-                    <form asp-controller="Avatars"
-                          asp-action="BundleDelete"
-                          asp-route-Unlockable="@Model.Unlockable"
-                          method="post"
-                          role="form"
-                          style="display:inline">
-                        <input id="Id" name="Id" type="hidden" />
-                        <button type="submit"
-                                class="btn btn-outline-danger float-end"
-                                aria-label="Confirm">
-                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
-                            Delete
-                        </button>
-                    </form>
-                </div>
+                </form>
             </div>
         </div>
     </div>
@@ -146,7 +147,7 @@
             var id = button.data('id');
             var name = button.data('name');
             var modal = $(this);
-            modal.find('#modal-text').text('Are you sure you wish to delete the bundle"' + name + '" ?');
+            modal.find('#modal-text').html('Are you sure you wish to delete the bundle: <strong>' + name + '</strong>?');
             modal.find('#Id').val(id);
         })
     </script>

@@ -4,9 +4,29 @@
     <link rel="stylesheet" href="/css/markdown.min.css" />
 }
 
+@section inHeading {
+    <div class="ms-auto">
+        @if (Model.Action == "Edit")
+        {
+            <a asp-action="@nameof(DashboardController.Preview)"
+               asp-route-id="@Model.DashboardContent.Id"
+               id="fullPreviewButton"
+               target="_blank"
+               class="btn btn-outline-secondary me-2 d-print-none">Full Preview</a>
+        }
+
+        <a asp-action="@nameof(DashboardController.Index)"
+           class="btn btn-outline-secondary d-print-none">Return to List</a>
+    </div>
+}
+
 @if (Model.Action == "Edit")
 {
-    <a asp-action="Preview" asp-route-id="@Model.DashboardContent.Id" class="btn btn-secondary my-4"> Full Preview</a>
+    <div class="row mt-3">
+        <div class="col-12 col-lg-6 offset-lg-3 text-center">
+            <div class="alert alert-info py-2">Save before using the Full Preview button!</div>
+        </div>
+    </div>
 }
 
 <form asp-controller="Dashboard" asp-action="@Model.Action" method="post" role="form">
@@ -20,7 +40,7 @@
         <div class="col-12">
             <label asp-for="DashboardContent.StartTime" class="col-form-label"></label>
             <div class="date" id="pickerStart">
-                <input asp-for="DashboardContent.StartTime" type="datetime-local" class="form-control"/>
+                <input asp-for="DashboardContent.StartTime" type="datetime-local" class="form-control" />
             </div>
             <span asp-validation-for="DashboardContent.StartTime" class="text-danger"></span>
         </div>
@@ -37,13 +57,12 @@
         </div>
     </div>
 
-    <div class="mb-3">
-        <a asp-action="Index" class="btn btn-outline-secondary">Return to List</a>
+    <div class="mb-3 d-flex justify-content-end">
         <button type="submit"
                 id="Submit"
                 name="Submit"
                 value="Submit"
-                class="btn btn-outline-primary btn-spinner"
+                class="btn btn-outline-primary"
                 button-spinner>
             <span class="buttonText">@(Model.Action == "Edit" ? "Save" : Model.Action)</span>
         </button>
@@ -51,8 +70,7 @@
 </form>
 
 @section scripts {
-    <script src="/js/markdown.min.js" ></script>
-
+    <script src="/js/markdown.min.js"></script>
     <script>
         var editor = new Markdown.Editor({ allowUploads: true });
         editor.run();

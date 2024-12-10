@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace GRA.Controllers.Helper
+namespace GRA.Controllers.Helpers
 {
     [HtmlTargetElement(Attributes = "ActiveBy, routeKey, value")]
     public class ActiveByTagHelper : TagHelper

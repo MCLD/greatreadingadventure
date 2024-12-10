@@ -1,30 +1,35 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Carousels.ListViewModel
 
+@section inHeading {
+    <div class="ms-auto d-print-none">
+        <a asp-action="Add" class="btn btn-outline-success">
+            <span class="fas fa-plus-circle fa-fw"></span>
+            Create carousel
+        </a>
+    </div>
+}
+
 <div class="row my-4">
     <div class="col-12 mb-2">
         <ul class="nav nav-pills flex-column flex-sm-row">
             <li class="nav-item">
                 <a ActiveBy routeKey="Archived"
-                            value=",false"
-                            asp-action="Index"
-                            class="nav-link">
-                        Current and Upcoming</a>
-                </li>
+                   value=",false"
+                   asp-action="Index"
+                   class="nav-link">
+                    Current and Upcoming
+                </a>
+            </li>
             <li class="nav-item">
-                <a ActiveBy routeKey="Archived" 
-                            value="True" 
-                            asp-action="Index" 
-                            asp-route-archived="true"
-                            class="nav-link">
-                        Archived</a>
+                <a ActiveBy routeKey="Archived"
+                   value="true"
+                   asp-action="Index"
+                   asp-route-archived="true"
+                   class="nav-link">
+                    Archived
+                </a>
             </li>
         </ul>
-    </div>
-</div>
-
-<div class="row mb-4">
-    <div class="col-12">
-        <a asp-action="Add" class="btn btn-outline-primary">Create a new dashboard carousel</a>
     </div>
 </div>
 
@@ -43,7 +48,7 @@
                             <th>Name</th>
                             <th>Start time</th>
                             <th>Item count</th>
-                            <th>&nbsp;</th>
+                            <th style="width: 4rem;">&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -76,7 +81,7 @@
                                         </span>
                                     }
                                 </td>
-                                <td class="on-top gra-mc-icon">
+                                <td class="on-top d-flex justify-content-evenly">
                                     <button type="button"
                                             class="btn btn-outline-danger btn-sm"
                                             data-bs-toggle="modal"
@@ -91,10 +96,7 @@
                     </tbody>
                 </table>
             </div>
-            @if (Model.PaginateModel.MaxPage > 1)
-            {
-                <paginate paginateModel="@Model.PaginateModel"></paginate>
-            }
+            <paginate paginateModel="@Model.PaginateModel"></paginate>
         }
     </div>
 </div>
@@ -109,23 +111,23 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title h4" id="deleteModalLabel">Delete carousel</h1>
-
                     <button type="button"
                             class="btn-close"
                             data-bs-dismiss="modal"
                             aria-label="Close dialog">
-                        
                     </button>
                 </div>
-                <div class="modal-body">
-                    <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
-                    <span id="modal-text"></span>
+                <div class="modal-body p-0">
+                    <div class="modal-body d-flex align-items-stretch">
+                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                              aria-hidden="true"></span>
+                        <span id="modal-text"></span>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button"
                             class="btn btn-outline-secondary"
-                            data-bs-dismiss="modal"
-                            style="margin-right: 1em;">
+                            data-bs-dismiss="modal">
                         Cancel
                     </button>
                     <form asp-controller="Carousels"
@@ -136,7 +138,7 @@
                         <input id="Id" name="Id" type="hidden" />
                         <button id="modal-deleteButton"
                                 type="submit"
-                                class="btn btn-outline-danger float-end"
+                                class="btn btn-outline-danger"
                                 aria-label="Confirm">
                             <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                             Delete
@@ -148,26 +150,26 @@
     </div>
 </div>
 
-@section scripts{
+@section scripts {
     <script>
         $(window).on("load", function () {
             $('.td-class').each(function () {
-                $(this).children('a.rowlink').height($(this).height() + 11);
+                $(this).children("a.rowlink").height($(this).outerHeight());
             });
         });
         $(window).resize(function () {
             $('.td-class').each(function () {
-                $(this).children('a.rowlink').height($(this).height() + 11);
+                $(this).children("a.rowlink").height($(this).outerHeight());
             });
         });
 
         $('#deleteModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget);
-            var id = button.data('id');
-            var name = button.data('name');
-            var modal = $(this);
+            const button = $(event.relatedTarget);
+            const id = button.data('id');
+            const name = button.data('name');
+            const modal = $(this);
             modal.find('#Id').val(id);
-            modal.find('#modal-text').text('Are you sure you wish to delete the carousel "' + name + '" ?');
+            modal.find('#modal-text').html('Are you sure you wish to delete the carousel: <strong>' + name + '</strong>?');
             modal.find("#modal-deleteButton").show();
         })
     </script>

@@ -1,32 +1,22 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.EmailManagement.EmailIndexViewModel
 
-@section Styles {
-    <style>
-        .gra-button-buffer {
-            margin-right: 0.25rem;
-            margin-bottom: 0.25rem;
-        }
-    </style>
-}
-
-<div class="row" style="margin: 1rem 0;">
-    <div class="col-12">
+@section inHeading {
+    <div class="ms-auto">
         @if (Model.WelcomeEmailTemplateId > 0)
         {
             <form asp-action="@nameof(EmailManagementController.UnsetWelcomeEmail)"
-                  style="display: inline; margin-right: 1rem;"
-                  method="post">
+                  method="post"
+                  class="d-inline-block">
                 <button class="btn btn-warning">Unset Welcome Email</button>
             </form>
         }
-        <a class="btn btn-outline-secondary"
-           asp-action="@nameof(EmailManagementController.Index)">
-            Back
-        </a>
-    </div>
-</div>
 
-<div class="row" style="margin: 1rem 0;">
+        <a asp-action="@nameof(EmailManagementController.Index)"
+           class="btn btn-outline-secondary">Return to List</a>
+    </div>
+}
+
+<div class="row my-2">
     <div class="col-12">
         @if (Model.EmailTemplates.Count() == 0)
         {
@@ -46,20 +36,22 @@
                         @foreach (var template in Model.EmailTemplates)
                         {
                             <tr>
-                                <td style="vertical-align: middle;">
+                                <td class="align-middle">
                                     @template.Description
                                     @if (template.Id == Model.WelcomeEmailTemplateId)
                                     {
-                                        <span class="label label-primary">Welcome Email</span>
+                                        <span class="badge text-bg-primary">Welcome Email</span>
                                     }
                                 </td>
-                                <td style="vertical-align: middle;">
+                                <td class="align-middle">
                                     @if (template.Id != Model.WelcomeEmailTemplateId)
                                     {
                                         <form asp-action="@nameof(EmailManagementController.SetWelcomeEmail)"
                                               method="post">
                                             <input type="hidden" name="id" value="@template.Id" />
-                                            <button class="btn btn-outline-primary">Set as Welcome Email</button>
+                                            <button class="btn btn-outline-primary">
+                                                Set as Welcome Email
+                                            </button>
                                         </form>
                                     }
                                 </td>
@@ -68,10 +60,7 @@
                     </tbody>
                 </table>
             </div>
-            @if (Model.MaxPage > 1)
-            {
-                <paginate paginateModel="@Model"></paginate>
-            }
+            <paginate paginateModel="@Model"></paginate>
         }
     </div>
 </div>

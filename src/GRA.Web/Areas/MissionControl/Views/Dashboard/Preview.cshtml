@@ -1,10 +1,14 @@
 ﻿@model GRA.Domain.Model.DashboardContent
 
-<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary my-4">Return to Editor</a>
+@section inHeading {
+    <div class="ms-auto">
+        <a asp-action="@nameof(DashboardController.Edit)"
+           asp-route-id="@Model.Id"
+           class="btn btn-outline-secondary d-print-none">Return to Editor</a>
+    </div>
+}
 
-<hr />
-
-<div class="row" style="font-size: larger;">
+<div class="row mt-4" style="font-size: larger;">
     <div class="col-sm-6 offset-sm-3">
         <div class="card visible-sm visible-md visible-lg" style="margin-bottom: 0.5rem;">
             <div class="dashboard-page-container">

@@ -76,7 +76,7 @@ namespace GRA.Data.Profile
             CreateMap<Model.Notification, Domain.Model.Notification>();
             CreateMap<Model.PageHeader, Domain.Model.PageHeader>()
                 .ForMember(dest => dest.PageLanguages,
-                    opt => opt.MapFrom(src => src.Pages.Select(_ => _.Language.Name)));
+                    opt => opt.MapFrom(src => src.Pages.Select(_ => _.Language.Description)));
             CreateMap<Model.Page, Domain.Model.Page>();
             CreateMap<Model.PointTranslation, Domain.Model.PointTranslation>();
             CreateMap<Model.PrizeWinner, Domain.Model.PrizeWinner>()

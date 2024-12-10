@@ -4,54 +4,56 @@
     <link rel="stylesheet" href="/css/markdown.min.css" />
 }
 
-    <form asp-controller="Carousels"
-          asp-action="@($"{Model.PageAction}Item")"
-          method="post"
-          role="form"
-          style="margin: 1rem 0;">
+@section inHeading {
+    <div class="ms-auto d-print-none">
+        <a asp-action="@nameof(CarouselsController.Edit)" 
+        asp-route-id="@Model.CarouselId" 
+        class="btn btn-outline-secondary">Return to Carousel</a>
+    </div>
+}
 
-        <div class="mb-3">
-            <label asp-for="CarouselItem.Title" class="col-form-label"></label>
-            <description gra-description-for="CarouselItem.Title"></description>
-            <input asp-for="CarouselItem.Title" type="text" class="form-control" />
-            <span asp-validation-for="CarouselItem.Title" class="text-danger"></span>
+<form asp-controller="Carousels"
+      asp-action="@($"{Model.PageAction}Item")"
+      method="post"
+      role="form">
+    <div class="mb-3">
+        <label asp-for="CarouselItem.Title" class="col-form-label"></label>
+        <description gra-description-for="CarouselItem.Title"></description>
+        <input asp-for="CarouselItem.Title" type="text" class="form-control" />
+        <span asp-validation-for="CarouselItem.Title" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="CarouselItem.ImageUrl" class="col-form-label"></label>
+        <description gra-description-for="CarouselItem.ImageUrl"></description>
+        <input asp-for="CarouselItem.ImageUrl" type="text" class="form-control" />
+        <span asp-validation-for="CarouselItem.ImageUrl" class="text-danger"></span>
+    </div>
+    <div class="row mb-2">
+        <div class="col-12">
+            <label asp-for="CarouselItem.Description" class="col-form-label"></label>
+            <description gra-description-for="CarouselItem.Description"></description>
+            <div id="wmd-button-bar"></div>
+            <textarea asp-for="CarouselItem.Description" id="wmd-input" class="form-control wmd-input"> </textarea>
+            <br /><label class="col-form-label">Preview</label>
+            <div id="preview"></div>
+            <span asp-validation-for="CarouselItem.Description" class="text-danger"></span>
         </div>
+    </div>
+    <div class="mb-3">
+        <button type="submit"
+                id="Submit"
+                name="Submit"
+                value="Submit"
+                class="btn btn-outline-primary"
+                button-spinner>
+            <span class="buttonText">Save</span>
+        </button>
+    </div>
 
-        <div class="mb-3">
-            <label asp-for="CarouselItem.ImageUrl" class="col-form-label"></label>
-            <description gra-description-for="CarouselItem.ImageUrl"></description>
-            <input asp-for="CarouselItem.ImageUrl" type="text" class="form-control" />
-            <span asp-validation-for="CarouselItem.ImageUrl" class="text-danger"></span>
-        </div>
-
-        <div class="row row-spacing">
-            <div class="col-12">
-                <label asp-for="CarouselItem.Description" class="col-form-label"></label>
-                <description gra-description-for="CarouselItem.Description"></description>
-                <div id="wmd-button-bar"></div>
-                <textarea asp-for="CarouselItem.Description" id="wmd-input" class="form-control wmd-input"> </textarea>
-                <br /><label class="col-form-label">Preview</label>
-                <div id="preview"></div>
-                <span asp-validation-for="CarouselItem.Description" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="mb-3">
-        <a asp-action="Edit" asp-route-id="@Model.CarouselId" class="btn btn-outline-secondary">Return to Carousel</a>
-            <button type="submit"
-                    id="Submit"
-                    name="Submit"
-                    value="Submit"
-                class="btn btn-outline-primary btn-spinner"
-                    button-spinner>
-                <span class="buttonText">Save</span>
-            </button>
-        </div>
-
-    </form>
+</form>
 
 @section scripts {
-    <script src="/js/markdown.min.js" ></script>
+    <script src="/js/markdown.min.js"></script>
 
     <script>
         var editor = new Markdown.Editor({ allowUploads: true });

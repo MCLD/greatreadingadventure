@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace GRA.Controllers.Helper
+namespace GRA.Controllers.Helpers
 {
     [HtmlTargetElement(targetElement, Attributes = attributeName)]
     public class ButtonSpinnerTagHelper : TagHelper
@@ -23,10 +23,7 @@ namespace GRA.Controllers.Helper
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            if (output == null)
-            {
-                throw new ArgumentNullException(nameof(output));
-            }
+            ArgumentNullException.ThrowIfNull(output);
 
             var existingClasses = output.Attributes.FirstOrDefault(f => f.Name == classAttribute);
             var buttonClasses = new StringBuilder();

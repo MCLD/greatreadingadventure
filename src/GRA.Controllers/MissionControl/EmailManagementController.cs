@@ -47,17 +47,24 @@ namespace GRA.Controllers.MissionControl
             UserService userService)
             : base(context)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _emailManagementService = emailManagementService
-                ?? throw new ArgumentNullException(nameof(emailManagementService));
-            _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
-            _emailReminderService = emailReminderService
-                ?? throw new ArgumentNullException(nameof(emailReminderService));
-            _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
-            _languageService = languageService
-                ?? throw new ArgumentNullException(nameof(languageService));
-            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            ArgumentNullException.ThrowIfNull(logger);
+            ArgumentNullException.ThrowIfNull(emailManagementService);
+            ArgumentNullException.ThrowIfNull(emailService);
+            ArgumentNullException.ThrowIfNull(emailReminderService);
+            ArgumentNullException.ThrowIfNull(jobService);
+            ArgumentNullException.ThrowIfNull(languageService);
+            ArgumentNullException.ThrowIfNull(siteService);
+            ArgumentNullException.ThrowIfNull(userService);
+
+            _logger = logger;
+            _emailManagementService = emailManagementService;
+            _emailService = emailService;
+            _emailReminderService = emailReminderService;
+            _jobService = jobService;
+            _languageService = languageService;
+            _siteService = siteService;
+            _userService = userService;
+
             PageTitle = "Email Management";
         }
 
@@ -85,6 +92,7 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToRoute(new { page = viewModel.LastPage ?? 1 });
             }
 
+            PageTitle = "Base Templates";
             return View(viewModel);
         }
 
@@ -107,6 +115,7 @@ namespace GRA.Controllers.MissionControl
                 }
             }
 
+            PageTitle = "Create Base Template";
             return View("BaseDetails", new BaseDetailsViewModel
             {
                 Action = nameof(CreateBaseTemplate),
@@ -170,6 +179,7 @@ namespace GRA.Controllers.MissionControl
             }
             issues.Append("</ul>");
             ShowAlertWarning(issues.ToString());
+            PageTitle = "Create Base Template";
             return View("BaseDetails", baseDetailsViewModel);
         }
 
@@ -730,7 +740,7 @@ namespace GRA.Controllers.MissionControl
 
             if (baseDetailsViewModel?.UploadedFile == null)
             {
-                ShowAlertDanger("You must upload a JSON file of email records.");
+                ShowAlertDanger("You must upload a JSON file of an email base template.");
             }
             else
             {
@@ -817,7 +827,7 @@ namespace GRA.Controllers.MissionControl
             }
             if (detailsViewModel?.UploadedFile == null)
             {
-                ShowAlertDanger("You must upload a JSON file of email records.");
+                ShowAlertDanger("You must upload a JSON file of an email template.");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -891,7 +901,7 @@ namespace GRA.Controllers.MissionControl
 
             if (detailsViewModel?.UploadedFile == null)
             {
-                ShowAlertDanger("You must upload a JSON file of email records.");
+                ShowAlertDanger("You must upload a JSON file of an email template.");
             }
             else
             {
@@ -1231,7 +1241,7 @@ namespace GRA.Controllers.MissionControl
             ((List<EmailTemplateListItem>)viewModel.EmailTemplates).AddRange(templateList.Data);
             viewModel.IsAdmin = currentUser?.IsAdmin == true;
             viewModel.IsAnyoneSubscribed = isAnyoneSubscribed;
-            foreach(var ln in await _languageService.GetIdDescriptionDictionaryAsync())
+            foreach (var ln in await _languageService.GetIdDescriptionDictionaryAsync())
             {
                 viewModel.LanguageNames.Add(ln);
             }

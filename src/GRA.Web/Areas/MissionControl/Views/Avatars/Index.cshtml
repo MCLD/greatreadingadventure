@@ -10,7 +10,8 @@
         {
             <div class="alert alert-warning">
                 <span class="fas fa-ban"></span>
-                Avatars have not been configured. Set up the default avatars or upload an avatar .zip file.
+                Avatars have not been configured.
+                Set up the default avatars or upload an avatar .zip file.
             </div>
             @if (Model.AvatarZipPresent)
             {
@@ -27,7 +28,7 @@
                 <form asp-action="@nameof(AvatarsController.SetupDefaultAvatars)"
                       method="post"
                       class="py-3">
-                    <button type="submit" class="btn btn-outline-primary btn-spinner" button-spinner>
+                    <button type="submit" class="btn btn-outline-primary" button-spinner>
                         Add default avatars
                     </button>
                 </form>
