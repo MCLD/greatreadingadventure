@@ -18,6 +18,7 @@ namespace GRA.Controllers.ViewModel.Profile
         public bool RestrictChangingSystemBranch { get; set; }
         public string SystemName { get; set; }
         public string BranchName { get; set; }
+        public string ProgramName { get; set; }
 
         public bool AskEmailSubscription { get; set; }
         public string AskEmailSubscriptionText { get; set; }

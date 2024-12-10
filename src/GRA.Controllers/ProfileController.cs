@@ -1341,6 +1341,9 @@ namespace GRA.Controllers
                 viewModel.BranchName = branchList
                     .FirstOrDefault(_ => _.Id == viewModel.User.BranchId)?
                     .Name;
+                viewModel.ProgramName = programList
+    .FirstOrDefault(_ => _.Id == viewModel.User.ProgramId)?
+    .Name;
             }
 
             var (askEmailSubscription, askEmailSubscriptionText)
@@ -1485,6 +1488,9 @@ namespace GRA.Controllers
                     .Name;
                 model.BranchName = branchList
                     .FirstOrDefault(_ => _.Id == model.User.BranchId)?
+                    .Name;
+                model.ProgramName = programList
+                    .FirstOrDefault(_ => _.Id == model.User.ProgramId)?
                     .Name;
             }
 
