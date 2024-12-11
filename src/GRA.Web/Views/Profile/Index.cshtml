@@ -22,7 +22,7 @@
                             <input asp-for="User.VendorCodeMessage" type="hidden" />
 
                             @if ((!string.IsNullOrWhiteSpace(Model.User.VendorCode) || Model.User.NeedsToAnswerVendorCodeQuestion)
-                               && (Model.User.VendorOrderStatus == null || Model.User.VendorOrderStatus == VendorOrderStatus.Pending))
+                            && (Model.User.VendorOrderStatus == null || Model.User.VendorOrderStatus == VendorOrderStatus.Pending))
                             {
                                 <div class="row row spacing">
                                     <div class="col-12">
@@ -141,7 +141,6 @@
                             {
                                 <input asp-for="User.BranchId" type="hidden" />
                                 <input asp-for="User.SystemId" type="hidden" />
-                                <input asp-for="User.ProgramId" type="hidden" />
 
                                 @if (Model.SystemList.Count() > 1)
                                 {
@@ -164,20 +163,7 @@
                                             <span class="fas fa-info-circle"
                                                   data-bs-toggle="tooltip"
                                                   title="@SharedLocalizer[GRA.Annotations.Interface.NeedToChange, SharedLocalizer[DisplayNames.Branch]]"></span>
-                                            <input class="form-control" readonly value="@Model.BranchName"/>
-                                        </div>
-                                    </div>
-                                }
-
-                                @if (Model.ProgramList.Count() > 1)
-                                {
-                                    <div class="row row-spacing">
-                                        <div class="col-12">
-                                            <label asp-for="User.ProgramId" class="col-form-label"></label>
-                                            <span class="fas fa-info-circle"
-                                                  data-bs-toggle="tooltip"
-                                                  title="@SharedLocalizer[GRA.Annotations.Interface.NeedToChange, SharedLocalizer[DisplayNames.System]]"></span>
-                                            <input class="form-control" readonly value="@Model.ProgramName" />
+                                            <input class="form-control" readonly value="@Model.BranchName" />
                                         </div>
                                     </div>
                                 }
@@ -214,6 +200,26 @@
                                 {
                                     <input asp-for="User.BranchId" type="hidden" />
                                 }
+                            }
+
+                            @if (Model.RestrictChangingProgram)
+                            {
+                                <input asp-for="User.ProgramId" type="hidden" />
+                                @if (Model.ProgramList.Count() > 1)
+                                {
+                                    <div class="row row-spacing">
+                                        <div class="col-12">
+                                            <label asp-for="User.ProgramId" class="col-form-label"></label>
+                                            <span class="fas fa-info-circle"
+                                                  data-bs-toggle="tooltip"
+                                                  title="@SharedLocalizer[GRA.Annotations.Interface.NeedToChange, SharedLocalizer[DisplayNames.Program]]"></span>
+                                            <input class="form-control" readonly value="@Model.ProgramName" />
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
                                 @if (Model.ProgramList.Count() > 1)
                                 {
                                     <div class="row row-spacing">
@@ -421,12 +427,12 @@
 
         @if (Model.User.NeedsToAnswerVendorCodeQuestion && Model.User.CanEmailAwardVendorCode)
         {
-        <text>
-            $("#emailAwardButton").on("click", function(event) {
-                event.preventDefault();
-                $("#emailAwardModal").modal();
-            });
-        </text>
+            <text>
+                        $("#emailAwardButton").on("click", function(event) {
+                            event.preventDefault();
+                            $("#emailAwardModal").modal();
+                        });
+            </text>
         }
     </script>
 
