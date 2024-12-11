@@ -106,6 +106,13 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Points).Name,
                     Format = SiteSettingFormat.Integer
                 },
+                [SiteSettingKey.Users.RestrictChangingProgram] = new SiteSettingDefinition
+                {
+                    Name = "Restrict changing program",
+                    Info = "Put any text here to forbid participants from changing their program after joining",
+                    Category = typeof(SiteSettingKey.Users).Name,
+                    Format = SiteSettingFormat.Boolean,
+                },
                 [SiteSettingKey.Users.RestrictChangingSystemBranch] = new SiteSettingDefinition
                 {
                     Name = "Restrict changing system and branch",

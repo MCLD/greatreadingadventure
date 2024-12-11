@@ -22,7 +22,7 @@
                             <input asp-for="User.VendorCodeMessage" type="hidden" />
 
                             @if ((!string.IsNullOrWhiteSpace(Model.User.VendorCode) || Model.User.NeedsToAnswerVendorCodeQuestion)
-                               && (Model.User.VendorOrderStatus == null || Model.User.VendorOrderStatus == VendorOrderStatus.Pending))
+                            && (Model.User.VendorOrderStatus == null || Model.User.VendorOrderStatus == VendorOrderStatus.Pending))
                             {
                                 <div class="row row spacing">
                                     <div class="col-12">
@@ -202,19 +202,38 @@
                                 }
                             }
 
-                            @if (Model.ProgramList.Count() > 1)
+                            @if (Model.RestrictChangingProgram)
                             {
-                                <div class="row row-spacing">
-                                    <div class="col-12">
-                                        <label asp-for="User.ProgramId" class="col-form-label"></label>
-                                        <select asp-for="User.ProgramId" asp-items="Model.ProgramList" class="form-select"></select>
-                                        <span asp-validation-for="User.ProgramId" class="text-danger"></span>
+                                <input asp-for="User.ProgramId" type="hidden" />
+                                @if (Model.ProgramList.Count() > 1)
+                                {
+                                    <div class="row row-spacing">
+                                        <div class="col-12">
+                                            <label asp-for="User.ProgramId" class="col-form-label"></label>
+                                            <span class="fas fa-info-circle"
+                                                  data-bs-toggle="tooltip"
+                                                  title="@SharedLocalizer[GRA.Annotations.Interface.NeedToChange, SharedLocalizer[DisplayNames.Program]]"></span>
+                                            <input class="form-control" readonly value="@Model.ProgramName" />
+                                        </div>
                                     </div>
-                                </div>
+                                }
                             }
                             else
                             {
-                                <input asp-for="User.ProgramId" type="hidden" />
+                                @if (Model.ProgramList.Count() > 1)
+                                {
+                                    <div class="row row-spacing">
+                                        <div class="col-12">
+                                            <label asp-for="User.ProgramId" class="col-form-label"></label>
+                                            <select asp-for="User.ProgramId" asp-items="Model.ProgramList" class="form-select"></select>
+                                            <span asp-validation-for="User.ProgramId" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <input asp-for="User.ProgramId" type="hidden" />
+                                }
                             }
 
                             <div id="ageField" class="row row-spacing @(Model.ShowAge ? "" : "d-none")">
@@ -333,10 +352,10 @@
         })[0];
 
         $("#User_SystemId").on("change", function() {
-            var systemId = $(this).val();
-            var branchList = $("#User_BranchId");
-            var branchId = branchList.val();
-            var url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
+            let systemId = $(this).val();
+            let branchList = $("#User_BranchId");
+            let branchId = branchList.val();
+            let url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
 
             $.getJSON(url, { systemId: systemId, branchId: branchId }, function(response) {
                 branchList.empty();
@@ -351,7 +370,7 @@
         });
 
         $("#User_ProgramId").on("change", function() {
-            var programId = $(this).val();
+            let programId = $(this).val();
             selectedProgram = $.grep(programs, function(obj) {
                 return obj.Id == programId;
             })[0];
@@ -383,8 +402,8 @@
         });
 
         function validateAge() {
-            var age = $("#User_Age").val();
-            var message = $("#ageMessage");
+            let age = $("#User_Age").val();
+            let message = $("#ageMessage");
             if (age != "" && ((age > selectedProgram.AgeMaximum && selectedProgram.AgeMaximum != null)
                 || (age < selectedProgram.AgeMinimum && selectedProgram.AgeMinimum != null)))
             {
@@ -405,17 +424,17 @@
                 message.text("");
             }
         }
+    </script>
 
-        @if (Model.User.NeedsToAnswerVendorCodeQuestion && Model.User.CanEmailAwardVendorCode)
-        {
-        <text>
+    @if (Model.User.NeedsToAnswerVendorCodeQuestion && Model.User.CanEmailAwardVendorCode)
+    {
+        <script>
             $("#emailAwardButton").on("click", function(event) {
                 event.preventDefault();
                 $("#emailAwardModal").modal();
             });
-        </text>
-        }
-    </script>
+        </script>
+    }
 
     @await Html.PartialAsync("_SchoolSelectionScripts", Model)
 }
