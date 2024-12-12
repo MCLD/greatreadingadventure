@@ -1,26 +1,33 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Systems.BranchesListViewModel
 
+@section inHeading {
+    <div class="ms-auto d-print-none">
+        <a class="btn btn-outline-success text-nowrap"
+           data-bs-toggle="modal"
+           data-bs-target="#addModal">
+            <span class="fas fa-plus-circle fa-fw"></span>
+            Add Branch
+        </a>
+    </div>
+}
+
 @await Html.PartialAsync("_SystemsPartial")
 
-<form asp-controller="Systems" asp-action="Branches" method="get" role="form">
-    <div class="row row-spacing">
-        <div class="col-8">
-            <input asp-for="Search" class="form-control" />
-        </div>
-        <div class="col-4">
-            <input type="submit" value="Search" class="btn btn-outline-primary" style="margin-right: 8px;" />
-            <a asp-action="Branches" class="btn btn-outline-secondary">Clear</a>
+<form asp-controller="@SystemsController.Name"
+      asp-action="@nameof(SystemsController.Branches)"
+      method="get"
+      role="form">
+    <div class="row my-3">
+        <div class="col-12 input-group">
+            <input asp-for="Search"
+                   class="form-control"
+                   placeholder="Search systems" />
+            <a asp-action="@nameof(SystemsController.Branches)"
+               class="btn btn-outline-secondary">Clear</a>
+            <input type="submit" value="Search" class="btn btn-outline-primary" />
         </div>
     </div>
 </form>
-
-<div class="row my-4">
-    <div class="col-12">
-        <a class="btn btn-outline-primary"
-           data-bs-toggle="modal"
-           data-bs-target="#addModal">Add a Branch</a>
-    </div>
-</div>
 
 <div class="row my-4">
     <div class="col-12">
@@ -40,7 +47,7 @@
                             {
                                 <th>Geolocation</th>
                             }
-                            <th width="100">&nbsp;</th>
+                            <th style="width: 7rem;">&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -55,230 +62,214 @@
                                 </td>
                                 @if (Model.ShowGeolocation)
                                 {
-                                    <td>
+                                    <td class="text-center">
                                         @if (!string.IsNullOrWhiteSpace(branch.Geolocation))
                                         {
-                                            <span class="fas fa-check colored-icon"></span>
+                                            <span class="far fa-check-circle text-success"></span>
                                         }
                                         else
                                         {
                                             <button type="button"
                                                     class="btn btn-sm btn-outline-primary geolocateButton"
-                                    data-id="@branch.Id"
-                                    button-spinner
-                                    ignore-validation="true">
+                                                    data-id="@branch.Id"
+                                                    button-spinner
+                                                    ignore-validation="true">
                                                 Add geolocation
                                             </button>
                                         }
                                     </td>
                                 }
-                                <td class="gra-mc-icon">
-                                    <div class="btn-group-sm">
-                                        <button type="submit"
-                                                class="btn btn-outline-primary btn-sm"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#editModal"
-                                                data-id="@branch.Id"
-                                                data-name="@branch.Name"
-                                                data-url="@branch.Url"
-                                                data-address="@branch.Address"
-                                                data-telephone="@branch.Telephone">
-                                            <span class="fas fa-pencil-alt fa-fw" aria-hidden="true"></span>
-                                        </button>
-                                        <a class="btn btn-outline-danger btn-sm"
-                                           style="margin-left:16px;"
-                                           asp-action="@nameof(SystemsController.RemoveBranch)"
-                                           asp-route-id="@branch.Id">
-                                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
-                                        </a>
-                                    </div>
+                                <td class="d-flex justify-content-evenly">
+                                    <button type="submit"
+                                            class="btn btn-outline-primary btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editModal"
+                                            data-id="@branch.Id"
+                                            data-name="@branch.Name"
+                                            data-url="@branch.Url"
+                                            data-address="@branch.Address"
+                                            data-telephone="@branch.Telephone">
+                                        <span class="fas fa-pencil-alt fa-fw"
+                                              aria-hidden="true"></span>
+                                    </button>
+                                    <a class="btn btn-outline-danger btn-sm"
+                                       asp-action="@nameof(SystemsController.RemoveBranch)"
+                                       asp-route-id="@branch.Id">
+                                        <span class="fas fa-times fa-fw"
+                                              aria-hidden="true"></span>
+                                    </a>
                                 </td>
                             </tr>
                         }
                     </tbody>
                 </table>
             </div>
-            @if (Model.PaginateModel.MaxPage > 1)
-            {
-                <paginate paginateModel="@Model.PaginateModel"></paginate>
-            }
+            <paginate paginateModel="@Model.PaginateModel"></paginate>
         }
     </div>
 </div>
 
-<div class="row">
-    <div class="modal fade"
-         id="addModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="addModalLabel">
-        <div class="modal-dialog" role="document">
-            <form asp-controller="Systems"
-                  asp-action="AddBranch"
-                  method="post"
-                  role="form"
-                  style="display:inline">
-                <input asp-for="Search" type="hidden" />
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title h4" id="addModalLabel">Add Branch</h1>
-                        <button type="button"
-                                class="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close dialog">
-                            
-                        </button>
+<div class="modal fade"
+     id="addModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="addModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <form asp-controller="Systems"
+              asp-action="AddBranch"
+              method="post"
+              role="form">
+            <input asp-for="Search" type="hidden" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title h4" id="addModalLabel">Add Branch</h1>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close dialog">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <label asp-for="Branch.Name" class="col-form-label"></label>
+                        <input asp-for="Branch.Name" class="form-control" />
+                        <span asp-validation-for="Branch.Name" class="text-danger"></span>
                     </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label asp-for="Branch.Name" class="col-form-label"></label>
-                            <input asp-for="Branch.Name" class="form-control" />
-                            <span asp-validation-for="Branch.Name" class="text-danger"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="Branch.SystemId" class="col-form-label"></label>
-                            <select asp-for="Branch.SystemId"
-                                    asp-items="Model.SystemList"
-                                    class="form-select">
-                                <option></option>
-                            </select>
-                            <span asp-validation-for="Branch.SystemId" class="text-danger"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="Branch.Address" class="col-form-label">
-                                Address (include city, state and zip)
-                            </label>
-                            <input asp-for="Branch.Address" class="form-control addressInput" />
-                            <span asp-validation-for="Branch.Address" class="text-danger"></span>
-                        </div>
-                        @if (Model.ShowGeolocation)
-                        {
-                            <div class="mb-3 hide mapContainer">
-                                <iframe height="180"
-                                    width="400"
-                                    frameborder="0"
-                                    style="border:0"></iframe>
-                            </div>
-                        }
-                        <div class="mb-3">
-                            <label asp-for="Branch.Url" class="col-form-label"></label>
-                            <input asp-for="Branch.Url" class="form-control" />
-                            <span asp-validation-for="Branch.Url" class="text-danger"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="Branch.Telephone" class="col-form-label"></label>
-                            <input asp-for="Branch.Telephone" class="form-control" />
-                            <span asp-validation-for="Branch.Telephone" class="text-danger"></span>
-                        </div>
+                    <div>
+                        <label asp-for="Branch.SystemId" class="col-form-label"></label>
+                        <select asp-for="Branch.SystemId"
+                                asp-items="Model.SystemList"
+                                class="form-select">
+                            <option></option>
+                        </select>
+                        <span asp-validation-for="Branch.SystemId" class="text-danger"></span>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button"
-                                class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal"
-                                style="margin-right: 1em;">
-                            Cancel
-                        </button>
-                        <button type="submit"
-                                class="btn btn-outline-primary btn-spinner float-end"
-                                aria-label="Confirm"
-                                button-spinner>
-                            Add
-                        </button>
+                    <div>
+                        <label asp-for="Branch.Address" class="col-form-label">
+                            Address (include city, state and zip)
+                        </label>
+                        <input asp-for="Branch.Address" class="form-control addressInput" />
+                        <span asp-validation-for="Branch.Address" class="text-danger"></span>
+                    </div>
+                    @if (Model.ShowGeolocation)
+                    {
+                        <div class="d-none mapContainer d-flex justify-content-center py-2">
+                            <iframe style="width: 400px; height: 180px;"
+                                    class="img-thumbnail"
+                                    frameborder="0"></iframe>
+                        </div>
+                    }
+                    <div>
+                        <label asp-for="Branch.Url" class="col-form-label"></label>
+                        <input asp-for="Branch.Url" class="form-control" />
+                        <span asp-validation-for="Branch.Url" class="text-danger"></span>
+                    </div>
+                    <div>
+                        <label asp-for="Branch.Telephone" class="col-form-label"></label>
+                        <input asp-for="Branch.Telephone" class="form-control" />
+                        <span asp-validation-for="Branch.Telephone" class="text-danger"></span>
                     </div>
                 </div>
-            </form>
-        </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="btn btn-outline-primary"
+                            aria-label="Confirm"
+                            button-spinner>
+                        Add
+                    </button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 
-<div class="row">
-    <div class="modal fade"
-         id="editModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="editModalLabel">
-        <div class="modal-dialog" role="document">
-            <form asp-controller="Systems"
-                  asp-action="EditBranch"
-                  method="post"
-                  role="form"
-                  style="display:inline">
-                <input asp-for="Branch.Id" type="hidden" />
-                <input asp-for="Search" type="hidden" />
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title h4" id="editModalLabel">Edit branch</h1>
-                        <button type="button"
-                                class="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close dialog">
-                            
-                        </button>
+<div class="modal fade"
+     id="editModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="editModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <form asp-controller="Systems"
+              asp-action="EditBranch"
+              method="post"
+              role="form"
+              style="display:inline">
+            <input asp-for="Branch.Id" type="hidden" />
+            <input asp-for="Search" type="hidden" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title h4" id="editModalLabel">Edit branch</h1>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close dialog">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <label asp-for="Branch.Name" class="col-form-label"></label>
+                        <input asp-for="Branch.Name" class="form-control" />
+                        <span asp-validation-for="Branch.Name" class="text-danger"></span>
                     </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label asp-for="Branch.Name" class="col-form-label"></label>
-                            <input asp-for="Branch.Name" class="form-control" />
-                            <span asp-validation-for="Branch.Name" class="text-danger"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="Branch.Address" class="col-form-label">
-                                Address (include city, state and zip)
-                            </label>
-                            <input asp-for="Branch.Address" class="form-control addressInput" />
-                            <span asp-validation-for="Branch.Address" class="text-danger"></span>
-                        </div>
-                        @if (Model.ShowGeolocation)
-                        {
-                            <div class="mb-3 hide mapContainer">
-                                <iframe height="180"
-                                    width="400"
-                                    frameborder="0"
-                                    style="border:0"></iframe>
-                            </div>
-                        }
-                        <div class="mb-3">
-                            <label asp-for="Branch.Url" class="col-form-label"></label>
-                            <input asp-for="Branch.Url" class="form-control" />
-                            <span asp-validation-for="Branch.Url" class="text-danger"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="Branch.Telephone" class="col-form-label"></label>
-                            <input asp-for="Branch.Telephone" class="form-control" />
-                            <span asp-validation-for="Branch.Telephone" class="text-danger"></span>
-                        </div>
+                    <div>
+                        <label asp-for="Branch.Address" class="col-form-label">
+                            Address (include city, state and zip)
+                        </label>
+                        <input asp-for="Branch.Address" class="form-control addressInput" />
+                        <span asp-validation-for="Branch.Address" class="text-danger"></span>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button"
-                                class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal"
-                                style="margin-right: 1em;">
-                            Cancel
-                        </button>
-                        <button type="submit"
-                                class="btn btn-outline-primary btn-spinner float-end"
-                                aria-label="Confirm"
-                                button-spinner>
-                            Save
-                        </button>
+                    @if (Model.ShowGeolocation)
+                    {
+                        <div class="d-none mapContainer d-flex justify-content-center py-2">
+                            <iframe style="width: 400px; height: 180px;"
+                                    class="img-thumbnail"
+                                    frameborder="0"></iframe>
+                        </div>
+                    }
+                    <div>
+                        <label asp-for="Branch.Url" class="col-form-label"></label>
+                        <input asp-for="Branch.Url" class="form-control" />
+                        <span asp-validation-for="Branch.Url" class="text-danger"></span>
+                    </div>
+                    <div>
+                        <label asp-for="Branch.Telephone" class="col-form-label"></label>
+                        <input asp-for="Branch.Telephone" class="form-control" />
+                        <span asp-validation-for="Branch.Telephone" class="text-danger"></span>
                     </div>
                 </div>
-            </form>
-        </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="btn btn-outline-primary"
+                            aria-label="Confirm"
+                            button-spinner>
+                        Save
+                    </button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
-
 
 @section scripts {
     <script>
         $('#editModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget);
-            var id = button.data('id');
-            var name = button.data('name');
-            var url = button.data('url');
-            var address = button.data('address');
-            var telephone = button.data('telephone')
-            var modal = $(this);
+            let button = $(event.relatedTarget);
+            let id = button.data('id');
+            let name = button.data('name');
+            let url = button.data('url');
+            let address = button.data('address');
+            let telephone = button.data('telephone')
+            let modal = $(this);
 
             modal.find('#editModalLabel').text('Edit branch - "' + name + '"');
             modal.find('#Branch_Id').val(id);
@@ -293,17 +284,17 @@
     {
         <script>
             var geolocationUrl = "@Url.Action(nameof(EventsController.SetLocationGeolocation))";
-
             var mapsUrl = "https://www.google.com/maps/embed/v1/place?key=@Model.GoogleMapsAPIKey&q=";
 
             $(".geolocateButton").on("click", function () {
-                var button = $(this);
+                let button = $(this);
                 if (button.hasClass("disabled") == false) {
                     button.attr("disabled", "disabled");
                     button.children("span").removeClass("hidden");
                     $.post(geolocationUrl, { id: button.data("id") }, function (response) {
                         if (response.success) {
-                            button.parent().html("<span class=\"far fa-check-circle text-success\"></span>");
+                            button.parent()
+                                .html("<span class=\"far fa-check-circle text-success\"></span>");
                         }
                         else {
                             alert("Unable to set geolocation: " + response.message);
@@ -320,9 +311,9 @@
             });
 
             $(".addressInput").on("change", function () {
-                var input = $(this);
-                var address = input.val();
-                var mapContainer = input.parent().siblings(".mapContainer");
+                let input = $(this);
+                let address = input.val();
+                let mapContainer = input.parent().siblings(".mapContainer");
 
                 if (address.length == 0) {
                     mapContainer.addClass("d-none");

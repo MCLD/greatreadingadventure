@@ -22,7 +22,9 @@
                         {
                             <tr>
                                 <td class="td-class">
-                                    <a asp-action="@nameof(ProgramsController.EditPointTranslation)" asp-route-id="@pointTranslation.Id" class="rowlink">
+                                    <a asp-action="@nameof(ProgramsController.EditPointTranslation)"
+                                       asp-route-id="@pointTranslation.Id"
+                                       class="rowlink">
                                         @pointTranslation.TranslationName
                                     </a>
                                 </td>
@@ -31,10 +33,7 @@
                     </tbody>
                 </table>
             </div>
-            @if (Model.PaginateModel.MaxPage > 1)
-            {
-                <paginate paginateModel="@Model.PaginateModel"></paginate>
-            }
+            <paginate paginateModel="@Model.PaginateModel"></paginate>
         }
     </div>
 </div>
@@ -43,12 +42,12 @@
     <script>
         $(window).on("load", function () {
             $(".td-class").each(function () {
-                $(this).children("a.rowlink").height($(this).height() + 11);
+                $(this).children("a.rowlink").height($(this).outerHeight());
             });
         });
         $(window).resize(function () {
             $(".td-class").each(function () {
-                $(this).children("a.rowlink").height($(this).height() + 11);
+                $(this).children("a.rowlink").height($(this).outerHeight());
             });
         });
     </script>

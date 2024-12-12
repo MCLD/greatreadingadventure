@@ -3,77 +3,86 @@
 @if (Model.PerformerSchedulingEnabled)
 {
     <div class="row my-4">
-        <div class="col-12 col-md-9">
-            <ul class="nav nav-pills">
-                <li class="nav-item">
-                    <a ActiveBy routeKey="Action"
-                       value="@nameof(PerformerManagementController.Index)"
-                       asp-action="@nameof(PerformerManagementController.Index)"
-                       class="nav-link">
-                        Status
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a ActiveBy routeKey="Action"
-                       value="@nameof(PerformerManagementController.Performers)"
-                       asp-action="@nameof(PerformerManagementController.Performers)"
-                       class="nav-link">
-                        Performers
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a ActiveBy routeKey="Action"
-                       value="@nameof(PerformerManagementController.Kits)"
-                       asp-action="@nameof(PerformerManagementController.Kits)"
-                       class="nav-link">
-                        Kits
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a ActiveBy routeKey="Action"
-                       value="@nameof(PerformerManagementController.AgeGroups)"
-                       asp-action="@nameof(PerformerManagementController.AgeGroups)"
-                       class="nav-link">
-                        Age Groups
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a ActiveBy routeKey="Action"
-                       value="@nameof(PerformerManagementController.BlackoutDates)"
-                       asp-action="@nameof(PerformerManagementController.BlackoutDates)"
-                       class="nav-link">
-                        Blackout Dates
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a ActiveBy routeKey="Action"
-                       value="@nameof(PerformerManagementController.ExcludedBranches)"
-                       asp-action="@nameof(PerformerManagementController.ExcludedBranches)"
-                       class="nav-link">
-                        Excluded Branches
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a ActiveBy routeKey="Action"
-                       value="@nameof(PerformerManagementController.Settings)"
-                       asp-action="@nameof(PerformerManagementController.Settings)"
-                       class="nav-link">
-                        Settings
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <div class="col-12 col-md-3">
-                        <a asp-action="@nameof(PerformerManagementController.PerformerExport)"
-               class="btn btn-outline-primary btn-sm mt-1 text-nowrap">
-                <span class="fas fa-file-excel fa-fw"></span>
-                Export Performers
-            </a>
-            <a asp-action="@nameof(PerformerManagementController.ScheduleExport)"
-               class="btn btn-outline-primary btn-sm mt-1 text-nowrap">
-                <span class="fas fa-file-excel fa-fw"></span>
-                Export Schedule
-            </a>
+        <div class="col-12 d-flex justify-content-between">
+            <div>
+                <ul class="nav nav-pills">
+                    <li class="nav-item">
+                        <a ActiveBy
+                           routeKey="Action"
+                           value="@nameof(PerformerManagementController.Index)"
+                           asp-action="@nameof(PerformerManagementController.Index)"
+                           class="nav-link">
+                            Status
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a ActiveBy
+                           routeKey="Action"
+                           value="@nameof(PerformerManagementController.Performers)"
+                           asp-action="@nameof(PerformerManagementController.Performers)"
+                           class="nav-link">
+                            Performers
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a ActiveBy
+                           routeKey="Action"
+                           value="@nameof(PerformerManagementController.Kits)"
+                           asp-action="@nameof(PerformerManagementController.Kits)"
+                           class="nav-link">
+                            Kits
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a ActiveBy
+                           routeKey="Action"
+                           value="@nameof(PerformerManagementController.AgeGroups)"
+                           asp-action="@nameof(PerformerManagementController.AgeGroups)"
+                           class="nav-link">
+                            Age Groups
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a ActiveBy
+                           routeKey="Action"
+                           value="@nameof(PerformerManagementController.BlackoutDates)"
+                           asp-action="@nameof(PerformerManagementController.BlackoutDates)"
+                           class="nav-link">
+                            Blackout Dates
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a ActiveBy
+                           routeKey="Action"
+                           value="@nameof(PerformerManagementController.ExcludedBranches)"
+                           asp-action="@nameof(PerformerManagementController.ExcludedBranches)"
+                           class="nav-link">
+                            Excluded Branches
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a ActiveBy
+                           routeKey="Action"
+                           value="@nameof(PerformerManagementController.Settings)"
+                           asp-action="@nameof(PerformerManagementController.Settings)"
+                           class="nav-link">
+                            Settings
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <a asp-action="@nameof(PerformerManagementController.PerformerExport)"
+                   class="btn btn-outline-primary btn-sm mt-1 text-nowrap">
+                    <span class="fas fa-file-excel fa-fw"></span>
+                    Export Performers
+                </a>
+                <a asp-action="@nameof(PerformerManagementController.ScheduleExport)"
+                   class="btn btn-outline-primary btn-sm mt-1 text-nowrap">
+                    <span class="fas fa-file-excel fa-fw"></span>
+                    Export Schedule
+                </a>
+            </div>
         </div>
     </div>
 }

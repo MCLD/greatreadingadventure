@@ -1,5 +1,12 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Programs.ProgramDetailViewModel
 
+@section inHeading {
+    <div class="ms-auto d-print-none">
+        <a asp-action="@nameof(ProgramsController.Index)"
+           class="btn btn-outline-secondary">Return to List</a>
+    </div>
+}
+
 <form asp-action="@Model.Action" method="post" role="form" enctype="multipart/form-data">
     <input asp-for="Action" type="hidden" />
     <input asp-for="BadgeMakerImage" type="hidden" />
@@ -28,8 +35,16 @@
                   title="Display this text in a banner at the top of the participant dashboard. Only text, no HTML/links."
                   data-bs-toggle="tooltip"
                   data-bs-placement="top"></span>
-            <button type="button" class="btn btn-sm btn-outline-primary" id="previewAlertButton" data-bs-toggle="modal" data-bs-target="#previewAlertModal" style="margin-bottom: 0.25rem; margin-left: 0.5rem;">Preview alert</button>
-            <select asp-for="Program.DashboardAlertType" asp-items="Html.GetEnumSelectList<GRA.Domain.Model.AlertType>()" class="form-select" style="margin-bottom: 1rem;"></select>
+            <button type="button"
+                    class="btn btn-sm btn-outline-primary"
+                    id="previewAlertButton"
+                    data-bs-toggle="modal"
+                    data-bs-target="#previewAlertModal">
+                Preview alert
+            </button>
+            <select asp-for="Program.DashboardAlertType"
+                    asp-items="Html.GetEnumSelectList<GRA.Domain.Model.AlertType>()"
+                    class="form-select my-2"></select>
             <textarea asp-for="Program.DashboardAlert" class="form-control"></textarea>
         </div>
         <div class="col-12 mb-3">
@@ -67,19 +82,26 @@
         </div>
         <div class="col-12 mb-3">
             <label asp-for="Program.PointTranslationId" class="col-form-label"></label>
-            <select asp-for="Program.PointTranslationId" asp-items="Model.PointTranslationList" class="form-select" disabled="@(Model.PointTranslationList.Count() == 0 ? "disabled" : null)"></select>
+            <select asp-for="Program.PointTranslationId"
+                    asp-items="Model.PointTranslationList"
+                    class="form-select"
+                    disabled="@(Model.PointTranslationList.Count() == 0 ? "disabled" : null)">
+            </select>
             <span asp-validation-for="Program.PointTranslationId" class="text-danger"></span>
         </div>
         <div class="col-12 mb-3">
             <label asp-for="Program.DailyLiteracyTipId" class="col-form-label"></label>
-            <select asp-for="Program.DailyLiteracyTipId" asp-items="Model.DailyLiteracyTipList" class="form-select" disabled="@(Model.DailyLiteracyTipList.Count() == 0 ? "disabled" : null)">
+            <select asp-for="Program.DailyLiteracyTipId"
+                    asp-items="Model.DailyLiteracyTipList"
+                    class="form-select"
+                    disabled="@(Model.DailyLiteracyTipList.Count() == 0 ? "disabled" : null)">
                 <option></option>
             </select>
             <span asp-validation-for="Program.DailyLiteracyTipId" class="text-danger"></span>
         </div>
-        <div class="col-12">
-            <div class="row mb-3">
-                <div class="col-12 col-sm-4 col-md-3">
+        <div class="col-12 mb-3">
+            <div class="card">
+                <h5 class="card-header">
                     @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
                     {
                         <label class="col-form-label">Edit sign-up badge</label>
@@ -88,128 +110,101 @@
                     {
                         <label class="col-form-label">Add a sign-up badge</label>
                     }
-
-                    @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
-                    {
-                        <input asp-for="BadgePath" type="hidden" />
-                        <img id="badgeImage" class="img-thumbnail badge-lg"
-                             src="~/@Model.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")"
-                             asp-append-version="true" />
-                    }
-                    else
-                    {
-                        <img id="badgeImage" class="img-thumbnail badge-lg" src="@Model.BadgeMakerImage" style="height:210px;" />
-                    }
-                    <span asp-validation-for="BadgePath" class="text-danger" style="display:block;"></span>
-                </div>
-
-                <div class="col-12 col-sm-8 col-md-9">
-                    <div class="mb-3">
-                        <label asp-for="Program.JoinBadgeName" class="col-form-label"></label>
-                        <input asp-for="Program.JoinBadgeName" class="form-control" />
-                        <span asp-validation-for="Program.JoinBadgeName" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="col-12 col-sm-8 col-md-9 float-end">
-                    <ul class="nav nav-tabs" role="tablist">
-                        @if (Model.UseBadgeMaker)
-                        {
-                            <li role="presentation" class=@(Model.UseBadgeMaker ? "active" : "")>
-                                <a id="badgeTab" href="#badge" aria-controls="badge" role="tab" data-bs-toggle="tab">Badge Maker</a>
-                            </li>
-                        }
-                        <li role="presentation" class=@(Model.UseBadgeMaker ? "" : "active")>
-                            <a id="uploadTab" href="#upload" aria-controls="upload" role="tab" data-bs-toggle="tab">Upload an Image</a>
-                        </li>
-                    </ul>
-
-                    <div class="tab-content">
-                        <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.UseBadgeMaker ? "active" : "")" id="badge">
-                            <button id="openMaker" type="button" class="btn btn-outline-primary">
-                                <span class="fas fa-certificate"></span> Create a Badge
-                            </button>
+                </h5>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 col-sm-4 col-md-3">
+                            @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
+                            {
+                                <input asp-for="BadgePath" type="hidden" />
+                                <img id="badgeImage"
+                                     class="img-thumbnail badge-lg"
+                                     src="~/@Model.BadgePath?@DateTime.Now.Ticks" />
+                            }
+                            else if (!string.IsNullOrEmpty(Model.BadgeMakerImage))
+                            {
+                                <img id="badgeImage"
+                                     class="img-thumbnail badge-lg"
+                                     src="@Model.BadgeMakerImage?@DateTime.Now.Ticks" />
+                            }
+                            else
+                            {
+                                <div class="img-thumbnail badge-lg-none d-flex align-items-center justify-content-center">
+                                    <span class="far fa-image fa-fw fs-1 text-secondary"></span>
+                                </div>
+                            }
+                            <span asp-validation-for="BadgePath"
+                                  class="text-danger d-block"></span>
                         </div>
+                        <div class="col-12 col-sm-8 col-md-9">
+                            <label asp-for="Program.JoinBadgeName" class="col-form-label"></label>
+                            <input asp-for="Program.JoinBadgeName" class="form-control" />
+                            <span asp-validation-for="Program.JoinBadgeName" class="text-danger"></span>
 
-                        <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.UseBadgeMaker ? "" : "active")" id="upload">
-                            <p>Upload a badge image. Badge images must be square.</p>
-                            <div class="input-group">
-                                <label class="input-group-text">
-                                    <span class="btn btn-outline-primary btn-file">
-                                        <span class="far fa-file-image"></span> Select an image<input type="file" asp-for="BadgeUploadImage" accept=".png,.jpg,.jpeg" style="display: none;" />
-                                    </span>
-                                </label>
-                                <input type="text" class="form-control" readonly id="selectedFile">
+                            <label asp-for="BadgeUploadImage" class="col-form-label"></label>
+                            <div class="input-group mb-3">
+                                <input type="file"
+                                       class="form-control"
+                                       asp-for="BadgeUploadImage"
+                                       accept=".jpg,.png" />
+                                <button class="btn btn-outline-secondary"
+                                        type="button"
+                                        onclick="$('#BadgeUploadImage').val('')">
+                                    Clear selection
+                                </button>
                             </div>
+                            <span asp-validation-for="BadgeUploadImage"
+                                  class="text-danger mb-3"></span>
                             <div>
-                                <span asp-validation-for="BadgeUploadImage" class="text-danger"></span>
+                                <label asp-for="BadgeAltText" class="control-label"></label>
+                                <span class="fas fa-info-circle wide-tooltip"
+                                      title="How should this badge be described to someone who can't see it?"
+                                      data-toggle="tooltip"
+                                      data-placement="top"></span>
+                                <textarea asp-for="BadgeAltText"
+                                          class="form-control">@Model.BadgeAltText</textarea>
+                                <span asp-validation-for="BadgeAltText" class="text-danger"></span>
                             </div>
-                            <button id="clearFile" class="btn btn-outline-secondary" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-12 mb-3">
-            <label asp-for="BadgeAltText" class="col-form-label"></label>
-            <span class="fas fa-info-circle wide-tooltip"
-                  title="How should this badge be described to someone who can't see it?"
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="top"></span>
-            <textarea asp-for="BadgeAltText" class="form-control">
-                @Model.BadgeAltText
-                    </textarea>
-            <span asp-validation-for="BadgeAltText" class="text-danger"></span>
-        </div>
-    </div>
 
-    <hr />
-    <div class="row">
-        <div class="col-12 mb-3">
-            <a asp-action="Index" class="btn btn-outline-secondary">Return to List</a>
-            <button type="submit"
-                    id="Submit"
-                    name="Submit"
-                    value="Submit"
-                    class="btn btn-outline-primary btn-spinner"
-                    button-spinner>
-                <span class="buttonText">Save Program</span>
-            </button>
+        <div class="row">
+            <div class="col-12 mb-3">
+                <button type="submit"
+                        id="Submit"
+                        name="Submit"
+                        value="Submit"
+                        class="btn btn-outline-primary btn-spinner"
+                        button-spinner>
+                    <span class="buttonText">Save Program</span>
+                </button>
+            </div>
         </div>
     </div>
 </form>
-
-<div class="modal fade frame-modal"
-     id="badgeModal"
-     tabindex="-1"
-     role="dialog"
-     aria-labelledby="badgeModalLabel">
-    <div class="modal-content">
-        <div class="modal-body" style="padding: 30px;">
-            <span class="close frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
-                  data-bs-dismiss="modal"
-                  alt="Close dialog."
-                  role="button">
-                <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
-                <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
-            </span>
-            <iframe id="badgeMaker" class="badge-maker"></iframe>
-        </div>
-    </div>
-</div>
 
 <div class="modal fade" id="previewAlertModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 <h4 class="modal-title">Preview alert</h4>
             </div>
             <div class="modal-body">
                 <div class="alert" id="alertPreview"></div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal">
+                    Close
+                </button>
             </div>
         </div>
     </div>
@@ -218,64 +213,6 @@
 @section scripts {
     <script>
         var alertPreviewButtonEnabled = true;
-
-        $(':file').on('fileselect', function (event, numFiles, label) {
-            var input = $(this).parents('.input-group').find(':text'),
-                log = numFiles > 1 ? numFiles = ' files selected' : label;
-
-            if (input.length) {
-                input.val(log);
-                $('.btn-file').removeClass('btn-secondary');
-                $('.btn-file').addClass('btn-outline-success');
-                $("#badgeImage").removeAttr("src");
-                $("#badgeImage").height(200);
-                $("#BadgeMakerImage").val("");
-            }
-            else {
-                input.val('');
-                $('.btn-file').addClass('btn-secondary');
-                $('.btn-file').removeClass('btn-outline-success');
-            }
-        });
-
-        $(document).on('change', ':file', function () {
-            var input = $(this),
-                numFiles = input.get(0).files ? input.get(0).files.length : 1,
-                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-            input.trigger('fileselect', [numFiles, label]);
-        });
-
-        $("#badgeTab").on('show.bs.tab', function () {
-            $("#UseBadgeMaker").val("true");
-        });
-
-        $("#uploadTab").on('show.bs.tab', function () {
-            $("#UseBadgeMaker").val("false");
-        });
-
-        $("#openMaker").on("click", function () {
-            $("#badgeMaker").attr("src", "@Html.Raw(@Model.BadgeMakerUrl)");
-            $("#badgeModal").modal("show");
-        });
-
-        $('#clearFile').on("click", function () {
-            $('#BadgeUploadImage').val('');
-            $('.btn-file').addClass('btn-secondary');
-            $('.btn-file').removeClass('btn-outline-success');
-            $('#selectedFile').val('');
-        });
-
-        $(window).on("message", function (e) {
-            $("#badgeModal").modal("hide");
-            var data = e.originalEvent.data;
-            $("#badgeImage").attr("src", data);
-            $("#badgeImage").height(200);
-            $("#BadgeMakerImage").val(data);
-            $('#BadgeUploadImage').val('');
-            $('.btn-file').addClass('btn-secondary');
-            $('.btn-file').removeClass('btn-outline-success');
-            $('#selectedFile').val('');
-        });
 
         $('#previewAlertModal').on('show.bs.modal', function (e) {
             $('#alertPreview').removeClass('alert-info');

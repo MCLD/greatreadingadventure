@@ -32,13 +32,18 @@ namespace GRA.Controllers.MissionControl
             SiteService siteService)
             : base(context)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _badgeService = badgeService ?? throw new ArgumentNullException(nameof(badgeService));
-            _dailyLiteracyTipService = dailyLiteracyTipService
-                ?? throw new ArgumentNullException(nameof(dailyLiteracyTipService));
-            _pointTranslationService = pointTranslationService
-                ?? throw new ArgumentNullException(nameof(pointTranslationService));
-            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
+            ArgumentNullException.ThrowIfNull(logger);
+            ArgumentNullException.ThrowIfNull(badgeService);
+            ArgumentNullException.ThrowIfNull(dailyLiteracyTipService);
+            ArgumentNullException.ThrowIfNull(pointTranslationService);
+            ArgumentNullException.ThrowIfNull(siteService);
+
+            _logger = logger;
+            _badgeService = badgeService;
+            _dailyLiteracyTipService = dailyLiteracyTipService;
+            _pointTranslationService = pointTranslationService;
+            _siteService = siteService;
+
             PageTitle = "Program management";
         }
 
@@ -74,6 +79,8 @@ namespace GRA.Controllers.MissionControl
             Justification = "Using lowercase for filenames")]
         public async Task<IActionResult> Create(ProgramDetailViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             byte[] badgeBytes = null;
 
             if (!string.IsNullOrWhiteSpace(model.Program.JoinBadgeName)
@@ -82,13 +89,16 @@ namespace GRA.Controllers.MissionControl
             {
                 if (string.IsNullOrWhiteSpace(model.Program.JoinBadgeName))
                 {
-                    ModelState.AddModelError("Program.JoinBadgeName", "Please provide a name for the badge");
+                    ModelState.AddModelError("Program.JoinBadgeName",
+                        "Please provide a name for the badge");
                 }
                 if (string.IsNullOrWhiteSpace(model.BadgeAltText))
                 {
-                    ModelState.AddModelError("BadgeAltText", "The badge's alternative text is required.");
+                    ModelState.AddModelError("BadgeAltText",
+                        "The badge's alternative text is required.");
                 }
-                if (string.IsNullOrWhiteSpace(model.BadgeMakerImage) && model.BadgeUploadImage == null)
+                if (string.IsNullOrWhiteSpace(model.BadgeMakerImage)
+                    && model.BadgeUploadImage == null)
                 {
                     ModelState.AddModelError("BadgePath", "Please provide an image for the badge.");
                 }
@@ -98,16 +108,16 @@ namespace GRA.Controllers.MissionControl
                     if (!ValidImageExtensions.Contains(
                         Path.GetExtension(model.BadgeUploadImage.FileName).ToLowerInvariant()))
                     {
-                        ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
+                        ModelState.AddModelError("BadgeUploadImage",
+                            $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                     }
 
                     try
                     {
-                        using (var ms = new MemoryStream())
-                        {
-                            await model.BadgeUploadImage.CopyToAsync(ms);
-                            badgeBytes = ms.ToArray();
-                        }
+                        await using var ms = new MemoryStream();
+                        await model.BadgeUploadImage.CopyToAsync(ms);
+                        badgeBytes = ms.ToArray();
+
                         await _badgeService.ValidateBadgeImageAsync(badgeBytes);
                     }
                     catch (GraException gex)
@@ -126,7 +136,8 @@ namespace GRA.Controllers.MissionControl
 
             if (model.Program.AgeMaximum < model.Program.AgeMinimum)
             {
-                ModelState.AddModelError("Program.AgeMaximum", "The maximum age cannot be lower than the minimum age.");
+                ModelState.AddModelError("Program.AgeMaximum",
+                    "The maximum age cannot be lower than the minimum age.");
             }
 
             if (ModelState.IsValid)
@@ -148,7 +159,7 @@ namespace GRA.Controllers.MissionControl
                         {
                             if (badgeBytes == null)
                             {
-                                using var ms = new MemoryStream();
+                                await using var ms = new MemoryStream();
                                 await model.BadgeUploadImage.CopyToAsync(ms);
                                 badgeBytes = ms.ToArray();
                             }
@@ -200,13 +211,18 @@ namespace GRA.Controllers.MissionControl
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error decreasing position for program {id} : {ex}", ex);
+                _logger.LogError(ex,
+                    "Error decreasing position for program {ProgramId}: {ErrorMessage}",
+                    id,
+                    ex.Message);
                 return Json(false);
             }
         }
 
         public async Task<IActionResult> Delete(ProgramListViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             try
             {
                 await _siteService.RemoveProgramAsync(model.Program.Id);
@@ -276,6 +292,8 @@ namespace GRA.Controllers.MissionControl
             Justification = "Using lowercase for filenames")]
         public async Task<IActionResult> Edit(ProgramDetailViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             byte[] badgeBytes = null;
 
             var currentProgram = await _siteService.GetProgramByIdAsync(model.Program.Id);
@@ -284,10 +302,12 @@ namespace GRA.Controllers.MissionControl
                     || model.BadgeUploadImage != null
                     || currentProgram.JoinBadgeId.HasValue))
             {
-                ModelState.AddModelError("Program.JoinBadgeName", "Please provide a name for the badge");
+                ModelState.AddModelError("Program.JoinBadgeName",
+                    "Please provide a name for the badge");
                 if (string.IsNullOrWhiteSpace(model.BadgeAltText))
                 {
-                    ModelState.AddModelError("BadgeAltText", "The badge's alternative text is required.");
+                    ModelState.AddModelError("BadgeAltText",
+                        "The badge's alternative text is required.");
                 }
             }
 
@@ -296,17 +316,22 @@ namespace GRA.Controllers.MissionControl
                 && model.BadgeUploadImage == null
                 && !currentProgram.JoinBadgeId.HasValue)
             {
-                ModelState.AddModelError("BadgemakerImage", "Please provide an image for the badge.");
+                ModelState.AddModelError("BadgemakerImage",
+                    "Please provide an image for the badge.");
                 if (string.IsNullOrWhiteSpace(model.BadgeAltText))
                 {
-                    ModelState.AddModelError("BadgeAltText", "The badge's alternative text is required.");
+                    ModelState.AddModelError("BadgeAltText",
+                        "The badge's alternative text is required.");
                 }
             }
 
-            if ((!string.IsNullOrWhiteSpace(model.BadgePath) || (!string.IsNullOrWhiteSpace(model.BadgeMakerImage)
-                || model.BadgeUploadImage != null)) && string.IsNullOrWhiteSpace(model.BadgeAltText))
+            if ((!string.IsNullOrWhiteSpace(model.BadgePath)
+                || (!string.IsNullOrWhiteSpace(model.BadgeMakerImage)
+                    || model.BadgeUploadImage != null))
+                && string.IsNullOrWhiteSpace(model.BadgeAltText))
             {
-                ModelState.AddModelError("BadgeAltText", "The badge's alternative text is required.");
+                ModelState.AddModelError("BadgeAltText",
+                    "The badge's alternative text is required.");
             }
 
             if (!string.IsNullOrWhiteSpace(model.BadgeAltText) &&
@@ -322,16 +347,15 @@ namespace GRA.Controllers.MissionControl
                 if (!ValidImageExtensions.Contains(
                     Path.GetExtension(model.BadgeUploadImage.FileName).ToLowerInvariant()))
                 {
-                    ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
+                    ModelState.AddModelError("BadgeUploadImage",
+                        $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                 }
 
                 try
                 {
-                    using (var ms = new MemoryStream())
-                    {
-                        await model.BadgeUploadImage.CopyToAsync(ms);
-                        badgeBytes = ms.ToArray();
-                    }
+                    await using var ms = new MemoryStream();
+                    await model.BadgeUploadImage.CopyToAsync(ms);
+                    badgeBytes = ms.ToArray();
                     await _badgeService.ValidateBadgeImageAsync(badgeBytes);
                 }
                 catch (GraException gex)
@@ -342,7 +366,8 @@ namespace GRA.Controllers.MissionControl
 
             if (model.Program.AgeMaximum < model.Program.AgeMinimum)
             {
-                ModelState.AddModelError("Program.AgeMaximum", "The maximum age cannot be lower than the minimum age.");
+                ModelState.AddModelError("Program.AgeMaximum",
+                    "The maximum age cannot be lower than the minimum age.");
             }
 
             if (ModelState.IsValid)
@@ -364,7 +389,7 @@ namespace GRA.Controllers.MissionControl
                         {
                             if (badgeBytes == null)
                             {
-                                using var ms = new MemoryStream();
+                                await using var ms = new MemoryStream();
                                 await model.BadgeUploadImage.CopyToAsync(ms);
                                 badgeBytes = ms.ToArray();
                             }
@@ -441,7 +466,10 @@ namespace GRA.Controllers.MissionControl
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error increasing position for program {id} : {ex}", ex);
+                _logger.LogError(ex,
+                    "Error increasing position for program {ProgramId} : {ErrorMessage}",
+                    id,
+                    ex.Message);
                 return Json(false);
             }
         }
