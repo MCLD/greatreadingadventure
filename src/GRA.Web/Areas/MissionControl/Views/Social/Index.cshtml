@@ -2,39 +2,29 @@
 
 @using GRA.Controllers.ViewModel.MissionControl.Social
 
-@section styles {
-    <style type="text/css">
-        .gra-language-marker {
-            border: solid 2px;
-            border-radius: 0.5em;
-            display: inline-block;
-            font-size: smaller;
-            margin: 0.1rem;
-            padding: 0.3rem;
-        }
-    </style>
-}
-
-<div class="row" style="margin-top: 2rem; margin-bottom: 2rem;">
-    <div class="col-12">
+@section inHeading {
+    <div class="ms-auto d-print-none">
         <a class="btn btn-outline-success"
            asp-action="@nameof(GRA.Controllers.MissionControl.SocialController.AddSocialHeader)">
             <span class="fas fa-plus-circle fa-fw"></span>
             Add new social panel
         </a>
     </div>
-</div>
+}
 
-<div class="row">
+<div class="row mt-2">
     <div class="col-12">
+        <p>
+            OpenGraph link previews are cached for a long time by most sites which utilize them.
+            It is not possible to guarantee that new data will take effect on the listed date and
+            time!
+        </p>
         <table class="table table-striped table-bordered table-sm">
             <tr>
                 <th class="align-middle">Active</th>
                 <th class="align-middle">Name</th>
                 <th class="align-middle">Start Date</th>
-                <th class="align-middle">
-                    Available Languages <strong class="btn-info">(Light blue = current)</strong>
-                </th>
+                <th class="align-middle">Available Languages</th>
                 <th class="align-middle">Add Language</th>
             </tr>
             @if (Model?.SocialHeaders?.Any() != true)
@@ -49,7 +39,10 @@
                 {
                     <tr class="@SocialListViewModel.RowStatus(TempData, socialHeader.Id)">
                         <td class="align-middle">
-                            @Html.Raw(@Model.Status(socialHeader.Id))
+                            @foreach (var active in Model.ActiveSocials.Where(_ => _.HeaderId == socialHeader.Id))
+                            {
+                                <span class="badge text-bg-primary">@active.Badge</span>
+                            }
                         </td>
                         <td class="align-middle">@socialHeader.Name</td>
                         <td class="align-middle">@socialHeader.StartDate</td>
@@ -59,7 +52,7 @@
                                 <a asp-action="ViewSocial"
                                    asp-route-socialheaderid="@socialHeader.Id"
                                    asp-route-languageid="@social.LanguageId"
-                                   class="btn btn-outline-primary btn-sm">
+                                   class="btn btn-outline-primary btn-sm my-1">
                                     @Model.Languages.SingleOrDefault(_ => _.Id == social.LanguageId)?.Description
                                 </a>
                             }
@@ -70,7 +63,7 @@
                                 <a asp-action="ViewSocial"
                                    asp-route-socialheaderid="@socialHeader.Id"
                                    asp-route-languageid="@language.Id"
-                                   class="btn btn-outline-success btn-sm">
+                                   class="btn btn-outline-success btn-sm my-1">
                                     <span class="fas fa-plus-circle fa-fw"></span>
                                     @language.Description
                                 </a>
