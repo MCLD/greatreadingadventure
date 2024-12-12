@@ -1,26 +1,33 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Systems.SystemListViewModel
 
+@section inHeading {
+    <div class="ms-auto d-print-none">
+        <a class="btn btn-outline-success text-nowrap"
+           data-bs-toggle="modal"
+           data-bs-target="#addModal">
+            <span class="fas fa-plus-circle fa-fw"></span>
+            Add System
+        </a>
+    </div>
+}
+
 @await Html.PartialAsync("_SystemsPartial")
 
-<form asp-controller="Systems" asp-action="Index" method="get" role="form">
-    <div class="row row-spacing">
-        <div class="col-8">
-            <input asp-for="Search" class="form-control" />
-        </div>
-        <div class="col-4">
-            <input type="submit" value="Search" class="btn btn-outline-primary" style="margin-right: 8px;" />
-            <a asp-action="Index" class="btn btn-outline-secondary">Clear</a>
+<form asp-controller="@SystemsController.Name"
+      asp-action="@nameof(SystemsController.Index)"
+      method="get"
+      role="form">
+    <div class="row my-3">
+        <div class="col-12 input-group">
+            <input asp-for="Search"
+                   class="form-control"
+                   placeholder="Search systems" />
+            <a asp-action="@nameof(SystemsController.Index)"
+               class="btn btn-outline-secondary">Clear</a>
+            <input type="submit" value="Search" class="btn btn-outline-primary" />
         </div>
     </div>
 </form>
-
-<div class="row my-4">
-    <div class="col-12">
-        <a class="btn btn-outline-primary"
-           data-bs-toggle="modal"
-           data-bs-target="#addModal">Add a System</a>
-    </div>
-</div>
 
 <div class="row my-4">
     <div class="col-12">
@@ -35,7 +42,7 @@
                     <thead>
                         <tr>
                             <th>System Name</th>
-                            <th width="100">&nbsp;</th>
+                            <th style="width: 7rem;">&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -45,185 +52,165 @@
                                 <td>
                                     @system.Name
                                 </td>
-                                <td class="gra-mc-icon">
-                                    <div class="btn-group-sm">
-                                        <button type="button"
-                                                class="btn btn-outline-primary btn-sm"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#editModal"
-                                                data-id="@system.Id"
-                                                data-name="@system.Name">
-                                            <span class="fas fa-pencil-alt fa-fw" aria-hidden="true"></span>
-                                        </button>
-                                        <button type="button"
-                                                class="btn btn-outline-danger btn-sm"
-                                                style="margin-left:16px;"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#deleteModal"
-                                                data-id="@system.Id"
-                                                data-name="@system.Name">
-                                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
-                                        </button>
-                                    </div>
+                                <td class="d-flex justify-content-evenly">
+                                    <button type="button"
+                                            class="btn btn-outline-primary btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editModal"
+                                            data-id="@system.Id"
+                                            data-name="@system.Name">
+                                        <span class="fas fa-pencil-alt fa-fw"
+                                              aria-hidden="true"></span>
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-outline-danger btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal"
+                                            data-id="@system.Id"
+                                            data-name="@system.Name">
+                                        <span class="fas fa-times fa-fw"
+                                              aria-hidden="true"></span>
+                                    </button>
                                 </td>
                             </tr>
                         }
                     </tbody>
                 </table>
             </div>
-            @if (Model.PaginateModel.MaxPage > 1)
-            {
-                <paginate paginateModel="@Model.PaginateModel"></paginate>
-            }
+            <paginate paginateModel="@Model.PaginateModel"></paginate>
         }
     </div>
 </div>
 
-<div class="row">
-    <div class="modal fade"
-         id="addModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="addModalLabel">
-        <div class="modal-dialog" role="document">
-            <form asp-controller="Systems"
-                  asp-action="AddSystem"
-                  method="post"
-                  role="form"
-                  style="display:inline">
-                <input asp-for="Search" type="hidden" />
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title h4" id="addModalLabel">Add System</h1>
-                        <button type="button"
-                                class="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close dialog">
-                            
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label asp-for="System.Name" class="col-form-label"></label>
-                            <input asp-for="System.Name" class="form-control" />
-                            <span asp-validation-for="System.Name" class="text-danger"></span>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button"
-                                    class="btn btn-outline-secondary"
-                                    data-bs-dismiss="modal"
-                                    style="margin-left: 1em;">
-                                Cancel
-                            </button>
-                            <button type="submit"
-                                    class="btn btn-outline-primary btn-spinner float-end"
-                                    aria-label="Confirm"
-                                    button-spinner>
-                                Add
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="modal fade"
-         id="editModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="editModalLabel">
-        <div class="modal-dialog" role="document">
-            <form asp-controller="Systems"
-                  asp-action="EditSystem"
-                  method="post"
-                  role="form"
-                  style="display:inline">
-                <input asp-for="System.Id" type="hidden" />
-                <input asp-for="Search" type="hidden" />
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title h4" id="editModalLabel">Edit System</h1>
-                        <button type="button"
-                                class="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close dialog">
-                            
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label asp-for="System.Name" class="col-form-label"></label>
-                            <input asp-for="System.Name" class="form-control" />
-                            <span asp-validation-for="System.Name" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button"
-                                class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal"
-                                style="margin-right: 1em;">
-                            Cancel
-                        </button>
-                        <button type="submit"
-                                class="btn btn-outline-primary btn-spinner float-end"
-                                aria-label="Confirm"
-                                button-spinner>
-                            Save
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="modal fade"
-         id="deleteModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="deleteModalLabel">
-        <div class="modal-dialog" role="document">
+<div class="modal fade"
+     id="addModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="addModalLabel">
+    <div class="modal-dialog" role="document">
+        <form asp-controller="@SystemsController.Name"
+              asp-action="@nameof(SystemsController.AddSystem)"
+              method="post"
+              role="form">
+            <input asp-for="Search" type="hidden" />
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title h4" id="deleteModalLabel">Delete system</h1>
+                    <h1 class="modal-title h4" id="addModalLabel">Add System</h1>
                     <button type="button"
                             class="btn-close"
                             data-bs-dismiss="modal"
                             aria-label="Close dialog">
-                        
                     </button>
                 </div>
                 <div class="modal-body">
-                    <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
-                    <span id="modal-text"></span>
+                    <label asp-for="System.Name" class="col-form-label"></label>
+                    <input asp-for="System.Name" class="form-control" />
+                    <span asp-validation-for="System.Name" class="text-danger"></span>
                 </div>
                 <div class="modal-footer">
                     <button type="button"
                             class="btn btn-outline-secondary"
-                            data-bs-dismiss="modal"
-                            style="margin-right: 1em;">
+                            data-bs-dismiss="modal">
                         Cancel
                     </button>
-                    <form asp-controller="Systems"
-                          asp-action="DeleteSystem"
-                          method="post"
-                          role="form"
-                          style="display:inline">
-                        <input asp-for="Search" type="hidden" />
-                        <input id="Id" name="Id" type="hidden" />
-                        <button type="submit"
-                                class="btn btn-outline-danger btn-spinner float-end"
-                                aria-label="Confirm"
-                                button-spinner>
-                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
-                            Delete
-                        </button>
-                    </form>
+                    <button type="submit"
+                            class="btn btn-outline-primary"
+                            aria-label="Confirm"
+                            button-spinner>
+                        Add
+                    </button>
                 </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade"
+     id="editModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="editModalLabel">
+    <div class="modal-dialog" role="document">
+        <form asp-controller="@SystemsController.Name"
+              asp-action="@nameof(SystemsController.EditSystem)"
+              method="post"
+              role="form">
+            <input asp-for="System.Id" type="hidden" />
+            <input asp-for="Search" type="hidden" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title h4" id="editModalLabel">Edit System</h1>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close dialog">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label asp-for="System.Name" class="col-form-label"></label>
+                    <input asp-for="System.Name" class="form-control" />
+                    <span asp-validation-for="System.Name" class="text-danger"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="btn btn-outline-primary"
+                            aria-label="Confirm"
+                            button-spinner>
+                        Save
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade"
+     id="deleteModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="deleteModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title h4" id="deleteModalLabel">Delete system</h1>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close dialog">
+                </button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="modal-body d-flex align-items-stretch">
+                    <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                          aria-hidden="true"></span>
+                    <span id="modal-text"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal">
+                    Cancel
+                </button>
+                <form asp-controller="Systems"
+                      asp-action="DeleteSystem"
+                      method="post"
+                      role="form">
+                    <input asp-for="Search" type="hidden" />
+                    <input id="Id" name="Id" type="hidden" />
+                    <button type="submit"
+                            class="btn btn-outline-danger btn-spinner float-end"
+                            aria-label="Confirm"
+                            button-spinner>
+                        <span class="fas fa-times fa-fw" aria-hidden="true"></span>
+                        Delete
+                    </button>
+                </form>
             </div>
         </div>
     </div>
@@ -246,7 +233,7 @@
             var id = button.data('id');
             var name = button.data('name');
             var modal = $(this);
-            modal.find('#modal-text').text('Are you sure you wish to delete the system "' + name + '" ?');
+            modal.find('#modal-text').html('Are you sure you wish to delete the system <strong>' + name + '</strong>?');
             modal.find('#Id').val(id);
         });
     </script>

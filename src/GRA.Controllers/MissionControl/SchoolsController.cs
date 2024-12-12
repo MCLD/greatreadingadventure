@@ -25,50 +25,41 @@ namespace GRA.Controllers.MissionControl
             SchoolService schoolService)
             : base(context)
         {
-            _schoolImportService = schoolImportService
-                ?? throw new ArgumentNullException(nameof(schoolImportService));
-            _schoolService = schoolService
-                ?? throw new ArgumentNullException(nameof(schoolService));
+            ArgumentNullException.ThrowIfNull(schoolImportService);
+            ArgumentNullException.ThrowIfNull(schoolService);
+
+            _schoolImportService = schoolImportService;
+            _schoolService = schoolService;
+
             PageTitle = "School management";
         }
 
-        public async Task<IActionResult> Index(string search, int page = 1)
+        public static string Name
+        { get { return "Schools"; } }
+
+        [HttpPost]
+        public async Task<IActionResult> AddDistrict(DistrictListViewModel model)
         {
-            var filter = new BaseFilter(page)
-            {
-                Search = search
-            };
+            ArgumentNullException.ThrowIfNull(model);
 
-            var schoolList = await _schoolService.GetPaginatedListAsync(filter);
-
-            var paginateModel = new PaginateViewModel
+            try
             {
-                ItemCount = schoolList.Count,
-                CurrentPage = page,
-                ItemsPerPage = filter.Take.Value
-            };
-            if (paginateModel.PastMaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
+                model.District.Name = model.District.Name?.Trim();
+                await _schoolService.AddDistrict(model.District);
+                ShowAlertSuccess($"Added School District '{model.District.Name}'");
             }
-
-            var viewModel = new SchoolsListViewModel
+            catch (GraException gex)
             {
-                Schools = schoolList.Data.ToList(),
-                PaginateModel = paginateModel,
-                DistrictList = await _schoolService.GetDistrictsAsync()
-            };
-
-            return View(viewModel);
+                ShowAlertDanger("Unable to add School District: ", gex);
+            }
+            return RedirectToAction("Districts", new { search = model.Search });
         }
 
         [HttpPost]
         public async Task<IActionResult> AddSchool(SchoolsListViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             try
             {
                 await _schoolService.AddSchool(model.School.Name?.Trim(),
@@ -84,19 +75,18 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditSchool(SchoolsListViewModel model)
+        public async Task<IActionResult> DeleteDistrict(int id, string search)
         {
             try
             {
-                model.School.Name = model.School.Name?.Trim();
-                await _schoolService.UpdateSchoolAsync(model.School);
-                ShowAlertSuccess($"School District '{model.School.Name}' updated");
+                await _schoolService.RemoveDistrict(id);
+                AlertSuccess = "School District removed";
             }
             catch (GraException gex)
             {
-                ShowAlertDanger("Unable to edit School: ", gex);
+                ShowAlertDanger("Unable to delete School District: ", gex);
             }
-            return RedirectToAction("Index", new { search = model.Search });
+            return RedirectToAction("Districts", new { search });
         }
 
         [HttpPost]
@@ -150,24 +140,10 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddDistrict(DistrictListViewModel model)
-        {
-            try
-            {
-                model.District.Name = model.District.Name?.Trim();
-                await _schoolService.AddDistrict(model.District);
-                ShowAlertSuccess($"Added School District '{model.District.Name}'");
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger("Unable to add School District: ", gex);
-            }
-            return RedirectToAction("Districts", new { search = model.Search });
-        }
-
-        [HttpPost]
         public async Task<IActionResult> EditDistrict(DistrictListViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             try
             {
                 model.District.Name = model.District.Name?.Trim();
@@ -182,18 +158,32 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteDistrict(int id, string search)
+        public async Task<IActionResult> EditSchool(SchoolsListViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             try
             {
-                await _schoolService.RemoveDistrict(id);
-                AlertSuccess = "School District removed";
+                model.School.Name = model.School.Name?.Trim();
+                await _schoolService.UpdateSchoolAsync(model.School);
+                ShowAlertSuccess($"School District '{model.School.Name}' updated");
             }
             catch (GraException gex)
             {
-                ShowAlertDanger("Unable to delete School District: ", gex);
+                ShowAlertDanger("Unable to edit School: ", gex);
             }
-            return RedirectToAction("Districts", new { search });
+            return RedirectToAction("Index", new { search = model.Search });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Export()
+        {
+            PageTitle = "Export Schools";
+
+            string date = _dateTimeProvider.Now.ToString("yyyyMMdd", CultureInfo.InvariantCulture);
+            return File(await _schoolImportService.ToCsvAsync(),
+                "text/csv",
+                Utility.FileUtility.EnsureValidFilename($"{date}-SchoolsDistricts.csv"));
         }
 
         [HttpGet]
@@ -226,12 +216,15 @@ namespace GRA.Controllers.MissionControl
                     case ImportStatus.Success:
                         AlertSuccess = message;
                         break;
+
                     case ImportStatus.Warning:
                         AlertWarning = message;
                         break;
+
                     case ImportStatus.Danger:
                         AlertDanger = message;
                         break;
+
                     default:
                         AlertInfo = message;
                         break;
@@ -240,15 +233,38 @@ namespace GRA.Controllers.MissionControl
             return RedirectToAction("Import");
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Export()
+        public async Task<IActionResult> Index(string search, int page = 1)
         {
-            PageTitle = "Export Schools";
+            var filter = new BaseFilter(page)
+            {
+                Search = search
+            };
 
-            string date = _dateTimeProvider.Now.ToString("yyyyMMdd", CultureInfo.InvariantCulture);
-            return File(await _schoolImportService.ToCsvAsync(),
-                "text/csv",
-                Utility.FileUtility.EnsureValidFilename($"{date}-SchoolsDistricts.csv"));
+            var schoolList = await _schoolService.GetPaginatedListAsync(filter);
+
+            var paginateModel = new PaginateViewModel
+            {
+                ItemCount = schoolList.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+            if (paginateModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+
+            var viewModel = new SchoolsListViewModel
+            {
+                Schools = schoolList.Data.ToList(),
+                PaginateModel = paginateModel,
+                DistrictList = await _schoolService.GetDistrictsAsync()
+            };
+
+            return View(viewModel);
         }
     }
 }

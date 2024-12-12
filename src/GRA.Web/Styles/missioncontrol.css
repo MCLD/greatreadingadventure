@@ -121,3 +121,7 @@ table > tbody > tr > td.gra-mc-icon {
 .mc-news-subscribe {
     text-decoration: none;
 }
+
+.mc-extra-height {
+    line-height: 2rem;
+}

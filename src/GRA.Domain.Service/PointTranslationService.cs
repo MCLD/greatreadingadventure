@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
@@ -13,6 +12,7 @@ namespace GRA.Domain.Service
     {
         private readonly IPointTranslationRepository _pointTranslationRepository;
         private readonly IUserLogRepository _userLogRepository;
+
         public PointTranslationService(ILogger<PointTranslationService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
@@ -21,10 +21,69 @@ namespace GRA.Domain.Service
             : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManagePrograms);
-            _pointTranslationRepository = pointTranslationRepository
-                ?? throw new ArgumentNullException(nameof(pointTranslationRepository));
-            _userLogRepository = userLogRepository
-                ?? throw new ArgumentNullException(nameof(userLogRepository));
+
+            ArgumentNullException.ThrowIfNull(pointTranslationRepository);
+            ArgumentNullException.ThrowIfNull(userLogRepository);
+
+            _pointTranslationRepository = pointTranslationRepository;
+            _userLogRepository = userLogRepository;
+        }
+
+        public async Task<PointTranslation> AddAsync(PointTranslation pointTranslation)
+        {
+            ArgumentNullException.ThrowIfNull(pointTranslation);
+
+            VerifyManagementPermission();
+            pointTranslation.SiteId = GetCurrentSiteId();
+            return await _pointTranslationRepository.AddSaveAsync(GetClaimId(ClaimType.UserId),
+                pointTranslation);
+        }
+
+        public async Task<PointTranslation> GetByIdAsync(int id)
+        {
+            VerifyManagementPermission();
+            return await _pointTranslationRepository.GetByIdAsync(id);
+        }
+
+        public async Task<PointTranslation> GetByProgramIdAsync(int id, bool titleCase = false)
+        {
+            var pointTranslation = await _pointTranslationRepository.GetByProgramIdAsync(id);
+
+            if (titleCase)
+            {
+                if (!string.IsNullOrWhiteSpace(pointTranslation.ActivityDescription))
+                {
+                    pointTranslation.ActivityDescription = pointTranslation.ActivityDescription[0]
+                        .ToString()
+                        .ToUpper(System.Globalization.CultureInfo.CurrentCulture)
+                        + pointTranslation.ActivityDescription[1..];
+                }
+                if (!string.IsNullOrWhiteSpace(pointTranslation.ActivityDescriptionPlural))
+                {
+                    pointTranslation.ActivityDescriptionPlural =
+                        pointTranslation.ActivityDescriptionPlural[0]
+                        .ToString()
+                        .ToUpper(System.Globalization.CultureInfo.CurrentCulture)
+                        + pointTranslation.ActivityDescriptionPlural[1..];
+                }
+                if (!string.IsNullOrWhiteSpace(pointTranslation.TranslationDescriptionPastTense))
+                {
+                    pointTranslation.TranslationDescriptionPastTense =
+                        pointTranslation.TranslationDescriptionPastTense[0]
+                        .ToString()
+                        .ToUpper(System.Globalization.CultureInfo.CurrentCulture)
+                        + pointTranslation.TranslationDescriptionPastTense[1..];
+                }
+                if (!string.IsNullOrWhiteSpace(pointTranslation.TranslationDescriptionPresentTense))
+                {
+                    pointTranslation.TranslationDescriptionPresentTense =
+                        pointTranslation.TranslationDescriptionPresentTense[0]
+                        .ToString()
+                        .ToUpper(System.Globalization.CultureInfo.CurrentCulture)
+                        + pointTranslation.TranslationDescriptionPresentTense[1..];
+                }
+            }
+            return pointTranslation;
         }
 
         public async Task<IEnumerable<PointTranslation>> GetListAsync()
@@ -35,6 +94,7 @@ namespace GRA.Domain.Service
         public async Task<DataWithCount<ICollection<PointTranslation>>>
             GetPaginatedListAsync(Model.Filters.BaseFilter filter)
         {
+            filter ??= new Model.Filters.BaseFilter();
             VerifyManagementPermission();
             filter.SiteId = GetCurrentSiteId();
             return new DataWithCount<ICollection<PointTranslation>>
@@ -44,22 +104,39 @@ namespace GRA.Domain.Service
             };
         }
 
-        public async Task<PointTranslation> GetByIdAsync(int id)
+        public async Task<bool> HasBeenUsedAsync(int id)
         {
             VerifyManagementPermission();
-            return await _pointTranslationRepository.GetByIdAsync(id);
+            return await _userLogRepository.PointTranslationHasBeenUsedAsync(id);
         }
 
-        public async Task<PointTranslation> AddAsync(PointTranslation pointTranslation)
+        public async Task RemoveAsync(int pointTranslationId)
         {
             VerifyManagementPermission();
-            pointTranslation.SiteId = GetCurrentSiteId();
-            return await _pointTranslationRepository.AddSaveAsync(GetClaimId(ClaimType.UserId),
-                pointTranslation);
+            var authId = GetClaimId(ClaimType.UserId);
+            var siteId = GetCurrentSiteId();
+            var pointTranslation
+                = await _pointTranslationRepository.GetByIdAsync(pointTranslationId);
+
+            if (pointTranslation.SiteId != siteId)
+            {
+                _logger.LogError("User {AuthenticatedUserId} cannot update point translation {PointTranslationId} for site {PointTranslationiSiteId}.",
+                    authId,
+                    pointTranslationId,
+                    pointTranslation.SiteId);
+                throw new GraException($"Permission denied - point translation belongs to site id {pointTranslation.SiteId}.");
+            }
+            if (await _pointTranslationRepository.IsInUseAsync(pointTranslationId))
+            {
+                throw new GraException($"{pointTranslation.TranslationName} is in use by programs and/or challenge tasks.");
+            }
+            await _pointTranslationRepository.RemoveSaveAsync(authId, pointTranslationId);
         }
 
         public async Task UpdateAsync(PointTranslation pointTranslation)
         {
+            ArgumentNullException.ThrowIfNull(pointTranslation);
+
             VerifyManagementPermission();
             var authId = GetClaimId(ClaimType.UserId);
             var siteId = GetCurrentSiteId();
@@ -67,14 +144,20 @@ namespace GRA.Domain.Service
                 pointTranslation.Id);
             if (currentPointTranslation.SiteId != siteId)
             {
-                _logger.LogError($"User {authId} cannot update point translation {currentPointTranslation.Id} for site {currentPointTranslation.SiteId}.");
+                _logger.LogError("User {AuthenticatedUserId} cannot update point translation {PointTranslationId} for site {PointTranslationiSiteId}.",
+                    authId,
+                    currentPointTranslation.Id,
+                    currentPointTranslation.SiteId);
                 throw new GraException($"Permission denied - point translation belongs to site id {currentPointTranslation.SiteId}.");
             }
 
-            currentPointTranslation.ActivityDescription = pointTranslation.ActivityDescriptionPlural;
-            currentPointTranslation.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
-            currentPointTranslation.TranslationDescriptionPastTense = pointTranslation.TranslationDescriptionPastTense;
-            currentPointTranslation.TranslationDescriptionPresentTense = pointTranslation.TranslationDescriptionPresentTense;
+            currentPointTranslation.ActivityDescription = pointTranslation.ActivityDescription;
+            currentPointTranslation.ActivityDescriptionPlural
+                = pointTranslation.ActivityDescriptionPlural;
+            currentPointTranslation.TranslationDescriptionPastTense
+                = pointTranslation.TranslationDescriptionPastTense;
+            currentPointTranslation.TranslationDescriptionPresentTense
+                = pointTranslation.TranslationDescriptionPresentTense;
             currentPointTranslation.TranslationName = pointTranslation.TranslationName;
 
             var hasBeenUsed = await HasBeenUsedAsync(pointTranslation.Id);
@@ -87,75 +170,6 @@ namespace GRA.Domain.Service
             }
 
             await _pointTranslationRepository.UpdateSaveAsync(authId, currentPointTranslation);
-        }
-
-        public async Task RemoveAsync(int pointTranslationId)
-        {
-            VerifyManagementPermission();
-            var authId = GetClaimId(ClaimType.UserId);
-            var siteId = GetCurrentSiteId();
-            var pointTranslation = await _pointTranslationRepository.GetByIdAsync(pointTranslationId);
-            if (pointTranslation.SiteId != siteId)
-            {
-                _logger.LogError($"User {authId} cannot delete point translation {pointTranslationId} for site {pointTranslation.SiteId}.");
-                throw new GraException($"Permission denied - point translation belongs to site id {pointTranslation.SiteId}.");
-            }
-            if (await _pointTranslationRepository.IsInUseAsync(pointTranslationId))
-            {
-                throw new GraException($"{pointTranslation.TranslationName} is in use by programs and/or challenge tasks.");
-            }
-            await _pointTranslationRepository.RemoveSaveAsync(authId, pointTranslationId);
-        }
-
-        public async Task<bool> HasBeenUsedAsync(int id)
-        {
-            VerifyManagementPermission();
-            return await _userLogRepository.PointTranslationHasBeenUsedAsync(id);
-        }
-
-        public async Task<PointTranslation> GetByProgramIdAsync(int id, bool titleCase = false)
-        {
-            var pointTranslation = await _pointTranslationRepository.GetByProgramIdAsync(id);
-
-            if (titleCase)
-            {
-                if (!string.IsNullOrWhiteSpace(pointTranslation.ActivityDescription))
-                {
-                    pointTranslation.ActivityDescription = pointTranslation.ActivityDescription
-                        .First()
-                        .ToString()
-                        .ToUpper()
-                        + pointTranslation.ActivityDescription.Substring(1);
-                }
-                if (!string.IsNullOrWhiteSpace(pointTranslation.ActivityDescriptionPlural))
-                {
-                    pointTranslation.ActivityDescriptionPlural =
-                        pointTranslation.ActivityDescriptionPlural
-                        .First()
-                        .ToString()
-                        .ToUpper()
-                        + pointTranslation.ActivityDescriptionPlural.Substring(1);
-                }
-                if (!string.IsNullOrWhiteSpace(pointTranslation.TranslationDescriptionPastTense))
-                {
-                    pointTranslation.TranslationDescriptionPastTense =
-                        pointTranslation.TranslationDescriptionPastTense
-                        .First()
-                        .ToString()
-                        .ToUpper()
-                        + pointTranslation.TranslationDescriptionPastTense.Substring(1);
-                }
-                if (!string.IsNullOrWhiteSpace(pointTranslation.TranslationDescriptionPresentTense))
-                {
-                    pointTranslation.TranslationDescriptionPresentTense =
-                        pointTranslation.TranslationDescriptionPresentTense
-                        .First()
-                        .ToString()
-                        .ToUpper()
-                        + pointTranslation.TranslationDescriptionPresentTense.Substring(1);
-                }
-            }
-            return pointTranslation;
         }
     }
 }
