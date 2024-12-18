@@ -107,6 +107,14 @@ namespace GRA.Domain.Service
             return IsSet ? SetValue : (int?)null;
         }
 
+        public async Task<int?> GetLowPointThresholdAsync(int siteId)
+        {
+            var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingIntAsync(siteId,
+                SiteSettingKey.Triggers.LowPointThreshold);
+
+            return IsSet ? SetValue : (int?)null;
+        }
+
         public async Task<DataWithCount<ICollection<Trigger>>> GetPaginatedListAsync(TriggerFilter filter)
         {
             VerifyManagementPermission();

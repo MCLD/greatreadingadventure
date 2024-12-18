@@ -841,8 +841,9 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Index(string search,
             int? systemId,
             int? branchId,
-            bool? mine, int?
-            programId,
+            bool? mine,
+            bool? lowPoint,
+            int? programId,
             int page = 1)
         {
             var filter = new TriggerFilter(page);
@@ -855,6 +856,10 @@ namespace GRA.Controllers.MissionControl
             if (mine == true)
             {
                 filter.UserIds = new List<int> { GetId(ClaimType.UserId) };
+            }
+            else if (lowPoint == true)
+            {
+
             }
             else if (branchId.HasValue)
             {
@@ -919,6 +924,7 @@ namespace GRA.Controllers.MissionControl
                 BranchId = branchId,
                 ProgramId = programId,
                 Mine = mine,
+                LowPoints = lowPoint,
                 SystemList = systemList,
                 ProgramList = await _siteService.GetProgramList()
             };
@@ -928,6 +934,10 @@ namespace GRA.Controllers.MissionControl
                         .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
                         .ThenBy(_ => _.Name);
                 viewModel.ActiveNav = "Mine";
+            }
+            else if (lowPoint == true)
+            {
+
             }
             else if (branchId.HasValue)
             {

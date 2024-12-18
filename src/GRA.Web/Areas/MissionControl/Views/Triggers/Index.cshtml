@@ -55,6 +55,12 @@
                    asp-route-ProgramId="@Model.ProgramId"
                    asp-route-Mine="True">Mine</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link @(Model.ActiveNav == "Low Points" ? "active" : "")"
+                   asp-route-Search="@Model.Search"
+                   asp-route-ProgramId="@Model.ProgramId"
+                   asp-route-LowPoints="True">Low Points</a>
+            </li>
             <li class="nav-item d-none d-sm-block"><a class="nav-link disabled">|</a></li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle"
@@ -110,6 +116,10 @@
     @if (Model.Mine == true)
     {
         <input asp-for="Mine" type="hidden" />
+    }
+    @if (Model.LowPoints == true)
+    {
+        <input asp-for="LowPoints" type="hidden" />
     }
     @if (Model.ProgramId.HasValue)
     {
