@@ -484,6 +484,33 @@ namespace GRA.Controllers.MissionControl
 
         #region Point Translations
 
+        public async Task<IActionResult> CreatePointTranslation()
+        {
+            var viewModel = new PointTranslationDetailViewModel
+            {
+                PointTranslation = new PointTranslation(),
+                Action = nameof(CreatePointTranslation),
+                HasBeenUsed = false
+            };
+
+            PageTitle = "Create Point Translation";
+            return View("PointTranslationDetail", viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreatePointTranslation(PointTranslationDetailViewModel model)
+        {
+            if (ModelState.IsValid && model != null)
+            {
+                await _pointTranslationService.AddAsync(model.PointTranslation);
+                ShowAlertSuccess($"Added Point Translation \"{model.PointTranslation.TranslationName}\"!");
+                return RedirectToAction(nameof(PointTranslations));
+            }
+
+            PageTitle = "Create Point Translation";
+            return View("PointTranslationDetail", model);
+        }
+
         public async Task<IActionResult> EditPointTranslation(int id)
         {
             var viewModel = new PointTranslationDetailViewModel
