@@ -122,6 +122,11 @@ namespace GRA.Data.Repository
                                                 || _.SecretCode.Contains(filter.Search));
             }
 
+            if(filter.LowPointActivated == true)
+            {
+                triggerList = triggerList.Where(_ => filter.LowPointActivated == true);
+            }
+
             if (filter.SecretCodesOnly == true)
             {
                 triggerList = triggerList.Where(_ => !string.IsNullOrWhiteSpace(_.SecretCode));

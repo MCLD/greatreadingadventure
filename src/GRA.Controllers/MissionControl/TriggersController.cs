@@ -85,7 +85,8 @@ namespace GRA.Controllers.MissionControl
                 BranchList = new SelectList(await _siteService.GetAllBranches(), "Id", "Name"),
                 ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
                 IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
-                MaxPointLimit = await _triggerService.GetMaximumAllowedPointsAsync(site.Id)
+                MaxPointLimit = await _triggerService.GetMaximumAllowedPointsAsync(site.Id),
+                LowPointThreshold = await _triggerService.GetLowPointThresholdAsync(site.Id)
             };
 
             if (viewModel.MaxPointLimit.HasValue)
@@ -859,7 +860,6 @@ namespace GRA.Controllers.MissionControl
             }
             else if (lowPoint == true)
             {
-
             }
             else if (branchId.HasValue)
             {
@@ -937,7 +937,7 @@ namespace GRA.Controllers.MissionControl
             }
             else if (lowPoint == true)
             {
-
+                viewModel.ActiveNav = "Low Points";
             }
             else if (branchId.HasValue)
             {
