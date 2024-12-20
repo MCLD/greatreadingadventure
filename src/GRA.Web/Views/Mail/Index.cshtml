@@ -20,10 +20,10 @@
 }
 
 <div class="row">
-    <div class="col col-md-10 offset-md-1">
+    <div class="col-12 col-lg-10 offset-lg-1">
         <div class="card">
             <div class="card-header">
-                <span class="lead">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Mail]</span>
+                <span class="lead fw-bold">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Mail]</span>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -36,50 +36,48 @@
                         }
                         else
                         {
-                            <div>
-                                <table class="table table-sm table-bordered link-table">
-                                    <thead>
-                                        <tr>
-                                            <th>@SharedLocalizer[GRA.Annotations.Title.Date]</th>
-                                            <th>@SharedLocalizer[GRA.Annotations.Title.Subject]</th>
-                                            <th class="nojs-show">&nbsp;</th>
+                            <table class="table table-sm table-bordered link-table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>@SharedLocalizer[GRA.Annotations.Title.Date]</th>
+                                        <th>@SharedLocalizer[GRA.Annotations.Title.Subject]</th>
+                                        <th class="nojs-show">&nbsp;</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var mail in Model.Mail)
+                                    {
+                                        <tr class="@(mail.IsNew ? "unread-mail" : "read-mail")">
+                                            <td class="td-class">
+                                                <noscript>
+                                                    @mail.CreatedAt.ToString("d")
+                                                </noscript>
+                                                <a asp-action="Read"
+                                                   asp-route-id="@mail.Id"
+                                                   class="rowlink nojs-d-none">
+                                                    @mail.CreatedAt.ToString("d")
+                                                </a>
+                                            </td>
+                                            <td>@mail.Subject</td>
+                                            <td class="nojs-show">
+                                                <a asp-action="Read"
+                                                   asp-route-id="@mail.Id"
+                                                   class="btn btn-secondary btn-sm">
+                                                    @SharedLocalizer[GRA.Annotations.Interface.Read]
+                                                </a>
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var mail in Model.Mail)
-                                        {
-                                            <tr class="@(mail.IsNew ? "unread-mail" : "read-mail")">
-                                                <td class="td-class">
-                                                    <noscript>
-                                                        @mail.CreatedAt.ToString("d")
-                                                    </noscript>
-                                                    <a asp-action="Read"
-                                                       asp-route-id="@mail.Id"
-                                                       class="rowlink nojs-d-none">
-                                                        @mail.CreatedAt.ToString("d")
-                                                    </a>
-                                                </td>
-                                                <td>@mail.Subject</td>
-                                                <td class="nojs-show">
-                                                    <a asp-action="Read"
-                                                       asp-route-id="@mail.Id"
-                                                       class="btn btn-secondary btn-sm">
-                                                        @SharedLocalizer[GRA.Annotations.Interface.Read]
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                            @if (Model.PaginateModel.MaxPage > 1)
-                            {
-                                <paginate paginateModel="@Model.PaginateModel"></paginate>
-                            }
+                                    }
+                                </tbody>
+                            </table>
+                            <paginate paginateModel="@Model.PaginateModel"></paginate>
                         }
-                        <a asp-action="Send" class="btn btn-primary">@SharedLocalizer[GRA.Annotations.Interface.SendMail]</a>
                     </div>
                 </div>
+            </div>
+            <div class="card-footer d-flex justify-content-end">
+                <a asp-action="Send"
+                   class="btn btn-outline-primary">@SharedLocalizer[GRA.Annotations.Interface.SendMail]</a>
             </div>
         </div>
     </div>
@@ -89,12 +87,12 @@
     <script>
         $(document).ready(function () {
             $('.td-class').each(function () {
-                $(this).children('a.rowlink').height($(this).height() + 11);
+                $(this).children("a.rowlink").height($(this).outerHeight());
             });
         });
         $(window).resize(function () {
             $('.td-class').each(function () {
-                $(this).children('a.rowlink').height($(this).height() + 11);
+                $(this).children("a.rowlink").height($(this).outerHeight());
             });
         });
     </script>

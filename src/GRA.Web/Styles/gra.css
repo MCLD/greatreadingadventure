@@ -166,6 +166,12 @@ footer p {
     width: 210px;
 }
 
+.badge-lg-fixed {
+    height: auto;
+    min-width: 210px;
+    width: 210px;
+}
+
 .badge-lg {
     height: auto;
     width: 210px;
