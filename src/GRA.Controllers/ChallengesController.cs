@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
-using System.Web;
+using DocumentFormat.OpenXml.InkML;
 using GRA.Controllers.ViewModel.Challenges;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
@@ -39,17 +40,22 @@ namespace GRA.Controllers
             IHttpContextAccessor httpContextAccessor,
             SiteService siteService) : base(context)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            ArgumentNullException.ThrowIfNull(activityService);
+            ArgumentNullException.ThrowIfNull(categoryService);
+            ArgumentNullException.ThrowIfNull(challengeService);
+            ArgumentNullException.ThrowIfNull(context?.Mapper);
+            ArgumentNullException.ThrowIfNull(httpContextAccessor);
+            ArgumentNullException.ThrowIfNull(logger);
+            ArgumentNullException.ThrowIfNull(siteService);
+
+            _activityService = activityService;
+            _categoryService = categoryService;
+            _challengeService = challengeService;
+            _httpContextAccessor = httpContextAccessor;
+            _logger = logger;
             _mapper = context.Mapper;
-            _activityService = activityService
-                ?? throw new ArgumentNullException(nameof(activityService));
-            _categoryService = categoryService
-                ?? throw new ArgumentNullException(nameof(categoryService));
-            _challengeService = challengeService
-                ?? throw new ArgumentNullException(nameof(challengeService));
-            _httpContextAccessor = httpContextAccessor
-                ?? throw new ArgumentNullException(nameof(httpContextAccessor));
-            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
+            _siteService = siteService;
+
             PageTitle = _sharedLocalizer[Annotations.Title.Challenges];
         }
 
@@ -60,6 +66,8 @@ namespace GRA.Controllers
         [HttpPost]
         public async Task<IActionResult> CompleteTasks(ChallengeDetailViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             List<ChallengeTask> tasks = _mapper.Map<List<ChallengeTask>>(model.Tasks);
             try
             {
@@ -160,58 +168,69 @@ namespace GRA.Controllers
         }
 
         public async Task<IActionResult> Index(string Search = null,
-            int? Program = null,
-            string Categories = null,
-            string Group = null,
-            bool Favorites = false,
-            string Status = null,
-            bool ClearSearch = false,
-            int page = 1,
-            ChallengeFilter.OrderingOption ordering = ChallengeFilter.OrderingOption.MostPopular,
-            System.Net.HttpStatusCode httpStatus = System.Net.HttpStatusCode.OK)
+                    int? Program = null,
+                    string Categories = null,
+                    string Group = null,
+                    bool Favorites = false,
+                    string Status = null,
+                    bool ClearSearch = false,
+                    bool Find = false,
+                    int page = 1,
+                    ChallengeFilter.OrderingOption ordering = ChallengeFilter.OrderingOption.MostPopular,
+                    System.Net.HttpStatusCode httpStatus = System.Net.HttpStatusCode.OK)
         {
+            ChallengeSession settingsToSave = null;
+
             if (ClearSearch)
             {
+                // clear button was selected, remove any saved session data
                 _httpContextAccessor
                     .HttpContext
                     .Session
                     .Remove(Defaults.ChallengesFilterSessionKey);
             }
-            else if (string.IsNullOrEmpty(Request.QueryString.Value))
+            else if (Find)
             {
-                var saved = _httpContextAccessor
+                // find button was selected, save data to session
+                settingsToSave = new ChallengeSession()
+                {
+                    Categories = Categories,
+                    Favorites = Favorites,
+                    Group = Group,
+                    Ordering = ordering,
+                    Status = Status
+                };
+                _logger.LogDebug("Preparing to save filter criteria");
+            }
+            else
+            {
+                // page loaded with blank http get, get data from session and apply if possible
+                var savedCriteriaJson = _httpContextAccessor
                     .HttpContext
                     .Session
                     .GetString(Defaults.ChallengesFilterSessionKey);
 
-                if (saved != null)
+                if (!string.IsNullOrEmpty(savedCriteriaJson))
                 {
-                    var queryParams = HttpUtility.ParseQueryString(saved);
+                    var savedCriteria = GetSavedCriteria(savedCriteriaJson);
 
-                    Search = queryParams?[nameof(Search)];
-                    Status = queryParams?[nameof(Status)];
-                    Group = queryParams?[nameof(Group)];
-                    Categories = queryParams?[nameof(Categories)];
-                    if (Enum.TryParse(queryParams?[nameof(ordering)], out ChallengeFilter.OrderingOption option))
+                    if (savedCriteria != null)
                     {
-                        ordering = option;
+                        Categories = savedCriteria.Categories;
+                        Favorites = savedCriteria.Favorites;
+                        Group = savedCriteria.Group;
+                        ordering = savedCriteria.Ordering;
+                        Status = savedCriteria.Status;
                     }
-                    if (bool.TryParse(queryParams?[nameof(Favorites)], out bool favorites))
+                    else
                     {
-                        Favorites = favorites;
-                    }
-                    if (int.TryParse(queryParams?[nameof(Program)], out int program))
-                    {
-                        Program = program;
+                        // we know there's a session value but were unable to decocde it, remove
+                        _httpContextAccessor
+                            .HttpContext
+                            .Session
+                            .Remove(Defaults.ChallengesFilterSessionKey);
                     }
                 }
-            }
-            else
-            {
-                _httpContextAccessor
-                    .HttpContext
-                    .Session
-                    .SetString(Defaults.ChallengesFilterSessionKey, Request.QueryString.Value);
             }
 
             var filter = new ChallengeFilter(page)
@@ -336,6 +355,15 @@ namespace GRA.Controllers
             }
             HttpContext.Session.SetInt32(SessionKey.ChallengePage, page);
 
+            if (settingsToSave != null)
+            {
+                _httpContextAccessor
+                    .HttpContext
+                    .Session
+                    .SetString(Defaults.ChallengesFilterSessionKey,
+                        JsonSerializer.Serialize(settingsToSave));
+            }
+
             if (httpStatus != System.Net.HttpStatusCode.OK)
             {
                 Response.StatusCode = (int)httpStatus;
@@ -350,7 +378,7 @@ namespace GRA.Controllers
                 var challengeGroup = await _challengeService.GetActiveGroupByStubAsync(id);
                 if (challengeGroup != null)
                 {
-                    return await Index(Group: id, page: page);
+                    return await Index(Group: id, Find: true, page: page);
                 }
             }
 
@@ -361,6 +389,8 @@ namespace GRA.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateFavorites(ChallengesListViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             var serviceResult = await _activityService.UpdateFavoriteChallenges(model.Challenges);
             if (serviceResult.Status == ServiceResultStatus.Warning
                         && !string.IsNullOrWhiteSpace(serviceResult.Message))
@@ -414,6 +444,33 @@ namespace GRA.Controllers
                 message = serviceResult.Message,
                 favorite
             });
+        }
+
+        private ChallengeSession GetSavedCriteria(string criteriaJson)
+        {
+            if (string.IsNullOrEmpty(criteriaJson)) { return null; }
+            try
+            {
+                return JsonSerializer.Deserialize<ChallengeSession>(criteriaJson);
+            }
+            catch (JsonException jex)
+            {
+                _logger.LogError(jex,
+                    "Unable to deserialize saved challenge find criteria ({Criteria}): {ErrorMessage}",
+                    criteriaJson,
+                    jex.Message);
+            }
+            return null;
+        }
+
+        private class ChallengeSession()
+        {
+            public string Categories { get; set; }
+            public bool Favorites { get; set; }
+            public string Group { get; set; }
+            public ChallengeFilter.OrderingOption Ordering { get; set; }
+            public int? Program { get; set; }
+            public string Status { get; set; }
         }
     }
 }

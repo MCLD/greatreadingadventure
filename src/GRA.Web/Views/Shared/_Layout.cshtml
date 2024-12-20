@@ -122,7 +122,7 @@
                         @if (User.Identity.IsAuthenticated && Context.Items.ContainsKey(ItemKey.ShowMail) && Context.Items[ItemKey.ShowMail] as bool? == true)
                         {
                             <li ActiveBy class="nav-item" routeKey="Controller" value="Mail" title="Mail">
-                                <a add-active asp-controller="Mail" asp-action="Index" class="nav-link">
+                                <a add-active asp-controller="Mail" asp-action="Index" class="nav-link text-nowrap">
                                     @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.UnreadCount) && (int)Context.Items[GRA.Controllers.ItemKey.UnreadCount] > 0)
                                     {
                                         <span class="fas fa-envelope fa-fw text-danger" title="@SharedLocalizer[GRA.Annotations.Interface.NewMail]"></span>

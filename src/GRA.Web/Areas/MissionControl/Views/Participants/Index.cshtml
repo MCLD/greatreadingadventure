@@ -344,12 +344,12 @@
         <script>
             $(document).ready(function () {
                 $('.td-class').each(function () {
-                    $(this).children('a.rowlink').height($(this).height() + 11);
+                    $(this).children("a.rowlink").height($(this).outerHeight());
                 });
             });
             $(window).resize(function () {
                 $('.td-class').each(function () {
-                    $(this).children('a.rowlink').height($(this).height() + 11);
+                    $(this).children("a.rowlink").height($(this).outerHeight());
                 });
             });
         </script>
