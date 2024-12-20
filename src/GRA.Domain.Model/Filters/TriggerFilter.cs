@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-
-namespace GRA.Domain.Model.Filters
+﻿namespace GRA.Domain.Model.Filters
 {
     public class TriggerFilter : BaseFilter
     {

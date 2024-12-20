@@ -861,7 +861,7 @@ namespace GRA.Controllers.MissionControl
             else if (lowPoints == true)
             {
                 filter.PointsBelowOrEqual = await _triggerService.GetLowPointThresholdAsync(GetCurrentSiteId());
-                }
+            }
             else if (branchId.HasValue)
             {
                 filter.BranchIds = new List<int> { branchId.Value };
