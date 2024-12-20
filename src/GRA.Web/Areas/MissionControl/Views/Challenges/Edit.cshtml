@@ -986,7 +986,7 @@
         new TomSelect("#Challenge_CategoryIds");
 
         $('.td-class').each(function () {
-            $(this).children('a.rowlink').height($(this).height() + 11);
+            $(this).children("a.rowlink").height($(this).outerHeight());
         });
     </script>
 
@@ -1064,7 +1064,7 @@
     <script>
         $(window).resize(function () {
             $('.td-class').each(function () {
-                $(this).children('a.rowlink').height($(this).height() + 11);
+                $(this).children("a.rowlink").height($(this).outerHeight());
             });
         });
 

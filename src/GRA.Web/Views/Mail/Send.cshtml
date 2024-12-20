@@ -1,41 +1,39 @@
 ﻿@model GRA.Controllers.ViewModel.Mail.MailCreateViewModel
 
-<div class="row">
-    <div class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2">
-        <div class="card">
-            <div class="card-header">
-                <span class="lead">@SharedLocalizer[GRA.Annotations.Title.SendMail]</span>
-            </div>
-            <div class="card-body">
-                <form asp-controller="Mail" asp-action="Send" method="post" role="form">
-                    <div class="row row-spacing">
-                        <div class="col-sm-10 offset-sm-1">
-                            <label asp-for="Subject" class="col-form-label"></label>
-                            <input asp-for="Subject" class="form-control" />
-                            <span asp-validation-for="Subject" class="text-danger"></span>
-                        </div>
+<form asp-controller="Mail" asp-action="Send" method="post" role="form">
+    <div class="row">
+        <div class="col-12 col-lg-10 offset-lg-1">
+            <div class="card">
+                <div class="card-header">
+                    <span class="lead fw-bold">
+                        @SharedLocalizer[GRA.Annotations.Title.SendMail]
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div>
+                        <label asp-for="Subject" class="col-form-label"></label>
+                        <input asp-for="Subject" class="form-control" />
+                        <span asp-validation-for="Subject" class="text-danger"></span>
                     </div>
-
-                    <div class="row row-spacing">
-                        <div class="col-sm-10 offset-sm-1">
-                            <label asp-for="Body" class="col-form-label"></label>
-                            <textarea asp-for="Body" class="form-control"></textarea>
-                            <span asp-validation-for="Body" class="text-danger"></span>
-                        </div>
+                    <div>
+                        <label asp-for="Body" class="col-form-label"></label>
+                        <textarea asp-for="Body" class="form-control" rows="5"></textarea>
+                        <span asp-validation-for="Body" class="text-danger"></span>
                     </div>
-
-                    <div class="row">
-                        <div class="col-sm-10 offset-sm-1">
-                            <a asp-action="Index" class="btn btn-secondary">
-                                @SharedLocalizer[GRA.Annotations.Interface.BackToMailbox]
-                            </a>
-                            <button type="submit" class="btn btn-primary">
-                                @SharedLocalizer[GRA.Annotations.Interface.SendMail]
-                            </button>
-                        </div>
+                </div>
+                <div class="card-footer d-flex">
+                    <div class="flex-grow-1">
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            @SharedLocalizer[GRA.Annotations.Interface.BackToMailbox]
+                        </a>
                     </div>
-                </form>
+                    <div>
+                        <button type="submit" class="btn btn-outline-primary">
+                            @SharedLocalizer[GRA.Annotations.Interface.SendMail]
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</form>
