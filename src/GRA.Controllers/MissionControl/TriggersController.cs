@@ -843,7 +843,7 @@ namespace GRA.Controllers.MissionControl
             int? systemId,
             int? branchId,
             bool? mine,
-            bool? lowPoint,
+            bool? lowPoints,
             int? programId,
             int page = 1)
         {
@@ -858,7 +858,7 @@ namespace GRA.Controllers.MissionControl
             {
                 filter.UserIds = new List<int> { GetId(ClaimType.UserId) };
             }
-            else if (lowPoint == true)
+            else if (lowPoints == true)
             {
                 filter.PointsBelowOrEqual = await _triggerService.GetLowPointThresholdAsync(GetCurrentSiteId());
                 }
@@ -925,7 +925,7 @@ namespace GRA.Controllers.MissionControl
                 BranchId = branchId,
                 ProgramId = programId,
                 Mine = mine,
-                LowPoints = lowPoint,
+                LowPoints = lowPoints,
                 SystemList = systemList,
                 ProgramList = await _siteService.GetProgramList()
             };
@@ -936,7 +936,7 @@ namespace GRA.Controllers.MissionControl
                         .ThenBy(_ => _.Name);
                 viewModel.ActiveNav = "Mine";
             }
-            else if (lowPoint == true)
+            else if (lowPoints == true)
             {
                 viewModel.BranchList = (await _siteService.GetBranches(GetId(ClaimType.SystemId)))
                         .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
