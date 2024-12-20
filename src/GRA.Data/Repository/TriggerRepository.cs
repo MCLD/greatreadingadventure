@@ -124,7 +124,7 @@ namespace GRA.Data.Repository
 
             if (filter.PointsBelowOrEqual.HasValue)
             {
-                triggerList = triggerList.Where(_ => filter.PointsBelowOrEqual <= _.Points);
+                triggerList = triggerList.Where(_ => filter.PointsBelowOrEqual >= _.Points);
             }
 
             if (filter.SecretCodesOnly == true)
