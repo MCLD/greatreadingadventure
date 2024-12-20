@@ -27,7 +27,18 @@ namespace GRA.Controllers.ViewModel.Home
         public int Day { get; set; }
         public bool DisableSecretCode { get; set; }
         public bool FirstTimeParticipant { get; set; }
+
+        public bool HasOrderStatus
+        {
+            get
+            {
+                return User.VendorOrderStatus > VendorOrderStatus.Pending
+                    && User.VendorOrderStatus < VendorOrderStatus.Received;
+            }
+        }
+
         public bool HasPendingVendorCodeQuestion { get; set; }
+        public bool IsPerformerScheduling { get; set; }
         public int? PercentComplete { get; set; }
         public string ProgramName { get; set; }
         public string ProgressMessage { get; set; }
@@ -61,5 +72,12 @@ namespace GRA.Controllers.ViewModel.Home
                 AlertType.Success => "alert-success",
                 _ => "alert-info"
             };
+
+        public string ActiveStatus(VendorOrderStatus status)
+        {
+            return User.VendorOrderStatus == status
+                ? "active-status-color"
+                : "inactive-status-color";
+        }
     }
 }
