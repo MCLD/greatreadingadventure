@@ -117,7 +117,7 @@
     {
         <input asp-for="Mine" type="hidden" />
     }
-    @if (Model.LowPoints == true)
+    @if (Model.LowPoints.HasValue)
     {
         <input asp-for="LowPoints" type="hidden" />
     }
