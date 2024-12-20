@@ -85,7 +85,8 @@ namespace GRA.Controllers.MissionControl
                 BranchList = new SelectList(await _siteService.GetAllBranches(), "Id", "Name"),
                 ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
                 IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
-                MaxPointLimit = await _triggerService.GetMaximumAllowedPointsAsync(site.Id)
+                MaxPointLimit = await _triggerService.GetMaximumAllowedPointsAsync(site.Id),
+                LowPointThreshold = await _triggerService.GetLowPointThresholdAsync(site.Id)
             };
 
             if (viewModel.MaxPointLimit.HasValue)
@@ -841,8 +842,9 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Index(string search,
             int? systemId,
             int? branchId,
-            bool? mine, int?
-            programId,
+            bool? mine,
+            bool? lowPoints,
+            int? programId,
             int page = 1)
         {
             var filter = new TriggerFilter(page);
@@ -855,6 +857,10 @@ namespace GRA.Controllers.MissionControl
             if (mine == true)
             {
                 filter.UserIds = new List<int> { GetId(ClaimType.UserId) };
+            }
+            else if (lowPoints == true)
+            {
+                filter.PointsBelowOrEqual = await _triggerService.GetLowPointThresholdAsync(GetCurrentSiteId());
             }
             else if (branchId.HasValue)
             {
@@ -919,6 +925,7 @@ namespace GRA.Controllers.MissionControl
                 BranchId = branchId,
                 ProgramId = programId,
                 Mine = mine,
+                LowPoints = lowPoints,
                 SystemList = systemList,
                 ProgramList = await _siteService.GetProgramList()
             };
@@ -928,6 +935,13 @@ namespace GRA.Controllers.MissionControl
                         .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
                         .ThenBy(_ => _.Name);
                 viewModel.ActiveNav = "Mine";
+            }
+            else if (lowPoints == true)
+            {
+                viewModel.BranchList = (await _siteService.GetBranches(GetId(ClaimType.SystemId)))
+                        .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
+                        .ThenBy(_ => _.Name);
+                viewModel.ActiveNav = "Low Points";
             }
             else if (branchId.HasValue)
             {

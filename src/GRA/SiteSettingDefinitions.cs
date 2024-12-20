@@ -127,6 +127,13 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Triggers).Name,
                     Format = SiteSettingFormat.Integer
                 },
+                [SiteSettingKey.Triggers.LowPointThreshold] = new SiteSettingDefinition
+                {
+                    Name = "Low point threshold for triggers",
+                    Info = "Triggers activated with this many points or fewer are considered to be low point activated",
+                    Category = typeof(SiteSettingKey.Triggers).Name,
+                    Format = SiteSettingFormat.Integer
+                },
                 [SiteSettingKey.Users.MaximumHouseholdSizeBeforeGroup] = new SiteSettingDefinition
                 {
                     Name = "Maximum household size before group",

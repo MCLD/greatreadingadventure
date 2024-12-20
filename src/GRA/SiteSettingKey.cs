@@ -84,6 +84,7 @@
     public static class Triggers
     {
         public static readonly string MaxPointsPerTrigger = "Triggers.MaxPointsPerTrigger";
+        public static readonly string LowPointThreshold = "Triggers.LowPointThreshold";
     }
 
     public static class Users
