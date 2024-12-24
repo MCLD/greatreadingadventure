@@ -123,6 +123,7 @@ namespace GRA.Controllers.MissionControl
             var challengeRequiredList = new List<int>();
 
             model.IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits);
+            model.LowPointThreshold = await _triggerService.GetLowPointThresholdAsync(GetCurrentSiteId());
             model.MaxPointLimit = await _triggerService
                 .GetMaximumAllowedPointsAsync(GetCurrentSiteId());
             if (!model.IgnorePointLimits
@@ -317,7 +318,13 @@ namespace GRA.Controllers.MissionControl
                         model.Trigger.AwardAttachmentId = attachment.Id;
                     }
                     var trigger = await _triggerService.AddAsync(model.Trigger);
+                    if (model.LowPointThreshold >= trigger.Points)
+                    {
+                        ShowAlertWarning($"Trigger is a low point trigger.");
+                    }
                     ShowAlertSuccess($"Trigger '<strong>{trigger.Name}</strong>' was successfully created");
+
+
                     return RedirectToAction("Index");
                 }
                 catch (GraException gex)
@@ -536,8 +543,8 @@ namespace GRA.Controllers.MissionControl
             var challengeRequiredList = new List<int>();
 
             model.IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits);
-            model.MaxPointLimit =
-                await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId());
+            model.MaxPointLimit = await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId());
+            model.LowPointThreshold = await _triggerService.GetLowPointThresholdAsync(GetCurrentSiteId());
             if (!model.IgnorePointLimits
                 && model.MaxPointLimit.HasValue
                 && model.Trigger.AwardPoints > model.MaxPointLimit)
@@ -770,6 +777,10 @@ namespace GRA.Controllers.MissionControl
                         model.Trigger.AwardAttachmentId = null;
                     }
 
+                    if (model.LowPointThreshold >= model.Trigger.Points)
+                    {
+                        ShowAlertWarning($"Trigger is a low point trigger.");
+                    }
                     ShowAlertSuccess($"Trigger '<strong>{savedtrigger.Name}</strong>' was successfully modified");
                     return RedirectToAction("Index");
                 }
