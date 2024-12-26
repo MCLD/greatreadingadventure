@@ -10,6 +10,7 @@ using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
+using GRA.SiteSettingKey;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -263,6 +264,7 @@ namespace GRA.Controllers.MissionControl
                             .ToLowerInvariant();
                         model.Trigger.BadgeIds = new List<int>();
                         model.Trigger.ChallengeIds = new List<int>();
+                        model.LowPointThreshold = null;
                     }
                     else
                     {
@@ -324,7 +326,7 @@ namespace GRA.Controllers.MissionControl
                         model.Trigger.AwardAttachmentId = attachment.Id;
                     }
                     var trigger = await _triggerService.AddAsync(model.Trigger);
-                    if (model.LowPointThreshold >= trigger.Points)
+                    if (model.LowPointThreshold != null && model.LowPointThreshold >= trigger.Points)
                     {
                         ShowAlertWarning($"Trigger is a low point trigger.");
                     }
@@ -783,7 +785,7 @@ namespace GRA.Controllers.MissionControl
                         model.Trigger.AwardAttachmentId = null;
                     }
 
-                    if (model.LowPointThreshold >= model.Trigger.Points)
+                    if (model.LowPointThreshold != null && model.LowPointThreshold >= model.Trigger.Points)
                     {
                         ShowAlertWarning($"Trigger is a low point trigger.");
                     }
