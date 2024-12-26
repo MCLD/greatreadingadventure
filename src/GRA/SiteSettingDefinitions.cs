@@ -120,6 +120,13 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Users).Name,
                     Format = SiteSettingFormat.Boolean,
                 },
+                [SiteSettingKey.Triggers.DisallowTriggersBelowPoints] = new SiteSettingDefinition
+                {
+                    Name = "Disallow triggers below these points",
+                    Info = "Triggers cannot be created below this amount of points.",
+                    Category = typeof(SiteSettingKey.Triggers).Name,
+                    Format = SiteSettingFormat.Integer
+                },
                 [SiteSettingKey.Triggers.MaxPointsPerTrigger] = new SiteSettingDefinition
                 {
                     Name = "Maximum points per trigger",
@@ -131,13 +138,6 @@ namespace GRA
                 {
                     Name = "Low point threshold for triggers",
                     Info = "Triggers activated with this many points or fewer are considered to be low point activated.",
-                    Category = typeof(SiteSettingKey.Triggers).Name,
-                    Format = SiteSettingFormat.Integer
-                },
-                [SiteSettingKey.Triggers.DisallowTriggersBelowPoints] = new SiteSettingDefinition
-                {
-                    Name = "Disallow triggers below these points",
-                    Info = "Triggers cannot be created below this amount of points.",
                     Category = typeof(SiteSettingKey.Triggers).Name,
                     Format = SiteSettingFormat.Integer
                 },
