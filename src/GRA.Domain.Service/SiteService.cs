@@ -204,6 +204,14 @@ namespace GRA.Domain.Service
             return IsSet ? SetValue : (int?)null;
         }
 
+        public async Task<int?> GetMinimumPointsAsync(int siteId)
+        {
+            var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingIntAsync(siteId,
+                SiteSettingKey.Triggers.DisallowTriggersBelowPoints);
+
+            return IsSet ? SetValue : (int?)null;
+        }
+
         public async Task<DataWithCount<IEnumerable<Site>>> GetPaginatedListAsync(BaseFilter filter)
         {
             VerifyManagementPermission();

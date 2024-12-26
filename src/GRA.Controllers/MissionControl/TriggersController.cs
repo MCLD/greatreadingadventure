@@ -87,7 +87,7 @@ namespace GRA.Controllers.MissionControl
                 ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
                 IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
                 MaxPointLimit = await _triggerService.GetMaximumAllowedPointsAsync(site.Id),
-                MinAllowedPoints = await _triggerService.GetMinimumPointsAsync(site.Id)
+                MinAllowedPoints = await _siteService.GetMinimumPointsAsync(site.Id)
             };
 
             if (viewModel.MaxPointLimit.HasValue)
@@ -130,10 +130,9 @@ namespace GRA.Controllers.MissionControl
 
             model.IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits);
             model.LowPointThreshold = await _siteService.GetLowPointThresholdAsync(GetCurrentSiteId());
-            model.MinAllowedPoints = await _triggerService.GetMinimumPointsAsync(GetCurrentSiteId());
+            model.MinAllowedPoints = await _siteService.GetMinimumPointsAsync(GetCurrentSiteId());
             model.MaxPointLimit = await _triggerService
                 .GetMaximumAllowedPointsAsync(GetCurrentSiteId());
-            model.MinAllowedPoints = await _triggerService.GetMinimumPointsAsync(GetCurrentSiteId());
             if (!model.IgnorePointLimits
                 && model.MaxPointLimit.HasValue
                 && model.Trigger.AwardPoints > model.MaxPointLimit)
@@ -479,7 +478,7 @@ namespace GRA.Controllers.MissionControl
                     await _triggerService.GetMaximumAllowedPointsAsync(site.Id),
                 LowPointThreshold = await _siteService.GetLowPointThresholdAsync(site.Id),
                 BadgeAltText = badge.AltText,
-                MinAllowedPoints = await _triggerService.GetMinimumPointsAsync(site.Id)
+                MinAllowedPoints = await _siteService.GetMinimumPointsAsync(site.Id)
             };
             if (viewModel?.MaxPointLimit != null)
             {
@@ -569,7 +568,7 @@ namespace GRA.Controllers.MissionControl
             model.IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits);
             model.MaxPointLimit = await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId());
             model.LowPointThreshold = await _siteService.GetLowPointThresholdAsync(GetCurrentSiteId());
-            model.MinAllowedPoints = await _triggerService.GetMinimumPointsAsync(GetCurrentSiteId());
+            model.MinAllowedPoints = await _siteService.GetMinimumPointsAsync(GetCurrentSiteId());
             if (!model.IgnorePointLimits
                 && model.MaxPointLimit.HasValue
                 && model.Trigger.AwardPoints > model.MaxPointLimit)
