@@ -126,12 +126,18 @@ namespace GRA.Controllers.MissionControl
             model.LowPointThreshold = await _triggerService.GetLowPointThresholdAsync(GetCurrentSiteId());
             model.MaxPointLimit = await _triggerService
                 .GetMaximumAllowedPointsAsync(GetCurrentSiteId());
+            model.MinAllowedPoints = await _triggerService.GetMinimumPointsAsync(GetCurrentSiteId());
             if (!model.IgnorePointLimits
                 && model.MaxPointLimit.HasValue
                 && model.Trigger.AwardPoints > model.MaxPointLimit)
             {
                 ModelState.AddModelError("Trigger.AwardPoints",
                     $"You may award up to {model.MaxPointLimit} points.");
+            }
+            if(model.Trigger.Points < model.MinAllowedPoints)
+            {
+                ModelState.AddModelError("Trigger.Points",
+                    $"Trigger must have at least {model.MinAllowedPoints} points.");
             }
             if (!string.IsNullOrWhiteSpace(model.BadgeRequiredList))
             {

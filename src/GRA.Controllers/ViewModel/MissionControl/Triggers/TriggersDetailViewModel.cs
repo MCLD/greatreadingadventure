@@ -48,6 +48,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Triggers
         public bool IsSecretCode { get; set; }
         public int? MaxPointLimit { get; set; }
         public int? LowPointThreshold { get; set; }
+        public int? MinAllowedPoints { get; set; }
         public string MaxPointsMessage { get; set; }
         public string MaxPointsWarningMessage { get; set; }
         public SelectList ProgramList { get; set; }

@@ -130,7 +130,14 @@ namespace GRA
                 [SiteSettingKey.Triggers.LowPointThreshold] = new SiteSettingDefinition
                 {
                     Name = "Low point threshold for triggers",
-                    Info = "Triggers activated with this many points or fewer are considered to be low point activated",
+                    Info = "Triggers activated with this many points or fewer are considered to be low point activated.",
+                    Category = typeof(SiteSettingKey.Triggers).Name,
+                    Format = SiteSettingFormat.Integer
+                },
+                [SiteSettingKey.Triggers.DisallowTriggersBelowPoints] = new SiteSettingDefinition
+                {
+                    Name = "Disallow triggers below these points",
+                    Info = "Triggers cannot be created below this amount of points.",
                     Category = typeof(SiteSettingKey.Triggers).Name,
                     Format = SiteSettingFormat.Integer
                 },
