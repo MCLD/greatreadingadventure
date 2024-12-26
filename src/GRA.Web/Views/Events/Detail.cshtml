@@ -6,15 +6,15 @@
 }
 
 <div class="row">
-    <div class="col-sm-10 offset-sm-1 col-md-8 offset-md-2">
+    <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <span class="lead">
+                <h1 class="h4 mb-0">
                     @Model.Event.Name
-                </span>
+                </h1>
             </div>
             <div class="card-body">
-                <div class="row-spacing" style="font-size:medium;">
+                <div class="mb-2">
                     @if (Model.Event.IsStreaming)
                     {
                         <string>@SharedLocalizer[GRA.Annotations.Interface.StreamStarts]:&nbsp;</string>
@@ -25,7 +25,8 @@
                     }
                     @if (Model.Event.AllDay)
                     {
-                        @:@Model.Event.StartDate.ToString("d") @(Model.Event.EndDate.HasValue ? "– " + Model.Event.EndDate.Value.ToString("d") : "")
+                        @:@Model.Event.StartDate.ToString("d")
+                        @(Model.Event.EndDate.HasValue ? "– " + Model.Event.EndDate.Value.ToString("d") : "")
                     }
                     else
                     {
@@ -33,13 +34,21 @@
                     }
                 </div>
 
-                <div class="row-spacing">@Model.Event.Description</div>
+                <div class="mb-2">@Model.Event.Description</div>
 
                 @if (!string.IsNullOrWhiteSpace(Model.Event.ExternalLink))
                 {
-                    <div class="row-spacing" style="font-size:medium;"><strong>@SharedLocalizer[GRA.Annotations.Interface.MoreInformation]: </strong><a target="_blank" href="@Model.Event.ExternalLink">@Model.Event.Name</a> <a target="_blank" href="@Model.Event.ExternalLink"><span class="fas fa-external-link-alt"></span></a></div>
+                    <div class="mb-2">
+                        <strong>
+                            @SharedLocalizer[GRA.Annotations.Interface.MoreInformation]:
+                        </strong>
+                        <a target="_blank" href="@Model.Event.ExternalLink">@Model.Event.Name</a>
+                        <a target="_blank" href="@Model.Event.ExternalLink">
+                            <span class="fas fa-external-link-alt fa-fw"></span>
+                        </a>
+                    </div>
                 }
-                <div class="row-spacing" style="font-size:medium;">
+                <div class="mb-2">
                     <table>
                         <tr>
                             <td>
@@ -53,7 +62,7 @@
                                 @if (Model.Event.IsStreaming)
                                 {
                                     @if (Model.Event.StartDate <= DateTime.Now
-                                        && Model.Event.StreamingAccessEnds >= DateTime.Now)
+                                   && Model.Event.StreamingAccessEnds >= DateTime.Now)
                                     {
                                         if (Model.IsAuthenticated)
                                         {
@@ -118,28 +127,37 @@
 
                 @if (!string.IsNullOrWhiteSpace(Model.ProgramString))
                 {
-                    <div class="row-spacing" style="font-size:medium;">@Model.ProgramString</div>
+                    <div class="mb-2">@Model.ProgramString</div>
                 }
                 @if (Model.Event.Challenge != null)
                 {
 
-                    <div class="row-space" style="font-size:medium">
+                    <div>
                         <strong>@SharedLocalizer[GRA.Annotations.Interface.RelatedChallenge]:&nbsp;</strong>
-                        <a asp-controller="Challenges" asp-action="Detail" asp-route-id="@Model.Event.Challenge.Id" target="_blank">@Model.Event.Challenge.Name</a>
+                        <a asp-controller="Challenges"
+                           asp-action="Detail"
+                           asp-route-id="@Model.Event.Challenge.Id"
+                           target="_blank">@Model.Event.Challenge.Name</a>
                     </div>
                 }
                 else if (Model.Event.ChallengeGroup != null)
                 {
-                    <div class="row-space" style="font-size:medium">
+                    <div>
                         <strong>@SharedLocalizer[GRA.Annotations.Interface.RelatedChallenges]:&nbsp;</strong>
-                        <a asp-controller="Challenges" asp-action="List" asp-route-id="@Model.Event.ChallengeGroup.Stub" target="_blank">@Model.Event.ChallengeGroup.Name</a>
+                        <a asp-controller="Challenges"
+                           asp-action="List"
+                           asp-route-id="@Model.Event.ChallengeGroup.Stub"
+                           target="_blank">@Model.Event.ChallengeGroup.Name</a>
                     </div>
 
                 }
             </div>
-            <div class="card-footer clearfix d-print-none">
-                <div class="float-start">
-                    <return asp-action="Index" class="btn btn-secondary btn-lg">@SharedLocalizer[GRA.Annotations.Interface.BackToEventsCommunityExperiences]</return>
+            <div class="card-footer d-print-none d-flex justify-content-end">
+                <div>
+                    <a asp-action="Index"
+                       class="btn btn-outline-secondary btn-lg">
+                        @SharedLocalizer[GRA.Annotations.Interface.BackToEventsCommunityExperiences]
+                    </a>
                 </div>
             </div>
         </div>
@@ -175,7 +193,6 @@
         "address": "@Model.Event.EventLocationAddress",
         @if (!string.IsNullOrEmpty(Model.Event.EventLocationTelephone))
         {
-
             @:"telephone": "@Model.Event.EventLocationTelephone",
         }
         @if (!string.IsNullOrEmpty(Model.Event.EventLocationLink))
