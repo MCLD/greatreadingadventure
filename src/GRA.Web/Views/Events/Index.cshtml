@@ -9,20 +9,26 @@
 </noscript>
 
 <div class="row">
-    <div class="col-12 col-sm-10 offset-sm-1">
+    <div class="col-12 mb-2">
         <div class="card">
             <div class="card-header">
-                <span class="lead">@SharedLocalizer[GRA.Annotations.Title.EventsAndCommunityExperiences]</span>
+                <span class="fw-bold">
+                    @SharedLocalizer[GRA.Annotations.Title.EventsAndCommunityExperiences]
+                </span>
             </div>
             <div class="card-body">
-                <div class="row row-spacing">
+                <div class="row mb-2">
                     <div class="col-12">
                         <ul class="nav nav-pills">
-                            <li role="presentation" class="@(Model.EventType == GRA.EventType.Event ? "active" : "")">
-                                <a asp-action="Index">@SharedLocalizer[GRA.Annotations.Interface.Events]</a>
+                            <li role="presentation" class="nav-item">
+                                <a asp-action="Index"
+                                   class="nav-link @(Model.EventType == GRA.EventType.Event ? "active" : "")">
+                                    @SharedLocalizer[GRA.Annotations.Interface.Events]
+                                </a>
                             </li>
-                            <li role="presentation" class="@(Model.EventType == GRA.EventType.CommunityExperience ? "active" : "")">
-                                <a asp-action="CommunityExperiences">
+                            <li role="presentation" class="nav-item">
+                                <a asp-action="CommunityExperiences"
+                                   class="nav-link @(Model.EventType == GRA.EventType.CommunityExperience ? "active" : "")">
                                     @SharedLocalizer[GRA.Annotations.Interface.CommunityExperiences]
                                     @if (!string.IsNullOrWhiteSpace(Model.CommunityExperienceDescription))
                                     {
@@ -33,8 +39,11 @@
                                     }
                                 </a>
                             </li>
-                            <li role="presentation" class="@(Model.EventType == GRA.EventType.StreamingEvent ? "active" : "")">
-                                <a asp-action="StreamingEvents">@SharedLocalizer[GRA.Annotations.Interface.StreamingEvents]</a>
+                            <li role="presentation" class="nav-item">
+                                <a asp-action="StreamingEvents"
+                                   class="nav-link @(Model.EventType == GRA.EventType.StreamingEvent ? "active" : "")">
+                                    @SharedLocalizer[GRA.Annotations.Interface.StreamingEvents]
+                                </a>
                             </li>
                         </ul>
                     </div>
@@ -46,39 +55,43 @@
                     <input asp-for="EventType"
                            type="hidden"
                            value="@Model.EventType" />
-                    <div class="row row-spacing">
-                        <div class="col-6">
+                    <div class="row mb-2">
+                        <div class="col-12 col-lg-6">
                             <label asp-for="StartDate" class="col-form-label"></label>
-                            <div class="mb-3 date" id="pickerStart">
-                                <input asp-for="StartDate" type="datetime-local" class="form-control" />
+                            <div class="date" id="pickerStart">
+                                <input asp-for="StartDate"
+                                       type="datetime-local"
+                                       class="form-control" />
                             </div>
                         </div>
-
-                        <div class="col-6">
+                        <div class="col-12 col-lg-6">
                             <label asp-for="EndDate" class="col-form-label"></label>
-                            <div class="mb-3 date" id="pickerEnd">
-                                <input asp-for="EndDate" type="datetime-local" class="form-control" />
+                            <div class="date" id="pickerEnd">
+                                <input asp-for="EndDate"
+                                       type="datetime-local"
+                                       class="form-control" />
                             </div>
                         </div>
                     </div>
-
                     @if (Model.EventType != GRA.EventType.StreamingEvent)
                     {
                         @if (Model.ShowNearSearch)
                         {
-                            <div class="row row-spacing">
-                                <div class="col-6">
+                            <div class="row mb-2">
+                                <div class="col-12 col-lg-6">
                                     <label asp-for="ProgramId" class="col-form-label"></label>
-                                    <select asp-for="ProgramId" asp-items="Model.ProgramList" class="form-select">
+                                    <select asp-for="ProgramId"
+                                            asp-items="Model.ProgramList"
+                                            class="form-select">
                                         <option>@SharedLocalizer[GRA.Annotations.Interface.AllPrograms]</option>
                                     </select>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-12 col-lg-6">
                                     <label asp-for="Near" class="col-form-label"></label>
                                     @if (!string.IsNullOrWhiteSpace(Model.UserZipCode))
                                     {
                                         <button type="submit"
-                                                class="btn btn-sm btn-info gra-zipcode-button"
+                                                class="btn btn-sm btn-outline-primary gra-zipcode-button"
                                                 name="near"
                                                 value="@Model.UserZipCode">
                                             @SharedLocalizer[GRA.Annotations.Interface.UseMyZipCode]
@@ -92,27 +105,32 @@
                         }
                         else
                         {
-                            <div class="row row-spacing">
+                            <div class="row mb-2">
                                 <div class="col-12">
                                     <label asp-for="ProgramId" class="col-form-label"></label>
-                                    <select asp-for="ProgramId" asp-items="Model.ProgramList" class="form-select">
+                                    <select asp-for="ProgramId"
+                                            asp-items="Model.ProgramList"
+                                            class="form-select">
                                         <option>@SharedLocalizer[GRA.Annotations.Interface.AllPrograms]</option>
                                     </select>
                                 </div>
                             </div>
-
                             <div class="row">
                                 <div class="col-6">
                                     <div class="mb-3">
                                         <label asp-for="SystemId" class="col-form-label"></label>
-                                        <select asp-for="SystemId" asp-items="Model.SystemList" class="form-select">
+                                        <select asp-for="SystemId"
+                                                asp-items="Model.SystemList"
+                                                class="form-select">
                                             <option></option>
                                         </select>
                                     </div>
 
                                     <div class="mb-3">
                                         <label asp-for="BranchId" class="col-form-label"></label>
-                                        <select asp-for="BranchId" asp-items="Model.BranchList" class="form-select">
+                                        <select asp-for="BranchId"
+                                                asp-items="Model.BranchList"
+                                                class="form-select">
                                             <option></option>
                                         </select>
                                     </div>
@@ -120,7 +138,9 @@
 
                                 <div class="col-6">
                                     <label asp-for="LocationId" class="col-form-label"></label>
-                                    <select asp-for="LocationId" asp-items="Model.LocationList" class="form-select">
+                                    <select asp-for="LocationId"
+                                            asp-items="Model.LocationList"
+                                            class="form-select">
                                         <option></option>
                                     </select>
                                 </div>
@@ -129,34 +149,46 @@
                     }
                     @if (Model.IsLoggedIn)
                     {
-                        <div class="row row-spacing">
+                        <div class="row mb-2">
                             <div class="col-12">
                                 @if (Model.EventType == GRA.EventType.StreamingEvent)
                                 {
                                     <label asp-for="Viewed" class="col-form-label"></label>
                                     <select asp-for="Viewed" class="form-select">
-                                        <option value="@EventsController.VisitedNo">@SharedLocalizer[GRA.Annotations.Interface.No]</option>
-                                        <option value="@EventsController.VisitedYes">@SharedLocalizer[GRA.Annotations.Interface.Yes]</option>
-                                        <option value="@EventsController.VisitedAll">@SharedLocalizer[GRA.Annotations.Interface.ViewAll]</option>
+                                        <option value="@EventsController.VisitedNo">
+                                            @SharedLocalizer[GRA.Annotations.Interface.No]
+                                        </option>
+                                        <option value="@EventsController.VisitedYes">
+                                            @SharedLocalizer[GRA.Annotations.Interface.Yes]
+                                        </option>
+                                        <option value="@EventsController.VisitedAll">
+                                            @SharedLocalizer[GRA.Annotations.Interface.ViewAll]
+                                        </option>
                                     </select>
                                 }
                                 else
                                 {
                                     <label asp-for="Visited" class="col-form-label"></label>
                                     <select asp-for="Visited" class="form-select">
-                                        <option value="@EventsController.VisitedNo">@SharedLocalizer[GRA.Annotations.Interface.No]</option>
-                                        <option value="@EventsController.VisitedYes">@SharedLocalizer[GRA.Annotations.Interface.Yes]</option>
-                                        <option value="@EventsController.VisitedAll">@SharedLocalizer[GRA.Annotations.Interface.ViewAll]</option>
+                                        <option value="@EventsController.VisitedNo">
+                                            @SharedLocalizer[GRA.Annotations.Interface.No]
+                                        </option>
+                                        <option value="@EventsController.VisitedYes">
+                                            @SharedLocalizer[GRA.Annotations.Interface.Yes]
+                                        </option>
+                                        <option value="@EventsController.VisitedAll">
+                                            @SharedLocalizer[GRA.Annotations.Interface.ViewAll]
+                                        </option>
                                     </select>
                                 }
                             </div>
                         </div>
                     }
 
-                    <div class="row row-spacing">
+                    <div class="row mb-2">
                         <div class="col-12">
                             <label asp-for="Search" class="col-form-label"></label>
-                            <div class="row row-spacing">
+                            <div class="row mb-2">
                                 <div class="col-sm-12 gra-search-container">
                                     <input asp-for="Search"
                                            class="form-control"
@@ -164,58 +196,43 @@
                                 </div>
                             </div>
                             <div class="row">
-                                @if (Model.IsLoggedIn)
-                                {
-                                    <div class="col-12 col-sm-4 col-md-3 row-spacing">
-                                        <a asp-action="@(Model.FormAction)"
-                                           asp-route-Sort="@Model.Sort"
-                                           asp-route-Search="@Model.Search"
-                                           asp-route-Near="@Model.Near"
-                                           asp-route-System="@Model.SystemId"
-                                           asp-route-Branch="@Model.BranchId"
-                                           asp-route-Location="@Model.LocationId"
-                                           asp-route-Program="@Model.ProgramId"
-                                           asp-route-StartDate="@Model.StartDate"
-                                           asp-route-EndDate="@Model.EndDate"
-                                           asp-route-Visited="@Model.Visited"
-                                           asp-route-Favorites="@(Model.Favorites == true ? null : "True")"
-                                           class="btn  @(Model.Favorites == true ? "btn-success" : "btn-secondary")">
-                                            <span class="@(Model.Favorites == true ? "fas" : "far") fa-star"></span>
-                                            @SharedLocalizer[GRA.Annotations.Interface.MyFavorites]
-                                        </a>
-                                    </div>
-                                    <div class="col-6 col-sm-2 offset-sm-4 offset-md-5 row-spacing">
-                                        <a asp-action="CommunityExperiences" class="btn btn-secondary ">
-                                            <span class="hidden-sm fas fa-times fa-fw"></span>
+                                <div class="col-12 d-flex justify-content-end mt-3 mb-4">
+                                    @if (Model.IsLoggedIn)
+                                    {
+                                        <div class="flex-grow-1">
+                                            <a asp-action="@(Model.FormAction)"
+                                               asp-route-Sort="@Model.Sort"
+                                               asp-route-Search="@Model.Search"
+                                               asp-route-Near="@Model.Near"
+                                               asp-route-System="@Model.SystemId"
+                                               asp-route-Branch="@Model.BranchId"
+                                               asp-route-Location="@Model.LocationId"
+                                               asp-route-Program="@Model.ProgramId"
+                                               asp-route-StartDate="@Model.StartDate"
+                                               asp-route-EndDate="@Model.EndDate"
+                                               asp-route-Visited="@Model.Visited"
+                                               asp-route-Favorites="@(Model.Favorites == true ? "False" : "True")"
+                                               class="btn @(Model.Favorites == true ? "btn-success" : "btn-outline-secondary")">
+                                                <span class="@(Model.Favorites == true ? "fas" : "far") fa-star fa-fw"></span>
+                                                @SharedLocalizer[GRA.Annotations.Interface.MyFavorites]
+                                            </a>
+                                        </div>
+                                    }
+                                    <div>
+                                        <a asp-action="@Model.FormAction"
+                                           class="btn btn-outline-secondary">
+                                            <span class="fas fa-times fa-fw"></span>
                                             @SharedLocalizer[GRA.Annotations.Interface.Clear]
                                         </a>
                                     </div>
-                                    <div class="col-6 col-sm-2 row-spacing">
-                                        <button type="submit" class="btn btn-primary ">
-                                            <span class="hidden-sm fas fa-search"></span>
+                                    <div>
+                                        <button type="submit"
+                                                class="btn btn-outline-primary ms-2">
+                                            <span class="fas fa-search fa-fw"></span>
                                             @SharedLocalizer[GRA.Annotations.Interface.Find]
                                         </button>
                                     </div>
-                                }
-                                else
-                                {
-                                    <div class="col-6 col-sm-2 offset-sm-8 offset-md-8 row-spacing">
-                                        @if (Model.EventType == GRA.EventType.CommunityExperience)
-                                        {
-                                            <a asp-action="CommunityExperiences" class="btn btn-secondary ">
-                                                <span class="hidden-sm fas fa-times fa-fw"></span>
-                                                @SharedLocalizer[GRA.Annotations.Interface.Clear]
-                                            </a>
-                                        }
-                                        else
-                                        {
-                                            <a asp-action="" class="btn btn-secondary ">
-                                                <span class="hidden-sm fas fa-times fa-fw"></span>
-                                                @SharedLocalizer[GRA.Annotations.Interface.Clear]
-                                            </a>
-                                        }
-                                    </div>
-                                }
+                                </div>
                             </div>
                         </div>
 
@@ -226,7 +243,9 @@
                     <div class="col-12">
                         @if (Model.Events.Count() == 0)
                         {
-                            <div class="alert alert-warning">@SharedLocalizer[GRA.Annotations.Interface.NoEvents]</div>
+                            <div class="alert alert-warning">
+                                @SharedLocalizer[GRA.Annotations.Interface.NoEvents]
+                            </div>
                         }
                         else
                         {
@@ -253,9 +272,11 @@
                                             <tr>
                                                 @if (Model.IsLoggedIn)
                                                 {
-                                                    <th width="58px">&nbsp;</th>
+                                                    <th style="width: 4rem;">&nbsp;</th>
                                                 }
-                                                <th>@SharedLocalizer[GRA.Annotations.Interface.What]</th>
+                                                <th>
+                                                    @SharedLocalizer[GRA.Annotations.Interface.What]
+                                                </th>
                                                 @if (!string.IsNullOrWhiteSpace(Model.Near))
                                                 {
                                                     <th>
@@ -317,7 +338,7 @@
                                                 <tr>
                                                     @if (Model.IsLoggedIn)
                                                     {
-                                                        <td class="on-top" style="text-align:center;vertical-align:middle;">
+                                                        <td class="on-top text-center align-middle">
                                                             <div class="favorite-button @(Model.Events[i].IsFavorited ? "fas" : "far") fa-star" data-eventid="@Model.Events[i].Id" data-favorite="@Model.Events[i].IsFavorited"></div>
                                                             <noscript>
                                                                 <input asp-for="@Model.Events[i].Id" type="hidden" />
@@ -336,45 +357,48 @@
                                                     </td>
                                                     @if (Model.Events[i].AllDay)
                                                     {
-                                                        <td>@Model.Events[i].StartDate.ToString("d") @(Model.Events[i].EndDate.HasValue ? "– " + Model.Events[i].EndDate.Value.ToString("d") : "")</td>
+                                                        <td>
+                                                            @Model.Events[i].StartDate.ToString("d")
+                                                            @(Model.Events[i].EndDate.HasValue ? "– " + Model.Events[i].EndDate.Value.ToString("d") : "")
+                                                        </td>
                                                     }
                                                     else
                                                     {
-                                                        <td> @SharedLocalizer[GRA.Annotations.Interface.DateAtTime, Model.Events[i].StartDate.ToString("d"), Model.Events[i].StartDate.ToString("t")] </td>
+                                                        <td>@SharedLocalizer[GRA.Annotations.Interface.DateAtTime, Model.Events[i].StartDate.ToString("d"), Model.Events[i].StartDate.ToString("t")]</td>
                                                     }
                                                     <td>
                                                         @if (Model.EventType == GRA.EventType.StreamingEvent)
                                                         {
-                                                            <div class="on-top" style="display: inline-block;">
+                                                            <div class="on-top d-inline-block d-flex justify-content-center">
                                                                 @if (Model.Events[i].StartDate <= DateTime.Now
                                                                && Model.Events[i].StreamingAccessEnds >= DateTime.Now)
                                                                 {
                                                                     if (Model.IsAuthenticated)
                                                                     {
-                                                                        <a class="btn btn-success float-end"
+                                                                        <a class="btn btn-sm btn-success"
                                                                            href="@Url.Action(nameof(EventsController.Stream),
                                                                                 new { id = Model.Events[i].Id })">
-                                                                            <span class="far fa-play-circle"></span>
+                                                                            <span class="far fa-play-circle fa-fw"></span>
                                                                             @SharedLocalizer[GRA.Annotations.Interface.StreamNow]
                                                                         </a>
                                                                     }
                                                                     else
                                                                     {
-                                                                        <a class="btn btn-success float-end"
+                                                                        <a class="btn btn-sm btn-outline-primary"
                                                                            href="@Url.Action(nameof(EventsController.Stream),
                                                                                 new { id = Model.Events[i].Id })">
-                                                                            <span class="fas fa-sign-in-alt"></span>
+                                                                            <span class="fas fa-sign-in-alt fa-fw"></span>
                                                                             @SharedLocalizer[GRA.Annotations.Interface.SignInToStream]
                                                                         </a>
                                                                     }
                                                                 }
                                                                 else
                                                                 {
-                                                                    <button disabled class="btn btn-secondary float-end">
-                                                                        <span class="far fa-stop-circle"></span>
+                                                                    <button disabled class="btn btn-sm btn-secondary">
+                                                                        <span class="far fa-stop-circle fa-fw"></span>
                                                                         @(Model.Events[i].StartDate >= DateTime.Now
-                                                                    ? SharedLocalizer[GRA.Annotations.Interface.NotStreamingYet]
-                                                                    : SharedLocalizer[GRA.Annotations.Interface.ProgramIsOver])
+                                                                            ? SharedLocalizer[GRA.Annotations.Interface.NotStreamingYet]
+                                                                            : SharedLocalizer[GRA.Annotations.Interface.ProgramIsOver])
                                                                     </button>
                                                                 }
                                                             </div>
@@ -396,13 +420,12 @@
                                 @if (Model.IsLoggedIn)
                                 {
                                     <noscript>
-                                        <button type="submit" class="btn btn-primary">@SharedLocalizer[GRA.Annotations.Interface.SaveMyFavorites]</button>
+                                        <button type="submit" class="btn btn-primary">
+                                            @SharedLocalizer[GRA.Annotations.Interface.SaveMyFavorites]
+                                        </button>
                                     </noscript>
                                 }
-                                @if (Model.PaginateModel.MaxPage > 1)
-                                {
-                                    <paginate paginateModel="@Model.PaginateModel"></paginate>
-                                }
+                                <paginate paginateModel="@Model.PaginateModel"></paginate>
                             </form>
                         }
                     </div>
@@ -412,21 +435,19 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="modal fade"
-         id="detailModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="detailModalLabel">
-        <div class="modal-dialog" role="document">
-            <div id="detailModalContent" class="modal-content">
-            </div>
+<div class="modal fade"
+     id="detailModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="detailModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div id="detailModalContent" class="modal-content">
         </div>
     </div>
 </div>
 
 @section scripts
-    {
+{
     <script>
         var favoriteUrl = "@(Url.Action(nameof(EventsController.UpdateSingleFavorite)))";
         var showFavorites = "@Model.Favorites" == "True";
