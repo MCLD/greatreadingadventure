@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DocumentFormat.OpenXml.EMMA;
 using GRA.Controllers.ViewModel.MissionControl.Triggers;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
@@ -575,6 +576,11 @@ namespace GRA.Controllers.MissionControl
             {
                 ModelState.AddModelError("Trigger.AwardPoints",
                     $"You may award up to {model.MaxPointLimit} points.");
+            }
+            if (model.Trigger.Points < model.MinAllowedPoints)
+            {
+                ModelState.AddModelError("Trigger.Points",
+                    $"Trigger must have at least {model.MinAllowedPoints} points.");
             }
             if (!string.IsNullOrWhiteSpace(model.BadgeRequiredList))
             {
