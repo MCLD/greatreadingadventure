@@ -225,7 +225,7 @@
 
             <div class="col-12 mb-3">
                 <label asp-for="Trigger.Points" class="col-form-label"></label>
-                <div class="col-12 mb-3"><small><em>@Model.MinPointsMessage</em></small></div>
+                <div class="col-12"><small><em>@Model.MinPointsMessage</em></small></div>
                 <input asp-for="Trigger.Points"
                        class="form-control"
                        readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
