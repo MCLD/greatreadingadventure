@@ -904,10 +904,20 @@ namespace GRA.Controllers.MissionControl
             bool? mine,
             int? programId,
             bool? lowPoints,
+            bool? hideLowPoint,
             int page = 1)
         {
             var filter = new TriggerFilter(page);
+            var (lowPointThresholdSet, lowPointThreshold) = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(), SiteSettingKey.Triggers.LowPointThreshold);
 
+            if (lowPointThreshold == 0)
+            {
+                hideLowPoint = true;
+            }
+            else
+            {
+                hideLowPoint = false;
+            }
             if (!string.IsNullOrWhiteSpace(search))
             {
                 filter.Search = search;
@@ -919,7 +929,6 @@ namespace GRA.Controllers.MissionControl
             }
             else if (lowPoints == true)
             {
-                var (lowPointThresholdSet, lowPointThreshold) = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(), SiteSettingKey.Triggers.LowPointThreshold);
                 filter.PointsBelowOrEqual = lowPointThreshold;
             }
             else if (branchId.HasValue)
@@ -985,8 +994,10 @@ namespace GRA.Controllers.MissionControl
                 BranchId = branchId,
                 ProgramId = programId,
                 Mine = mine,
+                HideLowPoint = hideLowPoint,
                 LowPoints = lowPoints,
                 SystemList = systemList,
+
                 ProgramList = await _siteService.GetProgramList()
             };
             if (mine == true)
