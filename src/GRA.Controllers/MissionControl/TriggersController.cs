@@ -10,6 +10,7 @@ using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
+using GRA.SiteSettingKey;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -73,6 +74,8 @@ namespace GRA.Controllers.MissionControl
         {
             var site = await GetCurrentSiteAsync();
             var siteUrl = await _siteLookupService.GetSiteLinkAsync(site.Id);
+            var (minAllowedPointsSet, minAllowedPoints) = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(), SiteSettingKey.Triggers.DisallowTriggersBelowPoints);
+
             var viewModel = new TriggersDetailViewModel
             {
                 Action = "Create",
@@ -85,9 +88,10 @@ namespace GRA.Controllers.MissionControl
                 BranchList = new SelectList(await _siteService.GetAllBranches(), "Id", "Name"),
                 ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
                 IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
-                MaxPointLimit = await _triggerService.GetMaximumAllowedPointsAsync(site.Id)
+                MaxPointLimit = await _triggerService.GetMaximumAllowedPointsAsync(site.Id),
+                MinAllowedPoints = minAllowedPoints
             };
-
+            
             if (viewModel.MaxPointLimit.HasValue)
             {
                 viewModel.MaxPointsMessage = $"(Up to {viewModel.MaxPointLimit.Value} points)";
@@ -120,16 +124,33 @@ namespace GRA.Controllers.MissionControl
 
             var badgeRequiredList = new List<int>();
             var challengeRequiredList = new List<int>();
+            var (lowPointThresholdSet, lowPointThreshold) = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(), SiteSettingKey.Triggers.LowPointThreshold);
+            var (minAllowedPointsSet, minAllowedPoints) = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(), SiteSettingKey.Triggers.DisallowTriggersBelowPoints);
+
+            if (lowPointThresholdSet)
+            {
+                model.LowPointThreshold = lowPointThreshold;
+            }
+            if(minAllowedPointsSet)
+            {
+                model.MinAllowedPoints = minAllowedPoints;
+            }
 
             model.IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits);
             model.MaxPointLimit = await _triggerService
                 .GetMaximumAllowedPointsAsync(GetCurrentSiteId());
+
             if (!model.IgnorePointLimits
                 && model.MaxPointLimit.HasValue
                 && model.Trigger.AwardPoints > model.MaxPointLimit)
             {
                 ModelState.AddModelError("Trigger.AwardPoints",
                     $"You may award up to {model.MaxPointLimit} points.");
+            }
+            if(model.Trigger.Points < model.MinAllowedPoints)
+            {
+                ModelState.AddModelError("Trigger.Points",
+                    $"Trigger must have at least {model.MinAllowedPoints} points.");
             }
             if (!string.IsNullOrWhiteSpace(model.BadgeRequiredList))
             {
@@ -255,6 +276,7 @@ namespace GRA.Controllers.MissionControl
                             .ToLowerInvariant();
                         model.Trigger.BadgeIds = new List<int>();
                         model.Trigger.ChallengeIds = new List<int>();
+                        model.LowPointThreshold = null;
                     }
                     else
                     {
@@ -316,7 +338,13 @@ namespace GRA.Controllers.MissionControl
                         model.Trigger.AwardAttachmentId = attachment.Id;
                     }
                     var trigger = await _triggerService.AddAsync(model.Trigger);
+                    if (model.LowPointThreshold >= trigger.Points)
+                    {
+                      ShowAlertWarning("Trigger is a low point trigger.");
+                    }
                     ShowAlertSuccess($"Trigger '<strong>{trigger.Name}</strong>' was successfully created");
+
+
                     return RedirectToAction("Index");
                 }
                 catch (GraException gex)
@@ -422,6 +450,9 @@ namespace GRA.Controllers.MissionControl
             var site = await GetCurrentSiteAsync();
             var siteUrl = await _siteLookupService.GetSiteLinkAsync(site.Id);
             var badge = await _badgeService.GetByIdAsync(trigger.AwardBadgeId);
+            var (minAllowedPointsSet, minAllowedPoints) = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(), SiteSettingKey.Triggers.DisallowTriggersBelowPoints);
+            var (lowPointThresholdSet, lowPointThreshold) = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(), SiteSettingKey.Triggers.LowPointThreshold);
+
             Attachment attachment = null;
             if (trigger.AwardAttachmentId != null)
             {
@@ -451,8 +482,18 @@ namespace GRA.Controllers.MissionControl
                 IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
                 MaxPointLimit =
                     await _triggerService.GetMaximumAllowedPointsAsync(site.Id),
-                BadgeAltText = badge.AltText
+                BadgeAltText = badge.AltText,
             };
+            if (minAllowedPointsSet)
+            {
+                viewModel.MinAllowedPoints = minAllowedPoints;
+            }
+
+            if (lowPointThresholdSet)
+            {
+                viewModel.LowPointThreshold = lowPointThreshold;
+            }
+
             if (viewModel?.MaxPointLimit != null)
             {
                 viewModel.MaxPointsMessage = $"(Up to {viewModel.MaxPointLimit.Value} points)";
@@ -533,16 +574,32 @@ namespace GRA.Controllers.MissionControl
 
             var badgeRequiredList = new List<int>();
             var challengeRequiredList = new List<int>();
+            var (minAllowedPointsSet, minAllowedPoints) = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(), SiteSettingKey.Triggers.DisallowTriggersBelowPoints);
+            var (lowPointThresholdSet, lowPointThreshold) = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(), SiteSettingKey.Triggers.LowPointThreshold);
+
+
+            if (lowPointThresholdSet)
+            {
+                model.LowPointThreshold = lowPointThreshold;
+            }
+            if (minAllowedPointsSet)
+            {
+                model.MinAllowedPoints = minAllowedPoints;
+            }
 
             model.IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits);
-            model.MaxPointLimit =
-                await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId());
+            model.MaxPointLimit = await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId());
             if (!model.IgnorePointLimits
                 && model.MaxPointLimit.HasValue
                 && model.Trigger.AwardPoints > model.MaxPointLimit)
             {
                 ModelState.AddModelError("Trigger.AwardPoints",
                     $"You may award up to {model.MaxPointLimit} points.");
+            }
+            if (model.Trigger.Points < model.MinAllowedPoints)
+            {
+                ModelState.AddModelError("Trigger.Points",
+                    $"Trigger must have at least {model.MinAllowedPoints} points.");
             }
             if (!string.IsNullOrWhiteSpace(model.BadgeRequiredList))
             {
@@ -769,6 +826,10 @@ namespace GRA.Controllers.MissionControl
                         model.Trigger.AwardAttachmentId = null;
                     }
 
+                    if (model.LowPointThreshold >= model.Trigger.Points)
+                    {
+                        ShowAlertWarning("Trigger is a low point trigger.");
+                    }
                     ShowAlertSuccess($"Trigger '<strong>{savedtrigger.Name}</strong>' was successfully modified");
                     return RedirectToAction("Index");
                 }
@@ -833,7 +894,6 @@ namespace GRA.Controllers.MissionControl
                     model.MaxPointsWarningMessage = $"This Trigger exceeds the maximum of {model.MaxPointLimit.Value} points per required task. Only Administrators can edit the points awarded.";
                 }
             }
-
             PageTitle = $"Edit Trigger - {model.Trigger.Name}";
             return View("Detail", model);
         }
@@ -841,12 +901,23 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Index(string search,
             int? systemId,
             int? branchId,
-            bool? mine, int?
-            programId,
+            bool? mine,
+            int? programId,
+            bool? lowPoints,
+            bool? hideLowPoint,
             int page = 1)
         {
             var filter = new TriggerFilter(page);
+            var (lowPointThresholdSet, lowPointThreshold) = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(), SiteSettingKey.Triggers.LowPointThreshold);
 
+            if (lowPointThreshold == 0)
+            {
+                hideLowPoint = true;
+            }
+            else
+            {
+                hideLowPoint = false;
+            }
             if (!string.IsNullOrWhiteSpace(search))
             {
                 filter.Search = search;
@@ -855,6 +926,10 @@ namespace GRA.Controllers.MissionControl
             if (mine == true)
             {
                 filter.UserIds = new List<int> { GetId(ClaimType.UserId) };
+            }
+            else if (lowPoints == true)
+            {
+                filter.PointsBelowOrEqual = lowPointThreshold;
             }
             else if (branchId.HasValue)
             {
@@ -919,7 +994,10 @@ namespace GRA.Controllers.MissionControl
                 BranchId = branchId,
                 ProgramId = programId,
                 Mine = mine,
+                HideLowPoint = hideLowPoint,
+                LowPoints = lowPoints,
                 SystemList = systemList,
+
                 ProgramList = await _siteService.GetProgramList()
             };
             if (mine == true)
@@ -928,6 +1006,13 @@ namespace GRA.Controllers.MissionControl
                         .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
                         .ThenBy(_ => _.Name);
                 viewModel.ActiveNav = "Mine";
+            }
+            else if (lowPoints == true)
+            {
+                viewModel.BranchList = (await _siteService.GetBranches(GetId(ClaimType.SystemId)))
+                        .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
+                        .ThenBy(_ => _.Name);
+                viewModel.ActiveNav = "Low Points";
             }
             else if (branchId.HasValue)
             {
