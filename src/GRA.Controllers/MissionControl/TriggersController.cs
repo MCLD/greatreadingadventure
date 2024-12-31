@@ -343,7 +343,7 @@ namespace GRA.Controllers.MissionControl
                         model.Trigger.AwardAttachmentId = attachment.Id;
                     }
                     var trigger = await _triggerService.AddAsync(model.Trigger);
-                    if (model.LowPointThreshold != null && model.LowPointThreshold >= trigger.Points)
+                    if (model.LowPointThreshold >= trigger.Points)
                     {
                       ShowAlertWarning("Trigger is a low point trigger.");
                     }
@@ -839,7 +839,7 @@ namespace GRA.Controllers.MissionControl
                         model.Trigger.AwardAttachmentId = null;
                     }
 
-                    if (model.LowPointThreshold != null && model.LowPointThreshold >= model.Trigger.Points)
+                    if (model.LowPointThreshold >= model.Trigger.Points)
                     {
                         ShowAlertWarning("Trigger is a low point trigger.");
                     }
