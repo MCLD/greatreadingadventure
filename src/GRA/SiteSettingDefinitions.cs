@@ -122,7 +122,7 @@ namespace GRA
                 },
                 [SiteSettingKey.Triggers.DisallowTriggersBelowPoints] = new SiteSettingDefinition
                 {
-                    Name = "Disallow triggers below these points",
+                    Name = "Disallow triggers which activate at point values below the specified number of points",
                     Info = "Triggers cannot be created below this amount of points.",
                     Category = typeof(SiteSettingKey.Triggers).Name,
                     Format = SiteSettingFormat.Integer
