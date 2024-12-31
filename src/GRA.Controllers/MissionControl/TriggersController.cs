@@ -97,11 +97,6 @@ namespace GRA.Controllers.MissionControl
                 viewModel.MaxPointsMessage = $"(Up to {viewModel.MaxPointLimit.Value} points)";
             }
 
-            if (viewModel.MinAllowedPoints.HasValue)
-            {
-                viewModel.MinPointsMessage = $"(Must have at least {viewModel.MinAllowedPoints.Value} points)";
-            }
-
             if (viewModel.EditVendorCode)
             {
                 viewModel.VendorCodeTypeList = new SelectList(
@@ -394,10 +389,6 @@ namespace GRA.Controllers.MissionControl
             {
                 model.MaxPointsMessage = $"(Up to {model.MaxPointLimit.Value} points)";
             }
-            if (model.MinAllowedPoints.HasValue)
-            {
-                model.MinPointsMessage = $"(Must have at least {model.MinAllowedPoints.Value} points)";
-            }
 
             PageTitle = "Create Trigger";
             return View("Detail", model);
@@ -506,10 +497,6 @@ namespace GRA.Controllers.MissionControl
             if (viewModel?.MaxPointLimit != null)
             {
                 viewModel.MaxPointsMessage = $"(Up to {viewModel.MaxPointLimit.Value} points)";
-            }
-            if (viewModel.MinAllowedPoints.HasValue)
-            {
-                viewModel.MinPointsMessage = $"(Must have at least {viewModel.MinAllowedPoints.Value} points)";
             }
             if (trigger.AwardPoints > viewModel.MaxPointLimit)
             {
@@ -906,11 +893,6 @@ namespace GRA.Controllers.MissionControl
                 {
                     model.MaxPointsWarningMessage = $"This Trigger exceeds the maximum of {model.MaxPointLimit.Value} points per required task. Only Administrators can edit the points awarded.";
                 }
-            }
-
-            if (model.MinAllowedPoints.HasValue)
-            {
-                model.MinPointsMessage = $"(Must have at least {model.MinAllowedPoints.Value} points)";
             }
             PageTitle = $"Edit Trigger - {model.Trigger.Name}";
             return View("Detail", model);
