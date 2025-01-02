@@ -1,27 +1,28 @@
 ﻿@model GRA.Controllers.ViewModel.Profile.PrizeListViewModel
 
 <div class="row">
-    <div class="col-12 col-sm-10 offset-sm-1">
+    <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <span class="lead">@SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProfile]</span>
+                <span class="fw-bold">
+                    @SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProfile]
+                </span>
             </div>
-            <div class="card-body">
-
+            <div class="card-body pb-0">
                 @await Html.PartialAsync("_ProfilePartial")
-
                 @if (Model.PrizeWinners.Count() > 0)
                 {
-                    <div class="alert alert-warning" style="margin: 1rem 0;">
+                    <div class="alert alert-warning pb-0">
                         <p>@SharedLocalizer[GRA.Annotations.Info.WhileSuppliesLast]</p>
                     </div>
                 }
-
-                <div class="row" style="padding: 1rem 0;">
+                <div class="row">
                     <div class="col-12">
                         @if (Model.PrizeWinners.Count() == 0)
                         {
-                            <div class="alert alert-warning">@SharedLocalizer[GRA.Annotations.Info.NoPrizes]</div>
+                            <div class="alert alert-warning">
+                                @SharedLocalizer[GRA.Annotations.Info.NoPrizes]
+                            </div>
                         }
                         else
                         {
@@ -38,7 +39,7 @@
                                     <tbody>
                                         @foreach (var prizeWinner in Model.PrizeWinners)
                                         {
-                                            <tr class="@(!prizeWinner.RedeemedAt.HasValue ? "success" : "")">
+                                            <tr class="@(!prizeWinner.RedeemedAt.HasValue ? "table-success" : null)">
                                                 <td>@prizeWinner.PrizeName</td>
                                                 <td>@prizeWinner.UserFirstName</td>
                                                 <td>
@@ -46,7 +47,7 @@
                                                     {
                                                         @if (!string.IsNullOrWhiteSpace(prizeWinner.AvailableAtBranch) && !string.IsNullOrWhiteSpace(prizeWinner.AvailableAtBranchUrl))
                                                         {
-                                                            @: @prizeWinner.AvailableAtSystem -
+                                                            @:@prizeWinner.AvailableAtSystem -
                                                             <a href="@prizeWinner.AvailableAtBranchUrl" target="_blank">
                                                                 @prizeWinner.AvailableAtBranch
                                                             </a>
@@ -54,18 +55,19 @@
                                                         else
                                                         {
                                                             @Html.ActionLink(prizeWinner.AvailableAtSystem,
-                                            "Index",
-                                            "ParticipatingLibraries",
-                                            null,
-                                            null,
-                                            fragment: Html.GenerateIdFromName(prizeWinner.AvailableAtSystem),
-                                            null,
-                                            null)
+                                                                     "Index",
+                                                                     "ParticipatingLibraries",
+                                                                     null,
+                                                                     null,
+                                                                     fragment: Html.GenerateIdFromName(prizeWinner.AvailableAtSystem),
+                                                                     null,
+                                                                     null)
                                                         }
                                                     }
                                                     else
                                                     {
-                                                        <a asp-controller="ParticipatingLibraries" asp-action="Index">
+                                                        <a asp-controller="@ParticipatingLibrariesController.Name"
+                                                           asp-action="@nameof(ParticipatingLibrariesController.Index)">
                                                             <span>@SharedLocalizer[GRA.Annotations.Info.AnyLibrary]</span>
                                                         </a>
                                                     }
@@ -85,14 +87,18 @@
                                     </tbody>
                                 </table>
                             </div>
-                            @if (Model.PaginateModel.MaxPage > 1)
-                            {
-                                <paginate paginateModel="@Model.PaginateModel"></paginate>
-                            }
                         }
                     </div>
                 </div>
             </div>
+            @if (Model.PaginateModel.MaxPage > 1)
+            {
+                <div class="card-footer d-print-none d-flex">
+                    <div class="flex-grow-1">
+                        <paginate paginateModel="@Model.PaginateModel"></paginate>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>

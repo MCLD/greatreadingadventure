@@ -107,7 +107,7 @@
                     }
                 </span>
             </div>
-            <div class="card-body">
+            <div class="card-body pb-0">
                 @if (Model.ChallengeGroup != null)
                 {
                     <p class="lead">@Model.ChallengeGroup.Description</p>
@@ -223,7 +223,7 @@
                                 </div>
                             </div>
                         }
-                        <div class="row">
+                        <div class="row d-print-none">
                             <div class="col-12 d-flex justify-content-end mt-3 mb-4">
                                 @if (Model.IsLoggedIn)
                                 {
@@ -377,19 +377,26 @@
                                         </button>
                                     </noscript>
                                 }
-                                <paginate paginateModel="@Model.PaginateModel"></paginate>
                             </form>
                         }
                     </div>
                 </div>
             </div>
+            @if (Model.PaginateModel.MaxPage > 1)
+            {
+                <div class="card-footer d-print-none d-flex">
+                    <div class="flex-grow-1">
+                        <paginate paginateModel="@Model.PaginateModel"></paginate>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>
 
 @section scripts {
     <script>
-        const favoriteUrl = "@(Url.Action("UpdateSingleFavorite"))";
+        const favoriteUrl = "@Url.Action("UpdateSingleFavorite")";
         const showFavorites = "@Model.Favorites" === "True";
 
         $("#CategoryIds").removeAttr("disabled");

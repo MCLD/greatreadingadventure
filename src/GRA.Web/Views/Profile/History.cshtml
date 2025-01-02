@@ -1,90 +1,91 @@
 ﻿@model GRA.Controllers.ViewModel.Profile.HistoryListViewModel
 
 <div class="row">
-    <div class="col-12 col-sm-10 offset-sm-1">
+    <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <span class="lead">@SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProfile]</span>
+                <span class="fw-bold">
+                    @SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProfile]
+                </span>
             </div>
-            <div class="card-body">
-
+            <div class="card-body pb-0">
                 @await Html.PartialAsync("_ProfilePartial")
-
-                <div class="row" style="padding: 10px 0;">
+                <div class="row">
                     <div class="col-12">
                         @if (Model.Historys.Count() == 0)
                         {
-                            <div class="alert alert-warning">@SharedLocalizer[GRA.Annotations.Info.NoHistory]</div>
+                            <div class="alert alert-warning">
+                                SharedLocalizer[GRA.Annotations.Info.NoHistory]
+                            </div>
                         }
                         else
                         {
-                            <div>
-                                <table class="table table-sm table-bordered table-striped">
-                                    <thead>
+                            <table class="table table-sm table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>@SharedLocalizer[GRA.Annotations.Title.Date]</th>
+                                        <th>@SharedLocalizer[GRA.Annotations.Title.Activity]</th>
+                                        <th>@SharedLocalizer[GRA.Annotations.Title.Badge]</th>
+                                        <th>@SharedLocalizer[GRA.Annotations.Title.Points]</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var history in Model.Historys)
+                                    {
                                         <tr>
-                                            <th>@SharedLocalizer[GRA.Annotations.Title.Date]</th>
-                                            <th>@SharedLocalizer[GRA.Annotations.Title.Activity]</th>
-                                            <th>@SharedLocalizer[GRA.Annotations.Title.Badge]</th>
-                                            <th>@SharedLocalizer[GRA.Annotations.Title.Points]</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var history in Model.Historys)
-                                        {
-                                            <tr>
-                                                <td>@history.CreatedAt</td>
-                                                <td>
-                                                    <div>
-                                                        @Html.Raw(history.Description)
+                                            <td>@history.CreatedAt</td>
+                                            <td>
+                                                @Html.Raw(history.Description)
+                                                @if (history.ShowCertificate)
+                                                {
+                                                    <div class="m-1 fw-bold">
+                                                        <a href="~/@history.AttachmentFilename"
+                                                           download="@history.AttachmentDownload">
+                                                            <img src="~/images/certificate.png"
+                                                                 alt="@SharedLocalizer[GRA.Annotations.Title.Certificate]" />
+                                                            @SharedLocalizer[GRA.Annotations.Interface.ViewCertificate]
+                                                        </a>
                                                     </div>
-                                                    @if (history.ShowCertificate)
-                                                    {
-                                                        <div style="margin-top:1rem;">
-                                                            <a href="~/@history.AttachmentFilename" download="@history.AttachmentDownload">
-                                                                <img src="~/images/certificate.png"
-                                                         alt="@SharedLocalizer[GRA.Annotations.Title.Certificate]" />
-                                                                @SharedLocalizer[GRA.Annotations.Interface.ViewCertificate]
-                                                            </a>
-                                                        </div>
-                                                    }
-                                                </td>
-                                                <td>
-                                                    @if (!string.IsNullOrEmpty(history.BadgeFilename))
-                                                    {
-                                                        <div style="text-align:center;">
-                                                            <img class="img-thumbnail badge-sm"
-                                                     src="~/@history.BadgeFilename"
-                                                     alt="@history.BadgeAltText"
-                                                     asp-append-version="true" />
-                                                        </div>
-                                                    }
-                                                    else
-                                                    {
-                                                        @: &nbsp;
-                                                    }
-                                                </td>
-                                                <td>@history.PointsEarned</td>
-                                            </tr>
-                                        }
-                                        @if (Model.TotalPoints != 0)
-                                        {
-                                            <tr class="total-row">
-                                                <td colspan="3" style="text-align:right">@SharedLocalizer[GRA.Annotations.Interface.TotalPoints]:</td>
-                                                <td>@Model.TotalPoints</td>
-                                            </tr>
-
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                            @if (Model.PaginateModel.MaxPage > 1)
-                            {
-                                <paginate paginateModel="@Model.PaginateModel"></paginate>
-                            }
+                                                }
+                                            </td>
+                                            <td class="text-center">
+                                                @if (!string.IsNullOrEmpty(history.BadgeFilename))
+                                                {
+                                                    <img class="img-thumbnail badge-sm"
+                                                         src="~/@history.BadgeFilename"
+                                                         alt="@history.BadgeAltText" />
+                                                }
+                                                else
+                                                {
+                                                    @:&nbsp;
+                                                }
+                                            </td>
+                                            <td>@history.PointsEarned</td>
+                                        </tr>
+                                    }
+                                    @if (Model.TotalPoints != 0)
+                                    {
+                                        <tr class="total-row fw-bold">
+                                            <td colspan="3" class="text-end">
+                                                @SharedLocalizer[GRA.Annotations.Interface.TotalPoints]:
+                                            </td>
+                                            <td>@Model.TotalPoints</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
                         }
                     </div>
                 </div>
             </div>
+            @if (Model.PaginateModel.MaxPage > 1)
+            {
+                <div class="card-footer d-print-none d-flex">
+                    <div class="flex-grow-1">
+                        <paginate paginateModel="@Model.PaginateModel"></paginate>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>

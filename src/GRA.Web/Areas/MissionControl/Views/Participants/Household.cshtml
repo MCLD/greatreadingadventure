@@ -207,7 +207,7 @@
                                 <th width="96px">&nbsp;</th>
                             }
                         </tr>
-                        <tr class="warning @(Model.Id == Model.Head.Id ? " text-strong" : null)">
+                        <tr class="table-warning @(Model.Id == Model.Head.Id ? " text-strong" : null)">
                             @if (Model.CanLogActivity && Model.OpenToLog)
                             {
                                 <td class="on-top text-center align-middle">
@@ -370,7 +370,7 @@
                     <tbody>
                         @foreach (var user in Model.Users)
                         {
-                            <tr class="@(Model.Id == user.Id ? " info text-strong" : null)">
+                            <tr class="@(Model.Id == user.Id ? "table-info text-strong" : null)">
                                 @if (Model.CanLogActivity && Model.OpenToLog)
                                 {
                                     <td class="on-top text-center align-middle">

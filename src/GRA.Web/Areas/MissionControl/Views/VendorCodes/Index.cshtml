@@ -6,7 +6,7 @@
     <div class="col-12 col-sm-10 col-lg-8">
         <h2>Status</h2>
         <table class="table table-striped table-bordered table-sm">
-            <tr class="info">
+            <tr class="table-info">
                 <th>Assigned vendor codes</th>
                 <td>@Model.AssignedCodes</td>
                 <td>@Model.Percent(Model.AssignedCodes, Model.TotalCodes, "of total")</td>
@@ -24,7 +24,7 @@
             <tr>
                 <td colspan="3">&nbsp;</td>
             </tr>
-            <tr class="info">
+            <tr class="table-info">
                 <th>Donated</th>
                 <td>@Model.Donated</td>
                 <td>@Model.Percent(Model.Donated, Model.AssignedCodes, "of assigned")</td>
@@ -32,7 +32,7 @@
             <tr>
                 <td colspan="3">&nbsp;</td>
             </tr>
-            <tr class="info">
+            <tr class="table-info">
                 <th>Vendor redemption selected</th>
                 <td>@Model.VendorSelected</td>
                 <td>@Model.Percent(Model.VendorSelected, Model.AssignedCodes, "of assigned")</td>
@@ -47,7 +47,7 @@
                 <td>@Model.Ordered</td>
                 <td>@Model.Percent(Model.Ordered, Model.VendorSelected, "of vendor selected")</td>
             </tr>
-            <tr class="success">
+            <tr class="table-success">
                 <th>Shipped Items</th>
                 <td>@Model.Shipped</td>
                 <td>@Model.Percent(Model.Shipped, Model.VendorSelected, "of vendor selected")</td>
@@ -55,7 +55,7 @@
             <tr>
                 <td colspan="3">&nbsp;</td>
             </tr>
-            <tr class="info">
+            <tr class="table-info">
                 <th>Email award selected</th>
                 <td>@Model.EmailAwardSelected</td>
                 <td>@Model.Percent(Model.EmailAwardSelected, Model.AssignedCodes, "of assigned")</td>
@@ -70,7 +70,7 @@
                 <td>@Model.EmailAwardDownloadedInReport</td>
                 <td>@Model.Percent(Model.EmailAwardDownloadedInReport, Model.EmailAwardSelected, "of email selected")</td>
             </tr>
-            <tr class="success">
+            <tr class="table-success">
                 <th>Email award sent</th>
                 <td>@Model.EmailAwardSent</td>
                 <td>@Model.Percent(Model.EmailAwardSent, Model.EmailAwardSelected, "of email selected")</td>

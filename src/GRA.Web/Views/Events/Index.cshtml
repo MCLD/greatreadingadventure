@@ -16,8 +16,8 @@
                     @SharedLocalizer[GRA.Annotations.Title.EventsAndCommunityExperiences]
                 </span>
             </div>
-            <div class="card-body">
-                <div class="row mb-2">
+            <div class="card-body pb-0">
+                <div class="row mb-2 d-print-none">
                     <div class="col-12">
                         <ul class="nav nav-pills">
                             <li role="presentation" class="nav-item">
@@ -195,7 +195,7 @@
                                            placeholder="@SharedLocalizer[GRA.Annotations.Interface.EnterEventSearch]" />
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row d-print-none">
                                 <div class="col-12 d-flex justify-content-end mt-3 mb-4">
                                     @if (Model.IsLoggedIn)
                                     {
@@ -425,12 +425,19 @@
                                         </button>
                                     </noscript>
                                 }
-                                <paginate paginateModel="@Model.PaginateModel"></paginate>
                             </form>
                         }
                     </div>
                 </div>
             </div>
+            @if (Model.PaginateModel.MaxPage > 1)
+            {
+                <div class="card-footer d-print-none d-flex">
+                    <div class="flex-grow-1">
+                        <paginate paginateModel="@Model.PaginateModel"></paginate>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>

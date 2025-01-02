@@ -1,504 +1,546 @@
 ﻿@model GRA.Controllers.ViewModel.Profile.HouseholdListViewModel
 
+<a name="top"></a>
 <div class="row">
-    <div class="col-12 col-sm-10 offset-sm-1">
+    <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <span class="lead">@SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProfile]</span>
+                <span class="fw-bold">
+                    @SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProfile]
+                </span>
             </div>
             <div class="card-body">
                 @await Html.PartialAsync("_ProfilePartial")
-
                 @if (!string.IsNullOrEmpty(Model.GroupName))
                 {
                     @if (Model.GroupLeader)
                     {
                         @SharedHtmlLocalizer[GRA.Annotations.Info.GroupLeader,
-                            Url.Action(nameof(ProfileController.GroupDetails)),
-                            Model.GroupName]
+                                 Url.Action(nameof(ProfileController.GroupDetails)),
+                                 Model.GroupName]
                     }
                     else
                     {
                         @SharedHtmlLocalizer[GRA.Annotations.Info.GroupMember,
-                            Model.GroupName]
+                                 Model.GroupName]
                     }
                 }
-
-                <div class="row" style="padding: 10px 0;">
-                    <div class="col-12">
-                        @if (Model.Users.Count() == 0)
-                        {
-                            if (Model.CanEditHousehold)
+                @if (Model.Users.Count() == 0)
+                {
+                    <div class="row mb-1 d-print-none">
+                        <div class="col-12">
+                            @if (Model.CanEditHousehold)
                             {
-                                <div class="alert alert-warning">
+                                <div class="alert alert-warning mb-2">
                                     @SharedLocalizer[GRA.Annotations.Info.GroupCreate,
-                                        Model.LocalizedHouseholdTitle]
+                                             Model.LocalizedHouseholdTitle]
                                 </div>
-                                <a asp-action="AddHouseholdMember" class="btn btn-secondary">
+                                <a asp-action="AddHouseholdMember"
+                                   class="btn btn-outline-primary mb-2">
                                     @SharedLocalizer[GRA.Annotations.Info.GroupRegister,
-                                     Model.LocalizedHouseholdTitle]
+                                             Model.LocalizedHouseholdTitle]
                                 </a>
-                                <a asp-action="AddExistingParticipant" class="btn btn-secondary">
+                                <a asp-action="AddExistingParticipant"
+                                   class="btn btn-outline-primary mb-2">
                                     @SharedLocalizer[GRA.Annotations.Info.GroupAdd,
-                                        Model.LocalizedHouseholdTitle]
+                                             Model.LocalizedHouseholdTitle]
                                 </a>
                             }
                             else
                             {
-                                <div class="alert alert-warning">
+                                <div class="alert alert-warning mb-2">
                                     @SharedLocalizer[GRA.Annotations.Info.GroupCannot,
-                                        Model.LocalizedHouseholdTitle]
+                                             Model.LocalizedHouseholdTitle]
                                 </div>
                             }
-                        }
-                        else
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="row mb-2 d-print-none">
+                        <div class="col-12">
+                            @if (Model.AuthUserIsHead && Model.CanEditHousehold)
+                            {
+                                <a asp-action="AddHouseholdMember"
+                                   class="btn btn-outline-primary mb-2">
+                                    @SharedLocalizer[GRA.Annotations.Info.GroupRegister,
+                                             Model.LocalizedHouseholdTitle]
+                                </a>
+                                <a asp-action="AddExistingParticipant"
+                                   class="btn btn-outline-primary mb-2">
+                                    @SharedLocalizer[GRA.Annotations.Info.GroupAdd,
+                                             Model.LocalizedHouseholdTitle]
+                                </a>
+                            }
+                        </div>
+                    </div>
+                    <form id="form" asp-controller="Profile" method="post" role="form">
+                        @if (Model.AuthUserIsHead && Model.CanLogActivity)
                         {
-                            <div class="row" style="padding-bottom: 2rem;">
-                                <div class="col-12">
-                                    @if (Model.AuthUserIsHead && Model.CanEditHousehold)
-                                    {
-                                        <a asp-action="AddHouseholdMember" class="btn btn-secondary">
-                                            @SharedLocalizer[GRA.Annotations.Info.GroupRegister,
-                                                Model.LocalizedHouseholdTitle]
-                                        </a>
-                                        <a asp-action="AddExistingParticipant" class="btn btn-secondary">
-                                            @SharedLocalizer[GRA.Annotations.Info.GroupAdd,
-                                                Model.LocalizedHouseholdTitle]
-                                        </a>
-                                    }
-                                </div>
-                            </div>
-                            <form id="form" asp-controller="Profile" method="post" role="form">
-                                @if (Model.AuthUserIsHead && Model.CanLogActivity)
-                                {
-                                    <input asp-for="UserSelection" type="hidden" />
-                                    <input asp-for="ActivityAmount" type="hidden" />
-                                    <input asp-for="SecretCode" type="hidden" />
-
-                                    <div class="row">
-                                        <div class="col-12 col-sm-6 row-spacing">
-                                            <table>
-                                                <tr>
-                                                    @if (Model.PointTranslation.IsSingleEvent == false)
-                                                    {
-                                                        <td style="padding-right:6px;">@SharedLocalizer["Enter {0} read", SharedLocalizer[Model.PointTranslation.ActivityDescriptionPlural]]</td>
-                                                        <td width="80px" style="padding-right:6px;">
-                                                            <input data-action="HouseholdApplyActivity" value="" class="form-control activityInput" />
-                                                        </td>
-                                                    }
-                                                    <td>
-                                                        <button type="submit"
-                                                                class="btn btn-primary btn-spinner activityButton"
-                                                                data-action="HouseholdApplyActivity"
-                                                                button-spinner>
+                            <input asp-for="UserSelection" type="hidden" />
+                            <input asp-for="ActivityAmount" type="hidden" />
+                            <input asp-for="SecretCode" type="hidden" />
+                            <div class="alert alert-secondary py-0 d-print-none">
+                                <div class="d-flex flex-column flex-lg-row justify-content-around">
+                                    <div class="d-flex flex-column">
+                                        <div class="d-flex justify-content-center my-2">
+                                            @if (Model.PointTranslation.IsSingleEvent == false)
+                                            {
+                                                <div class="mx-1 pt-1">
+                                                    @SharedLocalizer["Enter {0} read", SharedLocalizer[Model.PointTranslation.ActivityDescriptionPlural]]
+                                                </div>
+                                                <div class="mx-1">
+                                                    <input data-action="HouseholdApplyActivity"
+                                                           value=""
+                                                           class="form-control activityInput"
+                                                           style="width: 4rem;" />
+                                                </div>
+                                            }
+                                            <div class="mx-1 pt-1">
+                                                <button type="submit"
+                                                        class="btn btn-sm btn-outline-primary activityButton"
+                                                        data-action="HouseholdApplyActivity"
+                                                        button-spinner>
+                                                    <span>
+                                                        @if (Model.PointTranslation.IsSingleEvent)
+                                                        {
                                                             <span>
-                                                                @if (Model.PointTranslation.IsSingleEvent)
-                                                                {
-                                                                    <span>
-                                                                        @($"{Model.PointTranslation.TranslationDescriptionPastTense.Replace("{0}", "1")} {Model.PointTranslation.ActivityDescription}")
-                                                                    </span>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <span>
-                                                                        @SharedLocalizer[GRA.Annotations.Interface.Apply]
-                                                                    </span>
-                                                                }
+                                                                @($"{Model.PointTranslation.TranslationDescriptionPastTense.Replace("{0}", "1")} {Model.PointTranslation.ActivityDescription}")
                                                             </span>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                @if (!string.IsNullOrWhiteSpace(Model.ActivityMessage))
-                                                {
-                                                    <tr>
-                                                        @if (Model.PointTranslation.IsSingleEvent == false)
-                                                        {
-                                                            <td>&nbsp;</td>
-                                                        }
-                                                        <td colspan="2">@Model.ActivityMessage</td>
-                                                    </tr>
-                                                }
-                                            </table>
-                                        </div>
-                                        @if (!Model.DisableSecretCode)
-                                        {
-                                            <div class="col-12 col-sm-6 row-spacing">
-                                                <table>
-                                                    <tr>
-                                                        <td style="padding-right:6px;">@SharedLocalizer[GRA.Annotations.Interface.Apply]</td>
-                                                        <td width="200px">
-                                                            <input data-action="HouseholdApplySecretCode" class="form-control codeInput" />
-                                                        </td>
-                                                        <td style="padding-left:6px;">
-                                                            <button type="submit"
-                                                                    class="btn btn-primary btn-spinner codeButton"
-                                                                    data-action="HouseholdApplySecretCode"
-                                                                    button-spinner>
-                                                                <span class="buttonText">@SharedLocalizer[GRA.Domain.Model.DisplayNames.SecretCode]</span>
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                    @if (!string.IsNullOrWhiteSpace(Model.SecretCodeMessage))
-                                                    {
-                                                        <tr>
-                                                            <td>&nbsp;</td>
-                                                            <td colspan="2">@Html.Raw(Model.SecretCodeMessage)</td>
-                                                        </tr>
-                                                    }
-                                                </table>
-                                            </div>
-                                        }
-                                    </div>
-                                }
-                                <div>
-                                    <table class="table table-sm table-bordered table-striped">
-                                        <thead>
-                                            <tr>
-                                                @if (Model.AuthUserIsHead)
-                                                {
-                                                    if (Model.CanLogActivity)
-                                                    {
-                                                        <th style="vertical-align:middle;" class="text-center" width="24px;"><input id="checkAll" type="checkbox" data-id="@Model.Head.Id" /></th>
-                                                    }
-                                                    <th width="36px" class="text-center"><span class="far fa-envelope fa-lg"></span></th>
-                                                }
-                                                <th>@SharedLocalizer[GRA.Annotations.Title.Participant]</th>
-                                                <th>@SharedLocalizer[GRA.Annotations.Title.Points]</th>
-                                                @if (Model.ShowVendorCodes)
-                                                {
-                                                    <th>@SharedLocalizer[GRA.Annotations.Title.BookCode]</th>
-                                                }
-                                                @if (Model.AuthUserIsHead && Model.CanEditHousehold)
-                                                {
-                                                    <th width="36px">&nbsp;</th>
-                                                }
-                                            </tr>
-                                            <tr class="warning @(Model.ActiveUser == Model.Head.Id ? "text-strong" : null)">
-                                                @if (Model.AuthUserIsHead)
-                                                {
-                                                    if (Model.CanLogActivity)
-                                                    {
-                                                        <td style="vertical-align:middle;" class="text-center">
-                                                            <input class="userSelection" data-id="@Model.Head.Id" type="checkbox" />
-                                                        </td>
-                                                    }
-                                                    <td style="vertical-align:middle;" class="text-center">
-                                                        <div class="user-mail" data-action="@(Model.ActiveUser == Model.Head.Id ? "" : @Url.Action("LoginAs", new { loginId = Model.Head.Id, goToMail = true }))">
-                                                            @if (Model.Head.HasNewMail)
-                                                            {
-                                                                <span class="fas fa-envelope fa-lg text-danger" title="@SharedLocalizer[GRA.Annotations.Interface.NewMail]"></span>
-                                                            }
-                                                            else
-                                                            {
-                                                                <span class="far fa-envelope fa-lg text-muted"></span>
-                                                            }
-                                                        </div>
-                                                    </td>
-                                                }
-                                                <td>
-                                                    <table style="display: inline-block;">
-                                                        <tr>
-                                                            <td style="vertical-align: top;">
-                                                                @if (Model.ActiveUser == Model.Head.Id)
-                                                                {
-                                                                    <span class="fas fa-user"></span>
-                                                                }
-                                                                @Model.Head.FullName
-                                                            </td>
-                                                            <td style="vertical-align: top;">
-                                                                @if (Model.ActiveUser != Model.Head.Id && Model.AuthUserIsHead)
-                                                                {
-                                                                    <button type="submit"
-                                                                            class="btn btn-primary btn-sm"
-                                                                            style="margin-left: 6px;"
-                                                                            name="loginId"
-                                                                            value="@Model.Head.Id"
-                                                                            asp-action="LoginAs">
-                                                                        <span class="fas fa-sign-in-alt"></span>
-                                                                        @SharedLocalizer[GRA.Annotations.Interface.SwitchTo]
-                                                                    </button>
-                                                                }
-                                                                else
-                                                                {
-                                                                    @:&nbsp;
-                                                                }
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>
-                                                                @Model.Head.Username
-                                                            </td>
-                                                            <td>&nbsp;</td>
-                                                        </tr>
-                                                    </table>
-                                                    @if (Model.AuthUserIsHead && Model.DailyImageDictionary.ContainsKey(Model.Head.ProgramId))
-                                                    {
-                                                        <button type="button"
-                                                                class="btn btn-primary btn-sm viewDailyImage"
-                                                                style="display: inline-block;vertical-align:top;"
-                                                                data-src="@Url.Content($"~/{Model.DailyImageDictionary[Model.Head.ProgramId].DailyImagePath}")"
-                                                                data-large="@Model.DailyImageDictionary[Model.Head.ProgramId].IsLarge"
-                                                                data-day="@Model.DailyImageDictionary[Model.Head.ProgramId].Day">
-                                                            @Model.DailyImageDictionary[Model.Head.ProgramId].DailyImageMessage
-                                                        </button>
-                                                    }
-                                                </td>
-                                                <td>@Model.Head.PointsEarned</td>
-                                                @if (Model.ShowVendorCodes)
-                                                {
-                                                    <td>
-                                                        @if (Model.Head.NeedsToAnswerVendorCodeQuestion)
-                                                        {
-                                                            @SharedLocalizer[GRA.Annotations.Interface.ChooseAnOption]
-                                                            <button class="btn btn-info btn-sm btn-spinner"
-                                                                    name="redeemButton"
-                                                                    value="@Model.Head.Id"
-                                                                    asp-action="HandleHouseholdDonation"
-                                                                    button-spinner>
-                                                                <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.RedeemYourCode]</span>
-                                                            </button>
-                                                            @if (Model.Head.CanDonateVendorCode)
-                                                            {
-                                                                <button class="btn btn-success btn-sm btn-spinner"
-                                                                        name="donateButton"
-                                                                        value="@Model.Head.Id"
-                                                                        asp-action="HandleHouseholdDonation"
-                                                                        button-spinner>
-                                                                    <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.DonateYourBook]</span>
-                                                                </button>
-                                                            }
-                                                            @if (Model.Head.CanEmailAwardVendorCode)
-                                                            {
-                                                                <a class="btn btn-warning btn-sm emailAwardButton"
-                                                                   asp-action="@nameof(ProfileController.EmailAward)"
-                                                                   asp-route-id="@Model.Head.Id"
-                                                                   data-email="@Model.Head.Email"
-                                                                   data-userid="@Model.Head.Id">
-                                                                    <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.ReceiveEAudiobook]</span>
-                                                                </a>
-                                                            }
                                                         }
                                                         else
                                                         {
-                                                            if (!string.IsNullOrEmpty(Model.Head.VendorCodeUrl))
-                                                            {
-                                                                <strong><a href="@Model.Head.VendorCodeUrl" target="_blank">@Model.Head.VendorCode</a></strong>
-                                                            }
-                                                            else
-                                                            {
-                                                                <strong>@Model.Head.VendorCode</strong>
-                                                            }
-                                                            if (!string.IsNullOrEmpty(Model.Head.VendorCodeMessage))
-                                                            {
-                                                                <br />@Html.Raw(Model.Head.VendorCodeMessage)
-                                                            }
+                                                            <span>
+                                                                @SharedLocalizer[GRA.Annotations.Interface.Apply]
+                                                            </span>
                                                         }
-                                                    </td>
-                                                }
-                                                @if (Model.AuthUserIsHead && Model.CanEditHousehold)
+                                                    </span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        @if (!string.IsNullOrWhiteSpace(Model.ActivityMessage))
+                                        {
+                                            <div class="text-center text-danger fw-bold mb-2">
+                                                @if (Model.PointTranslation.IsSingleEvent == false)
                                                 {
-                                                    <td>&nbsp;</td>
+                                                    @:&nbsp;
                                                 }
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach (var user in Model.Users)
+                                                @Model.ActivityMessage
+                                            </div>
+                                        }
+                                    </div>
+                                    @if (!Model.DisableSecretCode)
+                                    {
+                                        <div class="d-flex flex-column">
+                                            <div class="d-flex justify-content-center my-2">
+                                                <div class="mx-1 pt-1">
+                                                    @SharedLocalizer[GRA.Annotations.Interface.Apply]
+                                                </div>
+                                                <div class="mx-1">
+                                                    <input data-action="HouseholdApplySecretCode"
+                                                           class="form-control codeInput" />
+                                                </div>
+                                                <div class="mx-1 pt-1">
+                                                    <button type="submit"
+                                                            class="btn btn-sm btn-outline-primary codeButton text-nowrap"
+                                                            data-action="HouseholdApplySecretCode"
+                                                            button-spinner>
+                                                        <span class="buttonText">@SharedLocalizer[GRA.Domain.Model.DisplayNames.SecretCode]</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            @if (!string.IsNullOrWhiteSpace(Model.SecretCodeMessage))
                                             {
-                                                <tr class="@(Model.ActiveUser == user.Id ? "info text-strong" : null)">
-                                                    @if (Model.AuthUserIsHead)
-                                                    {
-                                                        if (Model.CanLogActivity)
-                                                        {
-                                                            <td style="vertical-align:middle;" class="text-center">
-                                                                @if (!user.HasPendingQuestionnaire)
-                                                                {
-                                                                    <input class="userSelection" type="checkbox" data-id="@user.Id" />
-                                                                }
-                                                                else
-                                                                {
-                                                                    <span class="pendingQuestionnaire fas fa-exclamation-circle text-warning" style="cursor:pointer" data-bs-toggle="modal" data-bs-target=".pendingModal"></span>
-
-                                                                }
-                                                            </td>
-                                                        }
-                                                        <td style="vertical-align:middle;" class="text-center">
-                                                            <div class="user-mail" data-action="@(Model.ActiveUser == user.Id ? "" : @Url.Action("LoginAs", new { loginId = user.Id, goToMail = true }))">
-                                                                @if (user.HasNewMail)
-                                                                {
-                                                                    <span class="fas fa-envelope fa-lg text-danger" title="@SharedLocalizer[GRA.Annotations.Interface.NewMail]"></span>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <span class="far fa-envelope fa-lg text-muted"></span>
-                                                                }
-                                                            </div>
-                                                        </td>
-                                                    }
-                                                    <td>
-                                                        <table style="display:inline-block;">
-                                                            <tr>
-                                                                <td style="vertical-align: top;">
-                                                                    @if (Model.ActiveUser == user.Id)
-                                                                    {
-                                                                        <span class="fas fa-user"></span>
-                                                                    }
-                                                                    @user.FullName
-                                                                </td>
-                                                                <td style="vertical-align: top;">
-                                                                    @if (Model.ActiveUser != user.Id && Model.AuthUserIsHead)
-                                                                    {
-                                                                        <button type="submit"
-                                                                                class="btn btn-primary btn-sm top"
-                                                                                style="margin: 0 6px;"
-                                                                                name="loginId"
-                                                                                value="@user.Id"
-                                                                                asp-action="LoginAs">
-                                                                            <span class="fas fa-sign-in-alt"></span>
-                                                                            @SharedLocalizer[GRA.Annotations.Interface.SwitchTo]
-                                                                        </button>
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        @:&nbsp;
-                                                                    }
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    @if (string.IsNullOrWhiteSpace(user.Username) && Model.AuthUserIsHead && Model.CanEditHousehold)
-                                                                    {
-                                                                        <button type="submit"
-                                                                                class="btn btn-secondary btn-sm"
-                                                                                name="RegisterId"
-                                                                                asp-action="RegisterHouseholdMember"
-                                                                                value="@user.Id">
-                                                                            <span class="fas fa-user-plus"></span>
-                                                                            @SharedLocalizer[GRA.Annotations.Interface.AddUsername]
-                                                                        </button>
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        @user.Username
-                                                                    }
-                                                                </td>
-                                                                <td>&nbsp;</td>
-                                                            </tr>
-                                                        </table>
-                                                        @if (Model.AuthUserIsHead && Model.DailyImageDictionary.ContainsKey(user.ProgramId))
-                                                        {
-                                                            <button type="button"
-                                                                    class="btn btn-primary btn-sm viewDailyImage"
-                                                                    style="display: inline-block;vertical-align:top;"
-                                                                    data-src="@Url.Content($"~/{Model.DailyImageDictionary[user.ProgramId].DailyImagePath}")"
-                                                                    data-large="@Model.DailyImageDictionary[user.ProgramId].IsLarge.ToString().ToLower()"
-                                                                    data-day="@Model.DailyImageDictionary[user.ProgramId].Day">
-                                                                @Model.DailyImageDictionary[user.ProgramId].DailyImageMessage
-                                                            </button>
-                                                        }
-                                                    </td>
-                                                    <td>@user.PointsEarned</td>
-                                                    @if (Model.ShowVendorCodes)
-                                                    {
-                                                        <td>
-                                                            @if (user.NeedsToAnswerVendorCodeQuestion)
-                                                            {
-                                                                @SharedLocalizer[GRA.Annotations.Interface.ChooseAnOption]
-                                                                <button class="btn btn-info btn-sm btn-spinner"
-                                                                        name="redeemButton"
-                                                                        value="@user.Id"
-                                                                        asp-action="HandleHouseholdDonation"
-                                                                        button-spinner>
-                                                                    <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.RedeemYourCode]</span>
-                                                                </button>
-                                                                @if (user.CanDonateVendorCode)
-                                                                {
-                                                                    <button class="btn btn-success btn-sm btn-spinner"
-                                                                            name="donateButton"
-                                                                            value="@user.Id"
-                                                                            asp-action="HandleHouseholdDonation"
-                                                                            button-spinner>
-                                                                        <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.DonateYourBook]</span>
-                                                                    </button>
-                                                                }
-                                                                @if (user.CanEmailAwardVendorCode)
-                                                                {
-                                                                    <a class="btn btn-warning btn-sm emailAwardButton"
-                                                                       asp-action="@nameof(ProfileController.EmailAward)"
-                                                                       asp-route-id="@user.Id"
-                                                                       data-email="@user.Email"
-                                                                       data-userid="@user.Id">
-                                                                        <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.ReceiveEAudiobook]</span>
-                                                                    </a>
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                if (!string.IsNullOrEmpty(user.VendorCodeUrl))
-                                                                {
-                                                                    <strong><a href="@user.VendorCodeUrl" target="_blank">@user.VendorCode</a></strong>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <strong>@user.VendorCode</strong>
-                                                                }
-                                                                if (!string.IsNullOrEmpty(user.VendorCodeMessage))
-                                                                {
-                                                                    <br />@Html.Raw(user.VendorCodeMessage)
-                                                                }
-                                                            }
-                                                        </td>
-                                                    }
-                                                    @if (Model.AuthUserIsHead && Model.CanEditHousehold)
-                                                    {
-                                                        <td>
-                                                            <a asp-action="@nameof(ProfileController.RemoveHouseholdMember)"
-                                                               asp-route-id="@user.Id" class="btn btn-sm btn-danger"
-                                                               title="Remove @user.FullName from this @Model.LocalizedHouseholdTitle">
-                                                                <span class="fas fa-sign-out-alt fa-fw"></span>
-                                                            </a>
-                                                        </td>
-                                                    }
-                                                </tr>
+                                                <div class="text-center text-danger fw-bold mb-2">
+                                                    @Html.Raw(Model.SecretCodeMessage)
+                                                </div>
                                             }
-                                        </tbody>
-                                    </table>
+                                        </div>
+                                    }
                                 </div>
-                            </form>
+                            </div>
                         }
-                    </div>
-                </div>
-                @if (Model.HouseholdCount > 0)
-                {
-                    <a href="#" class="btn btn-secondary float-end">@SharedLocalizer[GRA.Annotations.Interface.ReturnToTop]</a>
+                        <table class="table table-sm table-bordered table-striped mb-0">
+                            <thead>
+                                <tr>
+                                    @if (Model.AuthUserIsHead)
+                                    {
+                                        if (Model.CanLogActivity)
+                                        {
+                                            <th class="text-center align-middle"
+                                                style="width: 2rem;">
+                                                <input id="checkAll"
+                                                       type="checkbox"
+                                                       data-id="@Model.Head.Id" />
+                                            </th>
+                                        }
+                                        <th style="width: 3rem;"
+                                            class="text-center align-middle">
+                                            <span class="far fa-envelope fa-lg"></span>
+                                        </th>
+                                    }
+                                    <th class="align-middle">
+                                        @SharedLocalizer[GRA.Annotations.Title.Participant]
+                                    </th>
+                                    <th class="align-middle">
+                                        @SharedLocalizer[GRA.Annotations.Title.Points]
+                                    </th>
+                                    @if (Model.ShowVendorCodes)
+                                    {
+                                        <th class="align-middle">
+                                            @SharedLocalizer[GRA.Annotations.Title.BookCode]
+                                        </th>
+                                    }
+                                    @if (Model.AuthUserIsHead && Model.CanEditHousehold)
+                                    {
+                                        <th class="d-print-none"
+                                            style="width: 3rem;">&nbsp;</th>
+                                    }
+                                </tr>
+                                <tr class="@(Model.ActiveUser == Model.Head.Id ? "table-primary" : null)">
+                                    @if (Model.AuthUserIsHead)
+                                    {
+                                        if (Model.CanLogActivity)
+                                        {
+                                            <td class="text-center align-middle">
+                                                <input class="userSelection"
+                                                       data-id="@Model.Head.Id"
+                                                       type="checkbox" />
+                                            </td>
+                                        }
+                                        <td class="text-center align-middle">
+                                            <div class="user-mail"
+                                                 data-action="@(Model.ActiveUser == Model.Head.Id ? "" : @Url.Action("LoginAs", new { loginId = Model.Head.Id, goToMail = true }))">
+                                                @if (Model.Head.HasNewMail)
+                                                {
+                                                    <span class="fas fa-envelope fa-lg fa-fw text-primary"
+                                                          title="@SharedLocalizer[GRA.Annotations.Interface.NewMail]"></span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="far fa-envelope fa-lg fa-fw text-muted"></span>
+                                                }
+                                            </div>
+                                        </td>
+                                    }
+                                    <td class="align-top">
+                                        <div class="d-flex flex-row flex-wrap">
+                                            <div class="flex-grow-1 d-flex flex-column my-1">
+                                                <div>
+                                                    @if (Model.ActiveUser == Model.Head.Id)
+                                                    {
+                                                        <span class="fas fa-user fa-fw"></span>
+                                                    }
+                                                    <span class="@(Model.ActiveUser == Model.Head.Id ? "fw-bold" : null)">
+                                                        @Model.Head.FullName
+                                                    </span>
+                                                </div>
+                                                <div class="@(Model.ActiveUser == Model.Head.Id ? "fw-bold" : null)">
+                                                    @Model.Head.Username
+                                                </div>
+
+                                            </div>
+                                            @if (Model.ActiveUser != Model.Head.Id && Model.AuthUserIsHead)
+                                            {
+                                                <div class="my-1 d-print-none">
+                                                    <button type="submit"
+                                                            class="btn btn-outline-primary btn-sm"
+                                                            name="loginId"
+                                                            value="@Model.Head.Id"
+                                                            asp-action="LoginAs">
+                                                        <span class="fas fa-sign-in-alt fa-fw"></span>
+                                                        @SharedLocalizer[GRA.Annotations.Interface.SwitchTo]
+                                                    </button>
+                                                </div>
+                                            }
+                                        </div>
+                                        @if (Model.AuthUserIsHead && Model.DailyImageDictionary.ContainsKey(Model.Head.ProgramId))
+                                        {
+                                            <button type="button"
+                                                    class="btn btn-primary btn-sm viewDailyImage"
+                                                    style="display: inline-block;vertical-align:top;"
+                                                    data-src="@Url.Content($"~/{Model.DailyImageDictionary[Model.Head.ProgramId].DailyImagePath}")"
+                                                    data-large="@Model.DailyImageDictionary[Model.Head.ProgramId].IsLarge"
+                                                    data-day="@Model.DailyImageDictionary[Model.Head.ProgramId].Day">
+                                                @Model.DailyImageDictionary[Model.Head.ProgramId].DailyImageMessage
+                                            </button>
+                                        }
+                                    </td>
+                                    <td class="align-top @(Model.ActiveUser == Model.Head.Id ? "fw-bold" : null)">
+                                        @Model.Head.PointsEarned
+                                    </td>
+                                    @if (Model.ShowVendorCodes)
+                                    {
+                                        <td class="align-top">
+                                            @if (Model.Head.NeedsToAnswerVendorCodeQuestion)
+                                            {
+                                                @SharedLocalizer[GRA.Annotations.Interface.ChooseAnOption]
+                                                <button class="btn btn-info btn-sm"
+                                                        name="redeemButton"
+                                                        value="@Model.Head.Id"
+                                                        asp-action="HandleHouseholdDonation"
+                                                        button-spinner>
+                                                    <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.RedeemYourCode]</span>
+                                                </button>
+                                                @if (Model.Head.CanDonateVendorCode)
+                                                {
+                                                    <button class="btn btn-success btn-sm"
+                                                            name="donateButton"
+                                                            value="@Model.Head.Id"
+                                                            asp-action="HandleHouseholdDonation"
+                                                            button-spinner>
+                                                        <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.DonateYourBook]</span>
+                                                    </button>
+                                                }
+                                                @if (Model.Head.CanEmailAwardVendorCode)
+                                                {
+                                                    <a class="btn btn-warning btn-sm emailAwardButton"
+                                                       asp-action="@nameof(ProfileController.EmailAward)"
+                                                       asp-route-id="@Model.Head.Id"
+                                                       data-email="@Model.Head.Email"
+                                                       data-userid="@Model.Head.Id">
+                                                        <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.ReceiveEAudiobook]</span>
+                                                    </a>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <div class="d-flex flex-column">
+                                                    @if (!string.IsNullOrEmpty(Model.Head.VendorCodeUrl))
+                                                    {
+                                                        <div class="fw-bold">
+                                                            <a href="@Model.Head.VendorCodeUrl"
+                                                               target="_blank">
+                                                                @Model.Head.VendorCode
+                                                            </a>
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="fw-bold">
+                                                            @Model.Head.VendorCode
+                                                        </div>
+                                                    }
+                                                    @if (!string.IsNullOrEmpty(Model.Head.VendorCodeMessage))
+                                                    {
+                                                        <div>
+                                                            @Html.Raw(Model.Head.VendorCodeMessage)
+                                                        </div>
+                                                    }
+                                                </div>
+                                            }
+                                        </td>
+                                    }
+                                    @if (Model.AuthUserIsHead && Model.CanEditHousehold)
+                                    {
+                                        <td class="d-print-none">&nbsp;</td>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var user in Model.Users)
+                                {
+                                    <tr class="@(Model.ActiveUser == user.Id ? "table-primary" : null)">
+                                        @if (Model.AuthUserIsHead)
+                                        {
+                                            if (Model.CanLogActivity)
+                                            {
+                                                <td class="text-center align-middle">
+                                                    @if (!user.HasPendingQuestionnaire)
+                                                    {
+                                                        <input class="userSelection"
+                                                               type="checkbox"
+                                                               data-id="@user.Id" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="pendingQuestionnaire fas fa-exclamation-circle text-warning"
+                                                              style="cursor:pointer"
+                                                              data-bs-toggle="modal"
+                                                              data-bs-target=".pendingModal"></span>
+
+                                                    }
+                                                </td>
+                                            }
+                                            <td class="text-center align-middle">
+                                                <div class="user-mail"
+                                                     data-action="@(Model.ActiveUser == user.Id ? "" : @Url.Action("LoginAs", new { loginId = user.Id, goToMail = true }))">
+                                                    @if (user.HasNewMail)
+                                                    {
+                                                        <span class="fas fa-envelope fa-lg fa-fw text-primary"
+                                                              title="@SharedLocalizer[GRA.Annotations.Interface.NewMail]"></span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="far fa-envelope fa-lg fa-fw text-muted"></span>
+                                                    }
+                                                </div>
+                                            </td>
+                                        }
+                                        <td>
+                                            <div class="d-flex flex-row flex-wrap">
+                                                <div class="flex-grow-1 d-flex flex-column my-1">
+                                                    <div>
+                                                        @if (Model.ActiveUser == user.Id)
+                                                        {
+                                                            <span class="fas fa-user fa-fw"></span>
+                                                        }
+                                                        <span class="@(Model.ActiveUser == user.Id ? "fw-bold" : null)">
+                                                            @user.FullName
+                                                        </span>
+                                                    </div>
+                                                    <div class="@(Model.ActiveUser == user.Id ? "fw-bold" : null)">
+                                                        @Model.Head.Username
+                                                    </div>
+                                                </div>
+                                                @if (Model.ActiveUser != user.Id && Model.AuthUserIsHead)
+                                                {
+                                                    <div class="my-1 d-print-none">
+                                                        <button type="submit"
+                                                                class="btn btn-outline-primary btn-sm"
+                                                                name="loginId"
+                                                                value="@user.Id"
+                                                                asp-action="LoginAs">
+                                                            <span class="fas fa-sign-in-alt fa-fw"></span>
+                                                            @SharedLocalizer[GRA.Annotations.Interface.SwitchTo]
+                                                        </button>
+                                                    </div>
+                                                }
+                                            </div>
+                                            @if (Model.AuthUserIsHead && Model.DailyImageDictionary.ContainsKey(user.ProgramId))
+                                            {
+                                                <button type="button"
+                                                        class="btn btn-primary btn-sm viewDailyImage"
+                                                        style="display: inline-block;vertical-align:top;"
+                                                        data-src="@Url.Content($"~/{Model.DailyImageDictionary[user.ProgramId].DailyImagePath}")"
+                                                        data-large="@Model.DailyImageDictionary[user.ProgramId].IsLarge.ToString().ToLower()"
+                                                        data-day="@Model.DailyImageDictionary[user.ProgramId].Day">
+                                                    @Model.DailyImageDictionary[user.ProgramId].DailyImageMessage
+                                                </button>
+                                            }
+                                        </td>
+                                        <td class="align-top">@user.PointsEarned</td>
+                                        @if (Model.ShowVendorCodes)
+                                        {
+                                            <td class="align-top">
+                                                @if (user.NeedsToAnswerVendorCodeQuestion)
+                                                {
+                                                    @SharedLocalizer[GRA.Annotations.Interface.ChooseAnOption]
+                                                    <button class="btn btn-info btn-sm"
+                                                            name="redeemButton"
+                                                            value="@user.Id"
+                                                            asp-action="HandleHouseholdDonation"
+                                                            button-spinner>
+                                                        <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.RedeemYourCode]</span>
+                                                    </button>
+                                                    @if (user.CanDonateVendorCode)
+                                                    {
+                                                        <button class="btn btn-success btn-sm"
+                                                                name="donateButton"
+                                                                value="@user.Id"
+                                                                asp-action="HandleHouseholdDonation"
+                                                                button-spinner>
+                                                            <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.DonateYourBook]</span>
+                                                        </button>
+                                                    }
+                                                    @if (user.CanEmailAwardVendorCode)
+                                                    {
+                                                        <a class="btn btn-warning btn-sm emailAwardButton"
+                                                           asp-action="@nameof(ProfileController.EmailAward)"
+                                                           asp-route-id="@user.Id"
+                                                           data-email="@user.Email"
+                                                           data-userid="@user.Id">
+                                                            <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.ReceiveEAudiobook]</span>
+                                                        </a>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <div class="d-flex flex-column">
+                                                        @if (!string.IsNullOrEmpty(user.VendorCodeUrl))
+                                                        {
+                                                            <div class="fw-bold">
+                                                                <a href="@user.VendorCodeUrl"
+                                                                   target="_blank">
+                                                                    @user.VendorCode
+                                                                </a>
+                                                            </div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="fw-bold">
+                                                                @user.VendorCode
+                                                            </div>
+                                                        }
+                                                        @if (!string.IsNullOrEmpty(user.VendorCodeMessage))
+                                                        {
+                                                            <div>
+                                                                @Html.Raw(user.VendorCodeMessage)
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                }
+                                            </td>
+                                        }
+                                        @if (Model.AuthUserIsHead && Model.CanEditHousehold)
+                                        {
+                                            <td class="text-center align-middle d-print-none">
+                                                <a asp-action="@nameof(ProfileController.RemoveHouseholdMember)"
+                                                   asp-route-id="@user.Id"
+                                                   class="btn btn-sm btn-outline-danger"
+                                                   title="Remove @user.FullName from this @Model.LocalizedHouseholdTitle">
+                                                    <span class="fas fa-sign-out-alt fa-fw"></span>
+                                                </a>
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </form>
                 }
             </div>
+            @if (Model.HouseholdCount > 0)
+            {
+                <div class="card-footer d-print-none">
+                    <div action="row">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-end">
+                                <a href="#top"
+                                   class="btn btn-outline-secondary">
+                                    @SharedLocalizer[GRA.Annotations.Interface.ReturnToTop]
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>
 
 @if (Model.AuthUserIsHead)
 {
-    <div class="row">
-        <div class="modal fade"
-             id="dailyImageModal"
-             style="text-align:center;"
-             tabindex="-1" role="dialog"
-             aria-labelledby="dailyImageModalLabel">
-            <div id="dailyImageModalDialog"
-                 class="modal-dialog"
-                 style="display: inline-block;"
-                 role="document">
-                <div class="modal-content">
-                    <span class="close frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
-                          data-bs-dismiss="modal"
-                          alt="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]"
-                          role="button">
-                        <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
-                        <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
-                    </span>
-                    <div style="padding: 25px;">
-                        <img class="img img-fluid daily-image" />
-                    </div>
+    <div class="modal fade"
+         id="dailyImageModal"
+         style="text-align:center;"
+         tabindex="-1" role="dialog"
+         aria-labelledby="dailyImageModalLabel">
+        <div id="dailyImageModalDialog"
+             class="modal-dialog"
+             style="display: inline-block;"
+             role="document">
+            <div class="modal-content">
+                <span class="close frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
+                      data-bs-dismiss="modal"
+                      alt="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]"
+                      role="button">
+                    <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
+                    <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
+                </span>
+                <div style="padding: 25px;">
+                    <img class="img img-fluid daily-image" />
                 </div>
             </div>
         </div>
@@ -507,48 +549,46 @@
 
 @if (Model.ShowVendorCodes)
 {
-    <div class="row">
-        <div class="modal fade"
-             id="emailAwardModal"
-             tabindex="-1"
-             role="dialog"
-             aria-labelledby="emailAwardLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <form asp-action="@nameof(ProfileController.EmailAward)"
-                          method="post"
-                          role="form"
-                          style="display:inline">
-                        <input asp-for="EmailAwardModel.UserId" type="hidden" />
-                        <div class="modal-body">
-                            <p>@Html.Raw(Model.Head.EmailAwardInstructions)</p>
-                            <div class="row row-spacing">
-                                <div class="col-12">
-                                    <label asp-for="EmailAwardModel.Email"
-                                           class="col-form-label"></label>
-                                    <input asp-for="EmailAwardModel.Email"
-                                           class="form-control" />
-                                    <span asp-validation-for="EmailAwardModel.Email"
-                                          class="text-danger"></span>
-                                </div>
+    <div class="modal fade"
+         id="emailAwardModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="emailAwardLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form asp-action="@nameof(ProfileController.EmailAward)"
+                      method="post"
+                      role="form"
+                      style="display:inline">
+                    <input asp-for="EmailAwardModel.UserId" type="hidden" />
+                    <div class="modal-body">
+                        <p>@Html.Raw(Model.Head.EmailAwardInstructions)</p>
+                        <div class="row mb-2">
+                            <div class="col-12">
+                                <label asp-for="EmailAwardModel.Email"
+                                       class="col-form-label"></label>
+                                <input asp-for="EmailAwardModel.Email"
+                                       class="form-control" />
+                                <span asp-validation-for="EmailAwardModel.Email"
+                                      class="text-danger"></span>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button"
-                                    class="btn btn-secondary"
-                                    data-bs-dismiss="modal"
-                                    style="margin-right: 1em;">
-                                @SharedLocalizer[GRA.Annotations.Interface.Cancel]
-                            </button>
-                            <button type="submit"
-                                    class="btn btn-warning btn-spinner float-end"
-                                    aria-label="Confirm"
-                                    button-spinner>
-                                @SharedLocalizer[GRA.Annotations.Interface.Confirm]
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal"
+                                style="margin-right: 1em;">
+                            @SharedLocalizer[GRA.Annotations.Interface.Cancel]
+                        </button>
+                        <button type="submit"
+                                class="btn btn-warning float-end"
+                                aria-label="Confirm"
+                                button-spinner>
+                            @SharedLocalizer[GRA.Annotations.Interface.Confirm]
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -565,7 +605,6 @@
                         class="btn-close"
                         data-bs-dismiss="modal"
                         aria-label="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]">
-                    
                 </button>
                 <br />
                 @SharedLocalizer[GRA.Annotations.Validate.ParticipantQuestionnaire]

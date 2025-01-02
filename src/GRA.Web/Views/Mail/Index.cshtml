@@ -20,10 +20,10 @@
 }
 
 <div class="row">
-    <div class="col-12 col-lg-10 offset-lg-1">
+    <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <span class="lead fw-bold">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Mail]</span>
+                <span class="fw-bold">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Mail]</span>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -70,14 +70,18 @@
                                     }
                                 </tbody>
                             </table>
-                            <paginate paginateModel="@Model.PaginateModel"></paginate>
                         }
                     </div>
                 </div>
             </div>
-            <div class="card-footer d-flex justify-content-end">
-                <a asp-action="Send"
-                   class="btn btn-outline-primary">@SharedLocalizer[GRA.Annotations.Interface.SendMail]</a>
+            <div class="card-footer d-print-none d-flex">
+                <div class="flex-grow-1">
+                    <paginate paginateModel="@Model.PaginateModel"></paginate>
+                </div>
+                <div>
+                    <a asp-action="Send"
+                       class="btn btn-outline-primary">@SharedLocalizer[GRA.Annotations.Interface.SendMail]</a>
+                </div>
             </div>
         </div>
     </div>
