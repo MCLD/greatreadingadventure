@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Update packages
 - Update Docker Lock checksums
 - Update pinned curl version
+- Resolved issue with performer back-to-back dropdown on failed submit
 
 ## [4.5.0] 2024-08-29
 

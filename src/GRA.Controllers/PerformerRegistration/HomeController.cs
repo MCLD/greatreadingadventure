@@ -328,7 +328,7 @@ namespace GRA.Controllers.PerformerRegistration
             var userId = GetId(ClaimType.UserId);
             var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId,
                 includeBranches: true);
-            
+
             if (performer?.RegistrationCompleted == false)
             {
                 return RedirectToAction(nameof(Schedule));
@@ -366,7 +366,8 @@ namespace GRA.Controllers.PerformerRegistration
                 {
                     viewModel.BranchAvailability = performer.Branches?.Select(_ => _.Id).ToList();
                 }
-            } else
+            }
+            else
             {
                 var user = await _userService.GetDetails(GetActiveUserId());
 
@@ -676,6 +677,18 @@ namespace GRA.Controllers.PerformerRegistration
             model.AgeList = ageList;
             model.MaxUploadMB = MaxUploadMB;
             model.SetupSupplementalText = settings.SetupSupplementalText;
+            model.BackToBackSelection = new SelectList(new[] { GRA.Defaults.BackToBackInterval });
+
+            var (hasIntervalString, intervalString)
+                = await GetSiteSettingStringAsync(SiteSettingKey.Performer.BackToBackInterval);
+            if (hasIntervalString)
+            {
+                var intervalOptions = intervalString.Split(new[] { ',', ' ' },
+                    StringSplitOptions.RemoveEmptyEntries);
+
+                model.BackToBackSelection = new SelectList(intervalOptions);
+            }
+
             return View(model);
         }
 
