@@ -42,18 +42,24 @@ namespace GRA.Controllers.MissionControl
             UserService userService)
             : base(context)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _badgeService = badgeService ?? throw new ArgumentNullException(nameof(badgeService));
-            _eventImportService = eventImportService
-                ?? throw new ArgumentNullException(nameof(eventImportService));
-            _eventService = eventService ?? throw new ArgumentNullException(nameof(eventService));
-            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
-            _spatialService = spatialService
-                ?? throw new ArgumentNullException(nameof(spatialService));
-            _triggerService = triggerService
-                ?? throw new ArgumentNullException(nameof(triggerService));
-            _userService = userService
-                ?? throw new ArgumentNullException(nameof(userService));
+            ArgumentNullException.ThrowIfNull(badgeService);
+            ArgumentNullException.ThrowIfNull(eventImportService);
+            ArgumentNullException.ThrowIfNull(eventService);
+            ArgumentNullException.ThrowIfNull(logger);
+            ArgumentNullException.ThrowIfNull(siteService);
+            ArgumentNullException.ThrowIfNull(spatialService);
+            ArgumentNullException.ThrowIfNull(triggerService);
+            ArgumentNullException.ThrowIfNull(userService);
+
+            _badgeService = badgeService;
+            _eventImportService = eventImportService;
+            _eventService = eventService;
+            _logger = logger;
+            _siteService = siteService;
+            _spatialService = spatialService;
+            _triggerService = triggerService;
+            _userService = userService;
+
             PageTitle = "Events";
         }
 
@@ -66,8 +72,13 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization",
+            "CA1308:Normalize strings to uppercase",
+            Justification = "Normalize file names and extensions to lowercase")]
         public async Task<IActionResult> AddEditStreaming(EventsDetailViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             byte[] badgeBytes = null;
 
             var requireSecretCode = await GetSiteSettingBoolAsync(
@@ -75,12 +86,14 @@ namespace GRA.Controllers.MissionControl
 
             if (model.Event.StartDate >= model.Event.StreamingAccessEnds)
             {
-                ModelState.AddModelError("Event.StreamingAccessEnds", "The streaming access end time cannot be before the start time");
+                ModelState.AddModelError("Event.StreamingAccessEnds",
+                    "The streaming access end time cannot be before the start time");
             }
 
             if (!model.Editing && (model.IncludeSecretCode || requireSecretCode))
             {
-                if (string.IsNullOrWhiteSpace(model.BadgeMakerImage) && model.BadgeUploadImage == null)
+                if (string.IsNullOrWhiteSpace(model.BadgeMakerImage)
+                    && model.BadgeUploadImage == null)
                 {
                     ModelState.AddModelError("BadgemakerImage", "A badge is required.");
                 }
@@ -90,12 +103,13 @@ namespace GRA.Controllers.MissionControl
                     if (!ValidImageExtensions.Contains(
                         Path.GetExtension(model.BadgeUploadImage.FileName).ToLowerInvariant()))
                     {
-                        ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
+                        ModelState.AddModelError("BadgeUploadImage",
+                            $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                     }
 
                     try
                     {
-                        using (var ms = new MemoryStream())
+                        await using (var ms = new MemoryStream())
                         {
                             await model.BadgeUploadImage.CopyToAsync(ms);
                             badgeBytes = ms.ToArray();
@@ -108,7 +122,8 @@ namespace GRA.Controllers.MissionControl
                     }
                     if (string.IsNullOrWhiteSpace(model.BadgeAltText))
                     {
-                        ModelState.AddModelError("BadgeAltText", "The badge's alternative text is required.");
+                        ModelState.AddModelError("BadgeAltText",
+                            "The badge's alternative text is required.");
                     }
                 }
             }
@@ -143,7 +158,7 @@ namespace GRA.Controllers.MissionControl
                         {
                             if (badgeBytes == null)
                             {
-                                using var ms = new MemoryStream();
+                                await using var ms = new MemoryStream();
                                 await model.BadgeUploadImage.CopyToAsync(ms);
                                 badgeBytes = ms.ToArray();
                             }
@@ -230,6 +245,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> AddLocation(LocationsListViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             if (!string.IsNullOrWhiteSpace(model.Location.Url))
             {
                 try
@@ -237,9 +254,9 @@ namespace GRA.Controllers.MissionControl
                     model.Location.Url = new UriBuilder(
                         model.Location.Url).Uri.AbsoluteUri;
                 }
-                catch (Exception)
+                catch (UriFormatException ufex)
                 {
-                    ShowAlertDanger("Invalid URL");
+                    ShowAlertDanger($"Invalid URL: {ufex.Message}");
                     return RedirectToAction("Locations");
                 }
             }
@@ -264,7 +281,8 @@ namespace GRA.Controllers.MissionControl
                         }
                         else if (result.Status == ServiceResultStatus.Warning)
                         {
-                            ShowAlertWarning("Unable to set location geolocation: ", result.Message);
+                            ShowAlertWarning("Unable to set location geolocation: ",
+                                result.Message);
                         }
                         else
                         {
@@ -292,9 +310,9 @@ namespace GRA.Controllers.MissionControl
                 {
                     url = new UriBuilder(url).Uri.AbsoluteUri;
                 }
-                catch (Exception)
+                catch (UriFormatException ufex)
                 {
-                    return Json(new { success = false, message = "Invalid URL" });
+                    return Json(new { success = false, message = $"Invalid URL: {ufex.Message}" });
                 }
             }
 
@@ -362,7 +380,10 @@ namespace GRA.Controllers.MissionControl
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Invalid event filter by User {GetId(ClaimType.UserId)}: {ex}");
+                _logger.LogError(ex,
+                    "Invalid event filter by User {UserId}: {ErrorMessage}",
+                    GetId(ClaimType.UserId),
+                    ex.Message);
                 ShowAlertDanger("Invalid filter parameters.");
                 return RedirectToAction("CommunityExperiences");
             }
@@ -387,22 +408,22 @@ namespace GRA.Controllers.MissionControl
                     SiteSettingKey.Events.RequireBadge);
             var programList = await _siteService.GetProgramList();
 
+            var (maxPointLimitSet, maxPointLimit)
+                = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(),
+                    SiteSettingKey.Triggers.MaxPointsPerTrigger);
+
             var viewModel = new EventsDetailViewModel
             {
                 CanAddSecretCode = requireSecretCode
                     || UserHasPermission(Permission.ManageTriggers),
                 CanManageLocations = UserHasPermission(Permission.ManageLocations),
                 CanRelateChallenge = UserHasPermission(Permission.ViewAllChallenges),
-                ProgramList = new SelectList(programList, "Id", "Name"),
-                IncludeSecretCode = requireSecretCode,
-                RequireSecretCode = requireSecretCode,
                 IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
-                MaxPointLimit = await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId())
+                IncludeSecretCode = requireSecretCode,
+                MaxPointLimit = maxPointLimitSet ? maxPointLimit : null,
+                ProgramList = new SelectList(programList, "Id", "Name"),
+                RequireSecretCode = requireSecretCode
             };
-            if (viewModel.MaxPointLimit.HasValue)
-            {
-                viewModel.MaxPointLimitMessage = $"(Up to {viewModel.MaxPointLimit.Value} points)";
-            }
 
             if (!streamingEvent)
             {
@@ -436,7 +457,8 @@ namespace GRA.Controllers.MissionControl
                     viewModel.Event.RelatedTriggerId = null;
                     if (graEvent.AtBranchId.HasValue)
                     {
-                        var branch = await _siteService.GetBranchByIdAsync(graEvent.AtBranchId.Value);
+                        var branch = await _siteService
+                            .GetBranchByIdAsync(graEvent.AtBranchId.Value);
                         viewModel.SystemId = branch.SystemId;
                         viewModel.BranchList = new SelectList(await _siteService
                         .GetBranches(viewModel.SystemId, true), "Id", "Name");
@@ -471,21 +493,29 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization",
+            "CA1308:Normalize strings to uppercase",
+            Justification = "Normalize filenames to lowercase")]
         public async Task<IActionResult> Create(EventsDetailViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             byte[] badgeBytes = null;
 
-            var requireSecretCode = await GetSiteSettingBoolAsync(
-                SiteSettingKey.Events.RequireBadge);
+            var requireSecretCode
+                = await GetSiteSettingBoolAsync(SiteSettingKey.Events.RequireBadge);
+            var (maxPointLimitSet, maxPointLimit)
+                = await GetSiteSettingIntAsync(SiteSettingKey.Triggers.MaxPointsPerTrigger);
 
             model.IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits);
-            model.MaxPointLimit =
-                await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId());
+            model.MaxPointLimit = maxPointLimitSet ? maxPointLimit : null;
+
             if (model.Event.AllDay)
             {
                 if (model.Event.EndDate.HasValue && model.Event.StartDate > model.Event.EndDate)
                 {
-                    ModelState.AddModelError("Event.EndDate", "The End date cannot be before the Start date");
+                    ModelState.AddModelError("Event.EndDate",
+                        "The End date cannot be before the Start date");
                 }
             }
             else
@@ -493,12 +523,14 @@ namespace GRA.Controllers.MissionControl
                 if (model.Event.EndDate.HasValue && model.Event.StartDate.TimeOfDay
                     > model.Event.EndDate.Value.TimeOfDay)
                 {
-                    ModelState.AddModelError("Event.EndDate", "The End time cannot be before the Start time");
+                    ModelState.AddModelError("Event.EndDate",
+                        "The End time cannot be before the Start time");
                 }
             }
             if (model.UseLocation && !model.Event.AtLocationId.HasValue)
             {
-                ModelState.AddModelError("Event.AtLocationId", "The At Location field is required.");
+                ModelState.AddModelError("Event.AtLocationId",
+                    "The At Location field is required.");
             }
             if (!model.UseLocation && !model.Event.AtBranchId.HasValue)
             {
@@ -506,7 +538,8 @@ namespace GRA.Controllers.MissionControl
             }
             if (model.IncludeSecretCode || requireSecretCode)
             {
-                if (string.IsNullOrWhiteSpace(model.BadgeMakerImage) && model.BadgeUploadImage == null)
+                if (string.IsNullOrWhiteSpace(model.BadgeMakerImage)
+                    && model.BadgeUploadImage == null)
                 {
                     ModelState.AddModelError("BadgemakerImage", "A badge is required.");
                 }
@@ -516,16 +549,16 @@ namespace GRA.Controllers.MissionControl
                     if (!ValidImageExtensions.Contains(
                         Path.GetExtension(model.BadgeUploadImage.FileName).ToLowerInvariant()))
                     {
-                        ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
+                        ModelState.AddModelError("BadgeUploadImage",
+                            $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                     }
 
                     try
                     {
-                        using (var ms = new MemoryStream())
-                        {
-                            await model.BadgeUploadImage.CopyToAsync(ms);
-                            badgeBytes = ms.ToArray();
-                        }
+                        await using var ms = new MemoryStream();
+                        await model.BadgeUploadImage.CopyToAsync(ms);
+                        badgeBytes = ms.ToArray();
+
                         await _badgeService.ValidateBadgeImageAsync(badgeBytes);
                     }
                     catch (GraException gex)
@@ -542,7 +575,8 @@ namespace GRA.Controllers.MissionControl
                 }
                 if (string.IsNullOrWhiteSpace(model.BadgeAltText))
                 {
-                    ModelState.AddModelError("BadgeAltText", "The badge's alternative text is required.");
+                    ModelState.AddModelError("BadgeAltText",
+                        "The badge's alternative text is required.");
                 }
             }
             else
@@ -559,9 +593,9 @@ namespace GRA.Controllers.MissionControl
                     model.Event.ExternalLink = new UriBuilder(
                         model.Event.ExternalLink).Uri.AbsoluteUri;
                 }
-                catch (Exception)
+                catch (UriFormatException ufex)
                 {
-                    ModelState.AddModelError("Event.ExternalLink", "Invalid URL");
+                    ModelState.AddModelError("Event.ExternalLink", $"Invalid URL: {ufex.Message}");
                 }
             }
 
@@ -619,7 +653,7 @@ namespace GRA.Controllers.MissionControl
                         {
                             if (badgeBytes == null)
                             {
-                                using var ms = new MemoryStream();
+                                await using var ms = new MemoryStream();
                                 await model.BadgeUploadImage.CopyToAsync(ms);
                                 badgeBytes = ms.ToArray();
                             }
@@ -689,11 +723,6 @@ namespace GRA.Controllers.MissionControl
                 GetCurrentSiteId(), SiteSettingKey.Events.GoogleMapsAPIKey);
             model.ShowGeolocation = IsSet;
             model.GoogleMapsAPIKey = SetValue;
-
-            if (model.MaxPointLimit.HasValue)
-            {
-                model.MaxPointLimitMessage = $"(Up to {model.MaxPointLimit.Value} points)";
-            }
 
             return View(model);
         }
@@ -848,11 +877,14 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Edit(EventsDetailViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             if (model.Event.AllDay)
             {
                 if (model.Event.EndDate.HasValue && model.Event.StartDate > model.Event.EndDate)
                 {
-                    ModelState.AddModelError("Event.EndDate", "The End date cannot be before the Start date");
+                    ModelState.AddModelError("Event.EndDate",
+                        "The End date cannot be before the Start date");
                 }
             }
             else
@@ -860,12 +892,14 @@ namespace GRA.Controllers.MissionControl
                 if (model.Event.EndDate.HasValue && model.Event.StartDate.TimeOfDay
                     > model.Event.EndDate.Value.TimeOfDay)
                 {
-                    ModelState.AddModelError("Event.EndDate", "The End time cannot be before the Start time");
+                    ModelState.AddModelError("Event.EndDate",
+                        "The End time cannot be before the Start time");
                 }
             }
             if (model.UseLocation && !model.Event.AtLocationId.HasValue)
             {
-                ModelState.AddModelError("Event.AtLocationId", "The At Location field is required.");
+                ModelState.AddModelError("Event.AtLocationId",
+                    "The At Location field is required.");
             }
             if (!model.UseLocation && !model.Event.AtBranchId.HasValue)
             {
@@ -879,9 +913,9 @@ namespace GRA.Controllers.MissionControl
                     model.Event.ExternalLink = new UriBuilder(
                         model.Event.ExternalLink).Uri.AbsoluteUri;
                 }
-                catch (Exception)
+                catch (UriFormatException ufex)
                 {
-                    ModelState.AddModelError("Event.ExternalLink", "Invalid URL");
+                    ModelState.AddModelError("Event.ExternalLink", $"Invalid URL: {ufex.Message}");
                 }
             }
 
@@ -976,15 +1010,17 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> EditLocation(LocationsListViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             if (!string.IsNullOrWhiteSpace(model.Location.Url))
             {
                 try
                 {
                     model.Location.Url = new UriBuilder(model.Location.Url).Uri.AbsoluteUri;
                 }
-                catch (Exception)
+                catch (UriFormatException ufex)
                 {
-                    ShowAlertDanger("Invalid URL");
+                    ShowAlertDanger($"Invalid URL: {ufex.Message}");
                     return RedirectToAction("Locations");
                 }
             }
@@ -1011,11 +1047,13 @@ namespace GRA.Controllers.MissionControl
                             }
                             else if (result.Status == ServiceResultStatus.Warning)
                             {
-                                ShowAlertWarning("Unable to set location geolocation: ", result.Message);
+                                ShowAlertWarning("Unable to set location geolocation: ",
+                                    result.Message);
                             }
                             else
                             {
-                                ShowAlertDanger("Unable to set location geolocation: ", result.Message);
+                                ShowAlertDanger("Unable to set location geolocation: ",
+                                    result.Message);
                             }
                         }
                     }
@@ -1103,7 +1141,7 @@ namespace GRA.Controllers.MissionControl
                 ModelState.AddModelError("eventFileCsv", "You must select a .csv file.");
             }
 
-            if (ModelState.ErrorCount == 0)
+            if (eventFileCsv != null && ModelState.ErrorCount == 0)
             {
                 using var streamReader = new StreamReader(eventFileCsv.OpenReadStream());
                 (ImportStatus status, string message)
@@ -1161,7 +1199,10 @@ namespace GRA.Controllers.MissionControl
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Invalid event filter by User {GetId(ClaimType.UserId)}: {ex}");
+                _logger.LogError(ex,
+                    "Invalid event filter by User {UserId}: {ErrorMessage}",
+                    GetId(ClaimType.UserId),
+                    ex.Message);
                 ShowAlertDanger("Invalid filter parameters.");
                 return RedirectToAction("Index");
             }
@@ -1281,7 +1322,10 @@ namespace GRA.Controllers.MissionControl
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Invalid event filter by User {GetId(ClaimType.UserId)}: {ex}");
+                _logger.LogError(ex,
+                    "Invalid event filter by User {UserId}: {ErrorMessage}",
+                    GetId(ClaimType.UserId),
+                    ex.Message);
                 ShowAlertDanger("Invalid filter parameters.");
                 return RedirectToAction("CommunityExperiences");
             }

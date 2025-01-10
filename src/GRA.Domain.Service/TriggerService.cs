@@ -5,6 +5,7 @@ using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
+using GRA.SiteSettingKey;
 using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service
@@ -32,26 +33,28 @@ namespace GRA.Domain.Service
             : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageTriggers);
-            _avatarBundleRepository = avatarBundleRepository
-                ?? throw new ArgumentNullException(
-                nameof(avatarBundleRepository));
-            _branchRepository = branchRepository
-                ?? throw new ArgumentNullException(nameof(branchRepository));
-            _eventRepository = eventRepository
-                ?? throw new ArgumentNullException(nameof(eventRepository));
-            _programRepository = programRepository
-                ?? throw new ArgumentNullException(nameof(programRepository));
-            _systemRepository = systemRepository
-                ?? throw new ArgumentNullException(nameof(systemRepository));
-            _triggerRepository = triggerRepository
-                ?? throw new ArgumentNullException(nameof(triggerRepository));
-            _siteLookupService = siteLookupService
-                ?? throw new ArgumentNullException(nameof(siteLookupService));
+
+            ArgumentNullException.ThrowIfNull(avatarBundleRepository);
+            ArgumentNullException.ThrowIfNull(branchRepository);
+            ArgumentNullException.ThrowIfNull(eventRepository);
+            ArgumentNullException.ThrowIfNull(programRepository);
+            ArgumentNullException.ThrowIfNull(siteLookupService);
+            ArgumentNullException.ThrowIfNull(systemRepository);
+            ArgumentNullException.ThrowIfNull(triggerRepository);
+
+            _avatarBundleRepository = avatarBundleRepository;
+            _branchRepository = branchRepository;
+            _eventRepository = eventRepository;
+            _programRepository = programRepository;
+            _siteLookupService = siteLookupService;
+            _systemRepository = systemRepository;
+            _triggerRepository = triggerRepository;
         }
 
         public async Task<Trigger> AddAsync(Trigger trigger)
         {
             VerifyManagementPermission();
+            ArgumentNullException.ThrowIfNull(trigger);
             trigger.SiteId = GetCurrentSiteId();
             trigger.RelatedBranchId = GetClaimId(ClaimType.BranchId);
             trigger.RelatedSystemId = GetClaimId(ClaimType.SystemId);
@@ -77,10 +80,13 @@ namespace GRA.Domain.Service
                 trigger);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization",
+            "CA1308:Normalize strings to uppercase",
+            Justification = "Normalize secret codes to lowercase")]
         public async Task<bool> CodeExistsAsync(string secretCode, int? triggerId = null)
         {
             return await _triggerRepository.CodeExistsAsync(
-                GetCurrentSiteId(), secretCode.Trim().ToLower(), triggerId);
+                GetCurrentSiteId(), secretCode?.Trim().ToLowerInvariant(), triggerId);
         }
 
         public async Task<Trigger> GetByBadgeIdAsync(int badgeId)
@@ -99,17 +105,12 @@ namespace GRA.Domain.Service
             return await _triggerRepository.GetTriggerDependentsAsync(triggerId);
         }
 
-        public async Task<int?> GetMaximumAllowedPointsAsync(int siteId)
-        {
-            var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingIntAsync(siteId,
-                SiteSettingKey.Triggers.MaxPointsPerTrigger);
-
-            return IsSet ? SetValue : (int?)null;
-        }
-
-        public async Task<DataWithCount<ICollection<Trigger>>> GetPaginatedListAsync(TriggerFilter filter)
+        public async Task<DataWithCount<ICollection<Trigger>>>
+            GetPaginatedListAsync(TriggerFilter filter)
         {
             VerifyManagementPermission();
+            ArgumentNullException.ThrowIfNull(filter);
+
             filter.SiteId = GetCurrentSiteId();
             return new DataWithCount<ICollection<Trigger>>
             {
@@ -119,7 +120,8 @@ namespace GRA.Domain.Service
         }
 
         public async Task<ICollection<TriggerRequirement>> GetRequirementsByIdsAsync(
-            List<int> badgeIds, List<int> challengeIds)
+            ICollection<int> badgeIds,
+            ICollection<int> challengeIds)
         {
             VerifyManagementPermission();
             var trigger = new Trigger()
@@ -139,7 +141,8 @@ namespace GRA.Domain.Service
             return trigger?.AwardPrizeName;
         }
 
-        public async Task<ICollection<TriggerRequirement>> GetTriggerRequirementsAsync(Trigger trigger)
+        public async Task<ICollection<TriggerRequirement>>
+            GetTriggerRequirementsAsync(Trigger trigger)
         {
             VerifyManagementPermission();
             return await _triggerRepository.GetTriggerRequirmentsAsync(trigger);
@@ -151,8 +154,10 @@ namespace GRA.Domain.Service
             return await _triggerRepository.GetTriggersAwardingPrizesAsync(GetCurrentSiteId());
         }
 
-        public async Task<DataWithCount<ICollection<TriggerRequirement>>> PageRequirementAsync(BaseFilter filter)
+        public async Task<DataWithCount<ICollection<TriggerRequirement>>>
+            PageRequirementAsync(BaseFilter filter)
         {
+            ArgumentNullException.ThrowIfNull(filter);
             filter.SiteId = GetCurrentSiteId();
             return new DataWithCount<ICollection<TriggerRequirement>>()
             {
@@ -194,13 +199,16 @@ namespace GRA.Domain.Service
 
         public async Task<bool> SecretCodeInUseAsync(string username)
         {
-            string trimmedUsername = username.Trim();
-            return await _triggerRepository.SecretCodeInUseAsync(GetCurrentSiteId(), trimmedUsername);
+            string trimmedUsername = username?.Trim();
+            return await _triggerRepository
+                .SecretCodeInUseAsync(GetCurrentSiteId(), trimmedUsername);
         }
 
         public async Task<Trigger> UpdateAsync(Trigger trigger)
         {
             VerifyManagementPermission();
+            ArgumentNullException.ThrowIfNull(trigger);
+
             trigger.SiteId = GetCurrentSiteId();
             await ValidateTriggerAsync(trigger);
             if (!HasPermission(Permission.ManageVendorCodes)
@@ -281,9 +289,11 @@ namespace GRA.Domain.Service
                     throw new GraException("Invalid Avatar Bundle selection.");
                 }
             }
+            var (maxPointLimitSet, maxPointLimit)
+                = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(),
+                    Triggers.MaxPointsPerTrigger);
 
-            var maxPointLimit = await GetMaximumAllowedPointsAsync(GetCurrentSiteId());
-            if (maxPointLimit.HasValue && !HasPermission(Permission.IgnorePointLimits))
+            if (maxPointLimitSet && !HasPermission(Permission.IgnorePointLimits))
             {
                 var currentTrigger = await _triggerRepository.GetByIdAsync(trigger.Id);
                 if (currentTrigger?.AwardPoints > maxPointLimit)
