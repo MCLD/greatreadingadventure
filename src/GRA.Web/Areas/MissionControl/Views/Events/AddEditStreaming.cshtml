@@ -386,7 +386,10 @@
                         <div class="row my-2">
                             <div class="col-12">
                                 <label asp-for="AwardPoints" class="col-form-label"></label>
-                                <small>@Model.MaxPointLimitMessage</small>
+                                @if (Model.MaxPointLimit.HasValue)
+                                {
+                                    <small>(Up to @Model.MaxPointLimit points)</small>
+                                }
                                 <input asp-for="AwardPoints"
                                        min="0"
                                        class="form-control secretCodeField @(Model.IncludeSecretCode ? "" : "ignore")" />

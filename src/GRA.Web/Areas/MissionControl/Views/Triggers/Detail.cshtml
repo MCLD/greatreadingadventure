@@ -137,13 +137,12 @@
             on @Model.Trigger.CreatedAt
         </div>
 
-        @if (!string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
+        @if (!string.IsNullOrEmpty(Model.PointLimitExceededMessage))
         {
             <div class="col-12 col-sm-6 offset-sm-3 mb-3">
                 <div class="alert alert-warning d-flex align-items-stretch">
-                    <span class="fas fa-exclamation-circle fa-2x pt-2 me-3"
-                          aria-hidden="true"></span>
-                    <span>@Model.MaxPointsWarningMessage</span>
+                    <span class="fas fa-exclamation-circle fa-lg text-warning pt-2 me-3" aria-hidden="true"></span>
+                    <span>@Html.Raw(Model.PointLimitExceededMessage)</span>
                 </div>
             </div>
         }
@@ -153,7 +152,7 @@
         <label asp-for="Trigger.Name" class="col-form-label"></label>
         <input asp-for="Trigger.Name"
                class="form-control trigger-name-field"
-               readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
+               readonly="@Model.IsReadOnly" />
         <span asp-validation-for="Trigger.Name" class="text-danger"></span>
     </div>
 
@@ -198,7 +197,7 @@
                 <div>
                     <input asp-for="Trigger.SecretCode"
                            class="form-control"
-                           readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
+                           readonly="@Model.IsReadOnly" />
                     <span id="SecretCode-Validation"
                           asp-validation-for="Trigger.SecretCode"
                           class="text-success"></span>
@@ -225,10 +224,19 @@
 
             <div class="col-12 mb-3">
                 <label asp-for="Trigger.Points" class="col-form-label"></label>
-                <div class="col-12"><small><em>Must have at least @Model.MinAllowedPoints points</em></small></div>
+                @if (Model.MinAllowedPoints > 0)
+                {
+                    <div class="col-12">
+                        <small>
+                            <em>
+                                Must have at least @Model.MinAllowedPoints points
+                            </em>
+                        </small>
+                    </div>
+                }
                 <input asp-for="Trigger.Points"
                        class="form-control"
-                       readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
+                       readonly="@Model.IsReadOnly" />
                 <span asp-validation-for="Trigger.Points" class="text-danger"></span>
             </div>
 
@@ -244,7 +252,7 @@
                             <input asp-for="Trigger.ItemsRequired"
                                    class="form-control"
                                    min="0"
-                                   readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
+                                   readonly="@Model.IsReadOnly" />
                             <p class="form-control-plaintext"><strong>of the following:</strong></p>
                             <span asp-validation-for="Trigger.ItemsRequired" class="text-danger" />
                         </div>
@@ -314,7 +322,7 @@
                         <button type="button"
                                 id="addButton"
                                 class="btn btn-outline-warning"
-                                disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)">
+                                disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.PointLimitExceededMessage) ? "disabled" : null)">
                             Add Challenges or Triggers
                         </button>
                     </div>
@@ -326,7 +334,7 @@
                 <select asp-for="Trigger.LimitToSystemId"
                         asp-items="Model.SystemList"
                         class="form-select"
-                        disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)">
+                        disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.PointLimitExceededMessage) ? "disabled" : null)">
                     <option value="">No</option>
                 </select>
                 <span asp-validation-for="Trigger.LimitToSystemId" class="text-danger"></span>
@@ -337,7 +345,7 @@
                 <select asp-for="Trigger.LimitToBranchId"
                         asp-items="Model.BranchList"
                         class="form-select"
-                        disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)">
+                        disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.PointLimitExceededMessage) ? "disabled" : null)">
                     <option value="">No</option>
                 </select>
                 <span asp-validation-for="Trigger.LimitToBranchId" class="text-danger"></span>
@@ -348,7 +356,7 @@
                 <select asp-for="Trigger.LimitToProgramId"
                         asp-items="Model.ProgramList"
                         class="form-select"
-                        disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)">
+                        disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.PointLimitExceededMessage) ? "disabled" : null)">
                     <option value="">No</option>
                 </select>
                 <span asp-validation-for="Trigger.LimitToProgramId" class="text-danger"></span>
@@ -363,7 +371,7 @@
                 <input asp-for="Trigger.ActivationDate"
                        type="form"
                        class="form-control"
-                       readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
+                       readonly="@Model.IsReadOnly" />
             </div>
             <span asp-validation-for="Trigger.ActivationDate" class="text-danger"></span>
         </div>
@@ -378,19 +386,28 @@
                 <label asp-for="Trigger.AwardMessage"></label>
                 <textarea asp-for="Trigger.AwardMessage"
                           class="form-control"
-                          readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)"></textarea>
+                          readonly="@Model.IsReadOnly"></textarea>
                 <span asp-validation-for="Trigger.AwardMessage" class="text-danger"></span>
             </div>
             <div class="col-12">
                 <label asp-for="Trigger.AwardPoints"></label>
             </div>
-            <div class="col-12 mb-3"><small><em>@Model.MaxPointsMessage</em></small></div>
+            @if (Model.MaxPointLimit.HasValue)
+            {
+                <div class="col-12">
+                    <small>
+                        <em>
+                            (Up to @Model.MaxPointLimit points)
+                        </em>
+                    </small>
+                </div>
+            }
             <div class="col-12 mb-3">
                 <input asp-for="Trigger.AwardPoints"
                        value="@(Model.Trigger?.AwardPoints ?? 0)"
                        min="0"
                        class="form-control"
-                       readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
+                       readonly="@Model.IsReadOnly" />
                 <span asp-validation-for="Trigger.AwardPoints" class="text-danger"></span>
             </div>
             <div class="row mb-3">
@@ -532,7 +549,7 @@
                             <description gra-description-for="Trigger.AwardPrizeName"></description>
                             <input asp-for="Trigger.AwardPrizeName"
                                    class="form-control"
-                                   readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
+                                   readonly="@Model.IsReadOnly" />
                             <span asp-validation-for="Trigger.AwardPrizeName"
                                   class="text-danger"></span>
                         </div>
@@ -543,7 +560,7 @@
                                    class="col-form-label"></label>
                             <textarea asp-for="Trigger.AwardPrizeRedemptionInstructions"
                                       class="form-control"
-                                      readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)"></textarea>
+                                      readonly="@Model.IsReadOnly"></textarea>
                             <span asp-validation-for="Trigger.AwardPrizeRedemptionInstructions"
                                   class="text-danger"></span>
                         </div>
@@ -591,7 +608,7 @@
                                        class="col-form-label"></label>
                                 <input asp-for="Trigger.AwardMailSubject"
                                        class="form-control"
-                                       readonly="@(!Model.EditMail || (!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage)) ? "readonly" : null)" />
+                                       readonly="@(!Model.EditMail || (!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.PointLimitExceededMessage)) ? "readonly" : null)" />
                                 <span asp-validation-for="Trigger.AwardMailSubject"
                                       class="text-danger"></span>
                             </div>
@@ -601,7 +618,7 @@
                                 <label asp-for="Trigger.AwardMail" class="col-form-label"></label>
                                 <textarea asp-for="Trigger.AwardMail"
                                           class="form-control"
-                                          readonly="@(!Model.EditMail || (!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage)) ? "readonly" : null)"></textarea>
+                                          readonly="@(!Model.EditMail || (!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.PointLimitExceededMessage)) ? "readonly" : null)"></textarea>
                                 <span asp-validation-for="Trigger.AwardMail"
                                       class="text-danger"></span>
                             </div>
@@ -716,7 +733,7 @@
     <div class="mb-3 d-flex justify-content-end my-4">
         <a asp-action="Index"
            class="btn btn-outline-secondary mx-2">Return to List</a>
-        @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
+        @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.PointLimitExceededMessage))
         {
             <button type="submit"
                     id="saveButton"
@@ -730,9 +747,8 @@
     </div>
 </form>
 
-@if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
+@if (Model.IgnorePointLimits && (Model.MaxPointLimit.HasValue || Model.MinAllowedPoints.HasValue))
 {
-
     <div class="modal fade"
          id="warningModal"
          tabindex="-1"
@@ -742,20 +758,19 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title h4" id="deleteModalLabel">
-                        <button type="button"
-                                class="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close">
-                        </button>
-                        Warning: Award points exceed maximum
+                        Warning: Point limits exceeded
                     </h1>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                    </button>
                 </div>
-                <div class="modal-body">
-                    <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
-                    <span id="modal-text">
-                        The awarded points for this trigger exceed the maximum of
-                        <strong>@Model.MaxPointLimit points</strong>. Do you wish to continue?
-                    </span>
+                <div class="modal-body p-0">
+                    <div class="modal-body d-flex align-items-stretch">
+                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
+                        <span id="modal-text"></span>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button"
@@ -773,80 +788,77 @@
             </div>
         </div>
     </div>
-
 }
 
-<div class="row">
-    <div class="modal fade"
-         id="listModal"
-         tabindex="-1"
-         role="dialog"
-         data-bs-backdrop="static"
-         data-bs-keyboard="false"
-         aria-labelledby="listModalLabel">
-        <div class="modal-dialog modal-xl" role="document">
-            <div class="modal-content">
-                <div class="card">
-                    <div class="card-header">
-                        <h1 class="h4 modal-title lead">Add requirement</h1>
+<div class="modal fade"
+     id="listModal"
+     tabindex="-1"
+     role="dialog"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     aria-labelledby="listModalLabel">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="h4 modal-title lead">Add requirement</h1>
+                </div>
+                <div class="card-body pt-2">
+                    <div class="row">
+                        <div class="col-12 mb-2">
+                            <ul class="nav nav-pills">
+                                <li id="All" class="nav-item requirementScope">
+                                    <a class="nav-link active">All</a>
+                                </li>
+                                <li id="System" class="nav-item requirementScope">
+                                    <a class="nav-link">My System</a>
+                                </li>
+                                <li id="Branch" class="nav-item requirementScope">
+                                    <a class="nav-link">My Branch</a>
+                                </li>
+                                <li id="Mine" class="nav-item requirementScope">
+                                    <a class="nav-link">Mine</a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="card-body pt-2">
-                        <div class="row">
-                            <div class="col-12 mb-2">
-                                <ul class="nav nav-pills">
-                                    <li id="All" class="nav-item requirementScope">
-                                        <a class="nav-link active">All</a>
-                                    </li>
-                                    <li id="System" class="nav-item requirementScope">
-                                        <a class="nav-link">My System</a>
-                                    </li>
-                                    <li id="Branch" class="nav-item requirementScope">
-                                        <a class="nav-link">My Branch</a>
-                                    </li>
-                                    <li id="Mine" class="nav-item requirementScope">
-                                        <a class="nav-link">Mine</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-12">
-                                <div class="input-group">
-                                    <input id="searchText"
-                                           class="form-control"
-                                           placeholder="Enter text to search for a challenge here" />
-                                    <button type="button"
-                                            id="clearButton"
-                                            class="btn btn-outline-secondary">
-                                        Clear
-                                    </button>
-                                    <button type="button"
-                                            id="searchButton"
-                                            class="btn btn-outline-primary">
-                                        Search
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="searchMessage" class="row d-none">
-                            <div class="col-12">
-                                <p class="alert-sm alert-info">
-                                    Searching for '<strong id="searchTerm"></strong>'
-                                </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div id="modalRequirementList" class="col-12">
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <div class="input-group">
+                                <input id="searchText"
+                                       class="form-control"
+                                       placeholder="Enter text to search for a challenge here" />
+                                <button type="button"
+                                        id="clearButton"
+                                        class="btn btn-outline-secondary">
+                                    Clear
+                                </button>
+                                <button type="button"
+                                        id="searchButton"
+                                        class="btn btn-outline-primary">
+                                    Search
+                                </button>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button"
-                                class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal">
-                            Close
-                        </button>
+                    <div id="searchMessage" class="row d-none">
+                        <div class="col-12">
+                            <p class="alert-sm alert-info">
+                                Searching for '<strong id="searchTerm"></strong>'
+                            </p>
+                        </div>
                     </div>
+                    <div class="row">
+                        <div id="modalRequirementList" class="col-12">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
+                        Close
+                    </button>
                 </div>
             </div>
         </div>
@@ -885,8 +897,8 @@
 
         $(document).on("click", ".addRequirementButton", function () {
             if (!$(this).hasClass("disabled")) {
-                var badgeId = $(this).data("badgeid");
-                var challengeId = $(this).data("challengeid");
+                let badgeId = $(this).data("badgeid");
+                let challengeId = $(this).data("challengeid");
 
                 if (challengeId != "") {
                     challengeIds.push(challengeId);
@@ -898,8 +910,8 @@
                 }
                 $("#noRequirements").addClass("d-none");
 
-                var row = $(this).parent().parent().clone();
-                var addedItem = row.find(".addRequirementButton");
+                let row = $(this).parent().parent().clone();
+                let addedItem = row.find(".addRequirementButton");
                 addedItem.removeClass("addRequirementButton")
                 addedItem.children().removeClass("fa-plus");
                 addedItem.children().addClass("fa-times");
@@ -916,8 +928,8 @@
         });
 
         $(document).on("click", "#removeRequirementButton", function () {
-            var badgeId = $(this).data("badgeid");
-            var challengeId = $(this).data("challengeid");
+            let badgeId = $(this).data("badgeid");
+            let challengeId = $(this).data("challengeid");
 
             if (challengeId != "") {
                 challengeIds.splice(challengeIds.indexOf(challengeId), 1);
@@ -978,10 +990,10 @@
         });
 
         $("#Trigger_LimitToSystemId").on("change", function () {
-            var systemId = $(this).val();
-            var branchList = $("#Trigger_LimitToBranchId");
-            var branchId = branchList.val();
-            var url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
+            let systemId = $(this).val();
+            let branchList = $("#Trigger_LimitToBranchId");
+            let branchId = branchList.val();
+            let url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
 
             $.getJSON(url, { systemId: systemId, branchId: branchId, listAll: "true", prioritize: "true" }, function (response) {
                 branchList.empty();
@@ -1001,7 +1013,7 @@
         });
 
         $('#AttachmentUploadFile:file').on('fileselect', function (event, numFiles, label) {
-            var input = $(this).parents('.input-group').find(':text'),
+            let input = $(this).parents('.input-group').find(':text'),
                 log = numFiles > 1 ? numFiles = ' files selected' : label;
 
             if (input.length) {
@@ -1067,11 +1079,11 @@
 
         $("#Trigger_SecretCode").on("blur", function () {
             if ($(this).val() != "" && !$(this).hasClass("input-validation-error")) {
-                var secretCode = $(this).val();
+                let secretCode = $(this).val();
                 if (secretCode != "") {
                     if (secretCode != "@Model.Trigger?.SecretCode") {
-                        var codeCheckUrl = "@Url.Action("SecretCodeInUse", "Lookup")";
-                        var icon = $("#SecretCode-Icon");
+                        let codeCheckUrl = "@Url.Action("SecretCodeInUse", "Lookup")";
+                        let icon = $("#SecretCode-Icon");
                         icon.removeClass("d-none fa-times fa-check");
                         icon.addClass("fa-spinner fa-spin");
                         $.post(codeCheckUrl, { secretCode: secretCode }, function (response) {
@@ -1117,28 +1129,34 @@
         });
     </script>
 
-    @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
+    @if (Model.IgnorePointLimits && (Model.MaxPointLimit.HasValue || Model.MinAllowedPoints.HasValue))
     {
         <script>
             $("#saveButton").on("click", function (e) {
                 e.preventDefault();
+                let messages = [];
+
                 if ($("#Trigger_AwardPoints").val() > @Model.MaxPointLimit) {
-            @if (Model.Trigger != null)
-            {
-                <text>
-                                if ($("#Trigger_AwardPoints").val() != @Model.Trigger.AwardPoints) {
-                                    $('#warningModal').modal("show");
-                                                                                                            }
-                                else {
-                                    $("#triggerForm").submit();
-                                                                                                            }
-                </text>
-            }
-            else
-            {
-                @:$('#warningModal').modal("show");
-            }
-                                                                            } else {
+                    messages.push("The awarded points for this trigger exceed the configured maximum of <strong>"
+                        + @Model.MaxPointLimit
+                        + "</strong>. Override the restriction?");
+                }
+
+                if ($("#Trigger_Points").val() < @Model.MinAllowedPoints) {
+                    messages.push("The activation points for this trigger are below the configured minimum of <strong>"
+                        + @Model.MinAllowedPoints
+                        + "</strong>. Override the restriction?");
+                }
+
+                if(messages.length > 0) {
+                    $("#modal-text").html("");
+                    messages.forEach(function(item, _) {
+                        $("#modal-text").html($("#modal-text").html() + "<p>" + item + "</p>");
+                    });
+                    $("#warningModal").modal("show");
+                }
+                else
+                {
                     $("#triggerForm").submit();
                 }
             });
@@ -1148,6 +1166,7 @@
             });
 
             $("#warningModal").on("hide.bs.modal", function () {
+                ResetSpinners();
                 $("#saveButton").removeClass("disabled");
                 $("#saveButton").find(".fa-spinner").addClass("hidden");
             });

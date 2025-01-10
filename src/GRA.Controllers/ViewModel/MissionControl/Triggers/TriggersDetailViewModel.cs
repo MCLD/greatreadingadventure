@@ -35,6 +35,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Triggers
 
         [DisplayName("Upload a badge image. Badge images must be square.")]
         public IFormFile BadgeUploadImage { get; set; }
+
         public SelectList BranchList { get; set; }
         public bool CanViewParticipants { get; set; }
         public string ChallengeRequiredList { get; set; }
@@ -45,12 +46,22 @@ namespace GRA.Controllers.ViewModel.MissionControl.Triggers
         public bool EditMail { get; set; }
         public bool EditVendorCode { get; set; }
         public bool IgnorePointLimits { get; set; }
+
+        public string IsReadOnly
+        {
+            get
+            {
+                return !IgnorePointLimits && !string.IsNullOrEmpty(PointLimitExceededMessage)
+                    ? "readonly"
+                    : null;
+            }
+        }
+
         public bool IsSecretCode { get; set; }
         public int? LowPointThreshold { get; set; }
         public int? MaxPointLimit { get; set; }
         public int? MinAllowedPoints { get; set; }
-        public string MaxPointsMessage { get; set; }
-        public string MaxPointsWarningMessage { get; set; }
+        public string PointLimitExceededMessage { get; set; }
         public SelectList ProgramList { get; set; }
         public ICollection<Event> RelatedEvents { get; set; }
         public bool RemoveAttachment { get; set; }

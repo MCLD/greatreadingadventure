@@ -10,7 +10,6 @@ using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
-using GRA.SiteSettingKey;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -73,35 +72,35 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Create()
         {
             var site = await GetCurrentSiteAsync();
-            var siteUrl = await _siteLookupService.GetSiteLinkAsync(site.Id);
-            var (minAllowedPointsSet, minAllowedPoints) = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(), SiteSettingKey.Triggers.DisallowTriggersBelowPoints);
+            var (maxPointLimitSet, maxPointLimit)
+                = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(),
+                    SiteSettingKey.Triggers.MaxPointsPerTrigger);
+            var (minAllowedPointsSet, minAllowedPoints)
+                = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(),
+                    SiteSettingKey.Triggers.DisallowTriggersBelowPoints);
 
             var viewModel = new TriggersDetailViewModel
             {
-                Action = "Create",
-                IsSecretCode = true,
-                EditAvatarBundle = UserHasPermission(Permission.ManageAvatars),
+                Action = nameof(Create),
+                BranchList = new SelectList(await _siteService.GetAllBranches(), "Id", "Name"),
                 EditAttachment = UserHasPermission(Permission.TriggerAttachments),
+                EditAvatarBundle = UserHasPermission(Permission.ManageAvatars),
                 EditMail = UserHasPermission(Permission.ManageTriggerMail),
                 EditVendorCode = UserHasPermission(Permission.ManageVendorCodes),
-                SystemList = new SelectList(await _siteService.GetSystemList(), "Id", "Name"),
-                BranchList = new SelectList(await _siteService.GetAllBranches(), "Id", "Name"),
-                ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
                 IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
-                MaxPointLimit = await _triggerService.GetMaximumAllowedPointsAsync(site.Id),
-                MinAllowedPoints = minAllowedPoints
+                IsSecretCode = true,
+                MaxPointLimit = maxPointLimitSet ? maxPointLimit : null,
+                MinAllowedPoints = minAllowedPointsSet ? minAllowedPoints : null,
+                ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
+                SystemList = new SelectList(await _siteService.GetSystemList(), "Id", "Name"),
             };
-            
-            if (viewModel.MaxPointLimit.HasValue)
-            {
-                viewModel.MaxPointsMessage = $"(Up to {viewModel.MaxPointLimit.Value} points)";
-            }
 
             if (viewModel.EditVendorCode)
             {
                 viewModel.VendorCodeTypeList = new SelectList(
                     await _vendorCodeService.GetTypeAllAsync(), "Id", "Description");
             }
+
             if (viewModel.EditAvatarBundle)
             {
                 viewModel.UnlockableAvatarBundleList = new SelectList(
@@ -124,21 +123,16 @@ namespace GRA.Controllers.MissionControl
 
             var badgeRequiredList = new List<int>();
             var challengeRequiredList = new List<int>();
-            var (lowPointThresholdSet, lowPointThreshold) = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(), SiteSettingKey.Triggers.LowPointThreshold);
-            var (minAllowedPointsSet, minAllowedPoints) = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(), SiteSettingKey.Triggers.DisallowTriggersBelowPoints);
+            var (lowPointThresholdSet, lowPointThreshold)
+                = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(),
+                    SiteSettingKey.Triggers.LowPointThreshold);
 
-            if (lowPointThresholdSet)
-            {
-                model.LowPointThreshold = lowPointThreshold;
-            }
-            if(minAllowedPointsSet)
-            {
-                model.MinAllowedPoints = minAllowedPoints;
-            }
+            var pointLimits = await GetPointLimitsAsync(model.Trigger);
 
             model.IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits);
-            model.MaxPointLimit = await _triggerService
-                .GetMaximumAllowedPointsAsync(GetCurrentSiteId());
+            model.LowPointThreshold = lowPointThresholdSet ? lowPointThreshold : null;
+            model.MaxPointLimit = pointLimits.MaxAllowedAwardPoints;
+            model.MinAllowedPoints = pointLimits.MinAllowedTriggerPoints;
 
             if (!model.IgnorePointLimits
                 && model.MaxPointLimit.HasValue
@@ -147,11 +141,17 @@ namespace GRA.Controllers.MissionControl
                 ModelState.AddModelError("Trigger.AwardPoints",
                     $"You may award up to {model.MaxPointLimit} points.");
             }
-            if(model.Trigger.Points < model.MinAllowedPoints)
+
+            if (string.IsNullOrEmpty(model.Trigger.SecretCode)
+                && !model.IgnorePointLimits
+                && model.Trigger.Points.HasValue
+                && model.MinAllowedPoints.HasValue
+                && model.Trigger.Points < model.MinAllowedPoints)
             {
                 ModelState.AddModelError("Trigger.Points",
                     $"Trigger must have at least {model.MinAllowedPoints} points.");
             }
+
             if (!string.IsNullOrWhiteSpace(model.BadgeRequiredList))
             {
                 badgeRequiredList = model.BadgeRequiredList
@@ -160,6 +160,7 @@ namespace GRA.Controllers.MissionControl
                     .Select(int.Parse)
                     .ToList();
             }
+
             if (!string.IsNullOrWhiteSpace(model.ChallengeRequiredList))
             {
                 challengeRequiredList = model.ChallengeRequiredList
@@ -340,10 +341,9 @@ namespace GRA.Controllers.MissionControl
                     var trigger = await _triggerService.AddAsync(model.Trigger);
                     if (model.LowPointThreshold >= trigger.Points)
                     {
-                      ShowAlertWarning("Trigger is a low point trigger.");
+                        ShowAlertWarning("Trigger is a low point trigger.");
                     }
                     ShowAlertSuccess($"Trigger '<strong>{trigger.Name}</strong>' was successfully created");
-
 
                     return RedirectToAction("Index");
                 }
@@ -352,7 +352,7 @@ namespace GRA.Controllers.MissionControl
                     ShowAlertWarning("Unable to add trigger: ", gex.Message);
                 }
             }
-            model.Action = "Create";
+            model.Action = nameof(Create);
             model.SystemList = new SelectList(await _siteService.GetSystemList(), "Id", "Name");
             if (model.Trigger.LimitToSystemId.HasValue)
             {
@@ -383,11 +383,6 @@ namespace GRA.Controllers.MissionControl
             {
                 model.UnlockableAvatarBundleList = new SelectList(
                     await _avatarService.GetAllBundlesAsync(true), "Id", "Name");
-            }
-
-            if (model.MaxPointLimit.HasValue)
-            {
-                model.MaxPointsMessage = $"(Up to {model.MaxPointLimit.Value} points)";
             }
 
             PageTitle = "Create Trigger";
@@ -447,11 +442,10 @@ namespace GRA.Controllers.MissionControl
                 ShowAlertWarning($"Could not find trigger id {id}, possibly it has been deleted.");
                 return RedirectToAction("Index");
             }
-            var site = await GetCurrentSiteAsync();
-            var siteUrl = await _siteLookupService.GetSiteLinkAsync(site.Id);
             var badge = await _badgeService.GetByIdAsync(trigger.AwardBadgeId);
-            var (minAllowedPointsSet, minAllowedPoints) = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(), SiteSettingKey.Triggers.DisallowTriggersBelowPoints);
-            var (lowPointThresholdSet, lowPointThreshold) = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(), SiteSettingKey.Triggers.LowPointThreshold);
+            var (lowPointThresholdSet, lowPointThreshold)
+                = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(),
+                    SiteSettingKey.Triggers.LowPointThreshold);
 
             Attachment attachment = null;
             if (trigger.AwardAttachmentId != null)
@@ -461,47 +455,34 @@ namespace GRA.Controllers.MissionControl
 
             var viewModel = new TriggersDetailViewModel
             {
-                Trigger = trigger,
-                CreatedByName = await _userService.GetUsersNameByIdAsync(trigger.CreatedBy),
-                CanViewParticipants = UserHasPermission(Permission.ViewParticipantDetails),
                 Action = "Edit",
-                IsSecretCode = !string.IsNullOrWhiteSpace(trigger.SecretCode),
-                EditAvatarBundle = UserHasPermission(Permission.ManageAvatars),
-                EditAttachment = UserHasPermission(Permission.TriggerAttachments),
-                EditMail = UserHasPermission(Permission.ManageTriggerMail),
-                EditVendorCode = UserHasPermission(Permission.ManageVendorCodes),
+                AwardsAttachment = !string.IsNullOrWhiteSpace(trigger.AwardAttachmentFilename),
                 AwardsMail = !string.IsNullOrWhiteSpace(trigger.AwardMailSubject),
                 AwardsPrize = !string.IsNullOrWhiteSpace(trigger.AwardPrizeName),
-                AwardsAttachment = !string.IsNullOrWhiteSpace(trigger.AwardAttachmentFilename),
-                DependentTriggers = await _triggerService.GetDependentsAsync(trigger.AwardBadgeId),
-                TriggerRequirements = await _triggerService.GetTriggerRequirementsAsync(trigger),
-                BadgeRequiredList = string.Join(",", trigger.BadgeIds),
-                ChallengeRequiredList = string.Join(",", trigger.ChallengeIds),
-                SystemList = new SelectList(await _siteService.GetSystemList(), "Id", "Name"),
-                ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
-                IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
-                MaxPointLimit =
-                    await _triggerService.GetMaximumAllowedPointsAsync(site.Id),
                 BadgeAltText = badge.AltText,
+                BadgeRequiredList = string.Join(",", trigger.BadgeIds),
+                CanViewParticipants = UserHasPermission(Permission.ViewParticipantDetails),
+                ChallengeRequiredList = string.Join(",", trigger.ChallengeIds),
+                CreatedByName = await _userService.GetUsersNameByIdAsync(trigger.CreatedBy),
+                DependentTriggers = await _triggerService.GetDependentsAsync(trigger.AwardBadgeId),
+                EditAttachment = UserHasPermission(Permission.TriggerAttachments),
+                EditAvatarBundle = UserHasPermission(Permission.ManageAvatars),
+                EditMail = UserHasPermission(Permission.ManageTriggerMail),
+                EditVendorCode = UserHasPermission(Permission.ManageVendorCodes),
+                IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
+                IsSecretCode = !string.IsNullOrWhiteSpace(trigger.SecretCode),
+                LowPointThreshold = lowPointThresholdSet ? lowPointThreshold : null,
+                ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
+                SystemList = new SelectList(await _siteService.GetSystemList(), "Id", "Name"),
+                Trigger = trigger,
+                TriggerRequirements = await _triggerService.GetTriggerRequirementsAsync(trigger),
             };
-            if (minAllowedPointsSet)
-            {
-                viewModel.MinAllowedPoints = minAllowedPoints;
-            }
 
-            if (lowPointThresholdSet)
-            {
-                viewModel.LowPointThreshold = lowPointThreshold;
-            }
+            var pointLimits = await GetPointLimitsAsync(trigger);
+            viewModel.MaxPointLimit = pointLimits.MaxAllowedAwardPoints;
+            viewModel.MinAllowedPoints = pointLimits.MinAllowedTriggerPoints;
+            viewModel.PointLimitExceededMessage = pointLimits.PointLimitMessage;
 
-            if (viewModel?.MaxPointLimit != null)
-            {
-                viewModel.MaxPointsMessage = $"(Up to {viewModel.MaxPointLimit.Value} points)";
-            }
-            if (trigger.AwardPoints > viewModel.MaxPointLimit)
-            {
-                viewModel.MaxPointsWarningMessage = $"This Trigger exceeds the maximum of {viewModel.MaxPointLimit.Value} points per required task. Only Administrators can edit the points awarded.";
-            }
             if (viewModel.EditVendorCode)
             {
                 viewModel.VendorCodeTypeList = new SelectList(
@@ -569,26 +550,32 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Edit(TriggersDetailViewModel model)
         {
             ArgumentNullException.ThrowIfNull(model);
+            model.IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits);
+
+            var currentTrigger = await _triggerService.GetByIdAsync(model.Trigger.Id);
+
+            var pointRestrictions = await GetPointLimitsAsync(currentTrigger);
+
+            if (!model.IgnorePointLimits
+                && !string.IsNullOrEmpty(pointRestrictions.PointLimitMessage))
+            {
+                return RedirectToAction(nameof(Edit), new { id = currentTrigger.Id });
+            }
 
             byte[] badgeBytes = null;
 
             var badgeRequiredList = new List<int>();
             var challengeRequiredList = new List<int>();
-            var (minAllowedPointsSet, minAllowedPoints) = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(), SiteSettingKey.Triggers.DisallowTriggersBelowPoints);
-            var (lowPointThresholdSet, lowPointThreshold) = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(), SiteSettingKey.Triggers.LowPointThreshold);
 
+            var (lowPointThresholdSet, lowPointThreshold)
+                = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(),
+                    SiteSettingKey.Triggers.LowPointThreshold);
 
-            if (lowPointThresholdSet)
-            {
-                model.LowPointThreshold = lowPointThreshold;
-            }
-            if (minAllowedPointsSet)
-            {
-                model.MinAllowedPoints = minAllowedPoints;
-            }
+            model.LowPointThreshold = lowPointThresholdSet ? lowPointThreshold : null;
+            model.MaxPointLimit = pointRestrictions.MaxAllowedAwardPoints;
+            model.MinAllowedPoints = pointRestrictions.MinAllowedTriggerPoints;
+            model.PointLimitExceededMessage = pointRestrictions.PointLimitMessage;
 
-            model.IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits);
-            model.MaxPointLimit = await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId());
             if (!model.IgnorePointLimits
                 && model.MaxPointLimit.HasValue
                 && model.Trigger.AwardPoints > model.MaxPointLimit)
@@ -596,11 +583,16 @@ namespace GRA.Controllers.MissionControl
                 ModelState.AddModelError("Trigger.AwardPoints",
                     $"You may award up to {model.MaxPointLimit} points.");
             }
-            if (model.Trigger.Points < model.MinAllowedPoints)
+
+            if (!model.IsSecretCode
+                && !model.IgnorePointLimits
+                && model.MinAllowedPoints.HasValue
+                && model.MinAllowedPoints > model.Trigger.Points)
             {
                 ModelState.AddModelError("Trigger.Points",
                     $"Trigger must have at least {model.MinAllowedPoints} points.");
             }
+
             if (!string.IsNullOrWhiteSpace(model.BadgeRequiredList))
             {
                 badgeRequiredList = model.BadgeRequiredList
@@ -884,16 +876,6 @@ namespace GRA.Controllers.MissionControl
                     .GetBundleByIdAsync(model.Trigger.AwardAvatarBundleId.Value)).Name;
             }
 
-            if (model.MaxPointLimit.HasValue)
-            {
-                model.MaxPointsMessage = $"(Up to {model.MaxPointLimit.Value} points)";
-
-                var currentTrigger = await _triggerService.GetByIdAsync(model.Trigger.Id);
-                if (currentTrigger.AwardPoints > model.MaxPointLimit.Value)
-                {
-                    model.MaxPointsWarningMessage = $"This Trigger exceeds the maximum of {model.MaxPointLimit.Value} points per required task. Only Administrators can edit the points awarded.";
-                }
-            }
             PageTitle = $"Edit Trigger - {model.Trigger.Name}";
             return View("Detail", model);
         }
@@ -908,16 +890,12 @@ namespace GRA.Controllers.MissionControl
             int page = 1)
         {
             var filter = new TriggerFilter(page);
-            var (lowPointThresholdSet, lowPointThreshold) = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(), SiteSettingKey.Triggers.LowPointThreshold);
+            var (lowPointThresholdSet, lowPointThreshold) 
+                = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(), 
+                    SiteSettingKey.Triggers.LowPointThreshold);
 
-            if (lowPointThreshold == 0)
-            {
-                hideLowPoint = true;
-            }
-            else
-            {
-                hideLowPoint = false;
-            }
+            hideLowPoint = lowPointThreshold == 0 ? true : false;
+
             if (!string.IsNullOrWhiteSpace(search))
             {
                 filter.Search = search;
@@ -1059,6 +1037,55 @@ namespace GRA.Controllers.MissionControl
             }
 
             return View(viewModel);
+        }
+
+        private async Task<PointRestrictions> GetPointLimitsAsync(Trigger trigger)
+        {
+            var result = new PointRestrictions();
+            var pointLimitExceededMessage = new StringBuilder();
+
+            var (maxPointLimitSet, maxPointLimit)
+                = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(),
+                    SiteSettingKey.Triggers.MaxPointsPerTrigger);
+            var (minAllowedPointsSet, minAllowedPoints)
+                = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(),
+                    SiteSettingKey.Triggers.DisallowTriggersBelowPoints);
+
+            result.MaxAllowedAwardPoints = maxPointLimitSet ? maxPointLimit : null;
+            result.MinAllowedTriggerPoints = minAllowedPoints;
+
+            if (string.IsNullOrWhiteSpace(trigger.SecretCode)
+                && trigger.Points.HasValue
+                && minAllowedPointsSet && trigger.Points.Value < minAllowedPoints)
+            {
+                pointLimitExceededMessage.Append("<div>This Trigger activates below the minimum threshold of <strong>")
+                    .Append(minAllowedPoints)
+                    .Append("</strong> points.</div>");
+            }
+
+            if (maxPointLimitSet && trigger.AwardPoints > maxPointLimit)
+            {
+                pointLimitExceededMessage.Append("<div>This Trigger exceeds the maximum of <strong>")
+                    .Append(maxPointLimit)
+                    .Append("</strong> points awarded.</div>");
+            }
+
+            if (!UserHasPermission(Permission.IgnorePointLimits)
+                && pointLimitExceededMessage.Length > 0)
+            {
+                pointLimitExceededMessage.Append("<div><strong>Only Administrators can create or edit a Trigger which exceeds point thresholds.</strong></div>");
+            }
+
+            result.PointLimitMessage = pointLimitExceededMessage.ToString()?.Trim();
+
+            return result;
+        }
+
+        private class PointRestrictions
+        {
+            public int? MaxAllowedAwardPoints { get; set; }
+            public int? MinAllowedTriggerPoints { get; set; }
+            public string PointLimitMessage { get; set; }
         }
     }
 }
