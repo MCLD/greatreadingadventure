@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using GRA.Domain.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using GRA.Domain.Model;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Events
 {
@@ -42,7 +42,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.Events
         public GRA.Domain.Model.Location Location { get; set; }
         public SelectList LocationList { get; set; }
         public int? MaxPointLimit { get; set; }
-        public string MaxPointLimitMessage { get; set; }
         public string MaxPointLimitWarningMessage { get; set; }
         public bool NewCommunityExperience { get; set; }
         public SelectList ProgramList { get; set; }
