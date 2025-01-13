@@ -76,8 +76,8 @@ namespace GRA.Controllers.ViewModel.Home
         public string ActiveStatus(VendorOrderStatus status)
         {
             return User.VendorOrderStatus == status
-                ? "active-status-color"
-                : "inactive-status-color";
+                ? "text-success"
+                : "text-secondary";
         }
     }
 }

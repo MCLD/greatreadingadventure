@@ -1,20 +1,22 @@
 ﻿@model GRA.Controllers.ViewModel.Profile.AttachmentListViewModel
 
 <div class="row">
-    <div class="col-12 col-sm-10 offset-sm-1">
+    <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <span class="lead">@SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProfile]</span>
+                <span class="fw-bold">
+                    @SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProfile]
+                </span>
             </div>
             <div class="card-body">
-
                 @await Html.PartialAsync("_ProfilePartial")
-
                 @if (Model.Attachments.Count() == 0)
                 {
-                    <div class="row" style="padding: 10px 0;">
+                    <div class="row">
                         <div class="col-12">
-                            <div class="alert alert-warning">@SharedLocalizer[GRA.Annotations.Info.NoCertificates]</div>
+                            <div class="alert alert-warning">
+                                @SharedLocalizer[GRA.Annotations.Info.NoCertificates]
+                            </div>
                         </div>
                     </div>
                 }
@@ -24,7 +26,9 @@
                         <thead>
                             <tr>
                                 <th>@SharedLocalizer[GRA.Annotations.Title.Date]</th>
-                                <th colspan="2">@SharedLocalizer[GRA.Annotations.Interface.Details]</th>
+                                <th colspan="2">
+                                    @SharedLocalizer[GRA.Annotations.Interface.Details]
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -32,19 +36,19 @@
                             {
                                 <tr>
                                     <td>@item.EarnedOn</td>
-                                    <td>
-                                        <span>@item.Description</span>
-                                    </td>
+                                    <td>@item.Description</td>
                                     <td class="text-center">
-                                        <a href="~/@item.AttachmentFilename" download="@SharedLocalizer[GRA.Annotations.Title.Certificate]">
+                                        <a href="~/@item.AttachmentFilename"
+                                           download="@SharedLocalizer[GRA.Annotations.Title.Certificate]">
                                             @if (item.ShowCertificate)
                                             {
-                                                <img src="~/images/certificate.png"
-                                                    alt="@SharedLocalizer[GRA.Annotations.Title.Certificate]" />
+                                                <img alt="@SharedLocalizer[GRA.Annotations.Title.Certificate]"
+                                                     class="m-1"
+                                                     src="~/images/certificate.png" />
                                             }
                                             else
                                             {
-                                                <span>@SharedLocalizer[GRA.Annotations.Interface.Download]</span>
+                                                @SharedLocalizer[GRA.Annotations.Interface.Download]
                                             }
                                         </a>
                                     </td>
@@ -52,16 +56,16 @@
                             }
                         </tbody>
                     </table>
-                    @if (Model.MaxPage > 1)
-                    {
-                        <div class="row">
-                            <div class="col-12 text-center">
-                                <paginate paginateModel="@Model"></paginate>
-                            </div>
-                        </div>
-                    }
                 }
             </div>
+            @if (Model.MaxPage > 1)
+            {
+                <div class="card-footer d-print-none d-flex">
+                    <div class="flex-grow-1">
+                        <paginate paginateModel="@Model"></paginate>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>

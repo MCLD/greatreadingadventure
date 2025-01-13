@@ -1,69 +1,79 @@
 ﻿@model GRA.Controllers.ViewModel.Profile.HouseholdRegisterViewModel
 
-<div class="row">
-    <div class="col-12 col-sm-10 offset-sm-1">
-        <div class="card">
-            <div class="card-header">
-                <span class="lead">Register @Context.Items[GRA.Controllers.ItemKey.HouseholdTitle] Member</span>
-            </div>
-            <div class="card-body">
-                <form asp-controller="Profile" asp-action="RegisterHouseholdMember" method="post" role="form">
-                    <div class="row" style="padding: 10px 0;">
+<form asp-controller="@ProfileController.Name"
+      asp-action="@nameof(ProfileController.RegisterHouseholdMember)"
+      method="post"
+      role="form">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <span class="fw-bold">
+                        Register @Context.Items[GRA.Controllers.ItemKey.HouseholdTitle] Member
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="row">
                         <div class="col-12">
-
                             <input asp-for="RegisterId" type="hidden" />
                             <input asp-for="Validate" value="true" type="hidden" />
-
-                            <div class="row row-spacing">
+                            <div class="row">
                                 <div class="col-12">
                                     <label asp-for="Username" class="col-form-label"></label>
                                     <span id="Username-Icon" class="fas colored-icon d-none"></span>
                                     <input asp-for="Username" class="form-control" autofocus />
-                                    <span id="Username-Validation" asp-validation-for="Username" class="text-success"></span>
+                                    <span id="Username-Validation"
+                                          asp-validation-for="Username"
+                                          class="text-success"></span>
                                 </div>
                             </div>
-
-                            <div class="row row-spacing">
+                            <div class="row">
                                 <div class="col-12">
                                     <label asp-for="Password" class="col-form-label"></label>
-                                    <input asp-for="Password" type="password" class="form-control" />
+                                    <input asp-for="Password"
+                                           type="password"
+                                           class="form-control" />
                                     <span asp-validation-for="Password" class="text-danger"></span>
                                 </div>
                             </div>
-
-                            <div class="row row-spacing">
+                            <div class="row">
                                 <div class="col-12">
                                     <label asp-for="ConfirmPassword" class="col-form-label"></label>
-                                    <input asp-for="ConfirmPassword" type="password" class="form-control" />
-                                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                                    <input asp-for="ConfirmPassword"
+                                           type="password"
+                                           class="form-control" />
+                                    <span asp-validation-for="ConfirmPassword"
+                                          class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="mb-3">
-                        <a asp-action="Household" class="btn btn-secondary">Return to @Context.Items[GRA.Controllers.ItemKey.HouseholdTitle]</a>
-                        <button type="submit"
-                                id="Submit"
-                                name="Submit"
-                                value="Submit"
-                                class="btn btn-primary btn-spinner"
-                                button-spinner>
-                            <span class="buttonText">Register Member</span>
-                        </button>
-                    </div>
-                </form>
+                </div>
+                <div class="card-footer">
+                    <a asp-action="Household" class="btn btn-outline-secondary">
+                        Return to @Context.Items[GRA.Controllers.ItemKey.HouseholdTitle]
+                    </a>
+                    <button type="submit"
+                            id="Submit"
+                            name="Submit"
+                            value="Submit"
+                            class="btn btn-outline-primary"
+                            button-spinner>
+                        <span class="buttonText">Register Member</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</form>
+
 @section scripts {
     <script>
         $("#Username").on("blur", function () {
             if ($(this).val().trim() != "" && !$(this).hasClass("input-validation-error")) {
                 $(this).val($(this).val().trim());
-                var usernameCheckUrl = "@Url.Action("UsernameInUse", "Lookup", new { Area = string.Empty })";
-                var icon = $("#Username-Icon");
+                let usernameCheckUrl = "@Url.Action("UsernameInUse", "Lookup", new { Area = string.Empty })";
+                let icon = $("#Username-Icon");
                 icon.removeClass("d-none fa-times fa-check");
                 icon.addClass("fa-spinner fa-spin");
                 $.post(usernameCheckUrl, { username: $(this).val() }, function (response) {

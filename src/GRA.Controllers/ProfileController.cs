@@ -1324,7 +1324,7 @@ namespace GRA.Controllers
             }
             else
             {
-                TempData[ActivityMessage]
+                TempData[SecretCodeMessage]
                     = _sharedLocalizer[Annotations.Required.SelectFirst].ToString();
             }
 

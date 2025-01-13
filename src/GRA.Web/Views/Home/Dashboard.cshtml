@@ -31,26 +31,29 @@ else if (Model.HasOrderStatus)
         <div class="col-12">
             <div class="card mb-2">
                 <div class="card-body">
-                    <div class="row mb-2">
-                        <div class="col-12 col-lg-8 col-lg-push-2">
-                            <div class="row">
-                                <div class="col-4 text-center">
-                                    <span class="fas fa-shopping-cart fa-2x @Model.ActiveStatus(VendorOrderStatus.Ordered)"></span>
-                                </div>
-                                <div class="col-4 text-center">
-                                    <span class="fas fa-shipping-fast fa-2x @Model.ActiveStatus(VendorOrderStatus.Shipped)"></span>
-                                </div>
-                                <div class="col-4 text-center">
-                                    <span class="fas fa-box fa-2x @Model.ActiveStatus(VendorOrderStatus.Arrived)"></span>
-                                </div>
+                    <div class="row">
+                        <div class="d-flex justify-content-evenly">
+                            <div>
+                                <span class="fas fa-shopping-cart fa-2x @Model.ActiveStatus(VendorOrderStatus.Ordered)"></span>
+                            </div>
+                            <div>
+                                <span class="fas fa-arrow-alt-circle-right fa-2x text-body-tertiary"></span>
+                            </div>
+                            <div>
+                                <span class="fas fa-shipping-fast fa-2x @Model.ActiveStatus(VendorOrderStatus.Shipped)"></span>
+                            </div>
+                            <div>
+                                <span class="fas fa-arrow-alt-circle-right fa-2x text-body-tertiary"></span>
+                            </div>
+
+                            <div>
+                                <span class="fas fa-box fa-2x @Model.ActiveStatus(VendorOrderStatus.Arrived)"></span>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-12 text-center">
-                            @Html.Raw(Model.User.VendorCodeMessage)
-                        </div>
-                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    @Html.Raw(Model.User.VendorCodeMessage)
                 </div>
             </div>
         </div>
@@ -138,13 +141,13 @@ else if (Model.HasOrderStatus)
                         <span class="lead">@SharedHtmlLocalizer["Welcome <strong>{0}!</strong>", Model.User.FirstName]</span>
                         @if (Model.SiteStage == GRA.Domain.Model.SiteStage.RegistrationOpen)
                         {
-                            <p class="lead" style="padding-top: 2rem;">
+                            <p class="lead pt-2">
                                 @SharedLocalizer["Once the program starts, you will enter your activity right here!"]
                             </p>
                         }
                         else if (Model.SiteStage == GRA.Domain.Model.SiteStage.ProgramEnded)
                         {
-                            <p class="lead" style="padding-top: 2rem;">
+                            <p class="lead pt-2">
                                 @SharedLocalizer["The program has ended, thanks for participating!"]
                             </p>
                         }
@@ -163,8 +166,8 @@ else if (Model.HasOrderStatus)
             <div class="card mb-2">
                 <div class="card-header fw-bold">@SharedLocalizer[GRA.Annotations.Info.SiteGoalHeader]</div>
                 <div class="card-body text-center">
-                    <p class="fs-4">@SharedHtmlLocalizer[Model.SiteStage == SiteStage.ProgramOpen ? GRA.Annotations.Info.MinutesReadSoFar : GRA.Annotations.Info.MinutesRead, Model.TotalSiteActivity.Value]</p>
-                    <p class="mb-1">@SharedLocalizer[GRA.Annotations.Info.OurGoalInMinutes, @Model.SiteReadingGoal]</p>
+                    <p class="fs-4 mb-1">@SharedHtmlLocalizer[Model.SiteStage == SiteStage.ProgramOpen ? GRA.Annotations.Info.MinutesReadSoFar : GRA.Annotations.Info.MinutesRead, Model.TotalSiteActivity.Value]</p>
+                    <p class="mb-2">@SharedLocalizer[GRA.Annotations.Info.OurGoalInMinutes, @Model.SiteReadingGoal]</p>
                     <div class="progress" style="height: 1.5rem;">
                         <div class="progress-bar progress-bar-info progress-bar-striped @(Model.SiteActivityPercentComplete == 100 ? " progress-bar-success" : "") wide-tooltip"
                              role="progressbar"
@@ -196,7 +199,6 @@ else if (Model.HasOrderStatus)
                                     <span asp-validation-for="Title" class="text-danger"></span>
                                 </div>
                             </div>
-
                             <div class="row mb-2">
                                 <label asp-for="Author" class="col-form-label col-md-3 col-lg-2"></label>
                                 <div class="col-md-9 col-lg-10">
@@ -243,7 +245,6 @@ else if (Model.HasOrderStatus)
                                           data-bs-placement="top"></span>
                                 </div>
                             </div>
-
                             <div class="row mb-2">
                                 <label asp-for="Title" class="col-form-label col-lg-3"></label>
                                 <div class="col-lg-9">
@@ -266,7 +267,6 @@ else if (Model.HasOrderStatus)
                                     button-spinner>
                                 <span class="buttonText">@SharedLocalizer["Log {0}", SharedLocalizer[Model.ActivityDescriptionPlural]]</span>
                             </button>
-
                         </div>
                     </div>
                 </form>
@@ -282,10 +282,8 @@ else if (Model.HasOrderStatus)
                         <div class="card-header fw-bold"><label asp-for="SecretCode"></label></div>
                         <div class="card-body">
                             <div class="row mb-2" style="text-align:center;">
-                                <div class="col-12 ">
-                                    <small>
-                                        @SharedLocalizer["DashboardSecretCodeExplanation"]
-                                    </small>
+                                <div class="col-12">
+                                    @SharedLocalizer["DashboardSecretCodeExplanation"]
                                 </div>
                             </div>
                             <div class="row mb-2">
@@ -402,14 +400,14 @@ else if (Model.HasOrderStatus)
         {
             @:&nbsp;
         }
-    </div>
-    @if (Model.UpcomingStreams?.Count() > 0)
-    {
-        <div class="col-md-3 text-center">
-            <div class="card mb-2">
+        @if (Model.UpcomingStreams?.Count() > 0)
+        {
+            <div class="card text-center mb-2">
                 <div class="card-header fw-bold">
                     <a asp-controller="@EventsController.Name"
-                       asp-action="@nameof(EventsController.StreamingEvents)">@SharedLocalizer[GRA.Annotations.Interface.StreamingEvents]</a>
+                       asp-action="@nameof(EventsController.StreamingEvents)">
+                        @SharedLocalizer[GRA.Annotations.Interface.StreamingEvents]
+                    </a>
                 </div>
                 <ul class="list-group">
                     @foreach (var stream in Model.UpcomingStreams)
@@ -422,15 +420,18 @@ else if (Model.HasOrderStatus)
                             </a>
                             @if (stream.EndDate.HasValue)
                             {
-                                <br />
-                                <em style="font-size: smaller;">@SharedLocalizer[GRA.Annotations.Interface.StreamingEnds, stream.EndDate.Value.ToString("d")]</em>
+                                <small class="d-block">
+                                    <em>
+                                        @SharedLocalizer[GRA.Annotations.Interface.StreamingEnds, stream.EndDate.Value.ToString("d")]
+                                    </em>
+                                </small>
                             }
                         </li>
                     }
                 </ul>
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>
 @if (!string.IsNullOrWhiteSpace(Model.DashboardPageContent))
 {
