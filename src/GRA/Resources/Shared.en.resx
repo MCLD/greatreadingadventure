@@ -1673,4 +1673,16 @@
     <value>Would you like to &lt;a href="{0}"&gt;add a family member&lt;/a&gt;?</value>
     <comment>Prompt for if a new sign up wishes to add additional family members</comment>
   </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+    <comment>A button or heading regarding search</comment>
+  </data>
+  <data name="Featured Challenge Groups" xml:space="preserve">
+    <value>Featured Challenge Groups</value>
+    <comment>Link or header for displaying Featured Challenge Groups</comment>
+  </data>
+  <data name="All Challenges" xml:space="preserve">
+    <value>All Challenges</value>
+    <comment>Link to clear filters and display all Challenges</comment>
+  </data>
 </root>

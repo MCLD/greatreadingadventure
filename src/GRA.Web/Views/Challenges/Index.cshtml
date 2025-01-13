@@ -22,7 +22,7 @@
 @if (Model.FeaturedChallengeGroups?.Any() == true)
 {
     <div class="sr-only">
-        <h2>Featured Challenge Groups</h2>
+        <h2>@SharedLocalizer[GRA.Annotations.Interface.FeaturedChallengeGroups]</h2>
         <ul>
             @foreach (var featuredChallenge in Model.FeaturedChallengeGroups)
             {
@@ -36,7 +36,6 @@
             }
         </ul>
     </div>
-
     <div class="row gra-js-required gra-carousel-container" aria-hidden="true">
         <div class="col-12 mb-2">
             <div class="accordion" id="accordionFeatured">
@@ -49,7 +48,7 @@
                                 data-bs-target="#collapseFeatured"
                                 aria-expanded="true"
                                 aria-controls="collapseFeatured">
-                            Featured Challenge Groups
+                            @SharedLocalizer[GRA.Annotations.Interface.FeaturedChallengeGroups]
                         </button>
                     </div>
                     <div id="collapseFeatured"
@@ -82,7 +81,9 @@
                         <div class="card-footer d-flex justify-content-center">
                             <a asp-action="@nameof(ChallengesController.Index)"
                                asp-route-ClearSearch="true"
-                               class="btn btn-outline-primary">All Challenges</a>
+                               class="btn btn-outline-primary">
+                                @SharedLocalizer[GRA.Annotations.Interface.AllChallenges]
+                            </a>
                         </div>
                     }
                 </div>
@@ -110,7 +111,21 @@
             <div class="card-body pb-0">
                 @if (Model.ChallengeGroup != null)
                 {
-                    <p class="lead">@Model.ChallengeGroup.Description</p>
+                    <div class="d-flex mb-3">
+                        <div class="flex-grow-1 lead">
+                            @Model.ChallengeGroup.Description
+                        </div>
+                        @if (Model.FeaturedChallengeGroups?.Any() != true)
+                        {
+                            <div>
+                                <a asp-action="@nameof(ChallengesController.Index)"
+                                   asp-route-ClearSearch="true"
+                                   class="btn btn-outline-primary">
+                                    @SharedLocalizer[GRA.Annotations.Interface.AllChallenges]
+                                </a>
+                            </div>
+                        }
+                    </div>
                 }
                 else
                 {
@@ -127,7 +142,7 @@
 
                         <div class="row mb-2">
                             <label asp-for="Search" class="col-12 col-md-2 col-form-label">
-                                @SharedLocalizer["Search"]:
+                                @SharedLocalizer[GRA.Annotations.Interface.Search]:
                             </label>
                             <div class="col-12 col-md-10 gra-search-container">
                                 <input asp-for="Search"

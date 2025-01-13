@@ -101,6 +101,7 @@
             public const string AddExistingExplanation = "Add an existing participant into your {0}, if that participant is the head of a {0} their {0} members will be moved into your {0} as well.";
             public const string AddFamilyMember = "Would you like to <a href=\"{0}\">add a family member</a>?";
             public const string AddUsername = "Add username";
+            public const string AllChallenges = "All Challenges";
             public const string AllParticipatingLibraries = "All Participating Libraries";
             public const string AllPrograms = "All Age Groups";
             public const string AndOtherActivities = "and other activities";
@@ -149,6 +150,7 @@
             public const string Events = "Events";
             public const string Explore = "Explore {0}";
             public const string Family = "Family";
+            public const string FeaturedChallengeGroups = "Featured Challenge Groups";
             public const string Find = "Find";
             public const string FreeBookCode = "Free book code";
             public const string FreeBookCongratulations = "Congratulations, you've earned a free book!";
@@ -186,6 +188,7 @@
             public const string ReturnToTop = "Return to Top";
             public const string Save = "Save";
             public const string SaveMyFavorites = "Save My Favorites";
+            public const string Search = "Search";
             public const string SecretCodeApplied = "Secret code applied!";
             public const string SeeItemsUnlocked = "See the items you unlocked.";
             public const string SelectABundle = "Select a Bundle";
