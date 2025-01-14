@@ -1,17 +1,18 @@
 ﻿@model GRA.Controllers.ViewModel.Shared.DisplayNotificationsViewModel
 
 <div class="row">
-    <div id="notificationsAlert" class="col-12 col-sm-6 offset-sm-3">
+    <div id="notificationsAlert" class="d-block col-12 col-md-6 offset-md-3">
         <div class="alert alert-success">
             @foreach (var notification in Model.Notifications)
             {
-                @Html.Raw(notification.Text.Replace("and a badge", $"<a href=\"{Url.Action("History", "Profile")}\">and a badge</a>"))
-                <br />
+                <div>
+                    @Html.Raw(notification.Text)
+                </div>
                 @if (notification.IsJoiner && Context.Items.ContainsKey(ItemKey.AskToAddFamilyMember))
                 {
-                    <br />
-                    @SharedHtmlLocalizer[GRA.Annotations.Interface.AddFamilyMember, Url.Action(nameof(ProfileController.AddHouseholdMember), ProfileController.Name)]
-                    <br />
+                    <div class="mt-2">
+                        @SharedHtmlLocalizer[GRA.Annotations.Interface.AddFamilyMember, Url.Action(nameof(ProfileController.AddHouseholdMember), ProfileController.Name)]
+                    </div>
                 }
             }
             @if (!string.IsNullOrWhiteSpace(Model.SummaryText))
@@ -20,89 +21,77 @@
             }
         </div>
     </div>
-    <div class="modal fade"
-         id="notificationsModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="notificationsModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title h4" id="notificationsModalLabel">Notifications</h1>
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]">
-                        
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <table class="table">
-                        @foreach (var notification in Model.Notifications)
-                        {
-                            <tr>
-                                <td>
-                                    <div class="col-8 col-sm-9">
-                                        @if (notification.LocalizedText != null)
-                                        {
-                                            if (!string.IsNullOrEmpty(notification.DisplayIcon))
-                                            {
-                                                <span class="@notification.DisplayIcon"></span>
-                                            }
-                                            <p>@notification.LocalizedText</p>
-                                        }
-                                        else
-                                        {
-                                            <p>@Html.Raw(notification.Text)</p>
-                                        }
-                                    </div>
-                                    <div class="col-4 col-sm-3" style="min-width: 110px;">
-                                        @if (!string.IsNullOrEmpty(notification.BadgeFilename))
-                                        {
-                                            <img class="img-thumbnail badge-sm float-end"
-                                                 src="~/@notification.BadgeFilename"
-                                                 asp-append-version="true"
-                                                 alt="@notification.AltText" />
-                                        }
-                                    </div>
-                                </td>
-                            </tr>
-                            @if (!string.IsNullOrEmpty(notification.AttachmentFilename))
+</div>
+
+<div class="modal fade"
+     id="notificationsModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="notificationsModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title h4" id="notificationsModalLabel">Notifications</h1>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]">
+                </button>
+            </div>
+            <div class="modal-body">
+                @foreach (var notification in Model.Notifications)
+                {
+                    <div class="d-flex flex-column-reverse flex-sm-row">
+                        <div class="flex-grow-1">
+                            @if (notification.LocalizedText != null)
                             {
-                                <tr>
-                                    <td>
-                                        <div class="col-12">
-                                            <span>@SharedLocalizer[GRA.Annotations.Info.ReceivedCertificate]</span>
-                                            <a href="~/@notification.AttachmentFilename" target="_blank">
-                                                <img src="~/images/certificate.png"
-                                                     alt="@SharedLocalizer[GRA.Annotations.Title.Certificate]" />
-                                                @SharedLocalizer[GRA.Annotations.Interface.ViewCertificate]
-                                            </a>
+                                <div class="d-flex">
+                                    @if (!string.IsNullOrEmpty(notification.DisplayIcon))
+                                    {
+                                        <div class="me-1">
+                                            <span class="@notification.DisplayIcon"></span>
                                         </div>
-                                    </td>
-                                </tr>
+                                    }
+                                    <div class="flex-grow-1">
+                                        <p>@notification.LocalizedText</p>
+                                    </div>
+                                </div>
                             }
+                            else
+                            {
+                                <p>@Html.Raw(notification.Text)</p>
+                            }
+                        </div>
+                        @if (!string.IsNullOrEmpty(notification.BadgeFilename))
+                        {
+                            <div class="ms-1 mb-1 d-flex justify-content-center">
+                                <img class="img-thumbnail badge-sm-fixed"
+                                     src="~/@notification.BadgeFilename"
+                                     alt="@notification.AltText" />
+                            </div>
                         }
-                        <tr>
-                            <td>
-                                <div class="col-12">@Html.Raw(Model.SummaryText)</div>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-secondary"
-                            data-bs-dismiss="modal"
-                            style="margin-right: 1em;">
-                        Close
-                    </button>
-                </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(notification.AttachmentFilename))
+                    {
+                        <div>
+                            <span>@SharedLocalizer[GRA.Annotations.Info.ReceivedCertificate]</span>
+                            <a href="~/@notification.AttachmentFilename" target="_blank">
+                                <img src="~/images/certificate.png"
+                                     alt="@SharedLocalizer[GRA.Annotations.Title.Certificate]" />
+                                @SharedLocalizer[GRA.Annotations.Interface.ViewCertificate]
+                            </a>
+                        </div>
+                    }
+                }
+                <div>@Html.Raw(Model.SummaryText)</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal">
+                    Close
+                </button>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-    document.getElementById("notificationsAlert").style.display = "block";
-</script>

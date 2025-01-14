@@ -63,10 +63,10 @@
             @if (Context.Items[GRA.Controllers.ItemKey.SignedIn] != null)
             {
                 <text>
-                        if (typeof gtag !== 'undefined')
-                        {
-                            gtag('event', 'login');
-                                                                        }
+                                                    if (typeof gtag !== 'undefined')
+                                                    {
+                                                        gtag('event', 'login');
+                                                                                                    }
                 </text>
             }
         </script>
@@ -249,12 +249,14 @@
     </div>
     <script src="/js/main.min.js"></script>
     @RenderSection("scripts", required: false)
-    <script>
-        @if (Context.Items[GRA.Controllers.ItemKey.NotificationsModal] != null)
-        {
-            @:$('#notificationsModal').modal('show');
-        }
-    </script>
+    @if (Context.Items[GRA.Controllers.ItemKey.NotificationsModal] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                new bootstrap.Modal('#notificationsModal').show();
+            });
+        </script>
+    }
     @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.SiteJs))
     {
         <script src="@Url.Content(Context.Items[GRA.Controllers.ItemKey.SiteJs].ToString())"></script>

@@ -122,21 +122,21 @@ namespace GRA
                 },
                 [SiteSettingKey.Triggers.DisallowTriggersBelowPoints] = new SiteSettingDefinition
                 {
-                    Name = "Disallow triggers which activate at point values below the specified number of points",
-                    Info = "Triggers cannot be created below this amount of points.",
+                    Name = "Trigger minimum activation point level",
+                    Info = "Do not allow triggers which activate at point values below this value (overridable with IgnorePointLimits permission)",
                     Category = typeof(SiteSettingKey.Triggers).Name,
                     Format = SiteSettingFormat.Integer
                 },
                 [SiteSettingKey.Triggers.MaxPointsPerTrigger] = new SiteSettingDefinition
                 {
-                    Name = "Maximum points per trigger",
-                    Info = "A number representing the maximum amount of points permitted for a trigger (it may be able to be overidden from Mission Control).",
+                    Name = "Maximum points awardable per trigger",
+                    Info = "Do not allow triggers to award more than this many points (overridable with IgnorePointLimits permission)",
                     Category = typeof(SiteSettingKey.Triggers).Name,
                     Format = SiteSettingFormat.Integer
                 },
                 [SiteSettingKey.Triggers.LowPointThreshold] = new SiteSettingDefinition
                 {
-                    Name = "Low point threshold for triggers",
+                    Name = "Low point activation threshold for triggers",
                     Info = "Triggers activated with this many points or fewer are considered to be low point activated.",
                     Category = typeof(SiteSettingKey.Triggers).Name,
                     Format = SiteSettingFormat.Integer

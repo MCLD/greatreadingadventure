@@ -15,20 +15,21 @@ namespace GRA.Controllers.ViewComponents
     public class DisplayNotificationsViewComponent : ViewComponent
     {
         private const int MaxNotifications = 3;
-
         private readonly IPathResolver _pathResolver;
-        private readonly IHtmlLocalizer<GRA.Resources.Shared> _sharedHtmlLocalizer;
+        private readonly IHtmlLocalizer<Resources.Shared> _sharedHtmlLocalizer;
         private readonly IStringLocalizer<Resources.Shared> _sharedLocalizer;
 
         public DisplayNotificationsViewComponent(IPathResolver pathResolver,
             IStringLocalizer<Resources.Shared> sharedLocalizer,
-            IHtmlLocalizer<GRA.Resources.Shared> sharedHtmlLocalizer)
+            IHtmlLocalizer<Resources.Shared> sharedHtmlLocalizer)
         {
-            _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
-            _sharedLocalizer = sharedLocalizer
-                ?? throw new ArgumentNullException(nameof(sharedLocalizer));
-            _sharedHtmlLocalizer = sharedHtmlLocalizer
-                ?? throw new ArgumentNullException(nameof(sharedHtmlLocalizer));
+            ArgumentNullException.ThrowIfNull(pathResolver);
+            ArgumentNullException.ThrowIfNull(sharedHtmlLocalizer);
+            ArgumentNullException.ThrowIfNull(sharedLocalizer);
+
+            _pathResolver = pathResolver;
+            _sharedHtmlLocalizer = sharedHtmlLocalizer;
+            _sharedLocalizer = sharedLocalizer;
         }
 
         public IViewComponentResult Invoke()
@@ -117,6 +118,8 @@ namespace GRA.Controllers.ViewComponents
                 notifications.Remove(notification);
             }
 
+            var profileLink = Url.Action(nameof(ProfileController.History), ProfileController.Name);
+
             foreach (var notification in notifications
                 .Where(m => !string.IsNullOrWhiteSpace(m.BadgeFilename))
                 .OrderByDescending(m => m.PointsEarned)
@@ -133,6 +136,11 @@ namespace GRA.Controllers.ViewComponents
                         notification.AttachmentFilename
                             = _pathResolver.ResolveContentPath(notification.AttachmentFilename);
                     }
+
+                    notification.Text = notification.Text.Replace("and a badge",
+                        $"<a href=\"{profileLink}\">and a badge</a>",
+                        StringComparison.OrdinalIgnoreCase);
+
                     notificationDisplayList.Add(notification);
                 }
                 notifications.Remove(notification);
