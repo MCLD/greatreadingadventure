@@ -141,7 +141,8 @@
         {
             <div class="col-12 col-sm-6 offset-sm-3 mb-3">
                 <div class="alert alert-warning d-flex align-items-stretch">
-                    <span class="fas fa-exclamation-circle fa-lg text-warning pt-2 me-3" aria-hidden="true"></span>
+                    <span class="fas fa-exclamation-circle fa-lg text-warning pt-2 me-3"
+                          aria-hidden="true"></span>
                     <span>@Html.Raw(Model.PointLimitExceededMessage)</span>
                 </div>
             </div>
@@ -176,7 +177,9 @@
     </ul>
 
     <div class="tab-content">
-        <div role="tabpanel" class="tab-pane p-2 @(Model.IsSecretCode ? "active" : "")" id="secretCode">
+        <div role="tabpanel"
+             class="tab-pane p-2 @(Model.IsSecretCode ? "active" : "")"
+             id="secretCode">
             <div class="col-12">
                 <p>
                     <strong>
@@ -248,7 +251,11 @@
                     <div class="card-body">
 
                         <div class="d-flex flex-row align-items-center flex-wrap">
-                            <p class="form-control-plaintext"><strong>Participant must have earned</strong></p>
+                            <p class="form-control-plaintext">
+                                <strong>
+                                    Participant must have earned
+                                </strong>
+                            </p>
                             <input asp-for="Trigger.ItemsRequired"
                                    class="form-control"
                                    min="0"
@@ -421,25 +428,22 @@
                         <label class="col-form-label">Add a badge</label>
                     }
                 </div>
-
                 <div class="col-12 col-sm-4 col-md-3">
-
                     @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
                     {
                         <input asp-for="BadgePath" type="hidden" />
-                        <img id="badgeImage" class="img-thumbnail badge-lg"
+                        <img id="badgeImage" class="img-thumbnail badge-lg-fixed"
                              src="~/@Model.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")"
                              asp-append-version="true" />
                     }
                     else
                     {
                         <img id="badgeImage"
-                             class="img-thumbnail badge-lg"
+                             class="img-thumbnail badge-lg-fixed"
                              src="@Model.BadgeMakerImage" />
                     }
                     <span asp-validation-for="BadgePath" class="text-danger d-block"></span>
                 </div>
-
                 <div class="col-12 col-sm-8 col-md-9">
                     <label asp-for="BadgeUploadImage" class="col-form-label"></label>
                     <div class="input-group mb-3">
@@ -460,9 +464,9 @@
                               title="How should this badge be described to someone who can't see it?"
                               data-toggle="tooltip"
                               data-placement="top"></span>
-                        <textarea asp-for="BadgeAltText" class="form-control">@Model.BadgeAltText</textarea>
+                        <textarea asp-for="BadgeAltText"
+                                  class="form-control">@Model.BadgeAltText</textarea>
                         <span asp-validation-for="BadgeAltText" class="text-danger"></span>
-
                     </div>
                 </div>
             </div>
@@ -514,7 +518,8 @@
                     {
                         <input asp-for="UnlockableAvatarBundle" class="form-control" readonly />
                     }
-                    <span asp-validation-for="Trigger.AwardAvatarBundleId" class="text-danger"></span>
+                    <span asp-validation-for="Trigger.AwardAvatarBundleId"
+                          class="text-danger"></span>
                 </div>
             </div>
         }
@@ -630,7 +635,10 @@
     }
     @if (Model.EditAttachment || Model.AwardsAttachment)
     {
-        <div class="list-group mb-3" id="accordionAttachment" role="tablist" aria-multiselectable="true">
+        <div class="list-group mb-3"
+             id="accordionAttachment"
+             role="tablist"
+             aria-multiselectable="true">
             <div class="card card-info">
                 <div class="card-header @(Model.AwardsAttachment ? "bg-info-subtle" : "bg-dark-subtle")"
                      role="tab"
@@ -642,7 +650,8 @@
                            href="#collapseAttachment"
                            aria-expanded="true"
                            aria-controls="collapseAttachment">
-                            <span id="attachmentIcon" class="fas fa-lg @(Model.AwardsAttachment ? "fa-caret-down" : "fa-caret-right")"></span>
+                            <span id="attachmentIcon"
+                                  class="fas fa-lg @(Model.AwardsAttachment ? "fa-caret-down" : "fa-caret-right")"></span>
                             Award Attachment
                         </a>
                     </h4>
@@ -768,7 +777,8 @@
                 </div>
                 <div class="modal-body p-0">
                     <div class="modal-body d-flex align-items-stretch">
-                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
+                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                              aria-hidden="true"></span>
                         <span id="modal-text"></span>
                     </div>
                 </div>
@@ -1132,19 +1142,22 @@
     @if (Model.IgnorePointLimits && (Model.MaxPointLimit.HasValue || Model.MinAllowedPoints.HasValue))
     {
         <script>
+            var maxPointLimit = @(Model.MaxPointLimit.HasValue ? Model.MaxPointLimit : "null");
+            var minAllowedPoints = @(Model.MinAllowedPoints.HasValue ? Model.MinAllowedPoints : "null");
+
             $("#saveButton").on("click", function (e) {
                 e.preventDefault();
                 let messages = [];
 
-                if ($("#Trigger_AwardPoints").val() > @Model.MaxPointLimit) {
+                if (maxPointLimit != null && $("#Trigger_AwardPoints").val() > maxPointLimit) {
                     messages.push("The awarded points for this trigger exceed the configured maximum of <strong>"
-                        + @Model.MaxPointLimit
+                        + maxPointLimit
                         + "</strong>. Override the restriction?");
                 }
 
-                if ($("#Trigger_Points").val() < @Model.MinAllowedPoints) {
+                if (minAllowedPoints != null && $("#Trigger_Points").val() < minAllowedPoints) {
                     messages.push("The activation points for this trigger are below the configured minimum of <strong>"
-                        + @Model.MinAllowedPoints
+                        + minAllowedPoints
                         + "</strong>. Override the restriction?");
                 }
 

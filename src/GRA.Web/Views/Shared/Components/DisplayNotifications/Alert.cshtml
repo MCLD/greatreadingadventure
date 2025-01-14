@@ -1,29 +1,33 @@
 ﻿@model GRA.Controllers.ViewModel.Shared.DisplayNotificationsViewModel
 
 <div class="row">
-    <div class="col-12 col-sm-6 offset-sm-3">
+    <div class="d-block col-12 col-md-6 offset-md-3">
         <div class="alert alert-success">
             @foreach (var notification in Model.Notifications)
             {
                 if (notification.LocalizedText != null)
                 {
-                    if (!string.IsNullOrEmpty(notification.DisplayIcon))
-                    {
-                        <span class="@notification.DisplayIcon"></span>
-                    }
-                    @notification.LocalizedText
-                    <br />
+                    <div class="d-flex">
+                        @if (!string.IsNullOrEmpty(notification.DisplayIcon))
+                        {
+                            <div class="ms-1">
+                                <span class="@notification.DisplayIcon"></span>
+                            </div>
+                        }
+                        <div class="flex-grow-1">@notification.LocalizedText</div>
+                    </div>
                 }
                 else
                 {
-                    @Html.Raw(notification.Text)
-                    <br />
+                    <div>
+                        @Html.Raw(notification.Text)
+                    </div>
                 }
                 @if (notification.IsJoiner && Context.Items.ContainsKey(ItemKey.AskToAddFamilyMember))
                 {
-                    <br />
-                    @SharedHtmlLocalizer[GRA.Annotations.Interface.AddFamilyMember, Url.Action(nameof(ProfileController.AddHouseholdMember), ProfileController.Name)]
-                    <br />
+                    <div class="mt-2">
+                        @SharedHtmlLocalizer[GRA.Annotations.Interface.AddFamilyMember, Url.Action(nameof(ProfileController.AddHouseholdMember), ProfileController.Name)]
+                    </div>
                 }
             }
             @if (!string.IsNullOrWhiteSpace(Model.SummaryText))
