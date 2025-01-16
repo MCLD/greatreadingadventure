@@ -22,6 +22,8 @@
     </div>
 }
 
+<div class="row mb-2"><div class="col-12"><h3>Configure</h3></div></div>
+
 <div class="row my-1">
     <div class="col-12">
         @if (Model.VendorCodeType.Id == default)
@@ -63,13 +65,16 @@
             </div>
         </div>
     </div>
-    <input type="hidden" asp-for="VendorCodeType.MessageTemplateId" value="@Model.VendorCodeType.MessageTemplateId">
+    <input type="hidden"
+           asp-for="VendorCodeType.MessageTemplateId"
+           value="@Model.VendorCodeType.MessageTemplateId">
     @if (Model.VendorCodeType.Id != default)
     {
         <div class="row">
             <div class="col-12">
                 <div class="mb-3">
-                    <label class="col-form-label" asp-for="VendorCodeType.MessageTemplateId"></label>
+                    <label class="col-form-label"
+                           asp-for="VendorCodeType.MessageTemplateId"></label>
                     <description gra-description-for="VendorCodeType.MessageTemplateId"></description>
                     <br />
                     @foreach (var item in Model.Languages)
@@ -115,31 +120,37 @@
                         asp-items="VendorCodesController.ShipDateOptions"
                         class="form-select">
                 </select>
-                <span asp-validation-for="VendorCodeType.AwardPrizeOnShipDate" class="text-danger"></span>
+                <span asp-validation-for="VendorCodeType.AwardPrizeOnShipDate"
+                      class="text-danger"></span>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-12">
             <div class="mb-3">
-                <label asp-for="VendorCodeType.AwardPrizeOnPackingSlip" class="col-form-label"></label>
+                <label asp-for="VendorCodeType.AwardPrizeOnPackingSlip"
+                       class="col-form-label"></label>
                 <description gra-description-for="VendorCodeType.AwardPrizeOnPackingSlip"></description>
                 <select asp-for="VendorCodeType.AwardPrizeOnPackingSlip"
                         asp-items="VendorCodesController.PackingSlipOptions"
                         class="form-select">
                 </select>
-                <span asp-validation-for="VendorCodeType.AwardPrizeOnPackingSlip" class="text-danger"></span>
+                <span asp-validation-for="VendorCodeType.AwardPrizeOnPackingSlip"
+                      class="text-danger"></span>
             </div>
         </div>
     </div>
     @if (Model.VendorCodeType.Id != default)
     {
         <hr />
-        <input type="hidden" asp-for="VendorCodeType.OptionMessageTemplateId" value="@Model.VendorCodeType.OptionMessageTemplateId">
+        <input type="hidden"
+               asp-for="VendorCodeType.OptionMessageTemplateId"
+               value="@Model.VendorCodeType.OptionMessageTemplateId">
         <div class="row">
             <div class="col-12">
                 <div class="mb-3">
-                    <label class="col-form-label" asp-for="VendorCodeType.OptionMessageTemplateId"></label>
+                    <label class="col-form-label"
+                           asp-for="VendorCodeType.OptionMessageTemplateId"></label>
                     <description gra-description-for="VendorCodeType.OptionMessageTemplateId"></description>
                     <br />
                     @foreach (var item in Model.Languages)
@@ -162,7 +173,8 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="alert alert-warning">
-                            Please supply values for both the pop-up message as well as the sent message.
+                            Please supply values for both the pop-up message as well as the sent
+                            message.
                         </div>
                     </div>
                 </div>
@@ -170,7 +182,8 @@
             <div class="row">
                 <div class="col-12">
                     <div class="mb-3">
-                        <label asp-for="VendorCodeType.DonationSegmentId" class="col-form-label"></label><br />
+                        <label asp-for="VendorCodeType.DonationSegmentId"
+                               class="col-form-label"></label><br />
                         @foreach (var item in Model.Languages)
                         {
                             <a class="btn @Model.LanguageSegmentClass(Model.VendorCodeType.DonationSegmentId, item.Value)"
@@ -182,11 +195,14 @@
                     </div>
                 </div>
             </div>
-            <input type="hidden" asp-for="VendorCodeType.DonationMessageTemplateId" value="@Model.VendorCodeType.DonationMessageTemplateId">
+            <input type="hidden"
+                   asp-for="VendorCodeType.DonationMessageTemplateId"
+                   value="@Model.VendorCodeType.DonationMessageTemplateId">
             <div class="row">
                 <div class="col-12">
                     <div class="mb-3">
-                        <label class="col-form-label" asp-for="VendorCodeType.DonationMessageTemplateId"></label><br />
+                        <label class="col-form-label"
+                               asp-for="VendorCodeType.DonationMessageTemplateId"></label><br />
                         @foreach (var item in Model.Languages)
                         {
                             <a class="btn @Model.LanguageMessageClass(Model.VendorCodeType.DonationMessageTemplateId, item.Value)"
@@ -205,7 +221,8 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="alert alert-warning">
-                            Please supply values for both the pop-up message as well as the sent message.
+                            Please supply values for both the pop-up message as well as the sent
+                            message.
                         </div>
                     </div>
                 </div>
@@ -214,7 +231,8 @@
             <div class="row">
                 <div class="col-12">
                     <div class="mb-3">
-                        <label asp-for="VendorCodeType.EmailAwardSegmentId" class="col-form-label"></label><br />
+                        <label asp-for="VendorCodeType.EmailAwardSegmentId"
+                               class="col-form-label"></label><br />
                         @foreach (var item in Model.Languages)
                         {
                             <a class="btn @Model.LanguageSegmentClass(Model.VendorCodeType.EmailAwardSegmentId, item.Value)"
@@ -226,11 +244,14 @@
                     </div>
                 </div>
             </div>
-            <input type="hidden" asp-for="VendorCodeType.EmailAwardMessageTemplateId" value="@Model.VendorCodeType.EmailAwardMessageTemplateId">
+            <input type="hidden"
+                   asp-for="VendorCodeType.EmailAwardMessageTemplateId"
+                   value="@Model.VendorCodeType.EmailAwardMessageTemplateId">
             <div class="row">
                 <div class="col-12">
                     <div class="mb-3">
-                        <label class="col-form-label" asp-for="VendorCodeType.EmailAwardMessageTemplateId"></label><br />
+                        <label class="col-form-label"
+                               asp-for="VendorCodeType.EmailAwardMessageTemplateId"></label><br />
                         @foreach (var item in Model.Languages)
                         {
                             <a class="btn @Model.LanguageMessageClass(Model.VendorCodeType.EmailAwardMessageTemplateId, item.Value)"
@@ -247,14 +268,16 @@
         <div class="row">
             <div class="col-12">
                 <div class="mb-3">
-                    <label asp-for="VendorCodeType.ReadyForPickupEmailTemplateId" class="col-form-label"></label>
+                    <label asp-for="VendorCodeType.ReadyForPickupEmailTemplateId"
+                           class="col-form-label"></label>
                     <description gra-description-for="VendorCodeType.ReadyForPickupEmailTemplateId"></description>
                     <select asp-for="VendorCodeType.ReadyForPickupEmailTemplateId"
-                        asp-items="VendorCodesController.GetSelectList(Model.DirectEmailTemplates)"
+                            asp-items="VendorCodesController.GetSelectList(Model.DirectEmailTemplates)"
                             class="form-select">
                         <option value="">None</option>
                     </select>
-                    <span asp-validation-for="VendorCodeType.ReadyForPickupEmailTemplateId" class="text-danger"></span>
+                    <span asp-validation-for="VendorCodeType.ReadyForPickupEmailTemplateId"
+                          class="text-danger"></span>
                 </div>
             </div>
         </div>
@@ -282,7 +305,6 @@
                             class="btn-close"
                             data-bs-dismiss="modal"
                             aria-label="Close">
-                        
                     </button>
                     <h4 class="modal-title" id="segmentModalLabel">Pop-up Message</h4>
                 </div>
@@ -340,7 +362,6 @@
                             class="btn-close"
                             data-bs-dismiss="modal"
                             aria-label="Close">
-                        
                     </button>
                     <h4 class="modal-title" id="messageModalLabel">Message</h4>
                 </div>
