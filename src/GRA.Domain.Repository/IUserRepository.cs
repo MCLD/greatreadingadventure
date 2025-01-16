@@ -47,6 +47,8 @@ namespace GRA.Domain.Repository
 
         Task<IEnumerable<int>> GetNewsSubscribedUserIdsAsync(int siteId);
 
+        Task<IDictionary<User, int>> GetStaffRegisteredParticipantsAsync(ReportCriterion criterion);
+
         Task<IDictionary<string, int>> GetSubscribedLanguageCountAsync(string unspecifiedString);
 
         Task<int> GetSystemUserId();
