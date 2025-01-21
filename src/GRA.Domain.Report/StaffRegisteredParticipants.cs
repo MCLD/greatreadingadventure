@@ -63,6 +63,31 @@ namespace GRA.Domain.Report
                 "Registered Users"
             };
 
+            int count = 0;
+
+            IDictionary<User, int> staffRegisteredParticipants = await _userRepository.GetStaffRegisteredParticipantsAsync(criterion);
+
+            foreach (KeyValuePair<User, int> staffRegisteredParticipant in staffRegisteredParticipants)
+            {
+                UpdateProgress(progress,
+                    ++count * 100 / staffRegisteredParticipants.Count(),
+                    $"Processing: {count}/{staffRegisteredParticipants.Count()}",
+                    request.Name);
+
+                if (token.IsCancellationRequested)
+                {
+                    break;
+                }
+
+                reportData.Add(new object[] {
+                        count,
+                        staffRegisteredParticipant.Key.FullName,
+                        staffRegisteredParticipant.Key.Username,
+                        staffRegisteredParticipant.Value
+                    });
+            }
+
+            report.Data = reportData.ToArray();
             #endregion Collect data
 
             #region Finish up reporting
