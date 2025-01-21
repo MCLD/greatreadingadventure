@@ -28,17 +28,17 @@
                             && (Model.User.VendorOrderStatus == null
                             || Model.User.VendorOrderStatus == VendorOrderStatus.Pending))
                             {
-                                <div class="row row spacing">
+                                <div class="row">
                                     <div class="col-12">
                                         <div class="alert alert-info">
                                             @if (Model.User.NeedsToAnswerVendorCodeQuestion)
                                             {
-                                                <p>
+                                                <div>
                                                     <strong>
                                                         @SharedLocalizer[GRA.Annotations.Interface.FreeBookCongratulations]
                                                     </strong>
-                                                </p>
-                                                <p>
+                                                </div>
+                                                <div>
                                                     @SharedLocalizer[GRA.Annotations.Interface.ChooseAnOption]
                                                     <button class="btn btn-info"
                                                             asp-action="RedeemCode"
@@ -67,11 +67,11 @@
                                                             </span>
                                                         </a>
                                                     }
-                                                </p>
+                                                </div>
                                             }
                                             else
                                             {
-                                                <p>
+                                                <div>
                                                     @SharedLocalizer[GRA.Annotations.Interface.FreeBookCode]:
                                                     @if (!string.IsNullOrEmpty(Model.User.VendorCodeUrl))
                                                     {
@@ -86,11 +86,11 @@
                                                     {
                                                         <strong>@Model.User.VendorCode</strong>
                                                     }
-                                                </p>
+                                                </div>
                                             }
                                             @if (!string.IsNullOrWhiteSpace(Model.User.VendorCodeMessage))
                                             {
-                                                <p>@Html.Raw(Model.User.VendorCodeMessage)</p>
+                                                <div>@Html.Raw(Model.User.VendorCodeMessage)</div>
                                             }
                                         </div>
                                     </div>
