@@ -18,7 +18,7 @@ using Newtonsoft.Json;
 
 namespace GRA.Domain.Service
 {
-    public class UserService : Abstract.BaseUserService<UserService>
+    public class UserService : BaseUserService<UserService>
     {
         private const string UnspecifiedCulture = "unspecified";
 
@@ -265,8 +265,10 @@ namespace GRA.Domain.Service
             return authCode.RoleName;
         }
 
-        public async Task<User> AddHouseholdMemberAsync(int householdHeadUserId, User memberToAdd,
-            bool skipHouseholdActionVerification = false)
+        public async Task<User> AddHouseholdMemberAsync(int householdHeadUserId,
+            User memberToAdd,
+            bool skipHouseholdActionVerification,
+            bool isMcRegistered)
         {
             if (!skipHouseholdActionVerification)
             {
@@ -326,6 +328,8 @@ namespace GRA.Domain.Service
                 }
 
                 await ValidateUserFields(memberToAdd);
+
+                memberToAdd.IsMcRegistered = isMcRegistered;
 
                 var registeredUser = await _userRepository.AddSaveAsync(authUserId, memberToAdd);
 
@@ -713,9 +717,7 @@ namespace GRA.Domain.Service
         public async Task<User> GetDetailsByPermission(int userId)
         {
             VerifyPermission(Permission.ViewParticipantDetails);
-
-            var requestedUser = await _userRepository.GetByIdAsync(userId);
-            return requestedUser
+            return await _userRepository.GetByIdAsync(userId)
                 ?? throw new GraException("The requested participant could not be accessed or does not exist.");
         }
 
@@ -1090,7 +1092,7 @@ namespace GRA.Domain.Service
         }
 
         public async Task<JobStatus> ImportHouseholdMembersAsync(int jobId,
-                            CancellationToken token,
+            CancellationToken token,
             IProgress<JobStatus> progress = null)
         {
             var requestingUser = GetClaimId(ClaimType.UserId);
@@ -1249,6 +1251,7 @@ namespace GRA.Domain.Service
                         Age = importUser.Age,
                         BranchId = householdHead.BranchId,
                         FirstName = importUser.FirstName?.Trim(),
+                        IsMcRegistered = true,
                         IsFirstTime = jobDetails.FirstTimeParticipating,
                         IsHomeschooled = jobDetails.IsHomeSchooled,
                         LastName = importUser.LastName?.Trim(),
@@ -1259,7 +1262,7 @@ namespace GRA.Domain.Service
                         SystemId = householdHead.SystemId
                     };
 
-                    await AddHouseholdMemberAsync(householdHead.Id, user, true);
+                    await AddHouseholdMemberAsync(householdHead.Id, user, true, false);
 
                     currentUser++;
                 }
@@ -1490,7 +1493,9 @@ namespace GRA.Domain.Service
             return await _userRepository.ReassignBranchAsync(oldBranch, newBranch);
         }
 
-        public async Task RegisterHouseholdMemberAsync(User memberToRegister, string password)
+        public async Task RegisterHouseholdMemberAsync(User memberToRegister,
+            string password,
+            bool isMcRegistered)
         {
             VerifyCanRegister();
             ArgumentNullException.ThrowIfNull(memberToRegister);
@@ -1520,6 +1525,7 @@ namespace GRA.Domain.Service
                 _passwordValidator.Validate(password);
 
                 user.Username = memberToRegister.Username?.Trim();
+                user.IsMcRegistered = isMcRegistered;
                 await _userRepository.UpdateSaveAsync(authUserId, user);
                 await _userRepository
                     .SetUserPasswordAsync(authUserId, user.Id, password);
@@ -1533,12 +1539,14 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<User> RegisterUserAsync(User user, string password,
-            bool MCRegistration = false, bool allowDuringCloseProgram = false)
+        public async Task<User> RegisterUserAsync(User user,
+            string password,
+            bool isMcRegistration,
+            bool allowDuringClosedProgram)
         {
             var siteId = GetCurrentSiteId();
 
-            if (!allowDuringCloseProgram)
+            if (!allowDuringClosedProgram)
             {
                 VerifyCanRegister();
             }
@@ -1587,8 +1595,9 @@ namespace GRA.Domain.Service
             }
 
             User registeredUser;
-            if (MCRegistration)
+            if (isMcRegistration)
             {
+                user.IsMcRegistered = isMcRegistration;
                 registeredUser = await _userRepository.AddSaveAsync(
                     GetClaimId(ClaimType.UserId), user);
                 if (emailSubscribe)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -217,7 +218,7 @@ namespace GRA.Controllers
 
                                     // add authenticated user id to session
                                     HttpContext.Session.SetString(SessionKey.AbsorbUserId,
-                                        addUserId.ToString());
+                                        addUserId.ToString(CultureInfo.InvariantCulture));
                                     return View("GroupUpgrade", new GroupUpgradeViewModel
                                     {
                                         MaximumHouseholdAllowed = maximumHousehold,
@@ -352,8 +353,10 @@ namespace GRA.Controllers
             {
                 viewModel.User.DailyPersonalGoal = defaultDailyGoal;
                 var pointTranslation = programList.First().PointTranslation;
-                viewModel.TranslationDescriptionPastTense =
-                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                viewModel.TranslationDescriptionPastTense = pointTranslation
+                    .TranslationDescriptionPastTense
+                    .Replace("{0}", "", StringComparison.OrdinalIgnoreCase)
+                    .Trim();
                 viewModel.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 
@@ -490,7 +493,9 @@ namespace GRA.Controllers
                     }
 
                     var newMember = await _userService.AddHouseholdMemberAsync(authUser.Id,
-                        model.User);
+                        model.User,
+                        false,
+                        false);
                     await _mailService.SendUserBroadcastsAsync(newMember.Id, false, true);
                     HttpContext.Session.SetString(SessionKey.HeadOfHousehold, "True");
                     string groupTypeName
@@ -541,8 +546,10 @@ namespace GRA.Controllers
             if (askActivityGoal)
             {
                 var pointTranslation = programList.First().PointTranslation;
-                model.TranslationDescriptionPastTense =
-                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                model.TranslationDescriptionPastTense = pointTranslation
+                    .TranslationDescriptionPastTense
+                    .Replace("{0}", "", StringComparison.OrdinalIgnoreCase)
+                    .Trim();
                 model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 
@@ -772,11 +779,11 @@ namespace GRA.Controllers
                 viewModel.GroupInfo.UserId = GetId(ClaimType.UserId);
                 await _userService.CreateGroup(viewModel.GroupInfo.UserId, viewModel.GroupInfo);
             }
-            catch (Exception ex)
+            catch (GraException graex)
             {
                 ShowAlertDanger(_sharedLocalizer[Annotations.Interface.CouldNotCreate,
                     _sharedLocalizer[Annotations.Interface.Group],
-                    ex.Message]);
+                    graex.Message]);
                 return View("GroupUpgrade", viewModel);
             }
             HttpContext.Session.SetString(SessionKey.CallItGroup, "True");
@@ -990,12 +997,12 @@ namespace GRA.Controllers
             if (!string.IsNullOrEmpty(donateButton))
             {
                 donationStatus = true;
-                userId = int.Parse(donateButton);
+                userId = int.Parse(donateButton, CultureInfo.InvariantCulture);
             }
             if (!string.IsNullOrEmpty(redeemButton))
             {
                 donationStatus = false;
-                userId = int.Parse(redeemButton);
+                userId = int.Parse(redeemButton, CultureInfo.InvariantCulture);
             }
             if (userId == 0)
             {
@@ -1057,7 +1064,7 @@ namespace GRA.Controllers
                 var description = new StringBuilder(item.Description);
                 var itemModel = new HistoryItemViewModel
                 {
-                    CreatedAt = item.CreatedAt.ToString("d"),
+                    CreatedAt = item.CreatedAt.ToString("d", CultureInfo.InvariantCulture),
                     PointsEarned = item.PointsEarned,
                 };
                 if (!string.IsNullOrWhiteSpace(item.BadgeFilename))
@@ -1079,6 +1086,7 @@ namespace GRA.Controllers
                                 AvatarController.Name,
                                 new { bundle = item.AvatarBundleId.Value });
                             description.AppendFormat(
+                                CultureInfo.InvariantCulture,
                                 " <strong><a href=\"{0}\">{1}</a></strong>",
                                 bundleLink,
                                 _sharedLocalizer[Annotations.Interface.SeeItemsUnlocked]);
@@ -1336,7 +1344,7 @@ namespace GRA.Controllers
             HouseholdListViewModel viewModel,
             string redeemButton)
         {
-            int userId = int.Parse(redeemButton);
+            int userId = int.Parse(redeemButton, CultureInfo.InvariantCulture);
             await _vendorCodeService.ResolveCodeStatusAsync(userId, false, false);
             return RedirectToAction(nameof(ProfileController.Household), ProfileController.Name);
         }
@@ -1410,8 +1418,10 @@ namespace GRA.Controllers
             {
                 var pointTranslation = await _pointTranslationService
                     .GetByProgramIdAsync(user.ProgramId);
-                viewModel.TranslationDescriptionPastTense =
-                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                viewModel.TranslationDescriptionPastTense = pointTranslation
+                    .TranslationDescriptionPastTense
+                    .Replace("{0}", "", StringComparison.OrdinalIgnoreCase)
+                    .Trim();
                 viewModel.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 
@@ -1564,8 +1574,10 @@ namespace GRA.Controllers
             {
                 var pointTranslation = await _pointTranslationService
                     .GetByProgramIdAsync(model.User.ProgramId);
-                model.TranslationDescriptionPastTense =
-                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                model.TranslationDescriptionPastTense = pointTranslation
+                    .TranslationDescriptionPastTense
+                    .Replace("{0}", "",StringComparison.OrdinalIgnoreCase)
+                    .Trim();
                 model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 
@@ -1702,7 +1714,7 @@ namespace GRA.Controllers
                     user.Username = model.Username;
                     try
                     {
-                        await _userService.RegisterHouseholdMemberAsync(user, model.Password);
+                        await _userService.RegisterHouseholdMemberAsync(user, model.Password, false);
                         ShowAlertSuccess(
                             _sharedLocalizer[Annotations.Interface.AddedParticipantGroupFamily,
                                 user.FullName,
@@ -1799,7 +1811,8 @@ namespace GRA.Controllers
                     if (registerMember)
                     {
                         member.Username = model.Username;
-                        await _userService.RegisterHouseholdMemberAsync(member, model.Password);
+                        await _userService
+                            .RegisterHouseholdMemberAsync(member, model.Password, false);
                     }
 
                     if (GetActiveUserId() == member.Id)

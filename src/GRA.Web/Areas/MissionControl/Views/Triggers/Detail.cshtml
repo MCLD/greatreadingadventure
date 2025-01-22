@@ -121,22 +121,25 @@
 
     @if (Model.Action == "Edit")
     {
-        <div class="fs-5 mt-2 mb-3">
-            Created By:
-            @if (Model.CanViewParticipants)
-            {
-                <a asp-controller="Participants"
-                   asp-action="@nameof(ParticipantsController.Detail)"
-                   asp-route-id="@Model.Trigger.CreatedBy"
-                   target="_blank">@Model.CreatedByName</a>
-            }
-            else
-            {
-                @Model.CreatedByName
-            }
-            on @Model.Trigger.CreatedAt
-        </div>
-
+        @if (!string.IsNullOrEmpty(Model.CreatedByName))
+        {
+            <div class="fs-5 mt-2 mb-3">
+                Created By:
+                @if (Model.CanViewParticipants)
+                {
+                    <a aria-label="@Model.CreatedByName (Opens new window)"
+                       asp-action="@nameof(ParticipantsController.Detail)"
+                       asp-controller="@ParticipantsController.Name"
+                       asp-route-id="@Model.Trigger.CreatedBy"
+                       target="_blank">@Model.CreatedByName</a>
+                }
+                else
+                {
+                    @Model.CreatedByName
+                }
+                on @Model.Trigger.CreatedAt
+            </div>
+        }
         @if (!string.IsNullOrEmpty(Model.PointLimitExceededMessage))
         {
             <div class="col-12 col-sm-6 offset-sm-3 mb-3">

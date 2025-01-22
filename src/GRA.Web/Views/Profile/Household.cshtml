@@ -35,12 +35,12 @@
                                     @SharedLocalizer[GRA.Annotations.Info.GroupCreate,
                                              Model.LocalizedHouseholdTitle]
                                 </div>
-                                <a asp-action="AddHouseholdMember"
+                                <a asp-action="@nameof(ProfileController.AddHouseholdMember)"
                                    class="btn btn-outline-primary mb-2">
                                     @SharedLocalizer[GRA.Annotations.Info.GroupRegister,
                                              Model.LocalizedHouseholdTitle]
                                 </a>
-                                <a asp-action="AddExistingParticipant"
+                                <a asp-action="@nameof(ProfileController.AddExistingParticipant)"
                                    class="btn btn-outline-primary mb-2">
                                     @SharedLocalizer[GRA.Annotations.Info.GroupAdd,
                                              Model.LocalizedHouseholdTitle]
@@ -62,12 +62,12 @@
                         <div class="col-12">
                             @if (Model.AuthUserIsHead && Model.CanEditHousehold)
                             {
-                                <a asp-action="AddHouseholdMember"
+                                <a asp-action="@nameof(ProfileController.AddHouseholdMember)"
                                    class="btn btn-outline-primary mb-2">
                                     @SharedLocalizer[GRA.Annotations.Info.GroupRegister,
                                              Model.LocalizedHouseholdTitle]
                                 </a>
-                                <a asp-action="AddExistingParticipant"
+                                <a asp-action="@nameof(ProfileController.AddExistingParticipant)"
                                    class="btn btn-outline-primary mb-2">
                                     @SharedLocalizer[GRA.Annotations.Info.GroupAdd,
                                              Model.LocalizedHouseholdTitle]
@@ -75,7 +75,10 @@
                             }
                         </div>
                     </div>
-                    <form id="form" asp-controller="Profile" method="post" role="form">
+                    <form id="form"
+                          asp-controller="@ProfileController.Name"
+                          method="post"
+                          role="form">
                         @if (Model.AuthUserIsHead && Model.CanLogActivity)
                         {
                             <input asp-for="UserSelection" type="hidden" />
@@ -430,7 +433,7 @@
                                                     <button class="btn btn-info btn-sm"
                                                             name="redeemButton"
                                                             value="@user.Id"
-                                                            asp-action="HandleHouseholdDonation"
+                                                            asp-action="@nameof(ProfileController.HandleHouseholdDonation)"
                                                             button-spinner>
                                                         <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.RedeemYourCode]</span>
                                                     </button>
@@ -439,7 +442,7 @@
                                                         <button class="btn btn-success btn-sm"
                                                                 name="donateButton"
                                                                 value="@user.Id"
-                                                                asp-action="HandleHouseholdDonation"
+                                                                asp-action="@nameof(ProfileController.HandleHouseholdDonation)"
                                                                 button-spinner>
                                                             <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.DonateYourBook]</span>
                                                         </button>

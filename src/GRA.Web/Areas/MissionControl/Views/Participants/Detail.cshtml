@@ -1,6 +1,32 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.ParticipantsDetailViewModel
 @using GRA
 @using GRA.Domain.Model
+
+<div class="fs-5 mt-2 mb-3">
+    Created By:
+    @if (Model.User.CreatedBy == 0)
+    {
+        @:self-registered
+    }
+    else if (Model.CanViewParticipants)
+    {
+        <a aria-label="@Model.CreatedByName (Opens new window)"
+           asp-action="@nameof(ParticipantsController.Detail)"
+           asp-controller="@ParticipantsController.Name"
+           asp-route-id="@Model.User.CreatedBy"
+           target="_blank">@Model.CreatedByName</a>
+    }
+    else
+    {
+        @Model.CreatedByName
+    }
+    on @Model.User.CreatedAt
+    @if (Model.User.IsMcRegistered)
+    {
+        @:via Mission Control
+    }
+</div>
+
 @await Html.PartialAsync("_ParticipantPartial")
 
 <form asp-controller="Participants" method="post" role="form">
@@ -108,7 +134,6 @@
                 @if (Model.CanEditDetails)
                 {
                     @await Html.PartialAsync("_SchoolSelectionPartial", Model)
-                    ;
                 }
                 else if (Model.ShowSchool)
                 {
@@ -467,44 +492,39 @@
     @if (Model.CanEditUsername)
     {
         <script>
-            $("#User_Username").on("blur", function () {
-                $(this).val($(this).val().trim());
-                let username = $(this).val();
-                if (username != "" && !$(this).hasClass("input-validation-error")) {
-                    if (username != "@Html.Raw(Model.Username)") {
-                        let usernameCheckUrl = "@Url.Action("UsernameInUse", "Lookup", new { Area = string.Empty })";
-                        let icon = $("#Username-Icon");
-                        icon.removeClass("d-none fa-times fa-check");
-                        icon.addClass("fa-spinner fa-spin");
-                        $.post(usernameCheckUrl, { username: username }, function (response) {
-                            if (response) {
-                                $("#User_Username").removeClass("valid");
-                                $("#User_Username").addClass("input-validation-error");
-                                $("#Username-Validation").removeClass("field-validation-valid");
-                                $("#Username-Validation").addClass("field-validation-error");
-                                $("#Username-Validation").text("@GRA.Annotations.Validate.UsernameTaken");
-                                icon.removeClass("fa-spinner fa-spin");
-                                icon.addClass("fa-times");
-                            }
-                            else {
-                                $("#Username-Validation").removeClass("field-validation-valid");
-                                $("#Username-Validation").text("The chosen username is available.");
-                                icon.removeClass("fa-spinner fa-spin");
-                                icon.addClass("fa-check");
-                            }
-                        });
-                    }
-                    else {
-                        $("#Username-Icon").removeClass("d-none fa-times").addClass("fa-check");
-                        $("#Username-Validation").removeClass("field-validation-valid");
-                        $("#Username-Validation").text("No change to username.");
+            const usernameCheckUrl = "@Url.Action(nameof(GRA.Controllers.LookupController.UsernameInUse), LookupController.Name, new { Area = string.Empty })";
+            const usernameIcon = $("#Username-Icon");
+            const usernameField = $("#User_Username");
+            const usernameValidation = $("#Username-Validation");
 
-                    }
+            usernameField.on("blur", function () {
+                if ($(this).val().trim() != "" && !$(this).hasClass("input-validation-error")) {
+                    $(this).val($(this).val().trim());
+                    usernameIcon.addClass("fa-spinner fa-spin")
+                        .removeClass("d-none fa-times-circle fa-check-circle text-success text-danger");
+                    $.post(usernameCheckUrl, { username: $(this).val() }, function (response) {
+                        if (response) {
+                            $(this).removeClass("valid");
+                            $(this).addClass("input-validation-error");
+                            usernameValidation.removeClass("field-validation-valid text-success")
+                                .addClass("field-validation-error")
+                                .text("Someone has already chosen that username.");
+                            usernameIcon.removeClass("fa-spinner fa-spin")
+                                .addClass("fa-times-circle text-danger");
+                        }
+                        else {
+                            usernameValidation.removeClass("field-validation-valid")
+                                .addClass("text-success")
+                                .text("The chosen username is available.");
+                            usernameIcon.removeClass("fa-spinner fa-spin")
+                                .addClass("fa-check-circle text-success");
+                        }
+                    });
                 }
             });
 
-            $("#User_Username").on("keypress", function () {
-                $("#Username-Icon").addClass("d-none");
+            usernameField.on("keypress", function () {
+                usernameIcon.addClass("d-none");
             });
         </script>
     }
@@ -521,6 +541,5 @@
     @if (Model.CanEditDetails)
     {
         @await Html.PartialAsync("_SchoolSelectionScripts", Model)
-        ;
     }
 }

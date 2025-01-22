@@ -17,8 +17,8 @@
         @if (Model.CanViewParticipants)
         {
             <a aria-label="@Model.CreatedByName (Opens new window)"
-               asp-controller="Participants"
                asp-action="@nameof(ParticipantsController.Detail)"
+               asp-controller="@ParticipantsController.Name"
                asp-route-id="@Model.Challenge.CreatedBy"
                target="_blank">@Model.CreatedByName</a>
         }

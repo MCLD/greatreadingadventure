@@ -7,22 +7,26 @@
     </div>
 }
 
-<div class="pt-2" style="font-size:large;">
-    Created By:
-    @if (Model.CanViewParticipants)
-    {
-        <a aria-label="@Model.CreatedByName (Opens new window)"
-           asp-controller="Participants"
-           asp-action="@nameof(ParticipantsController.Detail)"
-           asp-route-id="@Model.Drawing.CreatedBy"
-           target="_blank">@Model.CreatedByName</a>
-    }
-    else
-    {
-        @Model.CreatedByName
-    }
-    on @Model.Drawing.CreatedAt
-</div>
+@if (!string.IsNullOrEmpty(Model.CreatedByName))
+{
+    <div class="fs-5 mt-2 mb-3">
+        Created By:
+        @if (Model.CanViewParticipants)
+        {
+            <a aria-label="@Model.CreatedByName (Opens new window)"
+               asp-action="@nameof(ParticipantsController.Detail)"
+               asp-controller="@ParticipantsController.Name"
+               asp-route-id="@Model.Drawing.CreatedBy"
+               target="_blank">@Model.CreatedByName</a>
+        }
+        else
+        {
+            @Model.CreatedByName
+        }
+        on @Model.Drawing.CreatedAt
+    </div>
+}
+
 <div class="row my-2">
     <div class="col-12">
         <label class="col-form-label">Criteria</label>
