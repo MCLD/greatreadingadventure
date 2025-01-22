@@ -13,14 +13,14 @@ using Microsoft.Extensions.Logging;
 namespace GRA.Domain.Report
 {
     [ReportInformation(24,
-        "Staff-registered Participants",
+        "Staff Registered Participants",
         "The number of participants registered by staff members.",
         "Staff")]
-    public class StaffRegisteredParticipants : BaseReport
+    public class StaffRegisteredParticipantsReport : BaseReport
     {
         private readonly IUserRepository _userRepository;
 
-        public StaffRegisteredParticipants(ILogger<StaffRegisteredParticipants> logger,
+        public StaffRegisteredParticipantsReport(ILogger<StaffRegisteredParticipantsReport> logger,
             Domain.Report.ServiceFacade.Report serviceFacade,
             IUserRepository userRepository) : base(logger, serviceFacade)
         {
@@ -80,7 +80,6 @@ namespace GRA.Domain.Report
                 }
 
                 reportData.Add(new object[] {
-                        count,
                         staffRegisteredParticipant.Key.FullName,
                         staffRegisteredParticipant.Key.Username,
                         staffRegisteredParticipant.Value
