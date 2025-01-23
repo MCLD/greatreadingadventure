@@ -260,9 +260,10 @@ namespace GRA.Data.Repository
 
             // this cannot use the ApplyUserFilter() method as dates are handled differently
             var userList = DbSet.AsNoTracking().Where(_ => !_.IsDeleted
-                    && _.SiteId == criterion.SiteId
                     && _.CreatedBy != systemUserId
-                    && _.Id != systemUserId);
+                    && _.Id != systemUserId
+                    && _.IsMcRegistered
+                    && _.SiteId == criterion.SiteId);
 
             if (criterion.SystemId != null)
             {
@@ -291,30 +292,22 @@ namespace GRA.Data.Repository
                     Value = _.Count()
                 });
 
-            var roles = _context.RolePermissions.AsNoTracking()
-                .Where(_ => _.PermissionId == (int)Permission.ViewParticipantList)
-                .Select(_ => _.Role.Id);
-
-            var userNamesOnly = _context.UserRoles.AsNoTracking()
-                .Where(_ => roles.Contains(_.RoleId))
-                .Select(_ => new User
-                {
-                    FirstName = _.User.FirstName,
-                    Id = _.User.Id,
-                    LastName = _.User.LastName,
-                    Username = _.User.Username
-                });
-
-            return await userNamesOnly
-                .Join(registeredUserCount,
-                    user => user.Id,
-                    registeredUserCount => registeredUserCount.Key,
-                    (user, registeredUserCount) => new
+            return await registeredUserCount
+                .Join(DbSet.AsNoTracking(),
+                    ruc => ruc.Key,
+                    all => all.Id,
+                    (ruc, all) => new
                     {
-                        RegisteredUserCount = registeredUserCount.Value,
-                        User = user
+                        Key = new User
+                        {
+                            FirstName = all.FirstName,
+                            Id = all.Id,
+                            LastName = all.LastName,
+                            Username = all.Username
+                        },
+                        ruc.Value
                     })
-                .ToDictionaryAsync(k => k.User, v => v.RegisteredUserCount);
+                .ToDictionaryAsync(k => k.Key, v => v.Value);
         }
 
         public async Task<IDictionary<string, int>>

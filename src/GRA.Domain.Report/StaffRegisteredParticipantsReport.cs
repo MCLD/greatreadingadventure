@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
@@ -24,16 +23,17 @@ namespace GRA.Domain.Report
             Domain.Report.ServiceFacade.Report serviceFacade,
             IUserRepository userRepository) : base(logger, serviceFacade)
         {
-            _userRepository = userRepository
-                ?? throw new ArgumentNullException(nameof(userRepository));
-        }
+            ArgumentNullException.ThrowIfNull(userRepository);
 
+            _userRepository = userRepository;
+        }
 
         public override async Task ExecuteAsync(ReportRequest request,
            CancellationToken token,
            IProgress<JobStatus> progress = null)
         {
             #region Reporting initialization
+
             request = await StartRequestAsync(request);
 
             var criterion
@@ -51,6 +51,7 @@ namespace GRA.Domain.Report
                 AsOf = _serviceFacade.DateTimeProvider.Now
             };
             var reportData = new List<object[]>();
+
             #endregion Reporting initialization
 
             #region Collect data
@@ -65,13 +66,15 @@ namespace GRA.Domain.Report
 
             int count = 0;
 
-            IDictionary<User, int> staffRegisteredParticipants = await _userRepository.GetStaffRegisteredParticipantsAsync(criterion);
+            IDictionary<User, int> staffRegisteredParticipants
+                = await _userRepository.GetStaffRegisteredParticipantsAsync(criterion);
 
-            foreach (KeyValuePair<User, int> staffRegisteredParticipant in staffRegisteredParticipants)
+            foreach (var staffRegisteredParticipant in staffRegisteredParticipants
+                .OrderByDescending(_ => _.Value))
             {
                 UpdateProgress(progress,
-                    ++count * 100 / staffRegisteredParticipants.Count(),
-                    $"Processing: {count}/{staffRegisteredParticipants.Count()}",
+                    ++count * 100 / staffRegisteredParticipants.Count,
+                    $"Processing: {count}/{staffRegisteredParticipants.Count}",
                     request.Name);
 
                 if (token.IsCancellationRequested)
@@ -90,13 +93,14 @@ namespace GRA.Domain.Report
             #endregion Collect data
 
             #region Finish up reporting
+
             if (!token.IsCancellationRequested)
             {
                 ReportSet.Reports.Add(report);
             }
             await FinishRequestAsync(request, !token.IsCancellationRequested);
+
             #endregion Finish up reporting
         }
     }
 }
-
