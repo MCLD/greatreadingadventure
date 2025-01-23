@@ -253,7 +253,7 @@
                             }
                             @if (Model.CanViewPrizes)
                             {
-                                <td class="on-top text-center" style="vertical-align:middle;">
+                                <td class="on-top text-center align-middle">
                                     <a class="plain-link"
                                        asp-action="Prizes"
                                        asp-route-id="@Model.Head.Id">
@@ -272,8 +272,8 @@
                                     </a>
                                 </td>
                             }
-                            <td class="td-class">
-                                <a asp-action="Detail"
+                            <td class="td-class align-top">
+                                <a asp-action="@nameof(ParticipantsController.Detail)"
                                    asp-route-id="@Model.Head.Id"
                                    class="rowlink">
                                     <div>
@@ -286,10 +286,10 @@
                                     <div>@Model.Head.Username</div>
                                 </a>
                             </td>
-                            <td>@Model.Head.PointsEarned</td>
+                            <td class="align-top">@Model.Head.PointsEarned</td>
                             @if (Model.ShowVendorCodes)
                             {
-                                <td>
+                                <td class="align-top">
                                     @if (Model.Head.NeedsToAnswerVendorCodeQuestion)
                                     {
                                         <button class="btn btn-info btn-sm btn-spinner btn-on-top"
@@ -359,8 +359,8 @@
                                     }
                                 </td>
                             }
-                            <td>@Model.Head.BranchName</td>
-                            <td>@Model.Head.ProgramName</td>
+                            <td class="align-top">@Model.Head.BranchName</td>
+                            <td class="align-top">@Model.Head.ProgramName</td>
                             @if (Model.CanEditDetails)
                             {
                                 <td class="on-top">&nbsp;</td>
@@ -434,7 +434,7 @@
                                         </a>
                                     </td>
                                 }
-                                <td class="td-class">
+                                <td class="td-class align-top">
                                     <a asp-action="Detail"
                                        asp-route-id="@user.Id"
                                        class="rowlink">
@@ -462,7 +462,7 @@
                                         }
                                     </div>
                                 </td>
-                                <td class="align-bottom">@user.PointsEarned</td>
+                                <td class="align-top">@user.PointsEarned</td>
                                 @if (Model.ShowVendorCodes)
                                 {
                                     <td>
@@ -534,8 +534,8 @@
                                         }
                                     </td>
                                 }
-                                <td class="align-bottom">@user.BranchName</td>
-                                <td class="align-bottom">@user.ProgramName</td>
+                                <td class="align-top">@user.BranchName</td>
+                                <td class="align-top">@user.ProgramName</td>
                                 @if (Model.CanEditDetails)
                                 {
 
@@ -1083,7 +1083,7 @@
     {
         <script>
             var userId = @Model.Id;
-                                                                                                                                    var defaultSystemId = @Model.SystemId;
+            var defaultSystemId = @Model.SystemId;
             var participantsUrl = "@Url.Action("HouseholdGetParticipantsList")";
             var branchUrl = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
             var systemId = null;

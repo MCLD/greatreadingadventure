@@ -71,9 +71,8 @@ namespace GRA.Domain.Model
         public bool IsFirstTime { get; set; }
 
         public bool IsHomeschooled { get; set; }
-
         public bool IsLockedOut { get; set; }
-
+        public bool IsMcRegistered { get; set; }
         public bool IsNewsSubscribed { get; set; }
 
         public bool IsSystemUser { get; set; }

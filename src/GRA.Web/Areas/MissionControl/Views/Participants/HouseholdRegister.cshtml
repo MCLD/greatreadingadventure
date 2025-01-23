@@ -52,35 +52,39 @@
             ignore: ".ignore"
         });
 
-        $("#Username").on("blur", function () {
+        const usernameCheckUrl = "@Url.Action(nameof(GRA.Controllers.LookupController.UsernameInUse), LookupController.Name, new { Area = string.Empty })";
+        const usernameIcon = $("#Username-Icon");
+        const usernameField = $("#Username");
+        const usernameValidation = $("#Username-Validation");
+
+        usernameField.on("blur", function () {
             if ($(this).val().trim() != "" && !$(this).hasClass("input-validation-error")) {
                 $(this).val($(this).val().trim());
-                var usernameCheckUrl = "@Url.Action("UsernameInUse", "Lookup", new { Area = string.Empty })";
-                var icon = $("#Username-Icon");
-                icon.removeClass("d-none fa-times fa-check");
-                icon.addClass("fa-spinner fa-spin");
+                usernameIcon.addClass("fa-spinner fa-spin")
+                    .removeClass("d-none fa-times-circle fa-check-circle text-success text-danger");
                 $.post(usernameCheckUrl, { username: $(this).val() }, function (response) {
                     if (response) {
-                        $("#Username").removeClass("valid");
-                        $("#Username").addClass("input-validation-error");
-                        $("#Username-Validation").removeClass("field-validation-valid");
-                        $("#Username-Validation").addClass("field-validation-error");
-                        $("#Username-Validation").text("@GRA.Annotations.Validate.UsernameTaken");
-                        icon.removeClass("fa-spinner fa-spin");
-                        icon.addClass("fa-times");
+                        $(this).removeClass("valid");
+                        $(this).addClass("input-validation-error");
+                        usernameValidation.removeClass("field-validation-valid text-success")
+                            .addClass("field-validation-error")
+                            .text("Someone has already chosen that username.");
+                        usernameIcon.removeClass("fa-spinner fa-spin")
+                            .addClass("fa-times-circle text-danger");
                     }
                     else {
-                        $("#Username-Validation").removeClass("field-validation-valid");
-                        $("#Username-Validation").text("The chosen username is available.");
-                        icon.removeClass("fa-spinner fa-spin");
-                        icon.addClass("fa-check");
+                        usernameValidation.removeClass("field-validation-valid")
+                            .addClass("text-success")
+                            .text("The chosen username is available.");
+                        usernameIcon.removeClass("fa-spinner fa-spin")
+                            .addClass("fa-check-circle text-success");
                     }
                 });
             }
         });
 
-        $("#Username").on("keypress", function () {
-            $("#Username-Icon").addClass("d-none");
+        usernameField.on("keypress", function () {
+            usernameIcon.addClass("d-none");
         });
 </script>
 }

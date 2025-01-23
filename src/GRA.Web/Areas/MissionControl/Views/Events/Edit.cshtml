@@ -22,22 +22,26 @@
     <input asp-for="Event.RelatedSystemId" type="hidden" />
     <input asp-for="Event.RelatedTriggerId" type="hidden" />
 
-    <div class="my-2 fs-5">
-        Created By:
-        @if (Model.CanViewParticipants)
-        {
-            <a aria-label="@Model.CreatedByName (Opens new window)"
-               asp-controller="Participants"
-               asp-action="@nameof(ParticipantsController.Detail)"
-               asp-route-id="@Model.Event.CreatedBy"
-               target="_blank">@Model.CreatedByName</a>
-        }
-        else
-        {
-            @Model.CreatedByName
-        }
-        on @Model.Event.CreatedAt
-    </div>
+    @if (!string.IsNullOrEmpty(Model.CreatedByName))
+    {
+        <div class="fs-5 mt-2 mb-3">
+            Created By:
+            @if (Model.CanViewParticipants)
+            {
+                <a aria-label="@Model.CreatedByName (Opens new window)"
+                   asp-action="@nameof(ParticipantsController.Detail)"
+                   asp-controller="@ParticipantsController.Name"
+                   asp-route-id="@Model.Event.CreatedBy"
+                   target="_blank">@Model.CreatedByName</a>
+            }
+            else
+            {
+                @Model.CreatedByName
+            }
+            on @Model.Event.CreatedAt
+        </div>
+    }
+
     @if (Model.CanAddSecretCode)
     {
         <input asp-for="CanAddSecretCode" type="hidden" />
