@@ -57,14 +57,14 @@ a.rowlink {
     background-color: #003399;
 }
 
-hr.footer {
-    border-top: 1px solid #ccc;
-    margin-bottom: 1rem;
-}
-
 footer p {
     font-size: small;
     font-style: italic;
+    margin-bottom: 0.5rem;
+}
+
+div.locations {
+    margin-top: 0.5rem;
 }
 
 .label-as-badge {
@@ -125,18 +125,11 @@ footer p {
         top: 0;
     }
 
-.infolinks {
-    font-size: 1.2em;
-    text-align: center;
+
+.infolinks .active {
+    font-weight: bold;
 }
 
-    .infolinks .active {
-        font-weight: bold;
-    }
-
-    .infolinks > .locations {
-        margin-top: 1rem;
-    }
 
 .total-row {
     background-color: rgb(215, 240, 240);

@@ -1,48 +1,53 @@
 ﻿@model GRA.Controllers.ViewModel.Home.LandingPageViewModel
 @section metadata {
-<social data="Model.Social"></social>
+    <social data="Model.Social"></social>
 }
-<div class="row gra-landing-banner">
+<div class="row">
     <div class="col-12">
-        <img src="~/images/forest.jpg"
-             alt="@SharedLocalizer[GRA.Annotations.Home.BannerAltTag]"
-             class="img-fluid rounded"
-             srcset="@Url.Content("~/images/forest.jpg") 1x, @Url.Content("~/images/forest@2x.jpg") 2x" />
-    </div>
-</div>
-<div class="row gra-landing-content">
-    <div class="col-sm-3">
-        <p>@SharedLocalizer[GRA.Annotations.Home.ForMoreInformation]</p>
-        <p>@SharedLocalizer[GRA.Annotations.Home.GoOnAJourney]</p>
-    </div>
-    <div class="col-sm-6">
-        @SharedLocalizer[GRA.Annotations.Home.Thanks, Model.SiteName]
-        @if (Model?.CollectEmail == true)
-        {
-            <p>@SharedLocalizer[GRA.Annotations.Home.WantAReminder]</p>
-            <form asp-controller="Home"
-              asp-action="AddReminder"
-              method="post"
-              role="form"
-              class="form-horizontal">
-                <input asp-for="SignUpSource" type="hidden" />
-                <div class="mb-3" style="padding: 0.5em 1em;">
-                    <label asp-for="Email" class="col-form-label sr-only">@SharedLocalizer[GRA.Domain.Model.DisplayNames.EmailAddress]</label>
-                    <div class="input-group">
-                        <input asp-for="Email" class="form-control" type="email" autofocus />
-                        <span class="input-group-text">
-                            <button type="submit"
-                                class="btn btn-info">
-                                <span class="far fa-envelope"></span> @SharedLocalizer[GRA.Annotations.Home.RemindMe]
-                            </button>
-                        </span>
+        <div class="card">
+            <img alt="@Model.BannerAltText"
+                 class="card-img-top"
+                 src="@Model.BannerImagePath" />
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        @Html.Raw(Model?.LeftMessage)
+                    </div>
+                    <div class="col-md-6">
+                        @Html.Raw(Model?.CenterMessage)
+                        @if (Model?.CollectEmail == true)
+                        {
+                            <p>@SharedLocalizer[GRA.Annotations.Home.WantAReminder]</p>
+                            <form asp-controller="@HomeController.Name"
+                                  asp-action="@nameof(HomeController.AddReminder)"
+                                  method="post"
+                                  role="form"
+                                  class="form-horizontal">
+                                <input asp-for="SignUpSource" type="hidden" />
+                                <div class="mb-3">
+                                    <label asp-for="Email" class="col-form-label sr-only">
+                                        @SharedLocalizer[GRA.Domain.Model.DisplayNames.EmailAddress]
+                                    </label>
+                                    <div class="input-group">
+                                        <input asp-for="Email"
+                                               class="form-control"
+                                               type="email"
+                                               autofocus />
+                                        <button type="submit"
+                                                class="btn btn-outline-primary">
+                                            <span class="far fa-envelope fa-fw"></span>
+                                            @SharedLocalizer[GRA.Annotations.Home.RemindMe]
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        }
+                    </div>
+                    <div class="col-md-3">
+                        @Html.Raw(Model?.RightMessage)
                     </div>
                 </div>
-            </form>
-        }
-    </div>
-    <div class="col-sm-3">
-        <p>@SharedLocalizer[GRA.Annotations.Home.Read20]</p>
-        <p>@SharedLocalizer[GRA.Annotations.Home.ReadingIsFundamental]</p>
+            </div>
+        </div>
     </div>
 </div>

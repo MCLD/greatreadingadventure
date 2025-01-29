@@ -26,15 +26,17 @@ namespace GRA.Controllers.Helpers
             SiteLookupService siteLookupService,
             UserService userService)
         {
-            _urlHelperFactory = urlHelperFactory
-                ?? throw new ArgumentNullException(nameof(urlHelperFactory));
-            _sharedLocalizer = sharedLocalizer
-                ?? throw new ArgumentNullException(nameof(sharedLocalizer));
-            _pageService = pageService
-                ?? throw new ArgumentNullException(nameof(pageService));
-            _siteLookupService = siteLookupService
-                ?? throw new ArgumentNullException(nameof(siteLookupService));
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            ArgumentNullException.ThrowIfNull(pageService);
+            ArgumentNullException.ThrowIfNull(sharedLocalizer);
+            ArgumentNullException.ThrowIfNull(siteLookupService);
+            ArgumentNullException.ThrowIfNull(urlHelperFactory);
+            ArgumentNullException.ThrowIfNull(userService);
+
+            _pageService = pageService;
+            _sharedLocalizer = sharedLocalizer;
+            _siteLookupService = siteLookupService;
+            _urlHelperFactory = urlHelperFactory;
+            _userService = userService;
         }
 
         /// <summary>
@@ -50,16 +52,13 @@ namespace GRA.Controllers.Helpers
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            if (output == null)
-            {
-                throw new ArgumentNullException(nameof(output));
-            }
+            ArgumentNullException.ThrowIfNull(output);
 
             var pages = await _pageService.GetAreaPagesAsync(NavPages);
 
             if (!NavPages)
             {
-                output.Attributes.Add("class", "infolinks mt-4");
+                output.Attributes.Add("class", "infolinks");
                 output.TagName = "div";
             }
             else

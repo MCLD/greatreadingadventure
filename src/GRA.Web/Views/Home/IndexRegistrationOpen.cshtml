@@ -1,46 +1,44 @@
 ﻿@model GRA.Controllers.ViewModel.Home.LandingPageViewModel
 @section metadata {
-<social data="Model.Social"></social>
+    <social data="Model.Social"></social>
 }
-<div class="row gra-landing-banner">
+<div class="row">
     <div class="col-12">
-        <img src="~/images/forest.jpg"
-             alt="@SharedLocalizer[GRA.Annotations.Home.BannerAltTag]"
-             class="img-fluid rounded"
-             srcset="@Url.Content("~/images/forest.jpg") 1x, @Url.Content("~/images/forest@2x.jpg") 2x" />
-    </div>
-</div>
-<div class="row gra-landing-content">
-    <div class="col-sm-3">
-        <p>@SharedLocalizer[GRA.Annotations.Home.ForMoreInformation]</p>
-        <p>@SharedLocalizer[GRA.Annotations.Home.GoOnAJourney]</p>
-    </div>
-    <div class="col-sm-6">
-        <p>
-            @SharedLocalizer[GRA.Annotations.Home.WelcomeTo, Model.SiteName]
-            @SharedLocalizer[GRA.Annotations.Home.StartsSoon]
-            <div class="row" style="margin-top: 2em;">
-                <div class="col-sm-6" style="margin-top: 0.5em;">
-                    <a asp-controller="Join"
-                       asp-action="Index"
-                       class="btn btn-primary  btn-lg">
-                        <span class="fas fa-book"></span>
-                        @SharedLocalizer[GRA.Domain.Model.DisplayNames.JoinNow]
-                    </a>
-                </div>
-                <div class="col-sm-6" style="margin-top: 0.5em;">
-                    <a asp-controller="SignIn"
-                       asp-action="Index"
-                       class="btn btn-success  btn-lg">
-                        <span class="fas fa-sign-in-alt"></span>
-                        @SharedLocalizer[GRA.Domain.Model.DisplayNames.SignIn]
-                    </a>
+        <div class="card">
+            <img alt="@Model.BannerAltText"
+                 class="card-img-top"
+                 src="@Model.BannerImagePath" />
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-3">
+                        @Html.Raw(Model?.LeftMessage)
+                    </div>
+                    <div class="col-lg-6">
+                        @Html.Raw(Model?.CenterMessage)
+                        <div class="row my-4">
+                            <div class="col-lg-6 d-grid">
+                                <a asp-action="@nameof(JoinController.Index)"
+                                   asp-controller="@JoinController.Name"
+                                   class="btn btn-outline-primary btn-lg mb-4">
+                                    <span class="fas fa-book fa-fw"></span>
+                                    @SharedLocalizer[GRA.Domain.Model.DisplayNames.JoinNow]
+                                </a>
+                            </div>
+                            <div class="col-lg-6 d-grid">
+                                <a asp-action="@nameof(SignInController.Index)"
+                                   asp-controller="@SignInController.Name"
+                                   class="btn btn-outline-success btn-lg mb-4">
+                                    <span class="fas fa-sign-in-alt fa-fw"></span>
+                                    @SharedLocalizer[GRA.Domain.Model.DisplayNames.SignIn]
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.Raw(Model?.RightMessage)
+                    </div>
                 </div>
             </div>
-        </p>
-    </div>
-    <div class="col-sm-3">
-        <p>@SharedLocalizer[GRA.Annotations.Home.Read20]</p>
-        <p>@SharedLocalizer[GRA.Annotations.Home.ReadingIsFundamental]</p>
+        </div>
     </div>
 </div>
