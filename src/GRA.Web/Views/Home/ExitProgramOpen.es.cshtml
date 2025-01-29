@@ -1,49 +1,56 @@
 ﻿@model GRA.Controllers.ViewModel.Home.ExitPageViewModel
 @section metadata {
-<social data="Model.Social"></social>
+    <social data="Model.Social"></social>
 }
-<div class="row gra-landing-banner">
+<div class="row">
     <div class="col-12">
-        <img src="~/images/forest.jpg"
-             alt="@SharedLocalizer[GRA.Annotations.Home.BannerAltTag]"
-             class="img-fluid rounded"
-             srcset="@Url.Content("~/images/forest.jpg") 1x, @Url.Content("~/images/forest@2x.jpg") 2x" />
-    </div>
-</div>
-<div class="row gra-landing-content">
-    <div class="@(string.IsNullOrEmpty(Model?.Branch?.Name) ? "col-sm-12" : "col-sm-7")">
-        <h2 class="gra-exit-header">@SharedLocalizer[GRA.Annotations.Home.AdventureNotOver]</h2>
-        <p>@SharedLocalizer[GRA.Annotations.Home.ContinueYourAdventure]</p>
-        <div class="text-center">
-            <a asp-controller="@SignInController.Name"
-               asp-action="@nameof(SignInController.Index)"
-               class="btn btn-success btn-lg">
-                <span class="fa fa-sign-in"></span>
-                @SharedLocalizer[GRA.Annotations.Home.SignInAgain]
-            </a>
+        <div class="card">
+            <img alt="@Model.BannerAltText"
+                 class="card-img-top"
+                 src="@Model.BannerImagePath" />
+            <div class="card-body">
+                <div class="row">
+                    <div class="@(string.IsNullOrEmpty(Model?.Branch?.Name) ? "col-md-12" : "col-md-7") mb-2">
+                        <h2>@Model.LeftHeader</h2>
+                        @Html.Raw(Model.LeftMessage)
+                        <div class="d-flex justify-content-center mt-2">
+                            <a asp-controller="@SignInController.Name"
+                               asp-action="@nameof(SignInController.Index)"
+                               class="btn btn-outline-success btn-lg">
+                                <span class="fa fa-sign-in fa-fw"></span>
+                                @SharedLocalizer[GRA.Annotations.Home.SignInAgain]
+                            </a>
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model?.Branch?.Name))
+                    {
+                        <div class="col-md-5 pt-2 mb-2">
+                            <div class="h5 mb-0">
+                                @if (!string.IsNullOrEmpty(Model?.Branch?.Url))
+                                {
+                                    <a href="@Model.Branch.Url">@Model.Branch.Name</a>
+                                }
+                                else
+                                {
+                                    @Model.Branch.Name
+                                }
+                            </div>
+                            @if (!string.IsNullOrEmpty(Model?.Branch?.Telephone))
+                            {
+                                <div>
+                                    <a href="tel:@Model.Branch.Telephone">@Model.Branch.Telephone</a>
+                                </div>
+                            }
+                            @if (!string.IsNullOrEmpty(Model?.Branch?.Address))
+                            {
+                                <div>
+                                    @Model.Branch.Address
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
         </div>
     </div>
-    @if (!string.IsNullOrEmpty(Model?.Branch?.Name))
-    {
-        <div class="col-sm-5">
-            @if (!string.IsNullOrEmpty(Model?.Branch?.Url))
-            {
-                <p class="gra-branch-name"><a href="@Model.Branch.Url">@Model.Branch.Name</a></p>
-            }
-            else
-            {
-                <p class="gra-branch-name">@Model.Branch.Name</p>
-            }
-            <p>
-                @if (!string.IsNullOrEmpty(Model?.Branch?.Telephone))
-                {
-                    <a href="tel:@Model.Branch.Telephone">@Model.Branch.Telephone</a><br />
-                }
-                @if (!string.IsNullOrEmpty(Model?.Branch?.Address))
-                {
-                    @Model.Branch.Address
-                }
-            </p>
-        </div>
-    }
 </div>

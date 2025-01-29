@@ -11,7 +11,9 @@
     {
         @foreach (var item in ((IDictionary<string, string>)Context.Items[GRA.Controllers.ItemKey.HrefLang]))
         {
-            <link rel="alternate" hreflang="@item.Key" href="@Url.RouteUrl(null, new { culture = item.Value }, Context.Items[GRA.Controllers.ItemKey.WebScheme].ToString())" />
+            <link rel="alternate"
+                  hreflang="@item.Key"
+                  href="@Url.RouteUrl(null, new { culture = item.Value }, Context.Items[GRA.Controllers.ItemKey.WebScheme].ToString())" />
         }
     }
     <link rel="icon" href="/favicon.ico">
@@ -59,17 +61,16 @@
                     'dimension2': 'Program_Name'
                 }
             });
-
-            @if (Context.Items[GRA.Controllers.ItemKey.SignedIn] != null)
-            {
-                <text>
-                                                    if (typeof gtag !== 'undefined')
-                                                    {
-                                                        gtag('event', 'login');
-                                                                                                    }
-                </text>
-            }
         </script>
+
+        @if (Context.Items[GRA.Controllers.ItemKey.SignedIn] != null)
+        {
+            <script>
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'login');
+                }
+            </script>
+        }
     }
 </head>
 <body>
@@ -78,7 +79,10 @@
     }
     <nav class="navbar navbar-expand-md d-print-none bg-light">
         <div class="container-fluid">
-            <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand flex-grow-1">
+            <a asp-area=""
+               asp-controller="@HomeController.Name"
+               asp-action="@nameof(HomeController.Index)"
+               class="navbar-brand flex-grow-1">
                 <div class="hidden-xs navbar-left gra-navbar-brand-logo"></div>
                 <grasite property="pageTitle"></grasite>
             </a>
@@ -89,7 +93,9 @@
                     aria-controls="navbarContent"
                     aria-expanded="false"
                     aria-label="Toggle navigation">
-                <span class="sr-only">@SharedLocalizer[GRA.Domain.Model.DisplayNames.ToggleNavigation]</span>
+                <span class="sr-only">
+                    @SharedLocalizer[GRA.Domain.Model.DisplayNames.ToggleNavigation]
+                </span>
                 @SharedLocalizer[GRA.Domain.Model.DisplayNames.Menu]
             </button>
             <div class="collapse navbar-collapse ms-auto" id="navbarContent">
@@ -97,42 +103,108 @@
                     @if (Context.Items[GRA.Controllers.ItemKey.L10n] != null)
                     {
                         <li class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" title="Languages">
-                                <span class="fas fa-globe-americas fa-fw"></span><span class="d-md-none"> @SharedLocalizer[GRA.Domain.Model.DisplayNames.Language]</span> <span class="caret"></span>
+                            <a href="#"
+                               class="nav-link dropdown-toggle"
+                               data-bs-toggle="dropdown"
+                               role="button"
+                               aria-expanded="false"
+                               title="Languages">
+                                <span class="fas fa-globe-americas fa-fw"></span>
+                                <span class="d-md-none">
+                                    @SharedLocalizer[GRA.Domain.Model.DisplayNames.Language]
+                                </span>
+                                <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu">
                                 @foreach (var item in ((IEnumerable<SelectListItem>)Context.Items[GRA.Controllers.ItemKey.L10n]))
                                 {
-                                    <li><a class="dropdown-item" href="@Url.RouteUrl(new { culture = item.Value, id = Context.Items[ItemKey.RouteId]})">@item.Text</a></li>
+                                    <li>
+                                        <a class="dropdown-item"
+                                           href="@Url.RouteUrl(new { culture = item.Value, id = Context.Items[ItemKey.RouteId]})">@item.Text</a>
+                                    </li>
                                 }
                             </ul>
                         </li>
                     }
                     @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.ShowMissionControl))
                     {
-                        <li class="nav-item"><a asp-area="MissionControl" asp-controller="Home" asp-action="Index" title="Mission Control" data-bs-toggle="tooltip" data-bs-placement="bottom" class="nav-link gra-mclink"><span class="fas fa-rocket fa-fw"></span><span class="d-md-none"> @SharedLocalizer[GRA.Domain.Model.DisplayNames.MissionControl]</span></a></li>
+                        <li class="nav-item">
+                            <a asp-action="@nameof(GRA.Controllers.MissionControl.HomeController.Index)"
+                               asp-area="@nameof(GRA.Controllers.MissionControl)"
+                               asp-controller="@GRA.Controllers.MissionControl.HomeController.Name"
+                               title="Mission Control"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="bottom"
+                               class="nav-link gra-mclink">
+                                <span class="fas fa-rocket fa-fw"></span>
+                                <span class="d-md-none">
+                                    @SharedLocalizer[GRA.Domain.Model.DisplayNames.MissionControl]
+                                </span>
+                            </a>
+                        </li>
                     }
                     @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.ShowPerformerRegistration) && !Context.Items.ContainsKey(GRA.Controllers.ItemKey.ShowMissionControl))
                     {
-                        <li class="nav-item"><a asp-area="PerformerRegistration" asp-controller="Home" asp-action="Index" title="Performer Registration" data-bs-toggle="tooltip" data-bs-placement="bottom" class="nav-link"><span class="fas fa-theater-masks fa-fw"></span><span class="d-md-none"> @SharedLocalizer[GRA.Domain.Model.DisplayNames.MissionControl]</span></a></li>
+                        <li class="nav-item">
+                            <a asp-action="@nameof(GRA.Controllers.PerformerRegistration.HomeController.Index)"
+                               asp-area="@nameof(GRA.Controllers.PerformerRegistration)"
+                               asp-controller="@GRA.Controllers.PerformerRegistration.HomeController.Name"
+                               title="Performer Registration"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="bottom"
+                               class="nav-link">
+                                <span class="fas fa-theater-masks fa-fw"></span>
+                                <span class="d-md-none">
+                                    @SharedLocalizer[GRA.Domain.Model.DisplayNames.MissionControl]
+                                </span>
+                            </a>
+                        </li>
                     }
                     @if (!String.Equals(this.ViewContext.RouteData.Values["controller"].ToString(), "Questionnaire", StringComparison.OrdinalIgnoreCase))
                     {
-                        <li ActiveBy class="nav-item" routeKey="Controller" value="Home"><a add-active asp-controller="Home" asp-action="Index" title="Home" class="nav-link"><span class="fas fa-home fa-fw"></span><span class="d-md-none"> @SharedLocalizer[GRA.Domain.Model.DisplayNames.Home]</span></a></li>
+                        <li add-active
+                            asp-action="@nameof(HomeController.Index)"
+                            asp-controller="@HomeController.Name"
+                            class="nav-item">
+                            <a add-active
+                               asp-action="@nameof(HomeController.Index)"
+                               asp-controller="@HomeController.Name"
+                               title="Home"
+                               class="nav-link">
+                                <span class="fas fa-home fa-fw"></span>
+                                <span class="d-md-none">
+                                    @SharedLocalizer[GRA.Domain.Model.DisplayNames.Home]
+                                </span>
+                            </a>
+                        </li>
                         @if (User.Identity.IsAuthenticated && Context.Items.ContainsKey(ItemKey.ShowMail) && Context.Items[ItemKey.ShowMail] as bool? == true)
                         {
-                            <li ActiveBy class="nav-item" routeKey="Controller" value="Mail" title="Mail">
-                                <a add-active asp-controller="Mail" asp-action="Index" class="nav-link text-nowrap">
+                            <li add-active
+                                asp-action="@nameof(MailController.Index)"
+                                asp-controller="@MailController.Name"
+                                class="nav-item"
+                                title="Mail">
+                                <a add-active
+                                   asp-action="@nameof(MailController.Index)"
+                                   asp-controller="@MailController.Name"
+                                   class="nav-link text-nowrap">
                                     @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.UnreadCount) && (int)Context.Items[GRA.Controllers.ItemKey.UnreadCount] > 0)
                                     {
-                                        <span class="fas fa-envelope fa-fw text-danger" title="@SharedLocalizer[GRA.Annotations.Interface.NewMail]"></span>
-                                        <span class="d-md-none"> @SharedLocalizer[GRA.Domain.Model.DisplayNames.Mail]</span>
-                                        <span class="badge bg-danger rounded-pill">@Context.Items[GRA.Controllers.ItemKey.UnreadCount]</span>
+                                        <span class="fas fa-envelope fa-fw text-danger"
+                                              title="@SharedLocalizer[GRA.Annotations.Interface.NewMail]"></span>
+                                        <span class="d-md-none">
+                                            @SharedLocalizer[GRA.Domain.Model.DisplayNames.Mail]
+                                        </span>
+                                        <span class="badge bg-danger rounded-pill">
+                                            @Context.Items[GRA.Controllers.ItemKey.UnreadCount]
+                                        </span>
                                     }
                                     else
                                     {
                                         <span class="far fa-envelope fa-fw"></span>
-                                        <span class="d-md-none"> @SharedLocalizer[GRA.Domain.Model.DisplayNames.Mail]</span>
+                                        <span class="d-md-none">
+                                            @SharedLocalizer[GRA.Domain.Model.DisplayNames.Mail]
+                                        </span>
                                     }
                                 </a>
                             </li>
@@ -141,17 +213,42 @@
                         {
                             @if (Context.Items[GRA.Controllers.ItemKey.ShowChallenges] as bool? != false)
                             {
-                                <li ActiveBy class="nav-item" routeKey="Controller" value="Challenges"><a add-active asp-controller="Challenges" asp-action="Index" class="nav-link">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Challenges]</a></li>
+                                <li add-active
+                                    asp-action="@nameof(ChallengesController.Index)"
+                                    asp-controller="@ChallengesController.Name"
+                                    class="nav-item">
+                                    <a add-active
+                                       asp-action="@nameof(ChallengesController.Index)"
+                                       asp-controller="@ChallengesController.Name"
+                                       class="nav-link">
+                                        @SharedLocalizer[GRA.Domain.Model.DisplayNames.Challenges]
+                                    </a>
+                                </li>
                             }
                             @if (Context.Items[GRA.Controllers.ItemKey.ShowEvents] as bool? != false)
                             {
                                 @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.ExternalEventListUrl))
                                 {
-                                    <li ActiveBy class="nav-item" routeKey="Controller" value="Events"><a add-active href="@Context.Items[GRA.Controllers.ItemKey.ExternalEventListUrl]" class="nav-link">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Events]</a></li>
+                                    <li>
+                                        <a href="@Context.Items[GRA.Controllers.ItemKey.ExternalEventListUrl]"
+                                           class="nav-link">
+                                            @SharedLocalizer[GRA.Domain.Model.DisplayNames.Events]
+                                        </a>
+                                    </li>
                                 }
                                 else
                                 {
-                                    <li ActiveBy class="nav-item" routeKey="Controller" value="Events"><a add-active asp-controller="Events" asp-action="Index" class="nav-link">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Events]</a></li>
+                                    <li add-active
+                                        asp-action="@nameof(EventsController.Index)"
+                                        asp-controller="@EventsController.Name"
+                                        class="nav-item">
+                                        <a add-active
+                                           asp-action="@nameof(EventsController.Index)"
+                                           asp-controller="@EventsController.Name"
+                                           class="nav-link">
+                                            @SharedLocalizer[GRA.Domain.Model.DisplayNames.Events]
+                                        </a>
+                                    </li>
                                 }
                             }
                         }
@@ -162,33 +259,84 @@
                         {
                             @if (Context.Session.Keys.Contains(GRA.Controllers.SessionKey.HeadOfHousehold))
                             {
-                                <li class="nav-item" add-active asp-controller="Profile" asp-action="Household">
-                                    <a add-active asp-controller="Profile" asp-action="Household" class="nav-link"><span class="fas fa-users fa-fw"></span></a>
+                                <li class="nav-item"
+                                    add-active
+                                    asp-action="@nameof(ProfileController.Household)"
+                                    asp-controller="@ProfileController.Name">
+                                    <a add-active
+                                       asp-action="@nameof(ProfileController.Household)"
+                                       asp-controller="@ProfileController.Name"
+                                       class="nav-link">
+                                        <span class="fas fa-users fa-fw"></span>
+                                    </a>
                                 </li>
-                                <li class="nav-item" add-active asp-controller="Profile" asp-action="Index">
-                                    <a add-active asp-controller="Profile" asp-action="Index" class="nav-link">@SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProfile]</a>
+                                <li class="nav-item"
+                                    add-active
+                                    asp-action="@nameof(ProfileController.Index)"
+                                    asp-controller="@ProfileController.Name">
+                                    <a add-active
+                                       asp-action="@nameof(ProfileController.Index)"
+                                       asp-controller="@ProfileController.Name"
+                                       class="nav-link">
+                                        @SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProfile]
+                                    </a>
                                 </li>
                             }
                             else
                             {
-                                <li ActiveBy class="nav-item" routeKey="Controller" value="Profile">
-                                    <a add-active asp-controller="Profile" asp-action="Index" class="nav-link">@SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProfile]</a>
+                                <li class="nav-item"
+                                    add-active
+                                    asp-action="@nameof(ProfileController.Index)"
+                                    asp-controller="@ProfileController.Name">
+                                    <a add-active
+                                       asp-action="@nameof(ProfileController.Index)"
+                                       asp-controller="@ProfileController.Name"
+                                       class="nav-link">
+                                        @SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProfile]
+                                    </a>
                                 </li>
                             }
                         }
                         <infolinks navPages="true"></infolinks>
-                        <li class="nav-item"><a add-active asp-controller="Home" asp-action="Signout" class="nav-link">@SharedLocalizer[GRA.Domain.Model.DisplayNames.SignOut]</a></li>
+                        <li class="nav-item">
+                            <a add-active
+                               asp-action="@nameof(HomeController.SignOut)"
+                               asp-controller="@HomeController.Name"
+                               class="nav-link">
+                                @SharedLocalizer[GRA.Domain.Model.DisplayNames.SignOut]
+                            </a>
+                        </li>
                     }
                     else
                     {
                         <infolinks navPages="true"></infolinks>
                         @if (siteStage == SiteStage.RegistrationOpen || siteStage == SiteStage.ProgramOpen)
                         {
-                            <li ActiveBy class="nav-item" routeKey="Controller" value="Join"><a add-active asp-controller="Join" asp-action="Index" class="nav-link">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Join]</a></li>
+                            <li add-active
+                                asp-action="@nameof(JoinController.Index)"
+                                asp-controller="@JoinController.Name"
+                                class="nav-item">
+                                <a add-active
+                                   asp-action="@nameof(JoinController.Index)"
+                                   asp-controller="@JoinController.Name"
+                                   class="nav-link">
+                                    @SharedLocalizer[GRA.Domain.Model.DisplayNames.Join]
+                                </a>
+                            </li>
                         }
                         @if (siteStage != GRA.Domain.Model.SiteStage.BeforeRegistration && siteStage != SiteStage.AccessClosed)
                         {
-                            <li ActiveBy class="nav-item" routeKey="Controller" value="SignIn"><a add-active asp-controller="Signin" asp-action="Index" class="nav-link">@SharedLocalizer[GRA.Domain.Model.DisplayNames.SignIn]</a></li>
+                            <li add-active
+                                asp-action="@nameof(SignInController.Index)"
+                                asp-controller="@SignInController.Name"
+                                class="nav-item">
+                                <a add-active
+                                   asp-action="@nameof(SignInController.Index)"
+                                   asp-controller="@SignInController.Name"
+                                   class="nav-link">
+                                    @SharedLocalizer[GRA.Domain.Model.DisplayNames.SignIn]
+                                </a>
+                            </li>
                         }
                     }
                 </ul>
@@ -199,7 +347,10 @@
         <noscript>
             <div class="row">
                 <div class="col-12">
-                    <div class="alert alert-warning"><span class="fas fa-lg fa-exclamation-triangle text-primary"></span> @SharedLocalizer[GRA.Annotations.Required.JavaScriptWarning]</div>
+                    <div class="alert alert-warning">
+                        <span class="fas fa-lg fa-exclamation-triangle text-primary"></span>
+                        @SharedLocalizer[GRA.Annotations.Required.JavaScriptWarning]
+                    </div>
                 </div>
             </div>
         </noscript>
@@ -212,7 +363,9 @@
         {
             <div class="row">
                 <div class="col-12 col-sm-6 offset-sm-3">
-                    <div class="alert alert-danger">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertDanger])</div>
+                    <div class="alert alert-danger">
+                        @Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertDanger])
+                    </div>
                 </div>
             </div>
         }
@@ -220,7 +373,9 @@
         {
             <div class="row">
                 <div class="col-12 col-sm-6 offset-sm-3">
-                    <div class="alert alert-warning">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertWarning])</div>
+                    <div class="alert alert-warning">
+                        @Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertWarning])
+                    </div>
                 </div>
             </div>
         }
@@ -228,7 +383,9 @@
         {
             <div class="row">
                 <div class="col-12 col-sm-6 offset-sm-3">
-                    <div class="alert alert-success">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertSuccess])</div>
+                    <div class="alert alert-success">
+                        @Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertSuccess])
+                    </div>
                 </div>
             </div>
         }
@@ -236,16 +393,25 @@
         {
             <div class="row">
                 <div class="col-12 col-sm-6 offset-sm-3">
-                    <div class="alert alert-info">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertInfo])</div>
+                    <div class="alert alert-info">
+                        @Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertInfo])
+                    </div>
                 </div>
             </div>
         }
         @RenderBody()
-        <infolinks navPages="false"></infolinks>
-        <hr class="footer">
-        <footer>
-            <grasite property="footer"></grasite>
-        </footer>
+        <div class="d-flex justify-content-center mt-4">
+            <div class="card">
+                <div class="card-body p-3 text-center">
+                    <infolinks navPages="false"></infolinks>
+                </div>
+                <div class="card-footer text-center">
+                    <footer>
+                        <grasite property="footer"></grasite>
+                    </footer>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="/js/main.min.js"></script>
     @RenderSection("scripts", required: false)

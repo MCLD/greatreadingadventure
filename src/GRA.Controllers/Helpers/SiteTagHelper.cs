@@ -19,10 +19,11 @@ namespace GRA.Controllers.Helpers
         public SiteTagHelper(IUserContextProvider userContextProvider,
             SiteLookupService siteLookupService)
         {
-            _userContextProvider = userContextProvider
-                ?? throw new ArgumentNullException(nameof(userContextProvider));
-            _siteLookupService = siteLookupService
-                ?? throw new ArgumentNullException(nameof(siteLookupService));
+            ArgumentNullException.ThrowIfNull(userContextProvider);
+            ArgumentNullException.ThrowIfNull(siteLookupService);
+
+            _userContextProvider = userContextProvider;
+            _siteLookupService = siteLookupService;
         }
 
         [HtmlAttributeName("property")]

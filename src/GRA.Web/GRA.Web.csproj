@@ -102,12 +102,11 @@
     <None Include="wwwroot\favicon.ico" />
     <None Include="wwwroot\icon.svg" />
     <None Include="wwwroot\images\great-reading-adventure-logo%401x.png" />
-    <None Include="wwwroot\images\forest%402x.jpg" />
-    <None Include="wwwroot\images\forest.jpg" />
     <None Include="wwwroot\manifest.webmanifest" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="assets\defaultimages\gra-forest.jpg" />
     <Content Include="assets\defaultimages\no_avatar.png" />
   </ItemGroup>
 

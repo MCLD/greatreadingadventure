@@ -7,6 +7,7 @@ using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -17,6 +18,7 @@ namespace GRA.Controllers
         private const string ActivityErrorMessage = "ActivityErrorMessage";
         private const string AuthorErrorMessage = "AuthorErrorMessage";
         private const int BadgesToDisplay = 6;
+        private const string DefaultBannerFilename = "gra-forest.jpg";
         private const string LatestBook = "LatestBook";
         private const string ModelData = "ModelData";
         private const string SecretCodeMessage = "SecretCodeMessage";
@@ -116,21 +118,17 @@ namespace GRA.Controllers
             {
                 carouselItemDescription = await _carouselService.GetItemDescriptionAsync(id);
             }
-            catch (Exception ex)
+            catch (GraException gex)
             {
-                _logger.LogWarning("Request for carousel item {id} description failed: {message}",
+                _logger.LogWarning(gex,
+                    "Request for carousel item {id} description failed: {message}",
                     id,
-                    ex.Message);
+                    gex.Message);
             }
 
-            if (string.IsNullOrEmpty(carouselItemDescription))
-            {
-                return NotFound();
-            }
-            else
-            {
-                return Ok(CommonMark.CommonMarkConverter.Convert(carouselItemDescription));
-            }
+            return string.IsNullOrEmpty(carouselItemDescription)
+                ? NotFound()
+                : Ok(CommonMark.CommonMarkConverter.Convert(carouselItemDescription));
         }
 
         [HttpPost]
@@ -217,10 +215,13 @@ namespace GRA.Controllers
                 var viewModel = new DashboardViewModel
                 {
                     ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural,
-                    DisableSecretCode = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
+                    DisableSecretCode
+                        = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
                     IsPerformerScheduling = GetSiteStage() == SiteStage.BeforeRegistration
-                        && User.HasClaim(ClaimType.Permission, nameof(Permission.AccessPerformerRegistration))
-                        && !User.HasClaim(ClaimType.Permission, nameof(Permission.AccessMissionControl)),
+                        && User.HasClaim(ClaimType.Permission,
+                            nameof(Permission.AccessPerformerRegistration))
+                        && !User.HasClaim(ClaimType.Permission,
+                            nameof(Permission.AccessMissionControl)),
                     SingleEvent = pointTranslation.IsSingleEvent,
                     UpcomingStreams = await _eventService.GetUpcomingStreamListAsync(),
                     User = user,
@@ -482,7 +483,8 @@ namespace GRA.Controllers
             {
                 try
                 {
-                    await _activityService.LogSecretCodeAsync(GetActiveUserId(), viewModel.SecretCode);
+                    await _activityService.LogSecretCodeAsync(GetActiveUserId(),
+                        viewModel.SecretCode);
                 }
                 catch (GraException gex)
                 {
@@ -494,28 +496,16 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> PreviewExit(string id)
         {
-            if (UserHasPermission(Permission.AccessMissionControl))
-            {
-                SiteStage stage = ParseStage(id);
-                return await ShowExitPageAsync(stage);
-            }
-            else
-            {
-                return RedirectToAction(nameof(Index));
-            }
+            return UserHasPermission(Permission.AccessMissionControl)
+                ? await ShowExitPageAsync(ParseStage(id))
+                : RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> PreviewLanding(string id)
         {
-            if (UserHasPermission(Permission.AccessMissionControl))
-            {
-                SiteStage stage = ParseStage(id);
-                return await ShowLandingPageAsync(await GetCurrentSiteAsync(), stage);
-            }
-            else
-            {
-                return RedirectToAction(nameof(Index));
-            }
+            return UserHasPermission(Permission.AccessMissionControl)
+                ? await ShowLandingPageAsync(await GetCurrentSiteAsync(), ParseStage(id))
+                : RedirectToAction(nameof(Index));
         }
 
         [PreventQuestionnaireRedirect]
@@ -555,12 +545,18 @@ namespace GRA.Controllers
         }
 
         private async Task<IActionResult> ShowExitPageAsync(SiteStage siteStage,
-                    int? branchId = null)
+            int? branchId = null)
         {
             string siteName = HttpContext.Items[ItemKey.SiteName]?.ToString();
             PageTitle = _sharedLocalizer[Annotations.Title.SeeYouSoon, siteName];
 
-            var exitPageViewModel = new ExitPageViewModel();
+            var exitPageViewModel = new ExitPageViewModel
+            {
+                BannerAltText = _sharedLocalizer[Annotations.Home.BannerAltTag],
+                BannerImagePath = $"/{_pathResolver.ResolveContentPath(DefaultBannerFilename)}",
+                LeftHeader = _sharedLocalizer[Annotations.Home.AdventureNotOver],
+                LeftMessage = _sharedLocalizer[Annotations.Home.ContinueYourAdventure]
+            };
 
             try
             {
@@ -613,9 +609,24 @@ namespace GRA.Controllers
 
             var culture = _userContextProvider.GetCurrentCulture();
 
-            // social
+            var leftMessage = CommonMark.CommonMarkConverter.Convert(
+                _sharedLocalizer[Annotations.Home.ForMoreInformation].Value
+                + Environment.NewLine
+                + Environment.NewLine
+                + _sharedLocalizer[Annotations.Home.GoOnAJourney].Value);
+
+            var rightMessage = CommonMark.CommonMarkConverter.Convert(
+                _sharedLocalizer[Annotations.Home.Read20].Value
+                + Environment.NewLine
+                + Environment.NewLine
+                + _sharedLocalizer[Annotations.Home.ReadingIsFundamental].Value);
+
             var viewmodel = new LandingPageViewModel
             {
+                BannerImagePath = $"/{_pathResolver.ResolveContentPath(DefaultBannerFilename)}",
+                BannerAltText = _sharedLocalizer[Annotations.Home.BannerAltTag],
+                LeftMessage = leftMessage,
+                RightMessage = rightMessage,
                 SiteName = siteName,
                 Social = await _socialService.GetAsync(culture.Name)
             };
@@ -635,21 +646,47 @@ namespace GRA.Controllers
                             viewmodel.RegistrationOpens
                                 = ((DateTime)site.RegistrationOpens).ToString("D",
                                     culture);
+                            viewmodel.CenterMessage = CommonMark.CommonMarkConverter.Convert(
+                               _sharedLocalizer[Annotations.Home.WelcomeTo, siteName]
+                               + Environment.NewLine
+                               + Environment.NewLine
+                               + _sharedLocalizer[Annotations.Home.ProgramStartsOn,
+                                    viewmodel.RegistrationOpens]);
                             PageTitle = _sharedLocalizer[Annotations.Title.RegistrationOpens,
                                 siteName,
                                 viewmodel.RegistrationOpens];
+                        }
+                        else
+                        {
+                            viewmodel.CenterMessage = CommonMark.CommonMarkConverter.Convert(
+                               _sharedLocalizer[Annotations.Home.WelcomeTo, siteName]
+                               + Environment.NewLine
+                               + Environment.NewLine
+                               + _sharedLocalizer[GRA.Annotations.Home.WhenProgramStarts]);
                         }
                     }
                     return View(ViewTemplates.BeforeRegistration, viewmodel);
 
                 case SiteStage.RegistrationOpen:
+                    viewmodel.CenterMessage = CommonMark.CommonMarkConverter.Convert(
+                       _sharedLocalizer[Annotations.Home.WelcomeTo, siteName]
+                       + Environment.NewLine
+                       + Environment.NewLine
+                       + _sharedLocalizer[Annotations.Home.StartAdventure]);
                     PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, siteName];
                     return View(ViewTemplates.RegistrationOpen, viewmodel);
 
                 case SiteStage.ProgramEnded:
+                    viewmodel.CenterMessage = CommonMark.CommonMarkConverter.Convert(
+                        _sharedLocalizer[Annotations.Home.Thanks, siteName].Value
+                        + Environment.NewLine
+                        + Environment.NewLine
+                        + _sharedLocalizer[Annotations.Home.StillSignIn].Value);
                     return View(ViewTemplates.ProgramEnded, viewmodel);
 
                 case SiteStage.AccessClosed:
+                    viewmodel.CenterMessage = CommonMark.CommonMarkConverter.Convert(
+                        _sharedLocalizer[Annotations.Home.Thanks, siteName].Value);
                     viewmodel.SignUpSource = nameof(SiteStage.AccessClosed);
                     if (site != null)
                     {
@@ -660,6 +697,11 @@ namespace GRA.Controllers
                     return View(ViewTemplates.AccessClosed, viewmodel);
 
                 default:
+                    viewmodel.CenterMessage = CommonMark.CommonMarkConverter.Convert(
+                       _sharedLocalizer[Annotations.Home.WelcomeTo, siteName]
+                       + Environment.NewLine
+                       + Environment.NewLine
+                       + _sharedLocalizer[Annotations.Home.StartAdventure]);
                     PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, siteName];
                     return View(ViewTemplates.ProgramOpen, viewmodel);
             }
