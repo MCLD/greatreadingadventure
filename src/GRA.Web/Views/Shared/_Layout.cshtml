@@ -77,7 +77,7 @@
     @{
         SiteStage siteStage = (SiteStage)(Context.Items[GRA.Controllers.ItemKey.SiteStage] ?? SiteStage.ProgramOpen);
     }
-    <nav class="navbar navbar-expand-md d-print-none bg-light">
+    <nav class="navbar navbar-expand-md bg-light">
         <div class="container-fluid">
             <a asp-area=""
                asp-controller="@HomeController.Name"
@@ -87,7 +87,7 @@
                 <grasite property="pageTitle"></grasite>
             </a>
             <button type="button"
-                    class="navbar-toggler btn-sm"
+                    class="navbar-toggler btn-sm d-print-none"
                     data-bs-toggle="collapse"
                     data-bs-target="#navbarContent"
                     aria-controls="navbarContent"
@@ -99,7 +99,7 @@
                 @SharedLocalizer[GRA.Domain.Model.DisplayNames.Menu]
             </button>
             <div class="collapse navbar-collapse ms-auto" id="navbarContent">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto d-print-none">
                     @if (Context.Items[GRA.Controllers.ItemKey.L10n] != null)
                     {
                         <li class="nav-item dropdown">
@@ -400,13 +400,11 @@
             </div>
         }
         @RenderBody()
-        <div class="d-flex justify-content-center mt-4">
-            <div class="card">
-                <div class="card-body p-3 text-center">
-                    <infolinks navPages="false"></infolinks>
-                </div>
-                <div class="card-footer text-center">
-                    <footer>
+        <div class="d-flex justify-content-center mt-5">
+            <div class="card border-light-subtle">
+                <div class="card-body py-2 px-3 text-center">
+                    <infolinks navPages="false" class="d-print-none"></infolinks>
+                    <footer class="text-center">
                         <grasite property="footer"></grasite>
                     </footer>
                 </div>

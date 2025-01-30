@@ -1,7 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.Shared.DisplayNotificationsViewModel
 
 <div class="row">
-    <div class="d-block col-12 col-md-6 offset-md-3">
+    <div class="col-12 col-md-6 offset-md-3">
         <div class="alert alert-success">
             @foreach (var notification in Model.Notifications)
             {
@@ -10,7 +10,7 @@
                     <div class="d-flex">
                         @if (!string.IsNullOrEmpty(notification.DisplayIcon))
                         {
-                            <div class="ms-1">
+                            <div class="me-2">
                                 <span class="@notification.DisplayIcon"></span>
                             </div>
                         }
