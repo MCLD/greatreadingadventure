@@ -66,11 +66,21 @@
                             <em class="d-print-none d-inline-block ms-2 fs-5">
                                 @if (performerSchedule == null)
                                 {
-                                    <span class="text-success">Available: @Model.DefaultPerformerScheduleStartTime.ToShortTimeString() &ndash; @Model.DefaultPerformerScheduleEndTime.ToShortTimeString()</span>
+                                    <span class="text-success">
+                                        Available:
+                                        @Model.DefaultPerformerScheduleStartTime.ToShortTimeString()
+                                        &ndash;
+                                        @Model.DefaultPerformerScheduleEndTime.ToShortTimeString()
+                                    </span>
                                 }
                                 else if (performerSchedule.StartTime.HasValue)
                                 {
-                                    <span style="color:#DFAA15;">Available: @performerSchedule.StartTime.Value.ToShortTimeString() &ndash; @performerSchedule.EndTime.Value.ToShortTimeString()</span>
+                                    <span style="color:#DFAA15;">
+                                        Available:
+                                        @performerSchedule.StartTime.Value.ToShortTimeString()
+                                        &ndash;
+                                        @performerSchedule.EndTime.Value.ToShortTimeString()
+                                    </span>
                                 }
                                 else
                                 {
@@ -93,7 +103,11 @@
                             </div>
                         }
                         <div class="@(branchSelection.BackToBackProgram ? "col-5" : "col-6") mb-2">
-                            <h5 class="fw-bold mb-0">@branchSelection.ScheduleStartTime.ToShortTimeString() &ndash; @branchSelection.ScheduleStartTime.AddMinutes(branchSelection.ScheduleDuration).ToShortTimeString()</h5>
+                            <h5 class="fw-bold mb-0">
+                                @branchSelection.ScheduleStartTime.ToShortTimeString()
+                                &ndash;
+                                @branchSelection.ScheduleStartTime.AddMinutes(branchSelection.ScheduleDuration).ToShortTimeString()
+                            </h5>
                             <div>
                                 (@branchSelection.RequestedStartTime.ToShortTimeString()@(branchSelection.BackToBackProgram ? $", {branchSelection.RequestedStartTime.AddMinutes(branchSelection.Program.ProgramLengthMinutes + branchSelection.Program.BackToBackMinutes).ToShortTimeString()} program start times" : " program start time"))
                             </div>
@@ -144,101 +158,6 @@
                         </div>
                     </div>
                 }
-
-                @*                 <table class="table table-bordered table-sm table-striped w-100">
-        <thead>
-        <tr>
-        <th style="width: 15rem;">Total Performer Time</th>
-        <th style="width: 13rem;">Program/Ages/Code</th>
-        <th>Location</th>
-        <th class="d-print-none" style="width: 5.5rem;">&nbsp;</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var branchSelection in branchSelectionDate)
-        {
-        <tr>
-        <td style="white-space:nowrap">
-        @branchSelection.ScheduleStartTime.ToShortTimeString() &ndash; @branchSelection.ScheduleStartTime.AddMinutes(branchSelection.ScheduleDuration).ToShortTimeString()
-        <div>
-        (@branchSelection.RequestedStartTime.ToShortTimeString()@(branchSelection.BackToBackProgram ? $", {branchSelection.RequestedStartTime.AddMinutes(branchSelection.Program.ProgramLengthMinutes + branchSelection.Program.BackToBackMinutes).ToShortTimeString()} start times" : " start time"))
-        @if (branchSelection.BackToBackProgram)
-        {
-        <div>
-        <span class="fas fa-plus-circle text-success" aria-hidden="true"></span>
-        <span class="fw-bold">Back-to-back programs</span>
-        </div>
-        }
-        </div>
-        </td>
-        <td>
-        <div>
-        <a asp-action="Program"
-        asp-route-id="@branchSelection.ProgramId"
-        target="_blank">@branchSelection.Program.Title</a>
-        </div>
-        <div>
-        @branchSelection.AgeGroup.Name
-        </div>
-        <div class="d-flex">
-        <input class="secretCode form-control"
-        style="width: 15rem; font-size: 0.8rem; font-family: monospace"
-        data-id="@branchSelection.Id"
-        value="@branchSelection.SecretCode"
-        autocomplete="off" />
-        <div class="mt-1 ms-1">
-        <span class="icon fa-fw fa-lg @(!string.IsNullOrWhiteSpace(branchSelection.SecretCode) ? "far fa-check-circle text-success" : "d-none")"></span>
-        </div>
-        </div>
-        <div class="errorMessage text-danger d-print-none"></div>
-        </td>
-        <td>
-        @branchSelection.Branch.SystemName:
-        <span class="text-nowrap">
-        @branchSelection.Branch.Name
-        <a aria-label="Map (Opens new window)"
-        href="https://www.google.com/maps/search/@branchSelection.Branch.Address"
-        target="_blank"
-        class="d-print-none">
-        <span class="far fa-map"></span>
-        </a>
-        </span>
-        <span class="d-none d-print-block">
-        @branchSelection.Branch.Address
-        </span>
-        <div style="margin-top:0.5rem">
-        <strong>Contact:</strong> @branchSelection.OnSiteContactName
-        <div>
-        @branchSelection.OnSiteContactEmail
-        </div>
-        <div>
-        @branchSelection.OnSiteContactPhone
-        </div>
-        </div>
-        </td>
-        <td class="d-print-none text-center">
-        <button type="button"
-        class="btn btn-sm btn-outline-primary mb-1"
-        data-bs-toggle="modal"
-        data-bs-target="#editModal"
-        data-selectionid="@branchSelection.Id">
-        <span class="fas fa-pencil-alt fa-fw"></span>
-        </button>
-        <button type="button"
-        class="btn btn-sm btn-outline-danger delete-selection mb-1"
-        data-bs-toggle="modal"
-        data-bs-target="#deleteModal"
-        data-selectionid="@branchSelection.Id"
-        data-branchname="@branchSelection.Branch.Name"
-        data-programtitle="@branchSelection.Program.Title">
-        <span class="fas fa-times fa-fw fa-fw"></span>
-        </button>
-        </td>
-        </tr>
-        }
-        </tbody>
-        </table>
-        *@
             }
         }
     </div>
@@ -261,7 +180,8 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
+                    <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                          aria-hidden="true"></span>
                     <span id="modal-text"></span>
                 </div>
                 <div class="modal-footer">
@@ -367,7 +287,6 @@
                     setTimeout(function () {
                         input.val(response.secretCode).removeAttr("readonly");
                         if (response.success) {
-
                             icon.removeClass("fas fa-spinner fa-pulse fa-fw").addClass("far fa-check-circle text-success");
                         }
                         else {
