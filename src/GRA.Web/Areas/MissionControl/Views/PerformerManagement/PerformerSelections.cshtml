@@ -15,6 +15,10 @@
             div.p-border-bottom {
                 border-bottom: 1px solid #ccc !important;
             }
+
+            div.mc-page-title > div > span.h2 {
+                display: none;
+            }
         }
     </style>
 }
@@ -46,6 +50,13 @@
         </div>
     </div>
 </div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <h2>@Model.Performer.Name</h2>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-xs-12">
         @if (Model.BranchSelectionDates.SelectMany(_ => _).Count() == 0)
