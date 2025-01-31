@@ -1,6 +1,9 @@
 ﻿@model GRA.Controllers.ViewModel.Profile.HouseholdExistingViewModel
 
-<form asp-controller="Profile" asp-action="AddExistingParticipant" method="post" role="form">
+<form asp-controller="@ProfileController.Name"
+      asp-action="@nameof(ProfileController.AddExistingParticipant)"
+      method="post"
+      role="form">
     <div class="row">
         <div class="col-12 col-lg-10 offset-lg-1 col-xl-8 offset-xl-2">
             <div class="card">
@@ -33,7 +36,8 @@
                     </div>
                 </div>
                 <div class="card-footer d-flex justify-content-end">
-                    <a asp-action="Household" class="btn btn-outline-secondary">
+                    <a asp-action="@nameof(ProfileController.Household)"
+                       class="btn btn-outline-secondary">
                         @SharedLocalizer[GRA.Annotations.Interface.BackTo,
                                  SharedLocalizer[Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString()]]
                     </a>

@@ -1,5 +1,14 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Sites.SiteScheduleViewModel
 
+@section styles {
+    <style>
+        .gra-preview-landings {
+            display: inline-block;
+            margin-left: 1rem;
+        }
+    </style>
+}
+
 @await Html.PartialAsync("_SitePartial")
 
 <form asp-controller="Sites" asp-action="Schedule" method="post" role="form">
@@ -40,9 +49,22 @@
                    asp-route-id="@nameof(GRA.Domain.Model.SiteStage.RegistrationOpen)"
                    target="_blank">Exit</a>
             </em>
-            <div class="mb-3 date">
-                @* timepicker *@
-                <input asp-for="RegistrationOpens" type="datetime-local" class="form-control" />
+            <div class="mb-3">
+                <div class="input-group td-picker-datetime"
+                     id="registrationOpensPicker"
+                     data-current-value="@Model.RegistrationOpens?.ToString("o", System.Globalization.CultureInfo.InvariantCulture)"
+                     data-td-target-input="nearest"
+                     data-td-target-toggle="nearest">
+                    <input asp-for="RegistrationOpens"
+                           type="text"
+                           class="form-control"
+                           data-td-target="#registrationOpensPicker" />
+                    <span class="input-group-text"
+                          data-td-target="#registrationOpensPicker"
+                          data-td-toggle="datetimepicker">
+                        <span class="far fa-calendar"></span>
+                    </span>
+                </div>
             </div>
             <span asp-validation-for="RegistrationOpens" class="text-danger"></span>
         </div>
@@ -112,7 +134,7 @@
                    asp-route-id="@nameof(GRA.Domain.Model.SiteStage.AccessClosed)"
                    target="_blank">Exit</a>
             </em>
-            <div class="mb-3 date datetimepicker">
+            <div class="mb-3">
                 <input asp-for="AccessClosed" type="datetime-local" class="form-control" />
             </div>
             <span asp-validation-for="AccessClosed" class="text-danger"></span>
@@ -131,12 +153,39 @@
         </button>
     </div>
 </form>
-
 @section scripts {
-    <style>
-        .gra-preview-landings {
-            display: inline-block;
-            margin-left: 1rem;
+    <script>
+        var datetimePickers = document.querySelectorAll(".td-picker-datetime");
+        for(let i = 0; i < datetimePickers.length; i++) {
+            let currentValue = new Date(datetimePickers[i].dataset.currentValue);
+            if(isNaN(currentValue)) {
+                currentValue = undefined;
+            }
+            new tempusDominus.TempusDominus(datetimePickers[i],
+            {
+                allowInputToggle: true,
+                defaultDate: currentValue,
+                display: {
+                    buttons: {
+                        close: true,
+                        today: true,
+                    },
+                    icons: {
+                        type: 'icons',
+                        time: 'fas fa-clock',
+                        date: 'fas fa-calendar',
+                        up: 'fas fa-arrow-up',
+                        down: 'fas fa-arrow-down',
+                        previous: 'fas fa-chevron-left',
+                        next: 'fas fa-chevron-right',
+                        today: 'fas fa-calendar-check',
+                        clear: 'fas fa-trash',
+                        close: 'fas fa-xmark'
+                    },
+                    sideBySide: true
+                },
+                useCurrent: false,
+            });
         }
-    </style>
+    </script>
 }

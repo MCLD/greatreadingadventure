@@ -5,11 +5,12 @@
       method="post"
       role="form">
     <div class="row">
-        <div class="col-12">
+        <div class="col-12 col-lg-10 offset-lg-1 col-xl-8 offset-xl-2">
             <div class="card">
                 <div class="card-header">
                     <span class="fw-bold">
-                        Register @Context.Items[GRA.Controllers.ItemKey.HouseholdTitle] Member
+                        @SharedLocalizer[GRA.Annotations.Info.GroupRegister,
+                                 Context.Items[GRA.Controllers.ItemKey.HouseholdTitle]]
                     </span>
                 </div>
                 <div class="card-body">
@@ -20,7 +21,7 @@
                             <div class="row">
                                 <div class="col-12">
                                     <label asp-for="Username" class="col-form-label"></label>
-                                    <span id="Username-Icon" class="fas colored-icon d-none"></span>
+                                    <span id="Username-Icon" class="fas d-none"></span>
                                     <input asp-for="Username" class="form-control" autofocus />
                                     <span id="Username-Validation"
                                           asp-validation-for="Username"
@@ -49,17 +50,21 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-footer">
-                    <a asp-action="Household" class="btn btn-outline-secondary">
+                <div class="card-footer d-flex justify-content-end">
+                    <a asp-action="@nameof(ProfileController.Household)"
+                       class="btn btn-outline-secondary">
                         Return to @Context.Items[GRA.Controllers.ItemKey.HouseholdTitle]
                     </a>
                     <button type="submit"
                             id="Submit"
                             name="Submit"
                             value="Submit"
-                            class="btn btn-outline-primary"
+                            class="btn btn-outline-primary ms-2"
                             button-spinner>
-                        <span class="buttonText">Register Member</span>
+                        <span class="buttonText">
+                            @SharedLocalizer[GRA.Annotations.Info.GroupRegister,
+                                     Context.Items[GRA.Controllers.ItemKey.HouseholdTitle]]
+                        </span>
                     </button>
                 </div>
             </div>
