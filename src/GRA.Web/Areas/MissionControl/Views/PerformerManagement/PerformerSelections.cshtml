@@ -7,62 +7,47 @@
             a[href]:after {
                 content: none !important;
             }
+
+            div.p-border-top {
+                border-top: 2px solid black !important;
+            }
+
+            div.p-border-bottom {
+                border-bottom: 1px solid #ccc !important;
+            }
         }
     </style>
 }
 
-<div class="row hidden-print">
-    <div class="col-xs-12">
-        <table style="margin:0 auto;">
-            <tr>
-                @if (Model.PrevPerformer.HasValue)
-                {
-                    <td style="position:absolute;">
-                        <h1>
-                            <a asp-action="PerformerSelections" asp-route-id="@Model.PrevPerformer" style="margin-left:-125px;"><span class="fas fa-chevron-left"></span></a>
-                        </h1>
-                    </td>
-                }
-                <td><h1>Performer Selections</h1></td>
-                @if (Model.NextPerformer.HasValue)
-                {
-                    <td style="position:absolute;">
-                        <h1>
-                            <a asp-action="PerformerSelections" asp-route-id="@Model.NextPerformer" style="margin-left:50px;"><span class="fas fa-chevron-right"></span></a>
-                        </h1>
-                    </td>
-                }
-            </tr>
-        </table>
-        <hr />
-        <div class="row">
-            <div class="col-xs-12 col-sm-8 col-sm-offset-2">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <div class="row form-group">
-                            <div class="col-xs-6">
-                                <label>Performer</label>
-                                <div>@Model.Performer.Name</div>
-                            </div>
-                            <div class="col-xs-6">
-                                <label>Program Selections</label>
-                                <div>@Model.BranchSelectionDates.SelectMany(_ => _).Count()</div>
-                            </div>
-                        </div>
-                        <div class="row form-group">
-                            <div class="col-xs-12">
-                                <a asp-action="Performer" asp-route-id="@Model.Performer.Id" class="btn btn-lg btn-default">View Performer</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+@section inHeading {
+    <a asp-action="Performer"
+       asp-route-id="@Model.Performer.Id"
+       class="btn btn-primary pull-right hidden-print">Return to Performer</a>
+}
+
+<div class="row mt-3 hidden-print">
+    <div class="col-xs-12 border-bottom border-top py-2 mb-3">
+        <div class="d-flex justify-content-between" style="display: flex; justify-content: space-between;">
+            <div class="h2 hidden-print" style="width: 2rem;">
+                <a asp-action="PerformerSelections"
+                   asp-route-id="@Model.PrevPerformer">
+                    <span class="fas fa-chevron-left"></span>
+                </a>
+            </div>
+            <div class="flex-grow-1 text-center h2" style="flex-grow: 1;">
+                Performer Selections
+            </div>
+            <div class="h2 hidden-print text-end" style="width: 2rem;">
+                <a asp-action="PerformerSelections"
+                   asp-route-id="@Model.NextPerformer">
+                    <span class="fas fa-chevron-right"></span>
+                </a>
             </div>
         </div>
     </div>
 </div>
 <div class="row">
     <div class="col-xs-12">
-        <h1 class="visible-print">@Model.Performer.Name</h1>
         @if (Model.BranchSelectionDates.SelectMany(_ => _).Count() == 0)
         {
             <div class="alert alert-warning">No selections.</div>
@@ -74,126 +59,105 @@
                 var date = branchSelectionDate.First().RequestedStartTime.Date;
                 var performerSchedule = Model.Performer.Schedule.Where(_ => _.Date.Date == date).FirstOrDefault();
                 var backToBack = branchSelectionDate.Any(_ => _.BackToBackProgram);
-                <strong style="font-size:large">@date.ToLongDateString()</strong>
-                <div class="hidden-print">
-                    @if (performerSchedule == null)
-                    {
-                        <div class="text-success" style="font-size:large">Available: @Model.DefaultPerformerScheduleStartTime.ToShortTimeString() &ndash; @Model.DefaultPerformerScheduleEndTime.ToShortTimeString()</div>
-                    }
-                    else if (performerSchedule.StartTime.HasValue)
-                    {
-                        <div style="color:#DFAA15; font-size:large">Available: @performerSchedule.StartTime.Value.ToShortTimeString() &ndash; @performerSchedule.EndTime.Value.ToShortTimeString()</div>
-                    }
-                    else
-                    {
-                        <div class="text-danger" style="font-size:x-large">Unavailable</div>
-                    }
-                </div>
-
-                <table class="table table-bordered table-condensed table-striped">
-                    <thead>
-                        <tr>
-                            <th width="170px">Total Performer Time</th>
-                            <th>
-                                Program/
-                                <br />
-                                Ages
-                            </th>
-                            <th>Location</th>
-                            <th width="400px">Secret Code</th>
-                            <th class="hidden-print" width="36px">&nbsp;</th>
-                            <th class="hidden-print" width="36px">&nbsp;</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var branchSelection in branchSelectionDate)
-                        {
-                            <tr>
-                                <td style="white-space:nowrap">
-                                    @branchSelection.ScheduleStartTime.ToShortTimeString() &ndash; @branchSelection.ScheduleStartTime.AddMinutes(branchSelection.ScheduleDuration).ToShortTimeString()
-                                    <div>
-                                        (@branchSelection.RequestedStartTime.ToShortTimeString()@(branchSelection.BackToBackProgram ? $", {branchSelection.RequestedStartTime.AddMinutes(branchSelection.Program.ProgramLengthMinutes + branchSelection.Program.BackToBackMinutes).ToShortTimeString()}" : "") start time)
-                                    </div>
-                                </td>
-                                <td>
-                                    <div>
-                                        <a asp-action="Program"
-                                           asp-route-id="@branchSelection.ProgramId"
-                                           target="_blank">@branchSelection.Program.Title</a>
-                                    </div>
-                                    <div>
-                                        @branchSelection.AgeGroup.Name
-                                    </div> 
-                                </td>
-                                <td>
-                                    @branchSelection.Branch.SystemName:
-                                    <span style="white-space:nowrap">
-                                        @branchSelection.Branch.Name
-                                        <a aria-label="Map (Opens new window)"
-                                           href="https://www.google.com/maps/search/@branchSelection.Branch.Address"
-                                           target="_blank"
-                                           class="hidden-print">
-                                            <span class="far fa-map"></span>
-                                        </a>
-                                        <span class="visible-print">
-                                            (@branchSelection.Branch.Address)
-                                        </span>
+                <div class="row p-border-top">
+                    <div class="col-xs-12">
+                        <h4>
+                            <strong>@date.ToLongDateString()</strong>
+                            <em class="hidden-print d-inline-block ms-2 fs-5">
+                                @if (performerSchedule == null)
+                                {
+                                    <span class="text-success">
+                                        Available:
+                                        @Model.DefaultPerformerScheduleStartTime.ToShortTimeString()
+                                        &ndash;
+                                        @Model.DefaultPerformerScheduleEndTime.ToShortTimeString()
                                     </span>
-                                    <div style="margin-top:0.5rem">
-                                        <strong>Contact:</strong> @branchSelection.OnSiteContactName
-                                        <div>
-                                            @branchSelection.OnSiteContactEmail
-                                        </div>
-                                        <div>
-                                            @branchSelection.OnSiteContactPhone
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <table style="width:100%;">
-                                        <tr>
-                                            <td>
-                                                <input class="secretCode form-control"
-                                                       data-id="@branchSelection.Id"
-                                                       value="@branchSelection.SecretCode"
-                                                       autocomplete="off" />
-                                            </td>
-                                            <td class="hidden-print" style="padding-left:3px; text-align:center; width:30px;">
-                                                <span class="icon fas fa-lg colored-icon @(!string.IsNullOrWhiteSpace(branchSelection.SecretCode) ? "fa-check" : "hidden")"></span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2">
-                                                <div class="errorMessage text-danger hidden-print"></div>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                                <td class="hidden-print" style="text-align:center;">
-                                    <button type="button"
-                                            class="btn btn-xs btn-primary"
-                                            data-toggle="modal"
-                                            data-target="#editModal"
-                                            data-selectionid="@branchSelection.Id">
-                                        <span class="fas fa-edit"></span>
-                                    </button>
-                                </td>
-                                <td class="hidden-print" style="text-align:center;">
-                                    <button type="button"
-                                            class="btn btn-xs btn-danger delete-selection"
-                                            data-toggle="modal"
-                                            data-target="#deleteModal"
-                                            data-selectionid="@branchSelection.Id"
-                                            data-branchname="@branchSelection.Branch.Name"
-                                            data-programtitle="@branchSelection.Program.Title">
-                                        <span class="fas fa-minus-circle"></span>
-                                    </button>
-                                </td>
-                            </tr>
+                                }
+                                else if (performerSchedule.StartTime.HasValue)
+                                {
+                                    <span style="color:#DFAA15;">
+                                        Available:
+                                        @performerSchedule.StartTime.Value.ToShortTimeString()
+                                        &ndash;
+                                        @performerSchedule.EndTime.Value.ToShortTimeString()
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="text-danger">Unavailable</span>
+                                }
+                            </em>
+                        </h4>
+                    </div>
+                </div>
+                @foreach (var branchSelection in branchSelectionDate)
+                {
+                    <div class="row border-bottom p-border-bottom bg-light mb-4">
+                        @if (branchSelection.BackToBackProgram)
+                        {
+                            <div class="col-xs-1 p-0 bg-primary bg-gradient text-light d-flex" style="display: flex;">
+                                <div class="d-inline-block text-nowrap fw-bold mx-auto py-1 text-center"
+                                     style="transform: rotate(180deg); writing-mode: vertical-lr;">
+                                    BACK-TO-BACK
+                                </div>
+                            </div>
                         }
-                    </tbody>
-                </table>
-                <hr />
+                        <div class="@(branchSelection.BackToBackProgram ? "col-xs-5" : "col-xs-6") mb-2">
+                            <h5 class="fw-bold mb-0">
+                                @branchSelection.ScheduleStartTime.ToShortTimeString()
+                                &ndash;
+                                @branchSelection.ScheduleStartTime.AddMinutes(branchSelection.ScheduleDuration).ToShortTimeString()
+                            </h5>
+                            <div>
+                                (@branchSelection.RequestedStartTime.ToShortTimeString()@(branchSelection.BackToBackProgram ? $", {branchSelection.RequestedStartTime.AddMinutes(branchSelection.Program.ProgramLengthMinutes + branchSelection.Program.BackToBackMinutes).ToShortTimeString()} program start times" : " program start time"))
+                            </div>
+                            <div>
+                                <strong>Program:</strong>
+                                <a asp-action="Program"
+                                   asp-route-id="@branchSelection.ProgramId"
+                                   target="_blank">@branchSelection.Program.Title</a>
+                            </div>
+                            <div>
+                                <strong>Age group:</strong> @branchSelection.AgeGroup.Name
+                            </div>
+                            <div class="d-flex" style="display: flex;">
+                                <strong>Code: </strong>
+                                <input class="secretCode form-control"
+                                       style="width: 15rem; font-size: 0.8rem; font-family: monospace"
+                                       data-id="@branchSelection.Id"
+                                       value="@branchSelection.SecretCode"
+                                       autocomplete="off" />
+                                <div class="mt-1 ms-1 hidden-print">
+                                    <span class="icon fa-fw fa-lg @(!string.IsNullOrWhiteSpace(branchSelection.SecretCode) ? "far fa-check-circle text-success" : "d-none")"></span>
+                                </div>
+                            </div>
+                            <div class="errorMessage text-danger hidden-print"></div>
+                        </div>
+                        <div class="col-xs-6">
+                            <strong>Location:</strong>
+                            @branchSelection.Branch.SystemName,
+                            @branchSelection.Branch.Name
+                            <a aria-label="Map (Opens new window)"
+                               href="https://www.google.com/maps/search/@branchSelection.Branch.Address"
+                               target="_blank"
+                               class="hidden-print">
+                                <span class="far fa-map"></span>
+                            </a>
+                            <span class="d-none d-print-block">
+                                @branchSelection.Branch.Address
+                            </span>
+                            <div style="margin-top:0.5rem">
+                                <strong>Contact:</strong> @branchSelection.OnSiteContactName
+                                <div>
+                                    @branchSelection.OnSiteContactEmail
+                                </div>
+                                <div>
+                                    @branchSelection.OnSiteContactPhone
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
             }
         }
     </div>
@@ -208,16 +172,16 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button"
-                            class="close"
-                            data-dismiss="modal"
-                            aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                     <h1 class="modal-title h4" id="deleteModalLabel">Delete branch selection</h1>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                    </button>
                 </div>
                 <div class="modal-body">
-                    <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                          aria-hidden="true"></span>
                     <span id="modal-text"></span>
                 </div>
                 <div class="modal-footer">
@@ -226,19 +190,19 @@
                           method="post"
                           role="form"
                           id="deletePerformerForm">
-                        <input class="hidden" asp-for="Performer.Id" aria-hidden="true" />
-                        <input class="hidden" asp-for="BranchSelectionId" aria-hidden="true" />
+                        <input type="hidden" asp-for="Performer.Id" aria-hidden="true" />
+                        <input type="hidden" asp-for="BranchSelectionId" aria-hidden="true" />
                         <button type="button"
-                                class="btn btn-default"
-                                data-dismiss="modal"
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel
                         </button>
                         <button type="submit"
                                 id="buttonDelete"
-                                class="btn btn-danger pull-right"
+                                class="btn btn-outline-danger float-end"
                                 aria-label="Confirm">
-                            <span class="fas fa-times" aria-hidden="true"></span>
+                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                             Delete
                         </button>
                     </form>
@@ -256,22 +220,20 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button"
-                            class="close"
-                            data-dismiss="modal"
-                            aria-label="Close dialog">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                     <h1 class="modal-title h4" id="deleteModalLabel">Edit Date/Time</h1>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close dialog">
+                    </button>
                 </div>
                 <div id="calendarContainer" class="modal-body">
-
                 </div>
                 <div class="modal-footer">
                     <form>
                         <button type="button"
-                                class="btn btn-default"
-                                data-dismiss="modal"
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel
                         </button>
@@ -319,17 +281,16 @@
                 var icon = input.closest("tr").find(".icon");
                 var errorMessage = input.closest("table").find(".errorMessage");
                 input.attr("readonly", "readonly");
-                icon.removeClass("hidden fa-check fa-times").addClass("fa-spinner fa-pulse fa-fw");
+                icon.removeClass("d-none far fa-check-circle text-success text-danger fa-times").addClass("fas fa-spinner fa-pulse fa-fw");
                 errorMessage.text("");
-                $.post(secretCodeUrl,{ id: input.data("id"), secretCode: input.val() }, function (response) {
+                $.post(secretCodeUrl, { id: input.data("id"), secretCode: input.val() }, function (response) {
                     setTimeout(function () {
                         input.val(response.secretCode).removeAttr("readonly");
                         if (response.success) {
-
-                            icon.removeClass("fa-spinner fa-pulse fa-fw").addClass("fa-check");
+                            icon.removeClass("fas fa-spinner fa-pulse fa-fw").addClass("far fa-check-circle text-success");
                         }
                         else {
-                            icon.removeClass("fa-spinner fa-pulse fa-fw").addClass("fa-times");
+                            icon.removeClass("fas fa-spinner fa-pulse fa-fw").addClass("far fa-check-circle text-danger");
                             errorMessage.text(response.message);
                         }
                     }, 500);
