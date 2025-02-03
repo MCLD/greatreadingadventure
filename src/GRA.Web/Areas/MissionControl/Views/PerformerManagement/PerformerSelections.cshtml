@@ -134,7 +134,7 @@
                             <div class="d-flex" style="display: flex;">
                                 <strong>Code: </strong>
                                 <input class="secretCode form-control"
-                                       style="width: 15rem; font-size: 0.8rem; font-family: monospace"
+                                       style="width: 15rem; font-size: 1.2rem; font-family: monospace"
                                        data-id="@branchSelection.Id"
                                        value="@branchSelection.SecretCode"
                                        autocomplete="off" />
@@ -166,6 +166,24 @@
                                     @branchSelection.OnSiteContactPhone
                                 </div>
                             </div>
+                            <div class="hidden-print">
+                                <button type="button"
+                                        class="btn btn-primary"
+                                        data-toggle="modal"
+                                        data-target="#editModal"
+                                        data-selectionid="@branchSelection.Id">
+                                    <span class="fas fa-edit fa-fw"></span>
+                                </button>
+                                <button type="button"
+                                        class="btn btn-danger delete-selection"
+                                        data-toggle="modal"
+                                        data-target="#deleteModal"
+                                        data-selectionid="@branchSelection.Id"
+                                        data-branchname="@branchSelection.Branch.Name"
+                                        data-programtitle="@branchSelection.Program.Title">
+                                    <span class="fas fa-minus-circle fa-fw"></span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 }
@@ -186,7 +204,7 @@
                     <h1 class="modal-title h4" id="deleteModalLabel">Delete branch selection</h1>
                     <button type="button"
                             class="btn-close"
-                            data-bs-dismiss="modal"
+                            data-dismiss="modal"
                             aria-label="Close">
                     </button>
                 </div>
@@ -205,7 +223,7 @@
                         <input type="hidden" asp-for="BranchSelectionId" aria-hidden="true" />
                         <button type="button"
                                 class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal"
+                                data-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel
                         </button>
@@ -234,7 +252,7 @@
                     <h1 class="modal-title h4" id="deleteModalLabel">Edit Date/Time</h1>
                     <button type="button"
                             class="btn-close"
-                            data-bs-dismiss="modal"
+                            data-dismiss="modal"
                             aria-label="Close dialog">
                     </button>
                 </div>
@@ -244,7 +262,7 @@
                     <form>
                         <button type="button"
                                 class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal"
+                                data-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel
                         </button>
