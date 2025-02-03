@@ -50,20 +50,10 @@
                    target="_blank">Exit</a>
             </em>
             <div class="mb-3">
-                <div class="input-group td-picker-datetime"
-                     id="registrationOpensPicker"
-                     data-current-value="@Model.RegistrationOpens?.ToString("o", System.Globalization.CultureInfo.InvariantCulture)"
-                     data-td-target-input="nearest"
-                     data-td-target-toggle="nearest">
-                    <input asp-for="RegistrationOpens"
-                           type="text"
-                           class="form-control"
-                           data-td-target="#registrationOpensPicker" />
-                    <span class="input-group-text"
-                          data-td-target="#registrationOpensPicker"
-                          data-td-toggle="datetimepicker">
-                        <span class="far fa-calendar"></span>
-                    </span>
+                <div current-value="@Model.RegistrationOpens"
+                     datetimepicker-container
+                     id="registrationOpensPicker">
+                    <input asp-for="RegistrationOpens" datetimepicker-input type="text" />
                 </div>
             </div>
             <span asp-validation-for="RegistrationOpens" class="text-danger"></span>
@@ -86,9 +76,12 @@
                    asp-route-id="@nameof(GRA.Domain.Model.SiteStage.ProgramOpen)"
                    target="_blank">Exit</a>
             </em>
-            <div class="mb-3 date">
-                @* timepicker *@
-                <input asp-for="ProgramStarts" type="datetime-local" class="form-control" />
+            <div class="mb-3">
+                <div current-value="@Model.ProgramStarts"
+                     datetimepicker-container
+                     id="programStartsPicker">
+                    <input asp-for="ProgramStarts" datetimepicker-input type="text" />
+                </div>
             </div>
             <span asp-validation-for="ProgramStarts" class="text-danger"></span>
         </div>
@@ -110,82 +103,52 @@
                    asp-route-id="@nameof(GRA.Domain.Model.SiteStage.ProgramEnded)"
                    target="_blank">Exit</a>
             </em>
-            <div class="input-group date">
-                @* timepicker *@
-                <input asp-for="ProgramEnds" type="datetime-local" class="form-control" />
-            </div>
-            <span asp-validation-for="ProgramEnds" class="text-danger"></span>
-        </div>
-    </div>
-
-    <div class="row row-spacing">
-        <div class="col-12">
-            <label asp-for="AccessClosed" class="col-form-label"></label>
-            <em class="gra-preview-landings">
-                Preview
-                <a asp-area=""
-                   asp-controller="Home"
-                   asp-action="PreviewLanding"
-                   asp-route-id="@nameof(GRA.Domain.Model.SiteStage.AccessClosed)"
-                   target="_blank">Landing</a> /
-                <a asp-area=""
-                   asp-controller="Home"
-                   asp-action="PreviewExit"
-                   asp-route-id="@nameof(GRA.Domain.Model.SiteStage.AccessClosed)"
-                   target="_blank">Exit</a>
-            </em>
             <div class="mb-3">
-                <input asp-for="AccessClosed" type="datetime-local" class="form-control" />
-            </div>
-            <span asp-validation-for="AccessClosed" class="text-danger"></span>
-        </div>
-    </div>
+                <div current-value="@Model.ProgramEnds"
+                     datetimepicker-container
+                     id="programEndsPicker">
+                    <input asp-for="ProgramEnds" datetimepicker-input type="text" />
+                </div>
 
-    <div class="mb-3">
-        <a asp-action="Index" class="btn btn-outline-secondary">Return to List</a>
-        <button type="submit"
-                id="Submit"
-                name="Submit"
-                value="Submit"
-                class="btn btn-outline-primary btn-spinner"
-                button-spinner>
-            <span class="buttonText">Save</span>
-        </button>
-    </div>
+            </div><span asp-validation-for="ProgramEnds" class="text-danger"></span>
+        </div>
+
+        <div class="row row-spacing">
+            <div class="col-12">
+                <label asp-for="AccessClosed" class="col-form-label"></label>
+                <em class="gra-preview-landings">
+                    Preview
+                    <a asp-area=""
+                       asp-controller="Home"
+                       asp-action="PreviewLanding"
+                       asp-route-id="@nameof(GRA.Domain.Model.SiteStage.AccessClosed)"
+                       target="_blank">Landing</a> /
+                    <a asp-area=""
+                       asp-controller="Home"
+                       asp-action="PreviewExit"
+                       asp-route-id="@nameof(GRA.Domain.Model.SiteStage.AccessClosed)"
+                       target="_blank">Exit</a>
+                </em>
+                <div class="mb-3">
+                    <div current-value="@Model.AccessClosed"
+                         datetimepicker-container
+                         id="accessClosedPicker">
+                        <input asp-for="AccessClosed" datetimepicker-input type="text" />
+                    </div>
+                </div>
+                <span asp-validation-for="AccessClosed" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <a asp-action="Index" class="btn btn-outline-secondary">Return to List</a>
+            <button type="submit"
+                    id="Submit"
+                    name="Submit"
+                    value="Submit"
+                    class="btn btn-outline-primary btn-spinner"
+                    button-spinner>
+                <span class="buttonText">Save</span>
+            </button>
+        </div>
 </form>
-@section scripts {
-    <script>
-        var datetimePickers = document.querySelectorAll(".td-picker-datetime");
-        for(let i = 0; i < datetimePickers.length; i++) {
-            let currentValue = new Date(datetimePickers[i].dataset.currentValue);
-            if(isNaN(currentValue)) {
-                currentValue = undefined;
-            }
-            new tempusDominus.TempusDominus(datetimePickers[i],
-            {
-                allowInputToggle: true,
-                defaultDate: currentValue,
-                display: {
-                    buttons: {
-                        close: true,
-                        today: true,
-                    },
-                    icons: {
-                        type: 'icons',
-                        time: 'fas fa-clock',
-                        date: 'fas fa-calendar',
-                        up: 'fas fa-arrow-up',
-                        down: 'fas fa-arrow-down',
-                        previous: 'fas fa-chevron-left',
-                        next: 'fas fa-chevron-right',
-                        today: 'fas fa-calendar-check',
-                        clear: 'fas fa-trash',
-                        close: 'fas fa-xmark'
-                    },
-                    sideBySide: true
-                },
-                useCurrent: false,
-            });
-        }
-    </script>
-}

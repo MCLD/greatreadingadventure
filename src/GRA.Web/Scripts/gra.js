@@ -80,4 +80,37 @@ $().ready(function () {
             ],
         });
     }
+
+    let graDatetimePickers = document.querySelectorAll(".gra-picker-datetime");
+    for (let i = 0; i < graDatetimePickers.length; i++) {
+        let currentValue = new Date(graDatetimePickers[i].dataset.currentValue);
+        if (isNaN(currentValue)) {
+            currentValue = undefined;
+        }
+        new tempusDominus.TempusDominus(graDatetimePickers[i],
+            {
+                allowInputToggle: true,
+                defaultDate: currentValue,
+                display: {
+                    buttons: {
+                        close: true,
+                        today: true,
+                    },
+                    icons: {
+                        type: 'icons',
+                        time: 'fas fa-clock',
+                        date: 'fas fa-calendar',
+                        up: 'fas fa-arrow-up',
+                        down: 'fas fa-arrow-down',
+                        previous: 'fas fa-chevron-left',
+                        next: 'fas fa-chevron-right',
+                        today: 'fas fa-calendar-check',
+                        clear: 'fas fa-trash',
+                        close: 'fas fa-xmark'
+                    },
+                    sideBySide: true
+                },
+                useCurrent: false,
+            });
+    }
 });
