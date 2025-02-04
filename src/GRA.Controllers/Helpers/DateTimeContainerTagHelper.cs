@@ -29,7 +29,7 @@ namespace GRA.Controllers.Helpers
 
         public DateTimeContainerTagHelper()
         {
-            _classes = new HashSet<string>() { "input-group", "gra-picker-datetime" };
+            _classes = new HashSet<string>() { "input-group" };
         }
 
         [HtmlAttributeName(AttributeClass)]

@@ -43,6 +43,83 @@ $(".btn-spinner").on("click", function (e) {
         }
     }
 });
+function graInitializePickerDatetime(element) {
+    let currentValue = new Date(element.dataset.currentValue);
+    if (isNaN(currentValue)) {
+        currentValue = undefined;
+    }
+    return new tempusDominus.TempusDominus(element,
+        {
+            allowInputToggle: true,
+            defaultDate: currentValue,
+            display: {
+                buttons: {
+                    close: true,
+                    today: true,
+                },
+                icons: {
+                    type: 'icons',
+                    time: 'fas fa-clock',
+                    date: 'fas fa-calendar',
+                    up: 'fas fa-arrow-up',
+                    down: 'fas fa-arrow-down',
+                    previous: 'fas fa-chevron-left',
+                    next: 'fas fa-chevron-right',
+                    today: 'fas fa-calendar-check',
+                    clear: 'fas fa-trash',
+                    close: 'fas fa-xmark'
+                },
+                sideBySide: true
+            },
+            useCurrent: false,
+        });
+
+}
+function graInitalizePickerTime(element) {
+    let currentValue = new Date(element.dataset.currentValue);
+    if (isNaN(currentValue)) {
+        currentValue = undefined;
+    }
+    return new tempusDominus.TempusDominus (element,
+        {
+            allowInputToggle: true,
+            defaultDate: currentValue,
+            display: {
+                buttons: {
+                    close: true
+                },
+                components: {
+                    calendar: false,
+                    date: false,
+                    decades: false,
+                    year: false,
+                    month: false,
+                    date: false,
+                    clock: true,
+                    hours: true,
+                    minutes: true,
+                    seconds: false
+                },
+                icons: {
+                    type: 'icons',
+                    time: 'fas fa-clock',
+                    date: 'fas fa-calendar',
+                    up: 'fas fa-arrow-up',
+                    down: 'fas fa-arrow-down',
+                    previous: 'fas fa-chevron-left',
+                    next: 'fas fa-chevron-right',
+                    today: 'fas fa-calendar-check',
+                    clear: 'fas fa-trash',
+                    close: 'fas fa-xmark'
+                },
+                viewMode: 'clock',
+            },
+            localization: {
+                format: 'HH:mm'
+            },
+            useCurrent: false,
+        });
+}
 
 $().ready(function () {
     if ($(".gra-carousel").length) {
@@ -83,34 +160,11 @@ $().ready(function () {
 
     let graDatetimePickers = document.querySelectorAll(".gra-picker-datetime");
     for (let i = 0; i < graDatetimePickers.length; i++) {
-        let currentValue = new Date(graDatetimePickers[i].dataset.currentValue);
-        if (isNaN(currentValue)) {
-            currentValue = undefined;
-        }
-        new tempusDominus.TempusDominus(graDatetimePickers[i],
-            {
-                allowInputToggle: true,
-                defaultDate: currentValue,
-                display: {
-                    buttons: {
-                        close: true,
-                        today: true,
-                    },
-                    icons: {
-                        type: 'icons',
-                        time: 'fas fa-clock',
-                        date: 'fas fa-calendar',
-                        up: 'fas fa-arrow-up',
-                        down: 'fas fa-arrow-down',
-                        previous: 'fas fa-chevron-left',
-                        next: 'fas fa-chevron-right',
-                        today: 'fas fa-calendar-check',
-                        clear: 'fas fa-trash',
-                        close: 'fas fa-xmark'
-                    },
-                    sideBySide: true
-                },
-                useCurrent: false,
-            });
+        graInitializePickerDatetime(graDatetimePickers[i])
+    }
+
+    let graTimePickers = document.querySelectorAll(".gra-picker-time");
+    for (let i = 0; i < graTimePickers.length; i++) {
+        graInitalizePickerTime(graTimePickers[i]);
     }
 });

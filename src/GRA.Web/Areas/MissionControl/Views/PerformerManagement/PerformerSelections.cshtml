@@ -155,6 +155,24 @@
                                     @branchSelection.OnSiteContactPhone
                                 </div>
                             </div>
+                            <div class="d-print-none">
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-primary"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#editModal"
+                                        data-selectionid="@branchSelection.Id">
+                                    <span class="fas fa-edit fa-fw"></span>
+                                </button>
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-danger delete-selection"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteModal"
+                                        data-selectionid="@branchSelection.Id"
+                                        data-branchname="@branchSelection.Branch.Name"
+                                        data-programtitle="@branchSelection.Program.Title">
+                                    <span class="fas fa-minus-circle fa-fw"></span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 }
@@ -179,10 +197,12 @@
                             aria-label="Close">
                     </button>
                 </div>
-                <div class="modal-body">
-                    <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
-                          aria-hidden="true"></span>
-                    <span id="modal-text"></span>
+                <div class="modal-body p-0">
+                    <div class="modal-body d-flex align-items-stretch">
+                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" 
+                        aria-hidden="true"></span>
+                        <span id="modal-text"></span>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <form asp-controller="@PerformerManagementController.Name"
@@ -194,13 +214,12 @@
                         <input type="hidden" asp-for="BranchSelectionId" aria-hidden="true" />
                         <button type="button"
                                 class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal"
-                                style="margin-right: 1em;">
+                                data-bs-dismiss="modal">
                             Cancel
                         </button>
                         <button type="submit"
                                 id="buttonDelete"
-                                class="btn btn-outline-danger float-end"
+                                class="btn btn-outline-danger"
                                 aria-label="Confirm">
                             <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                             Delete
@@ -211,13 +230,14 @@
         </div>
     </div>
 </div>
+
 <div class="row">
     <div class="modal fade"
          id="editModal"
          tabindex="-1"
          role="dialog"
          aria-labelledby="editModalLabel">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title h4" id="deleteModalLabel">Edit Date/Time</h1>
@@ -233,8 +253,7 @@
                     <form>
                         <button type="button"
                                 class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal"
-                                style="margin-right: 1em;">
+                                data-bs-dismiss="modal">
                             Cancel
                         </button>
                     </form>
@@ -246,7 +265,6 @@
 
 @section scripts {
     <script src="/js/performerregistration.min.js"></script>
-
     <script>
         var performerCalendarUrl = "@Url.Action(nameof(PerformerManagementController.GetPerformerCalendar))";
         var secretCodeUrl = "@Url.Action(nameof(PerformerManagementController.SetSecretCode))";

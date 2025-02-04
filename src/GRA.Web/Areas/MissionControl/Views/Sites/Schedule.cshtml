@@ -14,7 +14,7 @@
 <form asp-controller="Sites" asp-action="Schedule" method="post" role="form">
     <input asp-for="Id" type="hidden" />
 
-    <div class="row row-spacing">
+    <div class="row mb-3">
         <div class="col-12">
             <label class="col-form-label">Prior to Registration Opening</label>
             <em class="gra-preview-landings">
@@ -33,7 +33,7 @@
         </div>
     </div>
 
-    <div class="row row-spacing">
+    <div class="row mb-3">
         <div class="col-12">
             <label asp-for="RegistrationOpens" class="col-form-label"></label>
             <em class="gra-preview-landings">
@@ -51,6 +51,7 @@
             </em>
             <div class="mb-3">
                 <div current-value="@Model.RegistrationOpens"
+                     class="gra-picker-datetime"
                      datetimepicker-container
                      id="registrationOpensPicker">
                     <input asp-for="RegistrationOpens" datetimepicker-input type="text" />
@@ -60,7 +61,7 @@
         </div>
     </div>
 
-    <div class="row row-spacing">
+    <div class="row mb-3">
         <div class="col-12">
             <label asp-for="ProgramStarts" class="col-form-label"></label>
             <em class="gra-preview-landings">
@@ -78,6 +79,7 @@
             </em>
             <div class="mb-3">
                 <div current-value="@Model.ProgramStarts"
+                     class="gra-picker-datetime"
                      datetimepicker-container
                      id="programStartsPicker">
                     <input asp-for="ProgramStarts" datetimepicker-input type="text" />
@@ -87,7 +89,7 @@
         </div>
     </div>
 
-    <div class="row row-spacing">
+    <div class="row mb-3">
         <div class="col-12">
             <label asp-for="ProgramEnds" class="col-form-label"></label>
             <em class="gra-preview-landings">
@@ -105,6 +107,7 @@
             </em>
             <div class="mb-3">
                 <div current-value="@Model.ProgramEnds"
+                     class="gra-picker-datetime"
                      datetimepicker-container
                      id="programEndsPicker">
                     <input asp-for="ProgramEnds" datetimepicker-input type="text" />
@@ -113,7 +116,7 @@
             </div><span asp-validation-for="ProgramEnds" class="text-danger"></span>
         </div>
 
-        <div class="row row-spacing">
+        <div class="row mb-3">
             <div class="col-12">
                 <label asp-for="AccessClosed" class="col-form-label"></label>
                 <em class="gra-preview-landings">
@@ -131,6 +134,7 @@
                 </em>
                 <div class="mb-3">
                     <div current-value="@Model.AccessClosed"
+                         class="gra-picker-datetime"
                          datetimepicker-container
                          id="accessClosedPicker">
                         <input asp-for="AccessClosed" datetimepicker-input type="text" />
