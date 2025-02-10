@@ -104,9 +104,14 @@
             <div class="mb-3">
                 <label asp-for="VendorCodeType.ExpirationDate" class="col-form-label"></label>
                 <description gra-description-for="VendorCodeType.ExpirationDate"></description>
-                <input asp-for="VendorCodeType.ExpirationDate"
-                       class="form-control"
-                       type="datetime-local" />
+                <div class="gra-picker-datetime"
+                     current-value="@Model.VendorCodeType?.ExpirationDate"
+                     datetimepicker-container
+                     id="startDatePicker">
+                    <input asp-for="VendorCodeType.ExpirationDate"
+                           datetimepicker-input
+                           type="text" />
+                </div>
                 <span asp-validation-for="VendorCodeType.ExpirationDate" class="text-danger"></span>
             </div>
         </div>

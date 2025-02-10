@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Localization;
@@ -58,7 +60,7 @@ namespace GRA.Controllers.Helpers
 
             if (!NavPages)
             {
-                output.Attributes.Add("class", "infolinks");
+                output.AddClass("infolinks", HtmlEncoder.Default);
                 output.TagName = "div";
             }
             else
@@ -68,6 +70,9 @@ namespace GRA.Controllers.Helpers
 
             if (pages.Any())
             {
+                var divTag = new TagBuilder("div");
+                divTag.AddCssClass("info-page-links");
+
                 IUrlHelper url = _urlHelperFactory.GetUrlHelper(ViewContext);
                 string activeStub = url.ActionContext.RouteData.Values["id"] as string;
                 var first = true;
@@ -84,7 +89,7 @@ namespace GRA.Controllers.Helpers
                     }
                     else
                     {
-                        output.Content.Append(NavPages ? " " : " | ");
+                        divTag.InnerHtml.Append(NavPages ? " " : " | ");
                     }
 
                     TagBuilder outputTag;
@@ -112,8 +117,10 @@ namespace GRA.Controllers.Helpers
                         outputTag.AddCssClass("active");
                     }
 
-                    output.Content.AppendHtml(outputTag);
+                    divTag.InnerHtml.AppendHtml(outputTag);
                 }
+
+                output.Content.AppendHtml(divTag);
             }
 
             var siteId = (int)ViewContext
@@ -126,8 +133,7 @@ namespace GRA.Controllers.Helpers
                 .Claims
                 .SingleOrDefault(_ => _.Type == ClaimType.UserId);
 
-            if (!NavPages
-                && siteId != 0)
+            if (!NavPages && siteId != 0)
             {
                 bool linkToLibrary = await _siteLookupService.GetSiteSettingBoolAsync(siteId,
                         SiteSettingKey.Users.ShowLinkToParticipantsLibrary);
@@ -139,7 +145,7 @@ namespace GRA.Controllers.Helpers
                 if (linkToLibrary || showParticipatingLibraries)
                 {
                     var divTag = new TagBuilder("div");
-                    divTag.AddCssClass("locations");
+                    divTag.AddCssClass("locations-page-link");
 
                     if (showParticipatingLibraries)
                     {

@@ -58,18 +58,20 @@
                     <div class="row mb-2">
                         <div class="col-12 col-lg-6">
                             <label asp-for="StartDate" class="col-form-label"></label>
-                            <div class="date" id="pickerStart">
-                                <input asp-for="StartDate"
-                                       type="datetime-local"
-                                       class="form-control" />
+                            <div class="gra-picker-date"
+                                 current-value="@Model.StartDate"
+                                 datetimepicker-container
+                                 id="startDatePicker">
+                                <input asp-for="StartDate" datetimepicker-input type="text" value="" />
                             </div>
                         </div>
                         <div class="col-12 col-lg-6">
                             <label asp-for="EndDate" class="col-form-label"></label>
-                            <div class="date" id="pickerEnd">
-                                <input asp-for="EndDate"
-                                       type="datetime-local"
-                                       class="form-control" />
+                            <div class="gra-picker-date"
+                                 current-value="@Model.EndDate"
+                                 datetimepicker-container
+                                 id="endDatePicker">
+                                <input asp-for="EndDate" datetimepicker-input type="text" value="" />
                             </div>
                         </div>
                     </div>
@@ -456,8 +458,11 @@
 @section scripts
 {
     <script>
-        var favoriteUrl = "@(Url.Action(nameof(EventsController.UpdateSingleFavorite)))";
-        var showFavorites = "@Model.Favorites" == "True";
+        const branchList = $("#BranchId");
+        const favoriteUrl = "@Url.Action(nameof(EventsController.UpdateSingleFavorite))";
+        const getBranchesUrl = "@Url.Action(nameof(LookupController.GetBranches), LookupController.Name, new { Area = string.Empty })";
+        const getDetailsUrl = "@Url.Action(nameof(EventsController.GetDetails))";
+        const showFavorites = "@Model.Favorites" == "True";
 
         $(document).ready(function() {
             $('.td-class').each(function() {
@@ -476,22 +481,20 @@
                 $('#UseLocation').val("");
                 $("#LocationId").val("");
             }
-            var systemId = $(this).val();
-            var branchList = $("#BranchId");
-            var branchId = branchList.val();
-            var url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
+            const systemId = $(this).val();
+            const branchId = branchList.val();
 
-            $.getJSON(url, { systemId: systemId, branchId: branchId, listAll: "true" }, function(response) {
-                branchList.empty();
-                branchList.append(new Option("", ""));
-                $.each(response, function(index, item) {
-                    branchList.append(new Option(item.text, item.value, item.selected, item.selected))
+            $.getJSON(getBranchesUrl, { systemId: systemId, branchId: branchId, listAll: "true" },
+                function(response) {
+                    branchList.empty();
+                    branchList.append(new Option("", ""));
+                    $.each(response, function(index, item) {
+                        branchList.append(new Option(item.text, item.value, item.selected, item.selected))
+                    });
                 });
-            });
         });
 
         $("#BranchId").on("change", function(e) {
-
             $('#UseLocation').val("");
             $("#LocationId").val("");
         });
@@ -508,12 +511,12 @@
         $(".rowlink").on('click', function(e) {
             e.preventDefault();
             $("#detailModal").modal("show");
-            var id = $(this).data("id");
-            var url = "@Url.Action("GetDetails")";
-            $.get(url, { eventId: id }, function (response) {
+            let id = $(this).data("id");
+            $.get(getDetailsUrl, { eventId: id }, function (response) {
                 $("#detailModalContent").html(response);
             }).fail(function (response) {
-                $("#detailModalContent").html("<div class='modal-body'>" + response.responseText + "</div>");
+                $("#detailModalContent")
+                    .html("<div class='modal-body'>" + response.responseText + "</div>");
             });
         });
 
@@ -522,38 +525,40 @@
         });
 
         $(".favorite-button").on("click", function () {
-            var button = $(this);
+            const button = $(this);
             if (button.hasClass("fa-spinner") == false) {
                 button.removeClass("far fa-star").addClass("fas fa-spinner fa-pulse");
-                var favorite = button.data("favorite") == "False";
+                const favorite = button.data("favorite") == "False";
 
-                $.post(favoriteUrl, { eventId: button.data("eventid"), favorite: favorite }, function (response) {
-                    setTimeout(function() {
-                        if (response.success) {
-                            if (response.favorite) {
-                                button.addClass("fa-star");
-                                button.data("favorite", "True");
-                            }
-                            else {
-                                if (showFavorites) {
-                                    button.parent().parent().remove();
+                $.post(favoriteUrl, { eventId: button.data("eventid"), favorite: favorite }, 
+                    function (response) {
+                        setTimeout(function() {
+                            if (response.success) {
+                                if (response.favorite) {
+                                    button.addClass("fa-star");
+                                    button.data("favorite", "True");
                                 }
                                 else {
-                                    button.removeClass("fas");
-                                    button.addClass("far fa-star");
-                                    button.data("favorite", "False");
+                                    if (showFavorites) {
+                                        button.parent().parent().remove();
+                                    }
+                                    else {
+                                        button.removeClass("fas");
+                                        button.addClass("far fa-star");
+                                        button.data("favorite", "False");
+                                    }
                                 }
+                                button.removeClass("fa-spinner fa-pulse").css("transform", "none");
+                                }
+                            else {
+                                button.addClass("fa-exclamation-triangle")
+                                    .removeClass("fa-spinner fa-pulse")
+                                    .css("transform", "none");
+                                alert(response.message);
                             }
-                            button.removeClass("fa-spinner fa-pulse").css("transform", "none");
-                            }
-                        else {
-                            button.addClass("fa-exclamation-triangle").removeClass("fa-spinner fa-pulse").css("transform", "none");
-                            alert(response.message);
-                        }
-                    }, 500);
-                });
+                        }, 500);
+                    });
             }
-
         });
     </script>
 }

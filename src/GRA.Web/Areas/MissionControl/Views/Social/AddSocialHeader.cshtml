@@ -22,7 +22,12 @@
         <div class="col-12 mb-3">
             <label asp-for="StartDate" class="col-form-label"></label>*
             <description gra-description-for="StartDate"></description>
-            <input asp-for="StartDate" type="datetime-local" class="form-control" />
+            <div current-value="@Model.StartDate"
+                 class="gra-picker-datetime"
+                 datetimepicker-container
+                 id="startDatePicker">
+                <input asp-for="StartDate" datetimepicker-input type="text" />
+            </div>
             <span asp-validation-for="StartDate" class="text-danger"></span>
         </div>
         <div class="col-12 mb-3">

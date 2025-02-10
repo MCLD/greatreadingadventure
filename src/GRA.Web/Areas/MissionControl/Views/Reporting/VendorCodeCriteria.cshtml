@@ -1,6 +1,9 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.ReportCriteriaViewModel
 
-<form asp-controller="Reporting" asp-action="Run" method="post" role="form" class="form-horizontal" style="margin-top: 2rem; margin-bottom: 2rem;">
+<form asp-action="@nameof(ReportingController.Run)"
+      class="form-horizontal"
+      method="post"
+      role="form">
     <input asp-for="ReportId" type="hidden" />
 
     <div class="mb-3">
@@ -15,7 +18,7 @@
     <div class="mb-3">
         <div class="col-12">
             <button type="submit" class="btn btn-outline-primary">
-                <span class="fas fa-file-alt"></span>
+                <span class="fas fa-file-alt fa-fw"></span>
                 Run Report!
             </button>
         </div>

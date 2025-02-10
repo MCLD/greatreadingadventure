@@ -1,11 +1,20 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Sites.SiteScheduleViewModel
 
+@section styles {
+    <style>
+        .gra-preview-landings {
+            display: inline-block;
+            margin-left: 1rem;
+        }
+    </style>
+}
+
 @await Html.PartialAsync("_SitePartial")
 
 <form asp-controller="Sites" asp-action="Schedule" method="post" role="form">
     <input asp-for="Id" type="hidden" />
 
-    <div class="row row-spacing">
+    <div class="row mb-3">
         <div class="col-12">
             <label class="col-form-label">Prior to Registration Opening</label>
             <em class="gra-preview-landings">
@@ -24,7 +33,7 @@
         </div>
     </div>
 
-    <div class="row row-spacing">
+    <div class="row mb-3">
         <div class="col-12">
             <label asp-for="RegistrationOpens" class="col-form-label"></label>
             <em class="gra-preview-landings">
@@ -40,15 +49,19 @@
                    asp-route-id="@nameof(GRA.Domain.Model.SiteStage.RegistrationOpen)"
                    target="_blank">Exit</a>
             </em>
-            <div class="mb-3 date">
-                @* timepicker *@
-                <input asp-for="RegistrationOpens" type="datetime-local" class="form-control" />
+            <div class="mb-3">
+                <div current-value="@Model.RegistrationOpens"
+                     class="gra-picker-datetime"
+                     datetimepicker-container
+                     id="registrationOpensPicker">
+                    <input asp-for="RegistrationOpens" datetimepicker-input type="text" />
+                </div>
             </div>
             <span asp-validation-for="RegistrationOpens" class="text-danger"></span>
         </div>
     </div>
 
-    <div class="row row-spacing">
+    <div class="row mb-3">
         <div class="col-12">
             <label asp-for="ProgramStarts" class="col-form-label"></label>
             <em class="gra-preview-landings">
@@ -64,15 +77,19 @@
                    asp-route-id="@nameof(GRA.Domain.Model.SiteStage.ProgramOpen)"
                    target="_blank">Exit</a>
             </em>
-            <div class="mb-3 date">
-                @* timepicker *@
-                <input asp-for="ProgramStarts" type="datetime-local" class="form-control" />
+            <div class="mb-3">
+                <div current-value="@Model.ProgramStarts"
+                     class="gra-picker-datetime"
+                     datetimepicker-container
+                     id="programStartsPicker">
+                    <input asp-for="ProgramStarts" datetimepicker-input type="text" />
+                </div>
             </div>
             <span asp-validation-for="ProgramStarts" class="text-danger"></span>
         </div>
     </div>
 
-    <div class="row row-spacing">
+    <div class="row mb-3">
         <div class="col-12">
             <label asp-for="ProgramEnds" class="col-form-label"></label>
             <em class="gra-preview-landings">
@@ -88,15 +105,18 @@
                    asp-route-id="@nameof(GRA.Domain.Model.SiteStage.ProgramEnded)"
                    target="_blank">Exit</a>
             </em>
-            <div class="input-group date">
-                @* timepicker *@
-                <input asp-for="ProgramEnds" type="datetime-local" class="form-control" />
-            </div>
-            <span asp-validation-for="ProgramEnds" class="text-danger"></span>
+            <div class="mb-3">
+                <div current-value="@Model.ProgramEnds"
+                     class="gra-picker-datetime"
+                     datetimepicker-container
+                     id="programEndsPicker">
+                    <input asp-for="ProgramEnds" datetimepicker-input type="text" />
+                </div>
+            </div><span asp-validation-for="ProgramEnds" class="text-danger"></span>
         </div>
     </div>
 
-    <div class="row row-spacing">
+    <div class="row mb-3">
         <div class="col-12">
             <label asp-for="AccessClosed" class="col-form-label"></label>
             <em class="gra-preview-landings">
@@ -112,31 +132,28 @@
                    asp-route-id="@nameof(GRA.Domain.Model.SiteStage.AccessClosed)"
                    target="_blank">Exit</a>
             </em>
-            <div class="mb-3 date datetimepicker">
-                <input asp-for="AccessClosed" type="datetime-local" class="form-control" />
+            <div class="mb-3">
+                <div current-value="@Model.AccessClosed"
+                     class="gra-picker-datetime"
+                     datetimepicker-container
+                     id="accessClosedPicker">
+                    <input asp-for="AccessClosed" datetimepicker-input type="text" />
+                </div>
             </div>
             <span asp-validation-for="AccessClosed" class="text-danger"></span>
         </div>
     </div>
 
     <div class="mb-3">
-        <a asp-action="Index" class="btn btn-outline-secondary">Return to List</a>
+        <a asp-action="@nameof(SitesController.Index)"
+           class="btn btn-outline-secondary">Return to List</a>
         <button type="submit"
                 id="Submit"
                 name="Submit"
                 value="Submit"
-                class="btn btn-outline-primary btn-spinner"
+                class="btn btn-outline-primary"
                 button-spinner>
             <span class="buttonText">Save</span>
         </button>
     </div>
 </form>
-
-@section scripts {
-    <style>
-        .gra-preview-landings {
-            display: inline-block;
-            margin-left: 1rem;
-        }
-    </style>
-}

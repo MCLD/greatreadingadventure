@@ -57,6 +57,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dev", "dev", "{2F931D25-1A2
 	ProjectSection(SolutionItems) = preProject
 		dev\adding-an-entity.md = dev\adding-an-entity.md
 		dev\docker-yarn-update.sh = dev\docker-yarn-update.sh
+		dev\datetime-picker.md = dev\datetime-picker.md
 		dev\docker.md = dev\docker.md
 		dev\initial-developer-setup.md = dev\initial-developer-setup.md
 		dev\migration.ps1 = dev\migration.ps1

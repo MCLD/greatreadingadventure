@@ -63,10 +63,6 @@ footer p {
     margin-bottom: 0.5rem;
 }
 
-div.locations {
-    margin-top: 0.5rem;
-}
-
 .label-as-badge {
     border-radius: 0.7em;
     font-size: 0.8em;
@@ -125,11 +121,17 @@ div.locations {
         top: 0;
     }
 
-
-.infolinks .active {
-    font-weight: bold;
+.info-page-links {
+    margin-bottom: 0.5rem;
 }
 
+    .info-page-links .active {
+        font-weight: bold;
+    }
+
+.locations-page-link {
+    margin-bottom: 0.5rem;
+}
 
 .total-row {
     background-color: rgb(215, 240, 240);
@@ -154,7 +156,11 @@ div.locations {
     width: 110px;
 }
 
-.badge-sm-fixed {
+.badge-sm-fixed-container {
+    min-width: 120px;
+}
+
+.badge-sm-fixed-container > img {
     height: auto;
     min-height: 110px;
     width: 110px;
@@ -165,7 +171,11 @@ div.locations {
     width: 210px;
 }
 
-.badge-lg-fixed {
+.badge-lg-fixed-container {
+    min-width: 210px;
+}
+
+.badge-lg-fixed-container > img {
     height: auto;
     min-height: 210px;
     width: 210px;
@@ -633,21 +643,18 @@ p.password-note {
     position: relative;
 }
 
-.participating-libraries {
-    margin-bottom: 2rem;
+
+.participating-libraries > .system {
+    padding-bottom: 1rem;
 }
 
-    .participating-libraries > .system {
-        padding-bottom: 1rem;
-    }
+.participating-libraries > .library-list {
+    padding-bottom: 0.25rem;
+}
 
-    .participating-libraries > .library-list {
-        padding-bottom: 0.25rem;
-    }
-
-    .participating-libraries small {
-        padding-left: 1rem;
-    }
+.participating-libraries small {
+    padding-left: 1rem;
+}
 
 @media only screen and (min-width: 768px) {
     .avatar-layer-selector {

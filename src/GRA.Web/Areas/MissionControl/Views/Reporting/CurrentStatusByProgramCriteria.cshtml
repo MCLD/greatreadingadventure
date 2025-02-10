@@ -1,7 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.ReportCriteriaViewModel
 
 <form asp-action="@nameof(ReportingController.Run)"
-      asp-controller="@ReportingController.Name"
       class="form-horizontal"
       method="post"
       role="form">
@@ -10,7 +9,9 @@
     <div class="row">
         <div class="col-12">
             <label asp-for="EndDate" class="col-form-label"></label>
-            <input asp-for="EndDate" type="datetime-local" class="form-control" />
+            <div class="gra-picker-datetime" datetimepicker-container id="endDatePicker">
+                <input asp-for="EndDate" datetimepicker-input type="text" />
+            </div>
             <span asp-validation-for="EndDate" class="text-danger"></span>
         </div>
     </div>
@@ -18,7 +19,7 @@
     <div class="row mt-4">
         <div class="col-12">
             <button type="submit" class="btn btn-outline-primary">
-                <span class="fas fa-file-alt"></span>
+                <span class="fas fa-file-alt fa-fw"></span>
                 Run Report!
             </button>
         </div>

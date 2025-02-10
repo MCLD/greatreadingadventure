@@ -25,11 +25,11 @@
         <div class="col-12 mb-3">
             <label asp-for="StartDate" class="col-form-label"></label>*
             <description gra-description-for="StartDate"></description>
-            <div class="input-group date datetimepicker">
-                <span class="input-group-text">
-                    <i class="fas fa-calendar-alt"></i>
-                </span>
-                <input asp-for="StartDate" type="text" class="form-control" />
+            <div current-value="@Model.StartDate"
+                 class="gra-picker-datetime"
+                 datetimepicker-container
+                 id="startDatePicker">
+                <input asp-for="StartDate" datetimepicker-input type="text" />
             </div>
             <span asp-validation-for="StartDate" class="text-danger"></span>
         </div>

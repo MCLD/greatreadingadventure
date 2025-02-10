@@ -11,17 +11,21 @@
 && Model.Carousel.Items?.Any() != true)
 {
     <div class="row">
-        <div class="col-sm-6 offset-sm-3">
-            <div class="alert alert-danger" style="margin: 1rem 0;">
-                <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"></span>
-                This carousel has no items so it will not be displayed on the dashboard.
-                <a asp-action="AddItem" asp-route-id="@Model.Carousel.Id">Add an item now.</a>
+        <div class="col-md-6 offset-md-3">
+            <div class="alert alert-danger">
+                <div class=" d-flex align-items-baseline">
+                    <div class="fas fa-exclamation-triangle fa-lg text-danger align-self-baseline me-2"
+                         aria-hidden="true"></div>
+                    <div>
+                        This carousel has no items so it will not be displayed on the dashboard.
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 }
 
-<form asp-controller="Carousels"
+<form asp-controller="@CarouselsController.Name"
       asp-action="@Model.PageAction"
       method="post"
       role="form">
@@ -40,7 +44,12 @@
     <div class="mb-3">
         <label asp-for="Carousel.StartTime" class="col-form-label"></label>
         <description gra-description-for="Carousel.StartTime"></description>
-        <input asp-for="Carousel.StartTime" type="datetime-local" class="form-control" />
+        <div class="gra-picker-datetime"
+             current-value="@Model.Carousel?.StartTime"
+             datetimepicker-container
+             id="carouselStartTimePicker">
+            <input asp-for="Carousel.StartTime" datetimepicker-input type="text" />
+        </div>
         <span asp-validation-for="Carousel.StartTime" class="text-danger"></span>
     </div>
     <div class="mb-3">
@@ -54,7 +63,8 @@
                 id="Submit"
                 name="Submit"
                 value="Submit"
-                class="btn btn-outline-primary btn-spinner" button-spinner>
+                class="btn btn-outline-primary"
+                button-spinner>
             <span class="buttonText">Save</span>
         </button>
     </div>
@@ -64,7 +74,7 @@
 {
     @if (Model.Carousel.Items?.Any() != true)
     {
-        <a asp-action="AddItem"
+        <a asp-action="@nameof(CarouselsController.AddItem)"
            asp-route-id="@Model.Carousel.Id"
            class="btn btn-outline-success btn-lg">
             <span class="fas fa-lg fa-plus-circle fa-fw"></span>
@@ -75,7 +85,7 @@
     {
         @if (string.IsNullOrEmpty(Model.Carousel.Heading))
         {
-            <a asp-action="AddItem"
+            <a asp-action="@nameof(CarouselsController.AddItem)"
                asp-route-id="@Model.Carousel.Id"
                class="btn btn-outline-success">
                 <span class="fas fa-plus-circle fa-fw"></span>
@@ -92,14 +102,16 @@
                 <div class="card">
                     @if (!string.IsNullOrEmpty(Model.Carousel.Heading))
                     {
-                        <div class="card-header">
-                            @Model.Carousel.Heading
-                            <a asp-action="AddItem"
-                               asp-route-id="@Model.Carousel.Id"
-                               class="btn btn-sm btn-outline-success float-end">
-                                <span class="fas fa-plus-circle fa-fw"></span>
-                                Add item
-                            </a>
+                        <div class="card-header d-flex">
+                            <div class="flex-grow-1">@Model.Carousel.Heading</div>
+                            <div>
+                                <a asp-action="@nameof(CarouselsController.AddItem)"
+                                   asp-route-id="@Model.Carousel.Id"
+                                   class="btn btn-sm btn-outline-success">
+                                    <span class="fas fa-plus-circle fa-fw"></span>
+                                    Add item
+                                </a>
+                            </div>
                         </div>
                     }
                     <div class="card-body">
@@ -107,14 +119,13 @@
                             @foreach (var item in Model.Carousel.Items)
                             {
                                 <div>
-                                    <a asp-action="EditItem"
+                                    <a asp-action="@nameof(CarouselsController.EditItem)"
                                        asp-route-id="@item.Id"
                                        class="gra-carousel-link">
                                         <img src="@item.ImageUrl" />
                                         <p>@item.Title</p>
                                     </a>
-                                    <form asp-controller="Carousels"
-                                          asp-action="DeleteItem"
+                                    <form asp-action="@nameof(CarouselsController.DeleteItem)"
                                           asp-route-id="@item.Id"
                                           method="post"
                                           role="form">

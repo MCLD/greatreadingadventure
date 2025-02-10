@@ -39,8 +39,12 @@
     <div class="row row-spacing">
         <div class="col-12">
             <label asp-for="DashboardContent.StartTime" class="col-form-label"></label>
-            <div class="date" id="pickerStart">
-                <input asp-for="DashboardContent.StartTime" type="datetime-local" class="form-control" />
+
+            <div class="gra-picker-datetime"
+                 current-value="@Model.DashboardContent?.StartTime"
+                 datetimepicker-container
+                 id="dashboardContentStartTimePicker">
+                <input asp-for="DashboardContent.StartTime" datetimepicker-input type="text" />
             </div>
             <span asp-validation-for="DashboardContent.StartTime" class="text-danger"></span>
         </div>

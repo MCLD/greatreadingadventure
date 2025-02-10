@@ -1,7 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.ReportCriteriaViewModel
 
 <form asp-action="@nameof(ReportingController.Run)"
-      asp-controller="@ReportingController.Name"
       class="form-horizontal"
       method="post"
       role="form">
@@ -27,7 +26,7 @@
     <div class="row mt-4">
         <div class="col-12">
             <button type="submit" class="btn btn-outline-primary">
-                <span class="fas fa-file-alt"></span>
+                <span class="fas fa-file-alt fa-fw"></span>
                 Run Report!
             </button>
         </div>
@@ -37,6 +36,9 @@
 @section scripts
 {
     <script>
+        const branchList = $("#BranchId");
+        const url = "@Url.Action(nameof(GRA.Controllers.LookupController.GetBranches), GRA.Controllers.LookupController.Name, new { Area = string.Empty })";
+
         $(document).ready(function () {
             UpdateBranchList();
         });
@@ -46,15 +48,13 @@
         });
 
         function UpdateBranchList() {
-            var branchList = $("#BranchId");
-            var branchId = branchList.val();
-            var systemId = $("#SystemId").val();
-            var url = "@Url.Action(nameof(GRA.Controllers.LookupController.GetBranches), GRA.Controllers.LookupController.Name, new { Area = string.Empty })";
+            let branchId = branchList.val();
+            let systemId = $("#SystemId").val();
 
             $.getJSON(url, { systemId: systemId, branchId: branchId }, function (response) {
                 branchList.empty();
                 branchList.append(new Option("All Branches", ""));
-                $.each(response, function (index, item) {
+                $.each(response, function (_, item) {
                     branchList.append(new Option(item.text, item.value, item.selected, item.selected))
                 });
             });

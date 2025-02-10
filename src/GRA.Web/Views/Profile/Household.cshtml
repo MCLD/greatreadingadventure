@@ -394,7 +394,21 @@
                                                         </span>
                                                     </div>
                                                     <div class="@(Model.ActiveUser == user.Id ? "fw-bold" : null)">
-                                                        @user.Username
+                                                        @if (string.IsNullOrWhiteSpace(user.Username) && Model.AuthUserIsHead && Model.CanEditHousehold)
+                                                        {
+                                                            <button type="submit"
+                                                                    class="btn btn-outline-primary btn-sm mt-1"
+                                                                    name="RegisterId"
+                                                                    asp-action="@nameof(ProfileController.RegisterHouseholdMember)"
+                                                                    value="@user.Id">
+                                                                <span class="fas fa-user-plus fa-fw"></span>
+                                                                @SharedLocalizer[GRA.Annotations.Interface.AddUsername]
+                                                            </button>
+                                                        }
+                                                        else
+                                                        {
+                                                            @user.Username
+                                                        }
                                                     </div>
                                                 </div>
                                                 @if (Model.ActiveUser != user.Id && Model.AuthUserIsHead)

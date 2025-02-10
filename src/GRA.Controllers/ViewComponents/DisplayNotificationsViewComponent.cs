@@ -82,7 +82,7 @@ namespace GRA.Controllers.ViewComponents
                     notification.LocalizedText
                         = _sharedHtmlLocalizer[Annotations.Info.SuccessfullyJoined,
                             HttpContext.Items[ItemKey.SiteName]];
-                    notification.DisplayIcon = "far fa-thumbs-up";
+                    notification.DisplayIcon = "far fa-thumbs-up fa-fw";
                     notificationDisplayList.Add(notification);
                 }
                 notifications.Remove(notification);
@@ -104,7 +104,7 @@ namespace GRA.Controllers.ViewComponents
                         notification.AttachmentFilename
                             = _pathResolver.ResolveContentPath(notification.AttachmentFilename);
                     }
-                    notification.DisplayIcon = "far fa-thumbs-up";
+                    notification.DisplayIcon = "far fa-thumbs-up fa-fw";
                     notification.Text = new StringBuilder(notification.Text)
                         .AppendFormat(CultureInfo.InvariantCulture,
                             " <a href=\"{0}\">Check out your new avatar options!</a>",
