@@ -1,7 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.ReportCriteriaViewModel
 
 <form asp-action="@nameof(ReportingController.Run)"
-      asp-controller="@ReportingController.Name"
       class="form-horizontal"
       method="post"
       role="form">
@@ -28,13 +27,16 @@
     <div class="row">
         <div class="col-12 col-sm-6 my-2">
             <label asp-for="StartDate" class="col-form-label"></label>
-            <input asp-for="StartDate" type="datetime-local" class="form-control" />
+            <div datetimepicker-container id="startDatePicker">
+                <input asp-for="StartDate" datetimepicker-input type="text" />
+            </div>
             <span asp-validation-for="StartDate" class="text-danger"></span>
         </div>
-
         <div class="col-12 col-sm-6 my-2">
             <label asp-for="EndDate" class="col-form-label"></label>
-            <input asp-for="EndDate" type="datetime-local" class="form-control" />
+            <div datetimepicker-container id="endDatePicker">
+                <input asp-for="EndDate" datetimepicker-input type="text" />
+            </div>
             <span asp-validation-for="EndDate" class="text-danger"></span>
         </div>
     </div>
@@ -42,7 +44,7 @@
     <div class="row mt-4">
         <div class="col-12">
             <button type="submit" class="btn btn-outline-primary">
-                <span class="fas fa-file-alt"></span>
+                <span class="fas fa-file-altfa-fw"></span>
                 Run Report!
             </button>
         </div>
@@ -52,11 +54,16 @@
 @section scripts
 {
     <script>
+        const branchList = $("#BranchId");
+        const endDatePicker = graInitalizePickerDatetime(document.getElementById("endDatePicker"));
+        const startDatePicker = graInitalizePickerDatetime(document.getElementById("startDatePicker"));
+        const url = "@Url.Action(nameof(GRA.Controllers.LookupController.GetBranches), GRA.Controllers.LookupController.Name, new { Area = string.Empty })";
+
+        var defaultDateTime = graGetLocalDate();
+
         $("#SystemId").on("change", function() {
             var systemId = $(this).val();
-            var branchList = $("#BranchId");
             var branchId = branchList.val();
-            var url = "@Url.Action(nameof(GRA.Controllers.LookupController.GetBranches), GRA.Controllers.LookupController.Name, new { Area = string.Empty })";
 
             $.getJSON(url, { systemId: systemId, branchId: branchId }, function(response) {
                 branchList.empty();
@@ -69,6 +76,24 @@
                 });
             });
         });
+
+        document.getElementById("entireProgram").addEventListener("click", _ => {
+            startDatePicker.clear();
+            endDatePicker.clear();
+        });
+
+        document.getElementById("thisWeek").addEventListener("click", _ => {
+            defaultDateTime = graGetLocalDate();
+            defaultDateTime.setDate(defaultDateTime.getDate() - 1);
+            graPickerSetDate(endDatePicker, defaultDateTime);
+            defaultDateTime.setDate(defaultDateTime.getDate() - 7);
+            graPickerSetDate(startDatePicker, defaultDateTime);
+        });
+
+        defaultDateTime.setDate(defaultDateTime.getDate() - 1);
+        graPickerSetDate(endDatePicker, defaultDateTime);
+        defaultDateTime.setDate(defaultDateTime.getDate() - 1);
+        graPickerSetDate(startDatePicker, defaultDateTime);
     </script>
 }
 

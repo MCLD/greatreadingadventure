@@ -7,29 +7,30 @@
         <ul class="nav nav-pills flex-column flex-sm-row">
             <li class="nav-item">
                 <a ActiveBy routeKey="Upcoming"
-                value=",True"
-                asp-action="Broadcasts"
-                class="nav-link">
-                Upcoming</a>
+                   value=",True"
+                   asp-action="Broadcasts"
+                   class="nav-link">
+                    Upcoming
+                </a>
             </li>
             <li class="nav-item">
                 <a ActiveBy routeKey="Upcoming"
-                value="False"
-                asp-action="Broadcasts" 
-                asp-route-Upcoming="False"
-                class="nav-link">
-                Sent</a>
+                   value="False"
+                   asp-action="Broadcasts"
+                   asp-route-Upcoming="False"
+                   class="nav-link">
+                    Sent
+                </a>
             </li>
         </ul>
     </div>
 </div>
-
 <div class="row my-4">
     <div class="col-12 mb-2">
-        <a asp-action="BroadcastCreate" class="btn btn-outline-primary">Schedule a new Broadcast</a>
+        <a asp-action="@nameof(MailController.BroadcastCreate)"
+           class="btn btn-outline-primary">Schedule a new Broadcast</a>
     </div>
 </div>
-
 <div class="row my-4">
     <div class="col-12">
         @if (Model.Broadcasts.Count() == 0)
@@ -44,7 +45,7 @@
                         <tr>
                             <th>@(Model.Upcoming ? "Send" : "Sent") at</th>
                             <th>Subject</th>
-                            <th width="200px">Send to New Participants</th>
+                            <th style="width: 200px;">Send to New Participants</th>
                             @if (Model.Upcoming)
                             {
                                 <th>&nbsp;</th>
@@ -56,7 +57,9 @@
                         {
                             <tr>
                                 <td class="td-class">
-                                    <a asp-action="BroadcastEdit" asp-route-id="@broadcast.Id" class="rowlink">
+                                    <a asp-action="@nameof(MailController.BroadcastEdit)"
+                                       asp-route-id="@broadcast.Id"
+                                       class="rowlink">
                                         @broadcast.SendAt
                                     </a>
                                 </td>
@@ -80,7 +83,8 @@
                                                 data-bs-target="#deleteModal"
                                                 data-id="@broadcast.Id"
                                                 data-subject="@broadcast.Subject">
-                                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
+                                            <span class="fas fa-times fa-fw"
+                                                  aria-hidden="true"></span>
                                         </button>
                                     </td>
                                 }
@@ -89,58 +93,53 @@
                     </tbody>
                 </table>
             </div>
-            @if (Model.PaginateModel.MaxPage > 1)
-            {
-                <paginate paginateModel="@Model.PaginateModel"></paginate>
-            }
+            <paginate paginateModel="@Model.PaginateModel"></paginate>
         }
     </div>
 </div>
-
 @if (Model.Upcoming)
 {
-    <div class="row">
-        <div class="modal fade"
-             id="deleteModal"
-             tabindex="-1"
-             role="dialog"
-             aria-labelledby="deleteModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title h4" id="deleteModalLabel">Delete Broadcast</h1>
-                        <button type="button"
-                                class="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close dialog">
-                            
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
+    <div class="modal fade"
+         id="deleteModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="deleteModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title h4" id="deleteModalLabel">Delete Broadcast</h1>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close dialog">
+                    </button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="modal-body d-flex align-items-stretch">
+                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                              aria-hidden="true"></span>
                         <span id="modal-text"></span>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button"
-                                class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal"
-                                style="margin-right: 1em;">
-                            Cancel
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <form asp-controller="@MailController.Name"
+                          asp-action="@nameof(MailController.BroadcastDelete)"
+                          method="post"
+                          role="form"
+                          style="display:inline">
+                        <input id="Id" name="Id" type="hidden" />
+                        <button type="submit"
+                                class="btn btn-outline-danger"
+                                aria-label="Confirm">
+                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
+                            Delete
                         </button>
-                        <form asp-controller="Mail"
-                              asp-action="BroadcastDelete"
-                              method="post"
-                              role="form"
-                              style="display:inline">
-                            <input id="Id" name="Id" type="hidden" />
-                            <button type="submit"
-                                    class="btn btn-outline-danger float-end"
-                                    aria-label="Confirm">
-                                <span class="fas fa-times fa-fw" aria-hidden="true"></span>
-                                Delete
-                            </button>
-                        </form>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -160,13 +159,12 @@
                 $(this).children("a.rowlink").height($(this).outerHeight());
             });
         });
-
         $('#deleteModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var id = button.data('id');
             var subject = button.data('subject');
             var modal = $(this);
-            modal.find('#modal-text').text('Are you sure you wish to delete the Broadcast "' + subject + '" ?');
+            modal.find('#modal-text').html('Are you sure you wish to delete the Broadcast <strong>' + subject + '</strong>?');
             modal.find('#Id').val(id);
         })
     </script>

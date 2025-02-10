@@ -1,10 +1,9 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.ReportCriteriaViewModel
 
 <form asp-action="@nameof(ReportingController.Run)"
-    asp-controller="@ReportingController.Name" 
-    class="form-horizontal"
-    method="post" 
-    role="form">
+      class="form-horizontal"
+      method="post"
+      role="form">
     <input asp-for="ReportId" type="hidden" />
     <input asp-for="BadgeRequiredList" type="hidden" />
     <input asp-for="ChallengeRequiredList" type="hidden" />
@@ -27,13 +26,16 @@
     <div class="row">
         <div class="col-12 col-sm-6 my-2">
             <label asp-for="StartDate" class="col-form-label"></label>
-            <input asp-for="StartDate" type="datetime-local" class="form-control" />
+            <div datetimepicker-container id="startDatePicker">
+                <input asp-for="StartDate" datetimepicker-input type="text" />
+            </div>
             <span asp-validation-for="StartDate" class="text-danger"></span>
         </div>
-
         <div class="col-12 col-sm-6 my-2">
             <label asp-for="EndDate" class="col-form-label"></label>
-            <input asp-for="EndDate" type="datetime-local" class="form-control" />
+            <div datetimepicker-container id="endDatePicker">
+                <input asp-for="EndDate" datetimepicker-input type="text" />
+            </div>
             <span asp-validation-for="EndDate" class="text-danger"></span>
         </div>
     </div>
@@ -54,57 +56,57 @@
                     <h3 class="card-title">Badges</h3>
                 </div>
                 <div class="card-body">
-                        <table class="table table-sm table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th width="75px">Type</th>
-                                    <th width="75px">Badge</th>
-                                    <th width="75px">&nbsp;</th>
-                                </tr>
-                            </thead>
-                            <tbody id="requirementList">
-                                <tr id="noRequirements" class="@(Model.ReportBadges?.Count > 0 ? "d-none" : "")">
-                                    <td colspan="4"><em>No badges selected.</em></td>
-                                </tr>
-                                @if (Model.ReportBadges != null)
+                    <table class="table table-sm table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th width="75px">Type</th>
+                                <th width="75px">Badge</th>
+                                <th width="75px">&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody id="requirementList">
+                            <tr id="noRequirements" class="@(Model.ReportBadges?.Count > 0 ? "d-none" : "")">
+                                <td colspan="4"><em>No badges selected.</em></td>
+                            </tr>
+                            @if (Model.ReportBadges != null)
+                            {
+                                foreach (var requirement in Model.ReportBadges)
                                 {
-                                    foreach (var requirement in Model.ReportBadges)
-                                    {
-                                        <tr>
-                                            <td>
-                                                @requirement.Name
-                                            </td>
-                                            <td class="text-center">
-                                                <span class="fa fa-2x @requirement.Icon"
-                                                      title="@requirement.IconDescription"></span>
-                                            </td>
-                                            <td>
-                                                @if (!string.IsNullOrWhiteSpace(requirement.BadgePath))
-                                                {
-                                                    <img class="img-thumbnail badge-xs"
-                                                         src="~/@requirement.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")" />
-                                                }
-                                                else
-                                                {
-                                                    <text>&nbsp;</text>
-                                                }
-                                            </td>
-                                            <td>
-                                                <button type="button"
-                                                        id="removeRequirementButton"
-                                                        class="btn btn-link btn-sm"
-                                                        data-badgeid="@requirement.BadgeId"
-                                                        data-challengeid="@requirement.ChallengeId">
-                                                    <span class="fas fa-2x fa-minus-circle text-danger"
-                                                          aria-hidden="true"></span>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    }
+                                    <tr>
+                                        <td>
+                                            @requirement.Name
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="fa fa-2x @requirement.Icon"
+                                                  title="@requirement.IconDescription"></span>
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrWhiteSpace(requirement.BadgePath))
+                                            {
+                                                <img class="img-thumbnail badge-xs"
+                                                     src="~/@requirement.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")" />
+                                            }
+                                            else
+                                            {
+                                                <text>&nbsp;</text>
+                                            }
+                                        </td>
+                                        <td>
+                                            <button type="button"
+                                                    id="removeRequirementButton"
+                                                    class="btn btn-link btn-sm"
+                                                    data-badgeid="@requirement.BadgeId"
+                                                    data-challengeid="@requirement.ChallengeId">
+                                                <span class="fas fa-2x fa-minus-circle text-danger"
+                                                      aria-hidden="true"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
                                 }
-                            </tbody>
-                        </table>
+                            }
+                        </tbody>
+                    </table>
                     <button type="button"
                             id="addButton"
                             class="btn btn-outline-primary">
@@ -118,7 +120,7 @@
     <div class="row mt-4">
         <div class="col-12">
             <button type="submit" class="btn btn-outline-primary">
-                <span class="fas fa-file-alt"></span>
+                <span class="fas fa-file-alt fa-fw"></span>
                 Run Report!
             </button>
         </div>
@@ -205,10 +207,14 @@
 @section scripts
 {
     <script>
-        var badgeIds = $("#BadgeRequiredList").val().split(',').filter(function (x) { return x }).map(Number);
-        var challengeIds = $("#ChallengeRequiredList").val().split(',').filter(function (x) { return x }).map(Number);
+        const badgeIds = $("#BadgeRequiredList").val().split(',').filter(function (x) { return x }).map(Number);
+        const challengeIds = $("#ChallengeRequiredList").val().split(',').filter(function (x) { return x }).map(Number);
+        const endDatePicker = graInitalizePickerDatetime(document.getElementById("endDatePicker"));
+        const requirementsUrl = "@Url.Action(nameof(LookupController.GetRequirementList), LookupController.Name)";
+        const startDatePicker = graInitalizePickerDatetime(document.getElementById("startDatePicker"));
+
+        var defaultDateTime = graGetLocalDate();
         var page = 1;
-        var requirementsUrl = "@Url.Action(nameof(LookupController.GetRequirementList), LookupController.Name)";
         var scope = "All";
         var search = "";
 
@@ -319,25 +325,22 @@
         });
 
         document.getElementById("entireProgram").addEventListener("click", _ => {
-            document.getElementById('EndDate').value = null;
-            document.getElementById('StartDate').value = null;
+            startDatePicker.clear();
+            endDatePicker.clear();
         });
 
         document.getElementById("thisWeek").addEventListener("click", _ => {
-            let defaultDateTime = graGetLocalDate();
+            defaultDateTime = graGetLocalDate();
             defaultDateTime.setDate(defaultDateTime.getDate() - 1);
-            document.getElementById('EndDate').value = defaultDateTime.toISOString().slice(0, 16);
+            graPickerSetDate(endDatePicker, defaultDateTime);
             defaultDateTime.setDate(defaultDateTime.getDate() - 7);
-            document.getElementById('StartDate').value = defaultDateTime.toISOString().slice(0, 16);
+            graPickerSetDate(startDatePicker, defaultDateTime);
         });
 
-        $().ready(function () {
-            let defaultDateTime = graGetLocalDate();
-            defaultDateTime.setDate(defaultDateTime.getDate() - 1);
-            document.getElementById('EndDate').value = defaultDateTime.toISOString().slice(0, 16);
-            defaultDateTime.setDate(defaultDateTime.getDate() - 1);
-            document.getElementById('StartDate').value = defaultDateTime.toISOString().slice(0, 16);
-        });
+        defaultDateTime.setDate(defaultDateTime.getDate() - 1);
+        graPickerSetDate(endDatePicker, defaultDateTime);
+        defaultDateTime.setDate(defaultDateTime.getDate() - 1);
+        graPickerSetDate(startDatePicker, defaultDateTime);
 
         $("form").on("submit", function (e) {
             if (badgeIds.length == 0 && challengeIds.length == 0) {

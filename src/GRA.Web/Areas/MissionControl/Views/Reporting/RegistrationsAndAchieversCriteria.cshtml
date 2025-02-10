@@ -1,33 +1,39 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.ReportCriteriaViewModel
 
-<form asp-action="Run"
-        asp-controller="Reporting" 
-        class="form-horizontal"
-        method="post" 
-        role="form">
+<form asp-action="@nameof(ReportingController.Run)"
+      class="form-horizontal"
+      method="post"
+      role="form">
     <input asp-for="ReportId" type="hidden" />
 
     <div class="row mt-4">
         <div class="col-12">
-            <button type="button" 
-                class="btn btn-outline-secondary time-selector" 
-                id="entireProgram">Entire program</button>
-            <button type="button" 
-                class="btn btn-outline-secondary time-selector" 
-                id="thisWeek">Last 7 days</button>
+            <button type="button"
+                    class="btn btn-outline-secondary time-selector"
+                    id="entireProgram">
+                Entire program
+            </button>
+            <button type="button"
+                    class="btn btn-outline-secondary time-selector"
+                    id="thisWeek">
+                Last 7 days
+            </button>
         </div>
     </div>
 
     <div class="row">
         <div class="col-12 col-sm-6 my-2">
             <label asp-for="StartDate" class="col-form-label"></label>
-            <input asp-for="StartDate" type="datetime-local" class="form-control"/>
+            <div datetimepicker-container id="startDatePicker">
+                <input asp-for="StartDate" datetimepicker-input type="text" />
+            </div>
             <span asp-validation-for="StartDate" class="text-danger"></span>
         </div>
-
         <div class="col-12 col-sm-6 my-2">
             <label asp-for="EndDate" class="col-form-label"></label>
-            <input asp-for="EndDate" type="datetime-local" class="form-control"/>
+            <div datetimepicker-container id="endDatePicker">
+                <input asp-for="EndDate" datetimepicker-input type="text" />
+            </div>
             <span asp-validation-for="EndDate" class="text-danger"></span>
         </div>
     </div>
@@ -44,7 +50,7 @@
     <div class="row mt-4">
         <div class="col-12">
             <button type="submit" class="btn btn-outline-primary">
-                <span class="fas fa-file-alt"></span>
+                <span class="fas fa-file-alt fa-fw"></span>
                 Run Report!
             </button>
         </div>
@@ -54,25 +60,28 @@
 @section scripts
 {
     <script>
+        const endDatePicker = graInitalizePickerDatetime(document.getElementById("endDatePicker"));
+        const startDatePicker = graInitalizePickerDatetime(document.getElementById("startDatePicker"));
+
+        var defaultDateTime = graGetLocalDate();
+
         document.getElementById("entireProgram").addEventListener("click", _ => {
-            document.getElementById('EndDate').value = null;
-            document.getElementById('StartDate').value = null;
+            startDatePicker.clear();
+            endDatePicker.clear();
         });
 
         document.getElementById("thisWeek").addEventListener("click", _ => {
-            let defaultDateTime = graGetLocalDate();
+            defaultDateTime = graGetLocalDate();
             defaultDateTime.setDate(defaultDateTime.getDate() - 1);
-            document.getElementById('EndDate').value = defaultDateTime.toISOString().slice(0, 16);
+            graPickerSetDate(endDatePicker, defaultDateTime);
             defaultDateTime.setDate(defaultDateTime.getDate() - 7);
-            document.getElementById('StartDate').value = defaultDateTime.toISOString().slice(0, 16);
+            graPickerSetDate(startDatePicker, defaultDateTime);
         });
 
-        $().ready(function () {
-            let defaultDateTime = graGetLocalDate();
-            defaultDateTime.setDate(defaultDateTime.getDate() - 1);
-            document.getElementById('EndDate').value = defaultDateTime.toISOString().slice(0, 16);
-            defaultDateTime.setDate(defaultDateTime.getDate() - 1);
-            document.getElementById('StartDate').value = defaultDateTime.toISOString().slice(0, 16);
-        });
+        defaultDateTime.setDate(defaultDateTime.getDate() - 1);
+        graPickerSetDate(endDatePicker, defaultDateTime);
+        defaultDateTime.setDate(defaultDateTime.getDate() - 1);
+        graPickerSetDate(startDatePicker, defaultDateTime);
+
     </script>
 }

@@ -82,17 +82,27 @@
     <div class="row">
         <div class="col-12 col-sm-6">
             <label asp-for="Event.StartDate" class="col-form-label"></label>
-            <div class="mb-3 date" id="pickerStart">
-                <input asp-for="Event.StartDate" type="date" class="form-control" />
+            <div class="gra-picker-datetime"
+                 current-value="@Model.Event?.StartDate"
+                 datetimepicker-container
+                 id="startDatePicker">
+                <input asp-for="Event.StartDate"
+                       datetimepicker-input
+                       type="text"
+                       value="" />
             </div>
             <span asp-validation-for="Event.StartDate" class="text-danger"></span>
         </div>
         <div class="col-12 col-sm-6">
             <label asp-for="Event.StreamingAccessEnds" class="col-form-label"></label>
-            <div class="mb-3 date" id="pickerEnd">
+            <div class="gra-picker-datetime"
+                 current-value="@Model.Event?.StreamingAccessEnds"
+                 datetimepicker-container
+                 id="endDatePicker">
                 <input asp-for="Event.StreamingAccessEnds"
-                       type="date"
-                       class="form-control" />
+                       datetimepicker-input
+                       type="text"
+                       value="" />
             </div>
             <span asp-validation-for="Event.StreamingAccessEnds"
                   class="text-danger"></span>
@@ -637,7 +647,7 @@
                         <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
                         <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
                     </span>
-                    <23457890frame id="badgeMaker" class="badge-maker"></23457890frame>
+                    <frame id="badgeMaker" class="badge-maker"></frame>
                 </div>
             </div>
         </div>
@@ -645,19 +655,6 @@
 }
 
 @section scripts {
-    <script>
-        $("#Event_AllDay").on("change", function () {
-            if ($("#Event_AllDay").is(":checked")) {
-                $("#Event_StartDate").attr("type", "date");
-                $("#Event_EndDate").attr("type", "date");
-            }
-            else {
-                $("#Event_StartDate").attr("type", "datetime-local");
-                $("#Event_EndDate").attr("type", "datetime-local");
-            }
-        });
-    </script>
-
     @if (Model.CanAddSecretCode)
     {
         <script>

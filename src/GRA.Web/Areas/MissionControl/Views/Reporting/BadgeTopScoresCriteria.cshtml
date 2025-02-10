@@ -1,7 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.ReportCriteriaViewModel
 
 <form asp-action="@nameof(ReportingController.Run)"
-      asp-controller="@ReportingController.Name"
       class="form-horizontal"
       method="post"
       role="form">
@@ -27,13 +26,16 @@
     <div class="row">
         <div class="col-12 col-sm-6 my-2">
             <label asp-for="StartDate" class="col-form-label"></label>
-            <input asp-for="StartDate" type="datetime-local" class="form-control" />
+            <div datetimepicker-container id="startDatePicker">
+                <input asp-for="StartDate" datetimepicker-input type="text" />
+            </div>
             <span asp-validation-for="StartDate" class="text-danger"></span>
         </div>
-
         <div class="col-12 col-sm-6 my-2">
             <label asp-for="EndDate" class="col-form-label"></label>
-            <input asp-for="EndDate" type="datetime-local" class="form-control" />
+            <div datetimepicker-container id="endDatePicker">
+                <input asp-for="EndDate" datetimepicker-input type="text" />
+            </div>
             <span asp-validation-for="EndDate" class="text-danger"></span>
         </div>
     </div>
@@ -65,7 +67,8 @@
                                 </tr>
                             </thead>
                             <tbody id="requirementList">
-                                <tr id="noRequirements" class="@(Model.ReportBadges?.Count > 0 ? "d-none" : "")">
+                                <tr id="noRequirements"
+                                    class="@(Model.ReportBadges?.Count > 0 ? "d-none" : "")">
                                     <td colspan="4"><em>No badges reported</em></td>
                                 </tr>
                                 @if (Model.ReportBadges != null)
@@ -120,7 +123,7 @@
     <div class="row mt-4">
         <div class="col-12">
             <button type="submit" class="btn btn-outline-primary">
-                <span class="fas fa-file-alt"></span>
+                <span class="fas fa-file-alt fa-fw"></span>
                 Run Report!
             </button>
         </div>
@@ -207,10 +210,14 @@
 @section scripts
 {
     <script>
-        var badgeIds = $("#BadgeRequiredList").val().split(',').filter(function (x) { return x }).map(Number);
-        var challengeIds = $("#ChallengeRequiredList").val().split(',').filter(function (x) { return x }).map(Number);
+        const badgeIds = $("#BadgeRequiredList").val().split(',').filter(function (x) { return x }).map(Number);
+        const challengeIds = $("#ChallengeRequiredList").val().split(',').filter(function (x) { return x }).map(Number);
+        const endDatePicker = graInitalizePickerDatetime(document.getElementById("endDatePicker"));
+        const requirementsUrl = "@Url.Action(nameof(LookupController.GetRequirementList), LookupController.Name)";
+        const startDatePicker = graInitalizePickerDatetime(document.getElementById("startDatePicker"));
+
+        var defaultDateTime = graGetLocalDate();
         var page = 1;
-        var requirementsUrl = "@Url.Action(nameof(LookupController.GetRequirementList), LookupController.Name)";
         var scope = "All";
         var search = "";
 
@@ -241,8 +248,8 @@
             }
             $(".fa-minus-circle").parent().parent().parent().remove();
             if (!$(this).hasClass("disabled")) {
-                var badgeId = $(this).data("badgeid");
-                var challengeId = $(this).data("challengeid");
+                let badgeId = $(this).data("badgeid");
+                let challengeId = $(this).data("challengeid");
 
                 if (challengeId != "") {
                     challengeIds.push(challengeId);
@@ -255,8 +262,8 @@
                     $("#ChallengeRequiredList").val("");
                 }
                 $("#noRequirements").addClass("d-none");
-                var row = $(this).parent().parent().clone();
-                var addedItem = row.find(".addRequirementButton");
+                let row = $(this).parent().parent().clone();
+                let addedItem = row.find(".addRequirementButton");
                 addedItem.removeClass("addRequirementButton")
                 addedItem.children().removeClass("fa-plus-circle text-primary");
                 addedItem.children().addClass("fa-minus-circle text-danger");
@@ -272,8 +279,8 @@
         });
 
         $(document).on("click", "#removeRequirementButton", function () {
-            var badgeId = $(this).data("badgeid");
-            var challengeId = $(this).data("challengeid");
+            let badgeId = $(this).data("badgeid");
+            let challengeId = $(this).data("challengeid");
 
             if (challengeId != "") {
                 challengeIds.splice(challengeIds.indexOf(challengeId), 1);
@@ -328,25 +335,22 @@
         });
 
         document.getElementById("entireProgram").addEventListener("click", _ => {
-            document.getElementById('EndDate').value = null;
-            document.getElementById('StartDate').value = null;
+            startDatePicker.clear();
+            endDatePicker.clear();
         });
 
         document.getElementById("thisWeek").addEventListener("click", _ => {
-            let defaultDateTime = graGetLocalDate();
+            defaultDateTime = graGetLocalDate();
             defaultDateTime.setDate(defaultDateTime.getDate() - 1);
-            document.getElementById('EndDate').value = defaultDateTime.toISOString().slice(0, 16);
+            graPickerSetDate(endDatePicker, defaultDateTime);
             defaultDateTime.setDate(defaultDateTime.getDate() - 7);
-            document.getElementById('StartDate').value = defaultDateTime.toISOString().slice(0, 16);
+            graPickerSetDate(startDatePicker, defaultDateTime);
         });
 
-        $().ready(function () {
-            let defaultDateTime = graGetLocalDate();
-            defaultDateTime.setDate(defaultDateTime.getDate() - 1);
-            document.getElementById('EndDate').value = defaultDateTime.toISOString().slice(0, 16);
-            defaultDateTime.setDate(defaultDateTime.getDate() - 1);
-            document.getElementById('StartDate').value = defaultDateTime.toISOString().slice(0, 16);
-        });
+        defaultDateTime.setDate(defaultDateTime.getDate() - 1);
+        graPickerSetDate(endDatePicker, defaultDateTime);
+        defaultDateTime.setDate(defaultDateTime.getDate() - 1);
+        graPickerSetDate(startDatePicker, defaultDateTime);
 
         $("form").on("submit", function (e) {
             if (badgeIds.length == 0 && challengeIds.length == 0) {

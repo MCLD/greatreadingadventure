@@ -27,13 +27,21 @@ namespace GRA.Controllers.MissionControl
             UserService userService)
             : base(context)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
-            _messageTemplateService = messageTemplateService
-                ?? throw new ArgumentNullException(nameof(messageTemplateService));
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            ArgumentNullException.ThrowIfNull(logger);
+            ArgumentNullException.ThrowIfNull(mailService);
+            ArgumentNullException.ThrowIfNull(messageTemplateService);
+            ArgumentNullException.ThrowIfNull(userService);
+
+            _logger = logger;
+            _mailService = mailService;
+            _messageTemplateService = messageTemplateService;
+            _userService = userService;
+
             PageTitle = "Mail";
         }
+
+        public static string Name
+        { get { return "Mail"; } }
 
         [Authorize(Policy.SendBroadcastMail)]
         public IActionResult BroadcastCreate()
@@ -62,11 +70,13 @@ namespace GRA.Controllers.MissionControl
             {
                 if (model.Broadcast.SendAt == null)
                 {
-                    ModelState.AddModelError("Broadcast.SendAt", "Please select a date to send the Broadcast.");
+                    ModelState.AddModelError("Broadcast.SendAt",
+                        "Please select a date to send the Broadcast.");
                 }
                 else if (model.Broadcast.SendAt < _dateTimeProvider.Now)
                 {
-                    ModelState.AddModelError("Broadcast.SendAt", "Please select a date not in the past.");
+                    ModelState.AddModelError("Broadcast.SendAt",
+                        "Please select a date not in the past.");
                 }
             }
 
@@ -144,11 +154,13 @@ namespace GRA.Controllers.MissionControl
             {
                 if (model.Broadcast.SendAt == null)
                 {
-                    ModelState.AddModelError("Broadcast.SendAt", "Please select a date to send the Broadcast.");
+                    ModelState.AddModelError("Broadcast.SendAt",
+                        "Please select a date to send the Broadcast.");
                 }
                 else if (model.Broadcast.SendAt < _dateTimeProvider.Now)
                 {
-                    ModelState.AddModelError("Broadcast.SendAt", "Please select a date not in the past.");
+                    ModelState.AddModelError("Broadcast.SendAt",
+                        "Please select a date not in the past.");
                 }
             }
             if (ModelState.IsValid)

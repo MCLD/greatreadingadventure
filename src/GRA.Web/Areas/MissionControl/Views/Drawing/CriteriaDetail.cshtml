@@ -83,18 +83,22 @@
     <div class="row mb-2">
         <div class="col-6">
             <label asp-for="Criterion.StartOfPeriod" class="col-form-label"></label>
-            <div class="mb-3 date" id="pickerStart">
-                <input asp-for="Criterion.StartOfPeriod"
-                       type="datetime-local"
-                       class="form-control" />
+            <div class="gra-picker-datetime"
+                 current-value="@Model.Criterion?.StartOfPeriod"
+                 datetimepicker-container
+                 id="criterionStartOfPeriodPicker">
+                <input asp-for="Criterion.StartOfPeriod" datetimepicker-input type="text" />
             </div>
             <span asp-validation-for="Criterion.StartOfPeriod" class="text-danger"></span>
         </div>
 
         <div class="col-6">
             <label asp-for="Criterion.EndOfPeriod" class="col-form-label"></label>
-            <div class="mb-3 date" id="pickerEnd">
-                <input asp-for="Criterion.EndOfPeriod" type="datetime-local" class="form-control" />
+            <div class="gra-picker-datetime"
+                 current-value="@Model.Criterion?.EndOfPeriod"
+                 datetimepicker-container
+                 id="criterionEndOfPeriodPicker">
+                <input asp-for="Criterion.EndOfPeriod" datetimepicker-input type="text" />
             </div>
             <span asp-validation-for="Criterion.EndOfPeriod" class="text-danger"></span>
         </div>

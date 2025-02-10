@@ -112,47 +112,48 @@
                      id="programEndsPicker">
                     <input asp-for="ProgramEnds" datetimepicker-input type="text" />
                 </div>
-
             </div><span asp-validation-for="ProgramEnds" class="text-danger"></span>
         </div>
+    </div>
 
-        <div class="row mb-3">
-            <div class="col-12">
-                <label asp-for="AccessClosed" class="col-form-label"></label>
-                <em class="gra-preview-landings">
-                    Preview
-                    <a asp-area=""
-                       asp-controller="Home"
-                       asp-action="PreviewLanding"
-                       asp-route-id="@nameof(GRA.Domain.Model.SiteStage.AccessClosed)"
-                       target="_blank">Landing</a> /
-                    <a asp-area=""
-                       asp-controller="Home"
-                       asp-action="PreviewExit"
-                       asp-route-id="@nameof(GRA.Domain.Model.SiteStage.AccessClosed)"
-                       target="_blank">Exit</a>
-                </em>
-                <div class="mb-3">
-                    <div current-value="@Model.AccessClosed"
-                         class="gra-picker-datetime"
-                         datetimepicker-container
-                         id="accessClosedPicker">
-                        <input asp-for="AccessClosed" datetimepicker-input type="text" />
-                    </div>
+    <div class="row mb-3">
+        <div class="col-12">
+            <label asp-for="AccessClosed" class="col-form-label"></label>
+            <em class="gra-preview-landings">
+                Preview
+                <a asp-area=""
+                   asp-controller="Home"
+                   asp-action="PreviewLanding"
+                   asp-route-id="@nameof(GRA.Domain.Model.SiteStage.AccessClosed)"
+                   target="_blank">Landing</a> /
+                <a asp-area=""
+                   asp-controller="Home"
+                   asp-action="PreviewExit"
+                   asp-route-id="@nameof(GRA.Domain.Model.SiteStage.AccessClosed)"
+                   target="_blank">Exit</a>
+            </em>
+            <div class="mb-3">
+                <div current-value="@Model.AccessClosed"
+                     class="gra-picker-datetime"
+                     datetimepicker-container
+                     id="accessClosedPicker">
+                    <input asp-for="AccessClosed" datetimepicker-input type="text" />
                 </div>
-                <span asp-validation-for="AccessClosed" class="text-danger"></span>
             </div>
+            <span asp-validation-for="AccessClosed" class="text-danger"></span>
         </div>
+    </div>
 
-        <div class="mb-3">
-            <a asp-action="Index" class="btn btn-outline-secondary">Return to List</a>
-            <button type="submit"
-                    id="Submit"
-                    name="Submit"
-                    value="Submit"
-                    class="btn btn-outline-primary btn-spinner"
-                    button-spinner>
-                <span class="buttonText">Save</span>
-            </button>
-        </div>
+    <div class="mb-3">
+        <a asp-action="@nameof(SitesController.Index)"
+           class="btn btn-outline-secondary">Return to List</a>
+        <button type="submit"
+                id="Submit"
+                name="Submit"
+                value="Submit"
+                class="btn btn-outline-primary"
+                button-spinner>
+            <span class="buttonText">Save</span>
+        </button>
+    </div>
 </form>

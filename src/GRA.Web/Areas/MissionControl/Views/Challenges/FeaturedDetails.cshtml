@@ -20,23 +20,36 @@
             </div>
             <div class="mb-3">
                 <label asp-for="FeaturedGroup.ChallengeGroupId" class="col-form-label"></label>
-                <select asp-for="FeaturedGroup.ChallengeGroupId" asp-items="Model.ChallengeGroupList" class="form-select">
+                <select asp-for="FeaturedGroup.ChallengeGroupId"
+                        asp-items="Model.ChallengeGroupList"
+                        class="form-select">
                     <option></option>
                 </select>
-                <span asp-validation-for="FeaturedGroup.ChallengeGroupId" class="text-danger"></span>
+                <span asp-validation-for="FeaturedGroup.ChallengeGroupId"
+                      class="text-danger"></span>
             </div>
             <div class="row">
                 <div class="col-12 col-sm-6">
                     <label asp-for="FeaturedGroup.StartDate" class="col-form-label"></label>
-                    <div class="mb-3 date datetimePicker">
-                        <input asp-for="FeaturedGroup.StartDate" type="datetime-local" class="form-control" />
+                    <div current-value="@Model.FeaturedGroup?.StartDate"
+                         class="gra-picker-datetime"
+                         datetimepicker-container
+                         id="startDatePicker">
+                        <input asp-for="FeaturedGroup.StartDate"
+                               datetimepicker-input
+                               type="text" />
                     </div>
                     <span asp-validation-for="FeaturedGroup.StartDate" class="text-danger"></span>
                 </div>
                 <div class="col-12 col-sm-6 row-spacing">
                     <label asp-for="FeaturedGroup.EndDate" class="col-form-label"></label>
-                    <div class="mb-3 date datetimePicker">
-                        <input asp-for="FeaturedGroup.EndDate" type="datetime-local" class="form-control" />
+                    <div current-value="@Model.FeaturedGroup?.EndDate"
+                         class="gra-picker-datetime"
+                         datetimepicker-container
+                         id="endDatePicker">
+                        <input asp-for="FeaturedGroup.EndDate"
+                               datetimepicker-input
+                               type="text" />
                     </div>
                     <span asp-validation-for="FeaturedGroup.EndDate" class="text-danger"></span>
                 </div>
@@ -71,20 +84,17 @@
                             <img src="/@Model.FeaturedGroupText.ImagePath"
                                  style="border: 1px solid #ccc;"
                                  class="img img-fluid" />
-
                         </a>
                     </div>
                     <div class="col-sm-6">
                         @if (!string.IsNullOrEmpty(Model.FeaturedGroupText.Filename))
                         {
-                            <strong>Filename:</strong> @Model.FeaturedGroupText.Filename
-
-                            <br />
+                            <div><strong>Filename:</strong> @Model.FeaturedGroupText.Filename</div>
                         }
-                        <a class="btn btn-warning"
+                        <a class="btn btn-outline-primary"
                            data-bs-toggle="modal"
                            data-bs-target="#modalReplaceImage">
-                            <span class="fas fa-file-upload"></span>
+                            <span class="fas fa-file-upload fa-fw"></span>
                             Replace Image
                         </a>
                     </div>
@@ -94,7 +104,7 @@
                 <div class="col-12">
                     <a asp-action="@nameof(ChallengesController.FeaturedGroups)"
                        class="btn btn-outline-secondary">Return to List</a>
-                    <button class="btn btn-outline-primary btn-spinner" type="submit" button-spinner>
+                    <button class="btn btn-outline-primary" type="submit" button-spinner>
                         <span class="fas fa-file-upload"></span>
                         @if (Model.NewFeaturedGroup)
                         {
@@ -147,18 +157,17 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer" style="text-align: left;">
-
-                        <div style="text-align: right;">
-                            <button type="button"
-                                    class="btn btn-outline-secondary"
-                                    data-bs-dismiss="modal">
-                                Close
-                            </button>
-                            <button type="submit" class="btn btn-outline-primary">
-                                Update Image
-                            </button>
-                        </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">
+                            Close
+                        </button>
+                        <button button-spinner
+                                class="btn btn-outline-primary"
+                                type="submit">
+                            Update Image
+                        </button>
                     </div>
                 </div>
             </div>

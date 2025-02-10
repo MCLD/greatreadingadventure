@@ -86,19 +86,25 @@
             <div class="row">
                 <div class="col-12 col-sm-6">
                     <label asp-for="Event.StartDate" class="col-form-label"></label>
-                    <div class="mb-3">
+                    <div current-value="@Model.Event?.StartDate"
+                         datetimepicker-container
+                         id="startDatePicker">
                         <input asp-for="Event.StartDate"
-                               type="@(Model.Event.AllDay ? "date" : "datetime-local")"
-                               class="form-control" />
+                               datetimepicker-input
+                               type="text"
+                               value="" />
                     </div>
                     <span asp-validation-for="Event.StartDate" class="text-danger"></span>
                 </div>
                 <div class="col-12 col-sm-6">
                     <label asp-for="Event.EndDate" class="col-form-label"></label>
-                    <div class="mb-3">
+                    <div current-value="@Model.Event?.EndDate"
+                         datetimepicker-container
+                         id="endDatePicker">
                         <input asp-for="Event.EndDate"
-                               type="@(Model.Event.AllDay ? "date" : "datetime-local")"
-                               class="form-control" />
+                               datetimepicker-input
+                               type="text"
+                               value="" />
                     </div>
                     <span asp-validation-for="Event.EndDate" class="text-danger"></span>
                 </div>
@@ -601,15 +607,35 @@
 @section scripts
 {
     <script>
-        $("#Event_AllDay").on("change", function () {
-            if ($("#Event_AllDay").is(":checked")) {
-                $("#Event_StartDate").attr("type", "date");
-                $("#Event_EndDate").attr("type", "date");
-            } else {
-                $("#Event_StartDate").attr("type", "datetime-local");
-                $("#Event_EndDate").attr("type", "datetime-local");
+        const eventAllDayCheckbox = document.getElementById('Event_AllDay')
+
+        const datePickers = [
+            {
+                pickerObject: {},
+                pickerElement: document.getElementById("startDatePicker")
+            },
+            {
+                pickerObject: {},
+                pickerElement: document.getElementById("endDatePicker")
             }
-        });
+        ];
+
+        function graRefreshPickerElements() {
+            datePickers.forEach((item) =>
+            {
+                if(item.pickerObject && item.pickerObject.dispose) { item.pickerObject.dispose(); }
+                if(eventAllDayCheckbox.checked) {
+                    item.pickerObject = graInitalizePickerDate(item.pickerElement);
+                } else {
+                    item.pickerObject = graInitalizePickerDatetime(item.pickerElement);
+                }
+                item.pickerObject.toggle();
+                item.pickerObject.toggle();
+            });
+        }
+
+        graRefreshPickerElements();
+        document.getElementById("Event_AllDay").addEventListener("change", graRefreshPickerElements);
 
         $("#viewLocationList").on("click", function () {
             $("#branchGroup").addClass("d-none");
