@@ -192,7 +192,7 @@ namespace GRA.Controllers
             else if (Find)
             {
                 // find button was selected, save data to session
-                settingsToSave = new ChallengeSession()
+                settingsToSave = new ChallengeSession
                 {
                     Categories = Categories,
                     Favorites = Favorites,
@@ -463,7 +463,7 @@ namespace GRA.Controllers
             return null;
         }
 
-        private class ChallengeSession()
+        private class ChallengeSession
         {
             public string Categories { get; set; }
             public bool Favorites { get; set; }

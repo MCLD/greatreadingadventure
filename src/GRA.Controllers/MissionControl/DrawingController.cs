@@ -82,7 +82,7 @@ namespace GRA.Controllers.MissionControl
 
             var criterionList = await _drawingService.GetPaginatedCriterionListAsync(filter);
 
-            var paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = criterionList.Count,
                 CurrentPage = page,
@@ -100,7 +100,7 @@ namespace GRA.Controllers.MissionControl
             var systemList = (await _siteService.GetSystemList())
                 .OrderByDescending(_ => _.Id == GetId(ClaimType.SystemId)).ThenBy(_ => _.Name);
 
-            var viewModel = new CriterionListViewModel()
+            var viewModel = new CriterionListViewModel
             {
                 Criteria = criterionList.Data,
                 PaginateModel = paginateModel,
@@ -166,7 +166,7 @@ namespace GRA.Controllers.MissionControl
         {
             PageTitle = "Drawing Criteria";
 
-            var viewModel = new CriterionDetailViewModel()
+            var viewModel = new CriterionDetailViewModel
             {
                 SystemList = new SelectList(await _siteService.GetSystemList(), "Id", "Name"),
                 BranchList = new SelectList(await _siteService.GetAllBranches(), "Id", "Name"),
@@ -338,7 +338,7 @@ namespace GRA.Controllers.MissionControl
                         });
                 }
 
-                var viewModel = new DrawingDetailViewModel()
+                var viewModel = new DrawingDetailViewModel
                 {
                     Drawing = drawing.Data,
                     CreatedByName = await _userService.GetUsersNameByIdAsync(drawing.Data.CreatedBy),
@@ -417,7 +417,7 @@ namespace GRA.Controllers.MissionControl
             var systemList = (await _siteService.GetSystemList())
                 .OrderByDescending(_ => _.Id == GetId(ClaimType.SystemId)).ThenBy(_ => _.Name);
 
-            var viewModel = new DrawingListViewModel()
+            var viewModel = new DrawingListViewModel
             {
                 Drawings = drawingList.Data,
                 PaginateModel = paginateModel,

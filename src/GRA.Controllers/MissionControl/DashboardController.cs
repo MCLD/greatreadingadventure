@@ -121,7 +121,7 @@ namespace GRA.Controllers.MissionControl
 
             var dashboardContentList = await _dashboardContentService.GetPaginatedListAsync(filter);
 
-            var paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = dashboardContentList.Count,
                 CurrentPage = page,

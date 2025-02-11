@@ -8,7 +8,7 @@ namespace GRA.Controllers.Helpers
     [HtmlTargetElement(TagDiv, Attributes = AttributeTdContainer)]
     public class DateTimeContainerTagHelper : TagHelper
     {
-        public const string KeyPickerContainerId = "DateTimePickerContainerId";
+        public static readonly string KeyPickerContainerId = "DateTimePickerContainerId";
         private const string AttributeClass = "class";
         private const string AttributeCurrentValue = "current-value";
         private const string AttributeId = "id";
@@ -29,7 +29,7 @@ namespace GRA.Controllers.Helpers
 
         public DateTimeContainerTagHelper()
         {
-            _classes = new HashSet<string>() { "input-group" };
+            _classes = new HashSet<string> { "input-group" };
         }
 
         [HtmlAttributeName(AttributeClass)]

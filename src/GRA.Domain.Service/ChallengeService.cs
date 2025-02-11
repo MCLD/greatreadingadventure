@@ -558,7 +558,7 @@ namespace GRA.Domain.Service
 
         public async Task<int> GetTotalChallengeCount()
         {
-            return await _challengeRepository.GetChallengeCountAsync(new ChallengeFilter()
+            return await _challengeRepository.GetChallengeCountAsync(new ChallengeFilter
             {
                 IsActive = true,
                 SiteId = GetCurrentSiteId()

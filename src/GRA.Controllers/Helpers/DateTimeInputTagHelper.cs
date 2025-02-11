@@ -15,7 +15,7 @@ namespace GRA.Controllers.Helpers
 
         public DateTimeInputTagHelper()
         {
-            _classes = new HashSet<string>() { "form-control" };
+            _classes = new HashSet<string> { "form-control" };
         }
 
         [HtmlAttributeName(AttributeClass)]

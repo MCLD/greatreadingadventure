@@ -26,9 +26,9 @@ namespace GRA.Controllers.Helpers
         private const string TagAspController = "asp-controller";
         private const string TagClass = "class";
         private const string TagListItem = "li";
-        private static readonly string[] ClearATags = new string[] { AddActiveTag };
+        private static readonly string[] ClearATags = new [] { AddActiveTag };
 
-        private static readonly string[] ClearNonATags = new string[] { AddActiveTag,
+        private static readonly string[] ClearNonATags = new [] { AddActiveTag,
             TagAspArea,
             TagAspAction,
             TagAspController };
