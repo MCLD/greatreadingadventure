@@ -7518,11 +7518,11 @@ textarea.form-control-lg {
   border-top: 0 !important;
 }
 
-.border-right {
+.border-end {
   border-right: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
 }
 
-.border-right-0 {
+.border-end-0 {
   border-right: 0 !important;
 }
 
@@ -7534,11 +7534,11 @@ textarea.form-control-lg {
   border-bottom: 0 !important;
 }
 
-.border-left {
+.border-start {
   border-left: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
 }
 
-.border-left-0 {
+.border-start-0 {
   border-left: 0 !important;
 }
 
