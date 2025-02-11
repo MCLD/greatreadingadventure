@@ -386,7 +386,6 @@ namespace GRA.Web
                     "js/jquery.validate.js",
                     "js/jquery.validate.unobtrusive.js",
                     "js/popper.js",
-                    "js/bootstrap.js",
                     "js/moment.min.js",
                     "js/moment-timezone.min.js",
                     "js/bootstrap-select.js",
@@ -405,11 +404,18 @@ namespace GRA.Web
                 _.AddJavaScriptBundle("/js/jquery-ui.min.js",
                     "Scripts/jquery-ui-1.12.1.custom/jquery-ui.js").UseContentRoot();
 
+                // minifying Bootstrap seems to upset this tool, bring it in pre-minified
+                _.AddJavaScriptBundle("/js/bootstrap.min.js",
+                    new WebOptimizer.Processors.JsSettings
+                    {
+                        CodeSettings = new NUglify.JavaScript.CodeSettings { MinifyCode = false }
+                    },
+                    "js/bootstrap.min.js").UseContentRoot();
+
                 _.AddCssBundle("/css/main.min.css",
                     "css/bootstrap.css",
                     "css/all.css",
                     "css/v4-shims.css",
-                    "css/bootstrap-datetimepicker.css",
                     "css/bootstrap-select.css",
                     "css/tempus-dominus.css",
                     "css/tom-select.bootstrap5.css",
