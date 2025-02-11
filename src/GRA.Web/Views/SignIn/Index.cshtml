@@ -11,25 +11,19 @@
                 <div class="card-body">
                     @if (string.IsNullOrWhiteSpace(Model?.ErrorMessage) != true)
                     {
-                        <div class="row">
-                            <div class="col">
-                                <p class="text-danger">@Model.ErrorMessage</p>
-                            </div>
+                        <div>
+                            <p class="text-danger">@Model.ErrorMessage</p>
                         </div>
                     }
-                    <div class="row mb-2">
-                        <div class="col">
-                            <label asp-for="Username" class="form-label"></label>
-                            <input asp-for="Username" class="form-control form-control-lg" autofocus />
-                            <span asp-validation-for="Username" class="text-danger"></span>
-                        </div>
+                    <div class="mb-2">
+                        <label asp-for="Username" class="form-label"></label>
+                        <input asp-for="Username" class="form-control form-control-lg" autofocus />
+                        <span asp-validation-for="Username" class="text-danger"></span>
                     </div>
-                    <div class="row">
-                        <div class="col">
-                            <label asp-for="Password" class="form-label"></label>
-                            <input asp-for="Password" type="password" class="form-control form-control-lg" />
-                            <span asp-validation-for="Password" class="text-danger"></span>
-                        </div>
+                    <div>
+                        <label asp-for="Password" class="form-label"></label>
+                        <input asp-for="Password" type="password" class="form-control form-control-lg" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="card-footer">
@@ -39,7 +33,7 @@
                             <a asp-action="ForgotUsername">@SharedLocalizer[GRA.Domain.Model.DisplayNames.ForgotUsername]</a>
                         </div>
                         <div class="col-sm-5 py-1 d-grid">
-                            <button class="btn btn-success btn-lg btn-spinner text-nowrap" button-spinner>
+                            <button class="btn btn-outline-success btn-lg btn-spinner text-nowrap" button-spinner>
                                 <span class="fas fa-sign-in-alt fa-fw"></span>
                                 @SharedLocalizer[GRA.Domain.Model.DisplayNames.SignIn]
                             </button>

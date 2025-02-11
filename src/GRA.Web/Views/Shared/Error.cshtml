@@ -25,12 +25,18 @@
                 </p>
                 <p>
                     If you continue to have this problem, please
-                    <a asp-controller="Mail" asp-action="Send">send us a mail</a>
+                    <a asp-action="@nameof(MailController.Send)"
+                       asp-area=""
+                       asp-controller="@MailController.Name">send us a mail</a>
                     and let us know what you were trying to do and where it went wrong!
                 </p>
-
-                <a asp-controller="Home" asp-action="Index" class="btn btn-lg btn-success float-end">
-                    <span class="fas fa-home"></span>
+            </div>
+            <div class="card-footer">
+                <a asp-action="@nameof(HomeController.Index)"
+                   asp-area=""
+                   asp-controller="@HomeController.Name"
+                   class="btn btn-lg btn-outline-success">
+                    <span class="fas fa-home fa-fw"></span>
                     Home
                 </a>
             </div>

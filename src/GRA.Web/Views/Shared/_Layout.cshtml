@@ -416,8 +416,8 @@
     @if (Context.Items[GRA.Controllers.ItemKey.NotificationsModal] != null)
     {
         <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                new bootstrap.Modal('#notificationsModal').show();
+            $(function() {
+                $('#notificationsModal').modal('show');
             });
         </script>
     }

@@ -18,7 +18,7 @@
                              data-item="@layer.SelectedItem" />
                     }
                 </div>
-                <button type="button" class="btn btn-secondary avatar-zoom-button">
+                <button type="button" class="btn btn-outline-secondary avatar-zoom-button">
                     <span class="fas fa-lg fa-search-plus"></span>
                 </button>
             </div>
@@ -99,7 +99,7 @@
                             @if (counter != 0)
                             {
                                 <div class="dropdown" style="margin-top: 1rem;" id="bundleDropdown">
-                                    <a class="dropdown-toggle btn btn-info"
+                                    <a class="dropdown-toggle btn btn-outline-primary"
                                        id="bundle-selected"
                                        data-bs-toggle="dropdown"
                                        href="#" role="button"
@@ -182,19 +182,19 @@
                     <div style="text-align:center;vertical-align:top;">
                         <a asp-controller="Home"
                            asp-action="Index"
-                           class="btn btn-lg btn-secondary"
+                           class="btn btn-lg btn-outline-secondary"
                            style="margin:5px;">
                             <span class="fas fa-home"></span>
                             @SharedLocalizer[GRA.Domain.Model.DisplayNames.Home]
                         </a>
                         <button id="removeButton"
-                                class="btn btn-lg btn-secondary d-none"
+                                class="btn btn-lg btn-outline-secondary d-none"
                                 style="margin:5px;">
                             <span class="fas fa-ban"></span>
                             <span id="layerName"></span>
                         </button>
                         <button id="saveAvatar"
-                                class="btn btn-lg @(Model.NewAvatar ? "btn-success" : "btn-secondary")"
+                                class="btn btn-lg @(Model.NewAvatar ? "btn-outline-success" : "btn-outline-secondary")"
                                 style="margin:5px;"
                                 button-spinner>
                             <span class="far fa-save"></span>
@@ -208,7 +208,7 @@
                                   role="form"
                                   style="display: inline-block">
                                 <input type="hidden" name="selectionJson" />
-                                <button class="btn btn-lg btn-secondary" style="margin:5px;">
+                                <button class="btn btn-lg btn-outline-secondary" style="margin:5px;">
                                     <span class="fas fa-share-alt"></span>
                                     @SharedLocalizer[GRA.Annotations.Interface.Share]
                                 </button>
@@ -340,11 +340,11 @@
         function SetUnsavedChanges(bool) {
             if (unsavedChanges != bool) {
                 if (bool == true) {
-                    $("#saveAvatar").removeClass("btn-secondary").addClass("btn-success");
+                    $("#saveAvatar").removeClass("btn-outline-secondary").addClass("btn-outline-success");
                     unsavedChanges = true;
                 }
                 else {
-                    $("#saveAvatar").removeClass("btn-success").addClass("btn-secondary");
+                    $("#saveAvatar").removeClass("btn-outline-success").addClass("btn-outline-secondary");
                     unsavedChanges = false;
                 }
             }
@@ -545,8 +545,8 @@
         // When a user removes the layer's item
         $("#removeButton").on("click", function () {
             unsavedChanges = true;
-            $("#saveAvatar").removeClass("btn-secondary");
-            $("#saveAvatar").addClass("btn-success");
+            $("#saveAvatar").removeClass("btn-outline-secondary");
+            $("#saveAvatar").addClass("btn-outline-success");
             let button = $(this);
             let layer = CurrentSelectedLayer();
             if (layer.data("layer") != 999) {
@@ -634,8 +634,8 @@
         // Selecting an Item
         function SelectItem(item) {
             unsavedChanges = true;
-            $("#saveAvatar").removeClass("btn-secondary");
-            $("#saveAvatar").addClass("btn-success");
+            $("#saveAvatar").removeClass("btn-outline-secondary");
+            $("#saveAvatar").addClass("btn-outline-success");
             let newDataItem = $(item);
             let itemsLayer = GetLayerById(newDataItem.data("layer"));
             let layerTab = CurrentSelectedLayer();
@@ -683,8 +683,8 @@
         // Updates the color selected and removes the old
         function SelectColor(color) {
             unsavedChanges = true;
-            $("#saveAvatar").removeClass("btn-secondary");
-            $("#saveAvatar").addClass("btn-success");
+            $("#saveAvatar").removeClass("btn-outline-secondary");
+            $("#saveAvatar").addClass("btn-outline-success");
             $("#avatarColorSelectors").find(".selected").removeClass("selected");
             let dataColor = $(color);
             dataColor.addClass("selected");

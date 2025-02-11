@@ -249,7 +249,7 @@
                                            asp-route-Categories="@Model.Categories"
                                            asp-route-Status="@Model.Status"
                                            asp-route-Favorites="@(Model.Favorites == true ? "False" : "True")"
-                                           class="btn @(Model.Favorites == true ? "btn-success" : "btn-outline-secondary")">
+                                           class="btn @(Model.Favorites == true ? "btn-outline-success" : "btn-outline-secondary")">
                                             <span class="@(Model.Favorites == true ? "fas" : "far") fa-star fa-fw"></span>
                                             @SharedLocalizer[GRA.Annotations.Interface.MyFavorites]
                                         </a>

@@ -334,7 +334,6 @@ input:read-only:not([type="checkbox"]):not([type="radio"]):not( [type="submit"] 
 .info-page {
     background: white;
     border-radius: 1rem;
-    padding: 0.25rem 2rem 0.5rem 2rem;
 }
 
 .dashboard-badge {

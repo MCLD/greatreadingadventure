@@ -261,7 +261,7 @@
                                         @if (Model.AuthUserIsHead && Model.DailyImageDictionary.ContainsKey(Model.Head.ProgramId))
                                         {
                                             <button type="button"
-                                                    class="btn btn-primary btn-sm viewDailyImage"
+                                                    class="btn btn-outline-primary btn-sm viewDailyImage"
                                                     style="display: inline-block;vertical-align:top;"
                                                     data-src="@Url.Content($"~/{Model.DailyImageDictionary[Model.Head.ProgramId].DailyImagePath}")"
                                                     data-large="@Model.DailyImageDictionary[Model.Head.ProgramId].IsLarge"
@@ -279,7 +279,7 @@
                                             @if (Model.Head.NeedsToAnswerVendorCodeQuestion)
                                             {
                                                 @SharedLocalizer[GRA.Annotations.Interface.ChooseAnOption]
-                                                <button class="btn btn-info btn-sm"
+                                                <button class="btn btn-outline-primary btn-sm"
                                                         name="redeemButton"
                                                         value="@Model.Head.Id"
                                                         asp-action="HandleHouseholdDonation"
@@ -288,7 +288,7 @@
                                                 </button>
                                                 @if (Model.Head.CanDonateVendorCode)
                                                 {
-                                                    <button class="btn btn-success btn-sm"
+                                                    <button class="btn btn-outline-success btn-sm"
                                                             name="donateButton"
                                                             value="@Model.Head.Id"
                                                             asp-action="HandleHouseholdDonation"
@@ -298,7 +298,7 @@
                                                 }
                                                 @if (Model.Head.CanEmailAwardVendorCode)
                                                 {
-                                                    <a class="btn btn-warning btn-sm emailAwardButton"
+                                                    <a class="btn btn-outline-danger btn-sm emailAwardButton"
                                                        asp-action="@nameof(ProfileController.EmailAward)"
                                                        asp-route-id="@Model.Head.Id"
                                                        data-email="@Model.Head.Email"
@@ -428,7 +428,7 @@
                                             @if (Model.AuthUserIsHead && Model.DailyImageDictionary.ContainsKey(user.ProgramId))
                                             {
                                                 <button type="button"
-                                                        class="btn btn-primary btn-sm viewDailyImage"
+                                                        class="btn btn-outline-primary btn-sm viewDailyImage"
                                                         style="display: inline-block;vertical-align:top;"
                                                         data-src="@Url.Content($"~/{Model.DailyImageDictionary[user.ProgramId].DailyImagePath}")"
                                                         data-large="@Model.DailyImageDictionary[user.ProgramId].IsLarge.ToString().ToLower()"
@@ -444,7 +444,7 @@
                                                 @if (user.NeedsToAnswerVendorCodeQuestion)
                                                 {
                                                     @SharedLocalizer[GRA.Annotations.Interface.ChooseAnOption]
-                                                    <button class="btn btn-info btn-sm"
+                                                    <button class="btn btn-outline-primary btn-sm"
                                                             name="redeemButton"
                                                             value="@user.Id"
                                                             asp-action="@nameof(ProfileController.HandleHouseholdDonation)"
@@ -453,7 +453,7 @@
                                                     </button>
                                                     @if (user.CanDonateVendorCode)
                                                     {
-                                                        <button class="btn btn-success btn-sm"
+                                                        <button class="btn btn-outline-success btn-sm"
                                                                 name="donateButton"
                                                                 value="@user.Id"
                                                                 asp-action="@nameof(ProfileController.HandleHouseholdDonation)"
@@ -463,7 +463,7 @@
                                                     }
                                                     @if (user.CanEmailAwardVendorCode)
                                                     {
-                                                        <a class="btn btn-warning btn-sm emailAwardButton"
+                                                        <a class="btn btn-outline-danger btn-sm emailAwardButton"
                                                            asp-action="@nameof(ProfileController.EmailAward)"
                                                            asp-route-id="@user.Id"
                                                            data-email="@user.Email"
@@ -593,13 +593,12 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-secondary"
-                                data-bs-dismiss="modal"
-                                style="margin-right: 1em;">
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">
                             @SharedLocalizer[GRA.Annotations.Interface.Cancel]
                         </button>
                         <button type="submit"
-                                class="btn btn-warning float-end"
+                                class="btn btn-outline-warning"
                                 aria-label="Confirm"
                                 button-spinner>
                             @SharedLocalizer[GRA.Annotations.Interface.Confirm]

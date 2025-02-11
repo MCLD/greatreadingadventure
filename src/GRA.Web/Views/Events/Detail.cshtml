@@ -66,7 +66,7 @@
                                     {
                                         if (Model.IsAuthenticated)
                                         {
-                                            <a class="btn btn-success"
+                                            <a class="btn btn-outline-success"
                                                href="@Url.Action(nameof(EventsController.Stream),
                                                 new { id = Model.Event.Id })">
                                                 <span class="far fa-play-circle"></span>
@@ -75,7 +75,7 @@
                                         }
                                         else
                                         {
-                                            <a class="btn btn-success"
+                                            <a class="btn btn-outline-success"
                                                href="@Url.Action(nameof(EventsController.Stream),
                                                 new { id = Model.Event.Id })">
                                                 <span class="fas fa-sign-in-alt"></span>
@@ -85,7 +85,7 @@
                                     }
                                     else
                                     {
-                                        <button disabled class="btn btn-secondary">
+                                        <button disabled class="btn btn-outline-secondary">
                                             <span class="far fa-stop-circle"></span>
                                             @(@Model.Event.StartDate >= DateTime.Now
                                                 ? SharedLocalizer[GRA.Annotations.Interface.NotStreamingYet]

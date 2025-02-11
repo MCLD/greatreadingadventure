@@ -40,7 +40,7 @@
                                                 </div>
                                                 <div>
                                                     @SharedLocalizer[GRA.Annotations.Interface.ChooseAnOption]
-                                                    <button class="btn btn-info"
+                                                    <button class="btn btn-outline-info"
                                                             asp-action="RedeemCode"
                                                             button-spinner>
                                                         <span class="buttonText">
@@ -49,7 +49,7 @@
                                                     </button>
                                                     @if (Model.User.CanDonateVendorCode)
                                                     {
-                                                        <button class="btn btn-success"
+                                                        <button class="btn btn-outline-success"
                                                                 asp-action="DonateCode"
                                                                 button-spinner>
                                                             <span class="buttonText">
@@ -60,7 +60,7 @@
                                                     @if (Model.User.CanEmailAwardVendorCode)
                                                     {
                                                         <a id="emailAwardButton"
-                                                           class="btn btn-warning"
+                                                           class="btn btn-outline-warning"
                                                            asp-action="@nameof(ProfileController.EmailAward)">
                                                             <span class="buttonText">
                                                                 @SharedLocalizer[GRA.Annotations.Interface.ReceiveEAudiobook]

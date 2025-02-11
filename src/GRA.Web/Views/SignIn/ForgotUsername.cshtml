@@ -7,24 +7,16 @@
                 </div>
                 <div class="card-body">
                     <div asp-validation-summary="All"></div>
-                    <div class="row mb-2">
-                        <div class="col">
-                            <label class="form-label">@SharedLocalizer[GRA.Domain.Model.DisplayNames.EmailAddress]</label>
-                            <input name="email" type="email" class="form-control form-control-lg" autofocus />
-                        </div>
-                    </div>
+                    <label class="form-label">@SharedLocalizer[GRA.Domain.Model.DisplayNames.EmailAddress]</label>
+                    <input name="email" type="email" class="form-control form-control-lg" autofocus />
                 </div>
-                <div class="card-footer">
-                    <div class="row">
-                        <div class="col-sm-6 py-1 d-grid">
-                            <a asp-action="Index" class="btn btn-secondary btn-lg text-nowrap">@SharedLocalizer[GRA.Domain.Model.DisplayNames.ReturnToSignIn]</a>
-                        </div>
-                        <div class="col-sm-6 py-1 d-grid">
-                            <button class="btn btn-primary btn-lg btn-spinner text-nowrap" button-spinner>
-                                @SharedLocalizer[GRA.Domain.Model.DisplayNames.SendRecoveryEmail]
-                            </button>
-                        </div>
-                    </div>
+                <div class="card-footer d-flex justify-content-end">
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-lg me-2">
+                        @SharedLocalizer[GRA.Domain.Model.DisplayNames.ReturnToSignIn]
+                        </a>
+                    <button class="btn btn-outline-primary btn-lg" button-spinner>
+                        @SharedLocalizer[GRA.Domain.Model.DisplayNames.SendRecoveryEmail]
+                    </button>
                 </div>
             </div>
         </div>

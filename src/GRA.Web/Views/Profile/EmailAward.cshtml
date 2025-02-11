@@ -18,13 +18,13 @@
                 </div>
                 <div class="card-footer">
                     <a asp-action="@(Model.UserId.HasValue ? nameof(ProfileController.Household) : nameof(ProfileController.Index))"
-                       class="btn btn-secondary" 
+                       class="btn btn-outline-secondary" 
                        data-bs-dismiss="modal" 
                        style="margin-right: 1em;">
                         @SharedLocalizer[GRA.Annotations.Interface.Cancel]
                     </a>
                     <button type="submit"
-                            class="btn btn-warning btn-spinner float-end"
+                            class="btn btn-outline-danger float-end"
                             aria-label="Confirm"
                             button-spinner>
                         @SharedLocalizer[GRA.Annotations.Interface.Confirm]

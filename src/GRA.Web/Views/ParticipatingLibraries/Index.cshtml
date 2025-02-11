@@ -7,7 +7,7 @@
             <h2 class="card-header pb-3">
                 @SharedLocalizer[GRA.Annotations.Interface.AllParticipatingLibraries]
             </h2>
-            <div class="card-body participating-libraries">
+            <div class="card-body participating-libraries px-4">
                 @foreach (var system in Model.Systems)
                 {
                     <h2 id="@Html.GenerateIdFromName(system.Name)" class="h3 system">@system.Name</h2>
