@@ -390,9 +390,15 @@ namespace GRA.Web
                     "js/moment.min.js",
                     "js/moment-timezone.min.js",
                     "js/bootstrap-select.js",
-                    "js/tempus-dominus.js",
                     "js/tom-select.complete.js",
                     "Scripts/gra.js").UseContentRoot();
+                // this tool cannot currently minify tempus-dominus.js
+                _.AddJavaScriptBundle("/js/tempus-dominus.min.js",
+                    new WebOptimizer.Processors.JsSettings
+                    {
+                        CodeSettings = new NUglify.JavaScript.CodeSettings { MinifyCode = false }
+                    },
+                    "js/tempus-dominus.min.js").UseContentRoot();
                 _.AddJavaScriptBundle("/js/performerregistration.min.js",
                     "Scripts/performerregistration.js").UseContentRoot();
                 _.AddJavaScriptBundle("/js/markdown.min.js",
