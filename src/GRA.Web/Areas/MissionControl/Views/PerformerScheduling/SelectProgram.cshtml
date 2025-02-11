@@ -5,216 +5,240 @@
 }
 
 <div class="row">
-    <div class="col-xs-12">
-        <h1>
-            Select Program
-        </h1>
+    <div class="col-12">
+        <h1>Select Program</h1>
+    </div>
+</div>
 
-        <div class="row">
-            <div class="col-xs-12 col-sm-8 col-sm-offset-2">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <div class="row form-group">
-                            <div class="col-xs-6">
-                                <label>Branch</label>
-                                <div>@Model.BranchSelection.Branch.Name</div>
-                            </div>
-                            <div class="col-xs-6">
-                                <label>Age Group</label>
-                                <div>@Model.BranchSelection.AgeGroup.Name</div>
-                            </div>
-                        </div>
-                        <div class="row form-group">
-                            <div class="col-xs-6">
-                                <label>Program</label>
-                                <div>@Model.BranchSelection.Program.Title</div>
-                            </div>
-                            <div class="col-xs-6">
-                                <label>Program Length</label>
-                                <div>@Model.BranchSelection.Program.ProgramLengthMinutes minutes</div>
-                            </div>
-                        </div>
-                        <div class="row form-group">
-                            <div class="col-xs-6">
-                                <label>Set-up Time</label>
-                                <div>@Model.BranchSelection.Program.SetupTimeMinutes minutes</div>
-                            </div>
-                            <div class="col-xs-6">
-                                <label>Breakdown Time</label>
-                                <div>@Model.BranchSelection.Program.BreakdownTimeMinutes minutes</div>
-                            </div>
-                        </div>
-                        @if (Model.BranchSelection.BackToBackProgram)
-                        {
-                            <div class="row form-group">
-                                <div class="col-xs-6">
-                                    <label>Back to Back Program</label>
-                                    <div>Yes</div>
-                                </div>
-                                <div class="col-xs-6">
-                                    <label>Back to Back Time</label>
-                                    <div>@Model.BranchSelection.Program.BackToBackMinutes minutes</div>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row form-group">
-            <div class="col-xs-12 col-sm-8 col-sm-offset-2">
-                <div class=" panel panel-default">
-                    <form class="panel-body" id="onSiteContactInfo">
-                        <div class="form-group">
-                            <label>Please provide contact information for someone the performer can contact the day of the performance.</label>
-                        </div>
-                        <div class="form-group">
-                            <label for="OnSiteContactName">Name:</label>
-                            <div class="input-with-validation">
-                                <input name="OnSiteContactName" asp-for="BranchSelection.OnSiteContactName" type="text" class="form-control" required>
-                                <div class="validation"></div>
-                            </div>
-                            <span class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="OnSiteContactEmail">Email:</label>
-                            <div class="input-with-validation">
-                                <input name="OnSiteContactEmail" asp-for="BranchSelection.OnSiteContactEmail" type="email" pattern=".+@@.+\..+" class="form-control" required>
-                                <div class="validation"></div>
-                            </div>
-                            <span class="text-danger"></span>
-                        </div class="form-group">
-                        <div>
-                            <label for="OnSiteContactPhone">Phone (please enter numbers only):</label>
-                            <div class="input-with-validation">
-                                <input name="OnSiteContactPhone" asp-for="BranchSelection.OnSiteContactPhone" type="tel" pattern="[0-9]{10}" class="form-control" required>
-                                <div class="validation"></div>
-                            </div>
-                            <span class="text-danger"></span>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <div class="row form-group"></div>
-
-        @{int count = 0;}
-        @for (var calendarMonth = new DateTime(Model.Settings.ScheduleStartDate.Value.Year, Model.Settings.ScheduleStartDate.Value.Month, 1); calendarMonth <= Model.Settings.ScheduleEndDate.Value; calendarMonth = calendarMonth.AddMonths(1))
-        {
-            var firstDayOfWeek = (int)calendarMonth.DayOfWeek;
-            var daysInMonth = DateTime.DaysInMonth(calendarMonth.Year, calendarMonth.Month);
-            var monthDateSelectors = (firstDayOfWeek + daysInMonth > 35 ? 42 : 35);
-
-            @if (count % 3 == 0)
-            {
-                @Html.Raw("<div class=\"row\">");
-            }
-            <div class="col-xs-12 col-md-4">
-                <table class="table table-bordered" style="table-layout:fixed; text-align:center">
-                    <thead>
-                        <tr>
-                            <td colspan="7" class="calendar-cell">
-                                <div class="option">
-                                    @calendarMonth.ToString("MMMM") @(Model.Settings.ScheduleStartDate.Value.Year != Model.Settings.ScheduleEndDate.Value.Year ? calendarMonth.ToString("yyyy") : "")
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="calendar-cell"><div class="option">Sun</div></td>
-                            <td class="calendar-cell"><div class="option">Mon</div></td>
-                            <td class="calendar-cell"><div class="option">Tue</div></td>
-                            <td class="calendar-cell"><div class="option">Wed</div></td>
-                            <td class="calendar-cell"><div class="option">Thu</div></td>
-                            <td class="calendar-cell"><div class="option">Fri</div></td>
-                            <td class="calendar-cell"><div class="option">Sat</div></td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (int date = 1 - firstDayOfWeek; date <= (monthDateSelectors - firstDayOfWeek); date++)
-                        {
-                            var outOfRange = (calendarMonth.Month == Model.Settings.ScheduleStartDate.Value.Month && calendarMonth.Year == Model.Settings.ScheduleStartDate.Value.Year && date < Model.Settings.ScheduleStartDate.Value.Day
-                                || calendarMonth.Month == Model.Settings.ScheduleEndDate.Value.Month && calendarMonth.Year == Model.Settings.ScheduleEndDate.Value.Year && date > Model.Settings.ScheduleEndDate.Value.Day);
-                            var hideDate = date < 1 || date > daysInMonth;
-                            var blackoutDate = Model.BlackoutDates.FirstOrDefault(_ => _.Date.Day == date && _.Date.Month == calendarMonth.Month && _.Date.Year == calendarMonth.Year);
-                            var scheduleDate = Model.ScheduleDates.FirstOrDefault(_ => _.Date.Day == date && _.Date.Month == calendarMonth.Month && _.Date.Year == calendarMonth.Year);
-                            var bookedDate = Model.BookedDates.FirstOrDefault(_ => _.Day == date && _.Month == calendarMonth.Month && _.Year == calendarMonth.Year);
-
-                            if ((date + firstDayOfWeek) % 7 == 1)
-                            {
-                                @:<tr>
-                                }
-                                <td class="@(outOfRange || hideDate || blackoutDate != null || (scheduleDate != null && scheduleDate?.StartTime == null) ? "unselectable" : "selectable")@(blackoutDate != null ? " blackout" : "")@(outOfRange ? " out-of-range" : "")" data-year="@calendarMonth.Year" data-month="@calendarMonth.Month" data-date="@date" data-start="@(scheduleDate?.StartTime?.ToShortTimeString() ?? "8:00 AM")" asp-schedule="@scheduleDate" asp-booked="@bookedDate" asp-booking="true">
-                                    <div class="option" data-toggle="tooltip" data-placement="top" title="@blackoutDate?.Reason">
-                                        @Html.Raw(hideDate ? "&nbsp;" : date.ToString())
-                                    </div>
-                                </td>
-                                if ((date + firstDayOfWeek) % 7 == 0)
-                                {
-                                @:</tr>
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
-            
-            if (count % 3 == 2)
-            {
-                @Html.Raw("</div>");
-            }
-            { count++; }
-        }
-        @if (count % 3 != 0)
-        {
-            @Html.Raw("</div>");
-        }
-
-        <div class="row">
-            <div class="col-xs-12">
-                <div id="daySchedule"><p>Select a date to see available times.</p></div>
-                <table>
-                    <tr>
-                        <td>
-                            Program Start Time:
-                        </td>
-                        <td style="padding-left:15px;" colspan="2">
-                            Total Performer Time:
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="input-group date" id="pickerStart" style="width:150px;">
-                                <span class="input-group-addon">
-                                    <span class="far fa-clock"></span>
-                                </span>
-                                <input id="startTime" class="form-control" disabled="disabled" />
-                            </div>
-                        </td>
-                        <td id="programDuration" style="padding-left: 15px; width: 175px;"></td>
-                        <td>
-                            <button id="checkTime" type="button" class="btn btn-primary" style="margin-left:15px;" disabled="disabled">Check Time</button>
-                        </td>
-                    </tr>
-                </table>
-
-                <div class="row" style="margin-top: 20px;">
-                    <div class="col-xs-12 col-sm-6">
-                        <div id="checkAlert" class="alert hidden"></div>
-                    </div>
-                </div>
-
+<div class="row">
+    <div class="col-12 col-lg-8 offset-lg-2">
+        <div class="card mb-3">
+            <div class="card-body">
                 <div class="row">
-                    <div class="col-xs-12 col-sm-6">
-                        <button id="scheduleProgram" type="button" class="btn btn-success" disabled="true">Schedule Program</button>
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <strong>Branch</strong>
+                        <div>@Model.BranchSelection.Branch.Name</div>
                     </div>
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <strong>Age Group</strong>
+                        <div>@Model.BranchSelection.AgeGroup.Name</div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <strong>Program</strong>
+                        <div>@Model.BranchSelection.Program.Title</div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <strong>Program Length</strong>
+                        <div>
+                            @Model.BranchSelection.Program.ProgramLengthMinutes minutes
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <strong>Set-up Time</strong>
+                        <div>@Model.BranchSelection.Program.SetupTimeMinutes minutes</div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <strong>Breakdown Time</strong>
+                        <div>
+                            @Model.BranchSelection.Program.BreakdownTimeMinutes minutes
+                        </div>
+                    </div>
+                    @if (Model.BranchSelection.BackToBackProgram)
+                    {
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <strong>Back to Back Program</strong>
+                            <div>Yes</div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <strong>Back to Back Time</strong>
+                            <div>
+                                @Model.BranchSelection.Program.BackToBackMinutes minutes
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<form asp-action="@nameof(PerformerSchedulingController.ScheduleProgram)" id="branchSelectionForm" method="post" role="form" hidden="hidden">
+@{
+    int count = 0;
+    int openDivs = 0;
+}
+@for (var calendarMonth = new DateTime(Model.Settings.ScheduleStartDate.Value.Year, Model.Settings.ScheduleStartDate.Value.Month, 1); calendarMonth <= Model.Settings.ScheduleEndDate.Value; calendarMonth = calendarMonth.AddMonths(1))
+{
+    var firstDayOfWeek = (int)calendarMonth.DayOfWeek;
+    var daysInMonth = DateTime.DaysInMonth(calendarMonth.Year, calendarMonth.Month);
+    var monthDateSelectors = (firstDayOfWeek + daysInMonth > 35 ? 42 : 35);
+
+    @if (count % 3 == 0)
+    {
+        openDivs++;
+        @:<div class="row mb-3">
+    }
+    <div class="col-12 col-md-4">
+        <table class="table table-bordered text-center" style="table-layout:fixed;">
+            <thead>
+                <tr>
+                    <td colspan="7" class="calendar-cell">
+                        <div class="option">
+                            @calendarMonth.ToString("MMMM")
+                            @(Model.Settings.ScheduleStartDate.Value.Year != Model.Settings.ScheduleEndDate.Value.Year ? calendarMonth.ToString("yyyy") : "")
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="calendar-cell"><div class="option">Sun</div></td>
+                    <td class="calendar-cell"><div class="option">Mon</div></td>
+                    <td class="calendar-cell"><div class="option">Tue</div></td>
+                    <td class="calendar-cell"><div class="option">Wed</div></td>
+                    <td class="calendar-cell"><div class="option">Thu</div></td>
+                    <td class="calendar-cell"><div class="option">Fri</div></td>
+                    <td class="calendar-cell"><div class="option">Sat</div></td>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int date = 1 - firstDayOfWeek; date <= (monthDateSelectors - firstDayOfWeek); date++)
+                {
+                    var outOfRange = (calendarMonth.Month == Model.Settings.ScheduleStartDate.Value.Month && calendarMonth.Year == Model.Settings.ScheduleStartDate.Value.Year && date < Model.Settings.ScheduleStartDate.Value.Day
+                        || calendarMonth.Month == Model.Settings.ScheduleEndDate.Value.Month && calendarMonth.Year == Model.Settings.ScheduleEndDate.Value.Year && date > Model.Settings.ScheduleEndDate.Value.Day);
+                    var hideDate = date < 1 || date > daysInMonth;
+                    var blackoutDate = Model.BlackoutDates.FirstOrDefault(_ => _.Date.Day == date && _.Date.Month == calendarMonth.Month && _.Date.Year == calendarMonth.Year);
+                    var scheduleDate = Model.ScheduleDates.FirstOrDefault(_ => _.Date.Day == date && _.Date.Month == calendarMonth.Month && _.Date.Year == calendarMonth.Year);
+                    var bookedDate = Model.BookedDates.FirstOrDefault(_ => _.Day == date && _.Month == calendarMonth.Month && _.Year == calendarMonth.Year);
+
+                    if ((date + firstDayOfWeek) % 7 == 1)
+                    {
+                        @:<tr>
+                    }
+                    <td class="@(outOfRange || hideDate || blackoutDate != null || (scheduleDate != null && scheduleDate?.StartTime == null) ? "unselectable" : "selectable")@(blackoutDate != null ? " blackout" : "")@(outOfRange ? " out-of-range" : "")" data-year="@calendarMonth.Year" data-month="@calendarMonth.Month" data-date="@date" data-start="@(scheduleDate?.StartTime?.ToShortTimeString() ?? "8:00 AM")" asp-schedule="@scheduleDate" asp-booked="@bookedDate" asp-booking="true">
+                        <div class="option" 
+                            data-bs-toggle="tooltip" 
+                            data-bs-placement="top" 
+                            title="@blackoutDate?.Reason">
+                            @Html.Raw(hideDate ? "&nbsp;" : date.ToString())
+                        </div>
+                    </td>
+                    if ((date + firstDayOfWeek) % 7 == 0)
+                    {
+                        @:</tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    if (count % 3 == 2)
+    {
+        openDivs--;
+        @:</div>
+    }
+    { count++; }
+}
+@for(; openDivs > 0; openDivs--)
+{
+    @Html.Raw("</div>");
+}
+
+<div class="card">
+    <div class="card-header">Select This Date and Time</div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12 col-lg-6">
+                <div id="daySchedule"><ul><li>Select a date to see available times.</li></ul></div>
+                <div id="programDurationContainer" class="d-none">
+                    <ul>
+                    <li>Total time (including setup/teardown): <span id="programDuration"></span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                Select a start time:
+                <div class="date" id="pickerStart">
+                    <input id="startTime" 
+                        class="form-control" 
+                        type="time" 
+                        disabled />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <form class="card-body" id="onSiteContactInfo">
+                <div class="mb-1 mt-3">
+                    <label>
+                        <strong>
+                        Please provide contact information for someone the performer can 
+                        contact the day of the performance.
+                        </strong>
+                    </label>
+                </div>
+                <div class="mb-1">
+                    <label for="OnSiteContactName">Name</label>
+                    <div class="input-with-validation">
+                        <input name="OnSiteContactName" 
+                            asp-for="BranchSelection.OnSiteContactName" 
+                            type="text" 
+                            class="form-control" 
+                            required />
+                        <div class="validation"></div>
+                    </div>
+                    <span class="text-danger"></span>
+                </div>
+                <div class="mb-1">
+                    <label for="OnSiteContactEmail">Email</label>
+                    <div class="input-with-validation">
+                        <input name="OnSiteContactEmail" 
+                            asp-for="BranchSelection.OnSiteContactEmail" 
+                            type="email"
+                            pattern=".+&commat;.+\..+"
+                            class="form-control"
+                            required />
+                        <div class="validation"></div>
+                    </div>
+                    <span class="text-danger"></span>
+                </div class="mb-3">
+                <div>
+                    <label for="OnSiteContactPhone">
+                        Phone (numbers only)
+                        </label>
+                    <div class="input-with-validation">
+                        <input name="OnSiteContactPhone" 
+                            asp-for="BranchSelection.OnSiteContactPhone" 
+                            type="tel" 
+                            pattern="[0-9]{10}" 
+                            class="form-control" 
+                            required />
+                        <div class="validation"></div>
+                    </div>
+                    <span class="text-danger"></span>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer d-flex justify-content-end align-content-middle">
+        <div id="checkAlert" class="alert d-none mb-0 py-1"></div>
+        <div class="flex-grow-1"></div>
+        <div>
+            <a button-spinner
+                class="btn btn-outline-dark"
+                disabled
+                id="checkTime">Verify time</a>
+            <button button-spinner
+                    class="btn btn-outline-success" 
+                    disabled
+                    id="scheduleProgram"
+                    type="button">Schedule Program</button>
+        </div>
+    </div>
+</div>
+
+<form asp-action="@nameof(PerformerSchedulingController.ScheduleProgram)" 
+    id="branchSelectionForm"
+    method="post"
+    role="form" 
+    hidden="hidden">
     <input name="AgeGroupId" asp-for="BranchSelection.AgeGroupId" type="hidden" />
     <input name="BackToBackProgram" asp-for="BranchSelection.BackToBackProgram" type="hidden" />
     <input name="BranchId" asp-for="BranchSelection.BranchId" type="hidden" />
@@ -224,23 +248,27 @@
 
 @section Scripts {
     <script>
-        var dayScheduleUrl = "@Url.Action(nameof(PerformerSchedulingController.GetPerformerDaySchedule))";
-        var checkTimeUrl = "@Url.Action(nameof(PerformerSchedulingController.CheckProgramTimeAvailability))";
-        var scheduleBranchProgramUrl = "@Url.Action(nameof(PerformerSchedulingController.ScheduleProgram))";
         var backToBack = @Model.BranchSelection.BackToBackProgram.ToString().ToLower();
-        var selectedDate;
-        var startTime;
-        var startDateTime;
-        var selectedTimeValid = false;
+        var backToBackMinutes =  @Model.BranchSelection.Program.BackToBackMinutes;
+        var breakdownTimeMinutes = @Model.BranchSelection.Program.BreakdownTimeMinutes;
+        var checkTimeUrl = "@Url.Action(nameof(PerformerSchedulingController.CheckProgramTimeAvailability))";
+        var dayScheduleUrl = "@Url.Action(nameof(PerformerSchedulingController.GetPerformerDaySchedule))";
         var onSiteFieldsValid = false;
+        var programLengthMinutes = @Model.BranchSelection.Program.ProgramLengthMinutes;
+        var scheduleBranchProgramUrl = "@Url.Action(nameof(PerformerSchedulingController.ScheduleProgram))";
+        var selectedDate;
+        var selectedTimeValid = false;
+        var setupTimeMinutes = @Model.BranchSelection.Program.SetupTimeMinutes;
         var showOnSiteWarnings = false;
+        var startDateTime;
+        var startTime;
+        var reverifyTime = false;
 
         function validateContactFields() {
-
-            var fieldsValid = true;
-
+            let fieldsValid = true;
             document.querySelectorAll("#onSiteContactInfo input").forEach(function (input) {
                 if (!input.checkValidity()) {
+                    console.info("Validity failed for %o", input)
                     if (showOnSiteWarnings) { 
                         input.parentNode.parentNode.querySelector("span").innerText = `Please enter ${input.parentNode.parentNode.querySelector("label").innerText.toLowerCase()}.`;
                     }
@@ -249,23 +277,36 @@
                     input.parentNode.parentNode.querySelector("span").innerText = "";
                 }
             });
-
             onSiteFieldsValid = fieldsValid;
+            if (fieldsValid && reverifyTime) {
+                reverifyTime = false;
+                validateSelectedTime();
+            }
         }
 
         async function validateSelectedTime() {
-            var time = $("#pickerStart").data("DateTimePicker").date().format("HH:mm");
-            startDateTime = selectedDate + "T" + time;
+            $("#checkAlert")
+                .addClass('alert-info')
+                .removeClass('alert-danger alert-success alert-warning')
+                .html("<span class=\"fas fa-spinner fa-pulse fa-fw\"></span>")
+            startDateTime = selectedDate + "T" + document.getElementById("startTime").value;
             return $.getJSON(checkTimeUrl, { programId: "@Model.BranchSelection.ProgramId", dateTime: startDateTime, backToBack: backToBack }, function (response) {
-                var checkAlert = $("#checkAlert");
-                checkAlert.removeClass("hidden").removeClass("alert-warning alert-success alert-danger");
+                let checkAlert = $("#checkAlert");
+                checkAlert.removeClass("d-none").removeClass("alert-info");
                 if (response.success == true) {
                     selectedTimeValid = true;
                     if (response.message != null) {
                         checkAlert.addClass("alert-warning").text(response.message);
                     }
                     else {
-                        checkAlert.addClass("alert-success").text("The performer is available at that time.");
+                        validateContactFields();
+                        if (onSiteFieldsValid) {
+                            checkAlert.addClass("alert-success").text("The performer is available at that time.");
+                        }
+                        else {
+                            reverifyTime = true;
+                            checkAlert.addClass("alert-warning").text("The performer is available, please provide contact information.");
+                        }
                     }
                 }
                 else {
@@ -275,96 +316,93 @@
         }
 
         function enableOrDisableSubmit() {
-            var submitButton = document.querySelector("#scheduleProgram");
             if (onSiteFieldsValid && selectedTimeValid) {
-                submitButton.disabled = false;
+                $("#scheduleProgram").prop("disabled", false);
             } else {
-                submitButton.disabled = true;
+                $("#scheduleProgram").prop("disabled", true);
             }
         }
 
         $(".selectable").on("click", function () {
-            var clickedDate = $(this).data("year") + "-" + $(this).data("month") + "-" + $(this).data("date");
+            let clickedDate = $(this).data("year") + "-" + $(this).data("month") + "-" + $(this).data("date");
             if (clickedDate === selectedDate) return;
 
             selectedDate = null;
             selectedTimeValid = false;
             enableOrDisableSubmit();
+            $("#programDuration").text("");
+            $("#programDurationContainer").addClass("d-none");
             
             $(".selected-date").removeClass("selected-date");
             $(this).children().addClass("selected-date");
             selectedDate = clickedDate;
             startTime = $(this).data("start");
 
-            $("#checkAlert").addClass("hidden");
+            $("#checkAlert").addClass("d-none");
             $.get(dayScheduleUrl, { performerId: "@Model.BranchSelection.Program.PerformerId", date: selectedDate }, function (response) {
                 $("#daySchedule").html(response);
-                $("#startTime").val("").removeAttr("disabled");
-                $("#checkTime").attr("disabled", "disabled");
+                $("#startTime").val("").prop("disabled", false);
+                $("#checkTime").prop("disabled", true);
             });
         });
 
-        $("[id^=picker]").datetimepicker({
-            format: "hh:mm A",
-            allowInputToggle: true,
-            stepping: 5,
-            useCurrent: false,
-            icons: {
-                time: "far fa-clock",
-                date: "fas fa-calendar-alt",
-                up: "fas fa-arrow-up",
-                down: "fas fa-arrow-down",
-                previous: "fas fa-arrow-left",
-                next: "fas fa-arrow-right"
-            }
-        });
+        $("#startTime").on("change", function (e) {
+            let scheduleStartTime = new Date(selectedDate + ' ' + e.currentTarget.value);
+            if (scheduleStartTime instanceof Date && !isNaN(scheduleStartTime)) {
+                $("#checkTime").prop("disabled", false);
+                let scheduleEndTime = new Date(scheduleStartTime);
 
-        $("#pickerStart").on("dp.show", function () {
-            if ($("#startTime").val() == "") {
-                $(this).data("DateTimePicker").date(startTime);
-                $("#checkTime").removeAttr("disabled");
-            }
-        });
+                scheduleStartTime.setMinutes(scheduleStartTime.getMinutes() - setupTimeMinutes);
 
-        $("#pickerStart").on("dp.change", function () {
-            selectedTimeValid = false;
-            if ($("#pickerStart").data("DateTimePicker").date() != null) {
-                $("#checkTime").removeAttr("disabled");
-                var scheduleStartTime = $("#pickerStart").data("DateTimePicker").date().subtract(@Model.BranchSelection.Program.SetupTimeMinutes, "minutes").format("hh:mm A");
-                var scheduleEndTime = $("#pickerStart").data("DateTimePicker").date().add(@Model.BranchSelection.Program.ProgramLengthMinutes + @Model.BranchSelection.Program.BreakdownTimeMinutes, "minutes");
+                let endTimeMinutes = programLengthMinutes + breakdownTimeMinutes;
                 if (backToBack == true) {
-                    scheduleEndTime.add(@Model.BranchSelection.Program.ProgramLengthMinutes + @Model.BranchSelection.Program.BackToBackMinutes, "minutes");
+                    endTimeMinutes += programLengthMinutes + backToBackMinutes;
                 }
-                scheduleEndTime = scheduleEndTime.format("hh:mm A");
-                $("#programDuration").text(scheduleStartTime + " – " + scheduleEndTime);
+                scheduleEndTime.setMinutes(scheduleEndTime.getMinutes() + endTimeMinutes);
+
+                $("#programDuration").text(scheduleStartTime.toLocaleTimeString() 
+                    + " – " 
+                    + scheduleEndTime.toLocaleTimeString());
+                $("#programDurationContainer").removeClass("d-none");
+
+                $("#checkTime").prop("disabled", true);
+                validateSelectedTime()
+                    .then(function () {
+                        showOnSiteWarnings = true;
+                        validateContactFields();
+                        enableOrDisableSubmit();
+                    });
             }
             else {
-                $("#programDuration").text();
+                $("#programDuration").text("");
+                $("#programDurationContainer").addClass("d-none");
+                $("#checkTime").prop("disabled", true);
             }
-            $("#checkAlert").addClass("hidden");
+            $("#checkAlert").addClass("d-none");
             enableOrDisableSubmit();
         });
 
-        $("#checkTime").on("click", async function () { 
+        $("#checkTime").on("click", async function () {
+            $("#checkTime").prop("disabled", true);
             validateSelectedTime()
                 .then(function () {
                     showOnSiteWarnings = true;
                     validateContactFields();
                     enableOrDisableSubmit();
-                    $("#checkTime").attr("disabled", "disabled");
             })
         });
 
         $("#scheduleProgram").on("click", function () {
             $("#BranchSelection_RequestedStartTime").val(startDateTime);
-            var data = $("#branchSelectionForm").serializeArray().concat($("#onSiteContactInfo").serializeArray()).reduce(function (m, o) { m[o.name] = o.value; return m; }, {})
+            let data = $("#branchSelectionForm").serializeArray().concat($("#onSiteContactInfo").serializeArray()).reduce(function (m, o) { m[o.name] = o.value; return m; }, {})
             $.post(scheduleBranchProgramUrl, { branchSelection: data }, function (response) {
                 if (response.success) {
                     window.location.href = "@Url.Action(nameof(PerformerSchedulingController.Program), new { id = Model.BranchSelection.ProgramId})";
                 }
                 else {
-                    $("#checkAlert").addClass("hidden");
-                    document.querySelector("#scheduleProgram").disabled = true;
+                    $("#checkAlert").addClass("d-none");
+                    enableOrDisableSubmit();
+                    ResetSpinners();
                     alert(response.message);
                 }
             });

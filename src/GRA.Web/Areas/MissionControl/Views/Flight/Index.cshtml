@@ -1,34 +1,34 @@
 ﻿<div class="row" style="margin-top: 1rem;">
     <div class="col-sm-3 col-md-2 row-spacing">
-        <form asp-action="LoadSampleData" method="post" role="form" class="form-inline">
-            <button type="submit" class="btn btn-info btn-block">Insert sample data</button>
+        <form asp-action="LoadSampleData" method="post" role="form" class="d-flex flex-row align-items-center flex-wrap">
+            <button type="submit" class="btn btn-info ">Insert sample data</button>
         </form>
     </div>
     <div class="col-sm-4 col-md-3 row-spacing">
-        <a asp-action="@nameof(FlightController.RedeemSecretCode)" class="btn btn-info btn-block">Enter code "secretcode"</a>
+        <a asp-action="@nameof(FlightController.RedeemSecretCode)" class="btn btn-info ">Enter code "secretcode"</a>
     </div>
     <div class="col-sm-4 col-md-3 row-spacing">
-        <a asp-action="@nameof(FlightController.AddQuestionnaire)" class="btn btn-info btn-block">Create questionnaire</a>
+        <a asp-action="@nameof(FlightController.AddQuestionnaire)" class="btn btn-info ">Create questionnaire</a>
     </div>
     <div class="col-sm-4 col-md-3 row-spacing">
-        <form asp-action="@nameof(FlightController.ReloadSiteCache)" method="post" role="form" class="form-inline">
-            <button type="submit" class="btn btn-info btn-block">Reload sites into cache</button>
-        </form>
-    </div>
-    <div class="col-sm-3 col-md-2 row-spacing">
-        <form asp-controller="Flight" asp-action="LogWarning" method="post" role="form" class="form-inline">
-            <button type="submit" class="btn btn-warning btn-block">Log warning message</button>
+        <form asp-action="@nameof(FlightController.ReloadSiteCache)" method="post" role="form" class="d-flex flex-row align-items-center flex-wrap">
+            <button type="submit" class="btn btn-info ">Reload sites into cache</button>
         </form>
     </div>
     <div class="col-sm-3 col-md-2 row-spacing">
-        <form asp-controller="Flight" asp-action="LogError" method="post" role="form" class="form-inline">
-            <button type="submit" class="btn btn-danger btn-block">Log error message</button>
+        <form asp-controller="Flight" asp-action="LogWarning" method="post" role="form" class="d-flex flex-row align-items-center flex-wrap">
+            <button type="submit" class="btn btn-warning ">Log warning message</button>
+        </form>
+    </div>
+    <div class="col-sm-3 col-md-2 row-spacing">
+        <form asp-controller="Flight" asp-action="LogError" method="post" role="form" class="d-flex flex-row align-items-center flex-wrap">
+            <button type="submit" class="btn btn-outline-danger ">Log error message</button>
         </form>
     </div>
 
-    <div class="col-xs-12 col-sm-8 col-md-8 row-spacing">
-        <form asp-action="Job" asp-controller="Home" method="post" role="form" class="form-inline">
-            <div class="form-group">
+    <div class="col-12 col-sm-8 col-md-8 row-spacing">
+        <form asp-action="Job" asp-controller="Home" method="post" role="form" class="d-flex flex-row align-items-center flex-wrap">
+            <div class="mb-3">
                 <label for="id">Run job:</label>
                 <input name="id" class="form-control" placeholder="<guid>" />
             </div>

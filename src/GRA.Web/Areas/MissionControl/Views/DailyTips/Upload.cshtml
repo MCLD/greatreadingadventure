@@ -4,7 +4,7 @@
 @using Microsoft.AspNetCore.Mvc.ModelBinding
 
 <div class="row" style="margin-top: 2rem;">
-    <div class="col-xs-12">
+    <div class="col-12">
         <p>Configure a new set of daily tip images.</p>
         <ul>
             <li>
@@ -45,52 +45,37 @@
       role="form"
       enctype="multipart/form-data">
     <div class="row" style="margin-top: 2rem; margin-bottom: 2rem;">
-        <div class="col-xs-12">
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>*
+        <div class="col-12">
+            <div class="mb-3">
+                <label asp-for="Name" class="col-form-label"></label>*
                 <description gra-description-for="Name"></description>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Message" class="control-label"></label>*
+            <div class="mb-3">
+                <label asp-for="Message" class="col-form-label"></label>*
                 <description gra-description-for="Message"></description>
                 <input asp-for="Message" class="form-control" />
                 <span asp-validation-for="Message" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="IsLarge" class="control-label"></label>*
+            <div class="mb-3">
+                <label asp-for="IsLarge" class="col-form-label"></label>*
                 <description gra-description-for="IsLarge"></description>
-                <select asp-for="IsLarge" class="form-control">
+                <select asp-for="IsLarge" class="form-select">
                     <option value="True">Yes</option>
                     <option value="False">No</option>
                 </select>
                 <span asp-validation-for="IsLarge" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="mb-3">
                 <label for="selectedFile">Select a .zip file:</label>
                 <div class="input-group">
-                    <label class="input-group-btn">
-                        <span class="btn btn-default btn-file">
-                            <span class="far fa-file-image"></span>
-                            Image .zip file
-                            <input type="file"
-                                   asp-for="UploadedFile"
-                                   class="form-control"
-                                   accept=".zip"
-                                   style="display: none;" />
-                        </span>
-                    </label>
-                    <input type="text"
-                           class="form-control"
-                           readonly
-                           id="selectedFile"
-                           @(ViewData.ModelState.GetValidationState("UploadedFile") == ModelValidationState.Invalid ? "input-validation-error" : "")>
+                    <input type="file" asp-for="UploadedFile" class="form-control" accept=".zip" />
                 </div>
                 <span asp-validation-for="UploadedFile" class="text-danger"></span>
             </div>
             <div>
-                <button class="btn btn-primary btn-spinner" type="submit" button-spinner>
+                <button class="btn btn-outline-primary btn-spinner" type="submit" button-spinner>
                     <span class="fas fa-file-upload"></span>
                     Upload
                 </button>
@@ -107,13 +92,13 @@
 
             if (input.length) {
                 input.val(log);
-                $('.btn-file').removeClass('btn-default');
-                $('.btn-file').addClass('btn-success');
+                $('.btn-file').removeClass('btn-secondary');
+                $('.btn-file').addClass('btn-outline-success');
             }
             else {
                 input.val('');
-                $('.btn-file').addClass('btn-default');
-                $('.btn-file').removeClass('btn-success');
+                $('.btn-file').addClass('btn-secondary');
+                $('.btn-file').removeClass('btn-outline-success');
             }
         });
         $(document).on('change', ':file', function () {

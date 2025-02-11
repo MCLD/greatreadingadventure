@@ -68,36 +68,43 @@ namespace GRA.Controllers.MissionControl
             VendorCodeService vendorCodeService)
             : base(context)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            ArgumentNullException.ThrowIfNull(activityService);
+            ArgumentNullException.ThrowIfNull(authenticationService);
+            ArgumentNullException.ThrowIfNull(avatarService);
+            ArgumentNullException.ThrowIfNull(drawingService);
+            ArgumentNullException.ThrowIfNull(emailManagementService);
+            ArgumentNullException.ThrowIfNull(jobService);
+            ArgumentNullException.ThrowIfNull(logger);
+            ArgumentNullException.ThrowIfNull(mailService);
+            ArgumentNullException.ThrowIfNull(pointTranslationService);
+            ArgumentNullException.ThrowIfNull(prizeWinnerService);
+            ArgumentNullException.ThrowIfNull(questionnaireService);
+            ArgumentNullException.ThrowIfNull(roleService);
+            ArgumentNullException.ThrowIfNull(schoolService);
+            ArgumentNullException.ThrowIfNull(siteService);
+            ArgumentNullException.ThrowIfNull(triggerService);
+            ArgumentNullException.ThrowIfNull(userService);
+            ArgumentNullException.ThrowIfNull(vendorCodeService);
+
+            _activityService = activityService;
+            _authenticationService = authenticationService;
+            _avatarService = avatarService;
+            _drawingService = drawingService;
+            _emailManagementService = emailManagementService;
+            _jobService = jobService;
+            _logger = logger;
+            _mailService = mailService;
             _mapper = context?.Mapper;
-            _activityService = activityService
-                ?? throw new ArgumentNullException(nameof(activityService));
-            _authenticationService = authenticationService
-                ?? throw new ArgumentNullException(nameof(authenticationService));
-            _avatarService = avatarService
-                ?? throw new ArgumentNullException(nameof(avatarService));
-            _drawingService = drawingService
-                ?? throw new ArgumentNullException(nameof(drawingService));
-            _emailManagementService = emailManagementService
-                ?? throw new ArgumentNullException(nameof(emailManagementService));
-            _jobService = jobService
-                ?? throw new ArgumentNullException(nameof(jobService));
-            _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
-            _pointTranslationService = pointTranslationService
-                ?? throw new ArgumentNullException(nameof(pointTranslationService));
-            _prizeWinnerService = prizeWinnerService
-                ?? throw new ArgumentNullException(nameof(prizeWinnerService));
-            _questionnaireService = questionnaireService
-                ?? throw new ArgumentNullException(nameof(questionnaireService));
-            _roleService = roleService ?? throw new ArgumentNullException(nameof(roleService));
-            _schoolService = schoolService
-                ?? throw new ArgumentNullException(nameof(schoolService));
-            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
-            _triggerService = triggerService
-                ?? throw new ArgumentNullException(nameof(triggerService));
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-            _vendorCodeService = vendorCodeService
-                ?? throw new ArgumentNullException(nameof(vendorCodeService));
+            _pointTranslationService = pointTranslationService;
+            _prizeWinnerService = prizeWinnerService;
+            _questionnaireService = questionnaireService;
+            _roleService = roleService;
+            _schoolService = schoolService;
+            _siteService = siteService;
+            _triggerService = triggerService;
+            _userService = userService;
+            _vendorCodeService = vendorCodeService;
+
             PageTitle = "Participants";
         }
 
@@ -113,7 +120,7 @@ namespace GRA.Controllers.MissionControl
             var siteStage = GetSiteStage();
             if (siteStage <= SiteStage.BeforeRegistration)
             {
-                ShowAlertInfo("Registration has not opened yet");
+                ShowAlertInfo("Registratin has not opened yet");
                 return RedirectToAction("Index", "Participants");
             }
             else if (siteStage >= SiteStage.ProgramEnded)
@@ -129,7 +136,7 @@ namespace GRA.Controllers.MissionControl
             var viewModel = new ParticipantsAddViewModel
             {
                 RequirePostalCode = site.RequirePostalCode,
-                ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject),
+                ProgramJson = JsonConvert.SerializeObject(programViewObject),
                 SystemList = new SelectList(systemList.ToList(), "Id", "Name"),
                 ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
                 SchoolList = new SelectList(await _schoolService.GetSchoolsAsync(), "Id", "Name")
@@ -297,15 +304,18 @@ namespace GRA.Controllers.MissionControl
 
                 try
                 {
-                    var newUser = await _userService.RegisterUserAsync(user, model.Password, true);
+                    var newUser = await _userService.RegisterUserAsync(user,
+                        model.Password,
+                        true,
+                        false);
                     await _mailService.SendUserBroadcastsAsync(newUser.Id, false, true);
                     if (UserHasPermission(Permission.EditParticipants))
                     {
-                        return RedirectToAction("Detail", "Participants", new { id = newUser.Id });
+                        return RedirectToAction(nameof(Detail), Name, new { id = newUser.Id });
                     }
                     else
                     {
-                        return RedirectToAction("Index", "Participants");
+                        return RedirectToAction(nameof(Index), Name);
                     }
                 }
                 catch (GraException gex)
@@ -313,7 +323,8 @@ namespace GRA.Controllers.MissionControl
                     ShowAlertDanger("Could not create participant account: ", gex);
                     if (gex.Message.Contains("password", StringComparison.OrdinalIgnoreCase))
                     {
-                        ModelState.AddModelError("Password", "Please correct the issues with the password.");
+                        ModelState.AddModelError("Password",
+                            "Please correct the issues with the password.");
                     }
                 }
             }
@@ -334,7 +345,7 @@ namespace GRA.Controllers.MissionControl
             model.SystemList = new SelectList(systemList.ToList(), "Id", "Name");
             model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
             model.SchoolList = new SelectList(await _schoolService.GetSchoolsAsync(), "Id", "Name");
-            model.ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject);
+            model.ProgramJson = JsonConvert.SerializeObject(programViewObject);
             model.RequirePostalCode = site.RequirePostalCode;
             model.ShowAge = askAge;
             model.ShowSchool = askSchool;
@@ -415,7 +426,9 @@ namespace GRA.Controllers.MissionControl
             }
             filter.HasMultiplePrimaryVendorCodes = hasMultiplePrimaryVendorCodes;
 
-            bool isDescending = string.Equals(order, "Descending", StringComparison.OrdinalIgnoreCase);
+            bool isDescending = string.Equals(order,
+                "Descending",
+                StringComparison.OrdinalIgnoreCase);
             if (!string.IsNullOrWhiteSpace(sort) && Enum.IsDefined(typeof(SortUsersBy), sort))
             {
                 filter.SortBy = (SortUsersBy)Enum.Parse(typeof(SortUsersBy), sort);
@@ -531,22 +544,25 @@ namespace GRA.Controllers.MissionControl
 
                 var viewModel = new ParticipantsDetailViewModel(await GetPopulatedBaseViewModel(user))
                 {
-                    User = user,
-                    Username = user.Username,
-                    HeadOfHouseholdId = user.HouseholdHeadUserId,
+                    BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
                     CanEditDetails = UserHasPermission(Permission.EditParticipants),
+                    CanViewParticipants = UserHasPermission(Permission.ViewParticipantDetails),
+                    CreatedByName = await _userService.GetUsersNameByIdAsync(user.CreatedBy),
+                    HeadOfHouseholdId = user.HouseholdHeadUserId,
+                    IsHomeschooled = user.IsHomeschooled,
+                    ProgramJson = JsonConvert.SerializeObject(programViewObject),
+                    ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
                     RequirePostalCode = (await GetCurrentSiteAsync()).RequirePostalCode,
+                    SchoolId = user.SchoolId,
+                    SchoolList = new SelectList(await _schoolService.GetSchoolsAsync(),
+                        "Id",
+                        "Name"),
+                    SchoolNotListed = user.SchoolNotListed,
                     ShowAge = userProgram.AskAge,
                     ShowSchool = userProgram.AskSchool,
-                    ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject),
-                    BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
-                    ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
-                    SchoolList = new SelectList(await _schoolService.GetSchoolsAsync(),
-                        "Id", "Name"),
-                    SchoolId = user.SchoolId,
-                    IsHomeschooled = user.IsHomeschooled,
-                    SchoolNotListed = user.SchoolNotListed,
                     SystemList = new SelectList(systemList.ToList(), "Id", "Name"),
+                    User = user,
+                    Username = user.Username
                 };
 
                 if (viewModel.SchoolId.HasValue)
@@ -698,7 +714,7 @@ namespace GRA.Controllers.MissionControl
             model.SystemList = new SelectList(systemList.ToList(), "Id", "Name");
             model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
             model.SchoolList = new SelectList(await _schoolService.GetSchoolsAsync(), "Id", "Name");
-            model.ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject);
+            model.ProgramJson = JsonConvert.SerializeObject(programViewObject);
             model.RequirePostalCode = site.RequirePostalCode;
             model.ShowAge = program.AskAge;
             model.ShowSchool = program.AskSchool;
@@ -786,9 +802,10 @@ namespace GRA.Controllers.MissionControl
 
             var viewModel = new LogActivityViewModel(await GetPopulatedBaseViewModel(user))
             {
+                DisableSecretCode = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
                 HasPendingQuestionnaire = (await _questionnaireService
                     .GetRequiredQuestionnaire(user.Id, user.Age)).HasValue,
-                DisableSecretCode = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
+                OpenToLog = _activityService.IsOpenToLog(),
                 PointTranslation = await _pointTranslationService
                     .GetByProgramIdAsync(user.ProgramId, true),
             };
@@ -867,6 +884,7 @@ namespace GRA.Controllers.MissionControl
                 model.VendorCodeTypeList = new SelectList(
                     await _vendorCodeService.GetTypeAllAsync(), "Id", "Description");
             }
+            model.OpenToLog = _activityService.IsOpenToLog();
             return View(model);
         }
 
@@ -912,7 +930,7 @@ namespace GRA.Controllers.MissionControl
                     User = userBase,
                     Id = id,
                     RequirePostalCode = (await GetCurrentSiteAsync()).RequirePostalCode,
-                    ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject),
+                    ProgramJson = JsonConvert.SerializeObject(programViewObject),
                     BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
                     ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
                     SchoolList = new SelectList(await _schoolService.GetSchoolsAsync(),
@@ -1080,9 +1098,10 @@ namespace GRA.Controllers.MissionControl
                     {
                         model.User.DailyPersonalGoal = null;
                     }
-
                     var newMember = await _userService.AddHouseholdMemberAsync(headOfHousehold.Id,
-                        model.User);
+                        model.User,
+                        false,
+                        true);
                     await _mailService.SendUserBroadcastsAsync(newMember.Id, false, true);
                     AlertSuccess = "Added family/group member";
                     return RedirectToAction("Household", new { id = model.Id });
@@ -1106,7 +1125,7 @@ namespace GRA.Controllers.MissionControl
             model.SystemList = new SelectList(systemList.ToList(), "Id", "Name");
             model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
             model.SchoolList = new SelectList(await _schoolService.GetSchoolsAsync(), "Id", "Name");
-            model.ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject);
+            model.ProgramJson = JsonConvert.SerializeObject(programViewObject);
             model.RequirePostalCode = site.RequirePostalCode;
             model.ShowAge = askAge;
             model.ShowSchool = askSchool;
@@ -1179,22 +1198,24 @@ namespace GRA.Controllers.MissionControl
 
                 var viewModel = new HouseholdListViewModel(await GetPopulatedBaseViewModel(user))
                 {
-                    Users = household,
-                    HeadOfHouseholdId = user.HouseholdHeadUserId,
-                    CanRedeemBulkVendorCodes = UserHasPermission(Permission.RedeemBulkVendorCodes),
+                    BranchList = branchList,
                     CanEditDetails = UserHasPermission(Permission.EditParticipants),
                     CanImportNewMembers = UserHasPermission(Permission.ImportHouseholdMembers),
+                    OpenToLog = _activityService.IsOpenToLog(),
                     CanLogActivity = UserHasPermission(Permission.LogActivityForAny),
                     CanReadMail = ReadAllMail,
+                    CanRedeemBulkVendorCodes = UserHasPermission(Permission.RedeemBulkVendorCodes),
                     CanViewPrizes = ViewUserPrizes,
+                    DisableSecretCode
+                        = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
                     Head = head,
-                    SystemId = systemId,
-                    BranchList = branchList,
-                    SystemList = systemList,
-                    DisableSecretCode = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
+                    HeadOfHouseholdId = user.HouseholdHeadUserId,
+                    PointTranslation
+                        = await _pointTranslationService.GetByProgramIdAsync(user.ProgramId, true),
                     ShowVendorCodes = showVendorCodes,
-                    PointTranslation = await _pointTranslationService
-                        .GetByProgramIdAsync(user.ProgramId, true),
+                    SystemId = systemId,
+                    SystemList = systemList,
+                    Users = household,
                 };
 
                 if (ViewUserPrizes)
@@ -1242,8 +1263,9 @@ namespace GRA.Controllers.MissionControl
                 }
                 else
                 {
-                    var (useGroups, maximumHousehold) =
-                        await GetSiteSettingIntAsync(SiteSettingKey.Users.MaximumHouseholdSizeBeforeGroup);
+                    var (useGroups, maximumHousehold) = await GetSiteSettingIntAsync(SiteSettingKey
+                        .Users
+                        .MaximumHouseholdSizeBeforeGroup);
                     viewModel.UseGroups = useGroups;
                     if (useGroups && household.Count() + 1 >= maximumHousehold)
                     {
@@ -1297,7 +1319,7 @@ namespace GRA.Controllers.MissionControl
                 .GetByProgramIdAsync(user.ProgramId, true);
             if (model.ActivityAmount < 1 && !model.PointTranslation.IsSingleEvent)
             {
-                TempData[ActivityMessage] = "You must enter an amonunt!";
+                TempData[ActivityMessage] = "You must enter an amount!";
             }
             else if (!string.IsNullOrWhiteSpace(model.UserSelection))
             {
@@ -1358,7 +1380,8 @@ namespace GRA.Controllers.MissionControl
                     }
                     else
                     {
-                        TempData[SecretCodeMessage] = "All selected members have already entered that Secret Code.";
+                        TempData[SecretCodeMessage]
+                            = "All selected members have already entered that Secret Code.";
                     }
                 }
                 catch (GraException gex)
@@ -1385,7 +1408,8 @@ namespace GRA.Controllers.MissionControl
             {
                 UserIds = new List<int>() { userId },
                 Search = search,
-                CanAddToHousehold = true
+                CanAddToHousehold = true,
+                Take = 10
             };
             if (branchId.HasValue)
             {
@@ -1437,7 +1461,7 @@ namespace GRA.Controllers.MissionControl
                     Id = id,
                     SystemId = headOfHousehold.SystemId,
                     BranchId = headOfHousehold.BranchId,
-                    ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject),
+                    ProgramJson = JsonConvert.SerializeObject(programViewObject),
                     BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
                     ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
                     SchoolList = new SelectList(await _schoolService.GetSchoolsAsync(),
@@ -1513,7 +1537,8 @@ namespace GRA.Controllers.MissionControl
             if (model.UserExcelFile != null && !ValidExcelExtensions
                 .Contains(Path.GetExtension(model.UserExcelFile.FileName).ToLowerInvariant()))
             {
-                ModelState.AddModelError("UserExcelFile", $"File must be one of the following types: {string.Join(", ", ValidUploadExtensions)}");
+                ModelState.AddModelError("UserExcelFile",
+                    $"File must be one of the following types: {string.Join(", ", ValidUploadExtensions)}");
             }
 
             if (ModelState.IsValid)
@@ -1581,7 +1606,7 @@ namespace GRA.Controllers.MissionControl
             var programList = await _siteService.GetProgramList();
             var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
             model.ProgramList = new SelectList(programList, "Id", "Name");
-            model.ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject);
+            model.ProgramJson = JsonConvert.SerializeObject(programViewObject);
 
             if (askIfFirstTime)
             {
@@ -1857,7 +1882,7 @@ namespace GRA.Controllers.MissionControl
                 user.Username = model.Username;
                 try
                 {
-                    await _userService.RegisterHouseholdMemberAsync(user, model.Password);
+                    await _userService.RegisterHouseholdMemberAsync(user, model.Password, true);
                     AlertSuccess = "Family/group member registered!";
                     return RedirectToAction("Household", new { id = model.Id });
                 }
@@ -1919,7 +1944,10 @@ namespace GRA.Controllers.MissionControl
             {
                 var filter = new BookFilter(page);
 
-                bool isDescending = string.Equals(order, "Descending", StringComparison.OrdinalIgnoreCase);
+                bool isDescending = string.Equals(order,
+                    "Descending",
+                    StringComparison.OrdinalIgnoreCase);
+
                 if (!string.IsNullOrWhiteSpace(sort) && Enum.IsDefined(typeof(SortBooksBy), sort))
                 {
                     filter.SortBy = (SortBooksBy)Enum.Parse(typeof(SortBooksBy), sort);
@@ -1950,13 +1978,15 @@ namespace GRA.Controllers.MissionControl
                 var viewModel = new BookListViewModel(await GetPopulatedBaseViewModel(user))
                 {
                     Books = books.Data.ToList(),
+                    CanEditBooks = UserHasPermission(Permission.LogActivityForAny),
+                    HasPendingQuestionnaire
+                        = (await _questionnaireService.GetRequiredQuestionnaire(user.Id,
+                            user.Age)).HasValue,
+                    HeadOfHouseholdId = user.HouseholdHeadUserId,
+                    IsDescending = isDescending,
+                    OpenToLog = _activityService.IsOpenToLog(),
                     PaginateModel = paginateModel,
                     Sort = sort,
-                    IsDescending = isDescending,
-                    HasPendingQuestionnaire = (await _questionnaireService
-                        .GetRequiredQuestionnaire(user.Id, user.Age)).HasValue,
-                    HeadOfHouseholdId = user.HouseholdHeadUserId,
-                    CanEditBooks = UserHasPermission(Permission.LogActivityForAny),
                     SortBooks = Enum.GetValues(typeof(SortBooksBy)),
                 };
 
@@ -2158,7 +2188,8 @@ namespace GRA.Controllers.MissionControl
                     {
                         if (item.BadgeId.HasValue && !item.ChallengeId.HasValue)
                         {
-                            var trigger = await _triggerService.GetByBadgeIdAsync(item.BadgeId.Value);
+                            var trigger
+                                = await _triggerService.GetByBadgeIdAsync(item.BadgeId.Value);
                             if (trigger?.AwardAvatarBundleId.HasValue == false
                                 && !trigger.AwardVendorCodeTypeId.HasValue
                                 && string.IsNullOrWhiteSpace(trigger.AwardMail))

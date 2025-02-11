@@ -7,32 +7,33 @@
     }
 
     <div class="row">
-        <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">
+        <div class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
                     <span class="lead">@ViewData[ViewDataKey.Title]</span>
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     @if (TempData.ContainsKey("TwoStepSignUp"))
                     {
                         <partial name="_TwoStepPartial" />
                         TempData.Keep("TwoStepSignUp");
-                    } else 
+                    }
+                    else
                     {
                         <partial name="_MultiStepPartial" />
                     }
 
                     <div class="row row-spacing">
-                        <div class="col-xs-12">
-                            <label asp-for="FirstName" class="control-label"></label>
+                        <div class="col-12">
+                            <label asp-for="FirstName" class="col-form-label"></label>
                             <input asp-for="FirstName" class="form-control first-name-field" />
                             <span asp-validation-for="FirstName" class="text-danger"></span>
                         </div>
                     </div>
 
                     <div class="row row-spacing">
-                        <div class="col-xs-12">
-                            <label asp-for="LastName" class="control-label"></label>
+                        <div class="col-12">
+                            <label asp-for="LastName" class="col-form-label"></label>
                             <input asp-for="LastName" class="form-control" />
                             <span asp-validation-for="LastName" class="text-danger"></span>
                         </div>
@@ -41,8 +42,8 @@
                     @if (Model.RequirePostalCode)
                     {
                         <div class="row row-spacing">
-                            <div class="col-xs-12">
-                                <label asp-for="PostalCode" class="control-label"></label>
+                            <div class="col-12">
+                                <label asp-for="PostalCode" class="col-form-label"></label>
                                 <input asp-for="PostalCode" class="form-control" />
                                 <span asp-validation-for="PostalCode" class="text-danger"></span>
                             </div>
@@ -52,9 +53,11 @@
                     @if (Model.SystemList.Count() > 1)
                     {
                         <div class="row row-spacing">
-                            <div class="col-xs-12">
-                                <label asp-for="SystemId" class="control-label"></label>
-                                <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control">
+                            <div class="col-12">
+                                <label asp-for="SystemId" class="col-form-label"></label>
+                                <select asp-for="SystemId"
+                                        asp-items="Model.SystemList"
+                                        class="form-select">
                                     <option></option>
                                 </select>
                                 <span asp-validation-for="SystemId" class="text-danger"></span>
@@ -73,24 +76,23 @@
                     else
                     {
                         <div class="row row-spacing">
-                            <div class="col-xs-12">
-                                <label asp-for="BranchId" class="control-label"></label>
+                            <div class="col-12">
+                                <label asp-for="BranchId" class="col-form-label"></label>
                                 <select asp-for="BranchId"
                                         asp-items="Model.BranchList"
-                                        class="form-control"></select>
+                                        class="form-select"></select>
                                 <span asp-validation-for="BranchId" class="text-danger"></span>
                             </div>
                         </div>
                     }
                 </div>
-                <div class="panel-footer clearfix">
-                    <div class="pull-right">
-                        <button type="submit"
-                                class="btn btn-primary btn-lg btn-spinner"
-                                button-spinner>
-                            @SharedLocalizer[GRA.Domain.Model.DisplayNames.NextStep] <span class="fas fa-arrow-right"></span>
-                        </button>
-                    </div>
+                <div class="card-footer d-flex justify-content-end">
+                    <button type="submit"
+                            class="btn btn-outline-primary btn-lg"
+                            button-spinner>
+                        @SharedLocalizer[GRA.Domain.Model.DisplayNames.NextStep]
+                        <span class="fas fa-arrow-right"></span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -99,19 +101,18 @@
 
 @section scripts {
     <script>
-        $("#SystemId").on("change", function() {
+        $("#SystemId").on("change", function () {
             var systemId = $(this).val();
             var branchList = $("#BranchId");
             var branchId = branchList.val();
             var url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
 
-            $.getJSON(url, { systemId: systemId, branchId: branchId }, function(response) {
+            $.getJSON(url, { systemId: systemId, branchId: branchId }, function (response) {
                 branchList.empty();
-                if (response.length > 1)
-                {
+                if (response.length > 1) {
                     branchList.append(new Option("", ""));
                 }
-                $.each(response, function(index, item) {
+                $.each(response, function (index, item) {
                     branchList.append(new Option(item.text, item.value, item.selected, item.selected))
                 });
             });

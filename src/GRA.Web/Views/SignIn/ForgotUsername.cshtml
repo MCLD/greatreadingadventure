@@ -1,28 +1,22 @@
 ﻿<form asp-controller="SignIn" asp-action="ForgotUsername" method="post" role="form">
     <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <span class="lead"><grasite property="name"></grasite> - @SharedLocalizer[GRA.Annotations.Title.UsernameRecovery]</span>
+        <div class="col-sm-12 col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="h4"><grasite property="name"></grasite> - @SharedLocalizer[GRA.Annotations.Title.UsernameRecovery]</h1>
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     <div asp-validation-summary="All"></div>
-                    <div class="row row-spacing">
-                        <div class="col-xs-12">
-                            <label class="control-label">@SharedLocalizer[GRA.Domain.Model.DisplayNames.EmailAddress]</label>
-                            <input name="email" type="email" class="form-control input-lg" autofocus />
-                        </div>
-                    </div>
+                    <label class="form-label">@SharedLocalizer[GRA.Domain.Model.DisplayNames.EmailAddress]</label>
+                    <input name="email" type="email" class="form-control form-control-lg" autofocus />
                 </div>
-                <div class="panel-footer clearfix">
-                    <div class="pull-left">
-                        <a asp-action="Index" class="btn btn-default btn-lg">@SharedLocalizer[GRA.Domain.Model.DisplayNames.ReturnToSignIn]</a>
-                    </div>
-                    <div class="pull-right">
-                        <button class="btn btn-primary btn-lg btn-spinner" button-spinner>
-                            @SharedLocalizer[GRA.Domain.Model.DisplayNames.SendRecoveryEmail]
-                        </button>
-                    </div>
+                <div class="card-footer d-flex justify-content-end">
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-lg me-2">
+                        @SharedLocalizer[GRA.Domain.Model.DisplayNames.ReturnToSignIn]
+                        </a>
+                    <button class="btn btn-outline-primary btn-lg" button-spinner>
+                        @SharedLocalizer[GRA.Domain.Model.DisplayNames.SendRecoveryEmail]
+                    </button>
                 </div>
             </div>
         </div>

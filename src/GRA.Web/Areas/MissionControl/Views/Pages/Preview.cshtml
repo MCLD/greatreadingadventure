@@ -1,6 +1,13 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Pages.PagePreviewViewModel
 
-<a asp-action="@nameof(ParticipantsController.Detail)" asp-route-id="@Model.HeaderId" asp-route-language="@Model.Language" class="btn btn-default" style="margin-top:10px;">Return to Editor</a>
+@section inHeading {
+    <div class="ms-auto">
+        <a asp-action="@nameof(ParticipantsController.Detail)"
+           asp-route-id="@Model.HeaderId"
+           asp-route-language="@Model.Language"
+           class="btn btn-outline-secondary">Return to edit</a>
+    </div>
+}
 
 <hr />
 

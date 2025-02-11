@@ -252,8 +252,66 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
+        public async Task<IDictionary<User, int>> GetStaffRegisteredParticipantsAsync(ReportCriterion criterion)
+        {
+            ArgumentNullException.ThrowIfNull(criterion);
+
+            var systemUserId = await GetSystemUserId();
+
+            // this cannot use the ApplyUserFilter() method as dates are handled differently
+            var userList = DbSet.AsNoTracking().Where(_ => !_.IsDeleted
+                    && _.CreatedBy != systemUserId
+                    && _.Id != systemUserId
+                    && _.IsMcRegistered
+                    && _.SiteId == criterion.SiteId);
+
+            if (criterion.SystemId != null)
+            {
+                userList = userList.Where(_ => criterion.SystemId == _.SystemId);
+            }
+
+            if (criterion.BranchId != null)
+            {
+                userList = userList.Where(_ => criterion.BranchId == _.BranchId);
+            }
+
+            if (criterion.StartDate != null)
+            {
+                userList = userList.Where(_ => _.CreatedAt >= criterion.StartDate);
+            }
+
+            if (criterion.EndDate != null)
+            {
+                userList = userList.Where(_ => _.CreatedAt <= criterion.EndDate);
+            }
+
+            var registeredUserCount = userList.GroupBy(_ => _.CreatedBy)
+                .Select(_ => new
+                {
+                    _.Key,
+                    Value = _.Count()
+                });
+
+            return await registeredUserCount
+                .Join(DbSet.AsNoTracking(),
+                    ruc => ruc.Key,
+                    all => all.Id,
+                    (ruc, all) => new
+                    {
+                        Key = new User
+                        {
+                            FirstName = all.FirstName,
+                            Id = all.Id,
+                            LastName = all.LastName,
+                            Username = all.Username
+                        },
+                        ruc.Value
+                    })
+                .ToDictionaryAsync(k => k.Key, v => v.Value);
+        }
+
         public async Task<IDictionary<string, int>>
-            GetSubscribedLanguageCountAsync(string unspecifiedString)
+                    GetSubscribedLanguageCountAsync(string unspecifiedString)
         {
             return await DbSet
                 .AsNoTracking()

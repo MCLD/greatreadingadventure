@@ -9,9 +9,9 @@
 </noscript>
 
 <div id="schoolGroup" class="row row-spacing">
-    <div class="col-xs-12">
-        <label class="control-label">@SharedLocalizer[GRA.Domain.Model.DisplayNames.School]</label>
-        <select asp-for="SchoolId" asp-items="Model.SchoolList" class="selectpicker form-control" data-live-search="true" data-none-selected-text="">
+    <div class="col-12">
+        <label class="col-form-label">@SharedLocalizer[GRA.Domain.Model.DisplayNames.School]</label>
+        <select asp-for="SchoolId" asp-items="Model.SchoolList" class="selectpicker form-select" data-live-search="true" data-none-selected-text="">
             <option></option>
         </select>
         <span asp-validation-for="SchoolId" class="text-danger"></span>
@@ -19,7 +19,7 @@
 </div>
 
 <div class="row row-spacing">
-    <div class="col-xs-12">
+    <div class="col-12">
         <input asp-for="IsHomeschooled" class="school-selection-checkbox" />
         <label asp-for="IsHomeschooled">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Homeschooled]</label>
         <input asp-for="SchoolNotListed" class="school-selection-checkbox" />

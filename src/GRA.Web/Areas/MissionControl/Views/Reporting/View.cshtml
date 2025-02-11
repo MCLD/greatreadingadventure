@@ -1,18 +1,16 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.ReportResultsViewModel
 @section inHeading {
-    <div class="pull-right">
-        <a asp-action="Download"
-           asp-route-id="@Model.ReportResultId"
-           class="btn btn-default">
-            <span class="far fa-file-excel"></span>
-            Download Excel spreadsheet
-        </a>
-    </div>
+    <a asp-action="@nameof(ReportingController.Download)"
+       asp-route-id="@Model.ReportResultId"
+       class="btn btn-outline-primary ms-auto d-print-none">
+        <span class="far fa-file-excel"></span>
+        Download Excel spreadsheet
+    </a>
 }
 
-<div class="row" style="padding-top:10px;">
-    <div class="col-xs-12">
-        <table class="table table-bordered" style="border: none;margin-bottom:0; width:auto;">
+<div class="row mt-2">
+    <div class="col-12 mb-0">
+        <table class="table table-bordered" style="width: auto;">
             @if (Model.StartDate.HasValue)
             {
                 <tr>
@@ -85,13 +83,12 @@
     <div class="row">
         @if (report.Title != Model.Title)
         {
-            <div class="col-xs-12">
-                <h2>@report.Title</h2>
+            <div class="col-12">
+                <h3>@report.Title</h3>
             </div>
         }
-        <div class="col-xs-12">
-            <table class="table table-condensed table-bordered table-striped"
-                   style="margin-top: 2rem; margin-bottom: 0.5rem;">
+        <div class="col-12">
+            <table class="table table-sm table-bordered table-striped">
                 @if (report.HeaderRow != null)
                 {
                     <thead>
@@ -124,9 +121,10 @@
                     </tfoot>
                 }
             </table>
+
             @if (report.FooterText != null)
             {
-                <div style="margin-bottom: 2rem;">
+                <div class="mb-3">
                     @foreach (var data in report.FooterText)
                     {
                         <p>@data</p>
@@ -135,7 +133,7 @@
             }
             else
             {
-                <div style="margin-bottom: 2rem;">This report was run on @report.AsOf.ToString("g").</div>
+                <div>This report was run on @report.AsOf.ToString("g").</div>
             }
         </div>
     </div>

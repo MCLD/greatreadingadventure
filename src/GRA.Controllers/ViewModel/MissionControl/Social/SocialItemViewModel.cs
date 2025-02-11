@@ -1,9 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Social
 {
@@ -28,7 +26,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Social
         public string ImageLink { get; set; }
 
         [Display(Name = "Language for this social record",
-                            Description = "Required, once created you may add additional languages")]
+            Description = "Required, once created you may add additional languages")]
         public int LanguageId { get; set; }
 
         public SelectList LanguageList { get; set; }
@@ -62,13 +60,5 @@ namespace GRA.Controllers.ViewModel.MissionControl.Social
         [Display(Name = "Select an image file",
             Description = "Required, compressed for the Web, 1200x630 pixels or similar")]
         public IFormFile UploadedImage { get; set; }
-
-        public static string ValidationClass(ViewDataDictionary<SocialItemViewModel> viewData,
-            string field)
-        {
-            return viewData?.ModelState.GetValidationState(field) == ModelValidationState.Invalid
-                ? "input-validation-error"
-                : "";
-        }
     }
 }

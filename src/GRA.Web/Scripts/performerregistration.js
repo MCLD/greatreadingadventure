@@ -25,4 +25,5 @@ $(":file").on("fileselect", function (event, numFiles, label) {
 });
 
 // bootstrap tooltip
-$("[data-toggle=\"tooltip\"]").tooltip();
+const tooltipTriggerList = document.querySelectorAll("[data-bs-toggle=\"tooltip\"]");
+const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));

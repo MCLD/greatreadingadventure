@@ -20,14 +20,14 @@
 }
 
 <div class="row">
-    <div class="col-xs-12 col-sm-10 col-sm-offset-1">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <span class="lead">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Mail]</span>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <span class="fw-bold">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Mail]</span>
             </div>
-            <div class="panel-body">
+            <div class="card-body">
                 <div class="row">
-                    <div class="col-xs-12">
+                    <div class="col-12">
                         @if (Model.Mail.Count() == 0)
                         {
                             <div class="alert alert-warning">
@@ -36,49 +36,51 @@
                         }
                         else
                         {
-                            <div>
-                                <table class="table table-condensed table-bordered link-table">
-                                    <thead>
-                                        <tr>
-                                            <th>@SharedLocalizer[GRA.Annotations.Title.Date]</th>
-                                            <th>@SharedLocalizer[GRA.Annotations.Title.Subject]</th>
-                                            <th class="nojs-show">&nbsp;</th>
+                            <table class="table table-sm table-bordered link-table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>@SharedLocalizer[GRA.Annotations.Title.Date]</th>
+                                        <th>@SharedLocalizer[GRA.Annotations.Title.Subject]</th>
+                                        <th class="nojs-show">&nbsp;</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var mail in Model.Mail)
+                                    {
+                                        <tr class="@(mail.IsNew ? "unread-mail" : "read-mail")">
+                                            <td class="td-class">
+                                                <noscript>
+                                                    @mail.CreatedAt.ToString("d")
+                                                </noscript>
+                                                <a asp-action="Read"
+                                                   asp-route-id="@mail.Id"
+                                                   class="rowlink nojs-d-none">
+                                                    @mail.CreatedAt.ToString("d")
+                                                </a>
+                                            </td>
+                                            <td>@mail.Subject</td>
+                                            <td class="nojs-show">
+                                                <a asp-action="Read"
+                                                   asp-route-id="@mail.Id"
+                                                   class="btn btn-outline-secondary btn-sm">
+                                                    @SharedLocalizer[GRA.Annotations.Interface.Read]
+                                                </a>
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var mail in Model.Mail)
-                                        {
-                                            <tr class="@(mail.IsNew ? "unread-mail" : "read-mail")">
-                                                <td class="td-class">
-                                                    <noscript>
-                                                        @mail.CreatedAt.ToString("d")
-                                                    </noscript>
-                                                    <a asp-action="Read"
-                                                       asp-route-id="@mail.Id"
-                                                       class="rowlink nojs-hide">
-                                                        @mail.CreatedAt.ToString("d")
-                                                    </a>
-                                                </td>
-                                                <td>@mail.Subject</td>
-                                                <td class="nojs-show">
-                                                    <a asp-action="Read"
-                                                       asp-route-id="@mail.Id"
-                                                       class="btn btn-default btn-xs">
-                                                        @SharedLocalizer[GRA.Annotations.Interface.Read]
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                            @if (Model.PaginateModel.MaxPage > 1)
-                            {
-                                <paginate paginateModel="@Model.PaginateModel"></paginate>
-                            }
+                                    }
+                                </tbody>
+                            </table>
                         }
-                        <a asp-action="Send" class="btn btn-primary">@SharedLocalizer[GRA.Annotations.Interface.SendMail]</a>
                     </div>
+                </div>
+            </div>
+            <div class="card-footer d-print-none d-flex">
+                <div class="flex-grow-1">
+                    <paginate paginateModel="@Model.PaginateModel"></paginate>
+                </div>
+                <div>
+                    <a asp-action="Send"
+                       class="btn btn-outline-primary">@SharedLocalizer[GRA.Annotations.Interface.SendMail]</a>
                 </div>
             </div>
         </div>
@@ -89,12 +91,12 @@
     <script>
         $(document).ready(function () {
             $('.td-class').each(function () {
-                $(this).children('a.rowlink').height($(this).height() + 11);
+                $(this).children("a.rowlink").height($(this).outerHeight());
             });
         });
         $(window).resize(function () {
             $('.td-class').each(function () {
-                $(this).children('a.rowlink').height($(this).height() + 11);
+                $(this).children("a.rowlink").height($(this).outerHeight());
             });
         });
     </script>

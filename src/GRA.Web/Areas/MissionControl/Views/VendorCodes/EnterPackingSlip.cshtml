@@ -5,24 +5,21 @@
     @await Html.PartialAsync("_VendorCodePartial")
 }
 
-<div class="row" style="margin-top: 1rem; margin-bottom: 2rem;">
-    <div class="col-xs-12">
+<div class="row mt-3">
+    <div class="col-12 col-md-8 offset-md-2 col-xl-6 offset-xl-3">
         <form asp-action="@nameof(VendorCodesController.LookupPackingSlip)"
               method="post"
               role="form"
-              class="form-inline">
-            <div class="form-group">
-                <div class="input-group">
-                    <label for="numberOfCodes" 
-                           class="input-group-addon">Packing slip number:</label>
-                    <input id="id"
-                           name="id"
-                           class="form-control"
-                           value="@Model" />
-                    <span class="input-group-btn">
-                        <button type="submit" class="btn btn-info">View</button>
-                    </span>
-                </div>
+              class="d-flex flex-row align-items-center flex-wrap">
+            <div class="input-group">
+                <label for="numberOfCodes"
+                       class="input-group-text">Packing slip number:</label>
+                <input autofocus
+                       id="id"
+                       name="id"
+                       class="form-control"
+                       value="@Model" />
+                <button type="submit" class="btn btn-info">View</button>
             </div>
         </form>
     </div>

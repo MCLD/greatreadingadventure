@@ -2,47 +2,55 @@
 
 @await Html.PartialAsync("_VendorCodePartial")
 
-<form asp-controller="VendorCodes">
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <div class="form-group">
+<form asp-controller="@VendorCodesController.Name">
+    <div class="row mb-2">
+        <div class="col-12 col-md-8 offset-md-2">
+            <div class="mb-3">
                 <label for="vendorCodeTypeId">Vendor code:</label>
-                <select id="vendorCodeTypeId" name="vendorCodeTypeId" asp-items="@Model" class="form-control"></select>
+                <select id="vendorCodeTypeId"
+                        name="vendorCodeTypeId"
+                        asp-items="@Model"
+                        class="form-select"></select>
             </div>
         </div>
     </div>
 
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <button asp-action="@nameof(VendorCodesController.DownloadUnreportedEmailAddresses)" formmethod="get" class="btn btn-primary">Download Unreported Email Addresses</button>
+    <div class="row mb-4">
+        <div class="col-12 col-md-8 offset-md-2">
+            <button asp-action="@nameof(VendorCodesController.DownloadUnreportedEmailAddresses)"
+                    formmethod="get"
+                    class="btn btn-outline-primary">
+                Download Unreported Email Addresses
+            </button>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="form-group">
-                <label for="selectedFile">Update email award status:</label>
-                <div class="input-group">
-                    <label class="input-group-btn">
-                        <span class="btn btn-default btn-file">
-                            <span class="far fa-file-image"></span>
-                            Select an Excel file<input type="file" name="excelFile" accept=".xls" />
-                        </span>
-                    </label>
-                    <input type="text" class="form-control" readonly id="selectedFile">
-                    <span class="input-group-btn">
-                        <button type="submit"
-                                asp-action="@nameof(VendorCodesController.EmailAwardStatus)"
-                                formmethod="post"
-                                formenctype="multipart/form-data"
-                                class="btn btn-default"
-                                data-toggle="modal"
-                                data-target="#importModal">
-                            <span class="fas fa-upload"></span>
-                        </button>
-                    </span>
-                </div>
+    <div class="row mb-2">
+        <div class="col-12 col-md-8 offset-md-2">
+            <label for="selectedFile">Select an email award status file (.xls):</label>
+            <div class="input-group mb-3">
+                <input accept=".xls"
+                       id="excelFile"
+                       name="excelFile"
+                       class="form-control"
+                       type="file" />
+                <button class="btn btn-outline-secondary" onclick="$('#excelFile').val('')"
+                        type="button">
+                    Clear selection
+                </button>
             </div>
+        </div>
+        <div class="col-12 col-md-8 offset-md-2 d-flex justify-content-end">
+            <button type="submit"
+                    asp-action="@nameof(VendorCodesController.EmailAwardStatus)"
+                    formmethod="post"
+                    formenctype="multipart/form-data"
+                    class="btn btn-outline-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#importModal">
+                <span class="fas fa-fw fa-upload"></span>
+                Upload email award status
+            </button>
         </div>
     </div>
 </form>
@@ -68,31 +76,3 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
-@section scripts
-{
-    <script>
-        $(':file').on('fileselect', function (event, numFiles, label) {
-            var input = $(this).parents('.input-group').find(':text'),
-                log = numFiles > 1 ? numFiles = ' files selected' : label;
-
-            if (input.length) {
-                input.val(log);
-                $('.btn-file').removeClass('btn-default');
-                $('.btn-file').addClass('btn-success');
-            }
-            else {
-                input.val('');
-                $('.btn-file').addClass('btn-default');
-                $('.btn-file').removeClass('btn-success');
-            }
-        });
-
-        $(document).on('change', ':file', function () {
-            var input = $(this),
-                numFiles = input.get(0).files ? input.get(0).files.length : 1,
-                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-            input.trigger('fileselect', [numFiles, label]);
-        });
-    </script>
-}

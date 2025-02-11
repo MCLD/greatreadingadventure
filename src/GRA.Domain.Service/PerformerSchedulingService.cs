@@ -656,6 +656,12 @@ namespace GRA.Domain.Service
             return await _psAgeGroupRepository.GetAllAsync();
         }
 
+        public async Task<ICollection<PsPerformer>> GetAllPerformersAsync()
+        {
+            VerifyManagementPermission();
+            return await _psPerformerRepository.GetAllAsync();
+        }
+
         public async Task<ICollection<PsKit>> GetAllKitsAsync()
         {
             VerifyManagementPermission();
@@ -1392,7 +1398,8 @@ namespace GRA.Domain.Service
             await _psPerformerRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), performer);
         }
 
-        public async Task SetPerformerReferencesAsync(int performerId, byte[] referencesBytes,
+        public async Task SetPerformerReferencesAsync(int performerId,
+            byte[] referencesBytes,
             string fileExtension)
         {
             var authId = GetClaimId(ClaimType.UserId);
@@ -1401,16 +1408,18 @@ namespace GRA.Domain.Service
 
             if (!HasPermission(Permission.ManagePerformers)
                 && (performer.UserId != authId
-                    || !HasPermission(Permission.AccessPerformerRegistration)))
+                || !HasPermission(Permission.AccessPerformerRegistration)))
             {
-                _logger.LogError($"User {authId} doesn't have permission to set performer {performer.Id} references.");
+                _logger.LogError("User {authId} doesn't have permission to set performer {performerId} references.",
+                    authId,
+                    performer.Id);
                 throw new GraException("Permission denied.");
             }
 
             if (!string.IsNullOrWhiteSpace(performer.ReferencesFilename))
             {
                 var filePath = _pathResolver.ResolveContentFilePath(performer.ReferencesFilename);
-                System.IO.File.WriteAllBytes(filePath, referencesBytes);
+                await File.WriteAllBytesAsync(filePath, referencesBytes);
             }
             else
             {
@@ -1423,18 +1432,24 @@ namespace GRA.Domain.Service
                 var performerFilename = AlphanumericRegex.Replace(performer.Name, "");
                 var referencesFilename = $"{performerFilename}_references{fileExtension}";
 
-                while (System.IO.File.Exists(Path.Combine(referencesDirectory, referencesFilename)))
+                while (File.Exists(Path.Combine(referencesDirectory, referencesFilename)))
                 {
+                    var randomFilename = Path.GetRandomFileName().Replace(".",
+                        "",
+                        StringComparison.OrdinalIgnoreCase);
                     referencesFilename = $"{performerFilename}_references" +
-                        $"_{Path.GetRandomFileName().Replace(".", "")}{fileExtension}";
+                        $"_{randomFilename}{fileExtension}";
                 }
 
-                performer.ReferencesFilename = Path.Combine($"site{siteId}", ReferencesPath,
+                performer.ReferencesFilename = Path.Combine($"site{siteId}",
+                    ReferencesPath,
                     referencesFilename);
-                var filePath = _pathResolver.ResolveContentFilePath(performer.ReferencesFilename);
-                System.IO.File.WriteAllBytes(filePath, referencesBytes);
 
-                await _psPerformerRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), performer);
+                var filePath = _pathResolver.ResolveContentFilePath(performer.ReferencesFilename);
+                await File.WriteAllBytesAsync(filePath, referencesBytes);
+
+                await _psPerformerRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
+                    performer);
             }
         }
 

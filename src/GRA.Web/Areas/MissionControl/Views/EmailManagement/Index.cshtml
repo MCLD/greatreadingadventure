@@ -1,41 +1,30 @@
 ﻿@using GRA.Controllers.ViewModel.MissionControl.EmailManagement
 @model EmailIndexViewModel
 
-@section Styles {
-    <style>
-        .gra-button-buffer {
-            margin-right: 0.25rem;
-            margin-bottom: 0.25rem;
-        }
-    </style>
-}
-
-<div class="row" style="margin: 1rem 0;">
-    <div class="col-xs-12">
-        <a class="btn btn-success"
+<div class="row my-4">
+    <div class="col-12">
+        <a class="btn btn-outline-success"
            asp-action="@nameof(EmailManagementController.CreateTemplate)">
-            <span class="fas fa-plus-circle"></span>
+            <span class="fas fa-plus-circle fa-fw"></span>
             Create Template
         </a>
-        <a class="btn btn-success"
+        <a class="btn btn-outline-success"
            asp-action="@nameof(EmailManagementController.ImportTemplate)">
-            <span class="fas fa-plus-circle"></span>
+            <span class="fas fa-plus-circle fa-fw"></span>
             Import Template
         </a>
         <a asp-action="@nameof(EmailManagementController.Addresses)"
-           class="btn btn-default">
+           class="btn btn-outline-secondary">
             <span class="fas fa-list-alt"></span>
             Manage Lists
         </a>
-        <a class="btn btn-info"
-           style="margin-left: 1rem;"
+        <a class="btn btn-outline-secondary"
            asp-action="@nameof(EmailManagementController.BaseIndex)">
             Base Templates
         </a>
         @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.SendBulkEmails.ToString()))
         {
-            <a class="btn btn-default"
-               style="margin-left: 1rem;"
+            <a class="btn btn-outline-secondary"
                asp-action="@nameof(EmailManagementController.SetSpecialEmails)">
                 Set Special Emails
             </a>
@@ -43,8 +32,8 @@
     </div>
 </div>
 
-<div class="row" style="margin: 1rem 0;">
-    <div class="col-xs-12">
+<div class="row my-4">
+    <div class="col-12">
         @if (Model.EmailTemplates.Count() == 0)
         {
             <div class="alert alert-warning">No Emails.</div>
@@ -52,7 +41,7 @@
         else
         {
             <div>
-                <table class="table table-condensed table-bordered table-hover">
+                <table class="table table-sm table-bordered table-hover">
                     <thead>
                         <tr>
                             <th>Description</th>
@@ -81,8 +70,8 @@
                                     @template.EmailsSent
                                     @if (template.Id == Model.WelcomeEmailTemplateId)
                                     {
-                                       @:/
-                                       @Model.WelcomeEmailsTotal
+                                        @:/
+                                        @Model.WelcomeEmailsTotal
                                     }
                                 </td>
                                 <td style="vertical-align: middle;">
@@ -92,7 +81,8 @@
                                     }
                                     else
                                     {
-                                        <span class="text-danger" title="Emails have already been sent.">No</span>
+                                        <span class="text-danger"
+                                              title="Emails have already been sent.">No</span>
                                     }
                                 </td>
                                 <td style="vertical-align: middle;">
@@ -104,15 +94,15 @@
                                         <a asp-action="@nameof(EmailManagementController.EditTemplate)"
                                            asp-route-templateId="@template.Id"
                                            asp-route-languageId="@language"
-                                           class="btn btn-file btn-default btn-sm gra-button-buffer">@Model.LanguageNames[language]</a>
+                                           class="btn btn-outline-primary btn-sm my-1">@Model.LanguageNames[language]</a>
                                     }
                                 </td>
                                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.SendBulkEmails.ToString()))
                                 {
-                                    <td class="text-right">
+                                    <td class="text-center">
                                         @if (!template.IsSystem && Model.IsAnyoneSubscribed)
                                         {
-                                            <a class="btn btn-sm btn-warning sendEmail gra-button-buffer"
+                                            <a class="btn btn-sm btn-outline-primary sendEmail my-1"
                                                asp-action="@nameof(EmailManagementController.Send)"
                                                asp-route-templateId="@template.Id">
                                                 Send
@@ -125,10 +115,7 @@
                     </tbody>
                 </table>
             </div>
-            @if (Model.MaxPage > 1)
-            {
-                <paginate paginateModel="@Model"></paginate>
-            }
+            <paginate paginateModel="@Model"></paginate>
         }
     </div>
 </div>

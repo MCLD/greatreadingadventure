@@ -7,13 +7,13 @@
 else
 {
     <div>
-        <table class="table table-condensed table-bordered table-striped">
+        <table class="table table-sm table-bordered table-striped">
             <thead>
                 <tr>
                     <td>User</td>
                     <td>Branch</td>
                     <td>Program</td>
-                    <td width="42px">&nbsp;</td>
+                    <td width="48px">&nbsp;</td>
                 </tr>
             </thead>
             <tbody>
@@ -30,12 +30,12 @@ else
                         <td>
                             @user.ProgramName
                         </td>
-                        <td>
+                        <td class="align-middle">
                             <button type="submit"
-                                    class="btn btn-primary btn-xs"
+                                    class="btn btn-outline-success btn-sm"
                                     asp-action="HouseholdAddExistingParticipant"
                                     asp-route-userToAddId="@user.Id">
-                                <span class="fas fa-2x fa-plus" aria-hidden="true"></span>
+                                <span class="fas fa-plus fa-fw" aria-hidden="true"></span>
                             </button>
                         </td>
                     </tr>
@@ -43,8 +43,5 @@ else
             </tbody>
         </table>
     </div>
-    @if (Model.PaginateModel.MaxPage > 1)
-    {
-        <paginate paginateModel="@Model.PaginateModel" asButtons="true"></paginate>
-    }
+    <paginate paginateModel="@Model.PaginateModel" asButtons="true"></paginate>
 }

@@ -1,6 +1,6 @@
 ﻿
 <div class="row" style="margin-top: 1rem;">
-    <button class="btn btn-default btn-lg" id="runReport">Run report</button>
+    <button class="btn btn-outline-primary btn-lg" id="runReport">Run report</button>
 </div>
 
 <div class="modal fade" tabindex="-1" role="dialog" id="reportModal">
@@ -50,8 +50,8 @@
                             window.location.href = viewReport;
                         } else if (started && !finished) {
                             $('#cancelReport').text('Close window');
-                            $('#cancelReport').removeClass('btn-danger');
-                            $('#cancelReport').addClass('btn-danger');
+                            $('#cancelReport').removeClass('btn-outline-danger');
+                            $('#cancelReport').addClass('btn-outline-danger');
                             $('#reportProgress').removeClass('active');
                             $('#reportProgress').addClass('progress-bar-danger');
                             $('#reportStatus').text('The server disconnected while running the report.');
@@ -81,8 +81,8 @@
                                 finished = true;
                                 socket.close();
                                 $('#cancelReport').text('Close window');
-                                $('#cancelReport').removeClass('btn-danger');
-                                $('#cancelReport').addClass('btn-default');
+                                $('#cancelReport').removeClass('btn-outline-danger');
+                                $('#cancelReport').addClass('btn-secondary');
                                 $('#reportProgress').removeClass('active');
                                 $('#reportProgress').addClass('progress-bar-success');
                             }
@@ -106,7 +106,7 @@
             $('#reportProgress').removeClass('progress-bar-danger');
             $('#reportProgress').removeClass('progress-bar-success');
             $('#cancelReport').text('Cancel report');
-            $('#cancelReport').addClass('btn-danger');
+            $('#cancelReport').addClass('btn-outline-danger');
             $('#reportModal').modal({
                 backdrop: 'static',
                 keyboard: false
@@ -126,7 +126,7 @@
             if (socket && socket.readyState == WebSocket.OPEN) {
                 socket.close();
             }
-            $('#reportModal').modal('hide');
+            $('#reportModal')"d-none f');
         });
     </script>
 }

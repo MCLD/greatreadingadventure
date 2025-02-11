@@ -1,66 +1,59 @@
 ﻿@model GRA.Controllers.ViewModel.Profile.HouseholdExistingViewModel
 
-<div class="row">
-    <div class="col-xs-12 col-sm-10 col-sm-offset-1">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <span class="lead">
-                    @SharedLocalizer[GRA.Annotations.Info.GroupAdd,
-                        SharedLocalizer[Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString()]]
-                </span>
-            </div>
-            <div class="panel-body">
-
-                <form asp-controller="Profile" asp-action="AddExistingParticipant" method="post" role="form">
-                    <div class="row" style="padding: 10px 0;">
-                        <div class="col-xs-12">
-
-                            <div class="row row-spacing">
-                                <div class="col-xs-12">
-                                    <p>
-                                        @SharedLocalizer[GRA.Annotations.Interface.AddExistingExplanation,
-                                            SharedLocalizer[Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString()]]
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div class="row row-spacing">
-                                <div class="col-xs-12">
-                                    <label asp-for="Username" class="control-label"></label>
-                                    <input asp-for="Username" class="form-control" autofocus />
-                                    <span asp-validation-for="Username" class="text-danger"></span>
-                                </div>
-                            </div>
-
-                            <div class="row row-spacing">
-                                <div class="col-xs-12">
-                                    <label asp-for="Password" class="control-label"></label>
-                                    <input asp-for="Password" type="password" class="form-control" />
-                                    <span asp-validation-for="Password" class="text-danger"></span>
-                                </div>
-                            </div>
+<form asp-controller="@ProfileController.Name"
+      asp-action="@nameof(ProfileController.AddExistingParticipant)"
+      method="post"
+      role="form">
+    <div class="row">
+        <div class="col-12 col-lg-10 offset-lg-1 col-xl-8 offset-xl-2">
+            <div class="card">
+                <div class="card-header">
+                    <span class="fw-bold">
+                        @SharedLocalizer[GRA.Annotations.Info.GroupAdd,
+                                 SharedLocalizer[Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString()]]
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            @SharedLocalizer[GRA.Annotations.Interface.AddExistingExplanation,
+                                     SharedLocalizer[Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString()]]
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        <a asp-action="Household" class="btn btn-default">
-                            @SharedLocalizer[GRA.Annotations.Interface.BackTo,
-                                SharedLocalizer[Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString()]]
-                        </a>
-                        <button type="submit"
-                                id="Submit"
-                                name="Submit"
-                                value="Submit"
-                                class="btn btn-primary btn-spinner"
-                                button-spinner>
-                            <span class="buttonText">
-                                @SharedLocalizer[GRA.Annotations.Info.GroupAdd,
-                                    SharedLocalizer[Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString()]]
-                            </span>
-                        </button>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label asp-for="Username" class="col-form-label"></label>
+                            <input asp-for="Username" class="form-control" autofocus />
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
                     </div>
-                </form>
+                    <div class="row">
+                        <div class="col-12">
+                            <label asp-for="Password" class="col-form-label"></label>
+                            <input asp-for="Password" type="password" class="form-control" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-end">
+                    <a asp-action="@nameof(ProfileController.Household)"
+                       class="btn btn-outline-secondary">
+                        @SharedLocalizer[GRA.Annotations.Interface.BackTo,
+                                 SharedLocalizer[Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString()]]
+                    </a>
+                    <button type="submit"
+                            id="Submit"
+                            name="Submit"
+                            value="Submit"
+                            class="btn btn-outline-primary ms-2"
+                            button-spinner>
+                        <span class="buttonText">
+                            @SharedLocalizer[GRA.Annotations.Info.GroupAdd,
+                                     SharedLocalizer[Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString()]]
+                        </span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</form>

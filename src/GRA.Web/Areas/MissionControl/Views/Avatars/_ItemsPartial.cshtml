@@ -2,16 +2,15 @@
 
 @if (Model.Items.Count() == 0)
 {
-    <div class="alert alert-warning">No Items found</div>
+    <div class="alert alert-warning">No available items found</div>
 }
 else
 {
     <div>
-        <table class="table table-condensed table-bordered table-striped">
+        <table class="table table-sm table-bordered table-striped">
             <thead>
                 <tr>
                     <td>Name</td>
-                    <td width="100px">Layer</td>
                     <td width="100px">Thumbnail</td>
                     <td width="44px">&nbsp;</td>
                 </tr>
@@ -24,25 +23,21 @@ else
                             @item.Name
                         </td>
                         <td>
-                            @item.AvatarLayerName
-                        </td>
-                        <td>
                             @if (!string.IsNullOrWhiteSpace(item.Thumbnail))
                             {
-                                <img class="img-thumbnail" style="height: auto; width: 64px;"
-                                     src="~/@item.Thumbnail?@DateTime.Now.ToString("yyMMddHHmmss")"
-                                     asp-append-version="true" />
+                                <img class="img-thumbnail badge-xs"
+                                     src="~/@item.Thumbnail?@DateTime.Now.ToString("yyMMddHHmmss")" />
                             }
                             else
                             {
                                 <text>&nbsp;</text>
                             }
                         </td>
-                        <td>
+                        <td class="align-middle">
                             <button type="button"
-                                    class="btn btn-link btn-xs addItemButton"
+                                    class="btn btn-outline-success btn-sm addItemButton"
                                     data-itemid="@item.Id">
-                                <span class="fas fa-2x fa-plus-circle text-success" aria-hidden="true"></span>
+                                <span class="fas fa-plus fa-fw" aria-hidden="true"></span>
                             </button>
                         </td>
                     </tr>
@@ -50,8 +45,5 @@ else
             </tbody>
         </table>
     </div>
-    @if (Model.PaginateModel.MaxPage > 1)
-    {
-        <paginate paginateModel="@Model.PaginateModel" asButtons="true"></paginate>
-    }
+    <paginate paginateModel="@Model.PaginateModel" asButtons="true"></paginate>
 }

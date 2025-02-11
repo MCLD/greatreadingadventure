@@ -2,31 +2,35 @@
 
 @await Html.PartialAsync("_ParticipantPartial")
 
-<form asp-action="Roles" method="post" role="form" style="padding-top:10px;">
+<form asp-action="Roles" method="post" role="form" class="my-4">
     <input asp-for="Id" type="hidden" />
 
     <div class="row">
-        <div class="col-xs-6">
+        <div class="col-6">
             <h3>Available Roles</h3>
             <ul id="unselectedRoles" class="list-group">
                 @foreach (var role in Model.UnselectedRoles)
                 {
                     <li class="list-group-item" data-id="@role.Id" data-name="@role.Name">
                         @role.Name
-                        <button type="button" class="btn btn-default btn-xs move-right"><span class="fas fa-angle-double-right"></span></button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm move-right">
+                            <span class="fas fa-angle-double-right"></span>
+                        </button>
                     </li>
                 }
             </ul>
         </div>
 
-        <div class="col-xs-6">
+        <div class="col-6">
             <h3>Has Roles</h3>
             <ul id="selectedRoles" class="list-group">
                 @foreach (var role in Model.SelectedRoles)
                 {
                     <li class="list-group-item" data-id="@role.Id" data-name="@role.Name">
                         @role.Name
-                        <button type="button" class="btn btn-default btn-xs move-left"><span class="fas fa-angle-double-left"></span></button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm move-left">
+                            <span class="fas fa-angle-double-left"></span>
+                        </button>
                     </li>
                 }
             </ul>
@@ -35,13 +39,13 @@
 
     <hr />
 
-    <div class="form-group">
-        <a asp-action="Index" class="btn btn-default">Return to Participants</a>
+    <div class="mb-3 d-flex d-print-none justify-content-end">
+        <a asp-action="Index" class="btn btn-outline-secondary me-2">Return to Participants</a>
         <button type="submit"
                 id="Submit"
                 name="Submit"
                 value="Submit"
-                class="btn btn-primary btn-spinner"
+                class="btn btn-outline-primary"
                 button-spinner>
             <span class="buttonText">Save Roles</span>
         </button>
@@ -65,7 +69,7 @@
             }
         });
 
-        $(document).on("click", ".move-right", function() {
+        $(document).on("click", ".move-right", function () {
             $(this).removeClass("move-right").addClass("move-left");
             $(this).children().removeClass("fa-angle-double-right").addClass("fa-angle-double-left");
             var item = $(this).parent();
@@ -74,7 +78,7 @@
                 item.removeClass("list-group-item-danger");
                 var added = false;
                 var name = item.data("name");
-                $(".list-group-item", selectedList).each(function() {
+                $(".list-group-item", selectedList).each(function () {
                     if ($(this).hasClass("list-group-item-success") == false && $(this).data("name") > name) {
                         item.insertBefore($(this));
                         added = true;
@@ -89,7 +93,7 @@
                 item.addClass("list-group-item-success");
                 var added = false;
                 var name = item.data("name");
-                $(".list-group-item", selectedList).each(function() {
+                $(".list-group-item", selectedList).each(function () {
                     if ($(this).hasClass("list-group-item-success") == false || $(this).data("name") > name) {
                         item.insertBefore($(this));
                         added = true;
@@ -102,7 +106,7 @@
             }
         });
 
-        $(document).on("click", ".move-left", function() {
+        $(document).on("click", ".move-left", function () {
             $(this).removeClass("move-left").addClass("move-right");
             $(this).children().removeClass("fa-angle-double-left").addClass("fa-angle-double-right");
             var item = $(this).parent();
@@ -111,7 +115,7 @@
                 item.removeClass("list-group-item-success");
                 var added = false;
                 var name = item.data("name");
-                $(".list-group-item", unselectedList).each(function() {
+                $(".list-group-item", unselectedList).each(function () {
                     if ($(this).hasClass("list-group-item-danger") == false && $(this).data("name") > name) {
                         item.insertBefore($(this));
                         added = true;
@@ -126,7 +130,7 @@
                 item.addClass("list-group-item-danger");
                 var added = false;
                 var name = item.data("name");
-                $(".list-group-item", unselectedList).each(function() {
+                $(".list-group-item", unselectedList).each(function () {
                     if ($(this).hasClass("list-group-item-danger") == false || $(this).data("name") > name) {
                         item.insertBefore($(this));
                         added = true;

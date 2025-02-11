@@ -8,58 +8,115 @@
     </style>
 </noscript>
 
-<div class="row">
-    <div class="col-xs-12">
-        <ul class="nav nav-pills" style="padding: 10px 0;">
+<div class="row my-4">
+    <div class="col-12">
+        <ul class="nav nav-pills flex-column flex-sm-row">
             @if (Model.ShowSystem)
             {
-                <li class="@(Model.ActiveNav == "All" ? "active" : "")"><a asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-Program="@Model.Program">All</a></li>
-                <li class="@(Model.ActiveNav == "System" ? "active" : "")">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                <li class="nav-item">
+                    <a class="nav-link @(Model.ActiveNav == "All" ? "active" : "")"
+                       asp-route-Search="@Model.Search"
+                       asp-route-Categories="@Model.Categories"
+                       asp-route-Program="@Model.Program">All</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="dropdown-toggle nav-link @(Model.ActiveNav == "System" ? "active" : "")"
+                       data-bs-toggle="dropdown"
+                       href="#"
+                       role="button"
+                       aria-haspopup="true"
+                       aria-expanded="false">
                         @(Model.SystemName ?? "System") <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
                         @foreach (var system in Model.SystemList)
                         {
-                            <li><a asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-Program="@Model.Program" asp-route-System="@system.Id">@system.Name</a></li>
+                            <li>
+                                <a class="dropdown-item"
+                                   asp-route-Search="@Model.Search"
+                                   asp-route-Categories="@Model.Categories"
+                                   asp-route-Program="@Model.Program"
+                                   asp-route-System="@system.Id">@system.Name</a>
+                            </li>
                         }
                     </ul>
                 </li>
             }
             else
             {
-                <li class="@(Model.ActiveNav == "System" ? "active" : "")"><a asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-Program="@Model.Program">@Model.SystemName</a></li>
+                <li class="@(Model.ActiveNav == "System" ? "active" : "")">
+                    <a asp-route-Search="@Model.Search"
+                       asp-route-Categories="@Model.Categories"
+                       asp-route-Program="@Model.Program">@Model.SystemName</a>
+                </li>
             }
-            <li class="@(Model.ActiveNav == "Branch" ? "active" : "")">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+            <li class="nav-item dropdown">
+                <a class="dropdown-toggle nav-link @(Model.ActiveNav == "Branch" ? "active" : "")"
+                   data-bs-toggle="dropdown"
+                   href="#" role="button"
+                   aria-haspopup="true"
+                   aria-expanded="false">
                     @(Model.BranchName ?? "Branch") <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
                     @foreach (var branch in Model.BranchList)
                     {
-                        <li><a asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-Program="@Model.Program" asp-route-Branch="@branch.Id">@branch.Name</a></li>
+                        <li>
+                            <a class="dropdown-item"
+                               asp-route-Search="@Model.Search"
+                               asp-route-Categories="@Model.Categories"
+                               asp-route-Program="@Model.Program"
+                               asp-route-Branch="@branch.Id">@branch.Name</a>
+                        </li>
                     }
                 </ul>
             </li>
-            <li class="@(Model.ActiveNav == "Mine" ? "active" : "")"><a asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-Program="@Model.Program" asp-route-Mine="True">Mine</a></li>
-        </ul>
-    </div>
-</div>
-
-<div class="row row-spacing">
-    <div class="col-xs-12">
-        <span class="dropdown-label">Limited to Program:</span>
-        <ul class="nav" style="display: inline-table;">
-            <li>
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                    @(Model.ProgramName ?? "Show All") <span class="caret"></span>
+            <li class="nav-item">
+                <a class="nav-link @(Model.ActiveNav == "Mine" ? "active" : "")"
+                   asp-route-Search="@Model.Search"
+                   asp-route-Categories="@Model.Categories"
+                   asp-route-Program="@Model.Program"
+                   asp-route-Mine="True">Mine</a>
+            </li>
+            <li class="nav-item d-none d-sm-block"><a class="nav-link disabled">|</a></li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle"
+                   data-bs-toggle="dropdown"
+                   href="#"
+                   role="button"
+                   aria-haspopup="true"
+                   aria-expanded="false">
+                    Limitations: @(Model.ProgramName) <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-System="@Model.System" asp-route-Branch="@Model.Branch" asp-route-Mine="@Model.Mine">Show All</a></li>
-                    <li><a asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-Program="0" asp-route-System="@Model.System" asp-route-Branch="@Model.Branch" asp-route-Mine="@Model.Mine">Not Limited</a></li>
+                    <li>
+                        <a class="dropdown-item"
+                           asp-route-Search="@Model.Search"
+                           asp-route-Categories="@Model.Categories"
+                           asp-route-System="@Model.System"
+                           asp-route-Branch="@Model.Branch"
+                           asp-route-Mine="@Model.Mine">Show All</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item"
+                           asp-route-Search="@Model.Search"
+                           asp-route-Categories="@Model.Categories"
+                           asp-route-Program="0"
+                           asp-route-System="@Model.System"
+                           asp-route-Branch="@Model.Branch"
+                           asp-route-Mine="@Model.Mine">Not Limited</a>
+                    </li>
                     @foreach (var program in Model.ProgramList)
                     {
-                        <li><a asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-Program="@program.Id" asp-route-System="@Model.System" asp-route-Branch="@Model.Branch" asp-route-Mine="@Model.Mine">@program.Name</a></li>
+                        <li>
+                            <a class="dropdown-item"
+                               asp-route-Search="@Model.Search"
+                               asp-route-Categories="@Model.Categories"
+                               asp-route-Program="@program.Id"
+                               asp-route-System="@Model.System"
+                               asp-route-Branch="@Model.Branch"
+                               asp-route-Mine="@Model.Mine">@program.Name</a>
+                        </li>
                     }
                 </ul>
             </li>
@@ -84,79 +141,89 @@
     {
         <input asp-for="Mine" type="hidden" />
     }
-    <div class="row row-spacing">
-        <div class="col-xs-12 col-sm-2" style="margin-bottom:5px;">
-            <span style="font-size:large;">Search:</span>
+    <div class="row my-4">
+        <div class="col-12 col-sm-2">
+            <label class="col-form-label fs-5">Search:</label>
         </div>
-        <div class="col-xs-12 col-sm-10 gra-search-container">
+        <div class="col-12 col-sm-10">
             <input asp-for="Search" class="form-control" />
         </div>
     </div>
     @if (Model.CategoryList?.Count() > 0)
     {
-        <div id="Category" class="row row-spacing">
-            <div class="col-xs-12 col-sm-2" style="margin-bottom:5px;">
-                <span style="font-size:large;">Category:</span>
+        <div class="row mt-4">
+            <div class="col-12 col-sm-2">
+                <label class="col-form-label fs-5">Category:</label>
             </div>
-            <div class="col-xs-12 col-sm-10">
-                <input id="CategoryPlaceholder" class="form-control" />
-                <select asp-for="CategoryIds" asp-items="Model.CategoryList" class="form-control hidden" multiple="multiple"></select>
+            <div class="col-12 col-sm-10">
+                <select asp-for="CategoryIds"
+                        asp-items="Model.CategoryList"
+                        autocomplete="off"
+                        class="form-select"
+                        multiple="multiple"
+                        size="1"></select>
+            </div>
+        </div>
+        <div class="mb-4">
+            <div class="col-12 col-sm-10 offset-sm-2 ps-2">
+                <small><em>To remove a category: select it and use your backspace or delete key.</em></small>
             </div>
         </div>
     }
-    <div id="Ordering" class="row row-spacing">
-        <div class="col-xs-12 col-sm-2" style="margin-bottom:5px;">
-            <span style="font-size:large;">Ordering:</span>
+    <div id="Ordering" class="row my-4">
+        <div class="col-12 col-sm-2">
+            <label class="col-form-label fs-5">Ordering:</label>
         </div>
-        <div class="col-xs-12 col-sm-10">
-            <label class="radio-inline">
+        <div class="col-12 col-sm-10 d-flex align-items-center">
+            <div class="form-check form-check-inline">
                 <input type="radio"
+                       class="form-check-input"
                        name="Ordering"
+                       id="popularOption"
                        value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.MostPopular"
-                       @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.MostPopular)>
-                Most Popular
-            </label>
-            <label class="radio-inline">
+                @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.MostPopular)>
+                <label class="form-check-label" for="popularOption">Most Popular</label>
+            </div>
+            <div class="form-check form-check-inline">
                 <input type="radio"
+                       class="form-check-input"
                        name="Ordering"
-                       value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Name"
-                       @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Name)>
-                Name
-            </label>
-            <label class="radio-inline">
-                <input type="radio"
-                       name="Ordering"
+                       id="recentOption"
                        value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Recent"
-                       @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Recent)>
-                Most Recent
-            </label>
+                @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Recent)>
+                <label class="form-check-label" for="recentOption">Most Recent</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input type="radio"
+                       class="form-check-input"
+                       name="Ordering"
+                       id="nameOption"
+                       value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Name"
+                @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Name)>
+                <label class="form-check-label" for="nameOption">Name</label>
+            </div>
         </div>
     </div>
-
-
-    <div class="row row-spacing">
-
-        <div class="col-xs-6 col-sm-offset-8 col-sm-2">
-            <a asp-action="Index" class="btn btn-default btn-block"> Clear</a>
+    <div class="row my-4">
+        <div class="col-sm-6 col-lg-8 d-none d-sm-block">&nbsp;</div>
+        <div class="col-12 col-sm-3 col-lg-2 d-grid my-1">
+            <a asp-action="Index" class="btn btn-outline-secondary">Clear</a>
         </div>
-        <div class="col-xs-6 col-sm-2">
-            <button type="submit" class="btn btn-primary btn-block"> Search</button>
+        <div class="col-12 col-sm-3 col-lg-2 d-grid my-1">
+            <button type="submit" class="btn btn-outline-primary">Search</button>
         </div>
     </div>
 </form>
-
-
 @if (Model.CanAddChallenges)
 {
-    <div class="row" style="padding: 10px 0;">
-        <div class="col-xs-12">
-            <a asp-action="Create" class="btn btn-default">Create a new challenge</a>
+    <div class="row my-4">
+        <div class="col-12">
+            <a asp-action="Create" class="btn btn-outline-primary">Create a new challenge</a>
         </div>
     </div>
 }
-
-<div class="row" style="padding: 10px 0;">
-    <div class="col-xs-12">
+<div class="row">
+    <div class="col-12">
         @if (Model.Challenges.Count() == 0)
         {
             <div class="alert alert-warning">No Challenges</div>
@@ -164,7 +231,7 @@
         else
         {
             <div>
-                <table class="table table-condensed table-bordered link-table">
+                <table class="table table-sm table-bordered link-table">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -190,7 +257,7 @@
                                                 <br />
                                                 @foreach (var category in challenge.Categories)
                                                 {
-                                                    <span class="label" style="background-color:@category.Color">@category.Name</span>
+                                                    <span class="badge" style="background-color: @category.Color">@category.Name</span>
                                                 }
                                             }
                                         </a>
@@ -200,38 +267,53 @@
                                         @challenge.Name
                                     }
                                 </td>
-                                <td>
+                                <td class="gra-mc-icon">
                                     @if (!string.IsNullOrEmpty(challenge.BadgeFilename))
                                     {
-                                        <img class="img-thumbnail badge-sm" src="~/@challenge.BadgeFilename?@DateTime.Now.ToString("yyMMddHHmmss")" asp-append-version="true" />
+                                        <img class="img-thumbnail badge-sm" src="~/@challenge.BadgeFilename?@DateTime.Now.ToString("yyMMddHHmmss")" />
                                     }
                                     else
                                     {
-                                        @: &nbsp;
+                                        @:&nbsp;
                                     }
                                 </td>
                                 <td class="gra-mc-icon">
                                     @if (challenge.IsActive)
                                     {
-                                        <span class="fas fa-lg fa-check text-success"></span>
+                                        <span class="far fa-check-circle fa-lg text-success"></span>
                                     }
                                     else
                                     {
-                                        <span class="fas fa-lg fa-ban text-danger"></span>
+                                        <span class="far fa-times-circle fa-lg text-danger"></span>
                                     }
                                 </td>
                                 @if (Model.CanDeleteChallenges)
                                 {
                                     <td class="on-top gra-mc-icon">
-                                        <button type="button"
-                                    class="btn btn-danger btn-xs"
-                                    data-toggle="modal"
-                                    data-target="#deleteModal"
-                                    data-id="@challenge.Id"
-                                    data-name="@challenge.Name"
-                                    data-hasDependents="@challenge.HasDependents">
-                                            <span class="fas fa-times" aria-hidden="true"></span>
-                                        </button>
+                                        @if (challenge.HasDependents)
+                                        {
+                                            <button type="button"
+                                                    class="btn btn-outline-warning btn-sm"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#deleteModal"
+                                                    data-id="@challenge.Id"
+                                                    data-name="@challenge.Name"
+                                                    data-hasDependents="@challenge.HasDependents">
+                                                <span class="fas fa-exclamation fa-fw" aria-hidden="true"></span>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="button"
+                                                    class="btn btn-outline-danger btn-sm"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#deleteModal"
+                                                    data-id="@challenge.Id"
+                                                    data-name="@challenge.Name"
+                                                    data-hasDependents="@challenge.HasDependents">
+                                                <span class="fas fa-times fa-fw" aria-hidden="true"></span>
+                                            </button>
+                                        }
                                     </td>
                                 }
                             </tr>
@@ -239,16 +321,13 @@
                     </tbody>
                 </table>
             </div>
-            @if (Model.PaginateModel.MaxPage > 1)
-            {
-                <paginate paginateModel="@Model.PaginateModel"></paginate>
-            }
+            <paginate paginateModel="@Model.PaginateModel"></paginate>
         }
     </div>
 </div>
 
 <div class="row">
-    <div class="modal fade"
+    <div class="modal modal-lg fade"
          id="deleteModal"
          tabindex="-1"
          role="dialog"
@@ -256,34 +335,33 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button"
-                            class="close"
-                            data-dismiss="modal"
-                            aria-label="Close dialog">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                     <h1 class="modal-title h4" id="deleteModalLabel">Delete challenge</h1>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close dialog">
+                    </button>
                 </div>
-                <div class="modal-body">
-                    <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
+                <div class="modal-body d-flex align-items-stretch">
+                    <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
                     <span id="modal-text"></span>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer d-flex justify-content-end">
                     <button type="button"
-                            class="btn btn-default"
-                            data-dismiss="modal"
-                            style="margin-right: 1em;">
+                            id="modalCancelButton"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
                         Cancel
                     </button>
                     <form asp-controller="Challenges"
                           asp-action="Delete"
                           method="post"
                           role="form"
-                          style="display:inline">
+                          class="d-inline">
                         <input id="Id" name="Id" type="hidden" />
                         <button id="modal-deleteButton"
                                 type="submit"
-                                class="btn btn-danger pull-right"
+                                class="btn btn-outline-danger btn-spinner"
                                 aria-label="Confirm">
                             <span class="fas fa-times" aria-hidden="true"></span>
                             Delete
@@ -295,66 +373,49 @@
     </div>
 </div>
 
-@section scripts{
-<script>
-    $("#CategoryPlaceholder").remove();
-    $("#CategoryIds").multiselect({
-        nonSelectedText: "",
-        buttonClass: "form-control",
-        buttonWidth: "100%",
-        disableIfEmpty: true
-    });
-
-    $("#searchForm").on("submit", function () {
-        var categoryIds = $("#CategoryIds option:selected")
-            .map(function (a, item) { return item.value; })
-            .get();
-
-        if (categoryIds.length > 0) {
-            $("<input />")
-                .attr("type", "hidden")
-                .attr("name", "Categories")
-                .attr("value", categoryIds.join(","))
-                .appendTo($(this));
-        }
-    });
-
-    @if (Model.CanEditChallenges) {
-    <text>
-    $(window).on("load", function() {
-        $('.td-class').each(function() {
-            $(this).children('a.rowlink').height($(this).height() + 11);
-        });
-    });
-    $(window).resize(function() {
-        $('.td-class').each(function() {
-            $(this).children('a.rowlink').height($(this).height() + 11);
-        });
-    });
-    </text>
+@section scripts {
+    @if (Model.CategoryList?.Count() > 0)
+    {
+        <script>
+            new TomSelect("#CategoryIds");
+        </script>
     }
-
-    @if (Model.CanDeleteChallenges) {
-    <text>
-    $('#deleteModal').on('show.bs.modal', function(event) {
-        var button = $(event.relatedTarget);
-        var id = button.data('id');
-        var name = button.data('name');
-        var hasDependents = button.data('hasdependents');
-        var modal = $(this);
-        modal.find('#Id').val(id);
-        if (hasDependents == "True")
-        {
-            modal.find('#modal-text').text(name + " has triggers depending on it and cannot be deleted.");
-            modal.find("#modal-deleteButton").hide();
-        }
-        else
-        {
-            modal.find('#modal-text').text('Are you sure you wish to delete the challenge "' + name + '" ?');
-            modal.find("#modal-deleteButton").show();
-        }
-    })
-    </text>
+    @if (Model.CanEditChallenges)
+    {
+        <script>
+            $(window).on("load", function () {
+                $('.td-class').each(function () {
+                    $(this).children("a.rowlink").height($(this).outerHeight());
+                });
+            });
+            $(window).resize(function () {
+                $('.td-class').each(function () {
+                    $(this).children("a.rowlink").height($(this).outerHeight());
+                });
+            });
+        </script>
     }
-</script>
+    @if (Model.CanDeleteChallenges)
+    {
+        <script>
+            $('#deleteModal').on('show.bs.modal', function (event) {
+                let modal = $(this);
+                let button = $(event.relatedTarget);
+                let id = button.data('id');
+                let name = button.data('name');
+                let hasDependents = button.data('hasdependents');
+                modal.find('#Id').val(id);
+                if (hasDependents == "True") {
+                    modal.find('#modal-text').html('Challenge <strong>' + name + '</strong> has triggers depending on it and cannot be deleted.');
+                    modal.find("#modalCancelButton").text("Close");
+                    modal.find("#modal-deleteButton").hide();
+                }
+                else {
+                    modal.find('#modal-text').html('Are you sure you wish to delete the challenge: <strong>' + name + '</strong>?');
+                    modal.find("#modalCancelButton").text("Cancel");
+                    modal.find("#modal-deleteButton").show();
+                }
+            });
+        </script>
+    }
 }

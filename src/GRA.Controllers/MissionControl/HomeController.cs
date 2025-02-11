@@ -173,6 +173,7 @@ namespace GRA.Controllers.MissionControl
             var viewModel = new AtAGlanceViewModel
             {
                 AtAGlanceReport = await GetAtAGlanceAsync(),
+                Category = category ?? await _newsService.GetDefaultCategoryIdAsync(),
                 ShowPosts = await _newsService.AnyPublishedPostsAsync()
             };
 

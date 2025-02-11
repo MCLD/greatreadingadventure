@@ -1,76 +1,80 @@
 ﻿@model GRA.Controllers.ViewModel.PerformerRegistration.Home.DashboardViewModel
 
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <h1>
             Performer Dashboard
         </h1>
         @if (Model.IsEditable)
         {
             <p>
-                Information can be edited and new programs can be added until @Model.Settings.RegistrationClosed.Value.ToString("dddd, MMMM dd, yyyy h:mm tt").
+                Information can be edited and new programs can be added until
+                @Model.Settings.RegistrationClosed.Value.ToString("dddd, MMMM dd, yyyy h:mm tt").
             </p>
         }
         else
         {
             <p>
-                Registration has closed, if any changes need to be made please contact <a href="@($"mailto:{Model.Settings.ContactEmail}")">@Model.Settings.ContactEmail</a>
+                Registration has closed, if any changes need to be made please contact
+                <a href="mailto:@Model.Settings.ContactEmail" )">@Model.Settings.ContactEmail</a>
             </p>
 
         }
     </div>
 
-    <div class="col-xs-12">
+    <div class="col-12">
         <hr />
         <h2 style="margin-top:0px;">
             Performer Information
             @if (Model.IsEditable)
             {
-                <a asp-action="Information" class="btn btn-default" style="display:inline-block">Edit Information</a>
+                <a asp-action="Information"
+                   class="btn btn-outline-primary d-inline-block d-print-none">Edit Information</a>
             }
         </h2>
     </div>
-    <div class="col-xs-12 col-sm-5 col-md-4">
+    <div class="col-12 col-sm-5 col-md-4">
         @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
         {
             <div class="row" style="padding-bottom:15px;">
-                <div class="col-xs-12">
-                    <img src="~/@Model.ImagePath" class="img-responsive" style="margin: 0 auto;" />
+                <div class="col-12">
+                    <img src="~/@Model.ImagePath" class="img-fluid" style="margin: 0 auto;" />
                 </div>
             </div>
         }
-        <div class="row" style="padding-bottom:15px;">
-            <div class="col-xs-12" style="text-align:center;">
-                <a asp-action="Images" class="btn btn-primary">@(Model.IsEditable ? "View/Manage Images" : "View Images")</a>
+        <div class="row d-print-none" style="padding-bottom:15px;">
+            <div class="col-12 text-center">
+                <a asp-action="Images"
+                   class="btn btn-outline-primary">@(Model.IsEditable ? "View/Manage Images" : "View Images")</a>
             </div>
         </div>
-        <div class="row" style="padding-bottom:15px;">
-            <div class="col-xs-12" style="text-align:center;">
+        <div class="row d-print-none" style="padding-bottom:15px;">
+            <div class="col-12 text-center">
                 <a aria-label="View References (Opens new window)"
                    href="~/@Model.ReferencesPath"
                    target="_blank"
-                   class="btn btn-primary">View References</a>
+                   class="btn btn-outline-primary">View References</a>
             </div>
         </div>
     </div>
-    <div class="col-xs-12 col-sm-7 col-md-8">
-        <div class="form-group">
+    <div class="col-12 col-sm-7 col-md-8">
+        <div class="mb-3">
             <label>Name</label>
             <div>@Model.Performer.Name</div>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <label>Billing Address</label>
             <div>@Model.Performer.BillingAddress</div>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <label>Email @(Model.Performer.PhonePreferred ? "" : "(preferred)") </label>
             <div>@Model.Performer.Email</div>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <label>Phone @(Model.Performer.PhonePreferred ? "(preferred)" : "")</label>
             <div>@Model.Performer.Phone</div>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <label>Website</label>
             @if (string.IsNullOrWhiteSpace(Model.Performer.Website))
             {
@@ -92,46 +96,56 @@
                 </div>
             }
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <label>@Model.Settings.VendorIdPrompt</label>
             <div>@Model.Performer.VendorId</div>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <label>Has Fingerprint Clearance Card</label>
             <div>@(Model.Performer.HasFingerprintCard ? "Yes" : "No")</div>
         </div>
         @if (Model.EnablePerformerInsuranceQuestion)
         {
-            <div class="form-group">
+            <div class="mb-3">
                 <label>Has Liability Insurance</label>
                 <div>@(Model.Performer.HasInsurance ? "Yes" : "No")</div>
             </div>
         }
-        <div class="form-group">
+        <div class="mb-3">
             <label>Branches</label>
-            <div>@(Model.Performer.AllBranches ? Model.Systems.SelectMany(_ => _.Branches).Count() : Model.Performer.Branches.Count) of @Model.Systems.SelectMany(_ => _.Branches).Count() Selected</div>
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#branchModal">View Selected Libraries</button>
+            <div>
+                @(Model.Performer.AllBranches ? Model.Systems.SelectMany(_ => _.Branches).Count() : Model.Performer.Branches.Count)
+                of @Model.Systems.SelectMany(_ => _.Branches).Count() Selected
+            </div>
+            <button type="button"
+                    class="btn btn-outline-primary d-print-none"
+                    data-bs-toggle="modal"
+                    data-bs-target="#branchModal">
+                View Selected Libraries
+            </button>
         </div>
     </div>
 
-    <div class="col-xs-12">
+    <div class="col-12">
         <hr />
         <h2>
             Programs
             @if (Model.IsEditable)
             {
-                <a asp-action="Program" class="btn btn-default" style="display:inline-block">Add Program</a>
+                <a asp-action="Program" class="btn btn-outline-primary d-inline-block d-print-none">
+                    Add Program
+                </a>
             }
         </h2>
     </div>
-    <div class="col-xs-12">
+    <div class="col-12">
         @if (Model.Performer.Programs.Count == 0)
         {
             <div class="alert alert-warning">No Programs.</div>
         }
         else
         {
-            <table class="table table-condensed table-bordered link-table">
+            <table class="table table-sm table-bordered link-table">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -160,12 +174,12 @@
                             {
                                 <td class="on-top">
                                     <button type="button"
-                                            class="btn btn-danger btn-xs"
-                                            data-toggle="modal"
-                                            data-target="#deleteModal"
+                                            class="btn btn-outline-danger btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal"
                                             data-id="@program.Id"
                                             data-name="@program.Title">
-                                        <span class="fas fa-times" aria-hidden="true"></span>
+                                        <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                                     </button>
                                 </td>
                             }
@@ -177,30 +191,40 @@
         }
     </div>
 
-    <div class="col-xs-12">
+    <div class="col-12">
         <hr />
         <h2>
             Schedule
             @if (Model.IsEditable)
             {
-                <a asp-action="Schedule" class="btn btn-default" style="display:inline-block">Edit Schedule</a>
+                <a asp-action="Schedule"
+                   class="btn btn-outline-primary d-inline-block d-print-none">Edit Schedule</a>
             }
         </h2>
     </div>
 
-    <div class="col-xs-12">
-        @{int count = 0;}
+    <div class="col-12">
+        @{
+            int count = 0;
+            int openRows = 0;
+        }
         @for (var calendarMonth = new DateTime(Model.Settings.ScheduleStartDate.Value.Year, Model.Settings.ScheduleStartDate.Value.Month, 1); calendarMonth <= Model.Settings.ScheduleEndDate; calendarMonth = calendarMonth.AddMonths(1))
         {
             @if (count % 3 == 0)
             {
-                @Html.Raw("<div class=\"row\">");
+                openRows++;
+                @Html.Raw("<div class=\"row\">")
+                ;
             }
-            <div class="col-xs-12 col-md-4">
-                <table class="table table-condensed">
+            <div class="col-12 col-md-4">
+                <table class="table table-sm">
                     <thead>
                         <tr>
-                            <td colspan="2"><strong style="font-size:large">@calendarMonth.ToString("MMMM")</strong></td>
+                            <td colspan="2">
+                                <strong class="fs-5">
+                                    @calendarMonth.ToString("MMMM")
+                                </strong>
+                            </td>
                         </tr>
                     </thead>
                     <tbody>
@@ -211,7 +235,9 @@
                                     @day.ToShortDateString() @day.Date.DayOfWeek
                                 </td>
                                 <td>
-                                    @{var blackoutDate = Model.BlackoutDates.FirstOrDefault(_ => _.Date == day.Date); }
+                                    @{
+                                        var blackoutDate = Model.BlackoutDates.FirstOrDefault(_ => _.Date == day.Date);
+                                    }
                                     @if (blackoutDate != null)
                                     {
                                         <div class="blackout-text">@blackoutDate.Reason</div>
@@ -226,7 +252,11 @@
                                         }
                                         else if (daySchedule.StartTime.HasValue)
                                         {
-                                            <div class="time-text">@daySchedule.StartTime.Value.ToShortTimeString() &ndash; @daySchedule.EndTime.Value.ToShortTimeString() </div>
+                                            <div class="time-text">
+                                                @daySchedule.StartTime.Value.ToShortTimeString()
+                                                &ndash;
+                                                @daySchedule.EndTime.Value.ToShortTimeString()
+                                            </div>
                                         }
                                         else
                                         {
@@ -241,13 +271,16 @@
             </div>
             if (count % 3 == 2)
             {
-                @Html.Raw("</div>");
+                openRows--;
+                @Html.Raw("</div>")
+                ;
             }
             { count++; }
         }
-        @if (count % 3 != 2)
+        @for (; openRows > 0; openRows--)
         {
-            @Html.Raw("</div>");
+            @Html.Raw("</div>")
+            ;
         }
     </div>
 </div>
@@ -258,26 +291,28 @@
          tabindex="-1"
          role="dialog"
          aria-labelledby="branchModalLabel">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                     <h1 class="modal-title h4" id="branchModalLabel">Branch Selection</h1>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                    </button>
                 </div>
                 <div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y:auto;">
                     @foreach (var system in Model.Systems)
                     {
-                        <div style="font-size:x-large;margin-bottom:10px;">
+                        <div style="font-size:x-large;margin-bottom: 0.5rem;">
                             <strong>@system.Name</strong>
                         </div>
                         @foreach (var branch in system.Branches)
                         {
                             <div>
-                                <span class="colored-icon fas fa-lg @(Model.BranchAvailability.Contains(branch.Id) || Model.Performer.AllBranches ? "fa-check" : "fa-times")"></span>
-                                <label data-toggle="tooltip"
-                                       data-placement="top"
+                                <span class="far fa-lg @(Model.BranchAvailability.Contains(branch.Id) || Model.Performer.AllBranches ? "fa-check-circle text-success" : "fa-times-circle text-danger")"></span>
+                                <label data-bs-toggle="tooltip"
+                                       data-bs-placement="top"
                                        title="@branch.Address">
                                     @branch.Name
                                 </label>
@@ -291,9 +326,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                            class="btn btn-default"
-                            data-dismiss="modal"
-                            style="margin-right: 1em;">
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
                         Close
                     </button>
                 </div>
@@ -311,19 +345,21 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                     <h1 class="modal-title h4" id="deleteModalLabel">Delete program</h1>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                          aria-hidden="true"></span>
                     <span id="modal-text"></span>
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                            class="btn btn-default"
-                            data-dismiss="modal"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal"
                             style="margin-right: 1em;">
                         Cancel
                     </button>
@@ -334,10 +370,10 @@
                         <input asp-for="ProgramToDelete.Id" type="hidden" />
                         <input asp-for="ProgramToDelete.Title" type="hidden" />
                         <button type="submit"
-                                class="btn btn-danger btn-spinner pull-right"
+                                class="btn btn-outline-danger btn-spinner float-end"
                                 aria-label="Confirm"
                                 button-spinner>
-                            <span class="fas fa-times" aria-hidden="true"></span>
+                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                             Delete
                         </button>
                     </form>
@@ -351,12 +387,12 @@
     <script>
         $(window).on("load", function () {
             $(".td-class").each(function () {
-                $(this).children("a.rowlink").height($(this).height() + 11);
+                $(this).children("a.rowlink").height($(this).outerHeight());
             });
         });
         $(window).resize(function () {
             $(".td-class").each(function () {
-                $(this).children("a.rowlink").height($(this).height() + 11);
+                $(this).children("a.rowlink").height($(this).outerHeight());
             });
         });
 
@@ -364,7 +400,7 @@
             var button = $(event.relatedTarget);
             var id = button.data("id");
             var name = button.data("name");
-            $(this).find("#modal-text").text("Are you sure you want to delete the program \"" + name + "\"?");
+            $(this).find("#modal-text").html("Are you sure you want to delete the program: <strong>" + name + "</strong>?");
             $(this).find("#ProgramToDelete_Id").val(id);
             $(this).find("#ProgramToDelete_Title").val(name);
         });

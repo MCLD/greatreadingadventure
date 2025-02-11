@@ -8,105 +8,142 @@
     <link rel="stylesheet" href="/css/performerregistration.min.css" />
 }
 
-<div class="row" style="margin-top: 1rem;">
-    <div class="col-sm-8 col-sm-offset-2">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Program Selection</h3>
+<div class="row mt-3">
+    <div class="col-12 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Program Selection</h3>
             </div>
-            <div class="panel-body">
+            <div class="card-body">
                 @if (Model.SchedulingStage < GRA.Domain.Model.PsSchedulingStage.SchedulingPreview)
                 {
-                    <p style="margin-bottom: auto;">
+                    <p class="mb-2 mt-0 lh-base">
                         The available programs and kits will be available to view starting on
-                        @Model.Settings.SchedulingPreview.Value.ToLongDateString(). Please come back then!
+                        @Model.Settings.SchedulingPreview.Value.ToLongDateString().
+                        Please come back then!
                     </p>
                 }
                 else if (Model.SchedulingStage == GRA.Domain.Model.PsSchedulingStage.SchedulingPreview)
                 {
-                    <p>
+                    <p class="mb-4 mt-0 lh-base">
                         The available programs and kits are available for preview until selection
-                        begins on @Model.Settings.SchedulingOpen.Value.ToLongDateString() at @Model.Settings.SchedulingOpen.Value.ToLongTimeString().
+                        begins on @Model.Settings.SchedulingOpen.Value.ToLongDateString() at
+                        @Model.Settings.SchedulingOpen.Value.ToShortTimeString().
                     </p>
-                    <div class="col-sm-6">
-                        <a asp-action="Performers" class="btn btn-lg btn-default btn-block">Preview Performers</a>
-                    </div>
-                    <div class="col-sm-6">
-                        <a asp-action="Kits" class="btn btn-lg btn-default btn-block">Preview Kits</a>
+                    <div class="d-flex justify-content-around mb-3 d-print-none">
+                        <a asp-action="Performers" class="btn btn-lg btn-outline-primary">
+                            <span class="fas fa-theater-masks"></span>
+                            Preview Performers
+                        </a>
+                        <a asp-action="Kits" class="btn btn-lg btn-outline-primary">
+                            <span class="fas fa-box"></span>
+                            Preview Kits
+                        </a>
                     </div>
                 }
                 else if (Model.SchedulingStage == GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
                 {
                     @if (Model.CanSchedule)
                     {
-                        <p>
-                            Scheduling has begun! You have until @Model.Settings.SchedulingClosed.Value.ToLongDateString() at @Model.Settings.SchedulingClosed.Value.ToLongTimeString() to complete your selection.
+                        <p class="mb-4 mt-0 lh-base">
+                            Scheduling has begun! You have until
+                            @Model.Settings.SchedulingClosed.Value.ToLongDateString() at
+                            @Model.Settings.SchedulingClosed.Value.ToShortTimeString()
+                            to complete your selection.
                         </p>
-                        <div class="col-sm-6">
-                            <a asp-action="Performers" class="btn btn-lg btn-info btn-block">Schedule Performers</a>
-                        </div>
-                        <div class="col-sm-6">
-                            <a asp-action="Kits" class="btn btn-lg btn-info btn-block">Select Kits</a>
+                        <div class="d-flex justify-content-around mb-3 d-print-none">
+                            <a asp-action="Performers" class="btn btn-lg btn-outline-primary">
+                                <span class="fas fa-theater-masks"></span>
+                                Schedule Performers
+                            </a>
+                            <a asp-action="Kits" class="btn btn-lg btn-outline-primary">
+                                <span class="fas fa-box"></span>
+                                Schedule Kits
+                            </a>
                         </div>
                     }
                     else
                     {
-                        <p>
-                            Scheduling has begun! Selections need to be compeleted by @Model.Settings.SchedulingClosed.Value.ToLongDateString() at @Model.Settings.SchedulingClosed.Value.ToLongTimeString().
+                        <p class="mb-4 mt-0 lh-base">
+                            Scheduling has begun! Selections need to be compeleted by
+                            @Model.Settings.SchedulingClosed.Value.ToLongDateString() at
+                            @Model.Settings.SchedulingClosed.Value.ToShortTimeString().
                         </p>
-                        <div class="col-sm-6">
-                            <a asp-action="Performers" class="btn btn-lg btn-default btn-block">View Performers</a>
-                        </div>
-                        <div class="col-sm-6">
-                            <a asp-action="Kits" class="btn btn-lg btn-default btn-block">View Kits</a>
+                        <div class="d-flex justify-content-around mb-3 d-print-none">
+                            <a asp-action="Performers" class="btn btn-lg btn-outline-primary">
+                                <span class="fas fa-theater-masks"></span>
+                                View Performers
+                            </a>
+                            <a asp-action="Kits" class="btn btn-lg btn-outline-primary">
+                                <span class="fas fa-box"></span>
+                                View Kits
+                            </a>
                         </div>
                     }
                 }
                 else if (Model.SchedulingStage == GRA.Domain.Model.PsSchedulingStage.SchedulingClosed)
                 {
-                    <p>
-                        Scheduling has closed, the finalized schedule will be posted on @Model.Settings.SchedulePosted.Value.ToLongDateString() at @Model.Settings.SchedulePosted.Value.ToLongTimeString(). If you have any questions please contact <a href="@($"mailto:{Model.Settings.ContactEmail}")">@Model.Settings.ContactEmail</a>
+                    <p class="mb-4 mt-0 lh-base">
+                        Scheduling has closed, the finalized schedule will be posted on
+                        @Model.Settings.SchedulePosted.Value.ToLongDateString() at
+                        @Model.Settings.SchedulePosted.Value.ToShortTimeString().
+                        If you have any questions please contact
+                        <a href="mailto:@Model.Settings.ContactEmail">
+                            @Model.Settings.ContactEmail
+                        </a>.
                     </p>
-                    <div class="col-sm-6">
-                        <a asp-action="Performers" class="btn btn-lg btn-default btn-block">View Performers</a>
-                    </div>
-                    <div class="col-sm-6">
-                        <a asp-action="Kits" class="btn btn-lg btn-default btn-block">View Kits</a>
+                    <div class="d-flex justify-content-around mb-3 d-print-none">
+                        <a asp-action="Performers" class="btn btn-lg btn-outline-primary">
+                            <span class="fas fa-theater-masks"></span>
+                            View Performers
+                        </a>
+                        <a asp-action="Kits" class="btn btn-lg btn-outline-primary">
+                            <span class="fas fa-box"></span>
+                            View Kits
+                        </a>
                     </div>
                 }
                 else if (Model.SchedulingStage >= GRA.Domain.Model.PsSchedulingStage.SchedulePosted)
                 {
                     if (Model.BranchList?.Count() > 0)
                     {
-                        <p style="margin-bottom:0;">View finalized schedule for branch:</p>
+                        <p class="mb-0 mt-0 d-print-none lh-base">
+                            View finalized schedule for branch:
+                        </p>
                         <form asp-action="Schedule" method="get" role="form">
-                            <div class="row" style="margin-bottom:2rem;">
-                                <div class="col-xs-9">
-                                    <select name="id" asp-items="Model.BranchList" class="form-control"></select>
-                                </div>
-                                <div class="col-xs-3">
-                                    <button type="submit" class="btn btn-primary">View</button>
-                                </div>
+                            <div class="d-flex justify-content-around d-print-none my-3">
+                                <select name="id"
+                                        asp-items="Model.BranchList"
+                                        class="form-select"></select>
+                                <button type="submit"
+                                        class="btn btn-outline-primary ms-2">
+                                    View
+                                </button>
                             </div>
                         </form>
                     }
-                    <p>
-                        If you have any questions please contact <a href="@($"mailto:{Model.Settings.ContactEmail}")">@Model.Settings.ContactEmail</a>
+                    <p class="mb-4 mt-0 d-print-none lh-base">
+                        If you have any questions please contact
+                        <a href="mailto:@Model.Settings.ContactEmail">
+                            @Model.Settings.ContactEmail
+                        </a>
                     </p>
-                    <div class="col-sm-6">
-                        <a asp-action="Performers" class="btn btn-lg btn-default btn-block">View Performers</a>
-                    </div>
-                    <div class="col-sm-6">
-                        <a asp-action="Kits" class="btn btn-lg btn-default btn-block">View Kits</a>
+                    <div class="d-flex d-print-none justify-content-around mb-4">
+                        <a asp-action="Performers" class="btn btn-lg btn-outline-primary">
+                            <span class="fas fa-theater-masks"></span>
+                            View Performers
+                        </a>
+                        <a asp-action="Kits" class="btn btn-lg btn-outline-primary">
+                            <span class="fas fa-box"></span>
+                            View Kits
+                        </a>
                     </div>
                 }
 
                 @if (Model.SchedulingStage >= GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
                 {
-                    <div class="clearfix" style="margin-bottom: 3rem;"></div>
-                    <p class="lead"><strong>@Model.SystemName status</strong></p>
-                    <table class="table table-striped table-hover table-condensed"
-                           style="width: 70%;">
+                    <h2 class="h4 mb-4">@Model.SystemName status</h2>
+                    <table class="table table-bordered table-striped table-hover table-sm">
                         <tr>
                             <th>Branch</th>
                             <th>Status</th>
@@ -116,7 +153,7 @@
                         {
                             <tr>
                                 <td>@branch.Name</td>
-                                <td>
+                                <td class="text-nowrap">
                                     @{
                                         int count = 0;
                                     }
@@ -127,8 +164,8 @@
                                         <span class="fa-stack cursor-pointer"
                                               style="color: @selection.AgeGroup.IconColor"
                                               title="@selection.Summary"
-                                              data-toggle="modal"
-                                              data-target="#selectionDetailsModal"
+                                              data-bs-toggle="modal"
+                                              data-bs-target="#selectionDetailsModal"
                                               data-performerid="@selection.Program?.PerformerId"
                                               data-performername="@selection.Program?.PerformerName"
                                               data-selectionid="@selection.Program?.Id"
@@ -154,11 +191,10 @@
                                               data-startsat="@selection.StartsAt"
                                               data-endsat="@selection.EndsAt"
                                               data-iskit="@selection.KitId.HasValue">
-
                                             @if (selection.KitId.HasValue)
                                             {
                                                 <span class="fas fa-square fa-stack-2x age-group-id-@selection.AgeGroupId"></span>
-                                                <span class="fa-stack-2x" style="color: white; font-size: small;">KIT</span>
+                                                <span class="fa-stack-2x fw-bold fs-4" style="color: white;">K</span>
                                             }
                                             else
                                             {
@@ -177,36 +213,42 @@
                                     {
                                         count++;
                                         <span class="fa-stack">
-                                            <span class="fas fa-square-o fa-stack-2x"></span>
+                                            <span class="far fa-square fa-stack-2x"
+                                                  title="Not selected yet."></span>
                                         </span>
                                     }
                                 </td>
                             </tr>
                         }
                     </table>
-                    <p style="font-style: italic;">
+                    <div class="d-flex flex-wrap justify-content-center fs-5 fw-bold">
                         @foreach (var ageGroup in Model.AgeGroups)
                         {
                             <span style="color: @ageGroup.IconColor"
-                                  style="white-space: nowrap; display: inline-block; margin-right: 1rem;">
+                                  class="text-nowrap d-block mb-2 me-4">
                                 <span class="fas fa-square"></span>
-                                @ageGroup.Name
+                                <span class="fst-italic">@ageGroup.Name</span>
                             </span>
                         }
-                        <span style="white-space: nowrap; display: inline-block; margin-right: 1rem;">
-                            <span class="fa-stack">
+                        <span class="text-nowrap d-block mb-2 me-4">
+                            <span class="fa-stack me-1"
+                                  style="width: 1rem; height: 1rem; line-height: 0.7rem;">
                                 <span class="fas fa-square fa-stack-1x"></span>
-                                <span class="fa-stack-1x" style="color: white; font-size: x-small;">KIT</span>
-                            </span>Kit
+                                <span class="fa-stack-1x fs-6"
+                                      style="color: white;">K</span>
+                            </span>
+                            <span class="fst-italic">Kit</span>
                         </span>
                         @if (hasBackToBacks)
                         {
-                            <span style="white-space: nowrap; display: inline-block; margin-right: 1rem;">
+                            <span class="text-nowrap d-block mb-2 me-4">
                                 <span class="fas fa-plus-square"></span>
-                                Back-to-back
+                                <span class="fst-italic">
+                                    Back-to-back
+                                </span>
                             </span>
                         }
-                    </p>
+                    </div>
                 }
             </div>
         </div>
@@ -218,24 +260,34 @@
      tabindex="-1"
      role="dialog"
      aria-labelledby="selectionDetailsLabel">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
                 <h4 id="selectionDetailsLabel">Selection details</h4>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <table class="table table-striped table-condensed">
+                <table class="table table-bordered table-striped table-sm">
                     <tr id="performerrow">
                         <th>Performer:</th>
-                        <td><a href="#" target="_blank" id="performerlink"><span id="performername"></span> <span class="fas fa-external-link-alt"></span></a></td>
+                        <td>
+                            <a href="#" target="_blank" id="performerlink">
+                                <span id="performername"></span>
+                                <span class="fas fa-external-link-alt"></span>
+                            </a>
+                        </td>
                     </tr>
-
                     <tr>
                         <th>Selection:</th>
-                        <td><a href="#" target="_blank" id="selectionlink"><span id="selectionname"></span> <span class="fas fa-external-link-alt"></span></a></td>
+                        <td>
+                            <a href="#" target="_blank" id="selectionlink">
+                                <span id="selectionname"></span>
+                                <span class="fas fa-external-link-alt"></span>
+                            </a>
+                        </td>
                     </tr>
                     <tr>
                         <th>Branch:</th>
@@ -254,8 +306,10 @@
                             Total performer time:
                         </th>
                         <td>
-                            <span id="modalduration"></span> minutes (<span id="modalstartsat"></span>&ndash;<span id="modalendsat"></span>)
-                            <br /><span style="font-size: small; font-weight: normal; font-style: italic;">(includes set-up and teardown)</span>
+                            <span id="modalduration"></span> minutes
+                            (<span id="modalstartsat"></span>&ndash;<span id="modalendsat"></span>)
+                            <br />
+                            <small><em>(includes set-up and teardown)</em></small>
                         </td>
                     </tr>
                     <tr id="modalbacktoback" style="display: none;">
@@ -276,38 +330,77 @@
                     </tr>
                     <tr>
                         <th>On site contact:</th>
-                        <td>
-                            <span id="editcontactinfo" class="on-site-contact-button on-site-contact-edit fas fa-edit"></span>
-                            <div>
-                                <label class="on-site-contact-label" for="onsitecontactname">Name:</label>
-                                <span class="input-with-validation">
-                                    <input class="on-site-contact-input disabled" type="text" id="onsitecontactname" name="onsitecontactname" disabled required />
-                                    <span class="validation"></span>
-                                </span>
+                        <td class="d-flex">
+                            <div class="flex-grow-1">
+                                <div>
+                                    <label class="on-site-contact-label" for="onsitecontactname">Name:</label>
+                                    <span class="input-with-validation">
+                                        <input class="on-site-contact-input disabled w-75"
+                                               type="text"
+                                               id="onsitecontactname"
+                                               name="onsitecontactname"
+                                               disabled
+                                               required />
+                                        <span class="validation"></span>
+                                    </span>
+                                </div>
+                                <div>
+                                    <label class="on-site-contact-label" for="onsitecontactemail">Email:</label>
+                                    <span class="input-with-validation">
+                                        <input class="on-site-contact-input disabled my-1 w-75"
+                                               type="email"
+                                               pattern=".+@@.+\..+"
+                                               id="onsitecontactemail"
+                                               name="onsitecontactemail"
+                                               disabled
+                                               required />
+                                        <span class="validation"></span>
+                                    </span>
+                                </div>
+                                <div>
+                                    <label class="on-site-contact-label" for="onsitecontactphone">Phone:</label>
+                                    <span class="input-with-validation">
+                                        <input class="on-site-contact-input disabled w-75"
+                                               type="tel"
+                                               pattern="[0-9]{10}"
+                                               id="onsitecontactphone"
+                                               name="onsitecontactphone"
+                                               disabled
+                                               required />
+                                        <span class="validation"></span>
+                                    </span>
+                                </div>
+                                <div id="checkAlert" class="alert py-1 px-2 mt-2 d-none"></div>
+                                <div>
+                                    <button id="submitcontactinfo"
+                                            type="button"
+                                            class="on-site-contact-button btn btn-outline-success d-none mt-3"
+                                            disabled>
+                                        Update
+                                    </button>
+                                    <button id="cancelcontactinfo"
+                                            type="button"
+                                            class="on-site-contact-button btn btn-outline-danger d-none mt-3">
+                                        Cancel
+                                    </button>
+                                </div>
                             </div>
                             <div>
-                                <label class="on-site-contact-label" for="onsitecontactemail">Email:</label>
-                                <span class="input-with-validation">
-                                    <input class="on-site-contact-input disabled" type="email" pattern=".+@@.+\..+" id="onsitecontactemail" name="onsitecontactemail" disabled required />
-                                    <span class="validation"></span>
-                                </span>
+                                <button id="editcontactinfo" class="btn btn-outline-primary btn-sm on-site-contact-button on-site-contact-edit">
+                                    <span class="fas fa-pencil-alt fa-fw"></span>
+                                </button>
                             </div>
-                            <div>
-                                <label class="on-site-contact-label" for="onsitecontactphone">Phone:</label>
-                                <span class="input-with-validation">
-                                    <input class="on-site-contact-input disabled" type="tel" pattern="[0-9]{10}" id="onsitecontactphone" name="onsitecontactphone" disabled required />
-                                    <span class="validation"></span>
-                                </span>
-                            </div>
-                            <button id="submitcontactinfo" type="button" class="on-site-contact-button btn btn-success hidden" disabled>Submit</button>
-                            <button id="cancelcontactinfo" type="button" class="on-site-contact-button btn btn-danger hidden">Cancel</button>
-                            <div id="checkAlert" class="alert hidden"></div>
                         </td>
+
                     </tr>
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal">
+                    Close
+                </button>
             </div>
         </div>
     </div>
@@ -318,7 +411,7 @@
         background: #fcfcfc;
     }
 
-    .panel-body p {
+    .card-body p {
         font-size: larger;
         line-height: 3rem;
         margin-bottom: 2rem;
@@ -327,17 +420,20 @@
 
 @section Scripts {
     <script>
-        var performerBaseLink = '@Url.Action(nameof(PerformerManagementController.Performer))'
-        var programBaseLink = '@Url.Action(nameof(PerformerManagementController.Program))'
-        var kitBaseLink = '@Url.Action(nameof(PerformerManagementController.Kit))'
-        var contactUpdateLink = '@Url.Action(nameof(PerformerSchedulingController.EditBranchProgramContact))'
-        
+        const checkAlert = document.querySelector("#checkAlert");
+        const performerBaseLink = '@Url.Action(nameof(PerformerManagementController.Performer))'
+        const programBaseLink = '@Url.Action(nameof(PerformerManagementController.Program))'
+        const kitBaseLink = '@Url.Action(nameof(PerformerManagementController.Kit))'
+        const contactUpdateLink = '@Url.Action(nameof(PerformerSchedulingController.EditBranchProgramContact))'
+
         var prevContactInfo = {};
         var branchSelectionId;
         var contactInfoUpdated = false;
 
         var contactInfoButtons = document.querySelectorAll(".on-site-contact-button");
         var contactInfoInputs = document.querySelectorAll(".on-site-contact-input");
+
+        var alertTimerId = null;
 
         function allInputsValid() {
 
@@ -352,25 +448,29 @@
             contactInfoInputs.forEach(function (input) {
                 input.disabled = true;
             })
-
             contactInfoButtons.forEach(function (button) {
-                button.id === "editcontactinfo" ? button.classList.remove("hidden") : button.classList.add('hidden');
+                button.id === "editcontactinfo"
+                    ? button.classList.remove("d-none")
+                    : button.classList.add('d-none');
             })
         }
 
         function startEditContactInfo() {
+            clearAlert();
             contactInfoInputs.forEach(function (input) {
+                prevContactInfo[input.id] = input.value
                 input.disabled = false;
-            })
-
+            });
             contactInfoButtons.forEach(function (button) {
-                button.id === "editcontactinfo" ? button.classList.add('hidden') : button.classList.remove('hidden');
-            })
+                button.id === "editcontactinfo"
+                    ? button.classList.add('d-none')
+                    : button.classList.remove('d-none');
+            });
         }
 
         function cancelEditContactInfo() {
-            contactInfoInputs.forEach(input => {
-                input.value = prevContactInfo[input.id];
+            contactInfoInputs.forEach(_ => {
+                _.value = prevContactInfo[_.id];
             })
 
             document.querySelector("#submitcontactinfo").disabled = true;
@@ -378,20 +478,32 @@
             hideEditContactInfo();
         }
 
+        function clearAlert() {
+            checkAlert.classList.add('d-none');
+            checkAlert.classList.remove('alert-success');
+            checkAlert.classList.remove('alert-danger');
+            checkAlert.innerText = '';
+            if (alertTimerId != null) {
+                clearTimeout(alertTimerId);
+                alertTimerId = null;
+            }
+        }
+
         function setAlert(alertType, message) {
-            var checkAlert = document.querySelector("#checkAlert");
+            if (message.length = 0) {
+                clearAlert(alertType, checkAlert);
+                return;
+            }
             checkAlert.classList.add(alertType);
             checkAlert.innerText = message;
-            checkAlert.classList.remove('hidden');
-            setTimeout(function() {
-                checkAlert.classList.add('hidden');
-                checkAlert.classList.remove(alertType);
-                checkAlert.innerText = '';
+            checkAlert.classList.remove('d-none');
+            alertTimerId = setTimeout(() => {
+                clearAlert(checkAlert);
             }, 5000);
         }
 
         $('#selectionDetailsModal').on('hide.bs.modal', function (e) {
-            if (document.querySelector("#editcontactinfo").classList.contains('hidden')) {
+            if (document.querySelector("#editcontactinfo").classList.contains('d-none')) {
                 cancelEditContactInfo();
             }
             if (contactInfoUpdated) {
@@ -400,8 +512,9 @@
         })
 
         $('#selectionDetailsModal').on('show.bs.modal', function (e) {
-            var dataElement = $(e.relatedTarget).closest('[data-target]');
+            var dataElement = $(e.relatedTarget).closest('[data-bs-target]');
             branchSelectionId = dataElement.data('branchselectionid');
+            document.querySelector("#editcontactinfo").classList.remove('d-none');
             $('#selectionDetailsLabel').html(dataElement.data('selectionname') + ' @@ ' + dataElement.data('branchname'));
             $('#selectionname').text(dataElement.data('selectionname'));
             $('#modalagegroupname').text(dataElement.data('agegroupname'));
@@ -423,10 +536,10 @@
                 }
                 $('#modalupdatermailto').text(dataElement.data('updatername'));
             }
-            else 
-            {
+            else {
                 $('#scheduleupdatedby').hide();
             }
+            $('#modalupdatermailto').text(dataElement.data('updatername'));
             $('#modalscheduled').text(dataElement.data('scheduled'));
             $('#modalduration').text(dataElement.data('duration'));
             $('#modalstartsat').text(dataElement.data('startsat'));
@@ -442,9 +555,9 @@
             });
 
             if (dataElement.data('issitemanager') === 'True' || dataElement.data('creatorid') === @Model.CurrentUserId) {
-                document.querySelector('#editcontactinfo').classList.remove('hidden');
+                document.querySelector('#editcontactinfo').classList.remove('d-none');
             } else {
-                document.querySelector('#editcontactinfo').classList.add('hidden');
+                document.querySelector('#editcontactinfo').classList.add('d-none');
             }
 
             if (dataElement.data('performername')) {
@@ -477,9 +590,9 @@
         document.querySelector("#editcontactinfo")?.addEventListener("click", startEditContactInfo);
         document.querySelector("#cancelcontactinfo")?.addEventListener("click", cancelEditContactInfo)
         document.querySelector("#submitcontactinfo")?.addEventListener("click", async () => {
-            var OnSiteContactName = document.querySelector("#onsitecontactname").value;
-            var OnSiteContactEmail = document.querySelector("#onsitecontactemail").value;
-            var OnSiteContactPhone = document.querySelector("#onsitecontactphone").value;
+            let OnSiteContactName = document.querySelector("#onsitecontactname").value;
+            let OnSiteContactEmail = document.querySelector("#onsitecontactemail").value;
+            let OnSiteContactPhone = document.querySelector("#onsitecontactphone").value;
             try {
                 fetch(contactUpdateLink, {
                     method: 'POST',
@@ -492,7 +605,7 @@
                         OnSiteContactEmail,
                         OnSiteContactPhone
                     })
-                }).then(function() {
+                }).then(function () {
                     setAlert('alert-success', "Update successful!");
                     contactInfoUpdated = true;
                     hideEditContactInfo();

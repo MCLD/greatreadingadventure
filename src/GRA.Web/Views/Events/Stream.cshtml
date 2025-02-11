@@ -5,14 +5,14 @@
         <h1>@Model.EventName</h1>
     </div>
 </div>
-<div class="row row-spacing">
+<div class="row mb-2">
     <div class="col-sm-12">
         @Html.Raw(Model.Embed)
     </div>
 </div>
 @if (Model.EndDate.HasValue)
 {
-    <div class="row row-spacing">
+    <div class="row mb-2">
         <div class="col-sm-12 text-center">
             <em>@SharedLocalizer[GRA.Annotations.Interface.StreamingEnds, Model.EndDate.Value.ToString("d")]</em>
         </div>
@@ -20,17 +20,18 @@
 }
 @if (!string.IsNullOrWhiteSpace(Model.SecretCode))
 {
-    <div class="row row-spacing">
+    <div class="row mb-2">
         <div class="col-sm-12 text-center">
-            <strong>@SharedLocalizer[GRA.Domain.Model.DisplayNames.SecretCode]:</strong> @Model.SecretCode
+            <strong>@SharedLocalizer[GRA.Domain.Model.DisplayNames.SecretCode]:</strong>
+            @Model.SecretCode
         </div>
     </div>
 }
-<div class="row row-spacing">
+<div class="row mb-2">
     <div class="col-sm-12 text-center">
         <a href="@Url.Action(nameof(EventsController.StreamingEvents))"
-           class="btn btn-default">
-            <span class="fas fa-calendar-alt"></span>
+           class="btn btn-outline-primary">
+            <span class="fas fa-calendar-alt fa-fw"></span>
             @SharedLocalizer[GRA.Annotations.Interface.StreamingEvents]
         </a>
     </div>

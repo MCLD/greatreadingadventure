@@ -46,3 +46,17 @@ The `main` branch contains work in progress.
 - [Bootstrap](http://getbootstrap.com/)
 - [jQuery](https://jquery.com/)
 - [FontAwesome](https://fontawesome.com/)
+
+#### Front-end best practices
+
+In Mission Control we try to be consistent with buttons and iconography:
+
+- Add/Save/Search buttons: classed `btn-outline-primary`
+- Back/Back to List/Clear Search buttons: classed `btn-outline-secondary`
+- Add icon buttons: classed `btn-outline-success`, interior span classed `fas fa-plus fa-fw`
+- Edit icon buttons: classed `btn-outline-primary`, interior span classed `fas fa-pencil-alt fa-fw`
+- Delete icon buttons: classed `btn-outline-danger`, interior span classed `fas fa-times fa-fw`
+- Up arrow icon buttons: classed `btn-outline-secondary`, interior span classed `fas fa-arrow-up fa-fw`
+- Down arrow icon buttons: classed `btn-outline-secondayr`, interior span classed `fas fa-arrow-down fa-fw`
+- Yes/Active/Positive indicator icon: classed `far fa-check-circle fa-fw text-success`
+- No/Inactive/Negative indicator icon: classed `far fa-times-circle fa-fw text-danger`

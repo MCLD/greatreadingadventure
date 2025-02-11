@@ -2,103 +2,181 @@
 
 @if (Model.HasElevatedRole)
 {
-    <div class="row hidden-print" style="padding: 10px 0; margin-top: 1rem;">
-        <div class="col-xs-12">
-            <div class="alert alert-warning">
-                <strong>
-                    <span class="fas fa-exclamation-triangle"></span>
-                    This user has an administrative role in this software.
-                </strong>
+    <div class="row d-print-none mt-2">
+        <div class="col-12 col-lg-6 offset-lg-3 mt-2">
+            <div class="alert alert-warning d-flex align-items-stretch">
+                <span class="fas fa-exclamation-circle fa-lg text-warning pt-2 me-3"></span>
+                <strong>This user has an administrative role in this software.</strong>
             </div>
         </div>
     </div>
 }
-<div class="row hidden-print">
-    <div class="col-xs-12" style="font-size: smaller;">
-            <ul class="nav nav-pills" style="padding: 10px 0;">
-                <li ActiveBy routeKey="Action" value="Detail"><a asp-action="Detail" asp-route-id="@Model.Id">Details</a></li>
-                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.LogActivityForAny.ToString()))
-                {
-                    <li ActiveBy routeKey="Action" value="LogActivity"><a asp-action="LogActivity" asp-route-id="@Model.Id">Log Activity</a></li>
-                }
-                <li ActiveBy routeKey="Action" value="Household">
-                    <a asp-action="Household" asp-route-id="@Model.Id">
-                        @if (Model.IsGroup)
+
+<div class="row my-2 d-print-none">
+    <div class="col-12" style="font-size: smaller;">
+        <ul class="nav nav-pills flex-column flex-sm-row">
+            <li class="nav-item ms-0">
+                <a ActiveBy
+                   routeKey="Action"
+                   value="Detail"
+                   class="nav-link px-2 py-1"
+                   asp-action="Detail"
+                   asp-route-id="@Model.Id">Details</a>
+            </li>
+            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.LogActivityForAny.ToString()))
+            {
+                <li class="nav-item ms-0">
+                    <a ActiveBy
+                       routeKey="Action"
+                       value="LogActivity"
+                       class="nav-link px-2 py-1"
+                       asp-action="LogActivity"
+                       asp-route-id="@Model.Id">Log Activity</a>
+                </li>
+            }
+            <li class="nav-item ms-0">
+                <a ActiveBy
+                   routeKey="Action"
+                   value="Household"
+                   class="nav-link px-2 py-1"
+                   asp-action="Household"
+                   asp-route-id="@Model.Id">
+                    @if (Model.IsGroup)
+                    {
+                        @:Group
+                    }
+                    else
+                    {
+                        @:Family
+                    }
+                    @if (Model.HouseholdCount > 0)
+                    {
+                        <span class="badge @Model.GetBadgeClass(this, "Household") rounded-pill">@(Model.HouseholdCount + 1)</span>
+                    }
+                </a>
+            </li>
+            <li class="nav-item ms-0">
+                <a ActiveBy
+                   routeKey="Action"
+                   value="Books"
+                   class="nav-link px-2 py-1"
+                   asp-action="Books"
+                   asp-route-id="@Model.Id">Books</a>
+            </li>
+            <li class="nav-item ms-0">
+                <a ActiveBy
+                   routeKey="Action"
+                   value="History"
+                   class="nav-link px-2 py-1"
+                   asp-action="History"
+                   asp-route-id="@Model.Id">History</a>
+            </li>
+            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewUserPrizes.ToString()))
+            {
+                <li class="nav-item ms-0">
+                    <a ActiveBy
+                       routeKey="Action"
+                       value="Prizes"
+                       class="nav-link px-2 py-1"
+                       asp-action="Prizes"
+                       asp-route-id="@Model.Id">
+                        Prizes
+                        @if (Model.PrizeCount > 0)
                         {
-                            @:Group
-                        }
-                        else
-                        {
-                            @:Family
-                        }
-                        @if (Model.HouseholdCount > 0)
-                        {
-                            <span class="label label-default label-as-badge">@(Model.HouseholdCount + 1)</span>
+                            <span class="badge @Model.GetBadgeClass(this, "Prizes") rounded-pill">@(Model.PrizeCount)</span>
                         }
                     </a>
                 </li>
-                <li ActiveBy routeKey="Action" value="Books"><a asp-action="Books" asp-route-id="@Model.Id">Books</a></li>
-                <li ActiveBy routeKey="Action" value="History"><a asp-action="History" asp-route-id="@Model.Id">History</a></li>
-                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewUserPrizes.ToString()))
-                {
-                    <li ActiveBy routeKey="Action" value="Prizes">
-                        <a asp-action="Prizes" asp-route-id="@Model.Id">
-                            Prizes
-                            @if (Model.PrizeCount > 0)
-                            {
-                                <span class="label label-default label-as-badge">@(Model.PrizeCount)</span>
-                            }
-                        </a>
-                    </li>
-                }
-                @if (Model.EmailSubscriptionEnabled)
-                {
-                    <li ActiveBy routeKey="Action" value="EmailSubscriptionLog"><a asp-action="EmailSubscriptionLog" asp-route-id="@Model.Id">Email  Log</a></li>
-                }
-                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ReadAllMail.ToString()))
-                {
-                    <li ActiveBy routeKey="Action" value="Mail"><a asp-action="Mail" asp-route-id="@Model.Id">Mail</a></li>
-                }
-                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.EditParticipants.ToString()) && Model.HasAccount)
-                {
-                    <li ActiveBy routeKey="Action" value="PasswordReset"><a asp-action="PasswordReset" asp-route-id="@Model.Id">Password Reset</a></li>
-                }
-                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageVendorCodes.ToString()))
-                {
-                    <li ActiveBy routeKey="Action" value="VendorCodes"><a asp-action="@nameof(ParticipantsController.VendorCodes)" asp-route-id="@Model.Id">Vendor Codes</a></li>
-                }
-                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageRoles.ToString()) && Model.HasAccount)
-                {
-                    <li ActiveBy routeKey="Action" value="Roles">
-                        <a asp-action="Roles" asp-route-id="@Model.Id">
-                            Roles
-                            @if (Model.RoleCount > 0)
-                            {
-                                <span class="label label-default label-as-badge">@(Model.RoleCount)</span>
-                            }
-                        </a>
-                    </li>
-                }
-                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewChangeHistory.ToString()))
-                {
-                    <li ActiveBy routeKey="Action" value="ViewChangeHistory">
-                        <a asp-action="@nameof(ParticipantsController.ViewChangeHistory)" asp-route-id="@Model.Id">Change History</a>
-                    </li>
-                }
-                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewUserPrizes.ToString()))
-                {
-                    <li class="pull-right" style="margin-top: 1rem;">
-                        <form asp-action="@nameof(ParticipantsController.UpdatePrizes)" method="post" role="form">
-                            <input name="Id" value="@Model.Id" type="hidden" />
-                            <input name="ReturnUrl" value="@Context.Request.Path.ToString()" type="hidden" />
-                            <button class="btn btn-info btn-spinner-no-validate"
-                                    style="min-height: 40px;"
-                                    button-spinner>
-                                Update Prizes
-                            </button>
-                        </form>
-                    </li>
-                }
-            </ul>
+            }
+            @if (Model.EmailSubscriptionEnabled)
+            {
+                <li class="nav-item ms-0">
+                    <a ActiveBy
+                       routeKey="Action"
+                       value="EmailSubscriptionLog"
+                       class="nav-link px-2 py-1"
+                       asp-action="EmailSubscriptionLog"
+                       asp-route-id="@Model.Id">Email Log</a>
+                </li>
+            }
+            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ReadAllMail.ToString()))
+            {
+                <li class="nav-item ms-0">
+                    <a ActiveBy
+                       routeKey="Action"
+                       value="Mail"
+                       class="nav-link px-2 py-1"
+                       asp-action="Mail"
+                       asp-route-id="@Model.Id">Mail</a>
+                </li>
+            }
+            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.EditParticipants.ToString()) && Model.HasAccount)
+            {
+                <li class="nav-item ms-0">
+                    <a ActiveBy
+                       routeKey="Action"
+                       value="PasswordReset"
+                       class="nav-link px-2 py-1"
+                       asp-action="PasswordReset"
+                       asp-route-id="@Model.Id">Password Reset</a>
+                </li>
+            }
+            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageVendorCodes.ToString()))
+            {
+                <li class="nav-item ms-0">
+                    <a ActiveBy
+                       routeKey="Action"
+                       value="VendorCodes"
+                       class="nav-link px-2 py-1"
+                       asp-action="@nameof(ParticipantsController.VendorCodes)"
+                       asp-route-id="@Model.Id">Vendor Codes</a>
+                </li>
+            }
+            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageRoles.ToString()) && Model.HasAccount)
+            {
+                <li class="nav-item ms-0">
+                    <a ActiveBy
+                       routeKey="Action"
+                       value="Roles"
+                       class="nav-link px-2 py-1"
+                       asp-action="Roles"
+                       asp-route-id="@Model.Id">
+                        Roles
+                        @if (Model.RoleCount > 0)
+                        {
+                            <span class="badge @Model.GetBadgeClass(this, "Roles") rounded-pill">@(Model.RoleCount)</span>
+                        }
+                    </a>
+                </li>
+            }
+            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewChangeHistory.ToString()))
+            {
+                <li class="nav-item ms-0">
+                    <a ActiveBy
+                       routeKey="Action"
+                       value="ViewChangeHistory"
+                       class="nav-link px-2 py-1"
+                       asp-action="@nameof(ParticipantsController.ViewChangeHistory)"
+                       asp-route-id="@Model.Id">Change History</a>
+                </li>
+            }
+            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewUserPrizes.ToString()))
+            {
+                <li class="ms-auto">
+                    <form asp-action="@nameof(ParticipantsController.UpdatePrizes)"
+                          method="post"
+                          role="form">
+                        <input name="Id" value="@Model.Id" type="hidden" />
+                        <input name="ReturnUrl"
+                               value="@Context.Request.Path.ToString()"
+                               type="hidden" />
+                        <button class="btn btn-outline-info btn-sm btn-spinner-no-validate"
+                                button-spinner>
+                            Update Prizes
+                        </button>
+                    </form>
+                </li>
+            }
+        </ul>
     </div>
 </div>

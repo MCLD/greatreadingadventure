@@ -2,8 +2,8 @@
 
 @if (Model.MailThread.Count > 0)
 {
-    <div class="row" style="margin-bottom: 20px;">
-        <div class="col-md-8 col-md-offset-2">
+    <div class="row" style="margin-bottom: 1rem;">
+        <div class="col-md-8 offset-md-2">
             @foreach (var mail in Model.MailThread)
             {
                 if (mail.Id == Model.Mail.Id)
@@ -17,15 +17,15 @@
                 else
                 {
                     <div class="mail-thread-container">
-                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse@(mail.Id)" aria-expanded="true" aria-controls="collapse@(mail.Id)">
+                        <a role="button" data-bs-toggle="collapse" data-bs-parent="#accordion" href="#collapse@(mail.Id)" aria-expanded="true" aria-controls="collapse@(mail.Id)">
                             <div class="mail-thread-header" role="tab" id="heading@(mail.Id)">
                                 <span class="fas @(mail.ToUserId.HasValue ? "fa-reply" : "fa-share")"></span> @(mail.ToUserId.HasValue ? "To" : "From") @Model.User.FirstName: <strong>@(mail.Subject.Count() > 40 ? $"{mail.Subject.Substring(0, 40)}..." : mail.Subject)</strong>
-                                <span class="pull-right">@mail.CreatedAt</span>
+                                <span class="float-end">@mail.CreatedAt</span>
                             </div>
                         </a>
-                        <div id="collapse@(mail.Id)" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading@(mail.Id)">
+                        <div id="collapse@(mail.Id)" class="collapse" role="tabpanel" aria-labelledby="heading@(mail.Id)">
                             <div class="mail-thread-body">
-                                <div style="margin-bottom:10px;">
+                                <div style="margin-bottom: 0.5rem;">
                                     <strong style="padding-bottom:15px;">@mail.Subject</strong>
                                 </div>
 
@@ -47,7 +47,7 @@
 }
 
 <div class="row">
-    <div class="col-md-8 col-md-offset-2">
+    <div class="col-md-8 offset-md-2">
         <div class="row">
             <p style="font-size:large" class="col-md-7">
                 Sent @Model.SentMessage
@@ -68,15 +68,15 @@
                 </p>
             </div>
         </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
+        <div class="card">
+            <div class="card-header">
                 <span class="lead">
                     Subject: @Model.Mail.Subject
                 </span>
             </div>
-            <div class="panel-body">
+            <div class="card-body">
                 <div class="row">
-                    <div class="col-xs-8 col-sm-9">
+                    <div class="col-8 col-sm-9">
                         @if (Model.Mail.ToUserId.HasValue)
                         {
                             @: @Html.Raw(Model.Mail.Body)
@@ -88,12 +88,12 @@
                     </div>
                 </div>
             </div>
-            <div class="panel-footer clearfix hidden-print">
-                <a asp-action="Index" class="btn btn-default">Return to Mail List</a>
-                <div class="pull-right">
+            <div class="card-footer clearfix d-print-none">
+                <a asp-action="Index" class="btn btn-outline-secondary">Return to Mail List</a>
+                <div class="float-end">
                     @if (Model.CanDelete)
                     {
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" style="margin-right: 12px;">
+                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" style="margin-right: 12px;">
                             Delete Mail
                         </button>
                     }
@@ -104,13 +104,13 @@
                             <div style="display:inline-block">
                                 <form asp-controller="Mail" asp-action="MarkHandled" method="post" role="form">
                                     <input asp-for="Mail.Id" name="Id" type="hidden" />
-                                    <button type="submit" class="btn btn-success" style="margin-right: 12px;">
+                                    <button type="submit" class="btn btn-outline-success" style="margin-right: 12px;">
                                         Mark Handled
                                     </button>
                                 </form>
                             </div>
                         }
-                        <a asp-action="Reply" asp-route-id="@Model.Mail.Id" class="btn btn-primary">
+                        <a asp-action="Reply" asp-route-id="@Model.Mail.Id" class="btn btn-outline-primary">
                             Reply
                         </a>
                     }
@@ -131,24 +131,24 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button"
-                                class="close"
-                                data-dismiss="modal"
-                                aria-label="Close dialog">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
                         <h1 class="modal-title h4" id="deleteModalLabel">Delete Mail</h1>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close dialog">
+                            
+                        </button>
                     </div>
                     <div class="modal-body">
-                        <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
+                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
                         <span id="modal-text">
                             Are you sure you wish to delete the mail "@Model.Mail.Subject" ?
                         </span>
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-default"
-                                data-dismiss="modal"
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel
                         </button>
@@ -159,9 +159,9 @@
                               style="display:inline">
                             <input asp-for="Mail.Id" name="Id" type="hidden" />
                             <button type="submit"
-                                    class="btn btn-danger pull-right"
+                                    class="btn btn-outline-danger float-end"
                                     aria-label="Confirm">
-                                <span class="fas fa-times" aria-hidden="true"></span>
+                                <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                                 Delete
                             </button>
                         </form>

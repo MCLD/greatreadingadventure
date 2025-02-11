@@ -8,7 +8,7 @@
     </style>
 }
 
-<div style="margin-top: 0.5rem;">
+<div class="mt-1">
     <em>
         Posted on @Model.Post.PublishedAt.Value.ToShortDateString() by @Model.Post.CreatedByName
         @if (Model.Post.UpdatedAt.HasValue)
@@ -22,23 +22,23 @@
     </em>
 </div>
 
-<div style="margin-top: 2rem;">
+<div class="mt-4">
     @Html.Raw(Model.Post.Content)
 </div>
 
-<div class="hidden-print" style="margin-top: 2rem;">
+<div class="d-print-none mt-4">
     @if (Model.Post.PreviousPostId.HasValue)
     {
         <a asp-action="@nameof(HomeController.Post)"
            asp-route-id="@Model.Post.PreviousPostId"
            title="Previous post"
-           class="btn btn-default">
+           class="btn btn-outline-primary">
             <span class="fas fa-backward"></span>
         </a>
     }
     <a asp-action="@nameof(HomeController.Index)"
        title="Back to Mission Control"
-       class="btn btn-default">
+       class="btn btn-outline-secondary">
         <span class="fas fa-rocket"></span>
     </a>
 
@@ -47,7 +47,7 @@
         <a asp-action="@nameof(HomeController.Post)"
            asp-route-id="@Model.Post.NextPostId"
            title="Next post"
-           class="btn btn-default">
+           class="btn btn-outline-primary">
             <span class="fas fa-forward"></span>
         </a>
     }

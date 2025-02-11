@@ -3,16 +3,16 @@
 @if (!string.IsNullOrEmpty(Model.ReportingNote))
 {
 <div class="row mc-alertrow">
-    <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+    <div class="col-12 col-sm-8 offset-sm-2">
         <div class="alert alert-info clearfix">
-            <span class="fas fa-3x fa-info-circle pull-left"></span>
+            <span class="fas fa-3x fa-info-circle float-start"></span>
             @Model.ReportingNote
         </div>
     </div>
 </div>
 }
 
-<table class="table table-condensed table-bordered table-striped" style="margin-top: 2rem;">
+<table class="table table-sm table-bordered table-striped" style="margin-top: 2rem;">
     <thead>
         <tr>
             <th>Report Name</th>

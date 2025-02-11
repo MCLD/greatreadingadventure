@@ -1,14 +1,34 @@
 ﻿@model String
 
 <div class="row">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title h4">Prizes have been updated!</h1>
-                </div>
-                <div class="modal-body text-right">
-                    <a href="@Model" class="btn btn-default">Return</a>
+    <div class="col-12">
+        <div class="modal fade"
+             id="staticBackdrop"
+             data-bs-backdrop="static"
+             data-bs-keyboard="false"
+             tabindex="-1"
+             aria-labelledby="staticBackdropLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Prizes updated!</h1>
+                    </div>
+                    <div class="modal-body lead">
+                        Any pending prizes or badges for the user have been awarded!
+                    </div>
+                    <div class="modal-footer">
+                        <a href="@Model" class="btn btn-outline-secondary">Return</a>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
 </div>
+
+<script>
+    window.onload = () => {
+      const myModal = new bootstrap.Modal('#staticBackdrop');
+      myModal.show();
+    }
+</script>

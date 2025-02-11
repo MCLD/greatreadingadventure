@@ -3,85 +3,86 @@
 @section styles {
     <link rel="stylesheet" href="/css/performerregistration.min.css" />
 }
+@section inHeading {
+    <a asp-action="Performers"
+       asp-route-page="@Model.ReturnPage"
+       class="btn btn-outline-secondary ms-auto d-print-none">Return to List</a>
+}
 
-<div class="row">
-    <div class="col-xs-12">
-        <table style="margin:0 auto;">
-            <tr>
+<div class="row mt-3">
+    <div class="col-12 border-bottom border-top py-2 mb-3">
+        <div class="d-flex justify-content-between">
+            <div class="h2 d-print-none" style="width: 2rem;">
                 @if (Model.PrevPerformer.HasValue)
                 {
-                    <td style="position:absolute;">
-                        <h1>
-                            <a asp-action="Performer" asp-route-id="@Model.PrevPerformer" style="margin-left:-125px;"><span class="fas fa-chevron-left"></span></a>
-                        </h1>
-                    </td>
+                    <a asp-action="Performer"
+                       asp-route-id="@Model.PrevPerformer">
+                        <span class="fas fa-chevron-left"></span>
+                    </a>
                 }
-                <td><h1>Performer</h1></td>
+            </div>
+            <div class="flex-grow-1 text-center h2">
+                Performer
+            </div>
+            <div class="h2 d-print-none text-end" style="width: 2rem;">
                 @if (Model.NextPerformer.HasValue)
                 {
-                    <td style="position:absolute;">
-                        <h1>
-                            <a asp-action="Performer" asp-route-id="@Model.NextPerformer" style="margin-left:50px;"><span class="fas fa-chevron-right"></span></a>
-                        </h1>
-                    </td>
+                    <a asp-action="Performer"
+                       asp-route-id="@Model.NextPerformer">
+                        <span class="fas fa-chevron-right"></span>
+                    </a>
                 }
-            </tr>
-        </table>
+            </div>
+        </div>
     </div>
-    <div class="col-xs-12">
-        <hr />
+    <div class="col-12">
         <h2 style="margin-top:0px;">
             Information
         </h2>
     </div>
-    <div class="col-xs-12 col-sm-5 col-md-4">
+    <div class="col-12 col-sm-5 col-md-4">
         @if (Model.Performer.Images != null)
         {
-            <div class="row" style="padding-bottom:15px;">
-                <div class="col-xs-12">
-                    <img src="~/@Model.ImagePath" class="img-responsive" style="margin: 0 auto;" />
+            <div class="row pb-4">
+                <div class="col-12">
+                    <img src="~/@Model.ImagePath" class="img-fluid" style="margin: 0 auto;" />
                 </div>
             </div>
         }
         @if (Model.Performer.Images.Count > 1)
         {
-            <div class="row" style="padding-bottom:15px;">
-                <div class="col-xs-12" style="text-align:center;">
-                    <a asp-action="PerformerImages" asp-route-id="@Model.Performer.Id" class="btn btn-primary">View More Images</a>
+            <div class="row pb-4">
+                <div class="col-12 text-center">
+                    <a asp-action="PerformerImages" asp-route-id="@Model.Performer.Id" class="btn btn-outline-primary">View More Images</a>
                 </div>
             </div>
         }
         @if (!string.IsNullOrEmpty(Model?.ReferencesPath))
         {
-            <div class="row" style="padding-bottom:15px;">
-                <div class="col-xs-12" style="text-align:center;">
+            <div class="row pb-4">
+                <div class="col-12 text-center">
                     <a aria-label="View References (Opens new window)"
-                   href="~/@Model.ReferencesPath"
-                   target="_blank"
-                   class="btn btn-primary">View References</a>
+                       href="~/@Model.ReferencesPath"
+                       target="_blank"
+                       class="btn btn-outline-primary">View References</a>
                 </div>
             </div>
         }
-        <div class="row" style="padding-bottom:15px;">
-            <div class="col-xs-12" style="text-align:center;">
-                <a asp-action="Performers" asp-route-page="@Model.ReturnPage" class="btn btn-default">Return to List</a>
-            </div>
-        </div>
     </div>
-    <div class="col-xs-12 col-sm-7 col-md-8">
-        <div class="form-group">
+    <div class="col-12 col-sm-7 col-md-8">
+        <div class="mb-3">
             <label>Name</label>
             <div>@Model.Performer.Name</div>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <label>Email @(Model.Performer.PhonePreferred ? "" : "(preferred)") </label>
             <div>@Model.Performer.Email</div>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <label>Phone @(Model.Performer.PhonePreferred ? "(preferred)" : "")</label>
             <div>@Model.Performer.Phone</div>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <label>Website</label>
             @if (string.IsNullOrWhiteSpace(Model.Performer.Website))
             {
@@ -93,8 +94,8 @@
                     @if (Model.Uri != null)
                     {
                         <a aria-label="@Model.Performer.Website (Opens new window)"
-                   href="@Model.Uri"
-                   target="_blank">@Model.Performer.Website</a>
+                           href="@Model.Uri"
+                           target="_blank">@Model.Performer.Website</a>
                     }
                     else
                     {
@@ -103,7 +104,7 @@
                 </div>
             }
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <label>Programs available for the age groups</label>
             <ul>
                 @foreach (var ageGroup in Model.AgeGroups)
@@ -112,31 +113,31 @@
                 }
             </ul>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <label>Locations</label>
             <div>
                 Able to perform at
                 <strong>@(Model.Performer.AllBranches || Model.BranchAvailability.Count == Model.System.Branches.Count ? "all" : $"{Model.BranchAvailability.Count} of {Model.System.Branches.Count}")</strong>
                 libraries in your system.
             </div>
-            <button type="button" class="btn btn-default" style="margin-top:10px;" data-toggle="modal" data-target="#branchModal">View Locations</button>
+            <button type="button" class="btn btn-outline-primary mt-2" data-bs-toggle="modal" data-bs-target="#branchModal">View Locations</button>
         </div>
     </div>
 
-    <div class="col-xs-12">
+    <div class="col-12">
         <hr />
         <h2>
             Programs
         </h2>
     </div>
-    <div class="col-xs-12">
+    <div class="col-12">
         @if (Model.Performer.Programs.Count == 0)
         {
             <div class="alert alert-warning">No Programs.</div>
         }
         else
         {
-            <table class="table table-condensed table-bordered link-table">
+            <table class="table table-sm table-bordered link-table">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -162,13 +163,13 @@
         }
     </div>
 
-    <div class="col-xs-12">
+    <div class="col-12">
         <hr />
         <h2>
             Schedule
         </h2>
     </div>
-    <div class="col-xs-12">
+    <div class="col-12">
         @{
             int count = 0;
         }
@@ -179,8 +180,8 @@
                 @Html.Raw("<div class=\"row\">")
                 ;
             }
-            <div class="col-xs-12 col-md-4">
-                <table class="table table-condensed">
+            <div class="col-12 col-md-4">
+                <table class="table table-sm">
                     <thead>
                         <tr>
                             <td colspan="2"><strong style="font-size:large">@calendarMonth.ToString("MMMM")</strong></td>
@@ -248,30 +249,29 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button"
-                            class="close"
-                            data-dismiss="modal"
-                            aria-label="Close dialog">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                     <h1 class="modal-title h4" id="branchModalLabel">Branch Availability</h1>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close dialog">
+                    </button>
                 </div>
                 <div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y:auto;">
-                    <div style="font-size:x-large;margin-bottom:10px;">
+                    <div style="font-size:x-large;margin-bottom: 0.5rem;">
                         <strong>@Model.System.Name</strong>
                     </div>
                     @foreach (var branch in Model.System.Branches)
                     {
                         <div>
-                            <span class="colored-icon fas fa-lg @(Model.Performer.AllBranches || Model.BranchAvailability.Contains(branch.Id) ? "fa-check" : "fa-times")"></span>
-                            <label data-toggle="tooltip"
-                               data-placement="top"
-                               title="@branch.Address">
+                            <span class="far fa-lg @(Model.Performer.AllBranches || Model.BranchAvailability.Contains(branch.Id) ? "fa-check-circle text-success" : "fa-times-circle text-danger")"></span>
+                            <label data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
+                                   title="@branch.Address">
                                 @branch.Name
                             </label>
                             <a aria-label="Map (Opens new window)"
-                           href="https://www.google.com/maps/search/@branch.Address"
-                           target="_blank">
+                               href="https://www.google.com/maps/search/@branch.Address"
+                               target="_blank">
                                 <span class="far fa-map"></span>
                             </a>
                         </div>
@@ -279,8 +279,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                            class="btn btn-default"
-                            data-dismiss="modal"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal"
                             style="margin-right: 1em;">
                         Close
                     </button>
@@ -294,12 +294,12 @@
     <script>
         $(window).on("load", function () {
             $(".td-class").each(function () {
-                $(this).children("a.rowlink").height($(this).height() + 11);
+                $(this).children("a.rowlink").height($(this).outerHeight());
             });
         });
         $(window).resize(function () {
             $(".td-class").each(function () {
-                $(this).children("a.rowlink").height($(this).height() + 11);
+                $(this).children("a.rowlink").height($(this).outerHeight());
             });
         });
     </script>

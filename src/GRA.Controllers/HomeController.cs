@@ -7,6 +7,7 @@ using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -17,10 +18,11 @@ namespace GRA.Controllers
         private const string ActivityErrorMessage = "ActivityErrorMessage";
         private const string AuthorErrorMessage = "AuthorErrorMessage";
         private const int BadgesToDisplay = 6;
+        private const string DefaultBannerFilename = "gra-forest.jpg";
+        private const string LatestBook = "LatestBook";
         private const string ModelData = "ModelData";
         private const string SecretCodeMessage = "SecretCodeMessage";
         private const string TitleErrorMessage = "TitleErrorMessage";
-        private const string LatestBook = "LatestBook";
         private readonly ActivityService _activityService;
         private readonly AvatarService _avatarService;
         private readonly CarouselService _carouselService;
@@ -55,33 +57,36 @@ namespace GRA.Controllers
             VendorCodeService vendorCodeService)
             : base(context)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _activityService = activityService
-                ?? throw new ArgumentNullException(nameof(activityService));
-            _avatarService = avatarService
-                ?? throw new ArgumentNullException(nameof(avatarService));
-            _carouselService = carouselService
-                ?? throw new ArgumentNullException(nameof(carouselService));
-            _dailyLiteracyTipService = dailyLiteracyTipService
-                ?? throw new ArgumentNullException(nameof(dailyLiteracyTipService));
-            _dashboardContentService = dashboardContentService
-                ?? throw new ArgumentNullException(nameof(dashboardContentService));
-            _emailManagementService = emailManagementService
-                ?? throw new ArgumentNullException(nameof(emailManagementService));
-            _emailReminderService = emailReminderService
-                ?? throw new ArgumentNullException(nameof(emailReminderService));
-            _eventService = eventService
-                ?? throw new ArgumentNullException(nameof(eventService));
-            _languageService = languageService
-                ?? throw new ArgumentNullException(nameof(languageService));
-            _performerSchedulingService = performerSchedulingService
-                ?? throw new ArgumentNullException(nameof(performerSchedulingService));
-            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
-            _socialService = socialService
-                ?? throw new ArgumentNullException(nameof(socialService));
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-            _vendorCodeService = vendorCodeService
-                ?? throw new ArgumentNullException(nameof(vendorCodeService));
+            ArgumentNullException.ThrowIfNull(activityService);
+            ArgumentNullException.ThrowIfNull(avatarService);
+            ArgumentNullException.ThrowIfNull(carouselService);
+            ArgumentNullException.ThrowIfNull(dailyLiteracyTipService);
+            ArgumentNullException.ThrowIfNull(dashboardContentService);
+            ArgumentNullException.ThrowIfNull(emailManagementService);
+            ArgumentNullException.ThrowIfNull(emailReminderService);
+            ArgumentNullException.ThrowIfNull(eventService);
+            ArgumentNullException.ThrowIfNull(languageService);
+            ArgumentNullException.ThrowIfNull(logger);
+            ArgumentNullException.ThrowIfNull(performerSchedulingService);
+            ArgumentNullException.ThrowIfNull(siteService);
+            ArgumentNullException.ThrowIfNull(socialService);
+            ArgumentNullException.ThrowIfNull(userService);
+            ArgumentNullException.ThrowIfNull(vendorCodeService);
+
+            _activityService = activityService;
+            _avatarService = avatarService;
+            _carouselService = carouselService;
+            _dailyLiteracyTipService = dailyLiteracyTipService;
+            _dashboardContentService = dashboardContentService;
+            _emailManagementService = emailManagementService;
+            _emailReminderService = emailReminderService;
+            _eventService = eventService; _languageService = languageService;
+            _logger = logger;
+            _performerSchedulingService = performerSchedulingService;
+            _siteService = siteService;
+            _socialService = socialService;
+            _userService = userService;
+            _vendorCodeService = vendorCodeService;
         }
 
         public static string Name
@@ -113,21 +118,17 @@ namespace GRA.Controllers
             {
                 carouselItemDescription = await _carouselService.GetItemDescriptionAsync(id);
             }
-            catch (Exception ex)
+            catch (GraException gex)
             {
-                _logger.LogWarning("Request for carousel item {id} description failed: {message}",
+                _logger.LogWarning(gex,
+                    "Request for carousel item {id} description failed: {message}",
                     id,
-                    ex.Message);
+                    gex.Message);
             }
 
-            if (string.IsNullOrEmpty(carouselItemDescription))
-            {
-                return NotFound();
-            }
-            else
-            {
-                return Ok(CommonMark.CommonMarkConverter.Convert(carouselItemDescription));
-            }
+            return string.IsNullOrEmpty(carouselItemDescription)
+                ? NotFound()
+                : Ok(CommonMark.CommonMarkConverter.Convert(carouselItemDescription));
         }
 
         [HttpPost]
@@ -213,14 +214,18 @@ namespace GRA.Controllers
                 var pointTranslation = await _activityService.GetUserPointTranslationAsync();
                 var viewModel = new DashboardViewModel
                 {
-                    User = user,
-                    SingleEvent = pointTranslation.IsSingleEvent,
                     ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural,
-                    UserLogs = userLogs.Data,
                     DisableSecretCode
                         = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
-                    UpcomingStreams = await _eventService
-                        .GetUpcomingStreamListAsync()
+                    IsPerformerScheduling = GetSiteStage() == SiteStage.BeforeRegistration
+                        && User.HasClaim(ClaimType.Permission,
+                            nameof(Permission.AccessPerformerRegistration))
+                        && !User.HasClaim(ClaimType.Permission,
+                            nameof(Permission.AccessMissionControl)),
+                    SingleEvent = pointTranslation.IsSingleEvent,
+                    UpcomingStreams = await _eventService.GetUpcomingStreamListAsync(),
+                    User = user,
+                    UserLogs = userLogs.Data
                 };
 
                 var latestBookCookie = Request.Cookies[$"{GetActiveUserId()}{LatestBook}"];
@@ -283,11 +288,11 @@ namespace GRA.Controllers
 
                 if (TempData.ContainsKey(TempDataKey.UserJoined))
                 {
-                    TempData.Remove(TempDataKey.UserJoined);
                     viewModel.FirstTimeParticipant = user.IsFirstTime;
                     viewModel.ProgramName = program.Name;
                     viewModel.UserJoined = true;
                 }
+                TempData.Remove(TempDataKey.UserJoined);
 
                 var userAvatar = await _avatarService.GetUserAvatarAsync();
                 if (userAvatar?.Count > 0)
@@ -309,34 +314,34 @@ namespace GRA.Controllers
 
                 viewModel.Carousel = await _carouselService.GetCurrentForDashboardAsync();
 
-                if (TempData.ContainsKey(ModelData))
+                if (TempData.TryGetValue(ModelData, out object modelData))
                 {
                     var model = Newtonsoft.Json.JsonConvert
-                        .DeserializeObject<DashboardViewModel>((string)TempData[ModelData]);
+                        .DeserializeObject<DashboardViewModel>((string)modelData);
                     viewModel.ActivityAmount = model.ActivityAmount;
                     viewModel.Title = model.Title;
                     viewModel.Author = model.Author;
                 }
-                if (TempData.ContainsKey(ActivityErrorMessage))
+                if (TempData.TryGetValue(ActivityErrorMessage, out object activityErrorMessage))
                 {
                     ModelState.AddModelError("ActivityAmount",
-                        _sharedLocalizer[(string)TempData[ActivityErrorMessage]]);
+                        _sharedLocalizer[(string)activityErrorMessage]);
                     viewModel.ActivityAmount = null;
                 }
-                if (TempData.ContainsKey(TitleErrorMessage))
+                if (TempData.TryGetValue(TitleErrorMessage, out object titleErrorMessage))
                 {
                     ModelState.AddModelError(DisplayNames.Title,
-                        _sharedLocalizer[(string)TempData[TitleErrorMessage]]);
+                        _sharedLocalizer[(string)titleErrorMessage]);
                 }
-                if (TempData.ContainsKey(AuthorErrorMessage))
+                if (TempData.TryGetValue(AuthorErrorMessage, out object authorErrorMessage))
                 {
                     ModelState.AddModelError(DisplayNames.Author,
-                        _sharedLocalizer[(string)TempData[AuthorErrorMessage]]);
+                        _sharedLocalizer[(string)authorErrorMessage]);
                 }
-                if (TempData.ContainsKey(SecretCodeMessage))
+                if (TempData.TryGetValue(SecretCodeMessage, out object secretCodeMessage))
                 {
                     viewModel.SecretCodeMessage
-                        = _sharedLocalizer[(string)TempData[SecretCodeMessage]];
+                        = _sharedLocalizer[(string)secretCodeMessage];
                 }
 
                 if (user.DailyPersonalGoal.HasValue)
@@ -356,12 +361,15 @@ namespace GRA.Controllers
                 viewModel.PercentComplete = Math.Min(
                         (int)(viewModel.ActivityEarned * 100 / viewModel.TotalProgramGoal), 100);
 
-                var (siteReadingGoalSet, siteReadingGoal) = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(),
-                    SiteSettingKey.Site.ReadingGoalInMinutes);
+                var (siteReadingGoalSet, siteReadingGoal)
+                    = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(),
+                        SiteSettingKey.Site.ReadingGoalInMinutes);
+
                 if (siteReadingGoalSet)
                 {
                     viewModel.SiteReadingGoal = siteReadingGoal;
-                    viewModel.TotalSiteActivity = await _activityService.GetSiteActivityEarnedAsync();
+                    viewModel.TotalSiteActivity
+                        = await _activityService.GetSiteActivityEarnedAsync();
                     viewModel.SiteActivityPercentComplete = Math.Min(
                         (int)(viewModel.TotalSiteActivity * 100.0 / viewModel.SiteReadingGoal), 100);
                 }
@@ -475,7 +483,8 @@ namespace GRA.Controllers
             {
                 try
                 {
-                    await _activityService.LogSecretCodeAsync(GetActiveUserId(), viewModel.SecretCode);
+                    await _activityService.LogSecretCodeAsync(GetActiveUserId(),
+                        viewModel.SecretCode);
                 }
                 catch (GraException gex)
                 {
@@ -487,28 +496,16 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> PreviewExit(string id)
         {
-            if (UserHasPermission(Permission.AccessMissionControl))
-            {
-                SiteStage stage = ParseStage(id);
-                return await ShowExitPageAsync(stage);
-            }
-            else
-            {
-                return RedirectToAction(nameof(Index));
-            }
+            return UserHasPermission(Permission.AccessMissionControl)
+                ? await ShowExitPageAsync(ParseStage(id))
+                : RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> PreviewLanding(string id)
         {
-            if (UserHasPermission(Permission.AccessMissionControl))
-            {
-                SiteStage stage = ParseStage(id);
-                return await ShowLandingPageAsync(await GetCurrentSiteAsync(), stage);
-            }
-            else
-            {
-                return RedirectToAction(nameof(Index));
-            }
+            return UserHasPermission(Permission.AccessMissionControl)
+                ? await ShowLandingPageAsync(await GetCurrentSiteAsync(), ParseStage(id))
+                : RedirectToAction(nameof(Index));
         }
 
         [PreventQuestionnaireRedirect]
@@ -548,12 +545,18 @@ namespace GRA.Controllers
         }
 
         private async Task<IActionResult> ShowExitPageAsync(SiteStage siteStage,
-                    int? branchId = null)
+            int? branchId = null)
         {
             string siteName = HttpContext.Items[ItemKey.SiteName]?.ToString();
             PageTitle = _sharedLocalizer[Annotations.Title.SeeYouSoon, siteName];
 
-            var exitPageViewModel = new ExitPageViewModel();
+            var exitPageViewModel = new ExitPageViewModel
+            {
+                BannerAltText = _sharedLocalizer[Annotations.Home.BannerAltTag],
+                BannerImagePath = $"/{_pathResolver.ResolveContentPath(DefaultBannerFilename)}",
+                LeftHeader = _sharedLocalizer[Annotations.Home.AdventureNotOver],
+                LeftMessage = _sharedLocalizer[Annotations.Home.ContinueYourAdventure]
+            };
 
             try
             {
@@ -606,9 +609,24 @@ namespace GRA.Controllers
 
             var culture = _userContextProvider.GetCurrentCulture();
 
-            // social
+            var leftMessage = CommonMark.CommonMarkConverter.Convert(
+                _sharedLocalizer[Annotations.Home.ForMoreInformation].Value
+                + Environment.NewLine
+                + Environment.NewLine
+                + _sharedLocalizer[Annotations.Home.GoOnAJourney].Value);
+
+            var rightMessage = CommonMark.CommonMarkConverter.Convert(
+                _sharedLocalizer[Annotations.Home.Read20].Value
+                + Environment.NewLine
+                + Environment.NewLine
+                + _sharedLocalizer[Annotations.Home.ReadingIsFundamental].Value);
+
             var viewmodel = new LandingPageViewModel
             {
+                BannerImagePath = $"/{_pathResolver.ResolveContentPath(DefaultBannerFilename)}",
+                BannerAltText = _sharedLocalizer[Annotations.Home.BannerAltTag],
+                LeftMessage = leftMessage,
+                RightMessage = rightMessage,
                 SiteName = siteName,
                 Social = await _socialService.GetAsync(culture.Name)
             };
@@ -628,21 +646,47 @@ namespace GRA.Controllers
                             viewmodel.RegistrationOpens
                                 = ((DateTime)site.RegistrationOpens).ToString("D",
                                     culture);
+                            viewmodel.CenterMessage = CommonMark.CommonMarkConverter.Convert(
+                               _sharedLocalizer[Annotations.Home.WelcomeTo, siteName]
+                               + Environment.NewLine
+                               + Environment.NewLine
+                               + _sharedLocalizer[Annotations.Home.ProgramStartsOn,
+                                    viewmodel.RegistrationOpens]);
                             PageTitle = _sharedLocalizer[Annotations.Title.RegistrationOpens,
                                 siteName,
                                 viewmodel.RegistrationOpens];
+                        }
+                        else
+                        {
+                            viewmodel.CenterMessage = CommonMark.CommonMarkConverter.Convert(
+                               _sharedLocalizer[Annotations.Home.WelcomeTo, siteName]
+                               + Environment.NewLine
+                               + Environment.NewLine
+                               + _sharedLocalizer[GRA.Annotations.Home.WhenProgramStarts]);
                         }
                     }
                     return View(ViewTemplates.BeforeRegistration, viewmodel);
 
                 case SiteStage.RegistrationOpen:
+                    viewmodel.CenterMessage = CommonMark.CommonMarkConverter.Convert(
+                       _sharedLocalizer[Annotations.Home.WelcomeTo, siteName]
+                       + Environment.NewLine
+                       + Environment.NewLine
+                       + _sharedLocalizer[Annotations.Home.StartAdventure]);
                     PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, siteName];
                     return View(ViewTemplates.RegistrationOpen, viewmodel);
 
                 case SiteStage.ProgramEnded:
+                    viewmodel.CenterMessage = CommonMark.CommonMarkConverter.Convert(
+                        _sharedLocalizer[Annotations.Home.Thanks, siteName].Value
+                        + Environment.NewLine
+                        + Environment.NewLine
+                        + _sharedLocalizer[Annotations.Home.StillSignIn].Value);
                     return View(ViewTemplates.ProgramEnded, viewmodel);
 
                 case SiteStage.AccessClosed:
+                    viewmodel.CenterMessage = CommonMark.CommonMarkConverter.Convert(
+                        _sharedLocalizer[Annotations.Home.Thanks, siteName].Value);
                     viewmodel.SignUpSource = nameof(SiteStage.AccessClosed);
                     if (site != null)
                     {
@@ -653,6 +697,11 @@ namespace GRA.Controllers
                     return View(ViewTemplates.AccessClosed, viewmodel);
 
                 default:
+                    viewmodel.CenterMessage = CommonMark.CommonMarkConverter.Convert(
+                       _sharedLocalizer[Annotations.Home.WelcomeTo, siteName]
+                       + Environment.NewLine
+                       + Environment.NewLine
+                       + _sharedLocalizer[Annotations.Home.StartAdventure]);
                     PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, siteName];
                     return View(ViewTemplates.ProgramOpen, viewmodel);
             }

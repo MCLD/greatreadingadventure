@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Controllers.Filter;
@@ -17,14 +18,14 @@ namespace GRA.Controllers
     [UnauthenticatedFilter]
     public class JoinController : Base.UserController
     {
+        private const string AuthCodeAssignedBranch = "AuthCodeAssignedBranch";
+        private const string AuthCodeAssignedProgram = "AuthCodeAssignedProgram";
         private const string AuthCodeAttempts = "AuthCodeAttempts";
         private const string EnteredAuthCode = "EnteredAuthCode";
-        private const string TwoStepSignUp = "TwoStepSignUp";
         private const string SinglePageSignUp = "SinglePageSignUp";
-        private const string AuthCodeAssignedProgram = "AuthCodeAssignedProgram";
-        private const string AuthCodeAssignedBranch = "AuthCodeAssignedBranch";
         private const string TempStep1 = "TempStep1";
         private const string TempStep2 = "TempStep2";
+        private const string TwoStepSignUp = "TwoStepSignUp";
         private readonly AuthenticationService _authenticationService;
         private readonly AuthorizationCodeService _authorizationCodeService;
         private readonly ILogger<JoinController> _logger;
@@ -42,27 +43,32 @@ namespace GRA.Controllers
             AuthorizationCodeService authorizationCodeService,
             MailService mailService,
             PointTranslationService pointTranslationService,
+            QuestionnaireService questionnaireService,
             SchoolService schoolService,
             SiteService siteService,
-            QuestionnaireService questionnaireService,
-            UserService userService)
-                : base(context)
+            UserService userService) : base(context)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _mapper = context.Mapper;
-            _authenticationService = authenticationService
-                ?? throw new ArgumentNullException(nameof(authenticationService));
-            _authorizationCodeService = authorizationCodeService
-                ?? throw new ArgumentNullException(nameof(authorizationCodeService));
-            _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
-            _pointTranslationService = pointTranslationService
-                ?? throw new ArgumentNullException(nameof(pointTranslationService));
-            _schoolService = schoolService
-                ?? throw new ArgumentNullException(nameof(schoolService));
-            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
-            _questionnaireService = questionnaireService
-                ?? throw new ArgumentNullException(nameof(questionnaireService));
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            ArgumentNullException.ThrowIfNull(authenticationService);
+            ArgumentNullException.ThrowIfNull(authorizationCodeService);
+            ArgumentNullException.ThrowIfNull(logger);
+            ArgumentNullException.ThrowIfNull(mailService);
+            ArgumentNullException.ThrowIfNull(pointTranslationService);
+            ArgumentNullException.ThrowIfNull(questionnaireService);
+            ArgumentNullException.ThrowIfNull(schoolService);
+            ArgumentNullException.ThrowIfNull(siteService);
+            ArgumentNullException.ThrowIfNull(userService);
+
+            _authenticationService = authenticationService;
+            _authorizationCodeService = authorizationCodeService;
+            _logger = logger;
+            _mailService = mailService;
+            _mapper = context?.Mapper;
+            _pointTranslationService = pointTranslationService;
+            _questionnaireService = questionnaireService;
+            _schoolService = schoolService;
+            _siteService = siteService;
+            _userService = userService;
+
             PageTitle = _sharedLocalizer[Annotations.Title.Join];
         }
 
@@ -80,8 +86,13 @@ namespace GRA.Controllers
         }
 
         [HttpPost]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization",
+            "CA1308:Normalize strings to uppercase",
+            Justification = "Normalize authorization codes to lowercase")]
         public async Task<IActionResult> AuthorizationCode(AuthorizationCodeViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             var site = await GetCurrentSiteAsync();
             if (!TempData.ContainsKey(AuthCodeAttempts) || (int)TempData.Peek(AuthCodeAttempts) < 5)
             {
@@ -93,20 +104,23 @@ namespace GRA.Controllers
                     ShowAlertInfo("Authorization code accepted.");
 
                     var singlePageSignUp = site.SinglePageSignUp;
-                    
-                    if ((await _authorizationCodeService.SinglePageSignUpCode(sanitized))) {
+
+                    if (await _authorizationCodeService.SinglePageSignUpCode(sanitized))
+                    {
                         TempData[SinglePageSignUp] = true;
                         singlePageSignUp = true;
                     }
 
-                    var programId = await _authorizationCodeService.AssignedProgramFromCode(sanitized);
+                    var programId = await _authorizationCodeService
+                        .AssignedProgramFromCode(sanitized);
 
                     if (programId != null)
                     {
                         TempData[AuthCodeAssignedProgram] = programId;
                     }
 
-                    var branchId = await _authorizationCodeService.AssignedBranchFromCode(sanitized);
+                    var branchId = await _authorizationCodeService
+                        .AssignedBranchFromCode(sanitized);
 
                     if (branchId != null)
                     {
@@ -122,9 +136,9 @@ namespace GRA.Controllers
                         return RedirectToAction(nameof(Step1));
                     }
                 }
-                if (TempData.ContainsKey(AuthCodeAttempts))
+                if (TempData.TryGetValue(AuthCodeAttempts, out object authCodeAttempts))
                 {
-                    TempData[AuthCodeAttempts] = (int)TempData[AuthCodeAttempts] + 1;
+                    TempData[AuthCodeAttempts] = (int)authCodeAttempts + 1;
                 }
                 else
                 {
@@ -153,7 +167,9 @@ namespace GRA.Controllers
 
             var site = await GetCurrentSiteAsync();
 
-            var singlePageSignUp = site.SinglePageSignUp || TempData.ContainsKey(SinglePageSignUp) || (await _authorizationCodeService.SinglePageSignUpCode(authCode));
+            var singlePageSignUp = site.SinglePageSignUp
+                || TempData.ContainsKey(SinglePageSignUp)
+                || (await _authorizationCodeService.SinglePageSignUpCode(authCode));
 
             if (!singlePageSignUp)
             {
@@ -169,7 +185,7 @@ namespace GRA.Controllers
                     {
                         AlertInfo = _sharedLocalizer[Annotations.Info.YouCanJoinOn,
                             site.Name,
-                            site.RegistrationOpens.Value.ToString("d")];
+                            site.RegistrationOpens.Value.ToString("d", CultureInfo.CurrentCulture)];
                     }
                     else
                     {
@@ -190,9 +206,12 @@ namespace GRA.Controllers
             var systemList = TempData.ContainsKey(AuthCodeAssignedBranch)
                 ? Array.Empty<Domain.Model.System>()
                 : await _siteService.GetSystemList();
-            var programList = TempData.ContainsKey(AuthCodeAssignedProgram)
-                ? new Program[] { (await _siteService.GetProgramByIdAsync((int)TempData[AuthCodeAssignedProgram])) }
-                : await _siteService.GetProgramList();
+            var programList = TempData
+                .TryGetValue(AuthCodeAssignedProgram, out object tempProgramList)
+                    ? new Program[] {
+                        await _siteService.GetProgramByIdAsync((int)tempProgramList)
+                    }
+                    : await _siteService.GetProgramList();
             var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
 
             var viewModel = new SinglePageViewModel
@@ -204,15 +223,16 @@ namespace GRA.Controllers
                 SchoolList = NameIdSelectList(await _schoolService.GetSchoolsAsync())
             };
 
-            if (TempData.ContainsKey(AuthCodeAssignedProgram))
+            if (TempData.TryGetValue(AuthCodeAssignedProgram, out object tempAuthCodeProgram))
             {
-                viewModel.ProgramId = (int)TempData[AuthCodeAssignedProgram];
+                viewModel.ProgramId = (int)tempAuthCodeProgram;
                 TempData.Keep(AuthCodeAssignedProgram);
             }
 
-            if (TempData.ContainsKey(AuthCodeAssignedBranch))
+            if (TempData.TryGetValue(AuthCodeAssignedBranch, out object tempAuthCodeBranch))
             {
-                var branch = await _siteService.GetBranchByIdAsync((int)TempData[AuthCodeAssignedBranch]);
+                var branch = await _siteService
+                    .GetBranchByIdAsync((int)tempAuthCodeBranch);
                 viewModel.BranchId = branch.Id;
                 viewModel.SystemId = branch.SystemId;
                 viewModel.EmailSubscriptionRequested = "No";
@@ -221,17 +241,18 @@ namespace GRA.Controllers
                 TempData.Keep(AuthCodeAssignedBranch);
             }
 
-            var askIfFirstTime = TempData.ContainsKey(SinglePageSignUp) 
-                ? false 
-                : await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
+            var askIfFirstTime = !TempData.ContainsKey(SinglePageSignUp)
+                && await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
             if (askIfFirstTime)
             {
                 viewModel.AskFirstTime = EmptyNoYes();
             }
 
-            var (askEmailSubscription, askEmailSubscriptionText) = TempData.ContainsKey(SinglePageSignUp) 
-                ? (false, "") 
-                : await GetSiteSettingStringAsync(SiteSettingKey.Users.AskEmailSubPermission);
+            var (askEmailSubscription, askEmailSubscriptionText)
+                = TempData.ContainsKey(SinglePageSignUp)
+                    ? (false, "")
+                    : await GetSiteSettingStringAsync(SiteSettingKey.Users.AskEmailSubPermission);
+
             if (askEmailSubscription)
             {
                 viewModel.AskEmailSubscription = EmptyNoYes();
@@ -244,8 +265,10 @@ namespace GRA.Controllers
             {
                 viewModel.DailyPersonalGoal = defaultDailyGoal;
                 var pointTranslation = programList.First().PointTranslation;
-                viewModel.TranslationDescriptionPastTense =
-                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                viewModel.TranslationDescriptionPastTense = pointTranslation
+                    .TranslationDescriptionPastTense
+                    .Replace("{0}", "", StringComparison.OrdinalIgnoreCase)
+                    .Trim();
                 viewModel.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 
@@ -283,6 +306,9 @@ namespace GRA.Controllers
         }
 
         [HttpPost]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization",
+            "CA1308:Normalize strings to uppercase",
+            Justification = "Normalize authorization codes to lowercase")]
         public async Task<IActionResult> Index(SinglePageViewModel model)
         {
             bool askIfFirstTime;
@@ -307,18 +333,18 @@ namespace GRA.Controllers
                     _sharedLocalizer[ErrorMessages.Field,
                     _sharedLocalizer[DisplayNames.ZipCode]]);
             }
-            askIfFirstTime = TempData.ContainsKey(SinglePageSignUp)
-                ? false
-                : await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
+            askIfFirstTime = !TempData.ContainsKey(SinglePageSignUp)
+                && await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
 
             if (!askIfFirstTime)
             {
                 ModelState.Remove(nameof(model.IsFirstTime));
             }
 
-            (askEmailSubscription, askEmailSubscriptionText) = TempData.ContainsKey(SinglePageSignUp)
-                ? (false, "")
-                : await GetSiteSettingStringAsync(SiteSettingKey.Users.AskEmailSubPermission);
+            (askEmailSubscription, askEmailSubscriptionText)
+                = TempData.ContainsKey(SinglePageSignUp)
+                    ? (false, "")
+                    : await GetSiteSettingStringAsync(SiteSettingKey.Users.AskEmailSubPermission);
 
             TempData.Keep(SinglePageSignUp);
 
@@ -425,8 +451,7 @@ namespace GRA.Controllers
                                 model.AuthorizationCode);
                         }
                     }
-                    await _userService.RegisterUserAsync(user, model.Password,
-                        allowDuringCloseProgram: useAuthCode);
+                    await _userService.RegisterUserAsync(user, model.Password, false, useAuthCode);
                     var loginAttempt = await _authenticationService
                         .AuthenticateUserAsync(user.Username, model.Password, useAuthCode);
                     await LoginUserAsync(loginAttempt);
@@ -482,9 +507,12 @@ namespace GRA.Controllers
 
             if (model.SystemId.HasValue)
             {
-                var branchList = TempData.ContainsKey(AuthCodeAssignedBranch)
-                    ? new Branch[] { await _siteService.GetBranchByIdAsync((int)TempData[AuthCodeAssignedBranch]) }
-                    : await _siteService.GetBranches(model.SystemId.Value);
+                var branchList = TempData
+                    .TryGetValue(AuthCodeAssignedBranch, out object tempAuthCodeBranch)
+                        ? new Branch[] {
+                            await _siteService.GetBranchByIdAsync((int)tempAuthCodeBranch)
+                        }
+                        : await _siteService.GetBranches(model.SystemId.Value);
                 if (model.BranchId < 1)
                 {
                     branchList = branchList.Prepend(new Branch() { Id = -1 });
@@ -494,9 +522,12 @@ namespace GRA.Controllers
             var systemList = TempData.ContainsKey(AuthCodeAssignedBranch)
                 ? Array.Empty<Domain.Model.System>()
                 : await _siteService.GetSystemList();
-            var programList = TempData.ContainsKey(AuthCodeAssignedProgram)
-                ? new Program[] { (await _siteService.GetProgramByIdAsync((int)TempData[AuthCodeAssignedProgram])) }
-                : await _siteService.GetProgramList();
+            var programList = TempData
+                .TryGetValue(AuthCodeAssignedProgram, out object tempAuthCodeProgram)
+                    ? new Program[] {
+                        await _siteService.GetProgramByIdAsync((int)tempAuthCodeProgram)
+                    }
+                    : await _siteService.GetProgramList();
             var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
             model.SystemList = NameIdSelectList(systemList.ToList());
             model.ProgramList = NameIdSelectList(programList.ToList());
@@ -520,8 +551,10 @@ namespace GRA.Controllers
             if (askActivityGoal)
             {
                 var pointTranslation = programList.First().PointTranslation;
-                model.TranslationDescriptionPastTense =
-                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                model.TranslationDescriptionPastTense = pointTranslation
+                    .TranslationDescriptionPastTense
+                    .Replace("{0}", "", StringComparison.OrdinalIgnoreCase)
+                    .Trim();
                 model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 
@@ -538,7 +571,9 @@ namespace GRA.Controllers
             }
 
             var site = await GetCurrentSiteAsync();
-            var singlePageSignUp = site.SinglePageSignUp || TempData.ContainsKey(SinglePageSignUp) || (await _authorizationCodeService.SinglePageSignUpCode(authCode));
+            var singlePageSignUp = site.SinglePageSignUp
+                || TempData.ContainsKey(SinglePageSignUp)
+                || (await _authorizationCodeService.SinglePageSignUpCode(authCode));
 
             if (singlePageSignUp)
             {
@@ -554,7 +589,7 @@ namespace GRA.Controllers
                     {
                         AlertInfo = _sharedLocalizer[Annotations.Info.YouCanJoinOn,
                             site.Name,
-                            site.RegistrationOpens.Value.ToString("d")];
+                            site.RegistrationOpens.Value.ToString("d", CultureInfo.CurrentCulture)];
                     }
                     else
                     {
@@ -581,24 +616,28 @@ namespace GRA.Controllers
                 SystemList = NameIdSelectList(systemList.ToList())
             };
 
-            if (TempData.ContainsKey(AuthCodeAssignedProgram)) {
-                var program = await _siteService.GetProgramByIdAsync((int)TempData[AuthCodeAssignedProgram]);
+            if (TempData.TryGetValue(AuthCodeAssignedProgram, out object tempAuthCodeProgram))
+            {
+                var program = await _siteService
+                    .GetProgramByIdAsync((int)tempAuthCodeProgram);
                 TempData.Keep(AuthCodeAssignedProgram);
 
-                if (program != null && !program.AskAge && !program.AskSchool)
+                if (program?.AskAge == false && !program.AskSchool)
                 {
                     TempData[TwoStepSignUp] = true;
                 }
             }
 
-            if (TempData.ContainsKey(AuthCodeAssignedBranch))
+            if (TempData.TryGetValue(AuthCodeAssignedBranch, out object tempAuthCodeBranch))
             {
-                var branch = await _siteService.GetBranchByIdAsync((int)TempData[AuthCodeAssignedBranch]);
+                var branch = await _siteService
+                    .GetBranchByIdAsync((int)tempAuthCodeBranch);
                 viewModel.BranchId = branch.Id;
                 viewModel.SystemId = branch.SystemId;
                 viewModel.BranchList = NameIdSelectList(Array.Empty<Branch>());
                 TempData.Keep(AuthCodeAssignedBranch);
-            } else if (systemList.Count() == 1)
+            }
+            else if (systemList.Count() == 1)
             {
                 var systemId = systemList.Single().Id;
                 var branchList = await _siteService.GetBranches(systemId);
@@ -652,17 +691,18 @@ namespace GRA.Controllers
             {
                 TempData[TempStep1] = JsonConvert.SerializeObject(model);
 
-                if (TempData.ContainsKey(AuthCodeAssignedProgram))
+                if (TempData.TryGetValue(AuthCodeAssignedProgram, out object tempAuthCodeProgram))
                 {
-                    var program = await _siteService.GetProgramByIdAsync((int)TempData[AuthCodeAssignedProgram]);
-                    
+                    var program = await _siteService
+                        .GetProgramByIdAsync((int)tempAuthCodeProgram);
+
                     if (!TempData.ContainsKey(TwoStepSignUp))
                     {
                         return RedirectToAction(nameof(Step2));
                     }
 
-                    TempData[TempStep2] = JsonConvert.SerializeObject(new Step2ViewModel 
-                    { 
+                    TempData[TempStep2] = JsonConvert.SerializeObject(new Step2ViewModel
+                    {
                         ProgramId = program.Id,
                         SchoolId = null,
                         SchoolNotListed = false,
@@ -723,10 +763,11 @@ namespace GRA.Controllers
                 SchoolList = NameIdSelectList(await _schoolService.GetSchoolsAsync())
             };
 
-            if (TempData.ContainsKey(AuthCodeAssignedProgram))
+            if (TempData.TryGetValue(AuthCodeAssignedProgram, out object tempAuthCodeProgram))
             {
-                var program = await _siteService.GetProgramByIdAsync((int)TempData[AuthCodeAssignedProgram]);
-                
+                var program = await _siteService
+                    .GetProgramByIdAsync((int)tempAuthCodeProgram);
+
                 if (program != null)
                 {
                     viewModel.ProgramId = program.Id;
@@ -737,7 +778,7 @@ namespace GRA.Controllers
                 TempData.Keep(AuthCodeAssignedProgram);
             }
 
-                if (programList.Count() == 1)
+            if (programList.Count() == 1)
             {
                 var programId = programList.Single().Id;
                 var program = await _siteService.GetProgramByIdAsync(programId);
@@ -866,8 +907,10 @@ namespace GRA.Controllers
                 var step2 = JsonConvert.DeserializeObject<Step2ViewModel>(step2Json);
                 var pointTranslation = await _pointTranslationService
                     .GetByProgramIdAsync(step2.ProgramId.Value);
-                viewModel.TranslationDescriptionPastTense =
-                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                viewModel.TranslationDescriptionPastTense = pointTranslation
+                    .TranslationDescriptionPastTense
+                    .Replace("{0}", "", StringComparison.OrdinalIgnoreCase)
+                    .Trim();
                 viewModel.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 
@@ -875,6 +918,9 @@ namespace GRA.Controllers
         }
 
         [HttpPost]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization",
+            "CA1308:Normalize strings to uppercase",
+            Justification = "Normalize authorization code to lowercase")]
         public async Task<IActionResult> Step3(Step3ViewModel model)
         {
             var site = await GetCurrentSiteAsync();
@@ -972,8 +1018,7 @@ namespace GRA.Controllers
                                 step1.AuthorizationCode);
                         }
                     }
-                    await _userService.RegisterUserAsync(user, model.Password,
-                        allowDuringCloseProgram: useAuthCode);
+                    await _userService.RegisterUserAsync(user, model.Password, false, useAuthCode);
                     TempData.Remove(TempStep1);
                     TempData.Remove(TempStep2);
                     var loginAttempt = await _authenticationService
@@ -1044,8 +1089,10 @@ namespace GRA.Controllers
                 var step2 = JsonConvert.DeserializeObject<Step2ViewModel>(step2Json);
                 var pointTranslation = await _pointTranslationService
                     .GetByProgramIdAsync(step2.ProgramId.Value);
-                model.TranslationDescriptionPastTense =
-                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                model.TranslationDescriptionPastTense = pointTranslation
+                    .TranslationDescriptionPastTense
+                    .Replace("{0}", "", StringComparison.OrdinalIgnoreCase)
+                    .Trim();
                 model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 

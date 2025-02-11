@@ -4,7 +4,7 @@
 
 @section styles {
     <style>
-        .panel-error-message p {
+        .card-error-message p {
             margin-bottom: 2rem;
             line-height: 3rem;
             font-size: larger;
@@ -13,24 +13,30 @@
 }
 
 <div class="row">
-    <div class="col-sm-8 col-sm-offset-2">
-        <div class="panel panel-default">
-            <div class="panel-heading">
+    <div class="col-sm-8 offset-sm-2">
+        <div class="card">
+            <div class="card-header">
                 <span class="h3 text-danger"><strong>That didn't work right!</strong></span>
             </div>
-            <div class="panel-body panel-error-message">
+            <div class="card-body card-error-message">
                 <p>
                     Something seems to have gone wrong while loading the page you requested.
                     Sorry about that! Please wait a little bit and try again.
                 </p>
                 <p>
                     If you continue to have this problem, please
-                    <a asp-controller="Mail" asp-action="Send">send us a mail</a>
+                    <a asp-action="@nameof(MailController.Send)"
+                       asp-area=""
+                       asp-controller="@MailController.Name">send us a mail</a>
                     and let us know what you were trying to do and where it went wrong!
                 </p>
-
-                <a asp-controller="Home" asp-action="Index" class="btn btn-lg btn-success pull-right">
-                    <span class="fas fa-home"></span>
+            </div>
+            <div class="card-footer">
+                <a asp-action="@nameof(HomeController.Index)"
+                   asp-area=""
+                   asp-controller="@HomeController.Name"
+                   class="btn btn-lg btn-outline-success">
+                    <span class="fas fa-home fa-fw"></span>
                     Home
                 </a>
             </div>

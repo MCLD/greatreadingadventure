@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.Social;
 using GRA.Domain.Model;
@@ -28,12 +27,13 @@ namespace GRA.Controllers.MissionControl
             SocialManagementService socialManagementService,
             SocialService socialService) : base(context)
         {
-            _languageService = languageService
-                ?? throw new ArgumentNullException(nameof(languageService));
-            _socialManagementService = socialManagementService
-                ?? throw new ArgumentNullException(nameof(socialManagementService));
-            _socialService = socialService
-                ?? throw new ArgumentNullException(nameof(socialService));
+            ArgumentNullException.ThrowIfNull(languageService);
+            ArgumentNullException.ThrowIfNull(socialManagementService);
+            ArgumentNullException.ThrowIfNull(socialService);
+
+            _languageService = languageService;
+            _socialManagementService = socialManagementService;
+            _socialService = socialService;
 
             PageTitle = "Social";
         }
@@ -82,7 +82,7 @@ namespace GRA.Controllers.MissionControl
             {
                 try
                 {
-                    using var ms = new System.IO.MemoryStream();
+                    await using var ms = new System.IO.MemoryStream();
                     await viewmodel.UploadedImage.CopyToAsync(ms);
                     imageBytes = ms.ToArray();
                 }
@@ -104,19 +104,18 @@ namespace GRA.Controllers.MissionControl
             {
                 Name = viewmodel.Name,
                 StartDate = viewmodel.StartDate,
-                SiteId = GetCurrentSiteId()
-            };
-
-            header.Socials = new List<Social>
-            {
-                new Social
+                SiteId = GetCurrentSiteId(),
+                Socials = new List<Social>
                 {
-                    Description = viewmodel.Description,
-                    ImageAlt = viewmodel.ImageAlt,
-                    LanguageId = viewmodel.LanguageId,
-                    Title = viewmodel.Title,
-                    TwitterUsername = viewmodel.TwitterUsername
-               }
+                    new Social
+                    {
+                        Description = viewmodel.Description,
+                        ImageAlt = viewmodel.ImageAlt,
+                        LanguageId = viewmodel.LanguageId,
+                        Title = viewmodel.Title,
+                        TwitterUsername = viewmodel.TwitterUsername
+                   }
+                }
             };
 
             var headerId = await _socialManagementService.AddHeaderAndSocialAsync(header,
@@ -148,53 +147,42 @@ namespace GRA.Controllers.MissionControl
 
             var filter = new BaseFilter(page);
 
+            var viewModel = new SocialListViewModel
+            {
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value,
+            };
+
+            if (viewModel.PastMaxPage)
+            {
+                return RedirectToRoute(new { page = viewModel.LastPage ?? 1 });
+            }
+
+            ((List<Language>)viewModel.Languages).AddRange(await _languageService.GetActiveAsync());
+
             var socialHeaders = await _socialManagementService.GetPaginatedListAsync(filter);
+            ((List<SocialHeader>)viewModel.SocialHeaders).AddRange(socialHeaders.Data);
+            viewModel.ItemCount = socialHeaders.Count;
 
-            var languages = await _languageService.GetActiveAsync();
-
-            var activeSocials = new List<ActiveSocials>();
-
-            foreach (var language in languages)
+            foreach (var language in viewModel.Languages)
             {
                 var current = await _socialService.GetAsync(language.Name);
                 if (current != null)
                 {
-                    var sb = new StringBuilder("<a href=\"")
-                        .Append(Url.Action(nameof(ViewSocial), new
+                    viewModel.ActiveSocials.Add(new ActiveSocials
+                    {
+                        Badge = language.Description,
+                        HeaderId = current.SocialHeaderId,
+                        Link = Url.Action(nameof(ViewSocial), new
                         {
                             socialHeaderId = current.SocialHeaderId,
                             languageId = language.Id
-                        }))
-                        .Append("\"><span class=\"text-success gra-language-marker\" title=\"")
-                        .Append(language.Description)
-                        .Append("\">")
-                        .Append(language.Name)
-                        .AppendLine("</span></a>");
-                    activeSocials.Add(new ActiveSocials
-                    {
-                        HeaderId = current.SocialHeaderId,
-                        LanguageId = language.Id,
-                        Link = sb.ToString()
+                        })
                     });
                 }
             }
 
-            var viewmodel = new SocialListViewModel
-            {
-                ActiveSocials = activeSocials,
-                CurrentPage = page,
-                ItemCount = socialHeaders.Count,
-                ItemsPerPage = filter.Take.Value,
-                Languages = languages,
-                SocialHeaders = socialHeaders.Data
-            };
-
-            if (viewmodel.PastMaxPage)
-            {
-                return RedirectToRoute(new { page = viewmodel.LastPage ?? 1 });
-            }
-
-            return View(viewmodel);
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -225,7 +213,7 @@ namespace GRA.Controllers.MissionControl
 
             try
             {
-                using var ms = new System.IO.MemoryStream();
+                await using var ms = new System.IO.MemoryStream();
                 await viewmodel.UploadedImage.CopyToAsync(ms);
                 imageBytes = ms.ToArray();
             }
@@ -285,7 +273,7 @@ namespace GRA.Controllers.MissionControl
 
                 try
                 {
-                    using var ms = new System.IO.MemoryStream();
+                    await using var ms = new System.IO.MemoryStream();
                     await viewmodel.UploadedImage.CopyToAsync(ms);
                     imageBytes = ms.ToArray();
                 }

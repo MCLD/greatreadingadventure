@@ -1,39 +1,39 @@
 ﻿@model GRA.Controllers.ViewModel.Profile.GroupUpgradeViewModel
 <div class="row">
-    <div class="col-sm-6 col-sm-offset-3">
+    <div class="col-sm-6 offset-sm-3">
         <form asp-action="CreateGroup">
             <input asp-for="AddExisting" type="hidden" />
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">@SharedLocalizer[GRA.Annotations.Title.UpgradeToGroup]</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">@SharedLocalizer[GRA.Annotations.Title.UpgradeToGroup]</h3>
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     <p>
                         @SharedLocalizer[GRA.Annotations.Info.UpgradeToGroupDescription, Model.MaximumHouseholdAllowed]
                     </p>
-                    <div class="form-group">
-                        <label asp-for="GroupInfo.Name" class="control-label"></label>
+                    <div class="mb-3">
+                        <label asp-for="GroupInfo.Name" class="col-form-label"></label>
                         <input asp-for="GroupInfo.Name" class="form-control" />
                         <span asp-validation-for="GroupInfo.Name" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="GroupInfo.GroupTypeId" class="control-label"></label>
+                    <div class="mb-3">
+                        <label asp-for="GroupInfo.GroupTypeId" class="col-form-label"></label>
                         <select asp-for="GroupInfo.GroupTypeId"
                                 asp-items="Model.GroupTypes"
-                                class="form-control"></select>
+                                class="form-select"></select>
                         <span asp-validation-for="GroupInfo.GroupTypeId" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="panel-footer clearfix">
-                    <div class="pull-right">
-                        <a class="btn btn-danger" asp-action="CancelGroupUpgrade">
+                <div class="card-footer clearfix">
+                    <div class="float-end">
+                        <a class="btn btn-outline-danger" asp-action="CancelGroupUpgrade">
                             <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.Cancel]</span>
                         </a>
                         <button type="submit"
                                 id="Submit"
                                 name="Submit"
                                 value="Submit"
-                                class="btn btn-primary btn-spinner"
+                                class="btn btn-outline-primary"
                                 button-spinner>
                             <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.UpgradeToGroup]</span>
                         </button>

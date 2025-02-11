@@ -2,16 +2,16 @@
 
 @await Html.PartialAsync("_PerformerManagementPartial")
 
-<div class="row" style="padding: 10px 0;">
-    <div class="col-xs-12">
-        <a class="btn btn-default"
-           data-toggle="modal"
-           data-target="#addModal">Add an Age Group</a>
+<div class="row my-4">
+    <div class="col-12 col-md-8 offset-md-2 col-xl-6 offset-xl-3">
+        <a class="btn btn-outline-primary"
+           data-bs-toggle="modal"
+           data-bs-target="#addModal">Add an Age Group</a>
     </div>
 </div>
 
-<div class="row" style="padding: 10px 0;">
-    <div class="col-xs-12">
+<div class="row">
+    <div class="col-12 col-md-8 offset-md-2 col-xl-6 offset-xl-3">
         @if (Model.AgeGroups.Count == 0)
         {
             <div class="alert alert-warning">No Age Groups</div>
@@ -19,13 +19,13 @@
         else
         {
             <div>
-                <table class="table table-condensed table-bordered table-striped">
+                <table class="table table-sm table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>Name</th>
                             <th>Color</th>
                             <th>Back to Back Branches</th>
-                            <th width="100">&nbsp;</th>
+                            <th style="width: 6rem;">&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -41,25 +41,24 @@
                                 </td>
                                 <td>
                                     @AgeGroup.BackToBackBranchIds.Count
+                                </td>
+                                <td class="text-center">
                                     <button type="button"
-                                            class="btn btn-primary btn-xs"
-                                            style="margin-left: 1rem"
-                                            data-toggle="modal"
-                                            data-target="#updateBackToBackModal"
+                                            class="btn btn-outline-primary btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#updateBackToBackModal"
                                             data-id="@AgeGroup.Id"
                                             data-name="@AgeGroup.Name"
                                             data-branchids="@string.Join(",", AgeGroup.BackToBackBranchIds)">
-                                        <span class="fas fa-edit" aria-hidden="true"></span>
+                                        <span class="fas fa-pencil-alt fa-fw" aria-hidden="true"></span>
                                     </button>
-                                </td>
-                                <td>
                                     <button type="button"
-                                            class="btn btn-danger btn-xs"
-                                            data-toggle="modal"
-                                            data-target="#deleteModal"
+                                            class="btn btn-outline-danger btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal"
                                             data-id="@AgeGroup.Id"
                                             data-name="@AgeGroup.Name">
-                                        <span class="fas fa-2x fa-times" aria-hidden="true"></span>
+                                        <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                                     </button>
                                 </td>
                             </tr>
@@ -67,10 +66,7 @@
                     </tbody>
                 </table>
             </div>
-            @if (Model.PaginateModel.MaxPage > 1)
-            {
-                <paginate paginateModel="@Model.PaginateModel"></paginate>
-            }
+            <paginate paginateModel="@Model.PaginateModel"></paginate>
         }
     </div>
 </div>
@@ -90,23 +86,23 @@
                 <input asp-for="PaginateModel.CurrentPage" type="hidden" />
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button"
-                                class="close"
-                                data-dismiss="modal"
-                                aria-label="Close dialog">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
                         <h1 class="modal-title h4" id="addModalLabel">Add Age Group</h1>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close dialog">
+                        </button>
                     </div>
                     <div class="modal-body">
-                        <div class="form-group">
-                            <label asp-for="AgeGroup.Name" class="control-label"></label>
+                        <div class="mb-3">
+                            <label asp-for="AgeGroup.Name" class="col-form-label"></label>
                             <input asp-for="AgeGroup.Name" class="form-control" />
                             <span asp-validation-for="AgeGroup.Name" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
-                            <label asp-for="AgeGroup.IconColor" class="control-label"></label>
-                            <description gra-description-for="AgeGroup.IconColor"></description><br />
+                        <div class="mb-3">
+                            <label asp-for="AgeGroup.IconColor" class="col-form-label"></label>
+                            <description gra-description-for="AgeGroup.IconColor"></description>
+                            <br />
                             <input asp-for="AgeGroup.IconColor" type="color" />
                             <span asp-validation-for="AgeGroup.IconColor"
                                   class="text-danger"></span>
@@ -114,13 +110,13 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-default"
-                                data-dismiss="modal"
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel
                         </button>
                         <button type="submit"
-                                class="btn btn-primary btn-spinner pull-right"
+                                class="btn btn-outline-primary btn-spinner float-end"
                                 aria-label="Confirm"
                                 button-spinner>
                             Add
@@ -138,7 +134,7 @@
          tabindex="-1"
          role="dialog"
          aria-labelledby="updateBackToBackModalLabel">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
             <form id="backToBackUpdateForm"
                   asp-controller="PerformerManagement"
                   asp-action="UpdateAgeGroupBackToBackBranches"
@@ -149,23 +145,20 @@
                 <input asp-for="BackToBackBranchesString" type="hidden" />
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button"
-                                class="close"
-                                data-dismiss="modal"
-                                aria-label="Close dialog">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
                         <h1 class="modal-title h4" id="updateBackToBackModalLabel">
                             Update Back to Back Branches
                         </h1>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close dialog">
+                        </button>
+
                     </div>
-                    <div class="modal-body"
-                         style="max-height: calc(100vh - 200px); overflow-y:auto;">
+                    <div class="modal-body">
                         @foreach (var system in Model.Systems)
                         {
-                            <div style="font-size:x-large;margin-bottom:10px;">
-                                <strong>@system.Name</strong>
-                            </div>
+                            <strong>@system.Name</strong>
                             @foreach (var branch in system.Branches)
                             {
                                 <div>
@@ -180,13 +173,12 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-default"
-                                data-dismiss="modal"
-                                style="margin-right: 1em;">
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">
                             Cancel
                         </button>
                         <button type="submit"
-                                class="btn btn-primary btn-spinner pull-right"
+                                class="btn btn-outline-primary"
                                 aria-label="Confirm"
                                 button-spinner>
                             Save
@@ -215,30 +207,32 @@
                 <input asp-for="AgeGroup.Name" type="hidden" />
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button"
-                                class="close"
-                                data-dismiss="modal"
-                                aria-label="Close dialog">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
                         <h1 class="modal-title h4" id="deleteModalLabel">Delete Age Group</h1>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close dialog">
+                        </button>
                     </div>
-                    <div class="modal-body">
-                        <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
-                        <span id="modal-text"></span>
+                    <div class="modal-body p-0">
+                        <div class="modal-body d-flex align-items-stretch">
+                            <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                                  aria-hidden="true"></span>
+                            <span id="modal-text"></span>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-default"
-                                data-dismiss="modal"
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel
                         </button>
                         <button type="submit"
-                                class="btn btn-danger btn-spinner pull-right"
+                                class="btn btn-outline-danger btn-spinner float-end"
                                 aria-label="Confirm"
                                 button-spinner>
-                            <span class="fas fa-times" aria-hidden="true"></span>
+                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                             Delete
                         </button>
                     </div>
@@ -251,31 +245,32 @@
 @section scripts {
     <script>
         $("#updateBackToBackModal").on("show.bs.modal", function (e) {
-            var button = $(e.relatedTarget);
-            var id = button.data("id");
-            var name = button.data("name");
-            var branchIds = button.data("branchids");
-            var modal = $(this);
+            let button = $(e.relatedTarget);
+            let id = button.data("id");
+            let name = button.data("name");
+            let branchIds = button.data("branchids").toString();
+            let modal = $(this);
             modal.find("#AgeGroup_Id").val(id);
             modal.find("#AgeGroup_Name").val(name);
-
             modal.find(".branchSelector").prop("checked", false);
-            $.each(branchIds.split(","), function (index, value) {
+            $.each(branchIds.split(","), function (_, value) {
                 modal.find("#branch" + value).prop("checked", true);
             });
         });
 
         $("#backToBackUpdateForm").on("submit", function (e) {
-            var backToBackBranches = $(".branchSelector:checked").map(function () { return $(this).data("id"); }).get();
+            let backToBackBranches = $(".branchSelector:checked").map(function () {
+                return $(this).data("id");
+            }).get();
             $("#BackToBackBranchesString").val(JSON.stringify(backToBackBranches));
         });
 
         $("#deleteModal").on("show.bs.modal", function (e) {
-            var button = $(e.relatedTarget);
-            var id = button.data("id");
-            var name = button.data("name");
-            var modal = $(this);
-            modal.find("#modal-text").text("Are you sure you wish to delete the Age Group \"" + name + "\"?");
+            let button = $(e.relatedTarget);
+            let id = button.data("id");
+            let name = button.data("name");
+            let modal = $(this);
+            modal.find("#modal-text").html("Are you sure you wish to delete the Age Group: <strong>" + name + "</strong>?");
             modal.find("#AgeGroup_Id").val(id);
             modal.find("#AgeGroup_Name").val(name);
         });

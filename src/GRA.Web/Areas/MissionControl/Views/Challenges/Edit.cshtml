@@ -12,13 +12,13 @@
 
 @if (!string.IsNullOrEmpty(Model.CreatedByName))
 {
-    <div style="font-size:large;">
+    <div class="fs-5 mt-2 mb-3">
         Created By:
         @if (Model.CanViewParticipants)
         {
             <a aria-label="@Model.CreatedByName (Opens new window)"
-               asp-controller="Participants"
                asp-action="@nameof(ParticipantsController.Detail)"
+               asp-controller="@ParticipantsController.Name"
                asp-route-id="@Model.Challenge.CreatedBy"
                target="_blank">@Model.CreatedByName</a>
         }
@@ -32,9 +32,11 @@
 
 @if (!string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
 {
-    <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-        <div class="alert alert-warning">
-            <span class="fas fa-exclamation-circle" aria-hidden="true"></span> @Model.MaxPointsWarningMessage
+    <div class="col-12 col-sm-6 offset-sm-3 mb-3">
+        <div class="alert alert-warning d-flex align-items-stretch">
+            <span class="fas fa-exclamation-circle fa-2x pt-2 me-3"
+                  aria-hidden="true"></span>
+            <span>@Model.MaxPointsWarningMessage</span>
         </div>
     </div>
 }
@@ -43,92 +45,132 @@
       id="challengeForm"
       method="post"
       role="form"
-      enctype="multipart/form-data"
-      style="padding: 10px 0;">
-
+      enctype="multipart/form-data">
     @if (Model.AddTask)
     {
         <div class="row">
-            <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
-                <div class="modal-dialog" role="document">
+            <div class="modal fade"
+                 id="addModal"
+                 tabindex="-1"
+                 role="dialog"
+                 aria-labelledby="addModalLabel">
+                <div class="modal-dialog modal-xl" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                             <h4 class="modal-title" id="addModalLabel">Add task</h4>
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <input asp-for="Task.ChallengeTaskType" value="@ChallengeTaskType.Action" type="hidden" />
-                            <input asp-for="TaskUploadFile" type="file" accept=".png,.jpg,.jpeg,.png" style="display:none;" />
-                            <ul class="nav nav-tabs gra-nav-tabs" role="tablist">
-                                <li role="presentation" class="active">
-                                    <a id="actionTab" href="#action" aria-controls="action" role="tab" data-toggle="tab">Action</a>
+                            <input asp-for="Task.ChallengeTaskType"
+                                   value="@ChallengeTaskType.Action"
+                                   type="hidden" />
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="nav-item">
+                                    <a id="actionTab"
+                                       class="nav-link active"
+                                       href="#action"
+                                       aria-controls="action"
+                                       role="tab"
+                                       data-bs-toggle="tab">Action</a>
                                 </li>
-                                <li role="presentation">
-                                    <a id="bookTab" href="#book" aria-controls="book" role="tab" data-toggle="tab">Book</a>
+                                <li role="presentation" class="nav-item">
+                                    <a id="bookTab"
+                                       class="nav-link"
+                                       href="#book"
+                                       aria-controls="book"
+                                       role="tab"
+                                       data-bs-toggle="tab">Book</a>
                                 </li>
                             </ul>
-
                             <div class="tab-content">
-                                <div role="tabpanel" class="tab-pane gra-tab-pane active" id="action">
-                                    <div class="form-group">
-                                        <label asp-for="Task.Title" class="control-label">Description</label>
+                                <div role="tabpanel"
+                                     class="tab-pane gra-tab-pane active"
+                                     id="action">
+                                    <div class="mb-3">
+                                        <label asp-for="Task.Title"
+                                               class="col-form-label">Description</label>
                                         <div id="wmd-button-bar"></div>
-                                        <textarea asp-for="Task.Title" id="wmd-input" class="form-control wmd-input actionTitle" data-val-required="The Description field is required."></textarea>
-                                        <br /><label class="control-label">Preview</label>
+                                        <textarea asp-for="Task.Title"
+                                                  id="wmd-input"
+                                                  class="form-control wmd-input actionTitle"
+                                                  data-val-required="The Description field is required."></textarea>
+                                        <br /><label class="col-form-label">Preview</label>
                                         <div id="preview"></div>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="control-label">Add a file</label>
+                                    <div class="mb-3">
                                         <div class="input-group">
-                                            <label class="input-group-btn">
-                                                <button type="button" class="btn btn-default btn-file taskFileButton">
-                                                    <span class="far fa-file"></span> Select a file
-                                                </button>
-                                            </label>
-                                            <input type="text" class="form-control selectedTaskFile" readonly>
+                                            <input type="file"
+                                                   class="form-control task-upload-file"
+                                                   asp-for="TaskUploadFile"
+                                                   accept=".png,.jpg,.jpeg" />
+                                            <button class="btn btn-outline-secondary"
+                                                    type="button"
+                                                    onclick="$('.task-upload-file').val('')">
+                                                Clear selection
+                                            </button>
                                         </div>
-                                        <span asp-validation-for="TaskUploadFile" class="text-danger"></span>
-                                        <button class="btn btn-default clearTaskFile" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
+                                        <span asp-validation-for="TaskUploadFile"
+                                              class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div role="tabpanel" class="tab-pane gra-tab-pane" id="book">
-                                    <div class="form-group">
-                                        <label asp-for="Task.Title" class="control-label"></label>
-                                        <input asp-for="Task.Title" id="bookTitle" class="form-control" disabled />
+                                    <div class="mb-3">
+                                        <label asp-for="Task.Title" class="col-form-label"></label>
+                                        <input asp-for="Task.Title"
+                                               id="bookTitle"
+                                               class="form-control"
+                                               disabled />
                                     </div>
-                                    <div class="form-group">
-                                        <label asp-for="Task.Author" class="control-label"></label>
+                                    <div class="mb-3">
+                                        <label asp-for="Task.Author" class="col-form-label"></label>
                                         <input asp-for="Task.Author" class="form-control" />
-                                        <span asp-validation-for="Task.Author" class="text-danger"></span>
+                                        <span asp-validation-for="Task.Author"
+                                              class="text-danger"></span>
                                     </div>
-                                    <div class="form-group">
-                                        <label asp-for="Task.Isbn" class="control-label"></label>
+                                    <div class="mb-3">
+                                        <label asp-for="Task.Isbn" class="col-form-label"></label>
                                         <input asp-for="Task.Isbn" class="form-control" />
-                                        <span asp-validation-for="Task.Isbn" class="text-danger"></span>
+                                        <span asp-validation-for="Task.Isbn"
+                                              class="text-danger"></span>
                                     </div>
-                                    <div class="form-group">
-                                        <label asp-for="Task.Url" class="control-label"></label>
+                                    <div class="mb-3">
+                                        <label asp-for="Task.Url" class="col-form-label"></label>
                                         <input asp-for="Task.Url" class="form-control" />
                                     </div>
-                                    <div class="form-group">
-                                        <label class="control-label">Add a file</label>
+                                    <div class="mb-3">
+                                        <label class="col-form-label">Add a file</label>
                                         <div class="input-group">
-                                            <label class="input-group-btn">
-                                                <button type="button" class="btn btn-default btn-file taskFileButton">
-                                                    <span class="far fa-file"></span> Select a file
-                                                </button>
-                                            </label>
-                                            <input type="text" class="form-control selectedTaskFile" readonly>
+                                            <input type="file"
+                                                   class="form-control task-upload-file"
+                                                   asp-for="TaskUploadFile"
+                                                   accept=".png,.jpg,.jpeg" />
+                                            <button class="btn btn-outline-secondary"
+                                                    type="button"
+                                                    onclick="$('.task-upload-file').val('')">
+                                                Clear selection
+                                            </button>
                                         </div>
-                                        <span asp-validation-for="TaskUploadFile" class="text-danger"></span>
-                                        <button class="btn btn-default clearTaskFile" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
+                                        <span asp-validation-for="TaskUploadFile"
+                                              class="text-danger"></span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                            <button type="submit" asp-action="AddTask" class="btn btn-primary pull-right btn-spinner" aria-label="Confirm" button-spinner>
+                            <button type="button"
+                                    class="btn btn-outline-secondary"
+                                    data-bs-dismiss="modal"
+                                    button-spinner>
+                                Cancel
+                            </button>
+                            <button type="submit"
+                                    asp-action="AddTask"
+                                    class="btn btn-outline-primary float-end"
+                                    aria-label="Confirm"
+                                    button-spinner>
                                 <span class="buttonText">Add</span>
                             </button>
                         </div>
@@ -141,11 +183,14 @@
     @if (Model.Task != null)
     {
         <div class="row">
-            <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
-                <div class="modal-dialog" role="document">
+            <div class="modal fade"
+                 id="editModal"
+                 tabindex="-1"
+                 role="dialog"
+                 aria-labelledby="editModalLabel">
+                <div class="modal-dialog modal-xl" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                             <h4 class="modal-title" id="editModalLabel">Edit task</h4>
                         </div>
                         <div class="modal-body">
@@ -154,99 +199,162 @@
                             <input asp-for="Task.ChallengeId" type="hidden" />
                             <input asp-for="Task.ChallengeTaskType" type="hidden" />
                             <input asp-for="Task.Filename" type="hidden" />
-                            <input asp-for="TaskUploadFile" type="file" accept=".png,.jpg,.jpeg,.png" style="display:none;" />
-
-                            <ul class="nav nav-tabs gra-nav-tabs" role="tablist">
-                                <li role="presentation" class="@(Model.Task.ChallengeTaskType == ChallengeTaskType.Action ? " active" : "" )">
-                                    <a id="actionTab" href="#action" aria-controls="action" role="tab" data-toggle="tab">Action</a>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="nav-item">
+                                    <a id="actionTab"
+                                       class="nav-link @(Model.Task.ChallengeTaskType == ChallengeTaskType.Action ? " active" : "" )"
+                                       href="#action"
+                                       aria-controls="action"
+                                       role="tab"
+                                       data-bs-toggle="tab">Action</a>
                                 </li>
-                                <li role="presentation" class="@(Model.Task.ChallengeTaskType == ChallengeTaskType.Book ? " active" : "" )">
-                                    <a id="bookTab" href="#book" aria-controls="book" role="tab" data-toggle="tab">Book</a>
+                                <li role="presentation" class="nav-item">
+                                    <a id="bookTab"
+                                       class="nav-link @(Model.Task.ChallengeTaskType == ChallengeTaskType.Book ? " active" : "" )"
+                                       href="#book"
+                                       aria-controls="book"
+                                       role="tab"
+                                       data-bs-toggle="tab">Book</a>
                                 </li>
                             </ul>
-
                             <div class="tab-content">
-                                <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.Task.ChallengeTaskType == ChallengeTaskType.Action ? " active" : "" )" id="action">
-                                    <div class="form-group">
-                                        <label asp-for="Task.Title" class="control-label">Description</label>
+                                <div role="tabpanel"
+                                     class="tab-pane gra-tab-pane @(Model.Task.ChallengeTaskType == ChallengeTaskType.Action ? " active" : "" )"
+                                     id="action">
+                                    <div class="mb-3">
+                                        <label asp-for="Task.Title"
+                                               class="col-form-label">Description</label>
                                         <div id="wmd-button-bar"></div>
-                                        <textarea asp-for="Task.Title" id="wmd-input" class="form-control wmd-input actionTitle" data-val-required="The Description field is required." disabled="@(Model.Task.ChallengeTaskType == ChallengeTaskType.Action ? null : "disabled")"></textarea>
-                                        <br /><label class="control-label">Preview</label>
+                                        <textarea asp-for="Task.Title"
+                                                  id="wmd-input"
+                                                  class="form-control wmd-input actionTitle"
+                                                  data-val-required="The Description field is required."
+                                                  disabled="@(Model.Task.ChallengeTaskType == ChallengeTaskType.Action ? null : "disabled")"></textarea>
+                                        <br /><label class="col-form-label">Preview</label>
                                         <div id="preview"></div>
                                     </div>
-                                    <div class="form-group">
+                                    <div>
                                         @if (string.IsNullOrWhiteSpace(Model.Task.Filename))
                                         {
-                                            <label class="control-label">Add a file</label>
+                                            <label class="col-form-label">Add a file</label>
                                         }
                                         else
                                         {
-                                            <label class="control-label">
-                                                Edit File &ndash;
+                                            <label class="col-form-label">
+                                                Update or Remove File &ndash;
                                                 <a aria-label="Link (opens new window)"
                                                    href="@Model.TaskFilePath"
                                                    target="_blank">
-                                                    Link
+                                                    @Model.Task.Filename
                                                 </a>
                                             </label>
+                                            <div class="fileRemoveAlert d-none alert alert-danger">
+                                                File will be removed upon save.
+                                            </div>
                                         }
                                         <div class="input-group">
-                                            <label class="input-group-btn">
-                                                <button type="button" class="btn btn-default btn-file taskFileButton">
-                                                    <span class="far fa-file"></span> Select a file
-                                                </button>
-                                            </label>
-                                            <input type="text" value="@Model.Task.Filename" class="form-control selectedTaskFile" readonly>
+                                            <input type="file"
+                                                   class="form-control task-upload-file"
+                                                   asp-for="TaskUploadFile"
+                                                   accept=".png,.jpg,.jpeg" />
+                                            <button class="btn btn-outline-secondary"
+                                                    type="button"
+                                                    onclick="$('.task-upload-file').val('')">
+                                                Clear selection
+                                            </button>
                                         </div>
-                                        <span asp-validation-for="TaskUploadFile" class="text-danger"></span>
-                                        <button class="btn btn-default clearTaskFile" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
+                                        <span asp-validation-for="TaskUploadFile"
+                                              class="text-danger"></span>
+                                        @if (!string.IsNullOrWhiteSpace(Model.Task.Filename))
+                                        {
+                                            <button type="button"
+                                                    class="btn btn-outline-warning mt-2 clearTaskFile">
+                                                Remove attached file
+                                            </button>
+                                        }
                                     </div>
                                 </div>
-                                <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.Task.ChallengeTaskType == ChallengeTaskType.Book ? " active" : "" )" id="book">
-                                    <div class="form-group">
-                                        <label asp-for="Task.Title" class="control-label"></label>
-                                        <input asp-for="Task.Title" id="bookTitle" class="form-control" disabled="@(Model.Task.ChallengeTaskType == ChallengeTaskType.Book ? null : " disabled")" />
+                                <div role="tabpanel"
+                                     class="tab-pane gra-tab-pane @(Model.Task.ChallengeTaskType == ChallengeTaskType.Book ? " active" : "" )"
+                                     id="book">
+                                    <div class="mb-3">
+                                        <label asp-for="Task.Title" class="col-form-label"></label>
+                                        <input asp-for="Task.Title"
+                                               id="bookTitle"
+                                               class="form-control"
+                                               disabled="@(Model.Task.ChallengeTaskType == ChallengeTaskType.Book ? null : " disabled")" />
                                     </div>
-                                    <div class="form-group">
-                                        <label asp-for="Task.Author" class="control-label"></label>
+                                    <div class="mb-3">
+                                        <label asp-for="Task.Author" class="col-form-label"></label>
                                         <input asp-for="Task.Author" class="form-control" />
-                                        <span asp-validation-for="Task.Author" class="text-danger"></span>
+                                        <span asp-validation-for="Task.Author"
+                                              class="text-danger"></span>
                                     </div>
-                                    <div class="form-group">
-                                        <label asp-for="Task.Isbn" class="control-label"></label>
+                                    <div class="mb-3">
+                                        <label asp-for="Task.Isbn" class="col-form-label"></label>
                                         <input asp-for="Task.Isbn" class="form-control" />
-                                        <span asp-validation-for="Task.Isbn" class="text-danger"></span>
+                                        <span asp-validation-for="Task.Isbn"
+                                              class="text-danger"></span>
                                     </div>
-                                    <div class="form-group">
-                                        <label asp-for="Task.Url" class="control-label"></label>
+                                    <div class="mb-3">
+                                        <label asp-for="Task.Url" class="col-form-label"></label>
                                         <input asp-for="Task.Url" class="form-control" />
                                     </div>
-                                    <div class="form-group">
+                                    <div>
                                         @if (string.IsNullOrWhiteSpace(Model.Task.Filename))
                                         {
-                                            <label class="control-label">Add a file</label>
+                                            <label class="col-form-label">Add a file</label>
                                         }
                                         else
                                         {
-                                            <label class="control-label">Edit file</label>
+                                            <label class="col-form-label">
+                                                Update or Remove File &ndash;
+                                                <a aria-label="Link (opens new window)"
+                                                   href="@Model.TaskFilePath"
+                                                   target="_blank">
+                                                    @Model.Task.Filename
+                                                </a>
+                                            </label>
+                                            <div class="fileRemoveAlert d-none alert alert-danger">
+                                                File will be removed upon save.
+                                            </div>
                                         }
                                         <div class="input-group">
-                                            <label class="input-group-btn">
-                                                <button type="button" class="btn btn-default btn-file taskFileButton">
-                                                    <span class="far fa-file"></span> Select a file
-                                                </button>
-                                            </label>
-                                            <input type="text" value="@Model.Task.Filename" class="form-control selectedTaskFile" readonly>
+                                            <input type="file"
+                                                   class="form-control task-upload-file"
+                                                   asp-for="TaskUploadFile"
+                                                   accept=".png,.jpg,.jpeg" />
+                                            <button class="btn btn-outline-secondary"
+                                                    type="button"
+                                                    onclick="$('.task-upload-file').val('')">
+                                                Clear selection
+                                            </button>
                                         </div>
-                                        <span asp-validation-for="TaskUploadFile" class="text-danger"></span>
-                                        <button class="btn btn-default clearTaskFile" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
+                                        <span asp-validation-for="TaskUploadFile"
+                                              class="text-danger"></span>
+                                        @if (!string.IsNullOrWhiteSpace(Model.Task.Filename))
+                                        {
+                                            <button type="button"
+                                                    class="btn btn-outline-warning mt-2 clearTaskFile">
+                                                Remove attached file
+                                            </button>
+                                        }
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                            <button type="submit" asp-action="ModifyTask" class="btn btn-primary pull-right btn-spinner" aria-label="Confirm" button-spinner>
+                            <button type="button"
+                                    class="btn btn-outline-secondary"
+                                    data-bs-dismiss="modal"
+                                    button-spinner>
+                                Cancel
+                            </button>
+                            <button type="submit"
+                                    asp-action="ModifyTask"
+                                    class="btn btn-outline-primary float-end"
+                                    aria-label="Confirm"
+                                    button-spinner>
                                 <span class="buttonText">Save</span>
                             </button>
                         </div>
@@ -257,23 +365,35 @@
     }
 
     <div class="row">
-        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+        <div class="modal fade"
+             id="deleteModal"
+             tabindex="-1"
+             role="dialog"
+             aria-labelledby="deleteModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         <h4 class="modal-title" id="deleteModalLabel">Delete task</h4>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                        <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
+                    <div class="modal-body d-flex align-items-stretch">
+                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                              aria-hidden="true"></span>
                         <span id="modal-text"></span>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">
+                            Cancel
+                        </button>
                         <button type="submit"
                                 id="DeleteTask"
                                 asp-action="DeleteTask"
-                                class="btn btn-danger pull-right btn-spinner"
+                                class="btn btn-outline-danger"
                                 aria-label="Confirm"
                                 button-spinner>
                             <span class="fas fa-times" aria-hidden="true"></span>
@@ -284,29 +404,36 @@
             </div>
         </div>
     </div>
-
     <input asp-for="Challenge.Id" type="hidden" />
     <input asp-for="Challenge.BadgeId" type="hidden" />
     <input asp-for="CanEditGroups" type="hidden" />
     <input asp-for="CanManageEvents" type="hidden" />
     <input asp-for="CanViewTriggers" type="hidden" />
-    <input asp-for="UseBadgeMaker" type="hidden" />
-    <input asp-for="BadgeMakerUrl" type="hidden" />
     <input asp-for="BadgeMakerImage" type="hidden" />
-
     @if (Model.Groups.Count > 0)
     {
-        <div class="panel-group row-spacing" id="accordion" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingGroups">
-                    <h4 class="panel-title">
-                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseGroups" aria-expanded="false" aria-controls="collapseGroups">
+        <div class="list-group mb-3"
+             id="accordion"
+             role="tablist"
+             aria-multiselectable="true">
+            <div class="card">
+                <div class="card-header" role="tab" id="headingGroups">
+                    <h4 class="card-title">
+                        <a role="button"
+                           data-bs-toggle="collapse"
+                           data-bs-parent="#accordion"
+                           href="#collapseGroups"
+                           aria-expanded="false"
+                           aria-controls="collapseGroups">
                             Challenge Groups
                         </a>
                     </h4>
                 </div>
-                <div id="collapseGroups" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingGroups">
-                    <div class="panel-body">
+                <div id="collapseGroups"
+                     class="card-collapse collapse"
+                     role="tabpanel"
+                     aria-labelledby="headingGroups">
+                    <div class="card-body">
                         The following group(s) contain this challenge:
                         <ul>
                             @foreach (var group in Model.Groups)
@@ -341,17 +468,28 @@
 
     @if (Model.RelatedEvents.Count > 0)
     {
-        <div class="panel-group row-spacing" id="accordion" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingEvents">
-                    <h4 class="panel-title">
-                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEvents" aria-expanded="false" aria-controls="collapseEvents">
+        <div class="list-group mb-3"
+             id="accordion"
+             role="tablist"
+             aria-multiselectable="true">
+            <div class="card">
+                <div class="card-header" role="tab" id="headingEvents">
+                    <h4 class="card-title">
+                        <a role="button"
+                           data-bs-toggle="collapse"
+                           data-bs-parent="#accordion"
+                           href="#collapseEvents"
+                           aria-expanded="false"
+                           aria-controls="collapseEvents">
                             Related Events
                         </a>
                     </h4>
                 </div>
-                <div id="collapseEvents" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEvents">
-                    <div class="panel-body">
+                <div id="collapseEvents"
+                     class="card-collapse collapse"
+                     role="tabpanel"
+                     aria-labelledby="headingEvents">
+                    <div class="card-body">
                         The following event(s) are related to this challenge:
                         <ul>
                             @foreach (var graEvent in Model.RelatedEvents)
@@ -387,17 +525,28 @@
 
     @if (Model.DependentTriggers.Count > 0)
     {
-        <div class="panel-group row-spacing" id="accordion" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingOne">
-                    <h4 class="panel-title">
-                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+        <div class="list-group mb-3"
+             id="accordion"
+             role="tablist"
+             aria-multiselectable="true">
+            <div class="card">
+                <div class="card-header" role="tab" id="headingOne">
+                    <h4 class="card-title">
+                        <a role="button"
+                           data-bs-toggle="collapse"
+                           data-bs-parent="#accordion"
+                           href="#collapseOne"
+                           aria-expanded="false"
+                           aria-controls="collapseOne">
                             Dependent Triggers
                         </a>
                     </h4>
                 </div>
-                <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-                    <div class="panel-body">
+                <div id="collapseOne"
+                     class="card-collapse collapse"
+                     role="tabpanel"
+                     aria-labelledby="headingOne">
+                    <div class="card-body">
                         The following trigger(s) depend on this challenge:
                         <ul>
                             @foreach (var trigger in Model.DependentTriggers)
@@ -428,16 +577,19 @@
         </div>
     }
 
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label class="control-label">Status</label>
-            <input class="form-control" value=@(Model.Challenge.IsActive ? "Active" : "Inactive" ) ignore disabled />
+    <div class="row mb-3">
+        <div class="col-12">
+            <label class="col-form-label">Status</label>
+            <input class="form-control"
+                   value=@(Model.Challenge.IsActive ? "Active" : "Inactive" )
+                   ignore
+                   disabled />
         </div>
     </div>
 
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="Challenge.Name" class="control-label"></label>
+    <div class="row mb-3">
+        <div class="col-12">
+            <label asp-for="Challenge.Name" class="col-form-label"></label>
             <input asp-for="Challenge.Name"
                    class="form-control ignore"
                    readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
@@ -445,9 +597,9 @@
         </div>
     </div>
 
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="Challenge.Description" class="control-label"></label>
+    <div class="row mb-3">
+        <div class="col-12">
+            <label asp-for="Challenge.Description" class="col-form-label"></label>
             <textarea asp-for="Challenge.Description"
                       class="form-control ignore"
                       readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)"> </textarea>
@@ -456,8 +608,8 @@
     </div>
 
     <div class="row">
-        <div class="col-xs-12 col-sm-6 row-spacing">
-            <label asp-for="Challenge.PointsAwarded" class="control-label"></label>
+        <div class="col-12 col-sm-6 mb-3">
+            <label asp-for="Challenge.PointsAwarded" class="col-form-label"></label>
             <label style="font-size: 12px;">@Model.MaxPointsMessage</label>
             <input asp-for="Challenge.PointsAwarded"
                    type="number"
@@ -467,8 +619,8 @@
             <span asp-validation-for="Challenge.PointsAwarded" class="text-danger"></span>
         </div>
 
-        <div class="col-xs-12 col-sm-6 row-spacing">
-            <label asp-for="Challenge.TasksToComplete" class="control-label"></label>
+        <div class="col-12 col-sm-6 mb-3">
+            <label asp-for="Challenge.TasksToComplete" class="col-form-label"></label>
             <input asp-for="Challenge.TasksToComplete"
                    type="number"
                    min="1"
@@ -478,25 +630,33 @@
         </div>
     </div>
 
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="Challenge.CategoryIds" class="control-label"></label>
-            <input asp-for="CategoryPlaceholder" class="form-control" />
+    <div class="row mb-3">
+        <div class="col-12">
+            <label asp-for="Challenge.CategoryIds" class="col-form-label"></label>
             <select asp-for="Challenge.CategoryIds"
                     asp-items="Model.CategoryList"
-                    class="form-control hidden"
+                    autocomplete="off"
+                    class="form-select"
+                    disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)"
                     multiple="multiple"
-                    disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)"></select>
+                    size="1"></select>
             <span asp-validation-for="Challenge.CategoryIds" class="text-danger"></span>
+        </div>
+        <div class="col-12">
+            <small>
+                <em>
+                    To remove a category: select it and use your backspace or delete key.
+                </em>
+            </small>
         </div>
     </div>
 
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="Challenge.LimitToSystemId" class="control-label"></label>
+    <div class="row mb-3">
+        <div class="col-12">
+            <label asp-for="Challenge.LimitToSystemId" class="col-form-label"></label>
             <select asp-for="Challenge.LimitToSystemId"
                     asp-items="Model.SystemList"
-                    class="form-control"
+                    class="form-select"
                     disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)">
                 <option value="">No</option>
             </select>
@@ -504,12 +664,12 @@
         </div>
     </div>
 
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="Challenge.LimitToBranchId" class="control-label"></label>
+    <div class="row mb-3">
+        <div class="col-12">
+            <label asp-for="Challenge.LimitToBranchId" class="col-form-label"></label>
             <select asp-for="Challenge.LimitToBranchId"
                     asp-items="Model.BranchList"
-                    class="form-control"
+                    class="form-select"
                     disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)">
                 <option value="">No</option>
             </select>
@@ -517,12 +677,12 @@
         </div>
     </div>
 
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="Challenge.AssociatedProgramId" class="control-label"></label>
+    <div class="row mb-3">
+        <div class="col-12">
+            <label asp-for="Challenge.AssociatedProgramId" class="col-form-label"></label>
             <select asp-for="Challenge.AssociatedProgramId"
                     asp-items="Model.ProgramList"
-                    class="form-control"
+                    class="form-select"
                     disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)">
                 <option value="">No</option>
             </select>
@@ -530,91 +690,62 @@
         </div>
     </div>
 
-    <div class="row row-spacing">
-        <div class="col-xs-12">
+    <div class="row mb-3">
+        <div class="col-12">
             @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
             {
-                <label class="control-label">Edit badge image</label>
+                <label class="col-form-label">Edit badge image</label>
             }
             else
             {
-                <label class="control-label">Add a badge</label>
+                <label class="col-form-label">Add a badge</label>
             }
         </div>
 
-        <div class="col-xs-12 col-sm-4 col-md-3">
-
+        <div class="col-12 col-sm-4 col-md-3">
             @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
             {
                 <input asp-for="BadgePath" type="hidden" />
                 <img id="badgeImage" class="img-thumbnail badge-lg"
-                     src="~/@Model.BadgePath?@DateTime.Now.ToString(" yyMMddHHmmss")"
-                     asp-append-version="true" />
+                     src="~/@Model.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")" />
                 <span asp-validation-for="BadgeMakerImage" class="text-danger"></span>
             }
             else
             {
-                <img id="badgeImage" class="img-thumbnail badge-lg" src="@Model.BadgeMakerImage" style="height:210px;" />
+                <img id="badgeImage"
+                     class="img-thumbnail badge-lg"
+                     src="@Model.BadgeMakerImage" />
             }
             <span asp-validation-for="BadgePath" class="text-danger" style="display:block;"></span>
         </div>
 
-        <div class="col-xs-12 col-sm-8 col-md-9">
-            <ul class="nav nav-tabs gra-nav-tabs" role="tablist">
-                @if (Model.UseBadgeMaker)
-                {
-                    <li role="presentation" class=@(Model.UseBadgeMaker ? "active" : "" )>
-                        <a id="badgeTab" href="#badge" aria-controls="badge" role="tab" data-toggle="tab">Badge Maker</a>
-                    </li>
-                }
-                <li role="presentation" class=@(Model.UseBadgeMaker ? "" : "active" )>
-                    <a id="uploadTab" href="#upload" aria-controls="upload" role="tab" data-toggle="tab">Upload an Image</a>
-                </li>
-            </ul>
-
-            <div class="tab-content">
-                <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.UseBadgeMaker ? " active" : "" )" id="badge">
-                    <button id="openMaker" type="button" class="btn btn-default">
-                        <span class="fas fa-certificate"></span> Create a Badge
-                    </button>
-                    <div>
-                        <span class="text-danger" asp-validation-for="BadgeMakerImage"></span>
-                    </div>
-                </div>
-
-                <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.UseBadgeMaker ? " " : " active")" id="upload">
-                    <p>Upload a badge image. Badge images must be square.</p>
-                    <div class="input-group">
-                        <label class="input-group-btn">
-                            <span class="btn btn-default badgeFile">
-                                <span class="far fa-file-image"></span> Select an image<input type="file" name="BadgeUploadImage" id="BadgeUploadImage" accept=".png,.jpg,.jpeg" style="display: none;" />
-                            </span>
-                        </label>
-                        <input type="text" class="form-control" readonly id="selectedFile">
-                    </div>
-                    <div>
-                        <span asp-validation-for="BadgeUploadImage" class="text-danger"></span>
-                    </div>
-                    <button id="clearFile" class="btn btn-default" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
-                </div>
+        <div class="col-12 col-sm-8 col-md-9">
+            <label asp-for="BadgeUploadImage" class="col-form-label"></label>
+            <div class="input-group mb-3">
+                <input type="file"
+                       class="form-control"
+                       asp-for="BadgeUploadImage"
+                       accept=".jpg,.png" />
+                <button class="btn btn-outline-secondary"
+                        type="button"
+                        onclick="$('#BadgeUploadImage').val('')">
+                    Clear selection
+                </button>
+            </div>
+            <span asp-validation-for="BadgeUploadImage" class="text-danger mb-3"></span>
+            <div class="mb-3">
+                <label asp-for="BadgeAltText" class="col-form-label"></label>
+                <span class="fas fa-info-circle wide-tooltip"
+                      title="How should this badge be described to someone who can't see it?"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"></span>
+                <textarea asp-for="BadgeAltText" class="form-control"></textarea>
+                <span asp-validation-for="BadgeAltText" class="text-danger"></span>
             </div>
         </div>
     </div>
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="BadgeAltText" class="control-label"></label>
-            <span class="fas fa-info-circle wide-tooltip"
-                  title="How should this badge be described to someone who can't see it?"
-                  data-toggle="tooltip"
-                  data-placement="top"></span>
-            <textarea asp-for="BadgeAltText" class="form-control"></textarea>
-            <span asp-validation-for="BadgeAltText" class="text-danger"></span>
-        </div>
-    </div>
-    <hr />
-
-    <div class="form-group">
-        <a asp-action="Index" class="btn btn-default">Return to List</a>
+    <div class="mb-3 d-flex justify-content-end my-4">
+        <a asp-action="Index" class="btn btn-outline-secondary mx-2">Return to List</a>
         @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
         {
             <button id="saveChallenge"
@@ -622,14 +753,19 @@
                     asp-action="Edit"
                     name="Submit"
                     value="Edit"
-                    class="btn btn-primary btn-spinner"
+                    class="btn btn-outline-primary mx-2"
                     button-spinner>
                 <span class="buttonText">Save Changes</span>
             </button>
             @if (Model.CanActivate)
             {
                 <input asp-for="CanActivate" type="hidden" />
-                <button type="submit" asp-action="Edit" name="Submit" value="Activate" class="btn btn-success btn-spinner" button-spinner>
+                <button type="submit"
+                        asp-action="Edit"
+                        name="Submit"
+                        value="Activate"
+                        class="btn btn-outline-success mx-2"
+                        button-spinner>
                     <span class="buttonText">Save and Activate</span>
                 </button>
             }
@@ -637,11 +773,11 @@
 
     </div>
 
-    <h3>
-        Tasks
+    <h3 class="mt-5">
+        Tasks in this Challenge
     </h3>
 
-    <table class="table table-condensed table-bordered link-table">
+    <table class="table table-sm table-bordered link-table">
         <thead>
             <tr>
                 <th>Title</th>
@@ -662,7 +798,10 @@
                     <td class="td-class">
                         @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
                         {
-                            <input type="submit" asp-action="OpenModifyTask" asp-route-taskId="@task.Id" hidden />
+                            <input type="submit"
+                                   asp-action="OpenModifyTask"
+                                   asp-route-taskId="@task.Id"
+                                   hidden />
                         }
 
                         @if (!string.IsNullOrWhiteSpace(task.Description))
@@ -671,16 +810,15 @@
                             {
                                 <a class="rowlink"></a>
                             }
-                            <div class="task-description">
-                                @Html.Raw(task.Description)
+                            <div class="task-description p-2">
+                                <div>@Html.Raw(task.Description)</div>
                                 @if (!string.IsNullOrWhiteSpace(task.Filename))
                                 {
                                     <a aria-label="View Attachment (Opens new window)"
-                                       href="@task.Filename"
+                                       href="@task.Filename?@DateTime.Now.ToString("yyMMddHHmmss")"
                                        target="_blank"
-                                       class="btn btn-xs btn-default on-top"
-                                       style="margin-top:5px;">
-                                        <span class="far fa-file"></span>
+                                       class="btn btn-sm btn-outline-primary on-top mt-3">
+                                        <span class="far fa-file fa-fw"></span>
                                         View Attachment
                                     </a>
                                 }
@@ -690,35 +828,37 @@
                         {
                             @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
                             {
-                                <a class="rowlink">
-                                    <div>
-                                        @task.Title
-                                    </div>
+                                <a class="rowlink"></a>
+                                <div class="task-description p-2">
+                                    <div>@task.Title</div>
                                     @if (!string.IsNullOrWhiteSpace(task.Filename))
                                     {
-                                        <a href="@task.Filename" target="_blank" class="btn btn-xs btn-default on-top" style="margin-top:5px;">
-                                            <span class="far fa-file"></span>
+                                        <a href="@task.Filename?@DateTime.Now.ToString("yyMMddHHmmss")"
+                                           target="_blank"
+                                           class="btn btn-sm btn-outline-primary on-top mt-3">
+                                            <span class="far fa-file fa-fw"></span>
                                             View Attachment
                                         </a>
                                     }
-                                </a>
+                                </div>
+
+
                             }
                             else
                             {
-                                <div>
-                                    @task.Title
+                                <div class="p-2">
+                                    <div>@task.Title</div>
+                                    @if (!string.IsNullOrWhiteSpace(task.Filename))
+                                    {
+                                        <a aria-label="View Attachment (Opens new window)"
+                                           href="@task.Filename?@DateTime.Now.ToString("yyMMddHHmmss")"
+                                           target="_blank"
+                                           class="btn btn-sm btn-outline-primary on-top mt-3">
+                                            <span class="far fa-file fa-fw"></span>
+                                            View Attachment
+                                        </a>
+                                    }
                                 </div>
-                                @if (!string.IsNullOrWhiteSpace(task.Filename))
-                                {
-                                    <a aria-label="View Attachment (Opens new window)"
-                                       href="@task.Filename"
-                                       target="_blank"
-                                       class="btn btn-xs btn-default on-top"
-                                       style="margin-top:5px;">
-                                        <span class="far fa-file"></span>
-                                        View Attachment
-                                    </a>
-                                }
                             }
                         }
                     </td>
@@ -726,20 +866,25 @@
                     @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
                     {
                         <td class="on-top" style="white-space:nowrap;">
-                            <button type="button" data-id="@task.Id" class="btn btn-default btn-xs decreaseTaskSort" style="width:25px;" disabled="@(task == Model.Challenge.Tasks.First() ? " disabled" : null)">
-                                <span class="fas fa-arrow-up"></span>
-                            </button>
-                            <button type="button" data-id="@task.Id" class="btn btn-default btn-xs increaseTaskSort" style="width:25px;" disabled="@(task == Model.Challenge.Tasks.Last() ? " disabled" : null)">
-                                <span class="fas fa-arrow-down"></span>
+                            <button type="button"
+                                    data-id="@task.Id"
+                                    class="btn btn-outline-secondary btn-sm decreaseTaskSort"
+                                    disabled="@(task == Model.Challenge.Tasks.First() ? " disabled" : null)">
+                                <span class="fas fa-arrow-up fa-fw"></span>
                             </button>
                             <button type="button"
-                                    class="btn btn-danger btn-xs"
-                                    style="margin-left:16px;"
-                                    data-toggle="modal"
-                                    data-target="#deleteModal"
+                                    data-id="@task.Id"
+                                    class="btn btn-outline-secondary btn-sm increaseTaskSort"
+                                    disabled="@(task == Model.Challenge.Tasks.Last() ? " disabled" : null)">
+                                <span class="fas fa-arrow-down fa-fw"></span>
+                            </button>
+                            <button type="button"
+                                    class="btn btn-outline-danger btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal"
                                     data-id="@task.Id"
                                     data-name="@task.Title">
-                                <span class="fas fa-times" aria-hidden="true"></span>
+                                <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                             </button>
                         </td>
                     }
@@ -749,391 +894,20 @@
     </table>
     @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
     {
-        <button type="submit" formmethod="post" asp-action="OpenAddTask" asp-route-id="@Model.Challenge.Id" class="btn btn-primary">
+        <button type="submit"
+                formmethod="post"
+                asp-action="OpenAddTask"
+                asp-route-id="@Model.Challenge.Id"
+                class="btn btn-outline-primary">
             <span class="buttonText">Add Task</span>
         </button>
     }
 
-    @if (Model.AddTask)
-    {
-        <div class="row">
-            <div class="modal fade"
-                 id="addModal"
-                 tabindex="-1"
-                 role="dialog"
-                 aria-labelledby="addModalLabel">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button"
-                                    class="close"
-                                    data-dismiss="modal"
-                                    aria-label="Close dialog">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            <h1 class="modal-title h4" id="addModalLabel">Add task</h1>
-                        </div>
-                        <div class="modal-body">
-                            <input asp-for="Task.ChallengeTaskType"
-                                   value="@ChallengeTaskType.Action"
-                                   type="hidden" />
-                            <input asp-for="TaskUploadFile"
-                                   type="file"
-                                   accept=".png,.jpg,.jpeg,.png"
-                                   style="display:none;" />
-                            <ul class="nav nav-tabs gra-nav-tabs" role="tablist">
-                                <li role="presentation" class="active">
-                                    <a id="actionTab"
-                                       href="#action"
-                                       aria-controls="action"
-                                       role="tab"
-                                       data-toggle="tab">
-                                        Action
-                                    </a>
-                                </li>
-                                <li role="presentation">
-                                    <a id="bookTab"
-                                       href="#book"
-                                       aria-controls="book"
-                                       role="tab"
-                                       data-toggle="tab">
-                                        Book
-                                    </a>
-                                </li>
-                            </ul>
 
-                            <div class="tab-content">
-                                <div role="tabpanel"
-                                     class="tab-pane gra-tab-pane active"
-                                     id="action">
-                                    <div class="form-group">
-                                        <label asp-for="Task.Title"
-                                               class="control-label">
-                                            Description
-                                        </label>
-                                        <div id="wmd-button-bar"></div>
-                                        <textarea asp-for="Task.Title"
-                                                  id="wmd-input"
-                                                  class="form-control wmd-input actionTitle"
-                                                  data-val-required="The Description field is required."></textarea>
-                                        <br /><label class="control-label">Preview</label>
-                                        <div id="preview"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label">Add a file</label>
-                                        <div class="input-group">
-                                            <label class="input-group-btn">
-                                                <button type="button"
-                                                        class="btn btn-default btn-file taskFileButton">
-                                                    <span class="far fa-file"></span> Select a file
-                                                </button>
-                                            </label>
-                                            <input type="text"
-                                                   class="form-control selectedTaskFile"
-                                                   readonly>
-                                        </div>
-                                        <span asp-validation-for="TaskUploadFile"
-                                              class="text-danger"></span>
-                                        <button class="btn btn-default clearTaskFile"
-                                                type="button"
-                                                style="margin-top: 0.5em;">
-                                            <span class="fas fa-ban"></span> Clear file selection
-                                        </button>
-                                    </div>
-                                </div>
-                                <div role="tabpanel" class="tab-pane gra-tab-pane" id="book">
-                                    <div class="form-group">
-                                        <label asp-for="Task.Title" class="control-label"></label>
-                                        <input asp-for="Task.Title"
-                                               id="bookTitle"
-                                               class="form-control" disabled />
-                                    </div>
-                                    <div class="form-group">
-                                        <label asp-for="Task.Author" class="control-label"></label>
-                                        <input asp-for="Task.Author" class="form-control" />
-                                        <span asp-validation-for="Task.Author"
-                                              class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label asp-for="Task.Isbn" class="control-label"></label>
-                                        <input asp-for="Task.Isbn" class="form-control" />
-                                        <span asp-validation-for="Task.Isbn"
-                                              class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label asp-for="Task.Url" class="control-label"></label>
-                                        <input asp-for="Task.Url" class="form-control" />
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label">Add a file</label>
-                                        <div class="input-group">
-                                            <label class="input-group-btn">
-                                                <button type="button"
-                                                        class="btn btn-default btn-file taskFileButton">
-                                                    <span class="far fa-file"></span> Select a file
-                                                </button>
-                                            </label>
-                                            <input type="text"
-                                                   class="form-control selectedTaskFile"
-                                                   readonly>
-                                        </div>
-                                        <span asp-validation-for="TaskUploadFile"
-                                              class="text-danger"></span>
-                                        <button class="btn btn-default clearTaskFile"
-                                                type="button"
-                                                style="margin-top: 0.5em;">
-                                            <span class="fas fa-ban"></span> Clear file selection
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button"
-                                    class="btn btn-default"
-                                    data-dismiss="modal"
-                                    style="margin-right: 1em;">
-                                Cancel
-                            </button>
-                            <button type="submit"
-                                    asp-action="AddTask"
-                                    class="btn btn-primary pull-right btn-spinner"
-                                    aria-label="Confirm"
-                                    button-spinner>
-                                <span class="buttonText">Add</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
-
-    @if (Model.Task != null)
-    {
-        <div class="row">
-            <div class="modal fade"
-                 id="editModal"
-                 tabindex="-1"
-                 role="dialog"
-                 aria-labelledby="editModalLabel">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button"
-                                    class="close"
-                                    data-dismiss="modal"
-                                    aria-label="Close dialog">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            <h1 class="modal-title h4" id="editModalLabel">Edit task</h1>
-                        </div>
-                        <div class="modal-body">
-                            <input asp-for="Task.Id" type="hidden" />
-                            <input asp-for="Task.Position" type="hidden" />
-                            <input asp-for="Task.ChallengeId" type="hidden" />
-                            <input asp-for="Task.ChallengeTaskType" type="hidden" />
-                            <input asp-for="Task.Filename" type="hidden" />
-                            <input asp-for="TaskUploadFile"
-                                   type="file"
-                                   accept=".png,.jpg,.jpeg,.png"
-                                   style="display:none;" />
-
-                            <ul class="nav nav-tabs gra-nav-tabs" role="tablist">
-                                <li role="presentation"
-                                    class="@(Model.Task.ChallengeTaskType == ChallengeTaskType.Action ? " active" : "" )">
-                                    <a id="actionTab"
-                                       href="#action"
-                                       aria-controls="action"
-                                       role="tab"
-                                       data-toggle="tab">Action</a>
-                                </li>
-                                <li role="presentation"
-                                    class="@(Model.Task.ChallengeTaskType == ChallengeTaskType.Book ? " active" : "" )">
-                                    <a id="bookTab"
-                                       href="#book"
-                                       aria-controls="book"
-                                       role="tab"
-                                       data-toggle="tab">
-                                        Book
-                                    </a>
-                                </li>
-                            </ul>
-
-                            <div class="tab-content">
-                                <div role="tabpanel"
-                                     class="tab-pane gra-tab-pane @(Model.Task.ChallengeTaskType == ChallengeTaskType.Action ? " active" : "" )"
-                                     id="action">
-                                    <div class="form-group">
-                                        <label asp-for="Task.Title" class="control-label">Description</label>
-                                        <div id="wmd-button-bar"></div>
-                                        <textarea asp-for="Task.Title"
-                                                  id="wmd-input"
-                                                  class="form-control wmd-input actionTitle"
-                                                  data-val-required="The Description field is required."
-                                                  disabled="@(Model.Task.ChallengeTaskType == ChallengeTaskType.Action ? null : "disabled")"></textarea>
-                                        <br /><label class="control-label">Preview</label>
-                                        <div id="preview"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        @if (string.IsNullOrWhiteSpace(Model.Task.Filename))
-                                        {
-                                            <label class="control-label">Add a file</label>
-                                        }
-                                        else
-                                        {
-                                            <label class="control-label">
-                                                Edit File &ndash;
-                                                <a aria-label="Link (Opens new window)"
-                                                   href="@Model.TaskFilePath"
-                                                   target="_blank">Link</a>
-                                            </label>
-                                        }
-                                        <div class="input-group">
-                                            <label class="input-group-btn">
-                                                <button type="button"
-                                                        class="btn btn-default btn-file taskFileButton">
-                                                    <span class="far fa-file"></span> Select a file
-                                                </button>
-                                            </label>
-                                            <input type="text"
-                                                   value="@Model.Task.Filename"
-                                                   class="form-control selectedTaskFile"
-                                                   readonly>
-                                        </div>
-                                        <span asp-validation-for="TaskUploadFile"
-                                              class="text-danger"></span>
-                                        <button class="btn btn-default clearTaskFile"
-                                                type="button"
-                                                style="margin-top: 0.5em;">
-                                            <span class="fas fa-ban"></span> Clear file selection
-                                        </button>
-                                    </div>
-                                </div>
-                                <div role="tabpanel"
-                                     class="tab-pane gra-tab-pane @(Model.Task.ChallengeTaskType == ChallengeTaskType.Book ? " active" : "" )"
-                                     id="book">
-                                    <div class="form-group">
-                                        <label asp-for="Task.Title" class="control-label"></label>
-                                        <input asp-for="Task.Title"
-                                               id="bookTitle"
-                                               class="form-control"
-                                               disabled="@(Model.Task.ChallengeTaskType == ChallengeTaskType.Book ? null : " disabled")" />
-                                    </div>
-                                    <div class="form-group">
-                                        <label asp-for="Task.Author" class="control-label"></label>
-                                        <input asp-for="Task.Author" class="form-control" />
-                                        <span asp-validation-for="Task.Author"
-                                              class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label asp-for="Task.Isbn" class="control-label"></label>
-                                        <input asp-for="Task.Isbn" class="form-control" />
-                                        <span asp-validation-for="Task.Isbn"
-                                              class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label asp-for="Task.Url" class="control-label"></label>
-                                        <input asp-for="Task.Url" class="form-control" />
-                                    </div>
-                                    <div class="form-group">
-                                        @if (string.IsNullOrWhiteSpace(Model.Task.Filename))
-                                        {
-                                            <label class="control-label">Add a file</label>
-                                        }
-                                        else
-                                        {
-                                            <label class="control-label">Edit file</label>
-                                        }
-                                        <div class="input-group">
-                                            <label class="input-group-btn">
-                                                <button type="button"
-                                                        class="btn btn-default btn-file taskFileButton">
-                                                    <span class="far fa-file"></span> Select a file
-                                                </button>
-                                            </label>
-                                            <input type="text"
-                                                   value="@Model.Task.Filename"
-                                                   class="form-control selectedTaskFile"
-                                                   readonly>
-                                        </div>
-                                        <span asp-validation-for="TaskUploadFile"
-                                              class="text-danger"></span>
-                                        <button class="btn btn-default clearTaskFile"
-                                                type="button"
-                                                style="margin-top: 0.5em;">
-                                            <span class="fas fa-ban"></span> Clear file selection
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default"
-                                    data-dismiss="modal"
-                                    style="margin-right: 1em;">
-                                Cancel
-                            </button>
-                            <button type="submit"
-                                    asp-action="ModifyTask"
-                                    class="btn btn-primary pull-right btn-spinner"
-                                    aria-label="Confirm"
-                                    button-spinner>
-                                <span class="buttonText">Save</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
-
-    <div class="row">
-        <div class="modal fade"
-             id="deleteModal"
-             tabindex="-1"
-             role="dialog"
-             aria-labelledby="deleteModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close"
-                                data-dismiss="modal"
-                                aria-label="Close dialog">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <h1 class="modal-title h4" id="deleteModalLabel">Delete task</h1>
-                    </div>
-                    <div class="modal-body">
-                        <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
-                        <span id="modal-text"></span>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button"
-                                class="btn btn-default"
-                                data-dismiss="modal"
-                                style="margin-right: 1em;">
-                            Cancel
-                        </button>
-                        <button type="submit"
-                                id="DeleteTask"
-                                asp-action="DeleteTask"
-                                class="btn btn-danger pull-right btn-spinner"
-                                aria-label="Confirm"
-                                button-spinner>
-                            <span class="fas fa-times" aria-hidden="true"></span>
-                            Delete
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </form>
 
 @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
 {
-
     <div class="modal fade"
          id="warningModal"
          tabindex="-1"
@@ -1142,32 +916,34 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                     <h1 class="h4 modal-title" id="deleteModalLabel">
-                        Warning: Award points exceed maximum
+                        Warning: award points exceed maximum
                     </h1>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                    </button>
                 </div>
-                <div class="modal-body">
-                    <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
-                    <span id="modal-text">
+                <div class="modal-body d-flex align-items-stretch">
+                    <span class="fas fa-exclamation-triangle fa-lg text-warning pt-2 me-3"
+                          aria-hidden="true"></span>
+                    <span>
                         The awarded points for this trigger exceed the maximum of
-                        <strong>@Model.MaxPointLimit points per task</strong>. Do you wish to continue?
+                        <strong>@Model.MaxPointLimit points per task</strong>.
+                        Do you wish to continue?
                     </span>
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                            class="btn btn-default"
-                            data-dismiss="modal"
-                            style="margin-right: 1em;">
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
                         Cancel
                     </button>
                     <button id="warningSave"
                             type="button"
-                            class="btn btn-primary"
-                            data-dismiss="modal"
-                            style="margin-right: 1em;">
+                            class="btn btn-outline-primary"
+                            data-bs-dismiss="modal">
                         Save Challenge
                     </button>
                 </div>
@@ -1184,9 +960,9 @@
          role="dialog"
          aria-labelledby="badgeModalLabel">
         <div class="modal-content">
-            <div class="modal-body" style="padding: 30px;">
-                <span class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
-                      data-dismiss="modal"
+            <div class="modal-body py-6">
+                <span class="close frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
+                      data-bs-dismiss="modal"
                       alt="Close dialog."
                       role="button">
                     <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
@@ -1201,29 +977,27 @@
 @section scripts {
     @if (Model.AddTask || Model.Task != null)
     {
-        <script src="/js/markdown.min.js" ></script>
+        <script src="/js/markdown.min.js"></script>
     }
 
     <script>
         var decreaseTaskUrl = "@Url.Action("DecreaseTaskSort")";
         var increaseTaskUrl = "@Url.Action("IncreaseTaskSort")";
+        new TomSelect("#Challenge_CategoryIds");
 
-        $("#CategoryPlaceholder").remove();
-        $("#Challenge_CategoryIds").multiselect({
-            nonSelectedText: "",
-            buttonClass: "form-control",
-            buttonWidth: "100%",
-            disableIfEmpty: true
+        $('.td-class').each(function () {
+            $(this).children("a.rowlink").height($(this).outerHeight());
         });
+    </script>
 
-        $(document).ready(function () {
-            @if (Model.AddTask || Model.Task != null)
-            {
-                <text>
-                var editor = new Markdown.Editor({ allowUploads: true, allowImages: false });
+    @if (Model.AddTask || Model.Task != null)
+    {
+        <script>
+            $(document).ready(function () {
+                let editor = new Markdown.Editor({ allowUploads: true, allowImages: false });
                 editor.run();
 
-                var observer = new MutationObserver(function (mutations) {
+                let observer = new MutationObserver(function (mutations) {
                     mutations.forEach(function (mutation) {
                         if (mutation.addedNodes.length > 0) {
                             if (mutation.addedNodes[0].className == "wmd-prompt-background") {
@@ -1237,42 +1011,22 @@
                         }
                     });
                 });
-                var mutationTarget = document.querySelector("body");
-                var mutationConfig = { childList: true };
+                let mutationTarget = document.querySelector("body");
+                let mutationConfig = { childList: true };
 
                 observer.observe(mutationTarget, mutationConfig);
-                </text>
-                if (Model.AddTask)
-                {
-                    <text>
-                        $("#addModal").modal({
-                            show: true,
-                            keyboard: false
-                        });
-                    </text>
-                }
-                if (Model.Task != null)
-                {
-                    <text>
-                        $("#editModal").modal({
-                            show: true,
-                            keyboard: false
-                        });
-                    </text>
-                }
-            }
+            });
+        </script>
+    }
 
-            @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
-            {
-                <text>
-                $("#saveChallenge").on("click",function(e) {
-                    e.preventDefault();
-                    if ($("#Challenge_PointsAwarded").val() / $("#Challenge_TasksToComplete").val() > @Model.MaxPointLimit
-                        && $("#Challenge_PointsAwarded").val() != @Model.Challenge.PointsAwarded) {
+    @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
+    {
+        <script>
+            $(document).ready(function () {
+                $("#saveChallenge").on("click", function (e) {
+                    if ($("#Challenge_PointsAwarded").val() / $("#Challenge_TasksToComplete").val() > @Model.MaxPointLimit && $("#Challenge_PointsAwarded").val() != @Model.Challenge.PointsAwarded) {
+                        e.preventDefault();
                         $('#warningModal').modal("show");
-                    }
-                    else {
-                        $("#challengeForm").submit();
                     }
                 });
 
@@ -1281,55 +1035,36 @@
                 });
 
                 $("#warningModal").on("hide.bs.modal", function () {
-                    $("#saveChallenge").removeClass("disabled");
-                    $("#saveChallenge").find(".fa-spinner").addClass("hidden");
+                    ResetSpinners($("#saveChallenge"))
                 });
-                </text>
-            }
-
-            $('.td-class').each(function() {
-                $(this).children('a.rowlink').height($(this).height() + 11);
             });
+        </script>
+    }
 
-            $('#BadgeUploadImage:file').on('fileselect', function (event, numFiles, label) {
-                var input = $(this).parents('.input-group').find(':text'),
-                log = numFiles > 1 ? numFiles = ' files selected' : label;
-
-                if (input.length)
-                {
-                    input.val(log);
-                    $('.badgeFile').removeClass('btn-default');
-                    $('.badgeFile').addClass('btn-success');
-                    $("#badgeImage").removeAttr("src");
-                    $("#badgeImage").height(200);
-                    $("#BadgeMakerImage").val("");
-                }
-                else
-                {
-                    input.val('');
-                    $('.badgeFile').addClass('btn-default');
-                    $('.badgeFile').removeClass('btn-success');
-                }
+    @if (Model.AddTask)
+    {
+        <script>
+            $("#addModal").ready(function () {
+                const addModal = new bootstrap.Modal('#addModal');
+                addModal.show();
             });
+        </script>
+    }
 
-            $('#clearFile').on("click", function() {
-                $('#BadgeUploadImage').val('');
-                $('.badgeFile').addClass('btn-default');
-                $('.badgeFile').removeClass('btn-success');
-                $('#selectedFile').val('');
+    @if (Model.Task != null)
+    {
+        <script>
+            $("#editModal").ready(function () {
+                const editModal = new bootstrap.Modal('#editModal');
+                editModal.show();
             });
+        </script>
+    }
 
-            $(document).on('change', ':file', function() {
-                var input = $(this),
-                    numFiles = input.get(0).files ? input.get(0).files.length : 1,
-                    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-                    input.trigger('fileselect', [numFiles, label]);
-            });
-        });
-
-        $(window).resize(function() {
-            $('.td-class').each(function() {
-                $(this).children('a.rowlink').height($(this).height() + 11);
+    <script>
+        $(window).resize(function () {
+            $('.td-class').each(function () {
+                $(this).children("a.rowlink").height($(this).outerHeight());
             });
         });
 
@@ -1337,72 +1072,52 @@
             ignore: ".ignore"
         });
 
-        $('.rowlink').on('click', function() {
+        $('.rowlink').on('click', function () {
             $(this).siblings('input:first').click();
         });
 
         $('#deleteModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget);
-            var id = button.data('id');
-            var name = button.data('name');
-            var modal = $(this);
+            let button = $(event.relatedTarget);
+            let id = button.data('id');
+            let name = button.data('name');
+            let modal = $(this);
             modal.find('#modal-text').text('Are you sure you wish to delete the task "' + name + '" ?');
             modal.find('#DeleteTask').attr("formaction", function (i, val) {
                 return val + '/' + id;
             });
         });
-        $('#addModal, #editModal').on('hidden.bs.modal', function() {
-            var form = $(this).parents('form:first');
+
+        $('#addModal,#editModal').on('hide.bs.modal', function () {
+            let form = $(this).parents('form:first');
             form.attr('action', '@Url.Action("CloseTask")');
             form.validate().cancelSubmit = true;
             form.submit();
         });
 
-        $("#Challenge_LimitToSystemId").on("change", function() {
-                var systemId = $(this).val();
-                var branchList = $("#Challenge_LimitToBranchId");
-                var branchId = branchList.val();
-                var url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
+        $("#Challenge_LimitToSystemId").on("change", function () {
+            let systemId = $(this).val();
+            let branchList = $("#Challenge_LimitToBranchId");
+            let branchId = branchList.val();
+            let url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
 
-            $.getJSON(url, { systemId: systemId, branchId: branchId, listAll: "true", prioritize: "true" }, function(response) {
-                    branchList.empty();
-                    branchList.append(new Option("No", ""));
-                $.each(response, function(index, item) {
-                        branchList.append(new Option(item.text, item.value, item.selected, item.selected))
+            $.getJSON(url, {
+                systemId: systemId,
+                branchId: branchId,
+                listAll: "true",
+                prioritize: "true"
+            }, function (response) {
+                branchList.empty();
+                branchList.append(new Option("No", ""));
+                $.each(response, function (index, item) {
+                    branchList.append(new Option(item.text, item.value, item.selected, item.selected))
                 });
             });
         });
 
-        $("#badgeTab").on('show.bs.tab', function() {
-            $("#UseBadgeMaker").val("true");
-        });
-
-        $("#uploadTab").on('show.bs.tab', function() {
-            $("#UseBadgeMaker").val("false");
-        });
-
-        $("#openMaker").on("click", function() {
-            $("#badgeMaker").attr("src", "@Html.Raw(@Model.BadgeMakerUrl)");
-            $("#badgeModal").modal("show");
-        });
-
-        $(window).on("message", function(e) {
-            $("#badgeModal").modal("hide");
-                var data = e.originalEvent.data;
-            $("#badgeImage").attr("src", data);
-            $("#badgeImage").height(200);
-            $("#BadgeMakerImage").val(data);
-            $('#BadgeUploadImage').val('');
-            $('.btn-file').addClass('btn-default');
-            $('.btn-file').removeClass('btn-success');
-            $('#selectedFile').val('');
-        });
-
-        $("#actionTab").on('show.bs.tab', function () {
-            $("#Task_ChallengeTaskType").val("@ChallengeTaskType.Action");
-            $(".actionTitle").removeAttr("disabled");
-            $("#bookTitle").attr("disabled", "disabled");
-            $("#bookFile").attr("disabled", "disabled");
+        $(".clearTaskFile").on("click", function () {
+            $("#Task_Filename").val("");
+            $("#TaskUploadFile").val("");
+            $(".fileRemoveAlert").removeClass("d-none");
         });
 
         $("#bookTab").on('show.bs.tab', function () {
@@ -1413,46 +1128,18 @@
             $("#actionFile").attr("disabled", "disabled");
         });
 
-        $(".taskFileButton").on("click", function () {
-            $("#TaskUploadFile").trigger("click");
-        });
-
-        $("#TaskUploadFile:file").on("fileselect", function (event, numFiles, label) {
-            var input = $(this).parent().find(".selectedTaskFile"),
-                log = numFiles > 1 ? numFiles = " files selected" : label;
-
-            if (input.length) {
-                input.val(log);
-                $(".taskFileButton").removeClass("btn-default");
-                $(".taskFileButton").addClass("btn-success");
-            }
-            else {
-                input.val("");
-                $(".taskFileButton").addClass("btn-default");
-                $(".taskFileButton").removeClass("btn-success");
-            }
-        });
-
-        $(".clearTaskFile").on("click", function () {
-            $("#Task_Filename").val("");
-            $("#TaskUploadFile").val("");
-            $(".taskFileButton").addClass("btn-default");
-            $(".taskFileButton").removeClass("btn-success");
-            $(".selectedTaskFile").val("");
-        });
-
         $(".decreaseTaskSort").on("click", function () {
-            var taskButton = $(this);
-            var taskId = taskButton.data("id");
-            var child = taskButton.children("span");
+            let taskButton = $(this);
+            let taskId = taskButton.data("id");
+            let child = taskButton.children("span");
             if (child.hasClass("fa-spinner") == false) {
                 child.removeClass("fa-arrow-up").addClass("fa-spinner fa-pulse");
                 $.post(decreaseTaskUrl, { id: taskId }, function (response) {
                     setTimeout(function () {
                         child.removeClass("fa-spinner fa-pulse").addClass("fa-arrow-up");
                         if (response == true) {
-                            var taskDiv = taskButton.parent().parent();
-                            var prevDiv = taskDiv.prev();
+                            let taskDiv = taskButton.parent().parent();
+                            let prevDiv = taskDiv.prev();
                             taskDiv.insertBefore(prevDiv);
                             if (taskDiv.prev().length == 0) {
                                 taskDiv.find(".decreaseTaskSort").attr("disabled", "disabled");
@@ -1472,17 +1159,17 @@
         })
 
         $(".increaseTaskSort").on("click", function () {
-            var taskButton = $(this);
-            var taskId = taskButton.data("id");
-            var child = taskButton.children("span");
+            let taskButton = $(this);
+            let taskId = taskButton.data("id");
+            let child = taskButton.children("span");
             if (child.hasClass("fa-spinner") == false) {
                 child.removeClass("fa-arrow-down").addClass("fa-spinner fa-pulse");
                 $.post(increaseTaskUrl, { id: taskId }, function (response) {
                     setTimeout(function () {
                         child.removeClass("fa-spinner fa-pulse").addClass("fa-arrow-down");
                         if (response == true) {
-                            var taskDiv = taskButton.parent().parent();
-                            var nextDiv = taskDiv.next();
+                            let taskDiv = taskButton.parent().parent();
+                            let nextDiv = taskDiv.next();
                             taskDiv.insertAfter(nextDiv);
                             if (taskDiv.next().length == 0) {
                                 taskDiv.find(".increaseTaskSort").attr("disabled", "disabled");
@@ -1500,6 +1187,5 @@
                 });
             }
         })
-
     </script>
 }

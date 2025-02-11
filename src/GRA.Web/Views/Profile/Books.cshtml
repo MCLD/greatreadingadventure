@@ -1,24 +1,26 @@
 ﻿@model GRA.Controllers.ViewModel.Profile.BookListViewModel
 
 <div class="row">
-    <div class="col-xs-12 col-sm-10 col-sm-offset-1">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <span class="lead">@SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProfile]</span>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <span class="fw-bold">
+                    @SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProfile]
+                </span>
             </div>
-            <div class="panel-body">
-
+            <div class="card-body">
                 @await Html.PartialAsync("_ProfilePartial")
-
-                <div class="row" style="padding: 10px 0;">
-                    <div class="col-xs-12">
+                <div class="row">
+                    <div class="col-12">
                         @if (Model.Books.Count() == 0)
                         {
-                            <div class="alert alert-warning">@SharedLocalizer[GRA.Annotations.Info.NoBooksLogged]</div>
+                            <div class="alert alert-warning">
+                                @SharedLocalizer[GRA.Annotations.Info.NoBooksLogged]
+                            </div>
                         }
                         else
                         {
-                            <table class="table table-condensed table-bordered table-striped">
+                            <table class="table table-sm table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th>
@@ -38,7 +40,8 @@
                                         </th>
                                         @if (Model.CanEditBooks)
                                         {
-                                            <th width="95">&nbsp;</th>
+                                            <th style="width: 6rem;"
+                                                class="d-print-none">&nbsp;</th>
                                         }
                                     </tr>
                                 </thead>
@@ -46,28 +49,32 @@
                                     @foreach (var book in Model.Books)
                                     {
                                         <tr>
-                                            <td style="vertical-align:middle;">@book.CreatedAt.ToString("d")</td>
-                                            <td style="vertical-align:middle;">@book.Title</td>
-                                            <td style="vertical-align:middle;">@book.Author</td>
+                                            <td class="align-middle">
+                                                @book.CreatedAt.ToString("d")
+                                            </td>
+                                            <td class="align-middle">@book.Title</td>
+                                            <td class="align-middle">@book.Author</td>
                                             @if (Model.CanEditBooks)
                                             {
-                                                <td>
+                                                <td class="d-flex justify-content-evenly d-print-none">
                                                     <button type="button"
-                                                            class="btn btn-primary btn-xs"
-                                                            data-toggle="modal"
-                                                            data-target="#editModal"
+                                                            class="btn btn-outline-primary btn-sm"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#editModal"
                                                             data-id="@book.Id"
                                                             data-title="@book.Title"
                                                             data-author="@book.Author">
-                                                        <span class="fas fa-2x fa-pencil-alt" aria-hidden="true"></span>
+                                                        <span class="fas fa-pencil-alt fa-fw"
+                                                              aria-hidden="true"></span>
                                                     </button>
                                                     <button type="button"
-                                                            class="btn btn-danger btn-xs pull-right"
-                                                            data-toggle="modal"
-                                                            data-target="#deleteModal"
+                                                            class="btn btn-outline-danger btn-sm"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#deleteModal"
                                                             data-id="@book.Id"
                                                             data-title="@book.Title">
-                                                        <span class="fas fa-2x fa-times" aria-hidden="true"></span>
+                                                        <span class="fas fa-times fa-fw"
+                                                              aria-hidden="true"></span>
                                                     </button>
                                                 </td>
                                             }
@@ -75,34 +82,27 @@
                                     }
                                 </tbody>
                             </table>
-                            @if (Model.PaginateModel.MaxPage > 1)
-                            {
-                                <paginate paginateModel="@Model.PaginateModel"></paginate>
-                            }
-                        }
-                        @if (Model.CanEditBooks)
-                        {
-                            <a href="#"
-                               id="addBook"
-                               class="btn btn-default"
-                               data-toggle="modal"
-                               data-target="#addModal">
-                                @SharedLocalizer[GRA.Annotations.Interface.AddBook]
-                            </a>
-                        }
-                        else
-                        {
-                            <a href="#"
-                               id="addBook"
-                               class="btn btn-default wide-tooltip"
-                               data-toggle="tooltip"
-                               title="@SharedLocalizer[GRA.Annotations.Interface.AddBookNotYet]"
-                               data-placement="top"
-                               disabled>
-                                @SharedLocalizer[GRA.Annotations.Interface.AddBook]
-                            </a>
                         }
                     </div>
+                </div>
+            </div>
+            <div class="card-footer d-print-none">
+                <div class="d-flex">
+                    <div class="flex-grow-1">
+                        <paginate paginateModel="@Model.PaginateModel"></paginate>
+                    </div>
+                    @if (Model.CanEditBooks)
+                    {
+                        <div>
+                            <a href="#"
+                               id="addBook"
+                               class="btn btn-outline-primary"
+                               data-bs-toggle="modal"
+                               data-bs-target="#addModal">
+                                @SharedLocalizer[GRA.Annotations.Interface.AddBook]
+                            </a>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
@@ -111,177 +111,166 @@
 
 @if (Model.CanEditBooks)
 {
-    <div class="row">
-        <div class="modal fade"
-             id="editModal"
-             tabindex="-1"
-             role="dialog"
-             aria-labelledby="editModalLabel">
-            <div class="modal-dialog" role="document">
-                <form asp-controller="Profile"
-                      asp-action="EditBook"
-                      method="post"
-                      role="form"
-                      style="display:inline">
-                    <input asp-for="CanEditBooks" type="hidden" />
-                    <input asp-for="PaginateModel.CurrentPage" type="hidden" />
-                    <input asp-for="Book.Id" type="hidden" />
-                    <input asp-for="Book.Isbn" type="hidden" />
-                    <input asp-for="Book.Url" type="hidden" />
-                    <input id="Book_Id" name="Book.Id" type="hidden" />
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button"
-                                    class="close"
-                                    data-dismiss="modal"
-                                    aria-label="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            <h1 class="modal-title h4"
-                                id="editModalLabel">
-                                @SharedLocalizer[GRA.Annotations.Title.EditBook]
-                            </h1>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label asp-for="Book.Title" class="control-label"></label>
-                                <input asp-for="Book.Title" class="form-control" />
-                                <span asp-validation-for="Book.Title" class="text-danger"></span>
-                            </div>
-
-                            <div class="form-group">
-                                <label asp-for="Book.Author" class="control-label"></label>
-                                <input asp-for="Book.Author" class="form-control" />
-                                <span asp-validation-for="Book.Author" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button"
-                                    class="btn btn-default"
-                                    data-dismiss="modal"
-                                    style="margin-right: 1em;">
-                                @SharedLocalizer[GRA.Annotations.Interface.Cancel]
-                            </button>
-                            <button type="submit"
-                                    class="btn btn-primary pull-right"
-                                    aria-label="Confirm">
-                                @SharedLocalizer[GRA.Annotations.Interface.Save]
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="modal fade"
-             id="addModal"
-             tabindex="-1"
-             role="dialog"
-             aria-labelledby="addModalLabel">
-            <div class="modal-dialog" role="document">
-                <form asp-controller="Profile"
-                      asp-action="AddBook"
-                      method="post"
-                      role="form"
-                      style="display:inline">
-                    <input asp-for="CanEditBooks" type="hidden" />
-                    <input asp-for="PaginateModel.CurrentPage" type="hidden" />
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button"
-                                    class="close"
-                                    data-dismiss="modal"
-                                    aria-label="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            <h1 class="modal-title h4"
-                                id="addModalLabel">
-                                @SharedLocalizer[GRA.Annotations.Interface.AddBook]
-                            </h1>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label asp-for="Book.Title" class="control-label"></label>
-                                <input asp-for="Book.Title" class="form-control" />
-                                <span asp-validation-for="Book.Title" class="text-danger"></span>
-                            </div>
-
-                            <div class="form-group">
-                                <label asp-for="Book.Author" class="control-label"></label>
-                                <input asp-for="Book.Author" class="form-control" />
-                                <span asp-validation-for="Book.Author" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button"
-                                    class="btn btn-default"
-                                    data-dismiss="modal"
-                                    style="margin-right: 1em;">
-                                @SharedLocalizer[GRA.Annotations.Interface.Cancel]
-                            </button>
-                            <button type="submit"
-                                    class="btn btn-primary pull-right"
-                                    aria-label="Confirm">
-                                @SharedLocalizer[GRA.Annotations.Interface.Save]
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="modal fade"
-             id="deleteModal"
-             tabindex="-1"
-             role="dialog"
-             aria-labelledby="deleteModalLabel">
-            <div class="modal-dialog" role="document">
+    <div class="modal fade"
+         id="editModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="editModalLabel">
+        <div class="modal-dialog" role="document">
+            <form asp-controller="Profile"
+                  asp-action="EditBook"
+                  method="post"
+                  role="form">
+                <input asp-for="CanEditBooks" type="hidden" />
+                <input asp-for="PaginateModel.CurrentPage" type="hidden" />
+                <input asp-for="Book.Id" type="hidden" />
+                <input asp-for="Book.Isbn" type="hidden" />
+                <input asp-for="Book.Url" type="hidden" />
+                <input id="Book_Id" name="Book.Id" type="hidden" />
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button"
-                                class="close"
-                                data-dismiss="modal"
-                                aria-label="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
                         <h1 class="modal-title h4"
-                            id="deleteModalLabel">
-                            @SharedLocalizer[GRA.Annotations.Title.DeleteBook]
+                            id="editModalLabel">
+                            @SharedLocalizer[GRA.Annotations.Title.EditBook]
                         </h1>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]">
+                        </button>
                     </div>
                     <div class="modal-body">
-                        <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
-                        <span id="modal-text"></span>
+                        <div class="mb-3">
+                            <label asp-for="Book.Title" class="col-form-label"></label>
+                            <input asp-for="Book.Title" class="form-control" />
+                            <span asp-validation-for="Book.Title" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Book.Author" class="col-form-label"></label>
+                            <input asp-for="Book.Author" class="form-control" />
+                            <span asp-validation-for="Book.Author" class="text-danger"></span>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-default"
-                                data-dismiss="modal"
-                                style="margin-right: 1em;">
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">
                             @SharedLocalizer[GRA.Annotations.Interface.Cancel]
                         </button>
-                        <form asp-controller="Profile"
-                              asp-action="RemoveBook"
-                              method="post"
-                              role="form"
-                              style="display:inline">
-                            <input asp-for="CanEditBooks" type="hidden" />
-                            <input asp-for="PaginateModel.CurrentPage" type="hidden" />
-                            <input asp-for="Book.Id" type="hidden" />
-                            <input asp-for="Book.Title" type="hidden" />
-                            <button type="submit"
-                                    class="btn btn-danger btn-spinner pull-right"
-                                    aria-label="Confirm"
-                                    button-spinner>
-                                <span class="fas fa-times" aria-hidden="true"></span>
-                                @SharedLocalizer[GRA.Annotations.Interface.Delete]
-                            </button>
-                        </form>
+                        <button type="submit"
+                                class="btn btn-outline-primary"
+                                button-spinner
+                                aria-label="Confirm">
+                            @SharedLocalizer[GRA.Annotations.Interface.Save]
+                        </button>
                     </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade"
+         id="addModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="addModalLabel">
+        <div class="modal-dialog" role="document">
+            <form asp-controller="Profile"
+                  asp-action="AddBook"
+                  method="post"
+                  role="form">
+                <input asp-for="CanEditBooks" type="hidden" />
+                <input asp-for="PaginateModel.CurrentPage" type="hidden" />
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title h4"
+                            id="addModalLabel">
+                            @SharedLocalizer[GRA.Annotations.Interface.AddBook]
+                        </h1>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]">
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label asp-for="Book.Title" class="col-form-label"></label>
+                            <input asp-for="Book.Title" class="form-control" />
+                            <span asp-validation-for="Book.Title" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Book.Author" class="col-form-label"></label>
+                            <input asp-for="Book.Author" class="form-control" />
+                            <span asp-validation-for="Book.Author" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">
+                            @SharedLocalizer[GRA.Annotations.Interface.Cancel]
+                        </button>
+                        <button type="submit"
+                                class="btn btn-outline-primary"
+                                button-spinner
+                                aria-label="Confirm">
+                            @SharedLocalizer[GRA.Annotations.Interface.Save]
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade"
+         id="deleteModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="deleteModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title h4"
+                        id="deleteModalLabel">
+                        @SharedLocalizer[GRA.Annotations.Title.DeleteBook]
+                    </h1>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]">
+                    </button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="modal-body d-flex align-items-stretch">
+                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
+                        <span id="modal-text"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
+                        @SharedLocalizer[GRA.Annotations.Interface.Cancel]
+                    </button>
+                    <form asp-controller="Profile"
+                          asp-action="RemoveBook"
+                          method="post"
+                          role="form">
+                        <input asp-for="CanEditBooks" type="hidden" />
+                        <input asp-for="PaginateModel.CurrentPage" type="hidden" />
+                        <input asp-for="Book.Id" type="hidden" />
+                        <input asp-for="Book.Title" type="hidden" />
+                        <button type="submit"
+                                class="btn btn-outline-danger"
+                                aria-label="Confirm"
+                                button-spinner>
+                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
+                            @SharedLocalizer[GRA.Annotations.Interface.Delete]
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -290,31 +279,30 @@
 
 @section scripts
 {
-    <script>
-        @if (Model.CanEditBooks) {
-        <text>
-        $("#editModal").on("show.bs.modal", function (event) {
-            var button = $(event.relatedTarget);
-            var id = button.data("id");
-            var title = button.data("title");
-            var author = button.data('author');
-            var modal = $(this);
-            modal.find("#editModalLabel").text('@SharedLocalizer[GRA.Annotations.Title.EditBook] - "' + title + '"');
-            modal.find("#Book_Id").val(id);
-            modal.find("#Book_Title").val(title);
-            modal.find("#Book_Author").val(author);
-        })
+    @if (Model.CanEditBooks)
+    {
+        <script>
+            $("#editModal").on("show.bs.modal", function (event) {
+                let button = $(event.relatedTarget);
+                let id = button.data("id");
+                let title = button.data("title");
+                let author = button.data('author');
+                let modal = $(this);
+                modal.find("#editModalLabel").html('@SharedLocalizer[GRA.Annotations.Title.EditBook] <strong>' + title + '</strong>');
+                modal.find("#Book_Id").val(id);
+                modal.find("#Book_Title").val(title);
+                modal.find("#Book_Author").val(author);
+            })
 
-        $("#deleteModal").on("show.bs.modal", function (event) {
-            var button = $(event.relatedTarget);
-            var id = button.data("id");
-            var title = button.data("title");
-            var modal = $(this);
-            modal.find("#modal-text").text('@SharedLocalizer[GRA.Annotations.Info.ConfirmBookDelete] ' + title);
-            modal.find("#Book_Id").val(id);
-            modal.find("#Book_Title").val(title);
-        })
-        </text>
-        }
-    </script>
+            $("#deleteModal").on("show.bs.modal", function (event) {
+                let button = $(event.relatedTarget);
+                let id = button.data("id");
+                let title = button.data("title");
+                let modal = $(this);
+                modal.find("#modal-text").html('@SharedLocalizer[GRA.Annotations.Info.ConfirmBookDelete] <strong>' + title + '</strong>');
+                modal.find("#Book_Id").val(id);
+                modal.find("#Book_Title").val(title);
+            })
+        </script>
+    }
 }

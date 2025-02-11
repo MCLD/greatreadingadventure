@@ -10,7 +10,6 @@ using GRA.Domain.Model;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using GRA.Domain.Service.Models;
-using GRA.SiteSettingKey;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -436,8 +435,13 @@ namespace GRA.Domain.Service
             return await _pointTranslationRepository.GetByProgramIdAsync(user.ProgramId);
         }
 
+        public bool IsOpenToLog()
+        {
+            return OpenToLog();
+        }
+
         public async Task<ActivityLogResult> LogActivityAsync(int userIdToLog,
-                                            int activityAmountEarned,
+                                                    int activityAmountEarned,
             Book book = null)
         {
             VerifyCanLog();

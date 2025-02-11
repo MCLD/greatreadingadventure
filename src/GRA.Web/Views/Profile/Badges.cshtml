@@ -1,51 +1,50 @@
 ﻿@model GRA.Controllers.ViewModel.Profile.BadgeListViewModel
 
 <div class="row">
-    <div class="col-xs-12 col-sm-10 col-sm-offset-1">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <span class="lead">@SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProfile]</span>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <span class="fw-bold">
+                    @SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProfile]
+                </span>
             </div>
-            <div class="panel-body">
-
+            <div class="card-body">
                 @await Html.PartialAsync("_ProfilePartial")
-
                 @if (Model.UserLogs.Count() == 0)
                 {
-                    <div class="row" style="padding: 10px 0;">
-                        <div class="col-xs-12">
-                            <div class="alert alert-warning">@SharedLocalizer[GRA.Annotations.Info.NoBadges]</div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="alert alert-warning">
+                                @SharedLocalizer[GRA.Annotations.Info.NoBadges]
+                            </div>
                         </div>
                     </div>
                 }
                 else
                 {
-                    <div class="row text-center" style="padding: 10px 0;">
+                    <div class="row text-center">
                         @foreach (var userLog in Model.UserLogs)
                         {
-                            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3"
-                                 style="margin-bottom: 2rem;">
+                            <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-2">
                                 <a href="#"
-                                   data-toggle="modal"
-                                   data-target="#badgeDetailsModal"
+                                   data-bs-toggle="modal"
+                                   data-bs-target="#badgeDetailsModal"
                                    data-id="@userLog.Id">
                                     <img src="~/@userLog.BadgeFilename"
                                          alt="@userLog.BadgeAltText"
-                                         class="img-responsive img-thumbnail">
+                                         class="img-fluid img-thumbnail">
                                 </a>
                             </div>
                         }
                     </div>
-                    @if (Model.PaginateModel.MaxPage > 1)
-                    {
-                        <div class="row">
-                            <div class="col-xs-12 text-center">
-                                <paginate paginateModel="@Model.PaginateModel"></paginate>
-                            </div>
-                        </div>
-                    }
                 }
             </div>
+            @if (Model.PaginateModel.MaxPage > 1)
+            {
+                <div class="card-footer d-print-none d-flex justify-content-center">
+                    <paginate paginateModel="@Model.PaginateModel"></paginate>
+                </div>
+            }
         </div>
     </div>
 </div>
@@ -55,25 +54,24 @@
      tabindex="-1"
      role="dialog"
      aria-labelledby="badgeDetailsModalLabel">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button"
-                        class="close"
-                        data-dismiss="modal"
-                        aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
                 <h1 class="h4 modal-title">
                     @SharedLocalizer[GRA.Annotations.Interface.BadgeDetails]
                 </h1>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                </button>
             </div>
             <div class="modal-body" id="modal-body">
             </div>
             <div class="modal-footer">
                 <button type="button"
-                        class="btn btn-default"
-                        data-dismiss="modal">
+                        class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal">
                     @SharedLocalizer[GRA.Annotations.Interface.Back]
                 </button>
             </div>
@@ -85,11 +83,11 @@
 {
     <script>
         $("#badgeDetailsModal").on("show.bs.modal", function (event) {
-            var button = $(event.relatedTarget);
-            var id = button.data("id");
-            var modal = $(this);
+            let button = $(event.relatedTarget);
+            let id = button.data("id");
+            let modal = $(this);
 
-            var modalBody = modal.find(".modal-body");
+            let modalBody = modal.find(".modal-body");
             modalBody.html("<div class=\"text-center\" style=\"width: 100%;\"><span class=\"fas fa-spinner fa-2x fa-pulse\"></span></div>");
 
             $.get("@Url.Action(nameof(ProfileController.GetUserBadgeInfo), ProfileController.Name)",

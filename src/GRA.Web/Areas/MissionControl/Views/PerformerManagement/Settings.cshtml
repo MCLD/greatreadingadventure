@@ -9,190 +9,154 @@
 <h4>Fields marked with an asterisk (*) are required.</h4>
 
 <form asp-controller="PerformerManagement" asp-action="Settings" method="post" role="form">
-    <div class="form-group">
-        <label asp-for="Settings.ContactEmail" class="control-label required-field"></label>
-        <input asp-for="Settings.ContactEmail" class="form-control" />
-        <span asp-validation-for="Settings.ContactEmail" class="text-danger"></span>
-    </div>
+    <div class="row">
+        <div class="col-12 col-lg-6 mb-3">
+            <label asp-for="Settings.ContactEmail" class="col-form-label required-field"></label>
+            <input asp-for="Settings.ContactEmail" class="form-control" />
+            <span asp-validation-for="Settings.ContactEmail" class="text-danger"></span>
+        </div>
 
-    <div class="form-group">
-        <label asp-for="Settings.SelectionsPerBranch" class="control-label required-field"></label>
-        <input asp-for="Settings.SelectionsPerBranch" class="form-control" />
-        <span asp-validation-for="Settings.SelectionsPerBranch" class="text-danger"></span>
-    </div>
+        <div class="col-12 col-lg-6 mb-3">
+            <label asp-for="Settings.SelectionsPerBranch" class="col-form-label required-field"></label>
+            <input asp-for="Settings.SelectionsPerBranch" class="form-control" />
+            <span asp-validation-for="Settings.SelectionsPerBranch" class="text-danger"></span>
+        </div>
 
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="Settings.RegistrationOpen" class="control-label required-field"></label>
-            <div class="input-group date datetimepicker">
-                <span class="input-group-addon">
-                    <span class="fas fa-calendar-alt"></span>
-                </span>
-                <input asp-for="Settings.RegistrationOpen" type="text" class="form-control" />
+        <div class="col-12 col-lg-6 mb-3">
+            <label asp-for="Settings.RegistrationOpen" class="col-form-label required-field"></label>
+            <div current-value="@Model.Settings.RegistrationOpen"
+                 class="gra-picker-datetime"
+                 datetimepicker-container
+                 id="registrationOpenPicker">
+                <input asp-for="Settings.RegistrationOpen"
+                       datetimepicker-input
+                       type="text" />
             </div>
             <span asp-validation-for="Settings.RegistrationOpen" class="text-danger"></span>
         </div>
-    </div>
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="Settings.RegistrationClosed" class="control-label required-field"></label>
-            <div class="input-group date datetimepicker">
-                <span class="input-group-addon">
-                    <span class="fas fa-calendar-alt"></span>
-                </span>
-                <input asp-for="Settings.RegistrationClosed" type="text" class="form-control" />
+        <div class="col-12 col-lg-6 mb-3">
+            <label asp-for="Settings.RegistrationClosed" class="col-form-label required-field"></label>
+            <div current-value="@Model.Settings.RegistrationClosed"
+                 class="gra-picker-datetime"
+                 datetimepicker-container
+                 id="registrationClosedPicker">
+                <input asp-for="Settings.RegistrationClosed" datetimepicker-input type="text" />
             </div>
             <span asp-validation-for="Settings.RegistrationClosed" class="text-danger"></span>
         </div>
-    </div>
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="Settings.SchedulingPreview" class="control-label required-field"></label>
-            <div class="input-group date datetimepicker">
-                <span class="input-group-addon">
-                    <span class="fas fa-calendar-alt"></span>
-                </span>
-                <input asp-for="Settings.SchedulingPreview" type="text" class="form-control" />
+        <div class="col-12 col-lg-6 mb-3">
+            <label asp-for="Settings.SchedulingPreview" class="col-form-label required-field"></label>
+            <div current-value="@Model.Settings.SchedulingPreview"
+                 class="gra-picker-datetime"
+                 datetimepicker-container
+                 id="schedulingPreviewPicker">
+                <input asp-for="Settings.SchedulingPreview" datetimepicker-input type="text" />
             </div>
             <span asp-validation-for="Settings.SchedulingPreview" class="text-danger"></span>
         </div>
-    </div>
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="Settings.SchedulingOpen" class="control-label required-field"></label>
-            <div class="input-group date datetimepicker">
-                <span class="input-group-addon">
-                    <span class="fas fa-calendar-alt"></span>
-                </span>
-                <input asp-for="Settings.SchedulingOpen" type="text" class="form-control" />
+        <div class="col-12 col-lg-6 mb-3">
+            <label asp-for="Settings.SchedulingOpen" class="col-form-label required-field"></label>
+            <div current-value="@Model.Settings.SchedulingOpen"
+                 class="gra-picker-datetime"
+                 datetimepicker-container
+                 id="schedulingOpenPicker">
+                <input asp-for="Settings.SchedulingOpen" datetimepicker-input type="text" />
             </div>
             <span asp-validation-for="Settings.SchedulingOpen" class="text-danger"></span>
         </div>
-    </div>
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="Settings.SchedulingClosed" class="control-label required-field"></label>
-            <div class="input-group date datetimepicker">
-                <span class="input-group-addon">
-                    <span class="fas fa-calendar-alt"></span>
-                </span>
-                <input asp-for="Settings.SchedulingClosed" type="text" class="form-control" />
+        <div class="col-12 col-lg-6 mb-3">
+            <label asp-for="Settings.SchedulingClosed" class="col-form-label required-field"></label>
+            <div current-value="@Model.Settings.SchedulingClosed"
+                 class="gra-picker-datetime"
+                 datetimepicker-container
+                 id="schedulingClosedPicker">
+                <input asp-for="Settings.SchedulingClosed" datetimepicker-input type="text" />
             </div>
             <span asp-validation-for="Settings.SchedulingClosed" class="text-danger"></span>
         </div>
-    </div>
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="Settings.SchedulePosted" class="control-label required-field"></label>
-            <div class="input-group date datetimepicker">
-                <span class="input-group-addon">
-                    <span class="fas fa-calendar-alt"></span>
-                </span>
-                <input asp-for="Settings.SchedulePosted" type="text" class="form-control" />
+        <div class="col-12 col-lg-6 mb-3">
+            <label asp-for="Settings.SchedulePosted" class="col-form-label required-field"></label>
+            <div current-value="@Model.Settings.SchedulePosted"
+                 class="gra-picker-datetime"
+                 datetimepicker-container
+                 id="schedulePostedPicker">
+                <input asp-for="Settings.SchedulePosted" datetimepicker-input type="text" />
             </div>
             <span asp-validation-for="Settings.SchedulePosted" class="text-danger"></span>
         </div>
-    </div>
 
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="Settings.ScheduleStartDate" class="control-label required-field"></label>
-            <div class="input-group date datepicker">
-                <span class="input-group-addon">
-                    <span class="fas fa-calendar-alt"></span>
-                </span>
-                <input asp-for="Settings.ScheduleStartDate" type="text" class="form-control" />
+        <div class="col-12 col-lg-6 mb-3">
+            <label asp-for="Settings.ScheduleStartDate" class="col-form-label required-field"></label>
+            <div current-value="@Model.Settings.ScheduleStartDate"
+                 class="gra-picker-date"
+                 datetimepicker-container
+                 id="scheduleStartDatePicker">
+                <input asp-for="Settings.ScheduleStartDate"
+                       value=""
+                       datetimepicker-input
+                       type="text" />
             </div>
             <span asp-validation-for="Settings.ScheduleStartDate" class="text-danger"></span>
         </div>
-    </div>
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="Settings.ScheduleEndDate" class="control-label required-field"></label>
-            <div class="input-group date datepicker">
-                <span class="input-group-addon">
-                    <span class="fas fa-calendar-alt"></span>
-                </span>
-                <input asp-for="Settings.ScheduleEndDate" type="text" class="form-control" />
+        <div class="col-12 col-lg-6 mb-3">
+            <label asp-for="Settings.ScheduleEndDate" class="col-form-label required-field"></label>
+            <div current-value="@Model.Settings.ScheduleEndDate"
+                 class="gra-picker-date"
+                 datetimepicker-container
+                 id="scheduleEndDatePicker">
+                <input asp-for="Settings.ScheduleEndDate"
+                       value=""
+                       datetimepicker-input
+                       type="text" />
             </div>
             <span asp-validation-for="Settings.ScheduleEndDate" class="text-danger"></span>
         </div>
+
+        <div class="col-12 col-lg-6 mb-3">
+            <label asp-for="Settings.VendorIdPrompt" class="col-form-label"></label>
+            <input asp-for="Settings.VendorIdPrompt" class="form-control" />
+            <span asp-validation-for="Settings.VendorIdPrompt" class="text-danger"></span>
+        </div>
+
+        <div class="col-12 col-lg-6 mb-3">
+            <label asp-for="Settings.VendorCodeFormat" class="col-form-label"></label>
+            <input asp-for="Settings.VendorCodeFormat" class="form-control" />
+            <span asp-validation-for="Settings.VendorCodeFormat" class="text-danger"></span>
+        </div>
+
+        <div class="col-12 col-lg-6 mb-3">
+            <label asp-for="Settings.BranchAvailabilitySupplementalText" class="col-form-label"></label>
+            <input asp-for="Settings.BranchAvailabilitySupplementalText" class="form-control" />
+            <span asp-validation-for="Settings.BranchAvailabilitySupplementalText" class="text-danger"></span>
+        </div>
+
+        <div class="col-12 col-lg-6 mb-3">
+            <label asp-for="Settings.SetupSupplementalText" class="col-form-label"></label>
+            <input asp-for="Settings.SetupSupplementalText" class="form-control" />
+            <span asp-validation-for="Settings.SetupSupplementalText" class="text-danger"></span>
+        </div>
+
     </div>
 
-    <div class="form-group">
-        <label asp-for="Settings.VendorIdPrompt" class="control-label"></label>
-        <input asp-for="Settings.VendorIdPrompt" class="form-control" />
-        <span asp-validation-for="Settings.VendorIdPrompt" class="text-danger"></span>
-    </div>
 
-    <div class="form-group">
-        <label asp-for="Settings.VendorCodeFormat" class="control-label"></label>
-        <input asp-for="Settings.VendorCodeFormat" class="form-control" />
-        <span asp-validation-for="Settings.VendorCodeFormat" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Settings.BranchAvailabilitySupplementalText" class="control-label"></label>
-        <input asp-for="Settings.BranchAvailabilitySupplementalText" class="form-control" />
-        <span asp-validation-for="Settings.BranchAvailabilitySupplementalText" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Settings.SetupSupplementalText" class="control-label"></label>
-        <input asp-for="Settings.SetupSupplementalText" class="form-control" />
-        <span asp-validation-for="Settings.SetupSupplementalText" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label class="control-label">Questions</label>
-        <div class="form-control-plaintext">Configure questions about livestreaming and insurance in
+    <div class="mb-3">
+        <label class="col-form-label">Questions</label>
+        <div class="form-control-plaintext">
+            Configure questions about livestreaming and insurance in
             <a asp-controller="@GRA.Controllers.MissionControl.SitesController.Name"
                asp-action="@nameof(GRA.Controllers.MissionControl.SitesController.Settings)"
                asp-route-id="@Model.SiteId"
                asp-fragment="@nameof(GRA.SiteSettingKey.Performer)"
-            target="_blank">Site Settings</a>
+               target="_blank">Site Settings</a>
         </div>
     </div>
 
-    <div class="form-group" style="margin-top: 2rem;">
-        <button type="submit"
-                id="Submit"
-                name="Submit"
-                value="Submit"
-                class="btn btn-primary btn-spinner"
-                button-spinner>
-            <span class="buttonText">Save</span>
-        </button>
-    </div>
+    <button type="submit"
+            id="Submit"
+            name="Submit"
+            value="Submit"
+            class="btn btn-outline-primary btn-spinner"
+            button-spinner>
+        <span class="buttonText">Save</span>
+    </button>
 </form>
-
-@section scripts {
-    <script>
-        $(".datetimepicker").datetimepicker({
-            format: "MM/DD/YYYY hh:mm A",
-            allowInputToggle: true,
-            sideBySide: true,
-            icons: {
-                time: "far fa-clock",
-                date: "fas fa-calendar-alt",
-                up: "fas fa-arrow-up",
-                down: "fas fa-arrow-down",
-                previous: "fas fa-arrow-left",
-                next: "fas fa-arrow-right"
-            }
-        });
-
-        $(".datepicker").datetimepicker({
-            format: "MM/DD/YYYY",
-            allowInputToggle: true,
-            icons: {
-                time: "far fa-clock",
-                date: "fas fa-calendar-alt",
-                up: "fas fa-arrow-up",
-                down: "fas fa-arrow-down",
-                previous: "fas fa-arrow-left",
-                next: "fas fa-arrow-right"
-            }
-        });
-    </script>
-}

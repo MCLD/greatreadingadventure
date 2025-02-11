@@ -2,11 +2,11 @@
 
 @await Html.PartialAsync("_ParticipantPartial")
 
-<p class="hidden-print">Below are changes made to this user:</p>
+<p class="d-print-none mt-3">Below are recprded changes made to this participant:</p>
 
 <div class="row">
-    <div class="col-xs-12">
-        <table class="table table-condensed table-bordered table-striped" style="margin-top: 2rem;">
+    <div class="col-12">
+        <table class="table table-sm table-bordered table-striped">
             <tr>
                 <th>Changed by/at</th>
                 <th>Field</th>
@@ -62,5 +62,8 @@
                 </tr>
             }
         </table>
+    </div>
+    <div class="mb-3 d-flex d-print-none justify-content-end">
+        <a asp-action="Index" class="btn btn-outline-secondary">Return to Participants</a>
     </div>
 </div>

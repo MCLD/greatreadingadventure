@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Localization;
@@ -26,15 +28,17 @@ namespace GRA.Controllers.Helpers
             SiteLookupService siteLookupService,
             UserService userService)
         {
-            _urlHelperFactory = urlHelperFactory
-                ?? throw new ArgumentNullException(nameof(urlHelperFactory));
-            _sharedLocalizer = sharedLocalizer
-                ?? throw new ArgumentNullException(nameof(sharedLocalizer));
-            _pageService = pageService
-                ?? throw new ArgumentNullException(nameof(pageService));
-            _siteLookupService = siteLookupService
-                ?? throw new ArgumentNullException(nameof(siteLookupService));
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            ArgumentNullException.ThrowIfNull(pageService);
+            ArgumentNullException.ThrowIfNull(sharedLocalizer);
+            ArgumentNullException.ThrowIfNull(siteLookupService);
+            ArgumentNullException.ThrowIfNull(urlHelperFactory);
+            ArgumentNullException.ThrowIfNull(userService);
+
+            _pageService = pageService;
+            _sharedLocalizer = sharedLocalizer;
+            _siteLookupService = siteLookupService;
+            _urlHelperFactory = urlHelperFactory;
+            _userService = userService;
         }
 
         /// <summary>
@@ -50,16 +54,13 @@ namespace GRA.Controllers.Helpers
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            if (output == null)
-            {
-                throw new ArgumentNullException(nameof(output));
-            }
+            ArgumentNullException.ThrowIfNull(output);
 
             var pages = await _pageService.GetAreaPagesAsync(NavPages);
 
             if (!NavPages)
             {
-                output.Attributes.Add("class", "infolinks");
+                output.AddClass("infolinks", HtmlEncoder.Default);
                 output.TagName = "div";
             }
             else
@@ -69,6 +70,9 @@ namespace GRA.Controllers.Helpers
 
             if (pages.Any())
             {
+                var divTag = new TagBuilder("div");
+                divTag.AddCssClass("info-page-links");
+
                 IUrlHelper url = _urlHelperFactory.GetUrlHelper(ViewContext);
                 string activeStub = url.ActionContext.RouteData.Values["id"] as string;
                 var first = true;
@@ -85,17 +89,22 @@ namespace GRA.Controllers.Helpers
                     }
                     else
                     {
-                        output.Content.Append(NavPages ? " " : " | ");
+                        divTag.InnerHtml.Append(NavPages ? " " : " | ");
                     }
 
                     TagBuilder outputTag;
 
                     var aTag = new TagBuilder("a");
                     aTag.Attributes.Add("href", link);
+                    if (NavPages)
+                    {
+                        aTag.AddCssClass("nav-link");
+                    }
                     aTag.InnerHtml.AppendHtml(NavPages ? page.NavText : page.FooterText);
                     if (NavPages)
                     {
                         outputTag = new TagBuilder("li");
+                        outputTag.AddCssClass("nav-item");
                         outputTag.InnerHtml.AppendHtml(aTag);
                     }
                     else
@@ -108,8 +117,10 @@ namespace GRA.Controllers.Helpers
                         outputTag.AddCssClass("active");
                     }
 
-                    output.Content.AppendHtml(outputTag);
+                    divTag.InnerHtml.AppendHtml(outputTag);
                 }
+
+                output.Content.AppendHtml(divTag);
             }
 
             var siteId = (int)ViewContext
@@ -122,8 +133,7 @@ namespace GRA.Controllers.Helpers
                 .Claims
                 .SingleOrDefault(_ => _.Type == ClaimType.UserId);
 
-            if (!NavPages
-                && siteId != 0)
+            if (!NavPages && siteId != 0)
             {
                 bool linkToLibrary = await _siteLookupService.GetSiteSettingBoolAsync(siteId,
                         SiteSettingKey.Users.ShowLinkToParticipantsLibrary);
@@ -135,7 +145,7 @@ namespace GRA.Controllers.Helpers
                 if (linkToLibrary || showParticipatingLibraries)
                 {
                     var divTag = new TagBuilder("div");
-                    divTag.AddCssClass("locations");
+                    divTag.AddCssClass("locations-page-link");
 
                     if (showParticipatingLibraries)
                     {

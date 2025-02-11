@@ -6,8 +6,26 @@
     @await Html.PartialAsync("_VendorCodePartial")
 }
 
-<div class="row" style="margin-top: 1rem; margin-bottom: 1rem;">
-    <div class="col-xs-12">
+@section inHeading {
+    <div class="ms-auto">
+        @if (Model.VendorCodeType.Id > 0)
+        {
+            <a asp-action="@nameof(VendorCodesController.Index)"
+               class="btn btn-outline-secondary d-print-none">Return to summary</a>
+        }
+        else
+        {
+            <a asp-controller="@HomeController.Name"
+               asp-action="@nameof(HomeController.Index)"
+               class="btn btn-outline-secondary d-print-none">Cancel</a>
+        }
+    </div>
+}
+
+<div class="row mb-2"><div class="col-12"><h3>Configure</h3></div></div>
+
+<div class="row my-1">
+    <div class="col-12">
         @if (Model.VendorCodeType.Id == default)
         {
             <p>Vendor codes are not yet configured. Use this page to set them up.</p>
@@ -38,29 +56,32 @@
       enctype="multipart/form-data">
     <input type="hidden" asp-for="VendorCodeType.SiteId" value="@Model.VendorCodeType.SiteId" />
     <div class="row">
-        <div class="col-xs-12">
-            <div class="form-group">
-                <label asp-for="VendorCodeType.Description" class="control-label"></label>*
+        <div class="col-12">
+            <div class="mb-3">
+                <label asp-for="VendorCodeType.Description" class="col-form-label"></label>*
                 <description gra-description-for="VendorCodeType.Description"></description>
                 <input asp-for="VendorCodeType.Description" class="form-control" />
                 <span asp-validation-for="VendorCodeType.Description" class="text-danger"></span>
             </div>
         </div>
     </div>
-    <input type="hidden" asp-for="VendorCodeType.MessageTemplateId" value="@Model.VendorCodeType.MessageTemplateId">
+    <input type="hidden"
+           asp-for="VendorCodeType.MessageTemplateId"
+           value="@Model.VendorCodeType.MessageTemplateId">
     @if (Model.VendorCodeType.Id != default)
     {
         <div class="row">
-            <div class="col-xs-12">
-                <div class="form-group">
-                    <label class="control-label" asp-for="VendorCodeType.MessageTemplateId"></label>
+            <div class="col-12">
+                <div class="mb-3">
+                    <label class="col-form-label"
+                           asp-for="VendorCodeType.MessageTemplateId"></label>
                     <description gra-description-for="VendorCodeType.MessageTemplateId"></description>
                     <br />
                     @foreach (var item in Model.Languages)
                     {
                         <a class="btn @Model.LanguageMessageClass(Model.VendorCodeType.MessageTemplateId, item.Value)"
-                           data-toggle="modal"
-                           data-target="#messageModal"
+                           data-bs-toggle="modal"
+                           data-bs-target="#messageModal"
                            data-item="MessageTemplateId"
                            data-languageid="@item.Value">@item.Key</a>
                     }
@@ -69,9 +90,9 @@
         </div>
     }
     <div class="row">
-        <div class="col-xs-12">
-            <div class="form-group">
-                <label asp-for="VendorCodeType.Url" class="control-label"></label>
+        <div class="col-12">
+            <div class="mb-3">
+                <label asp-for="VendorCodeType.Url" class="col-form-label"></label>
                 <description gra-description-for="VendorCodeType.Url"></description>
                 <input asp-for="VendorCodeType.Url" class="form-control" />
                 <span asp-validation-for="VendorCodeType.Url" class="text-danger"></span>
@@ -79,58 +100,69 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-12">
-            <div class="form-group">
-                <label asp-for="VendorCodeType.ExpirationDate" class="control-label"></label>
+        <div class="col-12">
+            <div class="mb-3">
+                <label asp-for="VendorCodeType.ExpirationDate" class="col-form-label"></label>
                 <description gra-description-for="VendorCodeType.ExpirationDate"></description>
-                <input asp-for="VendorCodeType.ExpirationDate"
-                       class="form-control"
-                       type="date" />
+                <div class="gra-picker-datetime"
+                     current-value="@Model.VendorCodeType?.ExpirationDate"
+                     datetimepicker-container
+                     id="startDatePicker">
+                    <input asp-for="VendorCodeType.ExpirationDate"
+                           datetimepicker-input
+                           type="text" />
+                </div>
                 <span asp-validation-for="VendorCodeType.ExpirationDate" class="text-danger"></span>
             </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-12">
-            <div class="form-group">
-                <label asp-for="VendorCodeType.AwardPrizeOnShipDate" class="control-label"></label>
+        <div class="col-12">
+            <div class="mb-3">
+                <label asp-for="VendorCodeType.AwardPrizeOnShipDate" class="col-form-label"></label>
                 <description gra-description-for="VendorCodeType.AwardPrizeOnShipDate"></description>
                 <select asp-for="VendorCodeType.AwardPrizeOnShipDate"
                         asp-items="VendorCodesController.ShipDateOptions"
-                        class="form-control">
+                        class="form-select">
                 </select>
-                <span asp-validation-for="VendorCodeType.AwardPrizeOnShipDate" class="text-danger"></span>
+                <span asp-validation-for="VendorCodeType.AwardPrizeOnShipDate"
+                      class="text-danger"></span>
             </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-12">
-            <div class="form-group">
-                <label asp-for="VendorCodeType.AwardPrizeOnPackingSlip" class="control-label"></label>
+        <div class="col-12">
+            <div class="mb-3">
+                <label asp-for="VendorCodeType.AwardPrizeOnPackingSlip"
+                       class="col-form-label"></label>
                 <description gra-description-for="VendorCodeType.AwardPrizeOnPackingSlip"></description>
                 <select asp-for="VendorCodeType.AwardPrizeOnPackingSlip"
                         asp-items="VendorCodesController.PackingSlipOptions"
-                        class="form-control">
+                        class="form-select">
                 </select>
-                <span asp-validation-for="VendorCodeType.AwardPrizeOnPackingSlip" class="text-danger"></span>
+                <span asp-validation-for="VendorCodeType.AwardPrizeOnPackingSlip"
+                      class="text-danger"></span>
             </div>
         </div>
     </div>
     @if (Model.VendorCodeType.Id != default)
     {
         <hr />
-        <input type="hidden" asp-for="VendorCodeType.OptionMessageTemplateId" value="@Model.VendorCodeType.OptionMessageTemplateId">
+        <input type="hidden"
+               asp-for="VendorCodeType.OptionMessageTemplateId"
+               value="@Model.VendorCodeType.OptionMessageTemplateId">
         <div class="row">
-            <div class="col-xs-12">
-                <div class="form-group">
-                    <label class="control-label" asp-for="VendorCodeType.OptionMessageTemplateId"></label>
+            <div class="col-12">
+                <div class="mb-3">
+                    <label class="col-form-label"
+                           asp-for="VendorCodeType.OptionMessageTemplateId"></label>
                     <description gra-description-for="VendorCodeType.OptionMessageTemplateId"></description>
                     <br />
                     @foreach (var item in Model.Languages)
                     {
                         <a class="btn @Model.LanguageMessageClass(Model.VendorCodeType.OptionMessageTemplateId, item.Value)"
-                           data-toggle="modal"
-                           data-target="#messageModal"
+                           data-bs-toggle="modal"
+                           data-bs-target="#messageModal"
                            data-item="OptionMessageTemplateId"
                            data-languageid="@item.Value">@item.Key</a>
                     }
@@ -144,38 +176,43 @@
            ^ Model.VendorCodeType.DonationMessageTemplateId.HasValue)
             {
                 <div class="row">
-                    <div class="col-xs-12">
+                    <div class="col-12">
                         <div class="alert alert-warning">
-                            Please supply values for both the pop-up message as well as the sent message.
+                            Please supply values for both the pop-up message as well as the sent
+                            message.
                         </div>
                     </div>
                 </div>
             }
             <div class="row">
-                <div class="col-xs-12">
-                    <div class="form-group">
-                        <label asp-for="VendorCodeType.DonationSegmentId" class="control-label"></label><br />
+                <div class="col-12">
+                    <div class="mb-3">
+                        <label asp-for="VendorCodeType.DonationSegmentId"
+                               class="col-form-label"></label><br />
                         @foreach (var item in Model.Languages)
                         {
                             <a class="btn @Model.LanguageSegmentClass(Model.VendorCodeType.DonationSegmentId, item.Value)"
-                               data-toggle="modal"
-                               data-target="#segmentModal"
+                               data-bs-toggle="modal"
+                               data-bs-target="#segmentModal"
                                data-item="DonationSegmentId"
                                data-languageid="@item.Value">@item.Key</a>
                         }
                     </div>
                 </div>
             </div>
-            <input type="hidden" asp-for="VendorCodeType.DonationMessageTemplateId" value="@Model.VendorCodeType.DonationMessageTemplateId">
+            <input type="hidden"
+                   asp-for="VendorCodeType.DonationMessageTemplateId"
+                   value="@Model.VendorCodeType.DonationMessageTemplateId">
             <div class="row">
-                <div class="col-xs-12">
-                    <div class="form-group">
-                        <label class="control-label" asp-for="VendorCodeType.DonationMessageTemplateId"></label><br />
+                <div class="col-12">
+                    <div class="mb-3">
+                        <label class="col-form-label"
+                               asp-for="VendorCodeType.DonationMessageTemplateId"></label><br />
                         @foreach (var item in Model.Languages)
                         {
                             <a class="btn @Model.LanguageMessageClass(Model.VendorCodeType.DonationMessageTemplateId, item.Value)"
-                               data-toggle="modal"
-                               data-target="#messageModal"
+                               data-bs-toggle="modal"
+                               data-bs-target="#messageModal"
                                data-item="DonationMessageTemplateId"
                                data-languageid="@item.Value">@item.Key</a>
                         }
@@ -187,39 +224,44 @@
            ^ Model.VendorCodeType.EmailAwardMessageTemplateId.HasValue)
             {
                 <div class="row">
-                    <div class="col-xs-12">
+                    <div class="col-12">
                         <div class="alert alert-warning">
-                            Please supply values for both the pop-up message as well as the sent message.
+                            Please supply values for both the pop-up message as well as the sent
+                            message.
                         </div>
                     </div>
                 </div>
             }
 
             <div class="row">
-                <div class="col-xs-12">
-                    <div class="form-group">
-                        <label asp-for="VendorCodeType.EmailAwardSegmentId" class="control-label"></label><br />
+                <div class="col-12">
+                    <div class="mb-3">
+                        <label asp-for="VendorCodeType.EmailAwardSegmentId"
+                               class="col-form-label"></label><br />
                         @foreach (var item in Model.Languages)
                         {
                             <a class="btn @Model.LanguageSegmentClass(Model.VendorCodeType.EmailAwardSegmentId, item.Value)"
-                               data-toggle="modal"
-                               data-target="#segmentModal"
+                               data-bs-toggle="modal"
+                               data-bs-target="#segmentModal"
                                data-item="EmailAwardSegmentId"
                                data-languageid="@item.Value">@item.Key</a>
                         }
                     </div>
                 </div>
             </div>
-            <input type="hidden" asp-for="VendorCodeType.EmailAwardMessageTemplateId" value="@Model.VendorCodeType.EmailAwardMessageTemplateId">
+            <input type="hidden"
+                   asp-for="VendorCodeType.EmailAwardMessageTemplateId"
+                   value="@Model.VendorCodeType.EmailAwardMessageTemplateId">
             <div class="row">
-                <div class="col-xs-12">
-                    <div class="form-group">
-                        <label class="control-label" asp-for="VendorCodeType.EmailAwardMessageTemplateId"></label><br />
+                <div class="col-12">
+                    <div class="mb-3">
+                        <label class="col-form-label"
+                               asp-for="VendorCodeType.EmailAwardMessageTemplateId"></label><br />
                         @foreach (var item in Model.Languages)
                         {
                             <a class="btn @Model.LanguageMessageClass(Model.VendorCodeType.EmailAwardMessageTemplateId, item.Value)"
-                               data-toggle="modal"
-                               data-target="#messageModal"
+                               data-bs-toggle="modal"
+                               data-bs-target="#messageModal"
                                data-item="EmailAwardMessageTemplateId"
                                data-languageid="@item.Value">@item.Key</a>
                         }
@@ -229,34 +271,25 @@
         }
         <hr />
         <div class="row">
-            <div class="col-xs-12">
-                <div class="form-group">
-                    <label asp-for="VendorCodeType.ReadyForPickupEmailTemplateId" class="control-label"></label>
+            <div class="col-12">
+                <div class="mb-3">
+                    <label asp-for="VendorCodeType.ReadyForPickupEmailTemplateId"
+                           class="col-form-label"></label>
                     <description gra-description-for="VendorCodeType.ReadyForPickupEmailTemplateId"></description>
                     <select asp-for="VendorCodeType.ReadyForPickupEmailTemplateId"
-                        asp-items="VendorCodesController.GetSelectList(Model.DirectEmailTemplates)"
-                            class="form-control">
+                            asp-items="VendorCodesController.GetSelectList(Model.DirectEmailTemplates)"
+                            class="form-select">
                         <option value="">None</option>
                     </select>
-                    <span asp-validation-for="VendorCodeType.ReadyForPickupEmailTemplateId" class="text-danger"></span>
+                    <span asp-validation-for="VendorCodeType.ReadyForPickupEmailTemplateId"
+                          class="text-danger"></span>
                 </div>
             </div>
         </div>
     }
-    <div class="row row-spacing">
-        <div class="col-xs-12 text-right">
-            @if (Model.VendorCodeType.Id > 0)
-            {
-                <a asp-action="@nameof(VendorCodesController.Index)"
-                   class="btn btn-default">Back</a>
-            }
-            else
-            {
-                <a asp-controller="@HomeController.Name"
-               asp-action="@nameof(HomeController.Index)"
-                   class="btn btn-default">Cancel</a>
-            }
-            <button type="submit" class="btn btn-primary">Save vendor code</button>
+    <div class="row my-3">
+        <div class="col-12 text-right">
+            <button type="submit" class="btn btn-outline-primary">Save vendor code</button>
         </div>
     </div>
 </form>
@@ -274,10 +307,9 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button"
-                            class="close"
-                            data-dismiss="modal"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
                             aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
                     </button>
                     <h4 class="modal-title" id="segmentModalLabel">Pop-up Message</h4>
                 </div>
@@ -287,7 +319,7 @@
                         <span class="fa fa-spinner fa-spin" style="font-size: 3rem;"></span>
                     </div>
                     <div id="segmentModalContent" style="display: none;">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label>Pop-up text</label>
                             <input type="text"
                                    class="form-control"
@@ -303,13 +335,13 @@
                         Remove pop-up message
                     </button>
                     <button type="button"
-                            class="btn btn-default"
-                            data-dismiss="modal">
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
                         Close
                     </button>
                     <button type="submit"
                             button-spinner
-                            class="btn btn-primary btn-spinner"
+                            class="btn btn-outline-primary btn-spinner"
                             id="saveSegment">
                         Save changes
                     </button>
@@ -332,10 +364,9 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button"
-                            class="close"
-                            data-dismiss="modal"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
                             aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
                     </button>
                     <h4 class="modal-title" id="messageModalLabel">Message</h4>
                 </div>
@@ -345,14 +376,14 @@
                         <span class="fa fa-spinner fa-spin" style="font-size: 3rem;"></span>
                     </div>
                     <div id="messageModalContent" style="display: none;">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label>Message subject</label>
                             <input type="text"
                                    class="form-control"
                                    id="messageSubject"
                                    name="subject" />
                         </div>
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label>Message text</label>
                             <textarea class="form-control"
                                       rows="4"
@@ -363,18 +394,18 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                            class="btn btn-warning btn-spinner"
+                            class="btn btn-outline-warning btn-spinner"
                             id="clearMessageTemplate">
                         Remove message
                     </button>
                     <button type="button"
-                            class="btn btn-default"
-                            data-dismiss="modal">
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
                         Close
                     </button>
                     <button type="submit"
                             button-spinner
-                            class="btn btn-primary btn-spinner"
+                            class="btn btn-outline-primary btn-spinner"
                             id="saveMessageTemplate">
                         Save changes
                     </button>

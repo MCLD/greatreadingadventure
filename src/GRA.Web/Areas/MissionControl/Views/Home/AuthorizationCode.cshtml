@@ -1,5 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Home.AuthorizationCodeViewModel
-@{ Layout = null; }
+@{
+    Layout = null;
+}
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,71 +16,100 @@
     <link rel="stylesheet" href="/css/main.min.css" />
     @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.SiteCss))
     {
-        <link rel="stylesheet" href="@Url.Content(Context.Items[GRA.Controllers.ItemKey.SiteCss].ToString())" />
+        <link rel="stylesheet"
+              href="@Url.Content(Context.Items[GRA.Controllers.ItemKey.SiteCss].ToString())" />
     }
 </head>
 <body class="gra-authorization-code">
     <div class="container body-content">
-        @if (TempData[GRA.Controllers.TempDataKey.AlertDanger] != null)
-        {
-            <div class="row mc-alertrow">
-                <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                    <div class="alert alert-danger">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertDanger])</div>
-                </div>
-            </div>
-        }
-        @if (TempData[GRA.Controllers.TempDataKey.AlertWarning] != null)
-        {
-            <div class="row mc-alertrow">
-                <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                    <div class="alert alert-warning">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertWarning])</div>
-                </div>
-            </div>
-        }
-        @if (TempData[GRA.Controllers.TempDataKey.AlertSuccess] != null)
-        {
-            <div class="row mc-alertrow">
-                <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                    <div class="alert alert-success">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertSuccess])</div>
-                </div>
-            </div>
-        }
-        @if (TempData[GRA.Controllers.TempDataKey.AlertInfo] != null)
-        {
-            <div class="row mc-alertrow">
-                <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                    <div class="alert alert-info">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertInfo])</div>
-                </div>
-            </div>
-        }
         <form asp-action="AuthorizationCode" method="post">
-            <div class="row" style="padding-top: 2rem;">
-                <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <span class="lead"><grasite property="name"></grasite> - Authorization</span>
+            <div class="row py-6 mt-5">
+                <div class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="lead">
+                                <grasite property="name"></grasite> - Authorization
+                            </span>
                         </div>
-                        <div class="panel-body">
-                            <div class="form-group form-group-lg">
-                                <label asp-for="AuthorizationCode" class="h4">Authorization Code for <grasite property="name"></grasite>:</label>
-                                <input asp-for="AuthorizationCode" class="form-control input-lg" type="password" autofocus required>
-                                <span asp-validation-for="AuthorizationCode" class="text-danger"></span>
+                        <div class="card-body py-3">
+                            @if (TempData[GRA.Controllers.TempDataKey.AlertDanger] != null)
+                            {
+                                <div class="row mc-alertrow">
+                                    <div class="col-12 col-xl-10 offset-xl-1">
+                                        <div class="alert alert-danger">
+                                            @Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertDanger])
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            @if (TempData[GRA.Controllers.TempDataKey.AlertWarning] != null)
+                            {
+                                <div class="row mc-alertrow">
+                                    <div class="col-12 col-xl-10 offset-xl-1">
+                                        <div class="alert alert-warning">
+                                            @Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertWarning])
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            @if (TempData[GRA.Controllers.TempDataKey.AlertSuccess] != null)
+                            {
+                                <div class="row mc-alertrow">
+                                    <div class="col-12 col-xl-10 offset-xl-1">
+                                        <div class="alert alert-success">
+                                            @Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertSuccess])
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            @if (TempData[GRA.Controllers.TempDataKey.AlertInfo] != null)
+                            {
+                                <div class="row mc-alertrow">
+                                    <div class="col-12 col-xl-10 offset-xl-1">
+                                        <div class="alert alert-info">
+                                            @Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertInfo])
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            <div class="mb-3">
+                                <label asp-for="AuthorizationCode" class="h4">
+                                    Authorization Code for <grasite property="name"></grasite>:
+                                </label>
+                                <input asp-for="AuthorizationCode"
+                                       class="form-control form-control-lg"
+                                       type="password"
+                                       autofocus
+                                       required>
+                                <span asp-validation-for="AuthorizationCode"
+                                      class="text-danger"></span>
                             </div>
                         </div>
-                        <div class="panel-footer clearfix">
-                            <div class="pull-right">
-                                <button class="btn btn-lg btn-primary btn-block" type="submit">Validate code</button>
+                        <div class="card-footer d-flex justify-content-end">
+                            <div>
+                                <a asp-action="@nameof(GRA.Controllers.HomeController.Index)"
+                                   asp-area=""
+                                   asp-controller="@GRA.Controllers.HomeController.Name"
+                                   class="btn btn-lg btn-outline-secondary me-2">
+                                    Return to <grasite property="name"></grasite>
+                                </a>
+                            </div>
+                            <div>
+                                <button class="btn btn-lg btn-outline-primary"
+                                        type="submit">
+                                    Validate code
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </form>
-
-        <script src="/js/main.min.js"></script>
-        @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.SiteJs))
-        {
-            <script src="@Url.Content(Context.Items[GRA.Controllers.ItemKey.SiteJs].ToString())"></script>
-        }
+    </div>
+    <script src="/js/main.min.js"></script>
+    @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.SiteJs))
+    {
+        <script src="@Url.Content(Context.Items[GRA.Controllers.ItemKey.SiteJs].ToString())"></script>
+    }
 </body>
 </html>

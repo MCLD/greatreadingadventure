@@ -23,7 +23,9 @@
 
     public static class Email
     {
-        public static readonly string MaximumWelcomeEmailSendBlock = "Email.MaximumWelcomeEmailSendBlock";
+        public static readonly string MaximumWelcomeEmailSendBlock
+            = "Email.MaximumWelcomeEmailSendBlock";
+
         public static readonly string UnsubscribeBase = "Email.UnsubscribeBase";
         public static readonly string WelcomeDelayHours = "Email.WelcomeEmailDelayHours";
         public static readonly string WelcomeTemplateId = "Email.WelcomeEmailId";
@@ -56,7 +58,9 @@
     {
         public static readonly string BackToBackInterval = "Performers.PerformerBackToBackInterval";
         public static readonly string EnableInsuranceQuestion = "Performer.EnableInsuranceQuestion";
-        public static readonly string EnableLivestreamQuestions = "Performer.EnableLivestreamQuestions";
+
+        public static readonly string EnableLivestreamQuestions
+            = "Performer.EnableLivestreamQuestions";
     }
 
     public static class Points
@@ -80,6 +84,8 @@
     public static class Triggers
     {
         public static readonly string MaxPointsPerTrigger = "Triggers.MaxPointsPerTrigger";
+        public static readonly string LowPointThreshold = "Triggers.LowPointThreshold";
+        public static readonly string DisallowTriggersBelowPoints = "Triggers.DisallowTriggersBelowPoints";
     }
 
     public static class Users
@@ -104,6 +110,9 @@
 
         public static readonly string MaximumHouseholdSizeBeforeGroup
             = "Users.MaximumHouseholdSizeBeforeGroup";
+
+        public static readonly string RestrictChangingProgram
+            = "Users.RestrictChangingProgram";
 
         public static readonly string RestrictChangingSystemBranch
             = "Users.RestrictChangingSystemBranch";

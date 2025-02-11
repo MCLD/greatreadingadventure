@@ -1,19 +1,18 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Pages.PagesListViewModel
 
-<div class="row" style="padding: 10px 0;">
-    <div class="col-xs-12">
+@section inHeading {
+    <div class="ms-auto">
         <button type="button"
-                class="btn btn-default"
-                data-toggle="modal"
-                data-target="#addModal">
+                class="btn btn-outline-success"
+                data-bs-toggle="modal"
+                data-bs-target="#addModal">
             Create a new page
         </button>
     </div>
-</div>
+}
 
-
-<div class="row" style="padding: 10px 0;">
-    <div class="col-xs-12">
+<div class="row my-2">
+    <div class="col-12">
         @if (Model.PageHeaders.Count() == 0)
         {
             <div class="alert alert-warning">No Pages</div>
@@ -21,13 +20,13 @@
         else
         {
             <div>
-                <table class="table table-condensed table-bordered link-table">
+                <table class="table table-sm table-bordered link-table">
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Stub</th>
+                            <th>Slug</th>
                             <th>Languages</th>
-                            <th>&nbsp;</th>
+                            <th style="width: 7rem;">&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,7 +34,9 @@
                         {
                             <tr>
                                 <td class="td-class">
-                                    <a asp-action="@nameof(PagesController.Detail)" asp-route-id="@header.Id" class="rowlink">
+                                    <a asp-action="@nameof(PagesController.Detail)"
+                                       asp-route-id="@header.Id"
+                                       class="rowlink">
                                         @header.PageName
                                     </a>
                                 </td>
@@ -45,23 +46,25 @@
                                 <td>
                                     @string.Join(", ", header.PageLanguages)
                                 </td>
-                                <td class="on-top gra-mc-icon">
+                                <td class="on-top d-flex justify-content-evenly">
                                     <button type="button"
-                                            class="btn btn-primary btn-sm"
-                                            data-toggle="modal"
-                                            data-target="#editModal"
+                                            class="btn btn-outline-primary btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editModal"
                                             data-id="@header.Id"
                                             data-name="@header.PageName"
                                             data-stub="@header.Stub">
-                                        <span class="fas fa-pencil-alt" aria-hidden="true"></span>
+                                        <span class="fas fa-pencil-alt fa-fw"
+                                              aria-hidden="true"></span>
                                     </button>
                                     <button type="button"
-                                            class="btn btn-danger btn-sm"
-                                            data-toggle="modal"
-                                            data-target="#deleteModal"
+                                            class="btn btn-outline-danger btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal"
                                             data-id="@header.Id"
                                             data-name="@header.PageName">
-                                        <span class="fas fa-times" aria-hidden="true"></span>
+                                        <span class="fas fa-times fa-fw"
+                                              aria-hidden="true"></span>
                                     </button>
                                 </td>
                             </tr>
@@ -69,220 +72,201 @@
                     </tbody>
                 </table>
             </div>
-            @if (Model.PaginateModel.MaxPage > 1)
-            {
-                <paginate paginateModel="@Model.PaginateModel"></paginate>
-            }
+            <paginate paginateModel="@Model.PaginateModel"></paginate>
         }
     </div>
 </div>
 
-<div class="row">
-    <div class="modal fade"
-         id="addModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="addModalLabel">
-        <div class="modal-dialog" role="document">
-            <form asp-controller="Pages"
-                  asp-action="@nameof(PagesController.Create)"
-                  method="post"
-                  role="form"
-                  style="display:inline">
-                <input id="addCurrentPage" asp-for="PaginateModel.CurrentPage" type="hidden" />
-
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button"
-                                class="close"
-                                data-dismiss="modal"
-                                aria-label="Close dialog">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <h1 class="modal-title h4" id="addModalLabel">Add page</h1>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label asp-for="PageHeader.PageName" class="control-label"></label>
-                            <input id="addName" asp-for="PageHeader.PageName"
-                                   class="form-control" />
-                            <span asp-validation-for="PageHeader.PageName"
-                                  class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="PageHeader.Stub" class="control-label"></label>
-                            <input id="addStub" asp-for="PageHeader.Stub" class="form-control" />
-                            <span asp-validation-for="PageHeader.Stub" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button"
-                                class="btn btn-default"
-                                data-dismiss="modal"
-                                style="margin-right: 1em;">
-                            Cancel
-                        </button>
-                        <button type="submit"
-                                class="btn btn-primary btn-spinner pull-right"
-                                aria-label="Confirm"
-                                button-spinner>
-                            Add
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="modal fade"
-         id="editModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="editModalLabel">
-        <div class="modal-dialog" role="document">
-            <form asp-controller="Pages"
-                  asp-action="@nameof(PagesController.Edit)"
-                  method="post"
-                  role="form"
-                  style="display:inline">
-                <input id="editId" asp-for="PageHeader.Id" type="hidden" />
-                <input id="editCurrentPage" asp-for="PaginateModel.CurrentPage" type="hidden" />
-
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button"
-                                class="close"
-                                data-dismiss="modal"
-                                aria-label="Close dialog">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <h1 class="modal-title h4" id="editModalLabel">Edit page</h1>
-                    </div>
-                    <div class="modal-body">
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label asp-for="PageHeader.PageName"
-                                       class="control-label"></label>
-                                <input id="editName" asp-for="PageHeader.PageName"
-                                       class="form-control" />
-                                <span asp-validation-for="PageHeader.PageName"
-                                      class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="PageHeader.Stub" class="control-label"></label>
-                                <input id="editStub" asp-for="PageHeader.Stub"
-                                       class="form-control"
-                                       readonly />
-                                <span asp-validation-for="PageHeader.Stub"
-                                      class="text-danger"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button"
-                                class="btn btn-default"
-                                data-dismiss="modal"
-                                style="margin-right: 1em;">
-                            Cancel
-                        </button>
-                        <button type="submit"
-                                class="btn btn-primary btn-spinner pull-right"
-                                aria-label="Confirm"
-                                button-spinner>
-                            Save
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="modal fade"
-         id="deleteModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="deleteModalLabel">
-        <div class="modal-dialog" role="document">
+<div class="modal fade"
+     id="addModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="addModalLabel">
+    <div class="modal-dialog" role="document">
+        <form asp-controller="Pages"
+              asp-action="@nameof(PagesController.Create)"
+              method="post"
+              role="form">
+            <input id="addCurrentPage" asp-for="PaginateModel.CurrentPage" type="hidden" />
             <div class="modal-content">
-                <form asp-controller="Pages"
-                      asp-action="@nameof(PagesController.Delete)"
-                      method="post"
-                      role="form"
-                      style="display:inline">
-                    <input id="deleteId" asp-for="PageHeader.Id" type="hidden" />
-                    <input id="deleteName" asp-for="PageHeader.PageName" type="hidden" />
-                    <input id="deleteCurrentPage"
-                           asp-for="PaginateModel.CurrentPage"
-                           type="hidden" />
-
-                    <div class="modal-header">
-                        <button type="button"
-                                class="close"
-                                data-dismiss="modal"
-                                aria-label="Close dialog">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <h1 class="modal-title h4" id="deleteModalLabel">Delete page</h1>
+                <div class="modal-header">
+                    <h1 class="modal-title h4" id="addModalLabel">Add page</h1>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close dialog">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <label asp-for="PageHeader.PageName" class="col-form-label"></label>
+                        <input id="addName" asp-for="PageHeader.PageName"
+                               class="form-control" />
+                        <span asp-validation-for="PageHeader.PageName"
+                              class="text-danger"></span>
                     </div>
-                    <div class="modal-body">
-                        <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
+                    <div>
+                        <label asp-for="PageHeader.Stub" class="col-form-label"></label>
+                        <input id="addStub" asp-for="PageHeader.Stub" class="form-control" />
+                        <span asp-validation-for="PageHeader.Stub" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="btn btn-outline-primary"
+                            aria-label="Confirm"
+                            button-spinner>
+                        Add
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade"
+     id="editModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="editModalLabel">
+    <div class="modal-dialog" role="document">
+        <form asp-controller="Pages"
+              asp-action="@nameof(PagesController.Edit)"
+              method="post"
+              role="form">
+            <input id="editId" asp-for="PageHeader.Id" type="hidden" />
+            <input id="editCurrentPage" asp-for="PaginateModel.CurrentPage" type="hidden" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title h4" id="editModalLabel">Edit page name/slug</h1>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close dialog">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <label asp-for="PageHeader.PageName"
+                               class="col-form-label"></label>
+                        <input id="editName" asp-for="PageHeader.PageName"
+                               class="form-control" />
+                        <span asp-validation-for="PageHeader.PageName"
+                              class="text-danger"></span>
+                    </div>
+                    <div>
+                        <label asp-for="PageHeader.Stub" class="col-form-label"></label>
+                        <input id="editStub" asp-for="PageHeader.Stub"
+                               class="form-control"
+                               readonly />
+                        <span asp-validation-for="PageHeader.Stub"
+                              class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="btn btn-outline-primary"
+                            aria-label="Confirm"
+                            button-spinner>
+                        Save
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade"
+     id="deleteModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="deleteModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form asp-controller="Pages"
+                  asp-action="@nameof(PagesController.Delete)"
+                  method="post"
+                  role="form"
+                  style="display:inline">
+                <input id="deleteId" asp-for="PageHeader.Id" type="hidden" />
+                <input id="deleteName" asp-for="PageHeader.PageName" type="hidden" />
+                <input id="deleteCurrentPage"
+                       asp-for="PaginateModel.CurrentPage"
+                       type="hidden" />
+                <div class="modal-header">
+                    <h1 class="modal-title h4" id="deleteModalLabel">Delete page</h1>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close dialog">
+                    </button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="modal-body d-flex align-items-stretch">
+                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                              aria-hidden="true"></span>
                         <span id="modal-text"></span>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button"
-                                class="btn btn-default"
-                                data-dismiss="modal"
-                                style="margin-right: 1em;">
-                            Cancel
-                        </button>
-                        <button type="submit"
-                                class="btn btn-danger pull-right"
-                                aria-label="Confirm">
-                            <span class="fas fa-times" aria-hidden="true"></span>
-                            Delete
-                        </button>
-                    </div>
-                </form>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="btn btn-outline-danger"
+                            button-spinner
+                            aria-label="Confirm">
+                        Delete
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
 @section scripts
-    {
+{
     <script>
         $(document).ready(function () {
             $('.td-class').each(function () {
-                $(this).children('a.rowlink').height($(this).height() + 11);
+                $(this).children('a.rowlink').height($(this).outerHeight());
             });
         });
         $(window).resize(function () {
             $('.td-class').each(function () {
-                $(this).children('a.rowlink').height($(this).height() + 11);
+                $(this).children('a.rowlink').height($(this).outerHeight());
             });
         });
 
         $("#editModal").on("show.bs.modal", function (event) {
-            var button = $(event.relatedTarget);
-            var id = button.data("id");
-            var name = button.data("name");
-            var stub = button.data("stub");
-            var modal = $(this);
+            let button = $(event.relatedTarget);
+            let id = button.data("id");
+            let name = button.data("name");
+            let stub = button.data("stub");
+            let modal = $(this);
             modal.find("#editId").val(id);
             modal.find("#editName").val(name);
             modal.find("#editStub").val(stub);
         });
 
         $("#deleteModal").on("show.bs.modal", function (event) {
-            var button = $(event.relatedTarget);
-            var id = button.data("id");
-            var name = button.data("name");
-            var modal = $(this);
-            modal.find("#modal-text").text("Are you sure you want to delete the page \"" + name + "\"?");
+            let button = $(event.relatedTarget);
+            let id = button.data("id");
+            let name = button.data("name");
+            let modal = $(this);
+            modal.find("#modal-text").html("Are you sure you want to delete the page: <strong>" + name + "</strong>?");
             modal.find("#deleteId").val(id);
             modal.find("#deleteName").val(name);
         });

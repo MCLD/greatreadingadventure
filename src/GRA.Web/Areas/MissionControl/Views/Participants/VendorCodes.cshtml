@@ -3,23 +3,23 @@
 
 @await Html.PartialAsync("_ParticipantPartial")
 
-<div class="row hidden-print" style="margin-bottom: 2rem;">
-    <div class="col-xs-12">
+<div class="row d-print-none my-3">
+    <div class="col-12">
         @if (Model.CurrentCodes?.Count() > 0)
         {
             <button type="button"
-                    class="btn btn-danger"
-                    data-toggle="modal"
-                    data-target="#areYouSureModal">
+                    class="btn btn-outline-danger"
+                    data-bs-toggle="modal"
+                    data-bs-target="#areYouSureModal">
                 Assign new code
             </button>
         }
         @if (Model.CurrentUser)
         {
             <button type="button"
-                    class="btn btn-primary"
-                    data-toggle="modal"
-                    data-target="#spareCodeModal">
+                    class="btn btn-outline-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#spareCodeModal">
                 Assign spare code
             </button>
         }
@@ -27,8 +27,8 @@
 </div>
 
 <div class="row">
-    <div class="col-xs-12">
-        <table class="table table-condensed table-bordered table-striped">
+    <div class="col-12">
+        <table class="table table-sm table-bordered table-striped">
             <tr>
                 <th>Code</th>
                 <th>Item</th>
@@ -56,9 +56,9 @@
                             {
                                 <td>
                                     <button type="button"
-                                            class="btn btn-warning btn-sm"
-                                            data-toggle="modal"
-                                            data-target="#demoteCodeModal"
+                                            class="btn btn-outline-warning btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#demoteCodeModal"
                                             data-demotecodeid="@currentCode.VendorCode.Id">
                                         Demote code
                                     </button>
@@ -71,7 +71,11 @@
             @if (Model?.AssociatedCodes?.Count() > 0)
             {
                 <tr>
-                    <td colspan="5" class="text-center"><strong>Codes below have been replaced/assigned administratively.</strong></td>
+                    <td colspan="5" class="text-center">
+                        <strong>
+                            Codes below have been replaced/assigned administratively.
+                        </strong>
+                    </td>
                 </tr>
                 @foreach (var vendorInfo in Model?.AssociatedCodes)
                 {
@@ -94,16 +98,20 @@
     </div>
 </div>
 
+<div class="mb-3 d-flex d-print-none justify-content-end">
+    <a asp-action="Index"
+       class="btn btn-outline-secondary">Return to Participants</a>
+</div>
+
 <form method="post" asp-action="@nameof(ParticipantsController.AssignNewCode)">
     <input type="hidden" name="id" value="@Model.Id" />
     <div class="modal" id="areYouSureModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                     <h4 class="modal-title">Assign new code</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
                 </div>
                 <div class="modal-body">
                     <p>Are you sure you want to generate a new code?</p>
@@ -125,10 +133,10 @@
                             this action so they are not confused.
                         </li>
                     </ul>
-                    <div class="form-group">
+                    <div class="mb-3">
                         <label for="reason">Please give a brief (255 or fewer characters) reason:</label>
                         <input type="text"
-                               class="form-control"
+                               class="form-control mt-3"
                                id="reason"
                                name="reason"
                                placeholder="Reason for generating a new code">
@@ -136,11 +144,11 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                            class="btn btn-secondary"
-                            data-dismiss="modal">
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
                         Cancel
                     </button>
-                    <button type="submit" class="btn btn-danger">Assign new code</button>
+                    <button type="submit" class="btn btn-outline-danger">Assign new code</button>
                 </div>
             </div>
         </div>
@@ -151,13 +159,12 @@
     <input type="hidden" name="userId" value="@Model.Id" />
     <input type="hidden" name="demoteCodeId" id="demoteCodeId" />
     <div class="modal" id="demoteCodeModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                     <h4 class="modal-title">Demote code</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
                 </div>
                 <div class="modal-body">
                     <p>You are demoting a code for a user who has multiple primary codes.</p>
@@ -190,10 +197,10 @@
                             this action so they are not confused.
                         </li>
                     </ul>
-                    <div class="form-group">
+                    <div class="mb-3">
                         <label for="reason">Please give a brief (255 or fewer characters) reason:</label>
                         <input type="text"
-                               class="form-control"
+                               class="form-control mt-3"
                                id="reason"
                                name="reason"
                                placeholder="Reason for demoting this code">
@@ -201,31 +208,28 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                            class="btn btn-secondary"
-                            data-dismiss="modal">
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
                         Cancel
                     </button>
-                    <button type="submit" class="btn btn-danger">Demote code</button>
+                    <button type="submit" class="btn btn-outline-danger">Demote code</button>
                 </div>
             </div>
         </div>
     </div>
 </form>
 
-
-
 @if (Model.CurrentUser)
 {
     <form method="post" asp-action="@nameof(ParticipantsController.AssignSpareCode)">
         <input type="hidden" name="id" value="@Model.Id" />
         <div class="modal" id="spareCodeModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
                         <h4 class="modal-title">Assign spare code</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        </button>
                     </div>
                     <div class="modal-body">
                         <p>This will generate a new code associated to your user.</p>
@@ -237,29 +241,29 @@
                                 this Vendor Code area of Mission Control.
                             </li>
                         </ul>
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="reason">Please give a brief (255 or fewer characters) explanation:</label>
                             <input type="text"
-                                   class="form-control"
+                                   class="form-control mt-3"
                                    id="reason"
                                    name="reason"
                                    placeholder="Reason for assigning a spare code">
                         </div>
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="vendorCodeTypeId">Select type of code to assign</label>
                             <select name="vendorCodeTypeId"
                                     id="vendorCodeTypeId"
                                     asp-items="Model.VendorCodeTypeList"
-                                    class="form-control"></select>
+                                    class="form-select"></select>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-secondary"
-                                data-dismiss="modal">
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">
                             Cancel
                         </button>
-                        <button type="submit" class="btn btn-primary">Assign spare code</button>
+                        <button type="submit" class="btn btn-outline-primary">Assign spare code</button>
                     </div>
                 </div>
             </div>

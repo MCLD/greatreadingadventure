@@ -1,53 +1,25 @@
 ﻿@using GRA.Controllers.ViewModel.MissionControl.Triggers
 @model TriggersDetailViewModel
-
 @section styles {
     <style>
         .trigger-details-form .tab-pane {
             border-left: 1px solid #ddd;
             border-right: 1px solid #ddd;
             border-bottom: 1px solid #ddd;
-            border-radius: 0px 0px 5px 5px;
-            padding: 10px;
-        }
-
-        .trigger-details-form .nav-tabs {
-            margin-bottom: 0;
-        }
-
-        .trigger-details-form .form-group {
-            margin-top: 1rem;
-        }
-
-        .trigger-details-form .trigger-requirements-box {
-            border: 1px solid #ccc;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin-top: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        @@media (max-width: 768px) {
-            .text-sm-left {
-                text-align: left;
-            }
+            border-radius: 0px 5px;
         }
     </style>
 }
-
 <form asp-controller="Triggers"
       asp-action="@Model.Action"
       method="post"
       role="form"
       enctype="multipart/form-data"
-      style="padding: 10px 0;"
       id="triggerForm"
       class="form-horizontal trigger-details-form">
     <input asp-for="BadgeRequiredList" type="hidden" />
     <input asp-for="ChallengeRequiredList" type="hidden" />
     <input asp-for="IsSecretCode" type="hidden" />
-    <input asp-for="UseBadgeMaker" type="hidden" />
-    <input asp-for="BadgeMakerUrl" type="hidden" />
     <input asp-for="BadgeMakerImage" type="hidden" />
     <input asp-for="EditMail" type="hidden" />
     <input asp-for="EditVendorCode" type="hidden" />
@@ -69,23 +41,35 @@
 
     @if (Model.DependentTriggers?.Count > 0)
     {
-        <div class="panel-group row-spacing" id="accordionDependent" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingDependent">
-                    <h4 class="panel-title">
-                        <a role="button" data-toggle="collapse" data-parent="#accordionDependent" href="#collapseDependent" aria-expanded="false" aria-controls="collapseDependent">
+        <div class="list-group mb-3"
+             id="accordionDependent"
+             role="tablist"
+             aria-multiselectable="true">
+            <div class="card">
+                <div class="card-header" role="tab" id="headingDependent">
+                    <h4 class="card-title">
+                        <a role="button"
+                           data-bs-toggle="collapse"
+                           data-bs-parent="#accordionDependent"
+                           href="#collapseDependent"
+                           aria-expanded="false"
+                           aria-controls="collapseDependent">
                             Dependent Triggers
                         </a>
                     </h4>
                 </div>
-                <div id="collapseDependent" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingDependent">
-                    <div class="panel-body">
+                <div id="collapseDependent"
+                     class="card-collapse collapse"
+                     role="tabpanel"
+                     aria-labelledby="headingDependent">
+                    <div class="card-body">
                         The following trigger(s) depend on this trigger:
                         <ul>
                             @foreach (var trigger in Model.DependentTriggers)
                             {
                                 <li>
-                                    <a target="_blank" href="@Url.Action("Edit", new { id = trigger.Id })"> @trigger.Name</a>
+                                    <a target="_blank"
+                                       href="@Url.Action("Edit", new { id = trigger.Id })"> @trigger.Name</a>
                                 </li>
                             }
                         </ul>
@@ -97,23 +81,35 @@
 
     @if (Model.RelatedEvents?.Count > 0)
     {
-        <div class="panel-group row-spacing" id="accordionRelated" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingRelated">
-                    <h4 class="panel-title">
-                        <a role="button" data-toggle="collapse" data-parent="#accordionRelated" href="#collapseRelated" aria-expanded="false" aria-controls="collapseRelated">
+        <div class="list-group mb-3"
+             id="accordionRelated"
+             role="tablist"
+             aria-multiselectable="true">
+            <div class="card">
+                <div class="card-header" role="tab" id="headingRelated">
+                    <h4 class="card-title">
+                        <a role="button"
+                           data-bs-toggle="collapse"
+                           data-bs-parent="#accordionRelated"
+                           href="#collapseRelated"
+                           aria-expanded="false"
+                           aria-controls="collapseRelated">
                             Related Events
                         </a>
                     </h4>
                 </div>
-                <div id="collapseRelated" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingRelated">
-                    <div class="panel-body">
+                <div id="collapseRelated"
+                     class="card-collapse collapse"
+                     role="tabpanel"
+                     aria-labelledby="headingRelated">
+                    <div class="card-body">
                         The following event(s) relate to this trigger:
                         <ul>
                             @foreach (var graEvent in Model.RelatedEvents)
                             {
                                 <li>
-                                    <a target="_blank" href="@Url.Action("Edit", "Events", new { id = graEvent.Id })"> @graEvent.Name</a>
+                                    <a target="_blank"
+                                       href="@Url.Action("Edit", "Events", new { id = graEvent.Id })"> @graEvent.Name</a>
                                 </li>
                             }
                         </ul>
@@ -125,137 +121,171 @@
 
     @if (Model.Action == "Edit")
     {
-        <div style="font-size:large;">
-            Created By:
-            @if (Model.CanViewParticipants)
-            {
-                <a asp-controller="Participants"
-                   asp-action="@nameof(ParticipantsController.Detail)"
-                   asp-route-id="@Model.Trigger.CreatedBy"
-                   target="_blank">@Model.CreatedByName</a>
-            }
-            else
-            {
-                @Model.CreatedByName
-            }
-            on @Model.Trigger.CreatedAt
-        </div>
-
-        @if (!string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
+        @if (!string.IsNullOrEmpty(Model.CreatedByName))
         {
-            <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                <div class="alert alert-warning">
-                    <span class="fas fa-exclamation-circle" aria-hidden="true"></span> @Model.MaxPointsWarningMessage
+            <div class="fs-5 mt-2 mb-3">
+                Created By:
+                @if (Model.CanViewParticipants)
+                {
+                    <a aria-label="@Model.CreatedByName (Opens new window)"
+                       asp-action="@nameof(ParticipantsController.Detail)"
+                       asp-controller="@ParticipantsController.Name"
+                       asp-route-id="@Model.Trigger.CreatedBy"
+                       target="_blank">@Model.CreatedByName</a>
+                }
+                else
+                {
+                    @Model.CreatedByName
+                }
+                on @Model.Trigger.CreatedAt
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(Model.PointLimitExceededMessage))
+        {
+            <div class="col-12 col-sm-6 offset-sm-3 mb-3">
+                <div class="alert alert-warning d-flex align-items-stretch">
+                    <span class="fas fa-exclamation-circle fa-lg text-warning pt-2 me-3"
+                          aria-hidden="true"></span>
+                    <span>@Html.Raw(Model.PointLimitExceededMessage)</span>
                 </div>
             </div>
         }
     }
 
-
-    <div class="col-xs-12 form-group-lg" style="margin-top: 2rem; margin-bottom: 2rem;">
-        <label asp-for="Trigger.Name" class="control-label col-sm-3"></label>
-        <div class="col-sm-9">
-            <input asp-for="Trigger.Name"
-                   class="form-control trigger-name-field"
-                   readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
-            <span asp-validation-for="Trigger.Name" class="text-danger"></span>
-        </div>
+    <div class="col-12 mb-3">
+        <label asp-for="Trigger.Name" class="col-form-label"></label>
+        <input asp-for="Trigger.Name"
+               class="form-control trigger-name-field"
+               readonly="@Model.IsReadOnly" />
+        <span asp-validation-for="Trigger.Name" class="text-danger"></span>
     </div>
 
     <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class=@(Model.IsSecretCode ? "active" : "")>
-            <a id="codeTab" href="#secretCode" aria-controls="secretCode" role="tab" data-toggle="tab">Secret Code</a>
+        <li role="presentation" class="nav-item">
+            <a id="codeTab"
+               class="nav-link @(Model.IsSecretCode ? "active" : "")"
+               href="#secretCode"
+               aria-controls="secretCode"
+               role="tab"
+               data-bs-toggle="tab">Secret Code</a>
         </li>
-        <li role="presentation" class=@(Model.IsSecretCode ? "" : "active")>
-            <a id="requirementsTab" href="#requirements" aria-controls="requirements" role="tab" data-toggle="tab">Requirements</a>
+        <li role="presentation" class="nav-item">
+            <a id="requirementsTab"
+               class="nav-link @(Model.IsSecretCode ? "" : "active")"
+               href="#requirements"
+               aria-controls="requirements"
+               role="tab"
+               data-bs-toggle="tab">Requirements</a>
         </li>
     </ul>
 
     <div class="tab-content">
-        <div role="tabpanel" class="tab-pane @(Model.IsSecretCode ? "active" : "")" id="secretCode">
-            <div class="col-xs-12" style="margin-top: 1rem;">
+        <div role="tabpanel"
+             class="tab-pane p-2 @(Model.IsSecretCode ? "active" : "")"
+             id="secretCode">
+            <div class="col-12">
                 <p>
                     <strong>
-                        Choose a secret code to trigger this award. Don't choose something that is easy
-                        to guess!
+                        Choose a secret code to trigger this award. Don't choose something that is
+                        easy to guess!
                     </strong>
                 </p>
                 <p>
-                    Secret codes must be less than 50 characters and can only contain letters and numbers.
-                    Upper-case and lower-case don't matter.
+                    Secret codes must be less than 50 characters and can only contain letters and
+                    numbers. Upper-case and lower-case don't matter.
                 </p>
             </div>
-            <div class="col-xs-12 form-group-lg">
-                <label asp-for="Trigger.SecretCode" class="control-label col-sm-3"></label>
-                <div class="col-sm-9">
-                    <span id="SecretCode-Icon" style="float:left;margin-top:15px;" class="fa colored-icon hide"></span>
-                    <div style="margin-left:20px;">
-                        <input asp-for="Trigger.SecretCode"
-                               class="form-control"
-                               readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
-                        <span id="SecretCode-Validation" asp-validation-for="Trigger.SecretCode" class="text-success"></span>
-                    </div>
+            <div class="col-12 mb-3">
+                <label asp-for="Trigger.SecretCode" class="col-form-label"></label>
+
+                <span id="SecretCode-Icon"
+                      class="fa colored-icon d-none"></span>
+                <div>
+                    <input asp-for="Trigger.SecretCode"
+                           class="form-control"
+                           readonly="@Model.IsReadOnly" />
+                    <span id="SecretCode-Validation"
+                          asp-validation-for="Trigger.SecretCode"
+                          class="text-success"></span>
                 </div>
             </div>
-            <br style="clear: both;" />
         </div>
 
-        <div role="tabpanel" class="tab-pane @(Model.IsSecretCode ? "" : "active")" id="requirements">
-            <div class="col-xs-12" style="margin-top: 1rem;">
+        <div role="tabpanel"
+             class="tab-pane p-2 @(Model.IsSecretCode ? "" : "active")"
+             id="requirements">
+            <div class="col-12">
                 <p>
                     <strong>
-                        You can trigger this award through a combination of requirements selected below.
+                        You can trigger this award through a combination of requirements
+                        below.
                     </strong>
                 </p>
                 <p>
                     Participants will have to have all of the achievements you select in order to
                     receive the award.
                 </p>
-                <span asp-validation-for="TriggerRequirements" style="font-weight:bold;"></span>
+                <span asp-validation-for="TriggerRequirements"></span>
             </div>
 
-            <div class="col-xs-12 form-group">
-                <label asp-for="Trigger.Points" class="control-label col-sm-4"></label>
-                <div class="col-sm-8">
-                    <input asp-for="Trigger.Points"
-                           class="form-control"
-                           readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
-                    <span asp-validation-for="Trigger.Points" class="text-danger"></span>
-                </div>
-            </div>
-
-            <div class="col-xs-12 col-sm-10 col-sm-offset-1" style="margin-top: 2rem;">
-                <div class="panel panel-warning">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Require Challenges and Triggers</h3>
+            <div class="col-12 mb-3">
+                <label asp-for="Trigger.Points" class="col-form-label"></label>
+                @if (Model.MinAllowedPoints > 0)
+                {
+                    <div class="col-12">
+                        <small>
+                            <em>
+                                Must have at least @Model.MinAllowedPoints points
+                            </em>
+                        </small>
                     </div>
-                    <div class="panel-body">
+                }
+                <input asp-for="Trigger.Points"
+                       class="form-control"
+                       readonly="@Model.IsReadOnly" />
+                <span asp-validation-for="Trigger.Points" class="text-danger"></span>
+            </div>
 
-                        <div class="form-inline" style="margin-bottom: 1em;">
-                            <p class="form-control-static"><strong>Participant must have earned</strong></p>
+            <div class="col-12 mb-2">
+                <div class="card">
+                    <div class="card-header bg-warning-subtle">
+                        <h3 class="card-title">Require Challenges and Triggers</h3>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="d-flex flex-row align-items-center flex-wrap">
+                            <p class="form-control-plaintext">
+                                <strong>
+                                    Participant must have earned
+                                </strong>
+                            </p>
                             <input asp-for="Trigger.ItemsRequired"
                                    class="form-control"
                                    min="0"
-                                   readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
-                            <p class="form-control-static"><strong>of the following:</strong></p>
+                                   readonly="@Model.IsReadOnly" />
+                            <p class="form-control-plaintext"><strong>of the following:</strong></p>
                             <span asp-validation-for="Trigger.ItemsRequired" class="text-danger" />
                         </div>
                         <div>
-
                         </div>
                         <div>
-                            <table class="table table-condensed table-bordered table-striped">
+                            <table class="table table-sm table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th>Name</th>
-                                        <th width="44px">Type</th>
-                                        <th width="75px">Badge</th>
-                                        <th width="44px">&nbsp;</th>
+                                        <th style="width: 75px;">Type</th>
+                                        <th style="width: 75px;">Badge</th>
+                                        <th style="width: 75px">&nbsp;</th>
                                     </tr>
                                 </thead>
                                 <tbody id="requirementList">
-                                    <tr id="noRequirements" class="@(Model.TriggerRequirements?.Count > 0 ? "hide" : "")">
-                                        <td colspan="4"><em>No challenges or triggers required.</em></td>
+                                    <tr id="noRequirements"
+                                        class="@(Model.TriggerRequirements?.Count > 0 ? "d-none" : "")">
+                                        <td colspan="4">
+                                            <em>
+                                                No challenges or triggers required.
+                                            </em>
+                                        </td>
                                     </tr>
                                     @if (Model.TriggerRequirements != null)
                                     {
@@ -265,28 +295,32 @@
                                                 <td>
                                                     @requirement.Name
                                                 </td>
-                                                <td style="text-align:center;">
-                                                    <span class="fa fa-2x @requirement.Icon" title="@requirement.IconDescription"></span>
+                                                <td class="align-middle text-primary text-center">
+                                                    <span class="fa-stack">
+                                                        <span class="fas fa-circle fa-stack-2x"></span>
+                                                        <span class="fa fa-stack-1x fa-inverse @requirement.Icon"
+                                                              title="@requirement.IconDescription"></span>
+                                                    </span>
                                                 </td>
-                                                <td>
+                                                <td class="align-middle text-center">
                                                     @if (!string.IsNullOrWhiteSpace(requirement.BadgePath))
                                                     {
-                                                        <img class="img-thumbnail" style="height: auto; width: 64px;"
-                                                             src="~/@requirement.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")"
-                                                             asp-append-version="true" />
+                                                        <img class="img-thumbnail badge-xs"
+                                                             src="~/@requirement.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")" />
                                                     }
                                                     else
                                                     {
                                                         <text>&nbsp;</text>
                                                     }
                                                 </td>
-                                                <td>
+                                                <td class="align-middle text-center">
                                                     <button type="button"
                                                             id="removeRequirementButton"
-                                                            class="btn btn-link btn-xs"
+                                                            class="btn btn-outline-danger btn-sm"
                                                             data-badgeid="@requirement.BadgeId"
                                                             data-challengeid="@requirement.ChallengeId">
-                                                        <span class="fas fa-2x fa-minus-circle text-danger" aria-hidden="true"></span>
+                                                        <span class="fas fa-times fa-fw text-danger"
+                                                              aria-hidden="true"></span>
                                                     </button>
                                                 </td>
                                             </tr>
@@ -297,179 +331,145 @@
                         </div>
                         <button type="button"
                                 id="addButton"
-                                class="btn btn-warning"
-                                disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)">
+                                class="btn btn-outline-warning"
+                                disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.PointLimitExceededMessage) ? "disabled" : null)">
                             Add Challenges or Triggers
                         </button>
                     </div>
                 </div>
             </div>
 
-            <div class="col-xs-12 form-group">
-                <label asp-for="Trigger.LimitToSystemId" class="control-label col-sm-4"></label>
-                <div class="col-sm-8">
-                    <select asp-for="Trigger.LimitToSystemId"
-                            asp-items="Model.SystemList"
-                            class="form-control"
-                            disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)">
-                        <option value="">No</option>
-                    </select>
-                    <span asp-validation-for="Trigger.LimitToSystemId" class="text-danger"></span>
-                </div>
+            <div class="col-12 mb-3">
+                <label asp-for="Trigger.LimitToSystemId" class="col-form-label"></label>
+                <select asp-for="Trigger.LimitToSystemId"
+                        asp-items="Model.SystemList"
+                        class="form-select"
+                        disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.PointLimitExceededMessage) ? "disabled" : null)">
+                    <option value="">No</option>
+                </select>
+                <span asp-validation-for="Trigger.LimitToSystemId" class="text-danger"></span>
             </div>
 
-            <div class="col-xs-12 form-group">
-                <label asp-for="Trigger.LimitToBranchId" class="control-label col-sm-4"></label>
-                <div class="col-sm-8">
-                    <select asp-for="Trigger.LimitToBranchId"
-                            asp-items="Model.BranchList"
-                            class="form-control"
-                            disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)">
-                        <option value="">No</option>
-                    </select>
-                    <span asp-validation-for="Trigger.LimitToBranchId" class="text-danger"></span>
-                </div>
+            <div class="col-12 mb-3">
+                <label asp-for="Trigger.LimitToBranchId" class="col-form-label"></label>
+                <select asp-for="Trigger.LimitToBranchId"
+                        asp-items="Model.BranchList"
+                        class="form-select"
+                        disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.PointLimitExceededMessage) ? "disabled" : null)">
+                    <option value="">No</option>
+                </select>
+                <span asp-validation-for="Trigger.LimitToBranchId" class="text-danger"></span>
             </div>
 
-            <div class="col-xs-12 form-group">
-                <label asp-for="Trigger.LimitToProgramId" class="control-label col-sm-4"></label>
-                <div class="col-sm-8">
-                    <select asp-for="Trigger.LimitToProgramId"
-                            asp-items="Model.ProgramList"
-                            class="form-control"
-                            disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)">
-                        <option value="">No</option>
-                    </select>
-                    <span asp-validation-for="Trigger.LimitToProgramId" class="text-danger"></span>
-                </div>
+            <div class="col-12 mb-3">
+                <label asp-for="Trigger.LimitToProgramId" class="col-form-label"></label>
+                <select asp-for="Trigger.LimitToProgramId"
+                        asp-items="Model.ProgramList"
+                        class="form-select"
+                        disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.PointLimitExceededMessage) ? "disabled" : null)">
+                    <option value="">No</option>
+                </select>
+                <span asp-validation-for="Trigger.LimitToProgramId" class="text-danger"></span>
             </div>
-            <br style="clear: both;" />
         </div>
     </div>
 
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="Trigger.ActivationDate" class="control-label"></label>
-            <div class="input-group date" id="activationDatePicker">
-                <span class="input-group-addon">
-                    <span class="fas fa-calendar-alt"></span>
-                </span>
+    <div class="row mb-3">
+        <div class="col-12">
+            <label asp-for="Trigger.ActivationDate" class="col-form-label"></label>
+            <div class="mb-3 date" id="activationDatePicker">
                 <input asp-for="Trigger.ActivationDate"
-                       type="text"
+                       type="form"
                        class="form-control"
-                       readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
+                       readonly="@Model.IsReadOnly" />
             </div>
             <span asp-validation-for="Trigger.ActivationDate" class="text-danger"></span>
         </div>
     </div>
 
-    <div class="panel panel-primary" style="margin-top: 2rem;">
-        <div class="panel-heading">
-            <h3 class="panel-title">Awards</h3>
+    <div class="card">
+        <div class="card-header bg-primary-subtle">
+            <h3 class="card-title">Awards</h3>
         </div>
-        <div class="panel-body">
-            <div class="col-xs-12 form-group">
-                <label asp-for="Trigger.AwardMessage" class="control-label col-sm-3"></label>
-                <div class="col-sm-9">
-                    <textarea asp-for="Trigger.AwardMessage"
-                              class="form-control"
-                              readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)"></textarea>
-                    <span asp-validation-for="Trigger.AwardMessage" class="text-danger"></span>
-                </div>
+        <div class="card-body">
+            <div class="col-12 mb-3">
+                <label asp-for="Trigger.AwardMessage"></label>
+                <textarea asp-for="Trigger.AwardMessage"
+                          class="form-control"
+                          readonly="@Model.IsReadOnly"></textarea>
+                <span asp-validation-for="Trigger.AwardMessage" class="text-danger"></span>
             </div>
-
-            <div class="col-xs-12 form-group">
-                <div class="col-sm-3">
-                    <div class="row-12 text-right text-sm-left">
-                        <label asp-for="Trigger.AwardPoints" class="control-label"></label>
-                    </div>
-                    <div class="row-12 text-right text-sm-left">
-                        <label style="font-size: 12px;">@Model.MaxPointsMessage</label>
-                    </div>
-                </div>
-                <div class="col-sm-9">
-                    <input asp-for="Trigger.AwardPoints"
-                           value="@(Model.Trigger?.AwardPoints ?? 0)"
-                           min="0"
-                           class="form-control"
-                           readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
-                    <span asp-validation-for="Trigger.AwardPoints" class="text-danger"></span>
-                </div>
+            <div class="col-12">
+                <label asp-for="Trigger.AwardPoints"></label>
             </div>
-
-
-            <div class="row row-spacing">
-                <div class="col-xs-12">
+            @if (Model.MaxPointLimit.HasValue)
+            {
+                <div class="col-12">
+                    <small>
+                        <em>
+                            (Up to @Model.MaxPointLimit points)
+                        </em>
+                    </small>
+                </div>
+            }
+            <div class="col-12 mb-3">
+                <input asp-for="Trigger.AwardPoints"
+                       value="@(Model.Trigger?.AwardPoints ?? 0)"
+                       min="0"
+                       class="form-control"
+                       readonly="@Model.IsReadOnly" />
+                <span asp-validation-for="Trigger.AwardPoints" class="text-danger"></span>
+            </div>
+            <div class="row mb-3">
+                <div class="col-12">
                     @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
                     {
-                        <label class="control-label">Edit Badge</label>
+                        <label class="col-form-label">Edit badge image</label>
                     }
                     else
                     {
-                        <label class="control-label">Award Badge</label>
+                        <label class="col-form-label">Add a badge</label>
                     }
                 </div>
-
-                <div class="col-xs-12 col-sm-4 col-md-3">
+                <div class="col-12 col-sm-4 col-md-3">
                     @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
                     {
                         <input asp-for="BadgePath" type="hidden" />
-                        <img id="badgeImage" class="img-thumbnail badge-lg"
-                             src="~/@Model.BadgePath?@TriggersDetailViewModel.NoCache"
+                        <img id="badgeImage" class="img-thumbnail badge-lg-fixed"
+                             src="~/@Model.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")"
                              asp-append-version="true" />
                     }
                     else
                     {
-                        <img id="badgeImage" class="img-thumbnail badge-lg" src="@Model.BadgeMakerImage" style="height:210px;" />
+                        <img id="badgeImage"
+                             class="img-thumbnail badge-lg-fixed"
+                             src="@Model.BadgeMakerImage" />
                     }
-                    <span asp-validation-for="BadgePath" class="text-danger" style="display:block;"></span>
+                    <span asp-validation-for="BadgePath" class="text-danger d-block"></span>
                 </div>
-
-                <div class="col-xs-12 col-sm-8 col-md-9">
-                    <ul class="nav nav-tabs" role="tablist">
-                        @if (Model.UseBadgeMaker)
-                        {
-                        <li role="presentation" class=@(Model.UseBadgeMaker ? "active" : "")>
-                            <a id="badgeTab" href="#badge" aria-controls="badge" role="tab" data-toggle="tab">Badge Maker</a>
-                        </li>
-                        }
-                        <li role="presentation" class=@(Model.UseBadgeMaker ? "" : "active")>
-                            <a id="uploadTab" href="#upload" aria-controls="upload" role="tab" data-toggle="tab">Upload an Image</a>
-                        </li>
-                    </ul>
-
-                    <div class="tab-content">
-                        <div role="tabpanel" class="tab-pane @(Model.UseBadgeMaker ? "active" : "")" id="badge">
-                            <button id="openMaker" type="button" class="btn btn-default">
-                                <span class="fas fa-badge-check"></span> Create a Badge
-                            </button>
-                        </div>
-                        <div role="tabpanel" class="tab-pane @(Model.UseBadgeMaker ? "" : "active")" id="upload">
-                            <p>Upload a badge image. Badge images must be square.</p>
-                            <div class="input-group">
-                                <label class="input-group-btn">
-                                    <span id="selectBadge" class="btn btn-default btn-file">
-                                        <span class="far fa-file-image"></span> Select an image<input type="file" asp-for="BadgeUploadImage" accept=".png,.jpg,.jpeg" style="display: none;" />
-                                    </span>
-                                </label>
-                                <input type="text" class="form-control" readonly id="selectedFile">
-                            </div>
-                            <div>
-                                <span asp-validation-for="BadgeUploadImage" class="text-danger"></span>
-                            </div>
-                            <button id="clearFile" class="btn btn-default" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
-                        </div>
+                <div class="col-12 col-sm-8 col-md-9">
+                    <label asp-for="BadgeUploadImage" class="col-form-label"></label>
+                    <div class="input-group mb-3">
+                        <input type="file"
+                               class="form-control"
+                               asp-for="BadgeUploadImage"
+                               accept=".jpg,.png" />
+                        <button class="btn btn-outline-secondary"
+                                type="button"
+                                onclick="$('#BadgeUploadImage').val('')">
+                            Clear selection
+                        </button>
                     </div>
-                    <div class="row row-spacing">
-                        <div class="col-xs-12">
-                            <label asp-for="BadgeAltText" class="control-label"></label>
-                            <span class="fas fa-info-circle wide-tooltip"
-                                  title="How should this badge be described to someone who can't see it?"
-                                  data-toggle="tooltip"
-                                  data-placement="top"></span>
-                            <textarea asp-for="BadgeAltText" class="form-control">@Model.BadgeAltText</textarea>
-                            <span asp-validation-for="BadgeAltText" class="text-danger"></span>
-                        </div>
+                    <span asp-validation-for="BadgeUploadImage" class="text-danger mb-3"></span>
+                    <div>
+                        <label asp-for="BadgeAltText" class="control-label"></label>
+                        <span class="fas fa-info-circle wide-tooltip"
+                              title="How should this badge be described to someone who can't see it?"
+                              data-toggle="tooltip"
+                              data-placement="top"></span>
+                        <textarea asp-for="BadgeAltText"
+                                  class="form-control">@Model.BadgeAltText</textarea>
+                        <span asp-validation-for="BadgeAltText" class="text-danger"></span>
                     </div>
                 </div>
             </div>
@@ -480,12 +480,14 @@
     {
         if (!string.IsNullOrWhiteSpace(Model.VendorCodeType) || Model.VendorCodeTypeList.Count() > 0)
         {
-            <div class="row row-spacing">
-                <div class="col-xs-12">
-                    <label asp-for="Trigger.AwardVendorCodeTypeId" class="control-label"></label>
+            <div class="row mb-3">
+                <div class="col-12">
+                    <label asp-for="Trigger.AwardVendorCodeTypeId" class="col-form-label"></label>
                     @if (Model.EditVendorCode)
                     {
-                        <select asp-for="Trigger.AwardVendorCodeTypeId" asp-items="Model.VendorCodeTypeList" class="form-control">
+                        <select asp-for="Trigger.AwardVendorCodeTypeId"
+                                asp-items="Model.VendorCodeTypeList"
+                                class="form-select">
                             <option value="">No</option>
                         </select>
                     }
@@ -493,7 +495,8 @@
                     {
                         <input asp-for="VendorCodeType" class="form-control" readonly />
                     }
-                    <span asp-validation-for="Trigger.AwardVendorCodeTypeId" class="text-danger"></span>
+                    <span asp-validation-for="Trigger.AwardVendorCodeTypeId"
+                          class="text-danger"></span>
                 </div>
             </div>
         }
@@ -503,12 +506,14 @@
     {
         if (!string.IsNullOrWhiteSpace(Model.UnlockableAvatarBundle) || Model.UnlockableAvatarBundleList.Count() > 0)
         {
-            <div class="row row-spacing">
-                <div class="col-xs-12">
-                    <label asp-for="Trigger.AwardAvatarBundleId" class="control-label"></label>
+            <div class="row mb-3">
+                <div class="col-12">
+                    <label asp-for="Trigger.AwardAvatarBundleId" class="col-form-label"></label>
                     @if (Model.EditAvatarBundle)
                     {
-                        <select asp-for="Trigger.AwardAvatarBundleId" asp-items="Model.UnlockableAvatarBundleList" class="form-control">
+                        <select asp-for="Trigger.AwardAvatarBundleId"
+                                asp-items="Model.UnlockableAvatarBundleList"
+                                class="form-select">
                             <option value="">No</option>
                         </select>
                     }
@@ -516,41 +521,56 @@
                     {
                         <input asp-for="UnlockableAvatarBundle" class="form-control" readonly />
                     }
-                    <span asp-validation-for="Trigger.AwardAvatarBundleId" class="text-danger"></span>
+                    <span asp-validation-for="Trigger.AwardAvatarBundleId"
+                          class="text-danger"></span>
                 </div>
             </div>
         }
     }
 
-    <div class="panel-group" id="accordionPrize" role="tablist" aria-multiselectable="true">
-        <div class="panel panel-info">
-            <div class="panel-heading" role="tab" id="headingPrize">
-                <h4 class="panel-title">
-                    <a role="button" data-toggle="collapse" data-parent="#accordionPrize" href="#collapsePrize" aria-expanded="true" aria-controls="collapsePrize">
-                        <span id="prizeIcon" class="fas fa-lg @(Model.AwardsPrize ? "fa-caret-down" : "fa-caret-right")"></span>
+    <div class="list-group mb-3" id="accordionPrize" role="tablist" aria-multiselectable="true">
+        <div class="card">
+            <div class="card-header @(Model.AwardsPrize ? "bg-info-subtle" : "bg-dark-subtle")"
+                 role="tab"
+                 id="headingPrize">
+                <h4 class="card-title">
+                    <a role="button"
+                       data-bs-toggle="collapse"
+                       data-bs-parent="#accordionPrize"
+                       href="#collapsePrize"
+                       aria-expanded="true"
+                       aria-controls="collapsePrize">
+                        <span id="prizeIcon"
+                              class="fas fa-lg @(Model.AwardsPrize ? "fa-caret-down" : "fa-caret-right")"></span>
                         Award Prize
                     </a>
                 </h4>
             </div>
-            <div id="collapsePrize" class="panel-collapse collapse @(Model.AwardsPrize ? "in" : "")" role="tabpanel" aria-labelledby="headingPrize">
-                <div class="panel-body">
-                    <div class="row row-spacing">
-                        <div class="col-xs-12">
-                            <label asp-for="Trigger.AwardPrizeName" class="control-label"></label>
+            <div id="collapsePrize"
+                 class="collapse @(Model.AwardsPrize ? "show" : null)"
+                 role="tabpanel"
+                 aria-labelledby="headingPrize">
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <label asp-for="Trigger.AwardPrizeName" class="col-form-label"></label>
                             <description gra-description-for="Trigger.AwardPrizeName"></description>
                             <input asp-for="Trigger.AwardPrizeName"
                                    class="form-control"
-                                   readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
-                            <span asp-validation-for="Trigger.AwardPrizeName" class="text-danger"></span>
+                                   readonly="@Model.IsReadOnly" />
+                            <span asp-validation-for="Trigger.AwardPrizeName"
+                                  class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="row row-spacing">
-                        <div class="col-xs-12">
-                            <label asp-for="Trigger.AwardPrizeRedemptionInstructions" class="control-label"></label>
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <label asp-for="Trigger.AwardPrizeRedemptionInstructions"
+                                   class="col-form-label"></label>
                             <textarea asp-for="Trigger.AwardPrizeRedemptionInstructions"
                                       class="form-control"
-                                      readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)"></textarea>
-                            <span asp-validation-for="Trigger.AwardPrizeRedemptionInstructions" class="text-danger"></span>
+                                      readonly="@Model.IsReadOnly"></textarea>
+                            <span asp-validation-for="Trigger.AwardPrizeRedemptionInstructions"
+                                  class="text-danger"></span>
                         </div>
                     </div>
                 </div>
@@ -560,14 +580,22 @@
 
     @if (Model.EditMail || Model.AwardsMail)
     {
-        <div class="panel-group" id="accordionMail" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-info">
-                <div class="panel-heading" role="tab" id="headingMail">
-                    <h4 class="panel-title">
+        <div class="list-group mb-3" id="accordionMail" role="tablist" aria-multiselectable="true">
+            <div class="card card-info">
+                <div class="card-header @(Model.AwardsMail ? "bg-info-subtle" : "bg-dark-subtle")"
+                     role="tab"
+                     id="headingMail">
+                    <h4 class="card-title">
                         @if (Model.EditMail)
                         {
-                            <a role="button" data-toggle="collapse" data-parent="#accordionMail" href="#collapseMail" aria-expanded="true" aria-controls="collapseMail">
-                                <span id="mailIcon" class="fas fa-lg @(Model.AwardsMail ? "fa-caret-down" : "fa-caret-right")"></span>
+                            <a role="button"
+                               data-bs-toggle="collapse"
+                               data-bs-parent="#accordionMail"
+                               href="#collapseMail"
+                               aria-expanded="true"
+                               aria-controls="collapseMail">
+                                <span id="mailIcon"
+                                      class="fas fa-lg @(Model.AwardsMail ? "fa-caret-down" : "fa-caret-right")"></span>
                                 Award Mail
                             </a>
                         }
@@ -577,24 +605,30 @@
                         }
                     </h4>
                 </div>
-                <div id="collapseMail" class="panel-collapse collapse @(Model.AwardsMail ? "in" : "")" role="tabpanel" aria-labelledby="headingMail">
-                    <div class="panel-body">
-                        <div class="row row-spacing">
-                            <div class="col-xs-12">
-                                <label asp-for="Trigger.AwardMailSubject" class="control-label"></label>
+                <div id="collapseMail"
+                     class="collapse @(Model.AwardsMail ? "show" : null)"
+                     role="tabpanel"
+                     aria-labelledby="headingMail">
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <label asp-for="Trigger.AwardMailSubject"
+                                       class="col-form-label"></label>
                                 <input asp-for="Trigger.AwardMailSubject"
                                        class="form-control"
-                                       readonly="@(!Model.EditMail || (!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage)) ? "readonly" : null)" />
-                                <span asp-validation-for="Trigger.AwardMailSubject" class="text-danger"></span>
+                                       readonly="@(!Model.EditMail || (!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.PointLimitExceededMessage)) ? "readonly" : null)" />
+                                <span asp-validation-for="Trigger.AwardMailSubject"
+                                      class="text-danger"></span>
                             </div>
                         </div>
-                        <div class="row row-spacing">
-                            <div class="col-xs-12">
-                                <label asp-for="Trigger.AwardMail" class="control-label"></label>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <label asp-for="Trigger.AwardMail" class="col-form-label"></label>
                                 <textarea asp-for="Trigger.AwardMail"
                                           class="form-control"
-                                          readonly="@(!Model.EditMail || (!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage)) ? "readonly" : null)"></textarea>
-                                <span asp-validation-for="Trigger.AwardMail" class="text-danger"></span>
+                                          readonly="@(!Model.EditMail || (!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.PointLimitExceededMessage)) ? "readonly" : null)"></textarea>
+                                <span asp-validation-for="Trigger.AwardMail"
+                                      class="text-danger"></span>
                             </div>
                         </div>
                     </div>
@@ -604,30 +638,44 @@
     }
     @if (Model.EditAttachment || Model.AwardsAttachment)
     {
-        <div class="panel-group" id="accordionAttachment" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-info">
-                <div class="panel-heading" role="tab" id="headingAttachment">
-                    <h4 class="panel-title">
-                        <a role="button" data-toggle="collapse" data-parent="#accordionAttachment" href="#collapseAttachment" aria-expanded="true" aria-controls="collapseAttachment">
-                            <span id="attachmentIcon" class="fas fa-lg @(Model.AwardsAttachment ? "fa-caret-down" : "fa-caret-right")"></span>
+        <div class="list-group mb-3"
+             id="accordionAttachment"
+             role="tablist"
+             aria-multiselectable="true">
+            <div class="card card-info">
+                <div class="card-header @(Model.AwardsAttachment ? "bg-info-subtle" : "bg-dark-subtle")"
+                     role="tab"
+                     id="headingAttachment">
+                    <h4 class="card-title">
+                        <a role="button"
+                           data-bs-toggle="collapse"
+                           data-bs-parent="#accordionAttachment"
+                           href="#collapseAttachment"
+                           aria-expanded="true"
+                           aria-controls="collapseAttachment">
+                            <span id="attachmentIcon"
+                                  class="fas fa-lg @(Model.AwardsAttachment ? "fa-caret-down" : "fa-caret-right")"></span>
                             Award Attachment
                         </a>
                     </h4>
                 </div>
-                <div id="collapseAttachment" class="panel-collapse collapse @(Model.AwardsAttachment ? "in" : "")" role="tabpanel" aria-labelledby="headingAttachment">                   
-                    <div class="panel-body">
-                        <div class="row row-spacing">
-                            <div class="col-xs-12" id="uploadAttachmentContainer">
+                <div id="collapseAttachment"
+                     class="collapse @(Model.AwardsAttachment ? "show" : null)"
+                     role="tabpanel"
+                     aria-labelledby="headingAttachment">
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-12" id="uploadAttachmentContainer">
                                 <p id="uploadAttachmentHeader">
                                     @if (Model.AwardsAttachment)
                                     {
                                         if (Model.Trigger.AwardAttachmentId.HasValue && Model.RemoveAttachment)
                                         {
-                                            @:Attachment will be removed when this trigger is saved. <br /> Click "Return to List" to cancel attachment removal
+                                            @:Attachment will be removed when this trigger is saved. Click "Return to List" to cancel attachment removal
                                         }
                                         else if (Model.Trigger.AwardAttachmentId.HasValue)
                                         {
-                                            @: Select a file to replace the existing attachment and click "Save Trigger". <br /> Click "Return to List" to cancel attachment replacement.
+                                            @:Select a file to replace the existing attachment and click "Save Trigger". Click "Return to List" to cancel attachment replacement.
                                         }
                                     }
                                     else
@@ -635,44 +683,56 @@
                                         @:Upload an attachment.
                                     }
                                 </p>
+                                <div class="alert alert-warning d-none" id="removeAttachmentAlert">
+                                    The attached award will be removed when this trigger is saved.
+                                    Choose "Return to List" to to cancel the removal.
+                                </div>
                                 @if (!Model.RemoveAttachment)
                                 {
-                                    <div id="attachmentInputWrapper">
+                                    <div id="attachmentInputWrapper" class="mb-2">
                                         <div class="input-group">
-                                            <label class="input-group-btn">
-                                                <span id="selectAttachment" class="btn btn-default btn-file">
-                                                    <span class="far fa-file"></span> Select a file<input type="file" asp-for="AttachmentUploadFile" accept=".pdf" style="display: none;" />
-                                                </span>
-                                            </label>
-                                            <input type="text" class="form-control" readonly id="selectedCertPdf">
+                                            <input type="file"
+                                                   class="form-control"
+                                                   asp-for="AttachmentUploadFile"
+                                                   accept=".pdf" />
+                                            <button class="btn btn-outline-secondary"
+                                                    type="button"
+                                                    onclick="$('.task-upload-file').val('')"
+                                                    id="clearAttachment">
+                                                Clear selection
+                                            </button>
                                         </div>
                                         <div>
-                                            <span asp-validation-for="AttachmentUploadFile" class="text-danger"></span>
+                                            <span asp-validation-for="AttachmentUploadFile"
+                                                  class="text-danger"></span>
                                         </div>
-                                        <button id="clearAttachment" class="btn btn-default" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
                                     </div>
                                 }
                                 <div id="removeAttachmentContainer">
                                     @if (Model.AwardsAttachment)
-                                    {                                    
-                                        @if (!string.IsNullOrWhiteSpace(Model.Trigger.AwardAttachmentFilename))
-                                        {
-                                        <div>
-                                            <a class="btn btn-primary" style="margin-top:0.5em;" href="~/@Model.Trigger.AwardAttachmentFilename" target="_blank">
-                                                <img id="attachmentImage" width="20"
-                                                    src="~/images/certificate.png" />
-                                                <span>View Attachment</span>
-                                            </a>
+                                    {
+                                        <div class="mt-3">
+                                            @if (!string.IsNullOrWhiteSpace(Model.Trigger.AwardAttachmentFilename))
+                                            {
+                                                <a class="btn btn-outline-primary me-2"
+                                                   href="~/@Model.Trigger.AwardAttachmentFilename"
+                                                   target="_blank">
+                                                    <img id="attachmentImage"
+                                                         class="me-1"
+                                                         width="20"
+                                                         src="~/images/certificate.png" />
+                                                    <span>View Attachment</span>
+                                                </a>
+                                            }
+                                            @if (!Model.RemoveAttachment && Model.Trigger.AwardAttachmentId.HasValue)
+                                            {
+                                                <button type="button"
+                                                        class="btn btn-outline-danger"
+                                                        id="btn-remove-attachment">
+                                                    <span>Remove Attachment</span>
+                                                </button>
+                                            }
                                         </div>
-                                        }
-                                        @if (!Model.RemoveAttachment && Model.Trigger.AwardAttachmentId.HasValue)
-                                        {
-                                        <div>
-                                            <button type="button" class="btn btn-danger" style="margin-top:0.5em;" id="btn-remove-attachment">
-                                                <span>Remove Attachment</span>
-                                            </button>
-                                        </div>
-                                        }
                                     }
                                 </div>
                             </div>
@@ -682,11 +742,15 @@
             </div>
         </div>
     }
-    <div class="form-group">
-        <a asp-action="Index" class="btn btn-default">Return to List</a>
-        @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
+    <div class="mb-3 d-flex justify-content-end my-4">
+        <a asp-action="Index"
+           class="btn btn-outline-secondary mx-2">Return to List</a>
+        @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.PointLimitExceededMessage))
         {
-            <button type="submit" id="saveButton" class="btn btn-primary btn-spinner" button-spinner>
+            <button type="submit"
+                    id="saveButton"
+                    class="btn btn-outline-primary mx-2"
+                    button-spinner>
                 <span class="buttonText">
                     @(Model.Action == "Edit" ? "Save" : Model.Action) Trigger
                 </span>
@@ -695,31 +759,8 @@
     </div>
 </form>
 
-
-<div class="row">
-    <div class="modal fade frame-modal"
-         id="badgeModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="badgeModalLabel">
-        <div class="modal-content">
-            <div class="modal-body" style="padding: 30px;">
-                <span class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
-                      data-dismiss="modal"
-                      alt="Close dialog."
-                      role="button">
-                    <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
-                    <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
-                </span>
-                <iframe id="badgeMaker" class="badge-maker"></iframe>
-            </div>
-        </div>
-    </div>
-</div>
-
-@if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
+@if (Model.IgnorePointLimits && (Model.MaxPointLimit.HasValue || Model.MinAllowedPoints.HasValue))
 {
-
     <div class="modal fade"
          id="warningModal"
          tabindex="-1"
@@ -728,117 +769,109 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                     <h1 class="modal-title h4" id="deleteModalLabel">
-                        Warning: Award points exceed maximum
+                        Warning: Point limits exceeded
                     </h1>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                    </button>
                 </div>
-                <div class="modal-body">
-                    <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
-                    <span id="modal-text">
-                        The awarded points for this trigger exceed the maximum of <strong>@Model.MaxPointLimit points</strong>. Do you wish to continue?
-                    </span>
+                <div class="modal-body p-0">
+                    <div class="modal-body d-flex align-items-stretch">
+                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                              aria-hidden="true"></span>
+                        <span id="modal-text"></span>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                            class="btn btn-default"
-                            data-dismiss="modal"
-                            style="margin-right: 1em;">
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
                         Cancel
                     </button>
                     <button id="warningSave"
                             type="button"
-                            class="btn btn-primary"
-                            data-dismiss="modal"
-                            style="margin-right: 1em;">
+                            class="btn btn-outline-primary"
+                            data-bs-dismiss="modal">
                         Save Trigger
                     </button>
                 </div>
             </div>
         </div>
     </div>
-
 }
 
-<div class="row">
-    <div class="modal fade"
-         id="listModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="listModalLabel">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="row">
-                <div class="col-xs-12 col-sm-10 col-sm-offset-1">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h1 class="h4 modal-title lead">Add requirement</h1>
-                        </div>
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <ul class="nav nav-pills" style="padding: 10px 0;">
-                                        <li id="All" class="active requirementScope">
-                                            <a>All</a>
-                                        </li>
-                                        <li id="System" class="requirementScope">
-                                            <a>My System</a>
-                                        </li>
-                                        <li id="Branch" class="requirementScope">
-                                            <a>My Branch</a>
-                                        </li>
-                                        <li id="Mine" class="requirementScope">
-                                            <a>Mine</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="row row-spacing">
-                                <div class="col-xs-8">
-                                    <input id="searchText" class="form-control"
-                                           placeholder="Enter text to search for an event here" />
-                                </div>
-                                <div class="col-xs-4">
-                                    <div class="col-xs-6">
-                                        <button type="button"
-                                                id="searchButton"
-                                                class="btn btn-default btn-block"
-                                                style="margin-right: 8px;">
-                                            Search
-                                        </button>
-                                    </div>
-                                    <div class="col-xs-6">
-                                        <button type="button"
-                                                id="clearButton"
-                                                class="btn btn-default btn-block">
-                                            Clear
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="searchMessage" class="row hide">
-                                <div class="col-xs-12">
-                                    <p class="alert-sm alert-info">
-                                        Searching for '<strong id="searchTerm"></strong>'
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div id="modalRequirementList" class="col-xs-12">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button"
-                                    class="btn btn-default"
-                                    data-dismiss="modal"
-                                    style="margin-right: 1em;">
-                                Close
-                            </button>
+<div class="modal fade"
+     id="listModal"
+     tabindex="-1"
+     role="dialog"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     aria-labelledby="listModalLabel">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="h4 modal-title lead">Add requirement</h1>
+                </div>
+                <div class="card-body pt-2">
+                    <div class="row">
+                        <div class="col-12 mb-2">
+                            <ul class="nav nav-pills">
+                                <li id="All" class="nav-item requirementScope">
+                                    <a class="nav-link active">All</a>
+                                </li>
+                                <li id="System" class="nav-item requirementScope">
+                                    <a class="nav-link">My System</a>
+                                </li>
+                                <li id="Branch" class="nav-item requirementScope">
+                                    <a class="nav-link">My Branch</a>
+                                </li>
+                                <li id="Mine" class="nav-item requirementScope">
+                                    <a class="nav-link">Mine</a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <div class="input-group">
+                                <input id="searchText"
+                                       class="form-control"
+                                       placeholder="Enter text to search for a challenge here" />
+                                <button type="button"
+                                        id="clearButton"
+                                        class="btn btn-outline-secondary">
+                                    Clear
+                                </button>
+                                <button type="button"
+                                        id="searchButton"
+                                        class="btn btn-outline-primary">
+                                    Search
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="searchMessage" class="row d-none">
+                        <div class="col-12">
+                            <p class="alert-sm alert-info">
+                                Searching for '<strong id="searchTerm"></strong>'
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="modalRequirementList" class="col-12">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
+                        Close
+                    </button>
                 </div>
             </div>
         </div>
@@ -846,7 +879,7 @@
 </div>
 
 @section scripts
-    {
+{
     <script>
         var badgeIds = $("#BadgeRequiredList").val().split(',').filter(function (x) { return x }).map(Number);
         var challengeIds = $("#ChallengeRequiredList").val().split(',').filter(function (x) { return x }).map(Number);
@@ -865,20 +898,20 @@
                     search: search,
                     page: page,
                     thisBadge: thisBadge
-                }, function(response) {
+                }, function (response) {
                     $("#modalRequirementList").html(response);
                 });
         }
 
-        $("#addButton").on('click', function(e) {
+        $("#addButton").on('click', function (e) {
             $("#listModal").modal("show");
             UpdateRequirementsList();
         });
 
         $(document).on("click", ".addRequirementButton", function () {
             if (!$(this).hasClass("disabled")) {
-                var badgeId = $(this).data("badgeid");
-                var challengeId = $(this).data("challengeid");
+                let badgeId = $(this).data("badgeid");
+                let challengeId = $(this).data("challengeid");
 
                 if (challengeId != "") {
                     challengeIds.push(challengeId);
@@ -888,13 +921,15 @@
                     badgeIds.push(badgeId);
                     $("#BadgeRequiredList").val(badgeIds.join(','));
                 }
-                $("#noRequirements").addClass("hide");
+                $("#noRequirements").addClass("d-none");
 
-                var row = $(this).parent().parent().clone();
-                var addedItem = row.find(".addRequirementButton");
+                let row = $(this).parent().parent().clone();
+                let addedItem = row.find(".addRequirementButton");
                 addedItem.removeClass("addRequirementButton")
-                addedItem.children().removeClass("fa-plus-circle text-primary");
-                addedItem.children().addClass("fa-minus-circle text-danger");
+                addedItem.children().removeClass("fa-plus");
+                addedItem.children().addClass("fa-times");
+                addedItem.removeClass("btn-outline-success");
+                addedItem.addClass("btn-outline-danger");
                 addedItem.attr("id", "removeRequirementButton");
                 $("#requirementList").append(row);
 
@@ -905,46 +940,41 @@
             }
         });
 
-        $(document).on("click", "#removeRequirementButton", function() {
-            var badgeId = $(this).data("badgeid");
-            var challengeId = $(this).data("challengeid");
+        $(document).on("click", "#removeRequirementButton", function () {
+            let badgeId = $(this).data("badgeid");
+            let challengeId = $(this).data("challengeid");
 
-            if (challengeId != "")
-            {
+            if (challengeId != "") {
                 challengeIds.splice(challengeIds.indexOf(challengeId), 1);
                 $("#ChallengeRequiredList").val(challengeIds.join(','));
             }
-            else if (badgeId != "")
-            {
+            else if (badgeId != "") {
                 badgeIds.splice(badgeIds.indexOf(badgeId), 1);
                 $("#BadgeRequiredList").val(badgeIds.join(','));
             }
             $(this).parent().parent().remove();
-            if (badgeIds == "" && challengeIds == "")
-            {
-                $("#noRequirements").removeClass("hide");
+            if (badgeIds == "" && challengeIds == "") {
+                $("#noRequirements").removeClass("d-none");
             }
         });
 
-        $(".requirementScope").on("click", function(e) {
+        $(".requirementScope").on("click", function (e) {
             e.preventDefault();
-            $(this).siblings().removeClass("active");
-            $(this).addClass().addClass("active");
+            $(this).siblings().children().removeClass("active");
+            $(this).children().addClass("active");
             scope = $(this).attr("id");
             page = 1;
             UpdateRequirementsList();
         });
 
-        $("#searchButton").on("click", function() {
+        $("#searchButton").on("click", function () {
             search = $("#searchText").val();
-            if (search != "")
-            {
-                $("#searchMessage").removeClass("hide");
+            if (search != "") {
+                $("#searchMessage").removeClass("d-none");
                 $("#searchTerm").html(search);
             }
-            else
-            {
-                $("#searchMessage").addClass("hide");
+            else {
+                $("#searchMessage").addClass("d-none");
             }
             page = 1;
             UpdateRequirementsList();
@@ -953,167 +983,121 @@
         $("#clearButton").on("click", function () {
             $("#searchText").val("");
             search = "";
-            $("#searchMessage").addClass("hide");
+            $("#searchMessage").addClass("d-none");
             page = 1;
             UpdateRequirementsList();
         });
 
-        $('#clearFile').on("click", function () {
-            $('#BadgeUploadImage').val('');
-            $('#selectBadge').addClass('btn-default');
-            $('#selectBadge').removeClass('btn-success');
-            $('#selectedFile').val('');
-        });
-
         $('#clearAttachment').on('click', function () {
             $('#AttachmentUploadFile').val('');
-            $('#selectAttachment').addClass('btn-default');
-            $('#selectAttachment').removeClass('btn-success');
+            $('#selectAttachment').addClass('btn-outline-secondary');
+            $('#selectAttachment').removeClass('btn-outline-success');
             $('#selectedCertPdf').val('');
         });
 
-        $(document).on("click", ".page-button", function() {
-            if (!$(this).hasClass("disabled"))
-            {
+        $(document).on("click", ".page-button", function () {
+            if (!$(this).hasClass("disabled")) {
                 page = $(this).data("page");
                 UpdateRequirementsList();
             }
         });
 
-        $("#Trigger_LimitToSystemId").on("change", function() {
-            var systemId = $(this).val();
-            var branchList = $("#Trigger_LimitToBranchId");
-            var branchId = branchList.val();
-            var url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
+        $("#Trigger_LimitToSystemId").on("change", function () {
+            let systemId = $(this).val();
+            let branchList = $("#Trigger_LimitToBranchId");
+            let branchId = branchList.val();
+            let url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
 
-            $.getJSON(url, { systemId: systemId, branchId: branchId, listAll: "true", prioritize: "true" }, function(response) {
+            $.getJSON(url, { systemId: systemId, branchId: branchId, listAll: "true", prioritize: "true" }, function (response) {
                 branchList.empty();
                 branchList.append(new Option("No", ""));
-                $.each(response, function(index, item) {
+                $.each(response, function (index, item) {
                     branchList.append(new Option(item.text, item.value, item.selected, item.selected))
                 });
             });
         });
 
-        $("#codeTab").on('show.bs.tab', function() {
+        $("#codeTab").on('show.bs.tab', function () {
             $("#IsSecretCode").val("true");
         });
 
-        $("#requirementsTab").on('show.bs.tab', function() {
+        $("#requirementsTab").on('show.bs.tab', function () {
             $("#IsSecretCode").val("false");
         });
 
-        $('#BadgeUploadImage:file').on('fileselect', function(event, numFiles, label) {
-            var input = $(this).parents('.input-group').find(':text'),
-                log = numFiles > 1 ? numFiles = ' files selected' : label;
-
-                if (input.length)
-                {
-                    input.val(log);
-                    $('#selectBadge').removeClass('btn-default');
-                    $('#selectBadge').addClass('btn-success');
-                    $("#badgeImage").removeAttr("src");
-                    $("#badgeImage").height(200);
-                    $("#BadgeMakerImage").val("");
-                }
-                else
-                {
-                    input.val('');
-                    $('#selectBadge').addClass('btn-default');
-                    $('#selectBadge').removeClass('btn-success');
-                }
-        });
-
         $('#AttachmentUploadFile:file').on('fileselect', function (event, numFiles, label) {
-            var input = $(this).parents('.input-group').find(':text'),
+            let input = $(this).parents('.input-group').find(':text'),
                 log = numFiles > 1 ? numFiles = ' files selected' : label;
 
             if (input.length) {
                 input.val(log);
-                $('#selectAttachment').removeClass('btn-default');
-                $('#selectAttachment').addClass('btn-success');
+                $('#selectAttachment').removeClass('btn-outline-secondary');
+                $('#selectAttachment').addClass('btn-outline-success');
             }
             else {
                 input.val('');
-                $('#selectAttachment').addClass('btn-default');
-                $('#selectAttachment').removeClass('btn-success');
+                $('#selectAttachment').addClass('btn-outline-secondary');
+                $('#selectAttachment').removeClass('btn-outline-success');
             }
         });
 
-        $(document).on('change', ':file', function() {
-            var input = $(this),
-                numFiles = input.get(0).files ? input.get(0).files.length : 1,
-                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-            input.trigger('fileselect', [numFiles, label]);
-        });
-
-        $("#badgeTab").on('show.bs.tab', function() {
-            $("#UseBadgeMaker").val("true");
-        });
-
-        $("#uploadTab").on('show.bs.tab', function() {
-            $("#UseBadgeMaker").val("false");
-        });
-
-        $("#openMaker").on("click", function() {
-            $("#badgeMaker").attr("src", "@Html.Raw(@Model.BadgeMakerUrl)");
-            $("#badgeModal").modal("show");
-        });
-
-        $(window).on("message", function(e) {
-            $("#badgeModal").modal("hide");
-            var data = e.originalEvent.data;
-            $("#badgeImage").attr("src", data);
-            $("#badgeImage").height(200);
-            $("#BadgeMakerImage").val(data);
-            $('#BadgeUploadImage').val('');
-            $('.btn-file').addClass('btn-default');
-            $('.btn-file').removeClass('btn-success');
-            $('#selectedFile').val('');
-        });
-
-        $("#collapsePrize").on("show.bs.collapse", function() {
+        $("#collapsePrize").on("show.bs.collapse", function () {
             $("#AwardsPrize").val("true");
             $("#prizeIcon").removeClass("fa-caret-right").addClass("fa-caret-down");
+            $("#headingPrize").removeClass("bg-dark-subtle");
+            $("#headingPrize").addClass("bg-info-subtle");
         });
-        $("#collapsePrize").on("hide.bs.collapse", function() {
+
+        $("#collapsePrize").on("hide.bs.collapse", function () {
             $("#AwardsPrize").val("false");
             $("#prizeIcon").removeClass("fa-caret-down").addClass("fa-caret-right");
+            $("#headingPrize").addClass("bg-dark-subtle");
+            $("#headingPrize").removeClass("bg-info-subtle");
         });
 
-        $("#collapseMail").on("show.bs.collapse", function() {
+        $("#collapseMail").on("show.bs.collapse", function () {
             $("#AwardsMail").val("true");
             $("#mailIcon").removeClass("fa-caret-right").addClass("fa-caret-down");
+            $("#headingMail").removeClass("bg-dark-subtle");
+            $("#headingMail").addClass("bg-info-subtle");
         });
-        $("#collapseMail").on("hide.bs.collapse", function() {
+
+        $("#collapseMail").on("hide.bs.collapse", function () {
             $("#AwardsMail").val("false");
             $("#mailIcon").removeClass("fa-caret-down").addClass("fa-caret-right");
+            $("#headingMail").addClass("bg-dark-subtle");
+            $("#headingMail").removeClass("bg-info-subtle");
         });
 
-        $("#collapseAttachment").on("show.bs.collapse", function() {
+        $("#collapseAttachment").on("show.bs.collapse", function () {
             $("#AwardsAttachment").val("true");
             $("#attachmentIcon").removeClass("fa-caret-right").addClass("fa-caret-down");
-        });
-        $("#collapseAttachment").on("hide.bs.collapse", function() {
-            $("#AwardsAttachment").val("false");
-            $("#attachmentIcon").removeClass("fa-caret-down").addClass("fa-caret-right");
+            $("#headingAttachment").removeClass("bg-dark-subtle");
+            $("#headingAttachment").addClass("bg-info-subtle");
         });
 
-        $("#btn-remove-attachment").on("mouseup", function() {
+        $("#collapseAttachment").on("hide.bs.collapse", function () {
+            $("#AwardsAttachment").val("false");
+            $("#attachmentIcon").removeClass("fa-caret-down").addClass("fa-caret-right");
+            $("#headingAttachment").addClass("bg-dark-subtle");
+            $("#headingAttachment").removeClass("bg-info-subtle");
+        });
+
+        $("#btn-remove-attachment").on("click", function () {
+            $("#removeAttachmentAlert").removeClass("d-none");
             $("#attachmentInputWrapper").hide();
-            $("#uploadAttachmentHeader").text("Attachment will be removed when this trigger is saved. Click “Return to List” to cancel attachment removal.");
             $("#RemoveAttachment").val(true);
             $("#btn-remove-attachment").hide();
         });
 
         $("#Trigger_SecretCode").on("blur", function () {
             if ($(this).val() != "" && !$(this).hasClass("input-validation-error")) {
-                var secretCode = $(this).val();
+                let secretCode = $(this).val();
                 if (secretCode != "") {
                     if (secretCode != "@Model.Trigger?.SecretCode") {
-                        var codeCheckUrl = "@Url.Action("SecretCodeInUse", "Lookup")";
-                        var icon = $("#SecretCode-Icon");
-                        icon.removeClass("hide fa-times fa-check");
+                        let codeCheckUrl = "@Url.Action("SecretCodeInUse", "Lookup")";
+                        let icon = $("#SecretCode-Icon");
+                        icon.removeClass("d-none fa-times fa-check");
                         icon.addClass("fa-spinner fa-spin");
                         $.post(codeCheckUrl, { secretCode: secretCode }, function (response) {
                             if (response) {
@@ -1138,7 +1122,7 @@
                         });
                     }
                     else {
-                        $("#SecretCode-Icon").removeClass("hide fa-times").addClass("fa-check");
+                        $("#SecretCode-Icon").removeClass("d-none fa-times").addClass("fa-check");
                         $("#SecretCode-Validation").removeClass("field-validation-valid");
                         $("#SecretCode-Validation").text("No change to secret code.");
                     }
@@ -1147,7 +1131,7 @@
         });
 
         $("#Trigger_SecretCode").on("keypress", function () {
-            $("#SecretCode-Icon").addClass("hide");
+            $("#SecretCode-Icon").addClass("d-none");
             $("#SecretCode-Validation").addClass("field-validation-valid");
         });
 
@@ -1155,32 +1139,40 @@
             if ($('.trigger-name-field').first().val() === "") {
                 $('.trigger-name-field').first().focus();
             }
-
         });
+    </script>
 
-        @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
-        {
-            <text>
+    @if (Model.IgnorePointLimits && (Model.MaxPointLimit.HasValue || Model.MinAllowedPoints.HasValue))
+    {
+        <script>
+            var maxPointLimit = @(Model.MaxPointLimit.HasValue ? Model.MaxPointLimit : "null");
+            var minAllowedPoints = @(Model.MinAllowedPoints.HasValue ? Model.MinAllowedPoints : "null");
+
             $("#saveButton").on("click", function (e) {
                 e.preventDefault();
-                if ($("#Trigger_AwardPoints").val() > @Model.MaxPointLimit) {
-                    @if (Model.Trigger != null)
-                    {
-                        <text>
-                        if ($("#Trigger_AwardPoints").val() != @Model.Trigger.AwardPoints) {
-                            $('#warningModal').modal("show");
-                        }
-                        else {
-                            $("#triggerForm").submit();
-                        }
-                        </text>
-                    }
-                    else
-                    {
-                        @:$('#warningModal').modal("show");
-                    }
+                let messages = [];
+
+                if (maxPointLimit != null && $("#Trigger_AwardPoints").val() > maxPointLimit) {
+                    messages.push("The awarded points for this trigger exceed the configured maximum of <strong>"
+                        + maxPointLimit
+                        + "</strong>. Override the restriction?");
                 }
-                else {
+
+                if (minAllowedPoints != null && $("#Trigger_Points").val() < minAllowedPoints) {
+                    messages.push("The activation points for this trigger are below the configured minimum of <strong>"
+                        + minAllowedPoints
+                        + "</strong>. Override the restriction?");
+                }
+
+                if(messages.length > 0) {
+                    $("#modal-text").html("");
+                    messages.forEach(function(item, _) {
+                        $("#modal-text").html($("#modal-text").html() + "<p>" + item + "</p>");
+                    });
+                    $("#warningModal").modal("show");
+                }
+                else
+                {
                     $("#triggerForm").submit();
                 }
             });
@@ -1190,24 +1182,10 @@
             });
 
             $("#warningModal").on("hide.bs.modal", function () {
+                ResetSpinners();
                 $("#saveButton").removeClass("disabled");
                 $("#saveButton").find(".fa-spinner").addClass("hidden");
             });
-            </text>
-        }
-
-        $("#activationDatePicker").datetimepicker({
-            format: "MM/DD/YYYY h:mm a",
-            allowInputToggle: true,
-            sideBySide: true,
-            icons: {
-                time: "far fa-clock",
-                date: "fas fa-calendar-alt",
-                up: "fas fa-arrow-up",
-                down: "fas fa-arrow-down",
-                previous: "fas fa-arrow-left",
-                next: "fas fa-arrow-right"
-            }
-        });
-    </script>
+        </script>
+    }
 }

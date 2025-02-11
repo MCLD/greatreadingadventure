@@ -1,62 +1,70 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Carousels.DetailViewModel
 
+@section inHeading {
+    <div class="ms-auto d-print-none">
+        <a asp-action="@nameof(CarouselsController.Index)"
+           class="btn btn-outline-secondary">Return to List</a>
+    </div>
+}
+
 @if (Model.PageAction == GRA.Controllers.ViewModel.PageAction.Edit
 && Model.Carousel.Items?.Any() != true)
 {
     <div class="row">
-        <div class="col-sm-6 col-sm-offset-3">
-            <div class="alert alert-danger" style="margin: 1rem 0;">
-                <span class="fas fa-exclamation-triangle"></span>
-                This carousel has no items so it will not be displayed on the dashboard.
-                <a asp-action="AddItem" asp-route-id="@Model.Carousel.Id">Add an item now.</a>
+        <div class="col-md-6 offset-md-3">
+            <div class="alert alert-danger">
+                <div class=" d-flex align-items-baseline">
+                    <div class="fas fa-exclamation-triangle fa-lg text-danger align-self-baseline me-2"
+                         aria-hidden="true"></div>
+                    <div>
+                        This carousel has no items so it will not be displayed on the dashboard.
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 }
 
-<form asp-controller="Carousels"
+<form asp-controller="@CarouselsController.Name"
       asp-action="@Model.PageAction"
       method="post"
-      role="form"
-      style="margin: 1rem 0;">
+      role="form">
     <input asp-for="PageAction" type="hidden" />
     @if (Model.PageAction == GRA.Controllers.ViewModel.PageAction.Edit)
     {
         <input asp-for="Carousel.Id" type="hidden" />
     }
 
-    <div class="form-group">
-        <label asp-for="Carousel.Name" class="control-label"></label>
+    <div class="mb-3">
+        <label asp-for="Carousel.Name" class="col-form-label"></label>
         <description gra-description-for="Carousel.Name"></description>
         <input asp-for="Carousel.Name" type="text" class="form-control" />
         <span asp-validation-for="Carousel.Name" class="text-danger"></span>
     </div>
-    <div class="form-group">
-        <label asp-for="Carousel.StartTime" class="control-label"></label>
+    <div class="mb-3">
+        <label asp-for="Carousel.StartTime" class="col-form-label"></label>
         <description gra-description-for="Carousel.StartTime"></description>
-        <div class="input-group date" id="pickerStart">
-            <span class="input-group-addon">
-                <span class="fas fa-calendar-alt"></span>
-            </span>
-            <input asp-for="Carousel.StartTime" type="text" class="form-control" />
+        <div class="gra-picker-datetime"
+             current-value="@Model.Carousel?.StartTime"
+             datetimepicker-container
+             id="carouselStartTimePicker">
+            <input asp-for="Carousel.StartTime" datetimepicker-input type="text" />
         </div>
         <span asp-validation-for="Carousel.StartTime" class="text-danger"></span>
     </div>
-    <div class="form-group">
-        <label asp-for="Carousel.Heading" class="control-label"></label>
+    <div class="mb-3">
+        <label asp-for="Carousel.Heading" class="col-form-label"></label>
         <description gra-description-for="Carousel.Heading"></description>
         <input asp-for="Carousel.Heading" type="text" class="form-control" />
         <span asp-validation-for="Carousel.Heading" class="text-danger"></span>
     </div>
-
-
-    <div class="form-group">
-        <a asp-action="Index" class="btn btn-default">Return to List</a>
+    <div class="mb-3">
         <button type="submit"
                 id="Submit"
                 name="Submit"
                 value="Submit"
-                class="btn btn-primary btn-spinner" button-spinner>
+                class="btn btn-outline-primary"
+                button-spinner>
             <span class="buttonText">Save</span>
         </button>
     </div>
@@ -66,11 +74,10 @@
 {
     @if (Model.Carousel.Items?.Any() != true)
     {
-        <a asp-action="AddItem"
+        <a asp-action="@nameof(CarouselsController.AddItem)"
            asp-route-id="@Model.Carousel.Id"
-           class="btn btn-success btn-lg"
-           style="margin: 1rem 0;">
-            <span class="fas fa-lg fa-plus-circle"></span>
+           class="btn btn-outline-success btn-lg">
+            <span class="fas fa-lg fa-plus-circle fa-fw"></span>
             Add item
         </a>
     }
@@ -78,48 +85,57 @@
     {
         @if (string.IsNullOrEmpty(Model.Carousel.Heading))
         {
-            <a asp-action="AddItem"
+            <a asp-action="@nameof(CarouselsController.AddItem)"
                asp-route-id="@Model.Carousel.Id"
-               class="btn btn-success">
-                <span class="fas fa-plus-circle"></span>
+               class="btn btn-outline-success">
+                <span class="fas fa-plus-circle fa-fw"></span>
                 Add item
             </a>
         }
-
-        <div class="row gra-js-required" style="margin-top: 4rem;">
-            <div class="col-xs-12">
-                <div class="panel panel-default">
+        <hr class="mt-4" />
+        <div class="row gra-js-required">
+            <div class="col-12">
+                <p>
+                    Carousel items are displayed below. Select an image or title to edit an item,
+                    use the "Delete" button under an item to remove it.
+                </p>
+                <div class="card">
                     @if (!string.IsNullOrEmpty(Model.Carousel.Heading))
                     {
-                        <div class="panel-heading">
-                            @Model.Carousel.Heading
-
-                            <a asp-action="AddItem"
-                               asp-route-id="@Model.Carousel.Id"
-                               class="btn btn-xs btn-success pull-right">
-                                <span class="fas fa-plus-circle"></span>
-                                Add item
-                            </a>
+                        <div class="card-header d-flex">
+                            <div class="flex-grow-1">@Model.Carousel.Heading</div>
+                            <div>
+                                <a asp-action="@nameof(CarouselsController.AddItem)"
+                                   asp-route-id="@Model.Carousel.Id"
+                                   class="btn btn-sm btn-outline-success">
+                                    <span class="fas fa-plus-circle fa-fw"></span>
+                                    Add item
+                                </a>
+                            </div>
                         </div>
                     }
-                    <div class="panel-body">
+                    <div class="card-body">
                         <div class="gra-carousel text-center">
                             @foreach (var item in Model.Carousel.Items)
                             {
                                 <div>
-                                    <a asp-action="EditItem"
+                                    <a asp-action="@nameof(CarouselsController.EditItem)"
                                        asp-route-id="@item.Id"
                                        class="gra-carousel-link">
                                         <img src="@item.ImageUrl" />
                                         <p>@item.Title</p>
-                                    </a><br />
-                                    <form asp-controller="Carousels"
-                                          asp-action="DeleteItem"
+                                    </a>
+                                    <form asp-action="@nameof(CarouselsController.DeleteItem)"
                                           asp-route-id="@item.Id"
                                           method="post"
-                                          role="form"
-                                          class="form-inline">
-                                        <button type="submit" class="btn btn-xs btn-danger"><span class="far fa-times-circle"></span> Delete</button>
+                                          role="form">
+                                        <div class="d-flex justify-content-center">
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-outline-danger">
+                                                <span class="far fa-times-circle fa-fw"></span>
+                                                Delete
+                                            </button>
+                                        </div>
                                     </form>
                                 </div>
                             }
@@ -133,20 +149,6 @@
 }
 
 @section scripts {
-    <script>
-        $("#pickerStart").datetimepicker({
-            allowInputToggle: true,
-            sideBySide: true,
-            icons: {
-                time: "far fa-clock",
-                date: "fas fa-calendar-alt",
-                up: "fas fa-arrow-up",
-                down: "fas fa-arrow-down",
-                previous: "fas fa-arrow-left",
-                next: "fas fa-arrow-right"
-            }
-        });
-    </script>
     <link rel="stylesheet" type="text/css" href="/css/slick.min.css" />
     <script type="text/javascript" src="/js/slick.min.js"></script>
 }

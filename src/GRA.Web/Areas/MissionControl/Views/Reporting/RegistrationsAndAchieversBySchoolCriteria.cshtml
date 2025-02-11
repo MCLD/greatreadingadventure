@@ -1,29 +1,32 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.ReportCriteriaViewModel
 
-<form asp-controller="Reporting" asp-action="Run" method="post" role="form" class="form-horizontal" style="margin-top: 2rem; margin-bottom: 2rem;">
+<form asp-action="@nameof(ReportingController.Run)"
+      class="form-horizontal"
+      method="post"
+      role="form">
     <input asp-for="ReportId" type="hidden" />
 
-    <div class="form-group">
-        <div class="col-xs-12">
-            <label asp-for="SchoolDistrictId" class="control-label"></label>
-            <select asp-for="SchoolDistrictId" asp-items="Model.SchoolDistrictList" class="form-control">
+    <div class="row mt-4">
+        <div class="col-12">
+            <label asp-for="SchoolDistrictId" class="col-form-label"></label>
+            <select asp-for="SchoolDistrictId" asp-items="Model.SchoolDistrictList" class="form-select">
             </select>
         </div>
     </div>
 
-    <div class="form-group">
-        <div class="col-xs-12">
-            <label asp-for="SchoolId" class="control-label"></label>
-            <select asp-for="SchoolId" asp-items="Model.SchoolList" class="form-control">
+    <div class="row mt-4">
+        <div class="col-12">
+            <label asp-for="SchoolId" class="col-form-label"></label>
+            <select asp-for="SchoolId" asp-items="Model.SchoolList" class="form-select">
                 <option></option>
             </select>
         </div>
     </div>
 
-    <div class="form-group">
-        <div class="col-xs-12">
-            <button type="submit" class="btn btn-primary">
-                <span class="fas fa-file-alt"></span>
+    <div class="row mt-4">
+        <div class="col-12">
+            <button type="submit" class="btn btn-outline-primary">
+                <span class="fas fa-file-alt fa-fw"></span>
                 Run Report!
             </button>
         </div>
@@ -32,11 +35,12 @@
 
 @section scripts {
     <script>
+        const getSchoolsUrl = "@Url.Action(nameof(GRA.Controllers.LookupController.GetSchools), GRA.Controllers.LookupController.Name, new { Area = string.Empty })";
+        const schoolList = $("#SchoolId");
+
         $("#SchoolDistrictId").on("change", function() {
-            var districtId = $(this).val();
-            var schoolList = $("#SchoolId");
-            var schoolId = schoolList.val();
-            var getSchoolsUrl = "@Url.Action("GetSchools", "Lookup", new { Area = string.Empty })";
+            let districtId = $(this).val();
+            let schoolId = schoolList.val();
 
             $.getJSON(getSchoolsUrl, { districtId: districtId, schoolId: schoolId }, function(response) {
                 schoolList.empty();

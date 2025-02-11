@@ -1,28 +1,28 @@
-﻿<div class="row">
-    <div class="col-xs-12">
+﻿<div class="row my-4">
+    <div class="col-12">
         <p>Import events from a properly-formatted CSV file.</p>
     </div>
 </div>
-<div class="row">
-    <div class="col-xs-12">
+<div class="row my-4">
+    <div class="col-12">
         <form asp-controller="Events" 
               asp-action="Import" 
               method="post" 
               role="form" 
               enctype="multipart/form-data">
             <div class="input-group">
-                <label class="input-group-btn">
-                    <span class="btn btn-default btn-file">
+                <label class="input-group-text">
+                    <span class="btn btn-secondary btn-file">
                         <span class="far fa-file-image"></span>
                         Select a CSV file<input type="file" name="eventFileCsv" accept=".csv" />
                     </span>
                 </label>
                 <input type="text" class="form-control" readonly id="selectedFile">
-                <span class="input-group-btn">
+                <span class="input-group-text">
                     <button type="submit" 
-                            class="btn btn-default" 
-                            data-toggle="modal"
-                            data-target="#importModal"><span class="fas fa-upload"></span></button>
+                            class="btn btn-secondary" 
+                            data-bs-toggle="modal"
+                            data-bs-target="#importModal"><span class="fas fa-upload"></span></button>
                 </span>
             </div>
         </form>
@@ -58,13 +58,13 @@
 
             if (input.length) {
                 input.val(log);
-                $('.btn-file').removeClass('btn-default');
-                $('.btn-file').addClass('btn-success');
+                $('.btn-file').removeClass('btn-secondary');
+                $('.btn-file').addClass('btn-outline-success');
             }
             else {
                 input.val('');
-                $('.btn-file').addClass('btn-default');
-                $('.btn-file').removeClass('btn-success');
+                $('.btn-file').addClass('btn-secondary');
+                $('.btn-file').removeClass('btn-outline-success');
             }
         });
 

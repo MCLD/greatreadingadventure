@@ -7,192 +7,168 @@
       role="form"
       enctype="multipart/form-data">
 
-    <input asp-for="UseBadgeMaker" type="hidden" />
-    <input asp-for="BadgeMakerUrl" type="hidden" />
     <input asp-for="BadgeMakerImage" type="hidden" />
 
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="Challenge.Name" class="control-label"></label>
+    <div class="row mb-3">
+        <div class="col-12">
+            <label asp-for="Challenge.Name" class="col-form-label"></label>
             <input asp-for="Challenge.Name" class="form-control" />
             <span asp-validation-for="Challenge.Name" class="text-danger"></span>
         </div>
     </div>
 
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="Challenge.Description" class="control-label"></label>
+    <div class="row mb-3">
+        <div class="col-12">
+            <label asp-for="Challenge.Description" class="col-form-label"></label>
             <textarea asp-for="Challenge.Description" class="form-control"> </textarea>
             <span asp-validation-for="Challenge.Description" class="text-danger"></span>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-xs-12 col-sm-6 row-spacing">
-            <label asp-for="Challenge.PointsAwarded" class="control-label"></label>
+        <div class="col-12 col-sm-6 mb-3">
+            <label asp-for="Challenge.PointsAwarded" class="col-form-label"></label>
             <label style="font-size: 12px;">@Model.MaxPointsMessage</label>
             <input asp-for="Challenge.PointsAwarded" type="number" min="1" class="form-control" />
             <span asp-validation-for="Challenge.PointsAwarded" class="text-danger"></span>
         </div>
 
-        <div class="col-xs-12 col-sm-6 row-spacing">
-            <label asp-for="Challenge.TasksToComplete" class="control-label"></label>
+        <div class="col-12 col-sm-6 mb-3">
+            <label asp-for="Challenge.TasksToComplete" class="col-form-label"></label>
             <input asp-for="Challenge.TasksToComplete" type="number" min="1" class="form-control" />
             <span asp-validation-for="Challenge.TasksToComplete" class="text-danger"></span>
         </div>
     </div>
 
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="Challenge.CategoryIds" class="control-label"></label>
-            <input asp-for="CategoryPlaceholder" class="form-control" />
-            <select asp-for="Challenge.CategoryIds" asp-items="Model.CategoryList" class="form-control hidden" multiple="multiple"></select>
+    <div class="row mb-3">
+        <div class="col-12">
+            <label asp-for="Challenge.CategoryIds" class="col-form-label"></label>
+            <select asp-for="Challenge.CategoryIds"
+                    asp-items="Model.CategoryList"
+                    autocomplete="off"
+                    class="form-select"
+                    disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)"
+                    multiple="multiple"
+                    size="1"></select>
             <span asp-validation-for="Challenge.CategoryIds" class="text-danger"></span>
+        </div>
+        <div class="col-12">
+            <small>
+                <em>
+                    To remove a category: select it and use your backspace or delete key.
+                </em>
+            </small>
         </div>
     </div>
 
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="Challenge.LimitToSystemId" class="control-label"></label>
-            <select asp-for="Challenge.LimitToSystemId" asp-items="Model.SystemList" class="form-control">
+    <div class="row mb-3">
+        <div class="col-12">
+            <label asp-for="Challenge.LimitToSystemId" class="col-form-label"></label>
+            <select asp-for="Challenge.LimitToSystemId"
+                    asp-items="Model.SystemList"
+                    class="form-select">
                 <option value="">No</option>
             </select>
             <span asp-validation-for="Challenge.LimitToSystemId" class="text-danger"></span>
         </div>
     </div>
 
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="Challenge.LimitToBranchId" class="control-label"></label>
-            <select asp-for="Challenge.LimitToBranchId" asp-items="Model.BranchList" class="form-control">
+    <div class="row mb-3">
+        <div class="col-12">
+            <label asp-for="Challenge.LimitToBranchId" class="col-form-label"></label>
+            <select asp-for="Challenge.LimitToBranchId"
+                    asp-items="Model.BranchList"
+                    class="form-select">
                 <option value="">No</option>
             </select>
             <span asp-validation-for="Challenge.LimitToBranchId" class="text-danger"></span>
         </div>
     </div>
 
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="Challenge.AssociatedProgramId" class="control-label"></label>
-            <select asp-for="Challenge.AssociatedProgramId" asp-items="Model.ProgramList" class="form-control">
+    <div class="row mb-3">
+        <div class="col-12">
+            <label asp-for="Challenge.AssociatedProgramId" class="col-form-label"></label>
+            <select asp-for="Challenge.AssociatedProgramId"
+                    asp-items="Model.ProgramList"
+                    class="form-select">
                 <option value="">No</option>
             </select>
             <span asp-validation-for="Challenge.AssociatedProgramId" class="text-danger"></span>
         </div>
     </div>
 
-    <div class="row row-spacing">
-        <div class="col-xs-12">
+    <div class="row mb-3">
+        <div class="col-12">
             @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
             {
-                <label class="control-label">Edit badge image</label>
+                <label class="col-form-label">Edit badge image</label>
             }
             else
             {
-                <label class="control-label">Add a badge</label>
+                <label class="col-form-label">Add a badge</label>
             }
         </div>
 
-        <div class="col-xs-12 col-sm-4 col-md-3">
-
+        <div class="col-12 col-sm-4 col-md-3">
             @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
             {
                 <input asp-for="BadgePath" type="hidden" />
                 <img id="badgeImage" class="img-thumbnail badge-lg"
-                     src="~/@Model.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")"
-                     asp-append-version="true" />
+                     src="~/@Model.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")" />
             }
             else
             {
-                <img id="badgeImage" class="img-thumbnail badge-lg" src="@Model.BadgeMakerImage" style="height:210px;" />
+                <img id="badgeImage"
+                     class="img-thumbnail badge-lg"
+                     src="@Model.BadgeMakerImage" />
             }
             <span asp-validation-for="BadgePath" class="text-danger" style="display:block;"></span>
         </div>
 
-        <div class="col-xs-12 col-sm-8 col-md-9">
-            <ul class="nav nav-tabs" role="tablist">
-                @if (Model.UseBadgeMaker)
-                {
-                    <li role="presentation" class=@(Model.UseBadgeMaker ? "active" : "")>
-                        <a id="badgeTab" href="#badge" aria-controls="badge" role="tab" data-toggle="tab">Badge Maker</a>
-                    </li>
-                }
-                <li role="presentation" class=@(Model.UseBadgeMaker ? "" : "active")>
-                    <a id="uploadTab" href="#upload" aria-controls="upload" role="tab" data-toggle="tab">Upload an Image</a>
-                </li>
-            </ul>
-
-            <div class="tab-content">
-                <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.UseBadgeMaker ? "active" : "")" id="badge">
-                    <button id="openMaker" type="button" class="btn btn-default">
-                        <span class="fas fa-certificate"></span> Create a Badge
-                    </button>
-                </div>
-
-                <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.UseBadgeMaker ? "" : "active")" id="upload">
-                    <p>Upload a badge image. Badge images must be square.</p>
-                    <div class="input-group">
-                        <label class="input-group-btn">
-                            <span class="btn btn-default btn-file">
-                                <span class="far fa-file-image"></span> Select an image<input type="file" name="BadgeUploadImage" id="BadgeUploadImage" accept=".png,.jpg,.jpeg" style="display: none;" />
-                            </span>
-                        </label>
-                        <input type="text" class="form-control" readonly id="selectedFile">
-                    </div>
-                    <div>
-                        <span asp-validation-for="BadgeUploadImage" class="text-danger"></span>
-                    </div>
-                    <button id="clearFile" class="btn btn-default" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
-                </div>
+        <div class="col-12 col-sm-8 col-md-9">
+            <label asp-for="BadgeUploadImage" class="col-form-label"></label>
+            <div class="input-group mb-3">
+                <input type="file"
+                       class="form-control"
+                       asp-for="BadgeUploadImage"
+                       accept=".jpg,.png" />
+                <button class="btn btn-outline-secondary"
+                        type="button"
+                        onclick="$('#BadgeUploadImage').val('')">
+                    Clear selection
+                </button>
+            </div>
+            <span asp-validation-for="BadgeUploadImage" class="text-danger mb-3"></span>
+            <div action="mb-3">
+                <label asp-for="BadgeAltText" class="col-form-label"></label>
+                <span class="fas fa-info-circle wide-tooltip"
+                      title="How should this badge be described to someone who can't see it?"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"></span>
+                <textarea asp-for="BadgeAltText" class="form-control"></textarea>
+                <span asp-validation-for="BadgeAltText" class="text-danger"></span>
             </div>
         </div>
     </div>
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="BadgeAltText" class="control-label"></label>
-            <span class="fas fa-info-circle wide-tooltip"
-                  title="How should this badge be described to someone who can't see it?"
-                  data-toggle="tooltip"
-                  data-placement="top"></span>
-            <textarea asp-for="BadgeAltText" class="form-control"></textarea>
-            <span asp-validation-for="BadgeAltText" class="text-danger"></span>
+    <div class="row mb-3">
+        <div class="col-12">
         </div>
     </div>
     <hr />
 
-    <div class="form-group">
-        <a asp-action="Index" class="btn btn-default">Return to List</a>
+    <div class="mb-3 d-flex justify-content-end my-4">
+        <a asp-action="Index"
+           class="btn btn-outline-secondary mx-2">Return to List</a>
         <button type="submit"
                 id="saveChallenge"
                 name="Submit"
                 value="Submit"
-                class="btn btn-primary btn-spinner"
+                class="btn btn-outline-primary"
                 button-spinner>
             <span class="buttonText">Create</span>
         </button>
     </div>
 </form>
-
-<div class="row">
-    <div class="modal fade frame-modal"
-         id="badgeModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="badgeModalLabel">
-        <div class="modal-content">
-            <div class="modal-body" style="padding: 30px;">
-                <span class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
-                        data-dismiss="modal"
-                        alt="Close dialog."
-                        role="button">
-                    <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
-                    <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
-                </span>
-                <iframe id="badgeMaker" class="badge-maker"></iframe>
-            </div>
-        </div>
-    </div>
-</div>
 
 @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
 {
@@ -204,15 +180,14 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     </button>
                     <h1 class="h4 modal-title" id="deleteModalLabel">
                         Warning: Award points exceed maximum
                     </h1>
                 </div>
                 <div class="modal-body">
-                    <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
                     <span id="modal-text">
                         The awarded points for this trigger exceed the maximum of
                         <strong>@Model.MaxPointLimit points per task</strong>. Do you wish to continue?
@@ -220,16 +195,14 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                            class="btn btn-default"
-                            data-dismiss="modal"
-                            style="margin-right: 1em;">
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
                         Cancel
                     </button>
                     <button id="warningSave"
                             type="button"
-                            class="btn btn-primary"
-                            data-dismiss="modal"
-                            style="margin-right: 1em;">
+                            class="btn btn-outline-primary"
+                            data-bs-dismiss="modal">
                         Save Challenge
                     </button>
                 </div>
@@ -240,6 +213,8 @@
 
 @section scripts {
     <script>
+        new TomSelect("#Challenge_CategoryIds");
+
         $("#CategoryPlaceholder").remove();
         $("#Challenge_CategoryIds").multiselect({
             nonSelectedText: "",
@@ -248,102 +223,95 @@
             disableIfEmpty: true
         });
 
-        $(document).ready(function() {
-            $(':file').on('fileselect', function(event, numFiles, label) {
+        $(document).ready(function () {
+            $(':file').on('fileselect', function (event, numFiles, label) {
                 var input = $(this).parents('.input-group').find(':text'),
                     log = numFiles > 1 ? numFiles = ' files selected' : label;
 
-                if (input.length)
-                {
+                if (input.length) {
                     input.val(log);
-                    $('.btn-file').removeClass('btn-default');
-                    $('.btn-file').addClass('btn-success');
+                    $('.btn-file').removeClass('btn-outline-secondary');
+                    $('.btn-file').addClass('btn-outline-success');
                     $("#badgeImage").removeAttr("src");
                     $("#badgeImage").height(200);
                     $("#BadgeMakerImage").val("");
                 }
-                else
-                {
+                else {
                     input.val('');
-                    $('.btn-file').addClass('btn-default');
-                    $('.btn-file').removeClass('btn-success');
+                    $('.btn-file').addClass('btn-outline-secondary');
+                    $('.btn-file').removeClass('btn-outline-success');
                 }
             });
 
-            @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
-            {
-                <text>
-                $("#saveChallenge").on("click",function(e) {
-                    e.preventDefault();
-                    if ($("#Challenge_PointsAwarded").val() / $("#Challenge_TasksToComplete").val() > @Model.MaxPointLimit) {
-                        $('#warningModal').modal("show");
-                    }
-                    else {
-                        $("#challengeForm").submit();
-                    }
+        @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
+        {
+            <text>
+                        $("#saveChallenge").on("click",function(e) {
+                            e.preventDefault();
+                                                                                    if ($("#Challenge_PointsAwarded").val() / $("#Challenge_TasksToComplete").val() > @Model.MaxPointLimit) {
+                            $('#warningModal').modal("show");
+                                                                                    }
+                        else {
+                            $("#challengeForm").submit();
+                                                                                    }
+                                                                                });
+
+                        $("#warningSave").on("click", function () {
+                            $("#challengeForm").submit();
+                                                                                });
+
+                        $("#warningModal").on("hide.bs.modal", function () {
+                            ResetSpinners($("#saveChallenge"));
+                                                                                });
+            </text>
+        }
+
+                $('#clearFile').on("click", function () {
+                    $('#BadgeUploadImage').val('');
+                    $('.btn-file').addClass('btn-outline-secondary');
+                    $('.btn-file').removeClass('btn-outline-success');
+                    $('#selectedFile').val('');
                 });
 
-                $("#warningSave").on("click", function () {
-                    $("#challengeForm").submit();
-                });
-
-                $("#warningModal").on("hide.bs.modal", function () {
-                    ResetSpinners($("#saveChallenge"));
-                });
-                </text>
-            }
-
-            $('#clearFile').on("click", function() {
-                $('#BadgeUploadImage').val('');
-                $('.btn-file').addClass('btn-default');
-                $('.btn-file').removeClass('btn-success');
-                $('#selectedFile').val('');
-            });
-
-            $(document).on('change', ':file', function() {
+            $(document).on('change', ':file', function () {
                 var input = $(this),
                     numFiles = input.get(0).files ? input.get(0).files.length : 1,
                     label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
                 input.trigger('fileselect', [numFiles, label]);
             });
 
-            $("#Challenge_LimitToSystemId").on("change", function() {
+            $("#Challenge_LimitToSystemId").on("change", function () {
                 var systemId = $(this).val();
                 var branchList = $("#Challenge_LimitToBranchId");
                 var branchId = branchList.val();
                 var url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
 
-                $.getJSON(url, { systemId: systemId, branchId: branchId, listAll: "true", prioritize: "true" }, function(response) {
+                $.getJSON(url, { systemId: systemId, branchId: branchId, listAll: "true", prioritize: "true" }, function (response) {
                     branchList.empty();
                     branchList.append(new Option("No", ""));
-                    $.each(response, function(index, item) {
+                    $.each(response, function (index, item) {
                         branchList.append(new Option(item.text, item.value, item.selected, item.selected))
                     });
                 });
             });
 
-            $("#badgeTab").on('show.bs.tab', function() {
+            $("#badgeTab").on('show.bs.tab', function () {
                 $("#UseBadgeMaker").val("true");
             });
 
-            $("#uploadTab").on('show.bs.tab', function() {
+            $("#uploadTab").on('show.bs.tab', function () {
                 $("#UseBadgeMaker").val("false");
             });
 
-            $("#openMaker").on("click", function() {
-                $("#badgeMaker").attr("src", "@Html.Raw(@Model.BadgeMakerUrl)");
-                $("#badgeModal").modal("show");
-            });
-
-            $(window).on("message", function(e) {
+            $(window).on("message", function (e) {
                 $("#badgeModal").modal("hide");
                 var data = e.originalEvent.data;
                 $("#badgeImage").attr("src", data);
                 $("#badgeImage").height(200);
                 $("#BadgeMakerImage").val(data);
                 $('#BadgeUploadImage').val('');
-                $('.btn-file').addClass('btn-default');
-                $('.btn-file').removeClass('btn-success');
+                $('.btn-file').addClass('btn-outline-secondary');
+                $('.btn-file').removeClass('btn-outline-success');
                 $('#selectedFile').val('');
             });
         });

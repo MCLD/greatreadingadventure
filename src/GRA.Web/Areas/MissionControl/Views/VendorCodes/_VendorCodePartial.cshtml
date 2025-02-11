@@ -1,53 +1,72 @@
 ﻿<div class="row">
-    <div class="col-xs-12">
-        <ul class="nav nav-pills" style="margin-top: 2rem; margin-bottom: 1rem;">
-            <li ActiveBy routeKey="Action" value="@nameof(VendorCodesController.Index)">
-                <a asp-action="@nameof(VendorCodesController.Index)">Summary</a>
+    <div class="col-12 mb-2">
+        <ul class="nav nav-pills flex-column flex-sm-row my-2">
+            <li class="nav-item">
+                <a ActiveBy
+                   asp-action="@nameof(VendorCodesController.Index)"
+                   class="nav-link"
+                   routeKey="Action"
+                   value="@nameof(VendorCodesController.Index)">Summary</a>
             </li>
-            <li ActiveBy routeKey="Action" value="@nameof(VendorCodesController.ImportStatus)">
-                <a asp-action="@nameof(VendorCodesController.ImportStatus)">Import Status</a>
+            <li class="nav-item">
+                <a ActiveBy
+                   asp-action="@nameof(VendorCodesController.ImportStatus)"
+                   class="nav-link"
+                   routeKey="Action"
+                   value="@nameof(VendorCodesController.ImportStatus)">Import Status</a>
             </li>
-            <li ActiveBy routeKey="Action" value="@nameof(VendorCodesController.EmailAward)">
-                <a asp-action="@nameof(VendorCodesController.EmailAward)">Email Awards</a>
+            <li class="nav-item">
+                <a ActiveBy
+                   asp-action="@nameof(VendorCodesController.EmailAward)"
+                   class="nav-link"
+                   routeKey="Action"
+                   value="@nameof(VendorCodesController.EmailAward)">Email Awards</a>
             </li>
-            <li ActiveBy
-                routeKey="Action"
-                value="@nameof(VendorCodesController.ViewPackingSlip)">
-                <a asp-action="@nameof(VendorCodesController.ViewPackingSlip)"
-                   asp-route-id="">
+            <li class="nav-item">
+                <a ActiveBy
+                   asp-action="@nameof(VendorCodesController.ViewPackingSlip)"
+                   asp-route-id=""
+                   class="nav-link"
+                   routeKey="Action"
+                   value="@nameof(VendorCodesController.ViewPackingSlip)">
                     View/Receive Packing Slip
                 </a>
             </li>
-            <li role="presentation" class="dropdown">
-                <a class="dropdown-toggle"
-                   data-toggle="dropdown"
-                   href="#"
-                   role="button"
+            <li class="nav-item">
+                <a ActiveBy
+                   aria-expanded="false"
                    aria-haspopup="true"
-                   aria-expanded="false">
+                   class="dropdown nav-link"
+                   data-bs-toggle="dropdown"
+                   href="#"
+                   id="adminDropdown"
+                   role="presentation"
+                   routeKey="Action"
+                   value="@nameof(VendorCodesController.BulkCodeReassignment),@nameof(VendorCodesController.Configure),@nameof(VendorCodesController.GenerateCodes),@nameof(VendorCodesController.ExportCodes)">
                     Administration <span class="fas fa-caret-down"></span>
                 </a>
                 <ul class="dropdown-menu">
-                    <li>
-                        <a asp-action="@nameof(VendorCodesController.BulkCodeReassignment)">
+                    <li class="nav-item">
+                        <a asp-action="@nameof(VendorCodesController.BulkCodeReassignment)"
+                           class="nav-link">
                             Bulk code reassignment
                         </a>
                     </li>
-                    <li>
-                        <a asp-action="@nameof(VendorCodesController.Configure)">
+                    <li class="nav-item">
+                        <a asp-action="@nameof(VendorCodesController.Configure)" class="nav-link">
                             Configure
                         </a>
                     </li>
-                    <li>
-                        <a asp-action="@nameof(VendorCodesController.GenerateCodes)">
-                            Generate
-                            Codes
+                    <li class="nav-item">
+                        <a asp-action="@nameof(VendorCodesController.GenerateCodes)"
+                           class="nav-link">
+                            Generate Codes
                         </a>
                     </li>
-                    <li>
-                        <a asp-action="@nameof(VendorCodesController.ExportCodes)">
-                            Download
-                            Codes
+                    <li class="nav-item">
+                        <a asp-action="@nameof(VendorCodesController.ExportCodes)" class="nav-link">
+                            <span class="fas fa-file-download fa-fw"></span>
+                            Download Codes
                         </a>
                     </li>
                 </ul>

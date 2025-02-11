@@ -385,12 +385,13 @@ namespace GRA.Web
                     "js/jquery.js",
                     "js/jquery.validate.js",
                     "js/jquery.validate.unobtrusive.js",
+                    "js/popper.js",
                     "js/bootstrap.js",
                     "js/moment.min.js",
                     "js/moment-timezone.min.js",
-                    "js/bootstrap-datetimepicker.min.js",
-                    "js/bootstrap-multiselect.js",
                     "js/bootstrap-select.js",
+                    "js/tempus-dominus.js",
+                    "js/tom-select.complete.js",
                     "Scripts/gra.js").UseContentRoot();
                 _.AddJavaScriptBundle("/js/performerregistration.min.js",
                     "Scripts/performerregistration.js").UseContentRoot();
@@ -409,8 +410,9 @@ namespace GRA.Web
                     "css/all.css",
                     "css/v4-shims.css",
                     "css/bootstrap-datetimepicker.css",
-                    "css/bootstrap-multiselect.css",
                     "css/bootstrap-select.css",
+                    "css/tempus-dominus.css",
+                    "css/tom-select.bootstrap5.css",
                     "Styles/gra.css").UseContentRoot();
                 _.AddCssBundle("/css/missioncontrol.min.css",
                     "Styles/missioncontrol.css").UseContentRoot();
@@ -599,6 +601,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Report.RegistrationsAchieversBySchoolReport>();
             services.AddScoped<Domain.Report.RegistrationsAchieversReport>();
             services.AddScoped<Domain.Report.RemainingVendorPrizePickupReport>();
+            services.AddScoped<Domain.Report.StaffRegisteredParticipantsReport>();
             services.AddScoped<Domain.Report.TopScoresReport>();
             services.AddScoped<Domain.Report.VendorCodeByProgramReport>();
             services.AddScoped<Domain.Report.VendorCodeDonationsReport>();

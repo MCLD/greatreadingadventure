@@ -6,7 +6,7 @@
         @for (int i = 0; i < Model.Questions.Count; i++)
         {
             <div class="row row-spacing">
-                <div class="col-xs-12">
+                <div class="col-12">
                     @if (Model.Questions[i].Answers.Count == 0)
                     {
                         <input asp-for="@Model.Questions[i].Id" type="hidden" value="-1" />
@@ -16,11 +16,11 @@
                     {
                         <input asp-for="@Model.Questions[i].Id" type="hidden" />
                         <span asp-validation-for="@Model.Questions[i]" class="text-danger"></span>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
+                        <div class="card">
+                            <div class="card-header">
                                 <div class="question">@Html.Raw(Model.Questions[i].Text)</div>
                             </div>
-                            <div class="panel-body">
+                            <div class="card-body">
                                 @foreach (var answer in Model.Questions[i].Answers)
                                 {
                                     <div class="answer-selection">
@@ -38,9 +38,9 @@
             </div>
         }
         <div class="row">
-            <div class="col-xs-12 col-sm-4 col-sm-offset-4">
+            <div class="col-12 col-sm-4 offset-sm-4">
                 <button type="submit"
-                        class="btn btn-lg btn-block btn-primary btn-spinner"
+                        class="btn btn-lg btn-outline-primary"
                         button-spinner>
                     Submit
                 </button>

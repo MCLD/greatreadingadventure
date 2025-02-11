@@ -31,13 +31,23 @@ namespace GRA.Controllers.MissionControl
             UserService userService)
             : base(context)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _mapper = context.Mapper ?? throw new ArgumentNullException(nameof(context.Mapper));
-            _emailSerivce = emailService ?? throw new ArgumentNullException(nameof(emailService));
-            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            ArgumentNullException.ThrowIfNull(logger);
+            ArgumentNullException.ThrowIfNull(context);
+            ArgumentNullException.ThrowIfNull(emailService);
+            ArgumentNullException.ThrowIfNull(siteService);
+            ArgumentNullException.ThrowIfNull(userService);
+
+            _logger = logger;
+            _mapper = context.Mapper;
+            _emailSerivce = emailService;
+            _siteService = siteService;
+            _userService = userService;
+
             PageTitle = "Site management";
         }
+
+        public static string Area
+        { get { return "MissionControl"; } }
 
         public static string Name
         { get { return "Sites"; } }
@@ -60,6 +70,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Configuration(SiteConfigurationViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             var site = await _siteLookupService.GetByIdAsync(model.Id);
             if (ModelState.IsValid)
             {
@@ -92,6 +104,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Detail(SiteDetailViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             if (ModelState.IsValid)
             {
                 try
@@ -159,6 +173,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Schedule(SiteScheduleViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             var site = await _siteLookupService.GetByIdAsync(model.Id);
             if (ModelState.IsValid)
             {
@@ -245,6 +261,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Settings(SiteSettingsViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             var site = await _siteLookupService.GetByIdAsync(model.Id);
 
             var siteSettings = model.SiteSettingGroups
@@ -332,6 +350,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> SocialMedia(SiteSocialMediaViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             var site = await _siteLookupService.GetByIdAsync(model.Id);
             if (ModelState.IsValid)
             {

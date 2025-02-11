@@ -4,9 +4,29 @@
     <link rel="stylesheet" href="/css/markdown.min.css" />
 }
 
+@section inHeading {
+    <div class="ms-auto">
+        @if (Model.Action == "Edit")
+        {
+            <a asp-action="@nameof(DashboardController.Preview)"
+               asp-route-id="@Model.DashboardContent.Id"
+               id="fullPreviewButton"
+               target="_blank"
+               class="btn btn-outline-secondary me-2 d-print-none">Full Preview</a>
+        }
+
+        <a asp-action="@nameof(DashboardController.Index)"
+           class="btn btn-outline-secondary d-print-none">Return to List</a>
+    </div>
+}
+
 @if (Model.Action == "Edit")
 {
-    <a asp-action="Preview" asp-route-id="@Model.DashboardContent.Id" class="btn btn-default" style="margin:10px 0;"> Full Preview</a>
+    <div class="row mt-3">
+        <div class="col-12 col-lg-6 offset-lg-3 text-center">
+            <div class="alert alert-info py-2">Save before using the Full Preview button!</div>
+        </div>
+    </div>
 }
 
 <form asp-controller="Dashboard" asp-action="@Model.Action" method="post" role="form">
@@ -17,36 +37,36 @@
     }
 
     <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="DashboardContent.StartTime" class="control-label"></label>
-            <div class="input-group date" id="pickerStart">
-                <span class="input-group-addon">
-                    <span class="fas fa-calendar-alt"></span>
-                </span>
-                <input asp-for="DashboardContent.StartTime" type="text" class="form-control" />
+        <div class="col-12">
+            <label asp-for="DashboardContent.StartTime" class="col-form-label"></label>
+
+            <div class="gra-picker-datetime"
+                 current-value="@Model.DashboardContent?.StartTime"
+                 datetimepicker-container
+                 id="dashboardContentStartTimePicker">
+                <input asp-for="DashboardContent.StartTime" datetimepicker-input type="text" />
             </div>
             <span asp-validation-for="DashboardContent.StartTime" class="text-danger"></span>
         </div>
     </div>
 
     <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="DashboardContent.Content" class="control-label"></label>
+        <div class="col-12 mb-2">
+            <label asp-for="DashboardContent.Content" class="col-form-label"></label>
             <div id="wmd-button-bar"></div>
             <textarea asp-for="DashboardContent.Content" id="wmd-input" class="form-control wmd-input"> </textarea>
-            <br /><label class="control-label">Preview</label>
+            <br /><label class="col-form-label">Preview</label>
             <div id="preview"></div>
             <span asp-validation-for="DashboardContent.Content" class="text-danger"></span>
         </div>
     </div>
 
-    <div class="form-group">
-        <a asp-action="Index" class="btn btn-default">Return to List</a>
+    <div class="mb-3 d-flex justify-content-end">
         <button type="submit"
                 id="Submit"
                 name="Submit"
                 value="Submit"
-                class="btn btn-primary btn-spinner"
+                class="btn btn-outline-primary"
                 button-spinner>
             <span class="buttonText">@(Model.Action == "Edit" ? "Save" : Model.Action)</span>
         </button>
@@ -54,23 +74,9 @@
 </form>
 
 @section scripts {
-    <script src="/js/markdown.min.js" ></script>
-
+    <script src="/js/markdown.min.js"></script>
     <script>
         var editor = new Markdown.Editor({ allowUploads: true });
         editor.run();
-
-        $("#pickerStart").datetimepicker({
-            allowInputToggle: true,
-            sideBySide: true,
-            icons: {
-                time: "far fa-clock",
-                date: "fas fa-calendar-alt",
-                up: "fas fa-arrow-up",
-                down: "fas fa-arrow-down",
-                previous: "fas fa-arrow-left",
-                next: "fas fa-arrow-right"
-            }
-        });
     </script>
 }

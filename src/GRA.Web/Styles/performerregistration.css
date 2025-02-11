@@ -32,21 +32,21 @@ h1 {
     font-weight: bold;
 }
 
-.calendar-cell {
+td.calendar-cell {
     padding: 0 !important;
 }
 
-.selectable {
+td.selectable {
     cursor: pointer;
     padding: 0 !important;
 }
 
-.unselectable {
+td.unselectable {
     cursor: not-allowed;
     padding: 0 !important;
 }
 
-.available {
+td.available {
     background-color: lightgreen;
 }
 
@@ -58,11 +58,11 @@ h1 {
     background-color: deepskyblue;
 }
 
-.unavailable {
+td.unavailable {
     background-color: red;
 }
 
-.unavailable-text {
+td.unavailable-text {
     color: red;
 }
 
@@ -70,11 +70,11 @@ h1 {
     font-weight: bold;
 }
 
-.time {
+td.time {
     background-color: orange;
 }
 
-.time-text {
+td.time-text {
     color: orange;
 }
 
@@ -90,7 +90,7 @@ h1 {
     background-color: rgba(0, 0, 0, 0.3);
 }
 
-.blackout {
+td.blackout {
     background-color: #333333;
     color: white;
 }
@@ -100,7 +100,7 @@ h1 {
 }
 
 .out-of-range {
-    opacity: .3;
+    opacity: 0.3;
 }
 
 .required-field:after {
@@ -136,20 +136,20 @@ h1 {
     background-color: PaleGoldenrod;
 }
 
-.gra-performer-navbar .mc-navbar-brand {
-    color: black;
-}
+    .gra-performer-navbar .mc-navbar-brand {
+        color: black;
+    }
 
-.gra-performer-navbar .navbar-nav li.active {
-    background-color: #BDB76B;
-}
+    .gra-performer-navbar .navbar-nav li.active {
+        background-color: #bdb76b;
+    }
 
 .on-site-contact-label {
     min-width: 50px;
     pointer-events: none;
 }
 
-input:read-only:not([type=checkbox]):not([type=radio]):not([type="submit"]):not([type="color"]).on-site-contact-input {
+input:read-only:not([type="checkbox"]):not([type="radio"]):not( [type="submit"] ):not([type="color"]).on-site-contact-input {
     border: none;
     background-color: inherit;
     cursor: auto;
@@ -184,4 +184,8 @@ input:valid + .validation::before {
     float: right;
     cursor: pointer;
     margin-left: 8px;
+}
+
+.selection-hover {
+    background-color: #ddd !important;
 }

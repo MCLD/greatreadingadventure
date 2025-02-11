@@ -5,6 +5,18 @@ __metadata:
   version: 8
   cacheKey: 10
 
+"@eonasdan/tempus-dominus@npm:^6.9.10":
+  version: 6.9.10
+  resolution: "@eonasdan/tempus-dominus@npm:6.9.10"
+  peerDependencies:
+    "@popperjs/core": ^2.11.6
+  peerDependenciesMeta:
+    "@popperjs/core\"":
+      optional: true
+  checksum: 10/8c2db162d026d42eb36a5da3094f94b7bbecf919e5b70c9dbd03061480a4b3a465bdf10287d9e4ca3a39bac9740995f8e8a0fbad9c5a78100440946060703a99
+  languageName: node
+  linkType: hard
+
 "@fortawesome/fontawesome-free@npm:^5.15.4":
   version: 5.15.4
   resolution: "@fortawesome/fontawesome-free@npm:5.15.4"
@@ -12,33 +24,48 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@orchidjs/sifter@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "@orchidjs/sifter@npm:1.0.3"
+  dependencies:
+    "@orchidjs/unicode-variants": "npm:^1.0.4"
+  checksum: 10/ed4b142de90dc413371f1d85792f9cdad45c3fe02060d60af41b338b5077c77fd8eb00e2d5ac3e862347a876ce4ccb4bfea2bef4bfba842dc7fdd4523ec1e0e9
+  languageName: node
+  linkType: hard
+
+"@orchidjs/unicode-variants@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "@orchidjs/unicode-variants@npm:1.0.4"
+  checksum: 10/83213445467309e5bfa54f94229c0ecca8f04c9b3ff5e15d8afdde9afa236c190b40b932a3e1299f7b15ce91750832f35656fa418588641e63dd61d6e5cbbe44
+  languageName: node
+  linkType: hard
+
+"@popperjs/core@npm:^2.11.8":
+  version: 2.11.8
+  resolution: "@popperjs/core@npm:2.11.8"
+  checksum: 10/ddd16090cde777aaf102940f05d0274602079a95ad9805bd20bc55dcc7c3a2ba1b99dd5c73e5cc2753c3d31250ca52a67d58059459d7d27debb983a9f552936c
+  languageName: node
+  linkType: hard
+
 "GreatReadingAdventure@workspace:.":
   version: 0.0.0-use.local
   resolution: "GreatReadingAdventure@workspace:."
   dependencies:
+    "@eonasdan/tempus-dominus": "npm:^6.9.10"
     "@fortawesome/fontawesome-free": "npm:^5.15.4"
-    bootstrap: "npm:^3.4.1"
-    bootstrap-multiselect: "npm:^0.9.15"
+    "@popperjs/core": "npm:^2.11.8"
+    bootstrap: "npm:^5.3.3"
     bootstrap-select: "npm:^1.13.18"
     commonmark: "npm:^0.31.1"
-    eonasdan-bootstrap-datetimepicker: "npm:4.17.49"
     jquery: "npm:^3.7.1"
     jquery-validation: "npm:^1.21.0"
     jquery-validation-unobtrusive: "npm:^4.0.0"
     moment: "npm:^2.30.1"
     moment-timezone: "npm:^0.5.45"
     slick-carousel: "npm:^1.8.1"
+    tom-select: "npm:^2.3.1"
   languageName: unknown
   linkType: soft
-
-"bootstrap-multiselect@npm:^0.9.15":
-  version: 0.9.15
-  resolution: "bootstrap-multiselect@npm:0.9.15"
-  dependencies:
-    jquery: "npm:~2.1.3"
-  checksum: 10/c2c29780594703b5fb2cfaaee82c843716d7b58a55676d28b59a06776ccf9da98f44b331478eb615302f67f32c5b2951d02bc4ab2d46a7e3ad762c818f1ca734
-  languageName: node
-  linkType: hard
 
 "bootstrap-select@npm:^1.13.18":
   version: 1.13.18
@@ -50,10 +77,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bootstrap@npm:^3.3, bootstrap@npm:^3.4.1":
-  version: 3.4.1
-  resolution: "bootstrap@npm:3.4.1"
-  checksum: 10/c46285f9d46f6d7a716fa2d294a68b83d8da5f394b2df80e96e0015055e78899312186ac998474568949545e8edcea5c396d500fb9de71c2c81ad5bac1fb56b6
+"bootstrap@npm:^5.3.3":
+  version: 5.3.3
+  resolution: "bootstrap@npm:5.3.3"
+  peerDependencies:
+    "@popperjs/core": ^2.11.8
+  checksum: 10/f05183948b00b496400cc13df5798ecab7a85975e7d9a77b314a763b574a990aec0f1bbf1913c648a93b5d8cc82e73bc05f5ec1161d2932aad7ef7f316d9c82d
   languageName: node
   linkType: hard
 
@@ -74,23 +103,6 @@ __metadata:
   version: 3.0.1
   resolution: "entities@npm:3.0.1"
   checksum: 10/3706e0292ea3f3679720b3d3b1ed6290b164aaeb11116691a922a3acea144503871e0de2170b47671c3b735549b8b7f4741d0d3c2987e8f985ccaa0dd3762eba
-  languageName: node
-  linkType: hard
-
-"eonasdan-bootstrap-datetimepicker@npm:4.17.49":
-  version: 4.17.49
-  resolution: "eonasdan-bootstrap-datetimepicker@npm:4.17.49"
-  dependencies:
-    bootstrap: "npm:^3.3"
-    jquery: "npm:^3.5.1"
-    moment: "npm:^2.10"
-    moment-timezone: "npm:^0.4.0"
-  peerDependencies:
-    bootstrap: ^3.3
-    jquery: ^1.8.3 || ^2.0 || ^3.0
-    moment: ^2.10
-    moment-timezone: ^0.4.0 || ^0.5.0
-  checksum: 10/70a0aff9a9a4203e3a0ab97a29f2aa2397896350925c54b19603435a9d77840257d706b9c46115560614e7127d7ef4f697829acb5f9ecff7a3c413d84fbb699c
   languageName: node
   linkType: hard
 
@@ -122,13 +134,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jquery@npm:^3.5.1":
-  version: 3.6.1
-  resolution: "jquery@npm:3.6.1"
-  checksum: 10/7916e247c29cf7bf61c26c77307041892b6a4f6c4680084e73a085c5f9a7e5baca1e5d30e3fdf6662ec1e444e95eeece8447100f044c719a264250630dc58885
-  languageName: node
-  linkType: hard
-
 "jquery@npm:^3.6.0":
   version: 3.6.0
   resolution: "jquery@npm:3.6.0"
@@ -140,13 +145,6 @@ __metadata:
   version: 3.7.1
   resolution: "jquery@npm:3.7.1"
   checksum: 10/17be9929f5fa37697d9848284f0d108c543318ef79ec794e130cd0c49f6c050d60c803a69e8cfa16fa19f5ff7cdb814a6905cceab0831186560c65ed113cd579
-  languageName: node
-  linkType: hard
-
-"jquery@npm:~2.1.3":
-  version: 2.1.4
-  resolution: "jquery@npm:2.1.4"
-  checksum: 10/d36b486a0ba1d1c4792cfbd0e9bb45fd190fe2ecc7c3d7a70617a881aec465cb2040ba317bf12189a6797f19464f69cd4ee32e6be83739f19c3ba9c645589a87
   languageName: node
   linkType: hard
 
@@ -164,15 +162,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"moment-timezone@npm:^0.4.0":
-  version: 0.4.1
-  resolution: "moment-timezone@npm:0.4.1"
-  dependencies:
-    moment: "npm:>= 2.6.0"
-  checksum: 10/3e6cc33f4a08771e7e22bdd5d9494f748c39c9cad4ba1449509ec4668c9224f112aa677ff24b67712dfbd2e4c42b94e82d30f8b48cb22d0b2b27514c4243b23b
-  languageName: node
-  linkType: hard
-
 "moment-timezone@npm:^0.5.45":
   version: 0.5.45
   resolution: "moment-timezone@npm:0.5.45"
@@ -182,7 +171,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"moment@npm:>= 2.6.0, moment@npm:^2.10, moment@npm:^2.29.4":
+"moment@npm:^2.29.4":
   version: 2.29.4
   resolution: "moment@npm:2.29.4"
   checksum: 10/157c5af5a0ba8196e577bc67feb583303191d21ba1f7f2af30b3b40d4c63a64d505ba402be2a1454832082fac6be69db1e0d186c3279dae191e6634b0c33705c
@@ -202,5 +191,15 @@ __metadata:
   peerDependencies:
     jquery: ">=1.8.0"
   checksum: 10/b383e6f96b3bec573522467cfeeac1fce22d1cd53a68f5699cd3d62f0167777116b925dc48fbe64979a7a830777e4440036b8a7d4575c9ff8d18c3dd141b1ea2
+  languageName: node
+  linkType: hard
+
+"tom-select@npm:^2.3.1":
+  version: 2.3.1
+  resolution: "tom-select@npm:2.3.1"
+  dependencies:
+    "@orchidjs/sifter": "npm:^1.0.3"
+    "@orchidjs/unicode-variants": "npm:^1.0.4"
+  checksum: 10/785ae8fc648d9a99fb36cc7d541638597dcc349feb1f6f7dc838c9c0edbd78e07f2943ce1b0dc4e925fb8d628d547130cc7bd62aa52347f5b7a4d3e2f8881fe4
   languageName: node
   linkType: hard

@@ -10,61 +10,64 @@
 
 <form asp-controller="Challenges" asp-action="CompleteTasks" method="post" role="form">
     <div class="row">
-        <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 ">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <table style="width:100%">
-                        <tr>
-                            <td>
-                                <span class="lead">
-                                    @SharedLocalizer[GRA.Annotations.Title.ChallengeDetails, Model.Challenge.Name]
-                                </span>
-                            </td>
-                            @if (Model.IsLoggedIn)
-                            {
-                                <td id="favoriteCell" style="text-align:center;vertical-align:top;width:40px">
-                                    <div class="favorite-button pull-right @(Model.Challenge.IsFavorited ? "fa-star" : "fa-star-o")" data-favorite="@Model.Challenge.IsFavorited"></div>
-                                </td>
-                            }
-                        </tr>
-                    </table>
-                </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-xs-8 col-sm-9">
-                            <p>@Model.Challenge.Description</p>
-
-                            <p>
-                                @if (Model.IsBadgeEarning)
-                                {
-                                    @SharedHtmlLocalizer[GRA.Annotations.Info.CompleteTasksEarnPointsBadge,
-                                        Model.TaskCountAndDescription,
-                                        Model.PointCountAndDescription]
-                                }
-                                else
-                                {
-                                    @SharedHtmlLocalizer[GRA.Annotations.Info.CompleteTasksEarnPoints,
-                                        Model.TaskCountAndDescription,
-                                        Model.PointCountAndDescription]
-                                }
-                            </p>
+        <div class="col-12 mb-2">
+            <div class="card">
+                <div class="card-header fw-bold d-flex">
+                    <div class="flex-grow-1 align-middle">
+                        @SharedLocalizer[GRA.Annotations.Title.ChallengeDetails, Model.Challenge.Name]
+                    </div>
+                    @if (Model.IsLoggedIn)
+                    {
+                        <div id="favoriteCell"
+                             class="text-center align-middle">
+                            <div data-favorite="@Model.Challenge.IsFavorited"
+                                 class="favorite-button @(Model.Challenge.IsFavorited ? "fas" : "far") fa-star fa-fw"></div>
                         </div>
-                        <div class="col-xs-4 col-sm-3" style="min-width: 110px;">
-                            @if (!string.IsNullOrEmpty(Model.BadgePath))
-                            {
-                                <img class="img-thumbnail badge-sm pull-right"
-                                     src="~/@Model.BadgePath"
-                                     alt="@Model.BadgeAltText"
-                                     asp-append-version="true" />
-                            }
+                    }
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="d-flex">
+                                <div class="flex-grow-1">
+                                    <p>@Model.Challenge.Description</p>
+                                    <p>
+                                        @if (Model.IsBadgeEarning)
+                                        {
+                                            @SharedHtmlLocalizer[GRA.Annotations.Info.CompleteTasksEarnPointsBadge,
+                                                     Model.TaskCountAndDescription,
+                                                     Model.PointCountAndDescription]
+                                        }
+                                        else
+                                        {
+                                            @SharedHtmlLocalizer[GRA.Annotations.Info.CompleteTasksEarnPoints,
+                                                     Model.TaskCountAndDescription,
+                                                     Model.PointCountAndDescription]
+                                        }
+                                    </p>
+                                </div>
+                                @if (!string.IsNullOrEmpty(Model.BadgePath))
+                                {
+                                    <div class="d-none d-md-block badge-lg-fixed-container">
+                                        <img class="img-thumbnail"
+                                             src="~/@Model.BadgePath"
+                                             alt="@Model.BadgeAltText" />
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-12 d-md-none d-flex justify-content-center">
+                            <img class="img-thumbnail badge-lg"
+                                 src="~/@Model.BadgePath"
+                                 alt="@Model.BadgeAltText" />
                         </div>
                     </div>
                 </div>
-                <table class="table table-striped" style="margin-top: 1em;">
+                <table class="table table-striped">
                     <tr>
                         @if (Model.IsActive && !(Model.Challenge.IsCompleted == true))
                         {
-                            <th class="text-center">Complete</th>
+                            <th class="text-center" style="width: 6rem;">Complete</th>
                         }
                         <th>Task</th>
                     </tr>
@@ -73,9 +76,11 @@
                         <tr>
                             @if (Model.IsActive && !(Model.Challenge.IsCompleted == true))
                             {
-                                <td class="text-center challenge-checkbox-container" style="vertical-align: middle;">
+                                <td class="text-center align-middle challenge-checkbox-container">
                                     <input asp-for="Tasks[i].Id" type="hidden" />
-                                    <input asp-for="Tasks[i].IsCompleted" type="checkbox" />
+                                    <input asp-for="Tasks[i].IsCompleted"
+                                           type="checkbox"
+                                           style="width: 1.5rem; height: 1.5rem;" />
                                 </td>
                             }
                             <td>
@@ -90,15 +95,17 @@
                                                     if (string.IsNullOrEmpty(Model.Tasks[i].Author))
                                                     {
                                                         @SharedHtmlLocalizer[GRA.Annotations.Info.ChallengeBookLinkTitle,
-                                                            Model.Tasks[i].Url,
-                                                            Model.Tasks[i].Title];
+                                                             Model.Tasks[i].Url,
+                                                             Model.Tasks[i].Title]
+                                                        ;
                                                     }
                                                     else
                                                     {
                                                         @SharedHtmlLocalizer[GRA.Annotations.Info.ChallengeBookLinkTitleAuthor,
-                                                            Model.Tasks[i].Url,
-                                                            Model.Tasks[i].Title,
-                                                            Model.Tasks[i].Author];
+                                                             Model.Tasks[i].Url,
+                                                             Model.Tasks[i].Title,
+                                                             Model.Tasks[i].Author]
+                                                        ;
                                                     }
                                                 }
                                                 else
@@ -106,13 +113,15 @@
                                                     if (string.IsNullOrEmpty(Model.Tasks[i].Author))
                                                     {
                                                         @SharedHtmlLocalizer[GRA.Annotations.Info.ChallengeBookTitle,
-                                                            Model.Tasks[i].Title];
+                                                             Model.Tasks[i].Title]
+                                                        ;
                                                     }
                                                     else
                                                     {
                                                         @SharedHtmlLocalizer[GRA.Annotations.Info.ChallengeBookTitleAuthor,
-                                                            Model.Tasks[i].Title,
-                                                            Model.Tasks[i].Author];
+                                                             Model.Tasks[i].Title,
+                                                             Model.Tasks[i].Author]
+                                                        ;
                                                     }
                                                 }
                                             }
@@ -124,8 +133,10 @@
                                     }
                                     @if (!string.IsNullOrWhiteSpace(Model.Tasks[i].FilePath))
                                     {
-                                        <a href="@Model.Tasks[i].FilePath" target="_blank" class="btn btn-xs btn-default" style="margin-top:5px;">
-                                            <span class="far fa-file"></span>
+                                        <a href="@Model.Tasks[i].FilePath"
+                                           target="_blank"
+                                           class="btn btn-sm btn-outline-primary">
+                                            <span class="far fa-file fa-fw"></span>
                                             @SharedLocalizer[GRA.Annotations.Interface.ViewCertificate]
                                         </a>
                                     }
@@ -134,27 +145,31 @@
                         </tr>
                     }
                 </table>
-                <div class="panel-footer clearfix hidden-print">
-                    <div class="pull-left">
-                        <return asp-action="Index" class="btn btn-default btn-lg">@SharedLocalizer[GRA.Annotations.Interface.BackToChallenges]</return>
+                <div class="card-footer d-print-none d-flex">
+                    <div class="flex-grow-1">
+                        <a asp-action="Index"
+                           class="btn btn-outline-secondary btn-lg">
+                            @SharedLocalizer[GRA.Annotations.Interface.BackToChallenges]
+                        </a>
                     </div>
                     @if (Model.Challenge.IsCompleted == true && Model.ShowCompleted)
                     {
-                        <div class="pull-right">
-                            <div class="btn-lg" style="border:1px solid transparent">
+                        <div>
+                            <span class="align-middle">
                                 @SharedLocalizer[GRA.Annotations.Info.CompletedOnDate, Model.Challenge.CompletedAt?.ToString("d")]
-                            </div>
+                            </span>
                         </div>
-
                     }
                     else if (Model.IsActive)
                     {
                         <input asp-for="Challenge.Id" type="hidden" />
-                        <div class="pull-right">
+                        <div>
                             <button type="submit"
-                                    class="btn center-block btn-success btn-lg btn-spinner"
+                                    class="btn btn-outline-primary btn-lg"
                                     button-spinner>
-                                <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.Save]</span>
+                                <span class="buttonText">
+                                    @SharedLocalizer[GRA.Annotations.Interface.Save]
+                                </span>
                             </button>
                         </div>
                     }
@@ -171,7 +186,7 @@
         $(".favorite-button").on("click", function () {
             var button = $(this);
             if (button.hasClass("fa-spinner") == false) {
-                button.removeClass("fa-star fa-star-o").addClass("fa-spinner fa-pulse");
+                button.removeClass("far fa-star").addClass("fas fa-spinner fa-pulse");
                 var favorite = button.data("favorite") == "False";
 
                 $.post(favoriteUrl, { challengeId: @Model.Challenge.Id, favorite: favorite }, function (response) {
@@ -182,13 +197,16 @@
                                 button.data("favorite", "True");
                             }
                             else {
-                                button.addClass("fa-star-o");
+                                button.removeClass("fas");
+                                button.addClass("far fa-star");
                                 button.data("favorite", "False");
                             }
                             button.removeClass("fa-spinner fa-pulse").css("transform", "none");
                             }
                         else {
-                            button.addClass("fa-exclamation-triangle").removeClass("fa-spinner fa-pulse").css("transform", "none");
+                            button.addClass("fa-exclamation-triangle")
+                                .removeClass("fa-spinner fa-pulse")
+                                .css("transform", "none");
                             alert(response.message);
                         }
                     }, 500);

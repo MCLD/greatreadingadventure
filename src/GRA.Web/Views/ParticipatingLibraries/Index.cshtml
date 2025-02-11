@@ -1,34 +1,39 @@
 ﻿@model GRA.Controllers.ViewModel.ParticipatingBranches.ParticipatingLibrariesViewModel
 @using GRA.Controllers.ViewModel.ParticipatingBranches
 
-<h1>
-    @SharedLocalizer[GRA.Annotations.Interface.AllParticipatingLibraries]
-</h1>
-
-<div class="participating-libraries">
-    @foreach (var system in Model.Systems)
-    {
-        <h2 id="@Html.GenerateIdFromName(system.Name)" class="h3 system">@system.Name</h2>
-        <ul class="library-list">
-            @foreach (var branch in system.Branches)
-            {
-                <li>
-                    <h3 class="h4">
-                        @if (!string.IsNullOrEmpty(branch.Url))
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <h2 class="card-header pb-3">
+                @SharedLocalizer[GRA.Annotations.Interface.AllParticipatingLibraries]
+            </h2>
+            <div class="card-body participating-libraries px-4">
+                @foreach (var system in Model.Systems)
+                {
+                    <h2 id="@Html.GenerateIdFromName(system.Name)" class="h3 system">@system.Name</h2>
+                    <ul class="library-list">
+                        @foreach (var branch in system.Branches)
                         {
-                            <a href="@branch.Url">@branch.Name</a>
+                            <li>
+                                <h3 class="h4">
+                                    @if (!string.IsNullOrEmpty(branch.Url))
+                                    {
+                                        <a href="@branch.Url">@branch.Name</a>
+                                    }
+                                    else
+                                    {
+                                        @branch.Name
+                                    }
+                                    @if (!string.IsNullOrEmpty(ParticipatingLibrariesViewModel.FormatPhoneAddress(branch)))
+                                    {
+                                        <small>@Html.Raw(ParticipatingLibrariesViewModel.FormatPhoneAddress(branch))</small>
+                                    }
+                                </h3>
+                            </li>
                         }
-                        else
-                        {
-                            @branch.Name
-                        }
-                        @if (!string.IsNullOrEmpty(ParticipatingLibrariesViewModel.FormatPhoneAddress(branch)))
-                        {
-                            <small>@Html.Raw(ParticipatingLibrariesViewModel.FormatPhoneAddress(branch))</small>
-                        }
-                    </h3>
-                </li>
-            }
-        </ul>
-    }
+                    </ul>
+                }
+            </div>
+        </div>
+    </div>
 </div>

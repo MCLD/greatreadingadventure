@@ -1,52 +1,56 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.ReportCriteriaViewModel
 
-<form asp-controller="Reporting" asp-action="Run" method="post" role="form" class="form-horizontal" style="margin-top: 2rem; margin-bottom: 2rem;">
+<form asp-action="@nameof(ReportingController.Run)"
+      class="form-horizontal"
+      method="post"
+      role="form">
     <input asp-for="ReportId" type="hidden" />
 
-    <div class="row" style="padding: 10px 0;">
-        <div class="col-xs-12">
-            <btn type="button" class="btn btn-default time-selector" data-start="null" data-end="null">Entire program</btn>
-            <btn type="button" class="btn btn-default time-selector" data-start="@DateTime.Now.AddDays(-8).ToString("MM/dd/yyyy")" data-end="@DateTime.Now.AddDays(-1).ToString("MM/dd/yyyy")">Last 7 days</btn>
+    <div class="row mt-4">
+        <div class="col-12">
+            <button type="button"
+                    class="btn btn-outline-secondary time-selector"
+                    id="entireProgram">
+                Entire program
+            </button>
+            <button type="button"
+                    class="btn btn-outline-secondary time-selector"
+                    id="thisWeek">
+                Last 7 days
+            </button>
         </div>
     </div>
 
-    <div class="form-group">
-        <div class="col-xs-6">
-            <label asp-for="StartDate" class="control-label"></label>
-            <div class="input-group date" id="pickerStart">
-                <span class="input-group-addon">
-                    <span class="fas fa-calendar-alt"></span>
-                </span>
-                <input asp-for="StartDate" type="text" class="form-control" />
+    <div class="row">
+        <div class="col-12 col-sm-6 my-2">
+            <label asp-for="StartDate" class="col-form-label"></label>
+            <div datetimepicker-container id="startDatePicker">
+                <input asp-for="StartDate" datetimepicker-input type="text" />
             </div>
             <span asp-validation-for="StartDate" class="text-danger"></span>
         </div>
-
-        <div class="col-xs-6">
-            <label asp-for="EndDate" class="control-label"></label>
-            <div class="input-group date" id="pickerEnd">
-                <span class="input-group-addon">
-                    <span class="fas fa-calendar-alt"></span>
-                </span>
-                <input asp-for="EndDate" type="text" class="form-control" />
+        <div class="col-12 col-sm-6 my-2">
+            <label asp-for="EndDate" class="col-form-label"></label>
+            <div datetimepicker-container id="endDatePicker">
+                <input asp-for="EndDate" datetimepicker-input type="text" />
             </div>
             <span asp-validation-for="EndDate" class="text-danger"></span>
         </div>
     </div>
 
-    <div class="form-group">
-        <div class="col-xs-12">
-            <label asp-for="SystemId" class="control-label"></label>
-            <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control">
+    <div class="row my-2">
+        <div class="col-12">
+            <label asp-for="SystemId" class="col-form-label"></label>
+            <select asp-for="SystemId" asp-items="Model.SystemList" class="form-select">
                 <option value="">All systems</option>
             </select>
         </div>
     </div>
 
-    <div class="form-group">
-        <div class="col-xs-12">
-            <button type="submit" class="btn btn-primary">
-                <span class="fas fa-file-alt"></span>
+    <div class="row mt-4">
+        <div class="col-12">
+            <button type="submit" class="btn btn-outline-primary">
+                <span class="fas fa-file-alt fa-fw"></span>
                 Run Report!
             </button>
         </div>
@@ -56,30 +60,28 @@
 @section scripts
 {
     <script>
-        $('[id^=picker]').datetimepicker({
-            format: 'MM/DD/YYYY h:mm a',
-            allowInputToggle: true,
-            sideBySide: true,
-            icons: {
-                time: "far fa-clock",
-                date: "fas fa-calendar-alt",
-                up: "fas fa-arrow-up",
-                down: "fas fa-arrow-down",
-                previous: "fas fa-arrow-left",
-                next: "fas fa-arrow-right"
-            }
+        const endDatePicker = graInitalizePickerDatetime(document.getElementById("endDatePicker"));
+        const startDatePicker = graInitalizePickerDatetime(document.getElementById("startDatePicker"));
+
+        var defaultDateTime = graGetLocalDate();
+
+        document.getElementById("entireProgram").addEventListener("click", _ => {
+            startDatePicker.clear();
+            endDatePicker.clear();
         });
 
-        $("#pickerStart").data("DateTimePicker").defaultDate(moment(new Date()).subtract(2, "d").format("MM/DD/YYYY"));
-        $("#pickerEnd").data("DateTimePicker").defaultDate(moment(new Date()).subtract(1, "d").format("MM/DD/YYYY"));
-
-        $(".time-selector").on("click", function() {
-            $("#pickerStart").data("DateTimePicker").date($(this).data("start"));
-            var end = $(this).data("end");
-            if (end === "now") {
-                end = new Date();
-            }
-            $("#pickerEnd").data("DateTimePicker").date(end);
+        document.getElementById("thisWeek").addEventListener("click", _ => {
+            defaultDateTime = graGetLocalDate();
+            defaultDateTime.setDate(defaultDateTime.getDate() - 1);
+            graPickerSetDate(endDatePicker, defaultDateTime);
+            defaultDateTime.setDate(defaultDateTime.getDate() - 7);
+            graPickerSetDate(startDatePicker, defaultDateTime);
         });
+
+        defaultDateTime.setDate(defaultDateTime.getDate() - 1);
+        graPickerSetDate(endDatePicker, defaultDateTime);
+        defaultDateTime.setDate(defaultDateTime.getDate() - 1);
+        graPickerSetDate(startDatePicker, defaultDateTime);
+
     </script>
 }

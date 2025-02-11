@@ -3,37 +3,26 @@
 <div class="row">
     @if (Model?.UserLog != null)
     {
-        <div class="col-xs-12 col-sm-3 text-center"
-         style="margin-bottom: 1rem;">
-            <img class="img-thumbnail img-responsive"
-             alt="@Model.UserLog.BadgeAltText"
-             src="~/@Model.UserLog.BadgeFilename"
-             asp-append-version="true" />
+        <div class="col-12 col-sm-4 mb-2 d-flex justify-content-center">
+            <img class="img-thumbnail img-fluid"
+                 alt="@Model.UserLog.BadgeAltText"
+                 src="~/@Model.UserLog.BadgeFilename" />
         </div>
     }
-    <div class="col-xs-12 col-sm-9">
+    <div class="col-12 col-sm-8">
         @if (!string.IsNullOrWhiteSpace(Model.HtmlMessage))
         {
             <p>@Html.Raw(Model.HtmlMessage)</p>
         }
         else
         {
-            <p>@Html.Raw(@Model.Message)</p>
+            <p>@Html.Raw(Model.Message)</p>
+        }
+        @if (Model?.UserLog?.CreatedAt != null)
+        {
+            <em>
+                @SharedLocalizer[GRA.Annotations.Info.EarnedOn, Model.UserLog.CreatedAt.ToShortDateString()]
+            </em>
         }
     </div>
 </div>
-@if (Model?.UserLog != null)
-{
-    <div class="row" style="margin-top: 1rem;">
-        <div class="col-xs-12">
-            @if (Model?.UserLog?.CreatedAt != null)
-            {
-                <p style="margin-bottom: 0;"><em>@SharedLocalizer[GRA.Annotations.Info.EarnedOn, Model.UserLog.CreatedAt.ToShortDateString()]</em></p>
-            }
-            else
-            {
-                <p style="margin-bottom: 0;">&nbsp;</p>
-            }
-        </div>
-    </div>
-}

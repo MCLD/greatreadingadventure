@@ -1,60 +1,70 @@
 ﻿@await Html.PartialAsync("_SchoolsPartial")
 
-<div class="row" style="margin-top: 1rem; margin-bottom: 1rem;">
-    <div class="col-xs-12">
-        <p>Import schools from a properly-formatted <code>.csv</code> file.</p>
-        <ul>
-            <li>
-                Imports and exports happen via
-                <a href="https://en.wikipedia.org/wiki/Comma-separated_values"
-                   target="_blank">comma-separated value</a> (<code>.csv</code>) files.
-            </li>
-            <li>
-                Each district will be inserted only once and related to all schools that it is
-                listed with.
-            </li>
-            <li>
-                Each school in the file will be inserted,
-                <strong>even if it's already in the system</strong>.
-            </li>
-            <li>
-                If you need to see the file format, please perform an
-                <strong><a asp-action="Export">Export</a></strong> and review the downloaded file.
-            </li>
-            <li>
-                The easiest way to edit <code>.csv</code> files is in a spreadsheet application,
-                however you can edit them in a text editor as well.
-            </li>
-        </ul>
-    </div>
-</div>
-<div class="row" style="margin-bottom: 1rem;">
-    <div class="col-xs-12">
-        <form asp-controller="Schools"
-              asp-action="Import"
-              method="post"
-              role="form"
-              enctype="multipart/form-data">
-            <div class="input-group">
-                <label class="input-group-btn">
-                    <span class="btn btn-default btn-file">
-                        <span class="far fa-file-image"></span>
-                        Select a csv file to upload<input type="file" name="schoolFileCsv" accept=".csv" />
-                    </span>
-                </label>
-                <input type="text" class="form-control" readonly id="selectedFile">
-                <span class="input-group-btn">
+<form asp-controller="@SchoolsController.Name"
+      asp-action="@nameof(SchoolsController.Import)"
+      method="post"
+      role="form"
+      enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-12 col-md-8 offset-md-2 mb-3">
+            <div class="card">
+                <h5 class="card-header">
+                    Upload school <code>.csv</code> file
+                </h5>
+                <div class="card-body">
+                    <p>Import schools from a properly-formatted <code>.csv</code> file.</p>
+                    <ul>
+                        <li class="mc-extra-height">
+                            Imports and exports happen via
+                            <a href="https://en.wikipedia.org/wiki/Comma-separated_values"
+                               target="_blank">comma-separated value</a> (<code>.csv</code>) files.
+                        </li>
+                        <li class="mc-extra-height">
+                            Each district will be inserted only once and related to all schools that
+                            it is listed with.
+                        </li>
+                        <li class="mc-extra-height">
+                            Each school in the file will be inserted,
+                            <strong>even if it's already in the system</strong>.
+                        </li>
+                        <li class="mc-extra-height">
+                            If you need to see the file format, please perform an
+                            <strong><a asp-action="Export">Export</a></strong> and review the
+                            downloaded file.
+                        </li>
+                        <li class="mc-extra-height">
+                            The easiest way to edit <code>.csv</code> files is in a spreadsheet
+                            application, however you can edit them in a text editor as well.
+                        </li>
+                    </ul>
+                    <label for="schoolFileCsv">Select a csv file to upload</label>
+                    <div class="input-group mb-3">
+                        <input accept=".csv"
+                               id="schoolFileCsv"
+                               name="schoolFileCsv"
+                               class="form-control"
+                               type="file" />
+                        <button class="btn btn-outline-secondary"
+                                onclick="$('#schoolFileCsv').val('')"
+                                type="button">
+                            Clear selection
+                        </button>
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-end">
                     <button type="submit"
-                            class="btn btn-default"
-                            data-toggle="modal"
-                            data-target="#importModal">
+                            class="btn btn-outline-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#importModal">
                         <span class="fas fa-upload"></span>
+                        Upload school import
                     </button>
-                </span>
+                </div>
             </div>
-        </form>
+        </div>
     </div>
-</div>
+</form>
+
 <div class="modal fade" tabindex="-1" role="dialog" id="importModal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -76,36 +86,3 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-@section scripts
-{
-    <script>
-        $(':file').on('fileselect', function (event, numFiles, label) {
-            var input = $(this).parents('.input-group').find(':text'),
-                log = numFiles > 1 ? numFiles = ' files selected' : label;
-
-            if (input.length) {
-                input.val(log);
-                $('.btn-file').removeClass('btn-default');
-                $('.btn-file').addClass('btn-success');
-            }
-            else {
-                input.val('');
-                $('.btn-file').addClass('btn-default');
-                $('.btn-file').removeClass('btn-success');
-            }
-        });
-
-        $(document).on('change', ':file', function () {
-            var input = $(this),
-                numFiles = input.get(0).files ? input.get(0).files.length : 1,
-                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-            input.trigger('fileselect', [numFiles, label]);
-        });
-
-    </script>
-}
-<style type="text/css">
-    li {
-        line-height: 2rem;
-    }
-</style>

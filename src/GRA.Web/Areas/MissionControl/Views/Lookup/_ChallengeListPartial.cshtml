@@ -7,16 +7,16 @@
 else
 {
     <div>
-        <table class="table table-condensed table-bordered table-striped">
+        <table class="table table-sm table-bordered table-striped">
             <thead>
                 <tr>
-                    <td>Name</td>
-                    <td>Badge</td>
+                    <th>Name</th>
                     @if (Model.ShowActive)
                     {
-                        <td width="42px">Active</td>
+                        <th style="width: 75px">Active</th>
                     }
-                    <td width="42px">&nbsp;</td>
+                    <th style="width: 75px">Badge</th>
+                    <th style="width: 75px">&nbsp;</th>
                 </tr>
             </thead>
             <tbody>
@@ -26,45 +26,49 @@ else
                         <td>
                             @if (Model.CanEditChallenges)
                             {
-                                <a asp-controller="Challenges" asp-action="Edit" asp-route-id="@challenge.Id" target="_blank">@challenge.Name</a>
+                                <a asp-controller="Challenges"
+                                   asp-action="Edit"
+                                   asp-route-id="@challenge.Id"
+                                   target="_blank">@challenge.Name</a>
                             }
                             else
                             {
-                                <a asp-area="" asp-controller="Challenges" asp-action="Details" asp-route-id="@challenge.Id"  target="_blank">@challenge.Name</a>
-
+                                <a asp-area=""
+                                   asp-controller="Challenges"
+                                   asp-action="Details"
+                                   asp-route-id="@challenge.Id"
+                                   target="_blank">@challenge.Name</a>
                             }
-
                         </td>
-                        <td>
+                        @if (Model.ShowActive)
+                        {
+                            <td class="text-center align-middle">
+                                @if (challenge.IsActive)
+                                {
+                                    <span class="far fa-check-circle fa-lg text-success"></span>
+                                }
+                                else
+                                {
+                                    <span class="far fa-times-circle fa-lg text-danger"></span>
+                                }
+                            </td>
+                        }
+                        <td class="text-center align-middle">
                             @if (!string.IsNullOrWhiteSpace(challenge.BadgeFilename))
                             {
-                                <img class="img-thumbnail" style="height: auto; width: 64px;"
-                                     src="~/@challenge.BadgeFilename?@DateTime.Now.ToString("yyMMddHHmmss")"
-                                     asp-append-version="true" />
+                                <img class="img-thumbnail badge-xs"
+                                     src="~/@challenge.BadgeFilename?@DateTime.Now.ToString("yyMMddHHmmss")" />
                             }
                             else
                             {
                                 <text>&nbsp;</text>
                             }
                         </td>
-                        @if (Model.ShowActive)
-                        {
-                            <td class="gra-mc-icon">
-                                @if (challenge.IsActive)
-                                {
-                                    <span class="fas fa-lg fa-check text-success"></span>
-                                }
-                                else
-                                {
-                                    <span class="fas fa-lg fa-ban text-danger"></span>
-                                }
-                            </td>
-                        }
-                        <td class="gra-mc-icon">
+                        <td class="text-center align-middle">
                             <button type="button"
-                                    class="btn btn-link btn-xs addChallengeButton"
+                                    class="btn btn-outline-success btn-sm addChallengeButton"
                                     data-id="@challenge.Id">
-                                <span class="fas fa-2x fa-plus-circle text-success" aria-hidden="true"></span>
+                                <span class="fas fa-plus fa-fw" aria-hidden="true"></span>
                             </button>
                         </td>
                     </tr>
@@ -72,8 +76,5 @@ else
             </tbody>
         </table>
     </div>
-    @if (Model.PaginateModel.MaxPage > 1)
-    {
-        <paginate paginateModel="@Model.PaginateModel" asButtons="true"></paginate>
-    }
+    <paginate paginateModel="@Model.PaginateModel" asButtons="true"></paginate>
 }

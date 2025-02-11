@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## Changed
+
+- Update UI to support Bootstrap 5.3
+
 ### Fixed
 
 - Update packages

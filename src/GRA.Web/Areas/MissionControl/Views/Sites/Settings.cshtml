@@ -15,12 +15,12 @@
             <input asp-for="SiteSettingGroups[i].SettingInformations[j].SiteSetting.Key" value="@Model.SiteSettingGroups[i].SettingInformations[j].Key" type="hidden" />
 
             <div class="row row-spacing">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <label asp-for="SiteSettingGroups[i].SettingInformations[j].SiteSetting.Value">@Model.SiteSettingGroups[i].SettingInformations[j].Definition.Name</label>
-                    <span class="far fa-question-circle wide-tooltip" title="@Model.SiteSettingGroups[i].SettingInformations[j].Definition.Info" data-toggle="tooltip" data-placement="top"></span>
+                    <span class="far fa-question-circle wide-tooltip" title="@Model.SiteSettingGroups[i].SettingInformations[j].Definition.Info" data-bs-toggle="tooltip" data-bs-placement="top"></span>
                     @if (Model.SiteSettingGroups[i].SettingInformations[j].Definition.Format == GRA.Domain.Model.SiteSettingFormat.Boolean)
                     {
-                        <select asp-for="SiteSettingGroups[i].SettingInformations[j].SiteSetting.Value" class="form-control">
+                        <select asp-for="SiteSettingGroups[i].SettingInformations[j].SiteSetting.Value" class="form-select">
                             <option></option>
                             <option value="True">Yes</option>
                         </select>
@@ -41,13 +41,13 @@
         <hr />
     }
 
-    <div class="form-group">
-        <a asp-action="Index" class="btn btn-default">Return to List</a>
+    <div class="mb-3">
+        <a asp-action="Index" class="btn btn-outline-secondary">Return to List</a>
         <button type="submit"
                 id="Submit"
                 name="Submit"
                 value="Submit"
-                class="btn btn-primary btn-spinner"
+                class="btn btn-outline-primary btn-spinner"
                 button-spinner>
             <span class="buttonText">Save</span>
         </button>

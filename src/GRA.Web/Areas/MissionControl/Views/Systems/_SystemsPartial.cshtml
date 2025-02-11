@@ -1,0 +1,41 @@
+﻿<div class="row my-4">
+    <div class="col-12 d-flex justify-content-between">
+        <div>
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a ActiveBy
+                       asp-action="@nameof(SystemsController.Index)"
+                       class="nav-link"
+                       routeKey="Action"
+                       value="@nameof(SystemsController.Index)">
+                        Systems
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a ActiveBy
+                       asp-action="@nameof(SystemsController.Branches)"
+                       class="nav-link"
+                       routeKey="Action"
+                       value="@nameof(SystemsController.Branches)">
+                        Branches
+                    </a>
+                <li class="nav-item">
+                    <a ActiveBy
+                       asp-action="@nameof(SystemsController.Import)"
+                       class="nav-link"
+                       routeKey="Action"
+                       value="@nameof(SystemsController.Import)">
+                        <span class="fas fa-fw fa-file-upload"></span>
+                        Import
+                    </a>
+            </ul>
+        </div>
+        <div>
+            <a asp-action="@nameof(SystemsController.Export)"
+               class="btn btn-sm btn-outline-primary mt-1 text-nowrap">
+                <span class="fas fa-file-csv"></span>
+                Export
+            </a>
+        </div>
+    </div>
+</div>

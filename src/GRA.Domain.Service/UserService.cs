@@ -18,7 +18,7 @@ using Newtonsoft.Json;
 
 namespace GRA.Domain.Service
 {
-    public class UserService : Abstract.BaseUserService<UserService>
+    public class UserService : BaseUserService<UserService>
     {
         private const string UnspecifiedCulture = "unspecified";
 
@@ -139,63 +139,65 @@ namespace GRA.Domain.Service
             VendorCodeService vendorCodeService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
-            _activityService = activityService
-                ?? throw new ArgumentNullException(nameof(activityService));
-            _authorizationCodeRepository = authorizationCodeRepository
-                ?? throw new ArgumentNullException(nameof(authorizationCodeRepository));
-            _avatarBundleRepository = avatarBundleRepository
-                ?? throw new ArgumentNullException(nameof(avatarBundleRepository));
-            _badgeRepository = badgeRepository
-                ?? throw new ArgumentNullException(nameof(badgeRepository));
-            _bookRepository = bookRepository
-                ?? throw new ArgumentNullException(nameof(bookRepository));
-            _branchRepository = branchRepository
-                ?? throw new ArgumentNullException(nameof(branchRepository));
-            _codeGenerator = codeGenerator
-                ?? throw new ArgumentNullException(nameof(codeGenerator));
-            _emailManagementService = emailManagementService
-                ?? throw new ArgumentNullException(nameof(emailManagementService));
-            _groupInfoRepository = groupInfoRepository
-                ?? throw new ArgumentNullException(nameof(groupInfoRepository));
-            _groupTypeRepository = groupTypeRepository
-                ?? throw new ArgumentNullException(nameof(groupTypeRepository));
-            _jobRepository = jobRepository
-                ?? throw new ArgumentNullException(nameof(jobRepository));
-            _languageService = languageService
-                ?? throw new ArgumentNullException(nameof(languageService));
-            _mailRepository = mailRepository
-                ?? throw new ArgumentNullException(nameof(mailRepository));
-            _notificationRepository = notificationRepository
-                ?? throw new ArgumentNullException(nameof(notificationRepository));
-            _passwordValidator = passwordValidator
-                ?? throw new ArgumentNullException(nameof(passwordValidator));
-            _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
-            _prizeWinnerRepository = prizeWinnerRepository
-                ?? throw new ArgumentNullException(nameof(prizeWinnerRepository));
-            _programRepository = programRepository
-                ?? throw new ArgumentNullException(nameof(programRepository));
-            _requireQuestionnaireRepository = requireQuestionnaireRepository
-                ?? throw new ArgumentNullException(nameof(requireQuestionnaireRepository));
-            _roleRepository = roleRepository
-                ?? throw new ArgumentNullException(nameof(roleRepository));
-            _schoolRepository = schoolRepository
-                ?? throw new ArgumentNullException(nameof(schoolRepository));
-            _sharedLocalizer = sharedLocalizer
-                ?? throw new ArgumentNullException(nameof(sharedLocalizer));
-            _siteLookupService = siteLookupService
-                ?? throw new ArgumentNullException(nameof(siteLookupService));
-            _siteRepository = siteRepository
-                ?? throw new ArgumentNullException(nameof(siteRepository));
-            _systemRepository = systemRepository
-                ?? throw new ArgumentNullException(nameof(systemRepository));
-            _userImportService = userImportService
-                ?? throw new ArgumentNullException(nameof(userImportService));
-            _userLogRepository = userLogRepository
-                ?? throw new ArgumentNullException(nameof(userLogRepository));
-            _userRepository = userRepository
-                ?? throw new ArgumentNullException(nameof(userRepository));
-            _vendorCodeService = vendorCodeService
-                ?? throw new ArgumentNullException(nameof(vendorCodeService));
+            ArgumentNullException.ThrowIfNull(activityService);
+            ArgumentNullException.ThrowIfNull(authorizationCodeRepository);
+            ArgumentNullException.ThrowIfNull(avatarBundleRepository);
+            ArgumentNullException.ThrowIfNull(badgeRepository);
+            ArgumentNullException.ThrowIfNull(bookRepository);
+            ArgumentNullException.ThrowIfNull(branchRepository);
+            ArgumentNullException.ThrowIfNull(codeGenerator);
+            ArgumentNullException.ThrowIfNull(emailManagementService);
+            ArgumentNullException.ThrowIfNull(groupInfoRepository);
+            ArgumentNullException.ThrowIfNull(groupTypeRepository);
+            ArgumentNullException.ThrowIfNull(jobRepository);
+            ArgumentNullException.ThrowIfNull(languageService);
+            ArgumentNullException.ThrowIfNull(mailRepository);
+            ArgumentNullException.ThrowIfNull(notificationRepository);
+            ArgumentNullException.ThrowIfNull(passwordValidator);
+            ArgumentNullException.ThrowIfNull(pathResolver);
+            ArgumentNullException.ThrowIfNull(prizeWinnerRepository);
+            ArgumentNullException.ThrowIfNull(programRepository);
+            ArgumentNullException.ThrowIfNull(requireQuestionnaireRepository);
+            ArgumentNullException.ThrowIfNull(roleRepository);
+            ArgumentNullException.ThrowIfNull(schoolRepository);
+            ArgumentNullException.ThrowIfNull(sharedLocalizer);
+            ArgumentNullException.ThrowIfNull(siteLookupService);
+            ArgumentNullException.ThrowIfNull(siteRepository);
+            ArgumentNullException.ThrowIfNull(systemRepository);
+            ArgumentNullException.ThrowIfNull(userImportService);
+            ArgumentNullException.ThrowIfNull(userLogRepository);
+            ArgumentNullException.ThrowIfNull(userRepository);
+            ArgumentNullException.ThrowIfNull(vendorCodeService);
+
+            _activityService = activityService;
+            _authorizationCodeRepository = authorizationCodeRepository;
+            _avatarBundleRepository = avatarBundleRepository;
+            _badgeRepository = badgeRepository;
+            _bookRepository = bookRepository;
+            _branchRepository = branchRepository;
+            _codeGenerator = codeGenerator;
+            _emailManagementService = emailManagementService;
+            _groupInfoRepository = groupInfoRepository;
+            _groupTypeRepository = groupTypeRepository;
+            _jobRepository = jobRepository;
+            _languageService = languageService;
+            _mailRepository = mailRepository;
+            _notificationRepository = notificationRepository;
+            _passwordValidator = passwordValidator;
+            _pathResolver = pathResolver;
+            _prizeWinnerRepository = prizeWinnerRepository;
+            _programRepository = programRepository;
+            _requireQuestionnaireRepository = requireQuestionnaireRepository;
+            _roleRepository = roleRepository;
+            _schoolRepository = schoolRepository;
+            _sharedLocalizer = sharedLocalizer;
+            _siteLookupService = siteLookupService;
+            _siteRepository = siteRepository;
+            _systemRepository = systemRepository;
+            _userImportService = userImportService;
+            _userLogRepository = userLogRepository;
+            _userRepository = userRepository;
+            _vendorCodeService = vendorCodeService;
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization",
@@ -263,8 +265,10 @@ namespace GRA.Domain.Service
             return authCode.RoleName;
         }
 
-        public async Task<User> AddHouseholdMemberAsync(int householdHeadUserId, User memberToAdd,
-            bool skipHouseholdActionVerification = false)
+        public async Task<User> AddHouseholdMemberAsync(int householdHeadUserId,
+            User memberToAdd,
+            bool skipHouseholdActionVerification,
+            bool isMcRegistered)
         {
             if (!skipHouseholdActionVerification)
             {
@@ -324,6 +328,8 @@ namespace GRA.Domain.Service
                 }
 
                 await ValidateUserFields(memberToAdd);
+
+                memberToAdd.IsMcRegistered = isMcRegistered;
 
                 var registeredUser = await _userRepository.AddSaveAsync(authUserId, memberToAdd);
 
@@ -443,7 +449,9 @@ namespace GRA.Domain.Service
                 throw new GraException("You cannot add yourself");
             }
 
-            return await AddParticipantToHouseholdAlreadyAuthorizedAsync(authenticationResult.User.Id);
+            return await AddParticipantToHouseholdAlreadyAuthorizedAsync(authenticationResult
+                .User
+                .Id);
         }
 
         public async Task AwardUserBadgesAsync(int userId, bool awardJoinBadge,
@@ -709,9 +717,7 @@ namespace GRA.Domain.Service
         public async Task<User> GetDetailsByPermission(int userId)
         {
             VerifyPermission(Permission.ViewParticipantDetails);
-
-            var requestedUser = await _userRepository.GetByIdAsync(userId);
-            return requestedUser
+            return await _userRepository.GetByIdAsync(userId)
                 ?? throw new GraException("The requested participant could not be accessed or does not exist.");
         }
 
@@ -1086,7 +1092,7 @@ namespace GRA.Domain.Service
         }
 
         public async Task<JobStatus> ImportHouseholdMembersAsync(int jobId,
-                            CancellationToken token,
+            CancellationToken token,
             IProgress<JobStatus> progress = null)
         {
             var requestingUser = GetClaimId(ClaimType.UserId);
@@ -1245,6 +1251,7 @@ namespace GRA.Domain.Service
                         Age = importUser.Age,
                         BranchId = householdHead.BranchId,
                         FirstName = importUser.FirstName?.Trim(),
+                        IsMcRegistered = true,
                         IsFirstTime = jobDetails.FirstTimeParticipating,
                         IsHomeschooled = jobDetails.IsHomeSchooled,
                         LastName = importUser.LastName?.Trim(),
@@ -1255,7 +1262,7 @@ namespace GRA.Domain.Service
                         SystemId = householdHead.SystemId
                     };
 
-                    await AddHouseholdMemberAsync(householdHead.Id, user, true);
+                    await AddHouseholdMemberAsync(householdHead.Id, user, true, false);
 
                     currentUser++;
                 }
@@ -1486,7 +1493,9 @@ namespace GRA.Domain.Service
             return await _userRepository.ReassignBranchAsync(oldBranch, newBranch);
         }
 
-        public async Task RegisterHouseholdMemberAsync(User memberToRegister, string password)
+        public async Task RegisterHouseholdMemberAsync(User memberToRegister,
+            string password,
+            bool isMcRegistered)
         {
             VerifyCanRegister();
             ArgumentNullException.ThrowIfNull(memberToRegister);
@@ -1505,7 +1514,9 @@ namespace GRA.Domain.Service
                     throw new GraException("Household member is already registered");
                 }
 
-                var existingUser = await _userRepository.GetByUsernameAsync(memberToRegister.Username);
+                var existingUser = await _userRepository
+                    .GetByUsernameAsync(memberToRegister.Username);
+
                 if (existingUser != null)
                 {
                     throw new GraException(_sharedLocalizer[Annotations.Validate.UsernameTaken]);
@@ -1514,6 +1525,7 @@ namespace GRA.Domain.Service
                 _passwordValidator.Validate(password);
 
                 user.Username = memberToRegister.Username?.Trim();
+                user.IsMcRegistered = isMcRegistered;
                 await _userRepository.UpdateSaveAsync(authUserId, user);
                 await _userRepository
                     .SetUserPasswordAsync(authUserId, user.Id, password);
@@ -1527,12 +1539,14 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<User> RegisterUserAsync(User user, string password,
-            bool MCRegistration = false, bool allowDuringCloseProgram = false)
+        public async Task<User> RegisterUserAsync(User user,
+            string password,
+            bool isMcRegistration,
+            bool allowDuringClosedProgram)
         {
             var siteId = GetCurrentSiteId();
 
-            if (!allowDuringCloseProgram)
+            if (!allowDuringClosedProgram)
             {
                 VerifyCanRegister();
             }
@@ -1581,8 +1595,9 @@ namespace GRA.Domain.Service
             }
 
             User registeredUser;
-            if (MCRegistration)
+            if (isMcRegistration)
             {
+                user.IsMcRegistered = isMcRegistration;
                 registeredUser = await _userRepository.AddSaveAsync(
                     GetClaimId(ClaimType.UserId), user);
                 if (emailSubscribe)
@@ -1603,7 +1618,9 @@ namespace GRA.Domain.Service
                 if (emailSubscribe)
                 {
                     registeredUser.IsEmailSubscribed = await _emailManagementService
-                        .SetUserEmailSubscriptionStatusAsync(registeredUser.Id, true, newUser: true);
+                        .SetUserEmailSubscriptionStatusAsync(registeredUser.Id,
+                            true,
+                            newUser: true);
                 }
             }
 
@@ -1719,12 +1736,21 @@ namespace GRA.Domain.Service
 
                 bool restrictChangingSystemBranch = await _siteLookupService
                     .GetSiteSettingBoolAsync(currentEntity.SiteId,
-                    SiteSettingKey.Users.RestrictChangingSystemBranch);
+                        SiteSettingKey.Users.RestrictChangingSystemBranch);
 
                 if (!restrictChangingSystemBranch)
                 {
                     currentEntity.SystemId = userToUpdate.SystemId;
                     currentEntity.BranchId = userToUpdate.BranchId;
+                }
+
+                bool restrictChangingProgram = await _siteLookupService
+                    .GetSiteSettingBoolAsync(currentEntity.SiteId,
+                        SiteSettingKey.Users.RestrictChangingProgram);
+
+                if (!restrictChangingProgram)
+                {
+                    currentEntity.ProgramId = userToUpdate.ProgramId;
                 }
 
                 await ValidateUserFields(currentEntity);
@@ -1924,7 +1950,7 @@ namespace GRA.Domain.Service
                     Description = _sharedLocalizer[Annotations.Interface.Joined, site.Name]
                 });
 
-                // note this text is localized and displayed properly in SessionTimeoutFilterAttribute
+                // note this is localized and displayed properly in SessionTimeoutFilterAttribute
                 var notification = new Notification
                 {
                     BadgeFilename = badge.Filename,
@@ -1975,10 +2001,11 @@ namespace GRA.Domain.Service
                                 PointsEarned = 0,
                                 IsDeleted = false,
                                 BadgeId = badge.Id,
-                                Description = _sharedLocalizer[Annotations.Interface.Joined, site.Name]
+                                Description
+                                    = _sharedLocalizer[Annotations.Interface.Joined, site.Name]
                             });
 
-                            // note this text is localized and displayed properly in SessionTimeoutFilterAttribute
+                            // note: localized and displayed in SessionTimeoutFilterAttribute
                             var notification = new Notification
                             {
                                 BadgeFilename = badge.Filename,

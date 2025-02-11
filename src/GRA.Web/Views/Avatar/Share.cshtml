@@ -1,30 +1,30 @@
 ﻿@model GRA.Controllers.ViewModel.Avatar.ShareViewModel
 
 <div class="row row-spacing">
-    <div class="col-xs-12">
-        <img src="@Model.AvatarImageUrl" class="img-responsive" />
+    <div class="col-12">
+        <img src="@Model.AvatarImageUrl" class="img-fluid" />
     </div>
 </div>
 
 <div class="row row-spacing">
-    <div class="col-xs-12">
-        <a asp-action="Index" class="btn btn-default row-spacing">
+    <div class="col-12">
+        <a asp-action="Index" class="btn btn-outline-secondary row-spacing">
             <span class="fas fa-arrow-left"></span>
             @SharedLocalizer[GRA.Annotations.Interface.Back]
         </a>
 
-        <a href="@Model.FacebookShareUrl" class="btn btn-default row-spacing" target="_blank">
+        <a href="@Model.FacebookShareUrl" class="btn btn-outline-secondary row-spacing" target="_blank">
             <span class="fab fa-facebook"></span>
             @SharedLocalizer[GRA.Annotations.Interface.Share]
         </a>
 
-        <a href="@Model.TwitterShareUrl" class="btn btn-default row-spacing" target="_blank">
+        <a href="@Model.TwitterShareUrl" class="btn btn-outline-secondary row-spacing" target="_blank">
             <span class="fab fa-twitter"></span>
             @SharedLocalizer[GRA.Annotations.Interface.Share]
         </a>
         <a asp-action="InstagramImage"
            asp-route-id="@Model.AvatarId"
-           class="btn btn-default row-spacing"
+           class="btn btn-outline-secondary row-spacing"
            download="avatar.jpg">
             <span class="fab fa-instagram"></span>
             @SharedLocalizer[GRA.Annotations.Interface.DownloadToShare]

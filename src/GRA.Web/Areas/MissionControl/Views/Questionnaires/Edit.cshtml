@@ -28,8 +28,8 @@
     <input asp-for="QuestionSortOrder" type="hidden" />
 
     <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="Questionnaire.Name" class="control-label"></label>
+        <div class="col-12">
+            <label asp-for="Questionnaire.Name" class="col-form-label"></label>
             <input asp-for="Questionnaire.Name" class="form-control" />
             <span asp-validation-for="Questionnaire.Name" class="text-danger"></span>
         </div>
@@ -55,8 +55,7 @@
                         <span class="fas fa-lg fa-minus-circle text-danger removeRow"></span>
                     }
                     <button type="button"
-                            class="btn btn-default pull-right editQuestionButton"
-                            style="margin-right:10px;"
+                            class="btn btn-outline-primary float-end editQuestionButton me-4"
                             data-id="@question.Id"
                             data-name="@question.Name"
                             data-text="@question.Text"
@@ -69,19 +68,19 @@
     </div>
     @if (!Model.Questionnaire.IsLocked)
     {
-        <div class="form-group">
-            <button type="button" id="addQuestionButton" class="btn btn-default">
+        <div class="mb-3">
+            <button type="button" id="addQuestionButton" class="btn btn-outline-primary">
                 Add Question
             </button>
         </div>
     }
     <hr />
 
-    <div class="form-group">
-        <a asp-action="Index" class="btn btn-default">Return to List</a>
+    <div class="mb-3">
+        <a asp-action="Index" class="btn btn-outline-secondary">Return to List</a>
         @if (!Model.Questionnaire.IsLocked)
         {
-            <button type="submit" class="btn btn-primary" button-spinner>
+            <button type="submit" class="btn btn-outline-primary" button-spinner>
                 <span class="buttonText">Save Changes</span>
             </button>
         }
@@ -106,34 +105,34 @@
                 <input asp-for="AnswerSortOrder" type="hidden" />
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button"
-                                class="close"
-                                data-dismiss="modal"
-                                aria-label="Close dialog">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
                         <h1 class="modal-title h4" id="saveModalLabel">Edit Question</h1>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close dialog">
+                            
+                        </button>
 
                     </div>
                     <div class="modal-body">
-                        <div class="form-group">
-                            <label asp-for="Question.Name" class="control-label"></label>
+                        <div class="mb-3">
+                            <label asp-for="Question.Name" class="col-form-label"></label>
                             <input asp-for="Question.Name" class="form-control" />
                             <span asp-validation-for="Question.Name" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
-                            <label asp-for="Question.Text" class="control-label"></label>
+                        <div class="mb-3">
+                            <label asp-for="Question.Text" class="col-form-label"></label>
                             <textarea asp-for="Question.Text" class="form-control"></textarea>
                             <span asp-validation-for="Question.Text" class="text-danger"></span>
                         </div>
 
-                        <div class="form-group">
+                        <div class="mb-3">
                             <h4>Answers</h4>
                             <div id="answerList"></div>
                         </div>
                         @if (!Model.Questionnaire.IsLocked)
                         {
-                            <button type="button" id="addAnswerButton" class="btn btn-default">
+                            <button type="button" id="addAnswerButton" class="btn btn-outline-primary">
                                 Add Answer
                         </button>
                         }
@@ -143,8 +142,8 @@
                             Question saved!
                         </span>
                         <button type="button"
-                                class="btn btn-default"
-                                data-dismiss="modal"
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal"
                                 style="margin-right: 1em;">
                             Cancel
                         </button>
@@ -152,7 +151,7 @@
                         {
                             <button id="modalSaveButton"
                                     type="submit"
-                                    class="btn btn-primary"
+                                    class="btn btn-outline-primary"
                                     aria-label="Confirm"
                                     button-spinner>
                                 Save
@@ -181,7 +180,7 @@
         }
 
         function CreateAnswerRow(id, text, type) {
-            return "<div class='orderable-row' name='answer_" + id + "' id='answer_" + id + "'><span class='fas fa-bars' style='margin-top:10px;float:left;'></span><span class='fas fa-lg fa-minus-circle text-danger removeRow'></span><div class='input-group' style='margin:0 30px;'><span class='input-group-addon'><input type='radio' name='correctAnswer' value='" + id + "'></span><input class='form-control' name='" + type + "_" + id + "' value='" + text + "' required /></div></div>";
+            return "<div class='orderable-row' name='answer_" + id + "' id='answer_" + id + "'><span class='fas fa-bars' style='margin-top:10px;float:left;'></span><span class='fas fa-lg fa-minus-circle text-danger removeRow'></span><div class='input-group' style='margin:0 30px;'><span class='input-group-text'><input type='radio' name='correctAnswer' value='" + id + "'></span><input class='form-control' name='" + type + "_" + id + "' value='" + text + "' required /></div></div>";
         }
 
         function UpdateAnswerList(answerListItems, correctAnswerId) {
@@ -299,7 +298,7 @@
                                     }
                                     else {
                                         form.find("#Question_Id").val(response.question.id);
-                                        $("#questionList").append("<div class='orderable-row' id='question_" + response.question.id + "' +> <span class='fas fa-bars' style='margin-right:6px;'></span> <span class='name'>" + response.question.name + "</span><span class='fas fa-lg fa-minus-circle text-danger removeRow'></span><button type='button' class='btn btn-default pull-right editQuestionButton' style='margin-right:10px;' data-id='" + response.question.id + "' data-name='" + response.question.name + "' data-text='" + response.question.text + "' data-correctanswerid='" + response.question.correctAnswerId + "'>Edit</button></div>");
+                                        $("#questionList").append("<div class='orderable-row' id='question_" + response.question.id + "' +> <span class='fas fa-bars' style='margin-right:6px;'></span> <span class='name'>" + response.question.name + "</span><span class='fas fa-lg fa-minus-circle text-danger removeRow'></span><button type='button' class='btn btn-outline-primary float-end editQuestionButton' style='margin-right:10px;' data-id='" + response.question.id + "' data-name='" + response.question.name + "' data-text='" + response.question.text + "' data-correctanswerid='" + response.question.correctAnswerId + "'>Edit</button></div>");
                                         $("#QuestionSortOrder").val($("#questionList").sortable("serialize"));
                                     }
                                     $("#modalUpdateText").show().delay(2000).fadeOut("slow");

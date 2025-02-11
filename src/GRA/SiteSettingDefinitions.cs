@@ -106,6 +106,13 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Points).Name,
                     Format = SiteSettingFormat.Integer
                 },
+                [SiteSettingKey.Users.RestrictChangingProgram] = new SiteSettingDefinition
+                {
+                    Name = "Restrict changing program",
+                    Info = "Put any text here to forbid participants from changing their program after joining",
+                    Category = typeof(SiteSettingKey.Users).Name,
+                    Format = SiteSettingFormat.Boolean,
+                },
                 [SiteSettingKey.Users.RestrictChangingSystemBranch] = new SiteSettingDefinition
                 {
                     Name = "Restrict changing system and branch",
@@ -113,10 +120,24 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Users).Name,
                     Format = SiteSettingFormat.Boolean,
                 },
+                [SiteSettingKey.Triggers.DisallowTriggersBelowPoints] = new SiteSettingDefinition
+                {
+                    Name = "Trigger minimum activation point level",
+                    Info = "Do not allow triggers which activate at point values below this value (overridable with IgnorePointLimits permission)",
+                    Category = typeof(SiteSettingKey.Triggers).Name,
+                    Format = SiteSettingFormat.Integer
+                },
                 [SiteSettingKey.Triggers.MaxPointsPerTrigger] = new SiteSettingDefinition
                 {
-                    Name = "Maximum points per trigger",
-                    Info = "A number representing the maximum amount of points permitted for a trigger (it may be able to be overidden from Mission Control).",
+                    Name = "Maximum points awardable per trigger",
+                    Info = "Do not allow triggers to award more than this many points (overridable with IgnorePointLimits permission)",
+                    Category = typeof(SiteSettingKey.Triggers).Name,
+                    Format = SiteSettingFormat.Integer
+                },
+                [SiteSettingKey.Triggers.LowPointThreshold] = new SiteSettingDefinition
+                {
+                    Name = "Low point activation threshold for triggers",
+                    Info = "Triggers activated with this many points or fewer are considered to be low point activated.",
                     Category = typeof(SiteSettingKey.Triggers).Name,
                     Format = SiteSettingFormat.Integer
                 },

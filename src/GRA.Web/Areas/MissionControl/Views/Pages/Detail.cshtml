@@ -4,21 +4,33 @@
     <link rel="stylesheet" href="/css/markdown.min.css" />
 }
 
-<div class="row" style="padding: 1rem 0;">
-    <div class="col-xs-12">
-        <div class="form-group">
-            <label asp-for="HeaderName" class="control-label"></label>
+@section inHeading {
+    <div class="ms-auto">
+        <a asp-action="@nameof(PagesController.Index)"
+           class="btn btn-outline-secondary">
+            Return to list
+        </a>
+    </div>
+}
+
+<div class="row my-4">
+    <div class="col-12">
+        <div class="mb-3">
+            <label asp-for="HeaderName" class="col-form-label"></label>
             <input asp-for="HeaderName" class="form-control" readonly />
         </div>
 
-        <div class="form-group">
-            <label asp-for="HeaderStub" class="control-label"></label>
+        <div class="mb-3">
+            <label asp-for="HeaderStub" class="col-form-label"></label>
             <input asp-for="HeaderStub" class="form-control" readonly />
         </div>
 
         <div>
-            <label for="Language" class="control-label">Language</label>
-            <select id="Language" name="Language" asp-items="Model.LanguageList" class="form-control"></select>
+            <label for="Language" class="col-form-label">Language</label>
+            <select id="Language"
+                    name="Language"
+                    asp-items="Model.LanguageList"
+                    class="form-select"></select>
         </div>
     </div>
 </div>
@@ -26,27 +38,29 @@
 @if (!Model.NewPage)
 {
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-12">
             <div class="row">
-                <div class="col-xs-6">
+                <div class="col-12 d-flex">
                     @if (!string.IsNullOrWhiteSpace(Model.PageUrl))
                     {
-                        <label class="control-label">Link to page</label>
-                        <br />
-                        <a aria-label="@Model.PageUrl (Opens new window)"
-                           href="@Model.PageUrl"
-                           target="_blank">
-                            @Model.PageUrl
-                        </a>
+                        <div class="flex-grow-1">
+                            <label class="col-form-label">Link to page</label>
+                            <br />
+                            <a aria-label="@Model.PageUrl (Opens new window)"
+                               href="@Model.PageUrl"
+                               target="_blank">
+                                @Model.PageUrl
+                            </a>
+                        </div>
                     }
-                </div>
-                <div class="col-xs-6">
-                    <a asp-action="@nameof(PagesController.Preview)"
-                       asp-route-headerId="@Model.HeaderId"
-                       asp-route-languageId="@Model.SelectedLanguageId"
-                       class="btn btn-default pull-right">
-                        Preview
-                    </a>
+                    <div class="align-content-end">
+                        <a asp-action="@nameof(PagesController.Preview)"
+                           asp-route-headerId="@Model.HeaderId"
+                           asp-route-languageId="@Model.SelectedLanguageId"
+                           class="btn btn-outline-primary">
+                            Preview
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -61,65 +75,66 @@
     <input asp-for="NewPage" type="hidden" />
 
     <div class="row">
-        <div class="col-xs-12">
-            <div class="form-group">
-                <label asp-for="Page.Title" class="control-label"></label>
+        <div class="col-12">
+            <div class="mb-3">
+                <label asp-for="Page.Title" class="col-form-label"></label>
                 <input asp-for="Page.Title" class="form-control" />
                 <span asp-validation-for="Page.Title" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Page.Content" class="control-label"></label>
+            <div class="mb-3">
+                <label asp-for="Page.Content" class="col-form-label"></label>
                 <div id="wmd-button-bar"></div>
-                <textarea asp-for="Page.Content" id="wmd-input" class="form-control wmd-input"></textarea>
-                <label class="control-label" style="margin-top: 1rem; margin-bottom: 0;">Preview</label>
+                <textarea asp-for="Page.Content"
+                          id="wmd-input"
+                          class="form-control wmd-input"></textarea>
+                <label class="col-form-label">Preview</label>
                 <div id="preview"></div>
                 <span asp-validation-for="Page.Content" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Page.NavText" class="control-label"></label>
+            <div class="mb-3">
+                <label asp-for="Page.NavText" class="col-form-label"></label>
                 <input asp-for="Page.NavText" class="form-control" />
                 <span asp-validation-for="Page.NavText" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Page.FooterText" class="control-label"></label>
+            <div class="mb-3">
+                <label asp-for="Page.FooterText" class="col-form-label"></label>
                 <input asp-for="Page.FooterText" class="form-control" />
                 <span asp-validation-for="Page.FooterText" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Page.MetaDescription" class="control-label"></label>
+            <div class="mb-3">
+                <label asp-for="Page.MetaDescription" class="col-form-label"></label>
                 <input asp-for="Page.MetaDescription" class="form-control" />
                 <span asp-validation-for="Page.MetaDescription" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Page.IsPublished" class="control-label"></label>
-                <select asp-for="Page.IsPublished" class="form-control">
+            <div class="mb-3">
+                <label asp-for="Page.IsPublished" class="col-form-label"></label>
+                <select asp-for="Page.IsPublished" class="form-select">
                     <option value="True">Yes</option>
                     <option value="False">No</option>
                 </select>
                 <span asp-validation-for="Page.IsPublished" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <a asp-action="Index" class="btn btn-default">Return to List</a>
+            <div class="mb-3">
                 <button type="submit"
                         id="Submit"
                         name="Submit"
                         value="Submit"
-                        class="btn btn-primary btn-spinner"
+                        class="btn btn-outline-primary"
                         button-spinner>
                     <span class="buttonText">Save</span>
                 </button>
                 @if (Model.NewPage)
                 {
                     <button type="button"
-                            class="btn btn-danger pull-right"
-                            data-toggle="modal"
-                            data-target="#deleteModal">
+                            class="btn btn-outline-danger"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteModal">
                         Delete
                     </button>
                 }
@@ -128,59 +143,63 @@
     </div>
 </form>
 
-<div class="row">
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <form asp-controller="Pages"
-                      asp-action="@nameof(PagesController.DeletePage)"
-                      method="post"
-                      role="form"
-                      style="display:inline">
-                    <input id="deleteHeaderId" asp-for="HeaderId" type="hidden" />
-                    <input id="deleteLanguageId" asp-for="SelectedLanguageId" type="hidden" />
+<div class="modal fade"
+     id="deleteModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="deleteModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form asp-controller="Pages"
+                  asp-action="@nameof(PagesController.DeletePage)"
+                  method="post"
+                  role="form"
+                  style="display:inline">
+                <input id="deleteHeaderId" asp-for="HeaderId" type="hidden" />
+                <input id="deleteLanguageId" asp-for="SelectedLanguageId" type="hidden" />
 
-                    <div class="modal-header">
-                        <button type="button"
-                                class="close"
-                                data-dismiss="modal"
-                                aria-label="Close dialog">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <h1 class="modal-title h4" id="deleteModalLabel">Delete page</h1>
-                    </div>
-                    <div class="modal-body">
-                        <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
+                <div class="modal-header">
+                    <h1 class="modal-title h4" id="deleteModalLabel">Delete page</h1>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close dialog">
+                    </button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="modal-body d-flex align-items-stretch">
+                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                              aria-hidden="true"></span>
                         Are you sure you want to delete this page?
                     </div>
-                    <div class="modal-footer">
-                        <button type="button"
-                                class="btn btn-default"
-                                data-dismiss="modal"
-                                style="margin-right: 1em;">
-                            Cancel
-                        </button>
-                        <button type="submit"
-                                class="btn btn-danger pull-right"
-                                aria-label="Confirm">
-                            <span class="fas fa-times" aria-hidden="true"></span>
-                            Delete
-                        </button>
-                    </div>
-                </form>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="btn btn-outline-danger float-end"
+                            aria-label="Confirm">
+                        <span class="fas fa-times fa-fw" aria-hidden="true"></span>
+                        Delete
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
 @section scripts {
-    <script src="/js/markdown.min.js" ></script>
+    <script src="/js/markdown.min.js"></script>
 
     <script>
         var editor = new Markdown.Editor({ allowUploads: true });
         editor.run();
 
-        var pageUrl = "@Url.Action(nameof(PagesController.Detail), new { id = Model.HeaderId})";
+        var pageUrl = "@Url.Action(nameof(PagesController.Detail), new { id = Model.HeaderId })";
 
         $("#Language").on("change", function () {
             window.location.href = pageUrl + "?language=" + $(this).val();

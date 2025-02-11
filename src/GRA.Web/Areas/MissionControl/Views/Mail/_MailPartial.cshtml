@@ -1,11 +1,29 @@
-﻿<div class="row">
-    <div class="col-xs-12">
-        <ul class="nav nav-pills" style="padding: 10px 0;">
-            <li ActiveBy routeKey="Action" value="Index"><a asp-action="Index">Unhandled</a></li>
-            <li ActiveBy routeKey="Action" value="ViewAll"><a asp-action="ViewAll">View All Non-Broadcast</a></li>
+﻿<div class="row my-4">
+    <div class="col-12 mb-2">
+        <ul class="nav nav-pills flex-column flex-sm-row">
+            <li class="nav-item">
+                <a ActiveBy routeKey="Action"
+                value="Index"
+                asp-action="Index"
+                class="nav-link">
+                Unhandled</a>
+            </li>
+            <li class="nav-item">
+                <a ActiveBy routeKey="Action" 
+                value="ViewAll" 
+                asp-action="ViewAll"
+                class="nav-link">
+                View All Non-Broadcast</a>
+            </li>
             @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.SendBroadcastMail.ToString()))
             {
-                <li ActiveBy routeKey="Action" value="Broadcasts"><a asp-action="Broadcasts">Broadcasts</a></li>
+                <li class="nav-item">
+                    <a ActiveBy routeKey="Action"
+                    value="Broadcasts"
+                    asp-action="Broadcasts"
+                    class="nav-link">
+                    Broadcasts</a>
+                </li>
             }
         </ul>
     </div>

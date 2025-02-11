@@ -1,13 +1,9 @@
-﻿.mc-menu-button {
-    color: white;
-}
-
-.mc-alertrow {
+﻿.mc-alertrow {
     margin-top: 1em;
 }
 
 .news-post-content p {
-    margin-bottom: 20px;
+    margin-bottom: 1rem;
 }
 
 .news-post-content img {
@@ -26,61 +22,35 @@
     font-size: 1.6rem;
 }
 
-.ataglance-pill {
-    border: 1px solid;
+.ataglance-filtered,
+.ataglance-filtered .list-group-item {
+    border-color: rebeccapurple;
+    color: rebeccapurple;
+}
+
+    .ataglance-filtered .card-header,
+    .ataglance-filtered .card-footer {
+        background-color: rebeccapurple;
+        color: white;
+    }
+
+.ataglance-site,
+.ataglance-site .list-group-item {
+    border-color: teal;
+    color: teal;
+}
+
+    .ataglance-site .card-header,
+    .ataglance-site .card-footer {
+        background-color: teal;
+        color: white;
+    }
+
+.ataglance-summary {
     border-radius: 1rem;
-    font-size: 2rem;
-    padding: 1rem;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    background-color: dimgray;
-    color: white;
-}
-
-@media only screen and (min-width : 768px) {
-    .ataglance-pill {
-        font-size: 1.5rem;
-    }
-}
-
-@media only screen and (min-width : 992px) {
-    .ataglance-pill {
-        font-size: 1.5rem;
-    }
-}
-
-.ataglancepill-sidebar {
-    background-color: dimgray;
-    border: 1px solid;
-    border-radius: 1rem;
-    color: white;
-    line-height: 1.8em;
-    margin-bottom: 1rem;
-    padding: 0.75rem 1rem;
-}
-
-    .ataglancepill-sidebar .ataglance-icon {
-        width: 1.5em;
-    }
-
-.ataglance-pill-darkslateblue {
-    background-color: darkslateblue;
-    color: white;
-}
-
-.ataglance-pill-teal {
-    background-color: teal;
-    color: white;
-}
-
-.ataglance-pill-steelblue {
-    background-color: steelblue;
-    color: white;
-}
-
-.ataglance-pill-seagreen {
-    background-color: seagreen;
-    color: white;
+    border-style: solid;
+    border-width: 0.25rem;
+    height: 7rem;
 }
 
 .badge-maker {
@@ -98,7 +68,7 @@
     background-color: #f5f5f5;
     border: 1px solid #dddddd;
     border-radius: 3px;
-    margin-bottom: 10px;
+    margin-bottom: 0.5rem;
     cursor: move;
 }
 
@@ -138,15 +108,20 @@ table > tbody > tr > td.gra-mc-icon {
     background-color: #a94442;
 }
 
-.mc-news-panel-footer {
+.mc-news-card-footer {
     font-size: small;
     padding: 5px 15px;
 }
 
-.mc-filtered-asof-container, .mc-site-asof-container {
+.mc-filtered-asof-container,
+.mc-site-asof-container {
     font-size: smaller;
 }
 
 .mc-news-subscribe {
     text-decoration: none;
+}
+
+.mc-extra-height {
+    line-height: 2rem;
 }

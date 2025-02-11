@@ -85,6 +85,14 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
+        public async Task<ICollection<PsPerformer>> GetAllAsync()
+        {
+            return await DbSet
+                .AsNoTracking()
+                .ProjectTo<PsPerformer>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
         public async Task<ICollection<PsAgeGroup>> GetPerformerAgeGroupsAsync(int performerId)
         {
             return await _context.PsPrograms

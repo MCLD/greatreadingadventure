@@ -1,22 +1,37 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Avatar.BundlesListViewModel
 
-<div class="row">
-    <div class="col-xs-12">
-        <ul class="nav nav-pills" style="padding: 10px 0;">
-            <li ActiveBy routeKey="Unlockable" value=",True"><a asp-action="Bundles">Unlockable</a></li>
-            <li ActiveBy routeKey="Unlockable" value="False"><a asp-action="Bundles" asp-route-Unlockable="False">Default</a></li>
+<div class="row my-4">
+    <div class="col-12 mb-2">
+        <ul class="nav nav-pills flex-column flex-sm-row">
+            <li class="nav-item">
+                <a ActiveBy routeKey="Unlockable"
+                   value=",True"
+                   asp-action="Bundles"
+                   class="nav-link">
+                    Unlockable
+                </a>
+            </li>
+            <li class="nav-item">
+                <a ActiveBy routeKey="Unlockable"
+                   value="False"
+                   asp-action="Bundles"
+                   asp-route-Unlockable="False"
+                   class="nav-link">
+                    Default
+                </a>
+            </li>
         </ul>
     </div>
 </div>
 
-<div class="row" style="padding: 10px 0;">
-    <div class="col-xs-12">
-        <a asp-action="BundleCreate" class="btn btn-default">Create a new bundle</a>
+<div class="row my-4">
+    <div class="col-12">
+        <a asp-action="BundleCreate" class="btn btn-outline-primary">Create a new bundle</a>
     </div>
 </div>
 
-<div class="row" style="padding: 10px 0;">
-    <div class="col-xs-12">
+<div class="row my-4">
+    <div class="col-12">
         @if (Model.Bundles.Count() == 0)
         {
             <div class="alert alert-warning">No Bundles</div>
@@ -24,7 +39,7 @@
         else
         {
             <div>
-                <table class="table table-condensed table-bordered link-table">
+                <table class="table table-sm table-bordered link-table">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -37,19 +52,21 @@
                         {
                             <tr>
                                 <td class="td-class">
-                                    <a asp-action="BundleEdit" asp-route-id="@bundle.Id" class="rowlink">
+                                    <a asp-action="BundleEdit"
+                                       asp-route-id="@bundle.Id"
+                                       class="rowlink">
                                         @bundle.Name
                                     </a>
                                 </td>
                                 <td>@bundle.AvatarItems.Count</td>
                                 <td class="on-top gra-mc-icon">
                                     <button type="button"
-                                            class="btn btn-danger btn-xs"
-                                            data-toggle="modal"
-                                            data-target="#deleteModal"
+                                            class="btn btn-outline-danger btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal"
                                             data-id="@bundle.Id"
                                             data-name="@bundle.Name">
-                                        <span class="fas fa-times" aria-hidden="true"></span>
+                                        <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                                     </button>
                                 </td>
                             </tr>
@@ -65,49 +82,47 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="modal fade"
-         id="deleteModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="deleteModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button"
-                            class="close"
-                            data-dismiss="modal"
-                            aria-label="Close dialog">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h1 class="modal-title h4" id="deleteModalLabel">Delete bundle</h1>
-                </div>
-                <div class="modal-body">
-                    <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
+<div class="modal fade"
+     id="deleteModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="deleteModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title h4" id="deleteModalLabel">Delete bundle</h1>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close dialog">
+                </button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="modal-body d-flex align-items-stretch">
+                    <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                          aria-hidden="true"></span>
                     <span id="modal-text"></span>
                 </div>
-                <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-default"
-                            data-dismiss="modal"
-                            style="margin-right: 1em;">
-                        Cancel
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal">
+                    Cancel
+                </button>
+                <form asp-controller="Avatars"
+                      asp-action="BundleDelete"
+                      asp-route-Unlockable="@Model.Unlockable"
+                      method="post"
+                      role="form">
+                    <input id="Id" name="Id" type="hidden" />
+                    <button type="submit"
+                            class="btn btn-outline-danger"
+                            aria-label="Confirm">
+                        <span class="fas fa-times fa-fw" aria-hidden="true"></span>
+                        Delete
                     </button>
-                    <form asp-controller="Avatars"
-                          asp-action="BundleDelete"
-                          asp-route-Unlockable="@Model.Unlockable"
-                          method="post"
-                          role="form"
-                          style="display:inline">
-                        <input id="Id" name="Id" type="hidden" />
-                        <button type="submit"
-                                class="btn btn-danger pull-right"
-                                aria-label="Confirm">
-                            <span class="fas fa-times" aria-hidden="true"></span>
-                            Delete
-                        </button>
-                    </form>
-                </div>
+                </form>
             </div>
         </div>
     </div>
@@ -118,12 +133,12 @@
     <script>
         $(document).ready(function () {
             $('.td-class').each(function () {
-                $(this).children('a.rowlink').height($(this).height() + 11);
+                $(this).children("a.rowlink").height($(this).outerHeight());
             });
         });
         $(window).resize(function () {
             $('.td-class').each(function () {
-                $(this).children('a.rowlink').height($(this).height() + 11);
+                $(this).children("a.rowlink").height($(this).outerHeight());
             });
         });
 
@@ -132,7 +147,7 @@
             var id = button.data('id');
             var name = button.data('name');
             var modal = $(this);
-            modal.find('#modal-text').text('Are you sure you wish to delete the bundle"' + name + '" ?');
+            modal.find('#modal-text').html('Are you sure you wish to delete the bundle: <strong>' + name + '</strong>?');
             modal.find('#Id').val(id);
         })
     </script>

@@ -1,15 +1,17 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.PerformerDetailsViewModel
 
-@{
-    var invalid = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
-}
-
 @section styles {
     <link rel="stylesheet" href="/css/performerregistration.min.css" />
 }
 
+@section inHeading {
+    <a asp-action="@nameof(PerformerManagementController.Performer)"
+       asp-route-id="@Model.Performer.Id"
+       class="btn btn-outline-secondary ms-auto d-print-none">Return to Performer</a>
+}
+
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <h1>
             Performer Information
         </h1>
@@ -17,153 +19,156 @@
 </div>
 
 <div class="row">
-    <div class="col-sm-9 col-sm-offset-3">
+    <div class="col-12">
         <p>
-            <span class="text-danger small" style="font-weight: bold;">
+            <strong class="text-danger">
                 Fields marked with an asterisk (*) are required.
-            </span>
+            </strong>
         </p>
     </div>
 </div>
 
-<form asp-action="PerformerDetails" class="form-horizontal" method="post" role="form" enctype="multipart/form-data">
+<form asp-action="@nameof(PerformerManagementController.PerformerDetails)"
+      method="post"
+      role="form"
+      enctype="multipart/form-data">
     <input asp-for="Performer.Id" type="hidden" />
     <input asp-for="BranchAvailabilityString" type="hidden" />
 
-    <div class="form-group">
-        <label asp-for="Performer.Name" class="col-sm-3 control-label required-field"></label>
-        <div class="col-sm-9">
-            <input asp-for="Performer.Name" class="form-control" placeholder="" />
-            <span asp-validation-for="Performer.Name" class="text-danger"></span>
-        </div>
+    <div class="mb-3">
+        <label asp-for="Performer.Name" class="form-label required-field"></label>
+        <input asp-for="Performer.Name" class="form-control" placeholder="" />
+        <span asp-validation-for="Performer.Name" class="text-danger"></span>
     </div>
 
-    <div class="row">
-        <div class="col-sm-9 col-sm-offset-3">
-            <p>
+    <div class="row mb-3">
+        <div class="col-12">
+            <strong>
                 A new PDF document can be uploaded to replace the current list of references.
-                Include name, email address, and/or telephone number for each reference.
-            </p>
+            </strong>
+            Include name, email address, and/or telephone number for each reference.
         </div>
     </div>
 
-    <div class="form-group">
-        <label class="col-sm-3 control-label @(Model.Performer?.RegistrationCompleted != true ? "required-field": "")">Upload PDF</label>
-        <div class="col-sm-9">
-            <div class="input-group">
-                <label class="input-group-btn">
-                    <span class="btn btn-default btn-file" style="width:132px;text-align:left;">
-                        <span class="far fa-file-image"></span> Select file...
-                        <input type="file"
-                               asp-for="References"
-                               accept=".pdf"
-                               style="display: none;" />
-                    </span>
-                </label>
-                <input type="text" class="form-control @(ViewData.ModelState.GetValidationState("References") == invalid ? "input-validation-error" : "")" readonly />
-            </div>
-            <span asp-validation-for="References" class="text-danger"></span>
+    <div class="mb-3">
+        <div class="input-group mb-3">
+            <input accept=".pdf"
+                   asp-for="References"
+                   class="form-control"
+                   multiple="multiple"
+                   type="file" />
+            <button class="btn btn-outline-secondary"
+                    id="referencesClearButton"
+                    type="button">
+                Clear selection
+            </button>
         </div>
+        <span asp-validation-for="References" class="text-danger"></span>
     </div>
 
-    <div class="form-group">
-        <label asp-for="Performer.BillingAddress" class="col-sm-3 control-label required-field"></label>
-        <div class="col-sm-9">
-            <textarea asp-for="Performer.BillingAddress" class="form-control"></textarea>
-            <span asp-validation-for="Performer.BillingAddress" class="text-danger"></span>
-        </div>
+    <div class="mb-3">
+        <label asp-for="Performer.BillingAddress" class="form-label required-field"></label>
+        <textarea asp-for="Performer.BillingAddress" class="form-control"></textarea>
+        <span asp-validation-for="Performer.BillingAddress" class="text-danger"></span>
     </div>
 
 
-    <div class="form-group">
-        <label asp-for="Performer.Website" class="col-sm-3 control-label"></label>
-        <div class="col-sm-9">
-            <input asp-for="Performer.Website" class="form-control" placeholder="" />
-            <span asp-validation-for="Performer.Website" class="text-danger"></span>
-        </div>
+    <div class="mb-3">
+        <label asp-for="Performer.Website" class="form-label"></label>
+        <input asp-for="Performer.Website" class="form-control" placeholder="" />
+        <span asp-validation-for="Performer.Website" class="text-danger"></span>
     </div>
 
-    <div class="form-group">
-        <label asp-for="Performer.PhonePreferred" class="col-sm-3 control-label required-field"></label>
-        <div class="col-sm-9">
-            <select asp-for="Performer.PhonePreferred" class="form-control">
-                <option value="false">Email</option>
-                <option value="true">Phone</option>
-            </select>
-            <span asp-validation-for="Performer.PhonePreferred" class="text-danger"></span>
-        </div>
+    <div class="mb-3">
+        <label asp-for="Performer.PhonePreferred" class="form-label required-field"></label>
+        <select asp-for="Performer.PhonePreferred" class="form-select">
+            <option value="false">Email</option>
+            <option value="true">Phone</option>
+        </select>
+        <span asp-validation-for="Performer.PhonePreferred" class="text-danger"></span>
     </div>
 
-    <div class="form-group">
-        <label asp-for="Performer.Email" class="col-sm-3 control-label">Email</label>
-        <div class="col-sm-9">
-            <input asp-for="Performer.Email" class="form-control" />
-            <span asp-validation-for="Performer.Email" class="text-danger"></span>
-        </div>
+    <div class="mb-3">
+        <label asp-for="Performer.Email" class="form-label">Email</label>
+        <input asp-for="Performer.Email" class="form-control" />
+        <span asp-validation-for="Performer.Email" class="text-danger"></span>
     </div>
 
-    <div class="form-group">
-        <label asp-for="Performer.Phone" class="col-sm-3 control-label required-field"></label>
-        <div class="col-sm-9">
-            <input asp-for="Performer.Phone" class="form-control" placeholder="" />
-            <span asp-validation-for="Performer.Phone" class="text-danger"></span>
-        </div>
+    <div class="mb-3">
+        <label asp-for="Performer.Phone" class="form-label required-field"></label>
+        <input asp-for="Performer.Phone" class="form-control" placeholder="" />
+        <span asp-validation-for="Performer.Phone" class="text-danger"></span>
     </div>
 
-    <div class="form-group">
-        <label asp-for="Performer.VendorId" class="col-sm-3 control-label required-field">@Model.VendorIdPrompt<span class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Example number: @Model.VendorCodeFormat"></span></label>
-        <div class="col-sm-9">
-            <input asp-for="Performer.VendorId" class="form-control" placeholder="" />
-            <span asp-validation-for="Performer.VendorId" class="text-danger"></span>
-        </div>
+    <div class="mb-3">
+        <label asp-for="Performer.VendorId" class="form-label required-field">
+            @Model.VendorIdPrompt
+            <span class="far fa-question-circle"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  title="Example number: @Model.VendorCodeFormat"></span>
+        </label>
+        <input asp-for="Performer.VendorId" class="form-control" placeholder="" />
+        <span asp-validation-for="Performer.VendorId" class="text-danger"></span>
     </div>
 
-    <div class="form-group">
-        <label asp-for="Performer.HasFingerprintCard" class="col-sm-3 control-label required-field"></label>
-        <div class="col-sm-9">
-            <select asp-for="Performer.HasFingerprintCard" class="form-control">
-                <option value="false">No</option>
-                <option value="true">Yes</option>
-            </select>
-            <span asp-validation-for="Performer.HasFingerprintCard" class="text-danger"></span>
-        </div>
+    <div class="mb-3">
+        <label asp-for="Performer.HasFingerprintCard" class="form-label required-field"></label>
+        <select asp-for="Performer.HasFingerprintCard" class="form-select">
+            <option value="false">No</option>
+            <option value="true">Yes</option>
+        </select>
+        <span asp-validation-for="Performer.HasFingerprintCard" class="text-danger"></span>
     </div>
 
     @if (Model.EnablePerformerInsuranceQuestion)
     {
-        <div class="form-group">
-            <label asp-for="Performer.HasInsurance" class="col-sm-3 control-label required-field"></label>
-            <div class="col-sm-9">
-                <select asp-for="Performer.HasInsurance" class="form-control">
-                    <option value="false">No</option>
-                    <option value="true">Yes</option>
-                </select>
-                <span asp-validation-for="Performer.HasInsurance" class="text-danger"></span>
-            </div>
+        <div class="mb-3">
+            <label asp-for="Performer.HasInsurance" class="form-label required-field"></label>
+            <select asp-for="Performer.HasInsurance" class="form-select">
+                <option value="false">No</option>
+                <option value="true">Yes</option>
+            </select>
+            <span asp-validation-for="Performer.HasInsurance" class="text-danger"></span>
         </div>
     }
 
-    <div class="form-group">
-        <div class="col-sm-9 col-sm-offset-3">
-            <p>
-                Which locations are they willing to perform at:
-                <strong><span id="branchCount">@(Model.BranchAvailability?.Count ?? 0)</span> of @Model.BranchCount Selected</strong>
-            </p>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#branchModal">Select Libraries</button>
-            <span id="branchValidator" asp-validation-for="BranchAvailability" class="field-validation-error text-danger">Please select the libraries where they are willing to perform.</span>
+    <div class="row mb-3">
+        <div class="col-12 col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-header">Available locations</div>
+                <div class="card-body">
+                    Willing to perform at <strong>
+                        <span id="branchCount">@(Model.BranchAvailability?.Count ?? 0)</span>
+                        of
+                        @Model.BranchCount Selected
+                    </strong>
+                    <span id="branchValidator"
+                          asp-validation-for="BranchAvailability"
+                          class="field-validation-error text-danger">
+                        Please select the libraries where they are willing to perform.
+                    </span>
+                </div>
+                <div class="card-footer d-flex justify-content-center">
+                    <button type="button"
+                            class="btn btn-outline-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#branchModal">
+                        Select Libraries
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-xs-12 col-sm-9 col-sm-offset-3">
+        <div class="col-12 d-flex justify-content-end">
             <button id="submitButton"
                     type="submit"
-                    class="btn btn-lg btn-success"
-                    style="margin-bottom: 10px;"
+                    class="btn btn-lg btn-outline-success my-4"
                     button-spinner>
                 Save Information
             </button>
-            <a asp-action="Performer" asp-route-id="@Model.Performer.Id" class="btn btn-lg btn-default pull-left" style="margin-right: 10px;">Return to Performer</a>
         </div>
     </div>
 </form>
@@ -174,56 +179,53 @@
          tabindex="-1"
          role="dialog"
          aria-labelledby="branchModalLabel">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
+                    <h5 class="modal-title" id="branchModalLabel">Branch Selection</h5>
                     <button type="button"
-                            class="close"
-                            data-dismiss="modal"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
                             aria-label="Close dialog">
-                        <span aria-hidden="true">&times;</span>
                     </button>
-                    <h1 class="modal-title h4" id="branchModalLabel">Branch Selection</h1>
                 </div>
-                <div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y:auto;">
-                    <button id="selectAllButton"
-                            class="btn btn-primary"
-                            style="margin-bottom:10px;">
-                        Select All @Model.BranchCount Libraries
-                    </button>
+                <div class="modal-body">
                     @foreach (var system in Model.Systems)
                     {
-                        <div style="font-size:x-large;margin-bottom:10px;">
+                        <div class="mb-3">
                             <strong>@system.Name</strong>
+                            @foreach (var branch in system.Branches)
+                            {
+                                <div class="ms-3">
+                                    <input id="@($"branch{branch.Id}")"
+                                           class="branchSelector"
+                                           data-id="@branch.Id"
+                                           type="checkbox"
+                                           asp-checked="@(Model.BranchAvailability?.Contains(branch.Id) == true)" />
+                                    <label for="@($"branch{branch.Id}")"
+                                           data-bs-toggle="tooltip"
+                                           data-bs-placement="top"
+                                           title="@branch.Address">
+                                        @branch.Name
+                                    </label>
+                                    <a aria-label="Map (Opens new window)"
+                                       href="https://www.google.com/maps/search/@branch.Address"
+                                       target="_blank">
+                                        <span class="far fa-map"></span>
+                                    </a>
+                                </div>
+                            }
                         </div>
-                        @foreach (var branch in system.Branches)
-                        {
-                            <div>
-                                <input id="@($"branch{branch.Id}")"
-                                       class="branchSelector"
-                                       data-id="@branch.Id" type="checkbox"
-                                       asp-checked="@(Model.BranchAvailability?.Contains(branch.Id) == true)" />
-                                <label for="@($"branch{branch.Id}")"
-                                       data-toggle="tooltip"
-                                       data-placement="top"
-                                       title="@branch.Address">
-                                    @branch.Name
-                                </label>
-                                <a aria-label="Map (Opens new window)"
-                                   href="https://www.google.com/maps/search/@branch.Address"
-                                   target="_blank">
-                                    <span class="far fa-map"></span>
-                                </a>
-                            </div>
-                        }
-                        <br />
                     }
                 </div>
                 <div class="modal-footer">
+                    <button id="selectAllButton"
+                            class="btn btn-outline-primary">
+                        Select All @Model.BranchCount Libraries
+                    </button>
                     <button type="button"
-                            class="btn btn-default"
-                            data-dismiss="modal"
-                            style="margin-right: 1em;">
+                            class="btn btn-outline-primary"
+                            data-bs-dismiss="modal">
                         Confirm
                     </button>
                 </div>

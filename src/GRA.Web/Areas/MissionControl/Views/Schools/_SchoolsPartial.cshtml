@@ -1,22 +1,43 @@
-﻿<div class="row">
-    <div class="col-xs-12">
-        <ul class="nav nav-pills" style="padding: 10px 0;">
-            <li ActiveBy routeKey="Action" value="Index"><a asp-action="Index">Schools</a></li>
-            <li ActiveBy routeKey="Action" value="Districts"><a asp-action="Districts">School Districts</a></li>
-            <li class="pull-right">
-                <div>
-                    <a asp-action="Import"
-                       ActiveBy routeKey="Action" value="Import"
-                       class="btn btn-sm btn-default">
-                        <span class="fas fa-file-upload"></span>
+﻿<div class="row my-4">
+    <div class="col-12 d-flex justify-content-between">
+        <div>
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a ActiveBy
+                       routeKey="Action"
+                       value="Index"
+                       asp-action="Index"
+                       class="nav-link">
+                        Schools
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a ActiveBy
+                       routeKey="Action"
+                       value="Districts"
+                       asp-action="Districts"
+                       class="nav-link">
+                        School Districts
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a ActiveBy
+                       routeKey="Action"
+                       value="Import"
+                       asp-action="Import"
+                       class="nav-link">
+                        <span class="fas fa-fw fa-file-upload"></span>
                         Import
                     </a>
-                    <a asp-action="Export" class="btn btn-sm btn-default">
-                        <span class="fas fa-file-download"></span>
-                        Export
-                    </a>
-                </div>
-            </li>
-        </ul>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <a asp-action="@nameof(SchoolsController.Export)"
+               class="btn btn-outline-primary btn-sm mt-1 text-nowrap">
+                <span class="fas fa-file-download"></span>
+                Export
+            </a>
+        </div>
     </div>
 </div>

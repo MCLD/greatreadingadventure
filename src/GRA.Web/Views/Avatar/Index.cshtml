@@ -4,30 +4,30 @@
     <link rel="stylesheet" href="/css/slick.min.css" />
 }
 <div class="alert alert-danger" id="error-container"></div>
-<div class="panel panel-default">
-    <div class="row">
-        <div class="col-xs-12 col-sm-5 pull-right">
-            <div class="visible-xs" id="mobile-container">
-                <div class="avatar-container center-block">
+<div class="card">
+    <div>
+        <div class="col-12 col-sm-5 float-end">
+            <div class="d-block d-sm-none" id="mobile-container">
+                <div class="avatar-container mx-auto">
                     @foreach (var layer in Model.LayerGroupings.SelectMany(_ => _))
                     {
                         <img src="~/@layer.FilePath"
-                             class="@($"image{layer.Id}") xsLayer avatar-layer@(string.IsNullOrWhiteSpace(layer.FilePath) ? " hide" : "")"
+                             class="@($"image{layer.Id}") xsLayer avatar-layer@(string.IsNullOrWhiteSpace(layer.FilePath) ? " d-none" : "")"
                              style="z-index: @(layer.Position + 1);"
                              data-layer="@layer.Id"
                              data-item="@layer.SelectedItem" />
                     }
                 </div>
-                <button type="button" class="btn btn-default avatar-zoom-button">
+                <button type="button" class="btn btn-outline-secondary avatar-zoom-button">
                     <span class="fas fa-lg fa-search-plus"></span>
                 </button>
             </div>
-            <div class="hidden-xs" id="desktop-container">
-                <div class="avatar-container center-block">
+            <div class="d-none d-sm-block" id="desktop-container">
+                <div class="avatar-container mx-auto">
                     @foreach (var layer in Model.LayerGroupings.SelectMany(_ => _))
                     {
                         <img src="~/@layer.FilePath"
-                             class="@($"image{layer.Id}") avatar-layer@(string.IsNullOrWhiteSpace(layer.FilePath) ? " hide" : "")"
+                             class="@($"image{layer.Id}") avatar-layer@(string.IsNullOrWhiteSpace(layer.FilePath) ? " d-none" : "")"
                              style="z-index: @(layer.Position + 1);"
                              data-layer="@layer.Id"
                              data-item="@layer.SelectedItem" />
@@ -38,14 +38,14 @@
                 <div class="avatar-save-message"></div>
             </div>
         </div>
-        <div class="col-xs-12 col-sm-7">
+        <div class="col-12 col-sm-7">
             <div class="row">
-                <div class="col-xs-12 text-center" id="layer-container">
+                <div class="col-12 text-center" id="layer-container">
                     @if (Model.LayerGroupings.Count > 0)
                     {
                         foreach (var layerGroup in Model.LayerGroupings)
                         {
-                            <div style="display: inline-block;" class="@(layerGroup.Count == 1 ? "hide" : "")">
+                            <div style="display: inline-block;" class="@(layerGroup.Count == 1 ? "d-none" : "")">
                                 @foreach (var layer in layerGroup)
                                 {
                                     <img src="~/@layer.Icon"
@@ -66,7 +66,7 @@
                             </div>
                         }
                     }
-                    <div style="display: inline-block;" class="@(Model.Bundles.Count == 0 ? "hide" : "")">
+                    <div style="display: inline-block;" class="@(Model.Bundles.Count == 0 ? "d-none" : "")">
                         <img src="@(Model.Bundles.Any(_=>!_.HasBeenViewed.Value && _.CanBeUnlocked)
                             ? "/content/site1/avatarbundles/notif.png"
                             : "/content/site1/avatarbundles/icon.png")"
@@ -82,7 +82,7 @@
                     </div>
                 </div>
             </div>
-            <div id="avatarBundles" class="row col-xs-12" style="text-align:center;">
+            <div id="avatarBundles" class="row col-12" style="text-align:center;">
                 <ul class="nav" style="display: inline-table;">
                     <li>
 
@@ -99,9 +99,9 @@
                             @if (counter != 0)
                             {
                                 <div class="dropdown" style="margin-top: 1rem;" id="bundleDropdown">
-                                    <a class="dropdown-toggle btn btn-info"
+                                    <a class="dropdown-toggle btn btn-outline-primary"
                                        id="bundle-selected"
-                                       data-toggle="dropdown"
+                                       data-bs-toggle="dropdown"
                                        href="#" role="button"
                                        aria-haspopup="true"
                                        aria-expanded="false">
@@ -136,7 +136,7 @@
                             else
                             {
                                 <a class="dropdown-toggle disabled"
-                                   data-toggle="dropdown"
+                                   data-bs-toggle="dropdown"
                                    href="#"
                                    role="button"
                                    aria-haspopup="true"
@@ -149,7 +149,7 @@
                         else
                         {
                             <a class="dropdown-toggle disabled"
-                               data-toggle="dropdown"
+                               data-bs-toggle="dropdown"
                                href="#"
                                role="button"
                                aria-haspopup="true"
@@ -161,16 +161,16 @@
                     </li>
                 </ul>
             </div>
-            <div id="avatarColors" class="row hide">
-                <div class="col-xs-12">
+            <div id="avatarColors" class="row d-none">
+                <div class="col-12">
                     <div class="avatar-selector-well well well-sm">
                         <div id="avatarColorSelectors" class="avatar-selector-container">
                         </div>
                     </div>
                 </div>
             </div>
-            <div id="avatarItems" class="row hide">
-                <div class="col-xs-12">
+            <div id="avatarItems" class="row d-none">
+                <div class="col-12">
                     <div class="avatar-selector-well well well-sm">
                         <div id="avatarItemSelectors" class="avatar-selector-container">
                         </div>
@@ -178,23 +178,23 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <div style="text-align:center;vertical-align:top;">
                         <a asp-controller="Home"
                            asp-action="Index"
-                           class="btn btn-lg btn-default"
+                           class="btn btn-lg btn-outline-secondary"
                            style="margin:5px;">
                             <span class="fas fa-home"></span>
                             @SharedLocalizer[GRA.Domain.Model.DisplayNames.Home]
                         </a>
                         <button id="removeButton"
-                                class="btn btn-lg btn-default hide"
+                                class="btn btn-lg btn-outline-secondary d-none"
                                 style="margin:5px;">
                             <span class="fas fa-ban"></span>
                             <span id="layerName"></span>
                         </button>
                         <button id="saveAvatar"
-                                class="btn btn-lg @(Model.NewAvatar ? "btn-success" : "btn-default")"
+                                class="btn btn-lg @(Model.NewAvatar ? "btn-outline-success" : "btn-outline-secondary")"
                                 style="margin:5px;"
                                 button-spinner>
                             <span class="far fa-save"></span>
@@ -208,7 +208,7 @@
                                   role="form"
                                   style="display: inline-block">
                                 <input type="hidden" name="selectionJson" />
-                                <button class="btn btn-lg btn-default" style="margin:5px;">
+                                <button class="btn btn-lg btn-outline-secondary" style="margin:5px;">
                                     <span class="fas fa-share-alt"></span>
                                     @SharedLocalizer[GRA.Annotations.Interface.Share]
                                 </button>
@@ -277,13 +277,13 @@
         function UpdateRemoveButtonForBundle(item) {
             let layerId = item == undefined ? prevLayerSelected[0] : item.data("layer");
             if (layerId != undefined) {
-                $("#removeButton").removeClass("hide");
+                $("#removeButton").removeClass("d-none");
                 let layer = GetLayerById(layerId);
                 $("#layerName").text(layer.data("removelabel"));
                 $("#removeButton").data("layer", layerId);
             }
             else {
-                $("#removeButton").addClass("hide");
+                $("#removeButton").addClass("d-none");
             }
         }
 
@@ -315,10 +315,10 @@
                 image.data(type, id);
                 image.attr("src", srcStr);
                 if (hide) {
-                    image.addClass("hide");
+                    image.addClass("d-none");
                 }
                 else {
-                    image.removeClass("hide");
+                    image.removeClass("d-none");
                 }
             }
         }
@@ -340,11 +340,11 @@
         function SetUnsavedChanges(bool) {
             if (unsavedChanges != bool) {
                 if (bool == true) {
-                    $("#saveAvatar").removeClass("btn-default").addClass("btn-success");
+                    $("#saveAvatar").removeClass("btn-outline-secondary").addClass("btn-outline-success");
                     unsavedChanges = true;
                 }
                 else {
-                    $("#saveAvatar").removeClass("btn-success").addClass("btn-default");
+                    $("#saveAvatar").removeClass("btn-outline-success").addClass("btn-outline-secondary");
                     unsavedChanges = false;
                 }
             }
@@ -377,36 +377,36 @@
         function SetLayer(layer) {
             layer.addClass("selected");
             if (layer.data("layer") == 999) {
-                $("#avatarBundles").removeClass("hide");
+                $("#avatarBundles").removeClass("d-none");
                 $("#bundle-selected").html("@SharedLocalizer[GRA.Annotations.Interface.SelectABundle] ");
                 $("#bundle-selected").append("<span class='caret'></span>");
                 $("#bundle-selected").data("bundleid", "");
-                $("#avatarItems").addClass("hide");
-                $("#removeButton").addClass("hide");
+                $("#avatarItems").addClass("d-none");
+                $("#removeButton").addClass("d-none");
             }
             else if (layer.data("showitemselector") == "True") {
                 //If a regular item container is being displayed
-                $("#avatarBundles").addClass("hide");
-                $("#avatarItems").removeClass("hide");
+                $("#avatarBundles").addClass("d-none");
+                $("#avatarItems").removeClass("d-none");
                 $("#removeButton").data("layer", layer.data("layer"));
                 $("#layerName").text(layer.data("removelabel"));
                 SetLayersSelectors("#avatarItemSelectors", 3);
             }
             else {
-                $("#avatarBundles").addClass("hide");
-                $("#avatarItems").addClass("hide");
+                $("#avatarBundles").addClass("d-none");
+                $("#avatarItems").addClass("d-none");
             }
             // Handles the display of Colors and their row cases
             if (layer.data("showcolorselector") == "True") {
-                $("#avatarColors").removeClass("hide");
+                $("#avatarColors").removeClass("d-none");
                 SetLayersSelectors("#avatarColorSelectors", layer.data("colorrows"));
             }
             else {
-                $("#avatarColors").addClass("hide");
+                $("#avatarColors").addClass("d-none");
             }
             layer.data("removable") == "True" ?
-                $("#removeButton").removeClass("hide") :
-                $("#removeButton").addClass("hide");
+                $("#removeButton").removeClass("d-none") :
+                $("#removeButton").addClass("d-none");
         }
 
         // Initializes the item/color slicks
@@ -545,12 +545,12 @@
         // When a user removes the layer's item
         $("#removeButton").on("click", function () {
             unsavedChanges = true;
-            $("#saveAvatar").removeClass("btn-default");
-            $("#saveAvatar").addClass("btn-success");
+            $("#saveAvatar").removeClass("btn-outline-secondary");
+            $("#saveAvatar").addClass("btn-outline-success");
             let button = $(this);
             let layer = CurrentSelectedLayer();
             if (layer.data("layer") != 999) {
-                if (!$("#removeButton").hasClass("hide") && $(".avatarItems").find(".selected") != undefined
+                if (!$("#removeButton").hasClass("d-none") && $(".avatarItems").find(".selected") != undefined
                     && layer.data("removable") == "True") {
                     $(".avatar-item-selector.selected").removeClass("selected");
                     $(".avatar-color-selector.selected").removeClass("selected");
@@ -576,7 +576,7 @@
                     else {
                         nextSelected = GetFirstActiveSelectedItem();
                         if (nextSelected == undefined) {
-                            $("#removeButton").addClass("hide");
+                            $("#removeButton").addClass("d-none");
                         }
                         else {
                             UpdateRemoveButtonForBundle(nextSelected);
@@ -608,7 +608,7 @@
             let beenViewed = $(bundle).data("beenviewed");
             let listItem = $(bundle);
             let bundleId = $(bundle).data("bundleid");
-            $("#avatarItems").removeClass("hide");
+            $("#avatarItems").removeClass("d-none");
             $("#bundle-selected").text(listItem.contents().not(listItem.children()).text());
             $("#bundle-selected").append("<span class='caret'></span>");
             $($("#bundle-drop").find(".active")).removeClass("active");
@@ -634,8 +634,8 @@
         // Selecting an Item
         function SelectItem(item) {
             unsavedChanges = true;
-            $("#saveAvatar").removeClass("btn-default");
-            $("#saveAvatar").addClass("btn-success");
+            $("#saveAvatar").removeClass("btn-outline-secondary");
+            $("#saveAvatar").addClass("btn-outline-success");
             let newDataItem = $(item);
             let itemsLayer = GetLayerById(newDataItem.data("layer"));
             let layerTab = CurrentSelectedLayer();
@@ -658,7 +658,7 @@
                         }
                     }
                     prevLayerSelected.unshift(itemsLayer.data("layer"));
-                    $("#removeButton").removeClass("hide");
+                    $("#removeButton").removeClass("d-none");
                     UpdateRemoveButtonForBundle(newDataItem);
                 }
             }
@@ -683,8 +683,8 @@
         // Updates the color selected and removes the old
         function SelectColor(color) {
             unsavedChanges = true;
-            $("#saveAvatar").removeClass("btn-default");
-            $("#saveAvatar").addClass("btn-success");
+            $("#saveAvatar").removeClass("btn-outline-secondary");
+            $("#saveAvatar").addClass("btn-outline-success");
             $("#avatarColorSelectors").find(".selected").removeClass("selected");
             let dataColor = $(color);
             dataColor.addClass("selected");

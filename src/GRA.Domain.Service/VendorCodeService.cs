@@ -107,14 +107,11 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(vendorCodeTypeRepository));
         }
 
-        private IDictionary<string, VendorCodePackingSlip> PsCache { get; set; }
+        private Dictionary<string, VendorCodePackingSlip> PsCache { get; set; }
 
         public Task<VendorCodeType> AddTypeAsync(VendorCodeType vendorCodeType)
         {
-            if (vendorCodeType == null)
-            {
-                throw new ArgumentNullException(nameof(vendorCodeType));
-            }
+            ArgumentNullException.ThrowIfNull(vendorCodeType);
             return AddTypeInternalAsync(vendorCodeType);
         }
 
@@ -452,7 +449,7 @@ namespace GRA.Domain.Service
 
         public async Task PopulateVendorCodeStatusAsync(User user)
         {
-            if (user == null) { throw new ArgumentNullException(nameof(user)); }
+            ArgumentNullException.ThrowIfNull(user);
 
             var vendorCode = await GetUserVendorCodeAsync(user.Id);
 
@@ -773,7 +770,7 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError("User {AuthorizedUserId} doesn't have permission to update code donation status for {UserId}.",
+                _logger.LogError("User {AuthenticatedUserId} doesn't have permission to update code donation status for {UserId}.",
                     authId,
                     userId);
                 throw new GraException("Permission denied.");
@@ -1657,10 +1654,7 @@ namespace GRA.Domain.Service
 
         public Task<VendorCodeType> UpdateTypeAsync(VendorCodeType vendorCodeType)
         {
-            if (vendorCodeType == null)
-            {
-                throw new ArgumentNullException(nameof(vendorCodeType));
-            }
+            ArgumentNullException.ThrowIfNull(vendorCodeType);
             return UpdateTypeInternalAsync(vendorCodeType);
         }
 
@@ -2214,10 +2208,7 @@ namespace GRA.Domain.Service
             int columnId,
             string columnName)
         {
-            if (excelReader == null)
-            {
-                throw new ArgumentNullException(nameof(excelReader));
-            }
+            ArgumentNullException.ThrowIfNull(excelReader);
             try
             {
                 try
@@ -2258,10 +2249,7 @@ namespace GRA.Domain.Service
             int columnId,
             string columnName)
         {
-            if (excelReader == null)
-            {
-                throw new ArgumentNullException(nameof(excelReader));
-            }
+            ArgumentNullException.ThrowIfNull(excelReader);
             var value = excelReader.GetValue(columnId);
             if (value != null)
             {
@@ -2300,10 +2288,7 @@ namespace GRA.Domain.Service
             int columnId,
             string columnName)
         {
-            if (excelReader == null)
-            {
-                throw new ArgumentNullException(nameof(excelReader));
-            }
+            ArgumentNullException.ThrowIfNull(excelReader);
             try
             {
                 return excelReader.GetString(columnId);

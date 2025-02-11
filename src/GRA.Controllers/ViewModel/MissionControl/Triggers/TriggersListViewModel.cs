@@ -11,7 +11,9 @@ namespace GRA.Controllers.ViewModel.MissionControl.Triggers
         public int? SystemId { get; set; }
         public int? BranchId { get; set; }
         public int? ProgramId { get; set; }
+        public bool? HideLowPoint { get; set; }
         public bool? Mine { get; set; }
+        public bool? LowPoints { get; set; }
         public string ActiveNav { get; set; }
         public string SystemName { get; set; }
         public string BranchName { get; set; }

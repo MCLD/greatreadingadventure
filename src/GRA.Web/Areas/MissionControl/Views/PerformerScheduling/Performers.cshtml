@@ -4,30 +4,48 @@
     <link rel="stylesheet" href="/css/performerregistration.min.css" />
 }
 
-<div class="row">
-    <div class="col-xs-12">
-        <ul class="nav nav-pills" style="padding: 10px 0;">
-            <li ActiveBy routeKey="Action" value="Performers"><a asp-action="Performers">Performers</a></li>
-            <li ActiveBy routeKey="Action" value="Programs"><a asp-action="Programs">Programs</a></li>
-            <li ActiveBy routeKey="Action" value="Kits"><a asp-action="Kits">Kits</a></li>
+<div class="row my-4">
+    <div class="col-12 mb-2">
+        <ul class="nav nav-pills flex-column flex-sm-row">
+            <li class="nav-item">
+                <a ActiveBy routeKey="Action" 
+                value="Performers"
+                asp-action="Performers"
+                class="nav-link">
+            Performers</a>
+            </li>
+            <li class="nav-item">
+                <a ActiveBy routeKey="Action"
+                value="Programs"
+                asp-action="Programs"
+                class="nav-link">
+            Programs</a>
+            </li>
+            <li class="nav-item">
+                <a ActiveBy routeKey="Action"
+                value="Kits" 
+                asp-action="Kits" 
+                class="nav-link">
+            Kits</a>
+            </li>
         </ul>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-xs-12">
+<div class="row my-4">
+    <div class="col-12 mb-2">
         @if (Model.Performers.Count == 0)
         {
             <div class="alert alert-warning">No performers found.</div>
         }
         else
         {
-            <table class="table table-condensed table-bordered link-table">
+            <table class="table table-sm table-bordered link-table">
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Email <span class="far fa-question-circle" title="Preferred method of contact is italicized." data-toggle="tooltip" data-placement="top"></span></th>
-                        <th>Phone <span class="far fa-question-circle" title="Preferred method of contact is italicized." data-toggle="tooltip" data-placement="top"></span></th>
+                        <th>Email <span class="far fa-question-circle" title="Preferred method of contact is italicized." data-bs-toggle="tooltip" data-bs-placement="top"></span></th>
+                        <th>Phone <span class="far fa-question-circle" title="Preferred method of contact is italicized." data-bs-toggle="tooltip" data-bs-placement="top"></span></th>
                         <th width="80px;">Programs</th>
                         <th width="196px;">Performing in your system</th>
                     </tr>
@@ -44,7 +62,7 @@
                             <td style="@(performer.PhonePreferred ? "" : "font-style:italic")">@performer.Email</td>
                             <td style="@(performer.PhonePreferred ? "font-style:italic" : "")">@performer.Phone</td>
                             <td>@performer.ProgramCount</td>
-                            <td><span class="colored-icon fas @(performer.AvailableInSystem ? "fa-check" : "fa-times")"></span></td>
+                            <td><span class="far fa-lg @(performer.AvailableInSystem ? "fa-check-circle text-success" : "fa-times-circle text-danger")"></span></td>
                         </tr>
                     }
                 </tbody>
@@ -61,12 +79,12 @@
     <script>
         $(window).on("load", function () {
             $(".td-class").each(function () {
-                $(this).children("a.rowlink").height($(this).height() + 11);
+                $(this).children("a.rowlink").height($(this).outerHeight());
             });
         });
         $(window).resize(function () {
             $(".td-class").each(function () {
-                $(this).children("a.rowlink").height($(this).height() + 11);
+                $(this).children("a.rowlink").height($(this).outerHeight());
             });
         });
     </script>
