@@ -931,7 +931,7 @@ namespace GRA.Controllers.MissionControl
                     .Append(' ')
                     .Append(actualCost.ToString("C", CultureInfo.CurrentCulture));
 
-                if(selection.BackToBackProgram)
+                if (selection.BackToBackProgram)
                 {
                     description.Append(" (back-to-back program)");
                 }
@@ -1395,7 +1395,8 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<JsonResult> EditBranchProgramSelection(PsBranchSelection branchSelection)
+        public async Task<JsonResult> EditBranchProgramSelection(int branchSelectionId,
+            DateTime requestedStartTime)
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
@@ -1411,7 +1412,7 @@ namespace GRA.Controllers.MissionControl
             try
             {
                 await _performerSchedulingService
-                    .UpdateBranchProgramSelectionAsync(branchSelection);
+                    .UpdateBranchProgramSelectionAsync(branchSelectionId, requestedStartTime);
             }
             catch (GraException gex)
             {
@@ -1422,7 +1423,7 @@ namespace GRA.Controllers.MissionControl
                 });
             }
 
-            _logger.LogInformation("Selection {BranchSelectionId} edited", branchSelection.Id);
+            _logger.LogInformation("Selection {BranchSelectionId} edited", branchSelectionId);
 
             ShowAlertSuccess("Program selection edited!");
             return Json(new

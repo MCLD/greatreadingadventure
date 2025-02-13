@@ -656,16 +656,16 @@ namespace GRA.Domain.Service
             return await _psAgeGroupRepository.GetAllAsync();
         }
 
-        public async Task<ICollection<PsPerformer>> GetAllPerformersAsync()
-        {
-            VerifyManagementPermission();
-            return await _psPerformerRepository.GetAllAsync();
-        }
-
         public async Task<ICollection<PsKit>> GetAllKitsAsync()
         {
             VerifyManagementPermission();
             return await _psKitRepository.GetAllAsync();
+        }
+
+        public async Task<ICollection<PsPerformer>> GetAllPerformersAsync()
+        {
+            VerifyManagementPermission();
+            return await _psPerformerRepository.GetAllAsync();
         }
 
         public async Task<ICollection<PsBlackoutDate>> GetBlackoutDatesAsync()
@@ -1597,11 +1597,12 @@ namespace GRA.Domain.Service
                 currentBranchSelection);
         }
 
-        public async Task UpdateBranchProgramSelectionAsync(PsBranchSelection branchSelection)
+        public async Task UpdateBranchProgramSelectionAsync(int branchSelectionId,
+            DateTime requestedStartTime)
         {
             VerifyManagementPermission();
             var currentBranchSelection = await _psBranchSelectionRepository.GetByIdAsync(
-                branchSelection.Id);
+                branchSelectionId);
 
             if (currentBranchSelection == null)
             {
@@ -1613,15 +1614,15 @@ namespace GRA.Domain.Service
             }
 
             await ValidateScheduleTimeAsync(currentBranchSelection.ProgramId.Value,
-                branchSelection.RequestedStartTime,
+                requestedStartTime,
                 currentBranchSelection.BackToBackProgram,
                 currentBranchSelection.Id);
 
             var program = await _psProgramRepository.GetByIdAsync(
                 currentBranchSelection.ProgramId.Value);
 
-            currentBranchSelection.RequestedStartTime = branchSelection.RequestedStartTime;
-            currentBranchSelection.ScheduleStartTime = branchSelection.RequestedStartTime
+            currentBranchSelection.RequestedStartTime = requestedStartTime;
+            currentBranchSelection.ScheduleStartTime = requestedStartTime
                 .AddMinutes(-program.SetupTimeMinutes);
 
             currentBranchSelection.SelectedAt = _dateTimeProvider.Now;
