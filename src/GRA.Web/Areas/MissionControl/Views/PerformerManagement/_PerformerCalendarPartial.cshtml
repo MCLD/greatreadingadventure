@@ -139,6 +139,7 @@
             </div>
             <div>
                 <button id="checkTime"
+                        button-spinner
                         type="button"
                         class="btn btn-outline-primary ms-3" 
                         disabled="disabled">Check Availability</button>
@@ -158,15 +159,6 @@
         </div>
     </div>
 </div>
-
-<form asp-action="@nameof(PerformerManagementController.EditBranchProgramSelection)"
-    id="editSelectionForm"
-    method="post" 
-    role="form"
-    hidden="hidden">
-    <input name="Id" asp-for="BranchSelection.Id" type="hidden" />
-    <input name="RequestedStartTime" asp-for="BranchSelection.RequestedStartTime" type="hidden" />
-</form>
 
 <script>
     var dayScheduleUrl = "@Url.Action(nameof(PerformerManagementController.GetPerformerDaySchedule))";
@@ -225,11 +217,12 @@
     }
 
     function LookupNewTime() {
+        $("#checkTime").find(".fa-spinner").removeClass("d-none")
         $("#scheduleProgram").addClass("d-none");
-        let startDateTime = selectedDate + "T" + $("#startTime").val();
+        let startDateTime = new Date(selectedDate + " " + $("#startTime").val());
         $.getJSON(checkTimeUrl, { selectionId: "@Model.BranchSelection.Id", 
             programId: "@Model.BranchSelection.ProgramId", 
-            dateTime: startDateTime, 
+            dateTime: startDateTime.toISOString(), 
             backToBack: backToBack }, 
             function (response) {
                 if (response.success == true) {
@@ -243,23 +236,28 @@
                     }
                 }
                 else {
-                    DisplayResult("alert-danger", response.message)
+                    DisplayResult("alert-danger", response.message);
+                    $("#BranchSelection_RequestedStartTime").val("");
                 }
+                $("#checkTime").find(".fa-spinner").addClass("d-none")
         });
     }
 
     $("#checkTime").on("click", LookupNewTime);
 
     $("#scheduleProgram").on("click", function () {
-        let data = $("#editSelectionForm").serializeArray().reduce(function (m, o) { m[o.name] = o.value; return m; }, {})
-        $.post(scheduleBranchProgramUrl, { branchSelection: data }, function (response) {
-            if (response.success) {
-                window.location.href = "@Url.Action(nameof(PerformerManagementController.PerformerSelections), new { id = Model.Performer.Id})";
-            }
-            else {
-                $("#checkAlert").addClass("d-none");
-                alert(response.message);
-            }
+        let startDateTime = new Date(selectedDate + " " + $("#startTime").val());
+        $.post(scheduleBranchProgramUrl, { 
+            branchSelectionId: "@Model.BranchSelection.Id",
+            requestedStartTime: startDateTime.toISOString()
+            }, function (response) {
+                if (response.success) {
+                    window.location.href = "@Url.Action(nameof(PerformerManagementController.PerformerSelections), new { id = Model.Performer.Id})";
+                }
+                else {
+                    $("#checkAlert").addClass("d-none");
+                    alert(response.message);
+                }
         });
     });
 </script>
