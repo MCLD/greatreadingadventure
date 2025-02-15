@@ -59,14 +59,14 @@
                         @foreach (var template in Model.EmailTemplates)
                         {
                             <tr>
-                                <td style="vertical-align: middle;">
+                                <td class="align-middle">
                                     @template.Description
                                     @if (template.Id == Model.WelcomeEmailTemplateId)
                                     {
-                                        <span class="label label-primary">Welcome Email</span>
+                                        <span class="badge text-bg-primary">Welcome Email</span>
                                     }
                                 </td>
-                                <td style="vertical-align: middle;">
+                                <td class="align-middle">
                                     @template.EmailsSent
                                     @if (template.Id == Model.WelcomeEmailTemplateId)
                                     {
@@ -74,7 +74,7 @@
                                         @Model.WelcomeEmailsTotal
                                     }
                                 </td>
-                                <td style="vertical-align: middle;">
+                                <td class="align-middle">
                                     @if (template.IsSystem || !template.IsBulkSent)
                                     {
                                         @:Yes
@@ -85,10 +85,10 @@
                                               title="Emails have already been sent.">No</span>
                                     }
                                 </td>
-                                <td style="vertical-align: middle;">
+                                <td class="align-middle">
                                     @(template.IsSystem ? "Yes" : "No")
                                 </td>
-                                <td class="text-right">
+                                <td>
                                     @foreach (var language in template.LanguageIds)
                                     {
                                         <a asp-action="@nameof(EmailManagementController.EditTemplate)"

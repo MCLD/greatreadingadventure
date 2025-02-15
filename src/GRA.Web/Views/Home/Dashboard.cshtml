@@ -99,7 +99,7 @@ else if (Model.HasOrderStatus)
                                      aria-valuenow="@Model.PercentComplete"
                                      aria-valuemin="0"
                                      aria-valuemax="100"
-                                     style="width: @Model.PercentComplete%; min-width: 10%;"
+                                     style="width: @Model.PercentComplete%; min-width: 2rem;"
                                      title="@Model.ProgressMessage"
                                      data-bs-toggle="tooltip"
                                      data-bs-placement="top">
@@ -174,7 +174,7 @@ else if (Model.HasOrderStatus)
                              aria-valuenow="@Model.SiteActivityPercentComplete"
                              aria-valuemin="0"
                              aria-valuemax="100"
-                             style="width: @Model.SiteActivityPercentComplete%; min-width: 10%;"
+                             style="width: @Model.SiteActivityPercentComplete%; min-width: 2rem;"
                              title="@SharedLocalizer[GRA.Annotations.Info.OurGoalInMinutes, @Model.SiteReadingGoal]"
                              data-bs-toggle="tooltip"
                              data-bs-placement="top">

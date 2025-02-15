@@ -22,11 +22,9 @@ namespace GRA.Controllers
     [Authorize]
     public class AvatarController : Base.UserController
     {
-        private readonly ILogger<AvatarController> _logger;
         private readonly AvatarService _avatarService;
+        private readonly ILogger<AvatarController> _logger;
         private readonly SiteService _siteService;
-
-        public static string Name { get { return "Avatar"; } }
 
         public AvatarController(ILogger<AvatarController> logger,
             ServiceFacade.Controller context,
@@ -34,11 +32,124 @@ namespace GRA.Controllers
             SiteService siteService)
             : base(context)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _avatarService = avatarService
-                ?? throw new ArgumentNullException(nameof(avatarService));
-            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
+            ArgumentNullException.ThrowIfNull(avatarService);
+            ArgumentNullException.ThrowIfNull(logger);
+            ArgumentNullException.ThrowIfNull(siteService);
+
+            _avatarService = avatarService;
+            _logger = logger;
+            _siteService = siteService;
+
             PageTitle = _sharedLocalizer[Annotations.Title.Avatar];
+        }
+
+        public static string Name
+        { get { return "Avatar"; } }
+
+        public async Task<IActionResult> Download(string id)
+        {
+            if (await GetSiteSettingBoolAsync(SiteSettingKey.Avatars.DisableSharing))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var siteId = GetCurrentSiteId();
+
+            var igFilePath = _pathResolver.ResolveContentFilePath($"site{siteId}/igavatars/{id}.png");
+            if (System.IO.File.Exists(igFilePath))
+            {
+                var imageBytes = System.IO.File.ReadAllBytes(igFilePath);
+                return File(imageBytes, "image/png");
+            }
+
+            var avatarPath = _pathResolver.ResolveContentFilePath($"site{siteId}/useravatars/{id}.png");
+            if (System.IO.File.Exists(avatarPath))
+            {
+                var directory = _pathResolver.ResolveContentFilePath($"site{siteId}/igavatars/");
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+                using (var image = Image.Load(avatarPath))
+                {
+                    image.Mutate(_ => _.Resize(1080, 567));
+                    image.Mutate(_ => _.Crop(new Rectangle(0, 0, 1080, 566)));
+                    await image.SaveAsPngAsync(igFilePath, new PngEncoder
+                    {
+                        CompressionLevel = PngCompressionLevel.BestCompression
+                    });
+                }
+                var imageBytes = System.IO.File.ReadAllBytes(igFilePath);
+                return File(imageBytes, "image/png");
+            }
+
+            TempData[TempDataKey.AlertDanger]
+                = _sharedLocalizer[Annotations.Validate.CustomizeAvatarFirst];
+            return RedirectToAction(nameof(Index));
+        }
+
+        [PreventAjaxRedirect]
+        public async Task<IActionResult> GetLayersItems(string type,
+            int layerId,
+            int selectedItemId,
+            int bundleId,
+            int[] selectedItemIds)
+        {
+            try
+            {
+                var layeritems = await _avatarService.GetUsersItemsByLayerAsync(layerId);
+                var model = new AvatarViewModel
+                {
+                    ItemPath = _pathResolver
+                        .ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
+                };
+                switch (type?.ToUpperInvariant())
+                {
+                    case "ITEM":
+                        model.LayerItems = layeritems;
+                        model.SelectedItemId = selectedItemId;
+                        model.ItemPath = _pathResolver
+                            .ResolveContentPath($"site{GetCurrentSiteId()}/avatars/");
+                        model.LayerId = layerId;
+                        break;
+
+                    case "COLOR":
+                        model.LayerColors = await _avatarService.GetColorsByLayerAsync(layerId);
+                        model.SelectedItemId = selectedItemId;
+                        model.LayerId = layerId;
+                        break;
+
+                    default:
+                        model.Bundle = await _avatarService.GetBundleByIdAsync(bundleId);
+                        model.SelectedItemIds = selectedItemIds;
+                        break;
+                }
+                if (model.Bundle != null)
+                {
+                    var lookupIndex = model.SelectedItemIds
+                        .Select(_ => model.SelectedItemIds
+                            .ToList()
+                            .IndexOf(_)
+                            )
+                        .FirstOrDefault(_ => _ != -1);
+                    model.SelectedItemIndex = lookupIndex == -1 ? 0 : lookupIndex;
+                }
+                Response.StatusCode = StatusCodes.Status200OK;
+                return PartialView("_SlickPartial", model);
+            }
+            catch (GraException gex)
+            {
+                _logger.LogError(gex,
+                    "Could not retrieve layer items for layer id {layerId}: {Message}",
+                    layerId,
+                    gex.Message);
+                Response.StatusCode = StatusCodes.Status400BadRequest;
+                return Json(new
+                {
+                    success = false
+                });
+            }
         }
 
         public async Task<IActionResult> Index()
@@ -78,20 +189,6 @@ namespace GRA.Controllers
             try
             {
                 await UpdateAvatarAsync(selectionJson);
-                return Json(new { success = true });
-            }
-            catch (GraException gex)
-            {
-                return Json(new { success = false, message = gex.Message });
-            }
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> UpdateBundleHasBeenViewed(int bundleId)
-        {
-            try
-            {
-                await _avatarService.UpdateBundleHasBeenViewedAsync(bundleId);
                 return Json(new { success = true });
             }
             catch (GraException gex)
@@ -210,59 +307,17 @@ namespace GRA.Controllers
             return RedirectToAction(nameof(Share));
         }
 
-        [PreventAjaxRedirect]
-        public async Task<IActionResult> GetLayersItems(
-            string type, int layerId, int selectedItemId, int bundleId, int[] selectedItemIds)
+        [HttpPost]
+        public async Task<JsonResult> UpdateBundleHasBeenViewed(int bundleId)
         {
             try
             {
-                var layeritems = await _avatarService.GetUsersItemsByLayerAsync(layerId);
-                var model = new AvatarViewModel
-                {
-                    ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
-                };
-                switch (type?.ToUpperInvariant())
-                {
-                    case "ITEM":
-                        model.LayerItems = layeritems;
-                        model.SelectedItemId = selectedItemId;
-                        model.ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/");
-                        model.LayerId = layerId;
-                        break;
-                    case "COLOR":
-                        model.LayerColors = await _avatarService.GetColorsByLayerAsync(layerId);
-                        model.SelectedItemId = selectedItemId;
-                        model.LayerId = layerId;
-                        break;
-                    default:
-                        model.Bundle = await _avatarService.GetBundleByIdAsync(bundleId);
-                        model.SelectedItemIds = selectedItemIds;
-                        break;
-                }
-                if (model.Bundle != null)
-                {
-                    var lookupIndex = model.SelectedItemIds
-                        .Select(_ => model.SelectedItemIds
-                            .ToList()
-                            .IndexOf(_)
-                            )
-                        .FirstOrDefault(_ => _ != -1);
-                    model.SelectedItemIndex = lookupIndex == -1 ? 0 : lookupIndex;
-                }
-                Response.StatusCode = StatusCodes.Status200OK;
-                return PartialView("_SlickPartial", model);
+                await _avatarService.UpdateBundleHasBeenViewedAsync(bundleId);
+                return Json(new { success = true });
             }
             catch (GraException gex)
             {
-                _logger.LogError(gex,
-                    "Could not retrieve layer items for layer id {layerId}: {Message}",
-                    layerId,
-                    gex.Message);
-                Response.StatusCode = StatusCodes.Status400BadRequest;
-                return Json(new
-                {
-                    success = false
-                });
+                return Json(new { success = false, message = gex.Message });
             }
         }
 
@@ -272,49 +327,6 @@ namespace GRA.Controllers
                         .DeserializeObject<ICollection<AvatarLayer>>(selectionJson);
             selection = selection.Where(_ => _.SelectedItem.HasValue).ToList();
             await _avatarService.UpdateUserAvatarAsync(selection);
-        }
-
-        public async Task<IActionResult> InstagramImage(string id)
-        {
-            if (await GetSiteSettingBoolAsync(SiteSettingKey.Avatars.DisableSharing))
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            var siteId = GetCurrentSiteId();
-
-            var igFilePath = _pathResolver.ResolveContentFilePath($"site{siteId}/igavatars/{id}.png");
-            if (System.IO.File.Exists(igFilePath))
-            {
-                var imageBytes = System.IO.File.ReadAllBytes(igFilePath);
-                return File(imageBytes, "image/png");
-            }
-
-            var avatarPath = _pathResolver.ResolveContentFilePath($"site{siteId}/useravatars/{id}.png");
-            if (System.IO.File.Exists(avatarPath))
-            {
-                var directory = _pathResolver.ResolveContentFilePath($"site{siteId}/igavatars/");
-                if (!Directory.Exists(directory))
-                {
-                    Directory.CreateDirectory(directory);
-                }
-
-                using (var image = Image.Load(avatarPath))
-                {
-                    image.Mutate(_ => _.Resize(1080, 567));
-                    image.Mutate(_ => _.Crop(new Rectangle(0, 0, 1080, 566)));
-                    await image.SaveAsPngAsync(igFilePath, new PngEncoder
-                    {
-                        CompressionLevel = PngCompressionLevel.BestCompression
-                    });
-                }
-                var imageBytes = System.IO.File.ReadAllBytes(igFilePath);
-                return File(imageBytes, "image/png");
-            }
-
-            TempData[TempDataKey.AlertDanger]
-                = _sharedLocalizer[Annotations.Validate.CustomizeAvatarFirst];
-            return RedirectToAction(nameof(Index));
         }
     }
 }

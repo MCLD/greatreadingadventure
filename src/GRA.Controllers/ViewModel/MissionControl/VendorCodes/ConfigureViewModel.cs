@@ -31,7 +31,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.VendorCodes
                 ? "btn-secondary"
                 : MessageTemplateLanguageIds.TryGetValue(messageTemplateId.Value, out int[] value)
                     && value.Contains(languageId)
-                    ? "btn-outline-success"
+                    ? "btn-success"
                     : "btn-warning";
         }
 
@@ -41,7 +41,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.VendorCodes
                 ? "btn-secondary"
                 : SegmentLanguageIds.TryGetValue(segmentId.Value, out int[] value)
                     && value.Contains(languageId)
-                    ? "btn-outline-success"
+                    ? "btn-success"
                     : "btn-warning";
         }
     }

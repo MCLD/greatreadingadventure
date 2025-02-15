@@ -647,8 +647,8 @@ namespace GRA.Controllers.MissionControl
 
                     await _messageTemplateService.UpdateTextAsync(messageTemplateId.Value,
                         languageId,
-                        subject,
-                        body);
+                        subject?.Trim(),
+                        body?.Trim());
 
                     if (string.IsNullOrEmpty(subject) && string.IsNullOrEmpty(body))
                     {
@@ -725,7 +725,8 @@ namespace GRA.Controllers.MissionControl
             }
             catch (GraFieldValidationException gfvex)
             {
-                var builder = new StringBuilder("Could not save vendor code type changes:").AppendLine();
+                var builder = new StringBuilder("Could not save vendor code type changes:")
+                    .AppendLine();
                 foreach (var validationError in gfvex.FieldValidationErrors)
                 {
                     foreach (var errorMessage in validationError)
@@ -771,7 +772,7 @@ namespace GRA.Controllers.MissionControl
                 {
                     await _segmentService.UpdateTextAsync(segmentTextId.Value,
                         languageId,
-                        text);
+                        text?.Trim());
 
                     if (string.IsNullOrEmpty(text))
                     {
@@ -834,7 +835,8 @@ namespace GRA.Controllers.MissionControl
             }
             catch (GraFieldValidationException gfvex)
             {
-                var builder = new StringBuilder("Could not save vendor code type changes:").AppendLine();
+                var builder = new StringBuilder("Could not save vendor code type changes:")
+                    .AppendLine();
                 foreach (var validationError in gfvex.FieldValidationErrors)
                 {
                     foreach (var errorMessage in validationError)
@@ -918,7 +920,8 @@ namespace GRA.Controllers.MissionControl
 
             var holdSlipSummary = await _vendorCodeService.GetHoldSlipsAsync(id);
 
-            if (holdSlipSummary.VendorCodes.Count > 0 || holdSlipSummary.VendorCodePackingSlip != null)
+            if (holdSlipSummary.VendorCodes.Count > 0
+                || holdSlipSummary.VendorCodePackingSlip != null)
             {
                 return View("HoldSlips", holdSlipSummary);
             }

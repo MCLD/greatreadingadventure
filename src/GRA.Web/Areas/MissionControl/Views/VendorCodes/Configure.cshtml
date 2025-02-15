@@ -75,7 +75,8 @@
                 <div class="mb-3">
                     <label class="col-form-label"
                            asp-for="VendorCodeType.MessageTemplateId"></label>
-                    <description gra-description-for="VendorCodeType.MessageTemplateId"></description>
+                    <description gra-description-for="VendorCodeType.MessageTemplateId">
+                    </description>
                     <br />
                     @foreach (var item in Model.Languages)
                     {
@@ -120,7 +121,8 @@
         <div class="col-12">
             <div class="mb-3">
                 <label asp-for="VendorCodeType.AwardPrizeOnShipDate" class="col-form-label"></label>
-                <description gra-description-for="VendorCodeType.AwardPrizeOnShipDate"></description>
+                <description gra-description-for="VendorCodeType.AwardPrizeOnShipDate">
+                </description>
                 <select asp-for="VendorCodeType.AwardPrizeOnShipDate"
                         asp-items="VendorCodesController.ShipDateOptions"
                         class="form-select">
@@ -135,7 +137,8 @@
             <div class="mb-3">
                 <label asp-for="VendorCodeType.AwardPrizeOnPackingSlip"
                        class="col-form-label"></label>
-                <description gra-description-for="VendorCodeType.AwardPrizeOnPackingSlip"></description>
+                <description gra-description-for="VendorCodeType.AwardPrizeOnPackingSlip">
+                </description>
                 <select asp-for="VendorCodeType.AwardPrizeOnPackingSlip"
                         asp-items="VendorCodesController.PackingSlipOptions"
                         class="form-select">
@@ -156,7 +159,8 @@
                 <div class="mb-3">
                     <label class="col-form-label"
                            asp-for="VendorCodeType.OptionMessageTemplateId"></label>
-                    <description gra-description-for="VendorCodeType.OptionMessageTemplateId"></description>
+                    <description gra-description-for="VendorCodeType.OptionMessageTemplateId">
+                    </description>
                     <br />
                     @foreach (var item in Model.Languages)
                     {
@@ -275,7 +279,8 @@
                 <div class="mb-3">
                     <label asp-for="VendorCodeType.ReadyForPickupEmailTemplateId"
                            class="col-form-label"></label>
-                    <description gra-description-for="VendorCodeType.ReadyForPickupEmailTemplateId"></description>
+                    <description gra-description-for="VendorCodeType.ReadyForPickupEmailTemplateId">
+                    </description>
                     <select asp-for="VendorCodeType.ReadyForPickupEmailTemplateId"
                             asp-items="VendorCodesController.GetSelectList(Model.DirectEmailTemplates)"
                             class="form-select">
@@ -303,15 +308,14 @@
          tabindex="-1"
          role="dialog"
          aria-labelledby="segmentModalLabel">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button"
+                    <h4 class="modal-title" id="segmentModalLabel">Pop-up Message</h4>
+                    <button aria-label="Close"
                             class="btn-close"
                             data-bs-dismiss="modal"
-                            aria-label="Close">
-                    </button>
-                    <h4 class="modal-title" id="segmentModalLabel">Pop-up Message</h4>
+                            type="button"></button>
                 </div>
                 <div class="modal-body">
                     <div id="segmentModalCover"
@@ -360,15 +364,14 @@
          tabindex="-1"
          role="dialog"
          aria-labelledby="messageModalLabel">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button"
+                    <h4 class="modal-title" id="messageModalLabel">Message</h4>
+                    <button aria-label="Close"
                             class="btn-close"
                             data-bs-dismiss="modal"
-                            aria-label="Close">
-                    </button>
-                    <h4 class="modal-title" id="messageModalLabel">Message</h4>
+                            type="button"></button>
                 </div>
                 <div class="modal-body">
                     <div id="messageModalCover"
@@ -428,8 +431,8 @@
                     if (data.success === true) {
                         location.reload();
                     } else {
-                        window.alert("There as an error: " + data.message);
                         ResetSpinners();
+                        window.alert("An error occurred while saving: " + data.message);
                     }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
@@ -450,8 +453,8 @@
                     if (data.success === true) {
                         location.reload();
                     } else {
-                        window.alert("There as an error: " + data.message);
                         ResetSpinners();
+                        window.alert("An error occurred while saving: " + data.message);
                     }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
@@ -523,18 +526,18 @@
                         if (validData && item != '@nameof(Model.VendorCodeType.MessageTemplateId)') {
                             $('#clearMessageTemplate').show();
                         }
-                        $('#saveMessageTemplate').prop('disabled', false);
+                        $('#saveMessageTemplate').prop('disabled', null);
                         $('#messageModalCover').hide();
                         $('#messageModalContent').show();
                     }
                     else {
-                        console.log("Failure loading the message template: " + data.message);
+                        console.error("Failure loading the message template: " + data.message);
                         $('#messageModalCover').html('<div class="text-danger">' + data.message + '</span>');
                         $('#saveMessageTemplate').prop('disabled', true);
                     }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    console.log("Failure response for the message template: " + textStatus + " - " + errorThrown);
+                    console.error("Failure updating the message template: " + textStatus + " - " + errorThrown);
                     $('#messageModalCover').html('<div class="text-danger">' + textStatus + ' - ' + errorThrown + '</span>');
                     $('#saveMessageTemplate').prop('disabled', true);
                 }
@@ -568,7 +571,6 @@
                     'item': item
                 },
                 success: function (data, textStatus, jqXHR) {
-                    console.info("Response: %o", data)
                     if (data.success === true) {
                         if (data.text) {
                             $('#segmentText').val(data.text);
@@ -577,18 +579,18 @@
                             $('#segmentText').val('');
                             $('#clearSegment').hide();
                         }
-                        $('#saveSegment').prop('disabled', false);
+                        $('#saveSegment').prop('disabled', null);
                         $('#segmentModalCover').hide();
                         $('#segmentModalContent').show();
                     }
                     else {
-                        console.log("Failure loading the segment text: " + data.message);
+                        console.error("Failure loading the segment text: " + data.message);
                         $('#segmentModalCover').html('<div class="text-danger">' + data.message + '</span>');
                         $('#saveSegment').prop('disabled', true);
                     }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    console.log("Failure response for the segment text: " + textStatus + " - " + errorThrown);
+                    console.error("Failure updating the segment text: " + textStatus + " - " + errorThrown);
                     $('#segmentModalCover').html('<div class="text-danger">' + textStatus + ' - ' + errorThrown + '</span>');
                     $('#saveSegment').prop('disabled', true);
                 }
