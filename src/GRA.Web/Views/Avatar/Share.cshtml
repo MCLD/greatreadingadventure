@@ -1,33 +1,37 @@
 ﻿@model GRA.Controllers.ViewModel.Avatar.ShareViewModel
 
-<div class="row row-spacing">
-    <div class="col-12">
-        <img src="@Model.AvatarImageUrl" class="img-fluid" />
-    </div>
-</div>
-
-<div class="row row-spacing">
-    <div class="col-12">
-        <a asp-action="Index" class="btn btn-outline-secondary row-spacing">
-            <span class="fas fa-arrow-left"></span>
-            @SharedLocalizer[GRA.Annotations.Interface.Back]
-        </a>
-
-        <a href="@Model.FacebookShareUrl" class="btn btn-outline-secondary row-spacing" target="_blank">
-            <span class="fab fa-facebook"></span>
-            @SharedLocalizer[GRA.Annotations.Interface.Share]
-        </a>
-
-        <a href="@Model.TwitterShareUrl" class="btn btn-outline-secondary row-spacing" target="_blank">
-            <span class="fab fa-twitter"></span>
-            @SharedLocalizer[GRA.Annotations.Interface.Share]
-        </a>
-        <a asp-action="InstagramImage"
-           asp-route-id="@Model.AvatarId"
-           class="btn btn-outline-secondary row-spacing"
-           download="avatar.jpg">
-            <span class="fab fa-instagram"></span>
-            @SharedLocalizer[GRA.Annotations.Interface.DownloadToShare]
-        </a>
+<div class="row">
+    <div class="col-12 col-xxl-10 offset-xxl-1">
+        <div class="card">
+            <div class="card-img-top">
+                <img src="@Model.AvatarImageUrl" class="img-fluid" />
+            </div>
+            <div class="card-footer d-flex justify-content-center">
+                <div>
+                    <a asp-action="@nameof(AvatarController.Index)"
+                       class="btn btn-outline-secondary mx-1">
+                        <span class="fas fa-arrow-left fa-fw"></span>
+                        @SharedLocalizer[GRA.Annotations.Interface.Back]
+                    </a>
+                </div>
+                <div>
+                    <a href="@Model.FacebookShareUrl"
+                       class="btn btn-outline-secondary mx-1"
+                       target="_blank">
+                        <span class="fab fa-facebook fa-fw"></span>
+                        @SharedLocalizer[GRA.Annotations.Interface.Share]
+                    </a>
+                </div>
+                <div>
+                    <a asp-action="@nameof(AvatarController.Download)"
+                       asp-route-id="@Model.AvatarId"
+                       class="btn btn-outline-secondary mx-1"
+                       download="avatar.jpg">
+                        <span class="fas fa-file-download fa-fw"></span>
+                        @SharedLocalizer[GRA.Annotations.Interface.DownloadToShare]
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

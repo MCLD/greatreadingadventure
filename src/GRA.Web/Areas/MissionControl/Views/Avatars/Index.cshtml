@@ -18,7 +18,7 @@
                 <form asp-action="@nameof(AvatarsController.SetupAvatarZip)"
                       method="post"
                       class="py-3">
-                    <button type="submit" class="btn btn-outline-primary btn-spinner" button-spinner>
+                    <button type="submit" class="btn btn-outline-primary" button-spinner>
                         Import avatars.zip
                     </button>
                 </form>
@@ -38,30 +38,22 @@
                   enctype="multipart/form-data">
                 <div class="row row-spacing">
                     <div class="col-12">
-                        <label for="selectedFile">Select an avatar .zip file:</label>
-                        <div class="input-group">
-                            <label class="input-group-text">
-                                <span class="btn btn-secondary btn-file">
-                                    <span class="far fa-file-image"></span>
-                                    Select an avatar .zip file
-                                    <input type="file"
-                                           asp-for="UploadedFile"
-                                           class="form-control"
-                                           accept=".zip"
-                                           style="display: none;" />
-                                </span>
-                            </label>
-                            <input type="text"
+                        <div class="input-group mb-3">
+                            <input type="file"
                                    class="form-control"
-                                   readonly
-                                   id="selectedFile"
-                                   @(ViewData.ModelState.GetValidationState("UploadedFile") == invalid ? "input-validation-error" : "")>
+                                   asp-for="UploadedFile"
+                                   accept=".zip" />
+                            <button class="btn btn-outline-secondary"
+                                    type="button"
+                                    onclick="$('#UploadedFile').val('')">
+                                Clear selection
+                            </button>
                         </div>
                         <span asp-validation-for="UploadedFile" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="row-spacing">
-                    <button class="btn btn-outline-primary btn-spinner" type="submit" button-spinner>
+                    <button class="btn btn-outline-primary" type="submit" button-spinner>
                         <span class="fas fa-file-upload"></span>
                         Upload
                     </button>
@@ -116,30 +108,6 @@
             $('.td-class').each(function () {
                 $(this).children("a.rowlink").height($(this).outerHeight());
             });
-        });
-        $(':file').on('fileselect', function (event, numFiles, label) {
-            var input = $(this).parents('.input-group').find(':text'),
-                log = numFiles > 1 ? numFiles = ' files selected' : label;
-
-            if (input.length) {
-                input.val(log);
-                $('.btn-file').removeClass('btn-secondary');
-                $('.btn-file').addClass('btn-outline-success');
-                $("#badgeImage").removeAttr("src");
-                $("#badgeImage").height(200);
-                $("#BadgeMakerImage").val("");
-            }
-            else {
-                input.val('');
-                $('.btn-file').addClass('btn-secondary');
-                $('.btn-file').removeClass('btn-outline-success');
-            }
-        });
-        $(document).on('change', ':file', function () {
-            var input = $(this),
-                numFiles = input.get(0).files ? input.get(0).files.length : 1,
-                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-            input.trigger('fileselect', [numFiles, label]);
         });
     </script>
 }
