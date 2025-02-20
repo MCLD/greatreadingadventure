@@ -1054,28 +1054,24 @@ Markdown.HookCollection = HookCollection;
             // The main dialog box.
             dialog = doc.createElement("div");
             dialog.className = "wmd-prompt-dialog";
-            dialog.style.padding = "10px;";
-            dialog.style.position = "fixed";
-            dialog.style.width = "400px";
 
             // Dialog navigation tabs
             var tabs = doc.createElement("ul");
-            tabs.className = "nav nav-tabs";
+            tabs.className = "nav nav-pills";
             dialog.appendChild(tabs);
 
             if (allowUploads == true) {
                 var uploadTab = doc.createElement("li");
-                uploadTab.innerHTML = '<a data-toggle="tab" href="#uploadFile"><b>Upload File</b></a>';
-                uploadTab.className = "active";
-                uploadTab.style.padding = "5px";
+                uploadTab.innerHTML = '<a data-bs-toggle="tab" class="nav-link px-2 py-1 active" href="#uploadFile"><b>Upload File</b></a>';
                 tabs.appendChild(uploadTab);
             }
 
             var inputTab = doc.createElement("li");
-            inputTab.innerHTML = '<a data-toggle="tab" href="#inputUrl"><b>Input URL</b></a>';
-            inputTab.style.padding = "5px";
-            if (allowUploads == false) {
-                inputTab.className = "active";
+            if (allowUploads == true) {
+                inputTab.innerHTML = '<a data-bs-toggle="tab" class="nav-link px-2 py-1" href="#inputUrl"><b>Input URL</b></a>';
+            }
+            else {
+                inputTab.innerHTML = '<a data-bs-toggle="tab" class="nav-link px-2 py-1 active" href="#inputUrl"><b>Input URL</b></a>';
             }
             tabs.appendChild(inputTab);
 
@@ -1102,43 +1098,29 @@ Markdown.HookCollection = HookCollection;
             var inputForm = doc.createElement("form"),
                 style = inputForm.style;
             inputForm.onsubmit = function () { return close(false, false); };
-            style.padding = "0";
-            style.margin = "0";
-            style.cssFloat = "left";
-            style.width = "100%";
-            style.textAlign = "center";
-            style.position = "relative";
             inputUrl.appendChild(inputForm);
 
             input = doc.createElement("input");
             input.type = "text";
+            input.id = "TextUrl"
             input.value = defaultInputText;
-            style = input.style;
-            style.display = "block";
-            style.width = "80%";
-            style.marginLeft = style.marginRight = "auto";
+            input.classList = "form-control form-control-sm";
             inputForm.appendChild(input);
 
             var okButton = doc.createElement("input");
             okButton.type = "button";
             okButton.onclick = function () { return close(false, false); };
             okButton.value = "OK";
-            style = okButton.style;
-            style.margin = "10px";
-            style.display = "inline";
-            style.width = "7em";
+            okButton.classList = "btn btn-sm btn-outline-dark";
 
             var cancelButton = doc.createElement("input");
             cancelButton.type = "button";
             cancelButton.onclick = function () { return close(true, false); };
             cancelButton.value = "Cancel";
-            style = cancelButton.style;
-            style.margin = "10px";
-            style.display = "inline";
-            style.width = "7em";
+            cancelButton.classList = "btn btn-sm btn-outline-dark me-2";
 
-            inputForm.appendChild(okButton);
             inputForm.appendChild(cancelButton);
+            inputForm.appendChild(okButton);
 
             // Upload File tab
             if (allowUploads == true) {
@@ -1154,43 +1136,28 @@ Markdown.HookCollection = HookCollection;
                 var uploadForm = doc.createElement("form"),
                     style = uploadForm.style;
                 uploadForm.onsubmit = function () { return close(false, true); };
-                style.padding = "0";
-                style.margin = "0";
-                style.cssFloat = "left";
-                style.width = "100%";
-                style.textAlign = "center";
-                style.position = "relative";
                 uploadFile.appendChild(uploadForm);
 
                 var browse = doc.createElement("input");
                 browse.type = "file";
                 browse.id = "FileUpload";
-                style = input.style;
-                style.display = "block";
-                style.width = "80%";
-                style.marginLeft = style.marginRight = "auto";
+                browse.classList = "form-control form-control-sm";
                 uploadForm.appendChild(browse);
 
                 var uploadOkButton = doc.createElement("input");
                 uploadOkButton.type = "button";
                 uploadOkButton.onclick = function () { return close(false, true); };
                 uploadOkButton.value = "OK";
-                style = uploadOkButton.style;
-                style.margin = "10px";
-                style.display = "inline";
-                style.width = "7em";
+                uploadOkButton.classList = "btn btn-sm btn-outline-dark";
 
                 var uploadCancelButton = doc.createElement("input");
                 uploadCancelButton.type = "button";
                 uploadCancelButton.onclick = function () { return close(true, true); };
                 uploadCancelButton.value = "Cancel";
-                style = uploadCancelButton.style;
-                style.margin = "10px";
-                style.display = "inline";
-                style.width = "7em";
+                uploadCancelButton.classList = "btn btn-sm btn-outline-dark me-2";
 
-                uploadForm.appendChild(uploadOkButton);
                 uploadForm.appendChild(uploadCancelButton);
+                uploadForm.appendChild(uploadOkButton);
             }
 
             util.addEvent(doc.body, "keyup", checkEscape);

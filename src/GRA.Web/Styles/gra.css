@@ -160,11 +160,11 @@ footer p {
     min-width: 120px;
 }
 
-.badge-sm-fixed-container > img {
-    height: auto;
-    min-height: 110px;
-    width: 110px;
-}
+    .badge-sm-fixed-container > img {
+        height: auto;
+        min-height: 110px;
+        width: 110px;
+    }
 
 .badge-lg-none {
     height: 210px;
@@ -175,11 +175,11 @@ footer p {
     min-width: 210px;
 }
 
-.badge-lg-fixed-container > img {
-    height: auto;
-    min-height: 210px;
-    width: 210px;
-}
+    .badge-lg-fixed-container > img {
+        height: auto;
+        min-height: 210px;
+        width: 210px;
+    }
 
 .badge-lg {
     height: auto;
@@ -226,10 +226,6 @@ footer p {
 
 input.form-check {
     margin: 0;
-}
-
-input:read-only:not([type="checkbox"]):not([type="radio"]):not( [type="submit"] ):not([type="color"]):not([type="file"]) {
-    cursor: not-allowed;
 }
 
 .text-strong {

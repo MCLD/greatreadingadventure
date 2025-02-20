@@ -48,6 +48,11 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Mission Control";
         }
 
+        public static string Area
+        {
+            get { return nameof(MissionControl); }
+        }
+
         public static string Name
         { get { return "Home"; } }
 

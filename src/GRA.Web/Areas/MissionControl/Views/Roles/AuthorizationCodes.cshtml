@@ -26,7 +26,7 @@
                             <th>Role</th>
                             <th>Usage</th>
                             <th>Uses</th>
-                            <th style="min-width: 12rem">Action</th>
+                            <th style="width: 6rem">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,9 +46,9 @@
                                     @code.Uses
                                 </td>
                                 <td class="text-middle">
-                                    <div class="btn-group-sm">
+                                    <div class="d-flex justify-content-around">
                                         <button type="button"
-                                                class="btn btn-outline-primary"
+                                                class="btn btn-sm btn-outline-primary mx-1"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#editModal"
                                                 data-id="@code.Id"
@@ -59,16 +59,17 @@
                                                 data-program="@code.ProgramId"
                                                 data-branch="@code.BranchId"
                                                 data-express="@code.SinglePageSignUp">
-                                            <span class="fas fa-fw fa-pencil-alt" aria-hidden="true"></span>
+                                            <span class="fas fa-fw fa-pencil-alt"
+                                                  aria-hidden="true"></span>
                                         </button>
                                         <button type="button"
-                                                class="btn btn-outline-danger"
-                                                style="margin-left:16px;"
+                                                class="btn btn-sm btn-outline-danger mx-1"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#deleteModal"
                                                 data-id="@code.Id"
                                                 data-code="@code.Code">
-                                            <span class="fas fa-fw fa-times" aria-hidden="true"></span>
+                                            <span class="fas fa-fw fa-times"
+                                                  aria-hidden="true"></span>
                                         </button>
                                     </div>
                                 </td>
@@ -77,336 +78,317 @@
                     </tbody>
                 </table>
             </div>
-            @if (Model.PaginateModel.MaxPage > 1)
-            {
-                <paginate paginateModel="@Model.PaginateModel"></paginate>
-            }
+            <paginate paginateModel="@Model.PaginateModel"></paginate>
         }
     </div>
 </div>
 
-<div class="row">
+<form asp-action="@nameof(RolesController.AddCode)"
+      method="post"
+      role="form">
+    <input name="PaginateModel.CurrentPage"
+           value="@Model.PaginateModel.CurrentPage"
+           type="hidden" />
     <div class="modal fade"
+         data-bs-backdrop="static"
          id="addModal"
          tabindex="-1"
          role="dialog"
          aria-labelledby="addModalLabel">
-        <div class="modal-dialog" role="document">
-            <form asp-controller="Roles"
-                  asp-action="AddCode"
-                  method="post"
-                  role="form"
-                  style="display:inline">
-                <input name="PaginateModel.CurrentPage"
-                       value="@Model.PaginateModel.CurrentPage"
-                       type="hidden" />
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title h4" id="addModalLabel">Add Authorization Code</h1>
-                        <button type="button"
-                                class="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close dialog">
-                            
-                        </button>
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title h4" id="addModalLabel">Add Authorization Code</h1>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close dialog">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label asp-for="AuthorizationCode.RoleId"
+                               class="col-form-label"></label>
+                        <select id="addRole" asp-for="AuthorizationCode.RoleId"
+                                asp-items="Model.RoleList"
+                                class="form-select"></select>
+                        <span asp-validation-for="AuthorizationCode.RoleId"
+                              class="text-danger"></span>
                     </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label asp-for="AuthorizationCode.RoleId"
-                                   class="col-form-label"></label>
-                            <select id="addRole" asp-for="AuthorizationCode.RoleId"
-                                    asp-items="Model.RoleList"
-                                    class="form-select"></select>
-                            <span asp-validation-for="AuthorizationCode.RoleId"
-                                  class="text-danger"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="AuthorizationCode.Code" class="col-form-label"></label>
-                            <input id="addCode" asp-for="AuthorizationCode.Code"
-                                   class="form-control" />
-                            <span asp-validation-for="AuthorizationCode.Code"
-                                  class="text-danger"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="AuthorizationCode.Description"
-                                   class="col-form-label"></label>
-                            <textarea id="addDescription"
-                                      asp-for="AuthorizationCode.Description"
-                                      class="form-control"></textarea>
-                            <span asp-validation-for="AuthorizationCode.Description"
-                                  class="text-danger"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="AuthorizationCode.IsSingleUse"
-                                   class="col-form-label"></label>
-                            <span class="far fa-question-circle"
-                                  data-bs-toggle="tooltip"
-                                  title="Single use codes may be used once and then are deactivated."></span>
-                            <select id="addSingle" asp-for="AuthorizationCode.IsSingleUse"
-                                    class="form-select">
-                                <option value="true">Single Use</option>
-                                <option value="false">Multiple Use</option>
-                            </select>
-                            <span asp-validation-for="AuthorizationCode.IsSingleUse"
-                                  class="text-danger"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="AuthorizationCode.ProgramId"
-                                   class="col-form-label"></label>
-                            <span class="far fa-question-circle"
-                                  data-bs-toggle="tooltip"
-                                  title="Automatically assign users of this role to the selected program (optional)."></span>
-                            <select id="addProgram"
-                                    asp-for="AuthorizationCode.ProgramId"
-                                    asp-items="Model.ProgramList"
-                                    class="form-select">
-                                <option value="null" selected>None</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="AuthorizationCode.BranchId"
-                                   class="col-form-label"></label>
-                            <span class="far fa-question-circle"
-                                  data-bs-toggle="tooltip"
-                                  title="Automatically assign users of this role to the selected branch (optional)."></span>
-                            <select id="addBranch"
-                                    asp-for="AuthorizationCode.BranchId"
-                                    asp-items="Model.BranchList"
-                                    class="form-select">
-                                <option value="null" selected>None</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="AuthorizationCode.SinglePageSignUp"
-                                   class="col-form-label"></label>
-                            <span class="far fa-question-circle"
-                                  data-bs-toggle="tooltip"
-                                  title="Use a shortened, single-page sign-up to join with this code."></span>
-                            <select id="addSinglePage"
-                                    asp-for="AuthorizationCode.SinglePageSignUp"
-                                    class="form-select">
-                                <option value="False">No</option>
-                                <option value="True">Yes</option>
-                            </select>
-                        </div>
+                    <div class="mb-3">
+                        <label asp-for="AuthorizationCode.Code" class="col-form-label"></label>
+                        <input id="addCode" asp-for="AuthorizationCode.Code"
+                               class="form-control" />
+                        <span asp-validation-for="AuthorizationCode.Code"
+                              class="text-danger"></span>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button"
-                                class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal"
-                                style="margin-right: 1em;">
-                            Cancel
-                        </button>
-                        <button type="submit"
-                                class="btn btn-outline-primary btn-spinner float-end"
-                                aria-label="Confirm"
-                                button-spinner>
-                            Add
-                        </button>
+                    <div class="mb-3">
+                        <label asp-for="AuthorizationCode.Description"
+                               class="col-form-label"></label>
+                        <textarea id="addDescription"
+                                  asp-for="AuthorizationCode.Description"
+                                  class="form-control"></textarea>
+                        <span asp-validation-for="AuthorizationCode.Description"
+                              class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="AuthorizationCode.IsSingleUse"
+                               class="col-form-label"></label>
+                        <span class="far fa-question-circle"
+                              data-bs-toggle="tooltip"
+                              title="Single use codes may be used once and then are deactivated."></span>
+                        <select id="addSingle" asp-for="AuthorizationCode.IsSingleUse"
+                                class="form-select">
+                            <option value="true">Single Use</option>
+                            <option value="false">Multiple Use</option>
+                        </select>
+                        <span asp-validation-for="AuthorizationCode.IsSingleUse"
+                              class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="AuthorizationCode.ProgramId"
+                               class="col-form-label"></label>
+                        <span class="far fa-question-circle"
+                              data-bs-toggle="tooltip"
+                              title="Automatically assign users of this role to the selected program (optional)."></span>
+                        <select id="addProgram"
+                                asp-for="AuthorizationCode.ProgramId"
+                                asp-items="Model.ProgramList"
+                                class="form-select">
+                            <option value="null" selected>None</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="AuthorizationCode.BranchId"
+                               class="col-form-label"></label>
+                        <span class="far fa-question-circle"
+                              data-bs-toggle="tooltip"
+                              title="Automatically assign users of this role to the selected branch (optional)."></span>
+                        <select id="addBranch"
+                                asp-for="AuthorizationCode.BranchId"
+                                asp-items="Model.BranchList"
+                                class="form-select">
+                            <option value="null" selected>None</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="AuthorizationCode.SinglePageSignUp"
+                               class="col-form-label"></label>
+                        <span class="far fa-question-circle"
+                              data-bs-toggle="tooltip"
+                              title="Use a shortened, single-page sign-up to join with this code."></span>
+                        <select id="addSinglePage"
+                                asp-for="AuthorizationCode.SinglePageSignUp"
+                                class="form-select">
+                            <option value="False">No</option>
+                            <option value="True">Yes</option>
+                        </select>
                     </div>
                 </div>
-            </form>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="btn btn-outline-primary"
+                            aria-label="Confirm"
+                            button-spinner>
+                        Add
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+</form>
 
-<div class="row">
+<form asp-action="@nameof(RolesController.EditCode)"
+      method="post"
+      role="form">
     <div class="modal fade"
+         data-bs-backdrop="static"
          id="editModal"
          tabindex="-1"
          role="dialog"
          aria-labelledby="editModalLabel">
-        <div class="modal-dialog" role="document">
-            <form asp-controller="Roles"
-                  asp-action="EditCode"
-                  method="post"
-                  role="form"
-                  style="display:inline">
-                <input name="PaginateModel.CurrentPage"
-                       value="@Model.PaginateModel.CurrentPage"
-                       type="hidden" />
-                <input id="editId" name="AuthorizationCode.Id" type="hidden" />
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title h4"
-                            id="editModalLabel">
-                            Edit Authorization Code
-                        </h1>
-                        <button type="button"
-                                class="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close dialog">
-                            
-                        </button>
-
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title h4"
+                        id="editModalLabel">
+                        Edit Authorization Code
+                    </h1>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close dialog">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input name="PaginateModel.CurrentPage"
+                           value="@Model.PaginateModel.CurrentPage"
+                           type="hidden" />
+                    <input id="editId" name="AuthorizationCode.Id" type="hidden" />
+                    <div class="mb-3">
+                        <label asp-for="AuthorizationCode.RoleId" class="col-form-label"></label>
+                        <select id="editRole"
+                                asp-for="AuthorizationCode.RoleId"
+                                asp-items="Model.RoleList"
+                                class="form-select"></select>
+                        <span asp-validation-for="AuthorizationCode.RoleId"
+                              class="text-danger"></span>
                     </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label asp-for="AuthorizationCode.RoleId" class="col-form-label"></label>
-                            <select id="editRole"
-                                    asp-for="AuthorizationCode.RoleId"
-                                    asp-items="Model.RoleList"
-                                    class="form-select"></select>
-                            <span asp-validation-for="AuthorizationCode.RoleId"
-                                  class="text-danger"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="AuthorizationCode.Code"
-                                   class="col-form-label"></label>
-                            <input id="editCode" asp-for="AuthorizationCode.Code"
-                                   class="form-control" />
-                            <span asp-validation-for="AuthorizationCode.Code"
-                                  class="text-danger"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="AuthorizationCode.Description"
-                                   class="col-form-label"></label>
-                            <textarea id="editDescription"
-                                      asp-for="AuthorizationCode.Description"
-                                      class="form-control"></textarea>
-                            <span asp-validation-for="AuthorizationCode.Description"
-                                  class="text-danger"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="AuthorizationCode.IsSingleUse"
-                                   class="col-form-label"></label>
-                            <span class="far fa-question-circle"
-                                  data-bs-toggle="tooltip"
-                                  title="Single use codes may be used once and then are deactivated."></span>
-                            <select id="editSingle"
-                                    asp-for="AuthorizationCode.IsSingleUse"
-                                    class="form-select">
-                                <option value="true">Single Use</option>
-                                <option value="false">Multiple Use</option>
-                            </select>
-                            <span asp-validation-for="AuthorizationCode.IsSingleUse"
-                                  class="text-danger"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="AuthorizationCode.ProgramId"
-                                   class="col-form-label"></label>
-                            <span class="far fa-question-circle"
-                                  data-bs-toggle="tooltip"
-                                  title="Automatically assign users of this role to a program (optional)"></span>
-                            <select id="editProgram"
-                                    asp-for="AuthorizationCode.ProgramId"
-                                    asp-items="Model.ProgramList"
-                                    class="form-select">
-                                <option value="null" selected>None</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="AuthorizationCode.BranchId"
-                                   class="col-form-label"></label>
-                            <span class="far fa-question-circle"
-                                  data-bs-toggle="tooltip"
-                                  title="Automatically assign users of this role to the selected branch (optional)."></span>
-                            <select id="editBranch"
-                                    asp-for="AuthorizationCode.BranchId"
-                                    asp-items="Model.BranchList"
-                                    class="form-select">
-                                <option value="null" selected>None</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="AuthorizationCode.SinglePageSignUp"
-                                   class="col-form-label"></label>
-                            <span class="far fa-question-circle"
-                                  data-bs-toggle="tooltip"
-                                  title="Use a shortened, single-page sign-up to join with this code."></span>
-                            <select id="editSinglePage"
-                                    asp-for="AuthorizationCode.SinglePageSignUp"
-                                    class="form-select">
-                                <option value="False">No</option>
-                                <option value="True">Yes</option>
-                            </select>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button"
-                                    class="btn btn-outline-secondary"
-                                    data-bs-dismiss="modal"
-                                    style="margin-right: 1em;">
-                                Cancel
-                            </button>
-                            <button type="submit"
-                                    class="btn btn-outline-primary btn-spinner float-end"
-                                    aria-label="Confirm"
-                                    button-spinner>
-                                Save
-                            </button>
-                        </div>
+                    <div class="mb-3">
+                        <label asp-for="AuthorizationCode.Code"
+                               class="col-form-label"></label>
+                        <input id="editCode" asp-for="AuthorizationCode.Code"
+                               class="form-control" />
+                        <span asp-validation-for="AuthorizationCode.Code"
+                              class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="AuthorizationCode.Description"
+                               class="col-form-label"></label>
+                        <textarea id="editDescription"
+                                  asp-for="AuthorizationCode.Description"
+                                  class="form-control"></textarea>
+                        <span asp-validation-for="AuthorizationCode.Description"
+                              class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="AuthorizationCode.IsSingleUse"
+                               class="col-form-label"></label>
+                        <span class="far fa-question-circle"
+                              data-bs-toggle="tooltip"
+                              title="Single use codes may be used once and then are deactivated."></span>
+                        <select id="editSingle"
+                                asp-for="AuthorizationCode.IsSingleUse"
+                                class="form-select">
+                            <option value="true">Single Use</option>
+                            <option value="false">Multiple Use</option>
+                        </select>
+                        <span asp-validation-for="AuthorizationCode.IsSingleUse"
+                              class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="AuthorizationCode.ProgramId"
+                               class="col-form-label"></label>
+                        <span class="far fa-question-circle"
+                              data-bs-toggle="tooltip"
+                              title="Automatically assign users of this role to a program (optional)"></span>
+                        <select id="editProgram"
+                                asp-for="AuthorizationCode.ProgramId"
+                                asp-items="Model.ProgramList"
+                                class="form-select">
+                            <option value="null" selected>None</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="AuthorizationCode.BranchId"
+                               class="col-form-label"></label>
+                        <span class="far fa-question-circle"
+                              data-bs-toggle="tooltip"
+                              title="Automatically assign users of this role to the selected branch (optional)."></span>
+                        <select id="editBranch"
+                                asp-for="AuthorizationCode.BranchId"
+                                asp-items="Model.BranchList"
+                                class="form-select">
+                            <option value="null" selected>None</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="AuthorizationCode.SinglePageSignUp"
+                               class="col-form-label"></label>
+                        <span class="far fa-question-circle"
+                              data-bs-toggle="tooltip"
+                              title="Use a shortened, single-page sign-up to join with this code."></span>
+                        <select id="editSinglePage"
+                                asp-for="AuthorizationCode.SinglePageSignUp"
+                                class="form-select">
+                            <option value="False">No</option>
+                            <option value="True">Yes</option>
+                        </select>
                     </div>
                 </div>
-            </form>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="btn btn-outline-primary"
+                            aria-label="Confirm"
+                            button-spinner>
+                        Save
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+</form>
 
-<div class="row">
+<form asp-action="@nameof(RolesController.DeleteCode)"
+      method="post"
+      role="form">
     <div class="modal fade"
+         data-bs-backdrop="static"
          id="deleteModal"
          tabindex="-1"
          role="dialog"
          aria-labelledby="deleteModalLabel">
         <div class="modal-dialog" role="document">
-            <form asp-controller="Roles"
-                  asp-action="DeleteCode"
-                  method="post"
-                  role="form"
-                  style="display:inline">
-                <input name="PaginateModel.CurrentPage"
-                       value="@Model.PaginateModel.CurrentPage"
-                       type="hidden" />
-                <input id="deleteId" name="AuthorizationCode.Id" type="hidden" />
-                <input id="deleteCode" name="AuthorizationCode.Code" type="hidden" />
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title h4"
-                            id="deleteModalLabel">
-                            Delete Authorization Code
-                        </h1>
-                        <button type="button"
-                                class="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close dialog">
-                            
-                        </button>
-
-                    </div>
-                    <div class="modal-body">
-                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title h4"
+                        id="deleteModalLabel">
+                        Delete Authorization Code
+                    </h1>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close dialog">
+                    </button>
+                </div>
+                <div class="modal-body p-0">
+                    <input name="PaginateModel.CurrentPage"
+                           value="@Model.PaginateModel.CurrentPage"
+                           type="hidden" />
+                    <input id="deleteId" name="AuthorizationCode.Id" type="hidden" />
+                    <input id="deleteCode" name="AuthorizationCode.Code" type="hidden" />
+                    <div class="modal-body d-flex align-items-stretch">
+                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                              aria-hidden="true"></span>
                         <span id="modal-text"></span>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button"
-                                class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal"
-                                style="margin-right: 1em;">
-                            Cancel
-                        </button>
-                        <button type="submit"
-                                class="btn btn-outline-danger btn-spinner float-end"
-                                aria-label="Confirm"
-                                button-spinner>
-                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
-                            Delete
-                        </button>
-                    </div>
                 </div>
-            </form>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="btn btn-outline-danger"
+                            aria-label="Confirm"
+                            button-spinner>
+                        <span class="fas fa-times fa-fw" aria-hidden="true"></span>
+                        Delete
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+</form>
 
 @section scripts {
     <script>
-        $('[data-bs-toggle="tooltip"]').tooltip();
-
         $("#editModal").on("show.bs.modal", function (e) {
-            let button = $(e.relatedTarget);
-            let code = button.data("code");
-            let modal = $(this);
-            modal.find("#editModalLabel").text("Edit Authorization Code - \"" + code + "\"");
+            const button = $(e.relatedTarget);
+            const code = button.data("code");
+            const modal = $(this);
+            modal.find("#editModalLabel").html("Edit Authorization Code - <strong>" + code + "</strong>");
             modal.find("#editId").val(button.data("id"));
             modal.find("#editRole").val(button.data("role"));
             modal.find("#editCode").val(code);
@@ -418,10 +400,11 @@
         });
 
         $("#deleteModal").on("show.bs.modal", function (e) {
-            let button = $(e.relatedTarget);
-            let code = button.data("code");
-            let modal = $(this);
-            modal.find("#modal-text").text("Are you sure you want to delete the authorization code \"" + code + "\"?");
+            const button = $(e.relatedTarget);
+            const code = button.data("code");
+            const modal = $(this);
+            modal.find("#modal-text").html("Are you sure you want to delete the authorization code <strong>" + code + "</strong>?");
+            console.info("Delete id = %o", button.data("id"));
             modal.find("#deleteId").val(button.data("id"));
             modal.find("#deleteCode").val(code);
         });
