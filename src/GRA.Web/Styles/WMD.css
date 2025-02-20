@@ -64,24 +64,20 @@ blockquote {
 }
 
 .wmd-prompt-dialog {
-    border: 1px solid #999999;
-    background-color: #F5F5F5;
+    border: 3px solid #999999;
+    border-radius: 0.25rem;
+    background-color: #f5f5f5;
     z-index: 1101;
+    position: fixed;
+    padding: 1rem;
+    width: 25rem;
 }
 
-    .wmd-prompt-dialog > div {
-        font-size: 0.8em;
-        font-family: arial, helvetica, sans-serif;
+    .wmd-prompt-dialog .nav {
+        margin-bottom: 1rem;
     }
 
-    .wmd-prompt-dialog > form > input[type="text"] {
-        border: 1px solid #999999;
-        color: black;
-    }
-
-    .wmd-prompt-dialog > form > input[type="button"] {
-        border: 1px solid #888888;
-        font-family: trebuchet MS, helvetica, sans-serif;
-        font-size: 0.8em;
-        font-weight: bold;
+    .wmd-prompt-dialog input#FileUpload,
+    .wmd-prompt-dialog input#TextUrl {
+        margin-bottom: 1rem;
     }

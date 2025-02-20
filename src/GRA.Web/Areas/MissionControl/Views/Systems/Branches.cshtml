@@ -283,13 +283,13 @@
     @if (Model.ShowGeolocation)
     {
         <script>
-            var geolocationUrl = "@Url.Action(nameof(EventsController.SetLocationGeolocation))";
-            var mapsUrl = "https://www.google.com/maps/embed/v1/place?key=@Model.GoogleMapsAPIKey&q=";
+            const geolocationUrl = "@Url.Action(nameof(SystemsController.SetBranchGeolocation), SystemsController.Name)";
+            const mapsUrl = "https://www.google.com/maps/embed/v1/place?key=@Model.GoogleMapsAPIKey&q=";
 
             $(".geolocateButton").on("click", function () {
                 let button = $(this);
                 if (button.hasClass("disabled") == false) {
-                    button.attr("disabled", "disabled");
+                    button.prop("disabled", "disabled");
                     button.children("span").removeClass("hidden");
                     $.post(geolocationUrl, { id: button.data("id") }, function (response) {
                         if (response.success) {
@@ -298,15 +298,18 @@
                         }
                         else {
                             alert("Unable to set geolocation: " + response.message);
-                            button.removeAttr("disabled");
+                            button.prop("disabled", null);
                             button.children("span").addClass("hidden");
                         }
                     })
-                        .fail(function () {
-                            alert("Error setting geolocation");
-                            button.removeAttr("disabled");
-                            button.children("span").addClass("hidden");
-                        })
+                    .fail(function (f) {
+                        alert("Error setting geolocation");
+                        button.prop("disabled", null);
+                        button.children("span").addClass("hidden");
+                    })
+                    .always(function() {
+                        ResetSpinners();
+                    });
                 }
             });
 

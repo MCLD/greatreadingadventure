@@ -1,5 +1,10 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Roles.RoleDetailViewModel
 
+@section inHeading {
+    <a asp-action="@nameof(RolesController.Index)"
+       class="btn btn-outline-secondary ms-auto d-print-none">Return to List</a>
+}
+
 <form asp-action="@Model.Action" method="post" role="form" enctype="multipart/form-data" class="pt-2">
     <input asp-for="Action" type="hidden" />
     @if (Model.Action == nameof(RolesController.Edit))
@@ -16,20 +21,24 @@
                 <span asp-validation-for="Role.Name" class="text-danger"></span>
             </div>
 
-            @if (Model.UsersInRole > 0)
-            {
-                <a asp-action="@nameof(RolesController.UsersInRole)"
-                   asp-route-id="@Model.Role.Id"
-                   class="btn btn-secondary">See users in this role (@Model.UsersInRole)</a>
-            }
-            else
-            {
-                <button class="btn btn-secondary" disabled>No users in this role</button>
-            }
+            <div class="mb-3">
+                @if (Model.UsersInRole > 0)
+                {
+                    <a asp-action="@nameof(RolesController.UsersInRole)"
+                       asp-route-id="@Model.Role.Id"
+                       class="btn btn-outline-primary">
+                        See users in this role (@Model.UsersInRole)
+                    </a>
+                }
+                else
+                {
+                    <button class="btn btn-secondary" disabled>No users in this role</button>
+                }
+            </div>
 
             <div class="row">
                 <div class="col-6">
-                    <h2 class="h3">Available Permissions (@Model.UnselectedPermissions?.Count())</h2>
+                    <h2 class="h3 mb-3">Available Permissions (@Model.UnselectedPermissions?.Count())</h2>
                     <ul id="unselectedPermissions" class="list-group">
                         @foreach (var permission in Model.UnselectedPermissions)
                         {
@@ -42,7 +51,7 @@
                 </div>
 
                 <div class="col-6">
-                    <h2 class="h3">Has Permissions (@Model.SelectedPermissions?.Count())</h2>
+                    <h2 class="h3 mb-3">Has Permissions (@(Model.SelectedPermissions?.Count() ?? 0))</h2>
                     <ul id="selectedPermissions" class="list-group">
                         @if (Model.SelectedPermissions != null)
                         {

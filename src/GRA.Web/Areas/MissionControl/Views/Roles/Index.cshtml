@@ -23,7 +23,7 @@
                             <th>Name</th>
                             <th>Permissions in role</th>
                             <th>Users in role</th>
-                            <th>Delete</th>
+                            <th style="width: 5em;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -51,7 +51,13 @@
                                     }
                                     else
                                     {
-                                        @:&nbsp;
+                                        <button type="button"
+                                                class="btn btn-outline-warning btn-sm"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteModal"
+                                                data-sysadmin="True">
+                                            <span class="fas fa-exclamation fa-fw" aria-hidden="true"></span>
+                                        </button>
                                     }
                                 </td>
                             </tr>
@@ -85,25 +91,26 @@
                                 class="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="Close dialog">
-                            
                         </button>
                     </div>
-                    <div class="modal-body">
-                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
-                        <span id="modal-text"></span>
+                    <div class="modal-body p-0">
+                        <div class="modal-body d-flex align-items-stretch">
+                            <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                                  aria-hidden="true"></span>
+                            <span id="modal-text"></span>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button"
                                 class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal"
-                                style="margin-right: 1em;">
+                                data-bs-dismiss="modal">
                             Cancel
                         </button>
                         <button type="submit"
-                                class="btn btn-outline-danger btn-spinner float-end"
+                                id="deleteConfirmButton"
+                                class="btn btn-outline-danger"
                                 aria-label="Confirm"
                                 button-spinner>
-                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                             Delete
                         </button>
                     </div>
@@ -116,13 +123,21 @@
 @section scripts {
     <script>
         $("#deleteModal").on("show.bs.modal", function (e) {
-            var button = $(e.relatedTarget);
-            var id = button.data("id");
-            var name = button.data("name");
-            var modal = $(this);
-            modal.find("#modal-text").text("Are you sure you want to delete the role \"" + name + "\"?");
-            modal.find("#Role_Id").val(id);
-            modal.find("#Role_Name").val(name);
+            const button = $(e.relatedTarget);
+            const modal = $(this);
+            const sysadmin = button.data("sysadmin");
+            console.info("delete confirm button %o", modal.find("deleteConfirmButton"));
+            if(sysadmin ==="True") {
+                modal.find("#modal-text").html("You cannot delete the built-in System Administrator role.");
+                modal.find("#deleteConfirmButton").addClass("d-none");
+            } else {
+                const id = button.data("id");
+                const name = button.data("name");
+                modal.find("#modal-text").html("Are you sure you want to delete the role <strong>" + name + "</strong>?");
+                modal.find("#Role_Id").val(id);
+                modal.find("#Role_Name").val(name);
+                modal.find("#deleteConfirmButton").removeClass("d-none");
+            }
         });
 
         $(window).on("load", function () {

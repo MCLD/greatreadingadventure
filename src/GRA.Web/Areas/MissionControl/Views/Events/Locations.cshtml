@@ -130,12 +130,12 @@
                             </label>
                             <input asp-for="Location.Address" class="form-control addressInput" />
                             <span asp-validation-for="Location.Address" class="text-danger"></span>
-                        </div>                       
+                        </div>
                         @if (Model.ShowGeolocation)
                         {
                             <div class="mb-3 d-none mapContainer d-flex flex-column">
-                                <iframe frameborder="0" 
-                                    style="border:0; max-height: 200px"></iframe>
+                                <iframe frameborder="0"
+                                        style="border:0; max-height: 200px"></iframe>
                             </div>
                         }
                         <div class="mb-3">
@@ -207,8 +207,8 @@
                         @if (Model.ShowGeolocation)
                         {
                             <div class="mb-3 d-none mapContainer d-flex flex-column">
-                                <iframe frameborder="0" 
-                                    style="border:0; max-height: 200px"></iframe>
+                                <iframe frameborder="0"
+                                        style="border:0; max-height: 200px"></iframe>
                             </div>
                         }
                         <div class="mb-3">
@@ -258,8 +258,8 @@
                     </button>
                 </div>
                 <div class="modal-body d-flex align-items-stretch">
-                    <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" 
-                            aria-hidden="true"></span>
+                    <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                          aria-hidden="true"></span>
                     <span id="modal-text"></span>
                 </div>
                 <div class="modal-footer d-flex justify-content-end">
@@ -320,14 +320,13 @@
     @if (Model.ShowGeolocation)
     {
         <script>
-            var geolocationUrl = "@Url.Action(nameof(EventsController.SetLocationGeolocation))";
-
+            var geolocationUrl = "@Url.Action(nameof(EventsController.SetLocationGeolocation), EventsController.Name)";
             var mapsUrl = "https://www.google.com/maps/embed/v1/place?key=@Model.GoogleMapsAPIKey&q=";
 
             $(".geolocateButton").on("click", function () {
                 let button = $(this);
                 if (button.hasClass("disabled") == false) {
-                    button.attr("disabled", "disabled");
+                    button.prop("disabled", "disabled");
                     button.children("span").removeClass("hidden");
                     $.post(geolocationUrl, { id: button.data("id") }, function (response) {
                         if (response.success) {
@@ -335,15 +334,18 @@
                         }
                         else {
                             alert("Unable to set geolocation: " + response.message);
-                            button.removeAttr("disabled");
+                            button.prop("disabled", false);
                             button.children("span").addClass("hidden");
                         }
                     })
                     .fail(function () {
                         alert("Error setting geolocation");
-                        button.removeAttr("disabled");
+                        button.prop("disabled", false);
                         button.children("span").addClass("hidden");
                     })
+                    .always(function() {
+                        ResetSpinners();
+                    });
                 }
             });
 
