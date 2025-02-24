@@ -55,7 +55,6 @@ __metadata:
     "@fortawesome/fontawesome-free": "npm:^5.15.4"
     "@popperjs/core": "npm:^2.11.8"
     bootstrap: "npm:^5.3.3"
-    bootstrap-select: "npm:^1.13.18"
     commonmark: "npm:^0.31.2"
     jquery: "npm:^3.7.1"
     jquery-validation: "npm:^1.21.0"
@@ -66,16 +65,6 @@ __metadata:
     tom-select: "npm:^2.4.2"
   languageName: unknown
   linkType: soft
-
-"bootstrap-select@npm:^1.13.18":
-  version: 1.13.18
-  resolution: "bootstrap-select@npm:1.13.18"
-  peerDependencies:
-    bootstrap: ">=3.0.0"
-    jquery: 1.9.1 - 3
-  checksum: 10/660f1fdf826ccd2093ba4597406a664808e95fe34efb0a22ca85171ab6b902d7637fc649577d131c192a9c4dddb480ab1ba2132f8d0941f0d74760391909ec9a
-  languageName: node
-  linkType: hard
 
 "bootstrap@npm:^5.3.3":
   version: 5.3.3

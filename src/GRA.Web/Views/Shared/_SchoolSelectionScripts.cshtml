@@ -1,48 +1,58 @@
 ﻿@model GRA.Controllers.ViewModel.Shared.SchoolSelectionViewModel
 
+<script>
+    const schoolIdField = $("#SchoolId");
+    const schoolNotListedCheckbox = $("#SchoolNotListed");
+    const homeschoolCheckbox = $("#IsHomeschooled");
+    var schoolIdSelect;
+
+    homeschoolCheckbox.on("change", function () {
+        if ($(this).prop("checked")) {
+            schoolIdSelect.disable();
+            schoolNotListedCheckbox.prop("checked", false);
+            schoolIdField.prop("disabled", true);
+            schoolIdField.parent().addClass("disabled");
+            schoolIdField.siblings("button").addClass("disabled");
+        }
+        else if (schoolNotListedCheckbox.prop("checked") == false) {
+            schoolIdSelect.enable();
+            schoolIdField.prop("disabled", false);
+            schoolIdField.parent().removeClass("disabled");
+            schoolIdField.siblings("button").removeClass("disabled");
+        }
+    });
+
+    schoolNotListedCheckbox.on("change", function () {
+        if ($(this).prop("checked")) {
+            schoolIdSelect.disable();
+            homeschoolCheckbox.prop("checked", false);
+            schoolIdField.prop("disabled", true);
+            schoolIdField.parent().addClass("disabled");
+            schoolIdField.siblings("button").addClass("disabled");
+        }
+        else if (homeschoolCheckbox.prop("checked") == false) {
+            schoolIdSelect.enable();
+            schoolIdField.prop("disabled", false);
+            schoolIdField.parent().removeClass("disabled");
+            schoolIdField.siblings("button").removeClass("disabled");
+        }
+    });
+
+    $(function() {
+        schoolIdSelect = new TomSelect("#SchoolId",{
+            create: false,
+            maxOptions: @(Model.SchoolList?.Count() ?? 1200)
+        });
+    });
+</script>
+
 @if (Model.IsHomeschooled || Model.SchoolNotListed)
 {
     <script>
         $(function () {
-            var school = $("#SchoolId");
-            school.attr("disabled", "disabled");
-            school.siblings("button").addClass("disabled");
+            schoolIdSelect.disable();
+            schoolIdField.attr("disabled", "disabled");
+            schoolIdField.siblings("button").addClass("disabled");
         });
     </script>
 }
-
-<script>
-    $("#IsHomeschooled").on("change", function () {
-        var school = $("#SchoolId");
-        var schoolNotListed = $("#SchoolNotListed");
-        if ($(this).prop("checked")) {
-            schoolNotListed.prop("checked", false);
-            school.attr("disabled", "disabled");
-            school.parent().addClass("disabled");
-            school.siblings("button").addClass("disabled");
-            school.selectpicker("val", "");
-        }
-        else if (schoolNotListed.prop("checked") == false) {
-            school.attr("disabled", null);
-            school.parent().removeClass("disabled");
-            school.siblings("button").removeClass("disabled");
-        }
-    });
-
-    $("#SchoolNotListed").on("change", function () {
-        var school = $("#SchoolId");
-        var homeschoolCheckbox = $("#IsHomeschooled");
-        if ($(this).prop("checked")) {
-            homeschoolCheckbox.prop("checked", false);
-            school.attr("disabled", "disabled");
-            school.parent().addClass("disabled");
-            school.siblings("button").addClass("disabled");
-            school.selectpicker("val", "");
-        }
-        else if (homeschoolCheckbox.prop("checked") == false) {
-            school.attr("disabled", null);
-            school.parent().removeClass("disabled");
-            school.siblings("button").removeClass("disabled");
-        }
-    });
-</script>

@@ -389,7 +389,6 @@ namespace GRA.Web
                     "js/bootstrap.js",
                     "js/moment.min.js",
                     "js/moment-timezone.min.js",
-                    "js/bootstrap-select.js",
                     "js/tom-select.complete.js",
                     "Scripts/gra.js").UseContentRoot();
                 // this tool cannot currently minify tempus-dominus.js
@@ -416,7 +415,6 @@ namespace GRA.Web
                     "css/all.css",
                     "css/v4-shims.css",
                     "css/bootstrap-datetimepicker.css",
-                    "css/bootstrap-select.css",
                     "css/tempus-dominus.css",
                     "css/tom-select.bootstrap5.css",
                     "Styles/gra.css").UseContentRoot();
