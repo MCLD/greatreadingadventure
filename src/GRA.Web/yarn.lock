@@ -62,7 +62,7 @@ __metadata:
     moment: "npm:^2.30.1"
     moment-timezone: "npm:^0.5.47"
     slick-carousel: "npm:^1.8.1"
-    tom-select: "npm:^2.4.2"
+    tom-select: "npm:^2.4.3"
   languageName: unknown
   linkType: soft
 
@@ -183,12 +183,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tom-select@npm:^2.4.2":
-  version: 2.4.2
-  resolution: "tom-select@npm:2.4.2"
+"tom-select@npm:^2.4.3":
+  version: 2.4.3
+  resolution: "tom-select@npm:2.4.3"
   dependencies:
     "@orchidjs/sifter": "npm:^1.1.0"
     "@orchidjs/unicode-variants": "npm:^1.1.2"
-  checksum: 10/d8cef94553291421d0d04c771aaa319db415a7ba38693713cdacd8aad46fc8808d1594d04ec94da9371c733393e0103367cb1538ac3c18014c80559c78bfbee9
+  checksum: 10/f2321eb8099186c45e015d812aa4943a0311fb56012f62a3a8a8b7cbd2a862771d67320272bc431efef0afe56838715b9039904085aab1b43d954ff8aee729d8
   languageName: node
   linkType: hard
