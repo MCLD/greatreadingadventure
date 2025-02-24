@@ -1,21 +1,27 @@
 ﻿@model GRA.Controllers.ViewModel.Shared.SchoolSelectionViewModel
 
 
-<div id="schoolGroup" class="row row-spacing">
+<div id="schoolGroup" class="row mb-3">
     <div class="col-12">
         <label class="col-form-label">@SharedLocalizer[GRA.Domain.Model.DisplayNames.School]</label>
-        <select asp-for="SchoolId" asp-items="Model.SchoolList" class="form-select" data-live-search="true" data-none-selected-text="">
+        <select asp-for="SchoolId"
+                asp-items="Model.SchoolList"
+                class="form-select">
             <option></option>
         </select>
         <span asp-validation-for="SchoolId" class="text-danger"></span>
     </div>
 </div>
 
-<div class="row row-spacing">
+<div class="row mb-3">
     <div class="col-12">
         <input asp-for="IsHomeschooled" class="school-selection-checkbox" />
-        <label asp-for="IsHomeschooled">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Homeschooled]</label>
+        <label asp-for="IsHomeschooled">
+            @SharedLocalizer[GRA.Domain.Model.DisplayNames.Homeschooled]
+        </label>
         <input asp-for="SchoolNotListed" class="school-selection-checkbox" />
-        <label asp-for="SchoolNotListed">@SharedLocalizer[GRA.Domain.Model.DisplayNames.SchoolNotListed]</label>
+        <label asp-for="SchoolNotListed">
+            @SharedLocalizer[GRA.Domain.Model.DisplayNames.SchoolNotListed]
+        </label>
     </div>
 </div>
