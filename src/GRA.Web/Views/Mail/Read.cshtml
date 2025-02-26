@@ -5,8 +5,7 @@
         <div class="card">
             <div class="card-header">
                 <span class="lead fw-bold">
-                    @SharedLocalizer[GRA.Annotations.Interface.SentOn,
-                             Model.CreatedAt.ToString("d")]
+                    @SharedLocalizer[GRA.Annotations.Interface.SentOn, Model.CreatedAt.ToString("d")]
                 </span>
             </div>
             <div class="card-body">
@@ -30,19 +29,20 @@
                 <div>
                     @if (Model.CanParticipantDelete)
                     {
-                        <div style="display: inline-block">
+                        <div class="me-2">
                             <form asp-controller="Mail" method="post" role="form">
                                 <input asp-for="Id" type="hidden" />
                                 <button type="submit"
                                         id="Delete"
                                         asp-action="Delete"
-                                        class="btn btn-outline-danger"
-                                        style="margin-right: 12px;">
+                                        class="btn btn-outline-danger">
                                     @SharedLocalizer[GRA.Annotations.Title.DeleteMail]
                                 </button>
                             </form>
                         </div>
                     }
+                </div>
+                <div>
                     <a asp-action="Reply" asp-route-id="@Model.Id" class="btn btn-outline-primary">
                         @SharedLocalizer[GRA.Annotations.Interface.Reply]
                     </a>
@@ -63,35 +63,36 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title h4" id="deleteModalLabel">
+                        @SharedLocalizer[GRA.Annotations.Title.DeleteMail]
                         <button type="button"
                                 class="btn-close"
                                 data-bs-dismiss="modal"
-                                aria-label="Close">
-                        </button>
-                        @SharedLocalizer[GRA.Annotations.Title.DeleteMail]
+                                aria-label="Close"></button>
                     </h1>
                 </div>
-                <div class="modal-body">
-                    <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
-                    <span id="modal-text">
-                        @SharedLocalizer[GRA.Annotations.Interface.DeleteMail, Model.Subject]
-                    </span>
+                <div class="modal-body p-0">
+                    <div class="modal-body d-flex align-items-stretch">
+                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                              aria-hidden="true"></span>
+                        <span id="modal-text">
+                            @SharedLocalizer[GRA.Annotations.Interface.DeleteMail, Model.Subject]
+                        </span>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button"
                             class="btn btn-outline-secondary"
-                            data-bs-dismiss="modal"
-                            style="margin-right: 1em;">
+                            data-bs-dismiss="modal">
                         @SharedLocalizer[GRA.Annotations.Interface.Cancel]
                     </button>
                     <form asp-controller="Mail"
                           asp-action="Delete"
                           method="post"
-                          role="form"
-                          style="display:inline">
+                          role="form">
                         <input asp-for="Id" type="hidden" />
                         <button type="submit"
-                                class="btn btn-danger float-end"
+                                class="btn btn-danger"
+                                button-spinner
                                 aria-label="Confirm">
                             <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                             @SharedLocalizer[GRA.Annotations.Interface.Delete]

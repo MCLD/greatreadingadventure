@@ -32,7 +32,8 @@ namespace GRA.Controllers.ViewModel.Home
         {
             get
             {
-                return User.VendorOrderStatus > VendorOrderStatus.Pending
+                return User != null
+                    && User.VendorOrderStatus > VendorOrderStatus.Pending
                     && User.VendorOrderStatus < VendorOrderStatus.Received;
             }
         }

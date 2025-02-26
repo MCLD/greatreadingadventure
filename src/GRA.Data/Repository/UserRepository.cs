@@ -812,7 +812,8 @@ namespace GRA.Data.Repository
                     v => v.UserId,
                     (u, v) => new { u, v })
                     .Where(_ => _.v.VendorCodeTypeId == criterion.VendorCodeTypeId.Value
-                        && _.v.IsDonated == true)
+                        && _.v.IsDonated == true
+                        && !_.v.ReassignedByUserId.HasValue)
                     .Select(_ => _.u);
             }
 

@@ -236,7 +236,8 @@ namespace GRA.Data.Repository
                             code.ValidityReason = "Deactivated code, this participant has a different active code.";
                             if (!string.IsNullOrEmpty(code.ReasonForReassignment))
                             {
-                                code.ValidityReason += " Deactivation reason: " + code.ReasonForReassignment;
+                                code.ValidityReason
+                                    += $" Deactivation reason: {code.ReasonForReassignment}";
                             }
                         }
                     }
@@ -290,8 +291,9 @@ namespace GRA.Data.Repository
                 validUsers = validUsers.Where(_ => _.ProgramId == criterion.ProgramId.Value);
             }
 
-            return await (from vendorCodes in DbSet.AsNoTracking()
-                            .Where(_ => _.UserId.HasValue && _.SiteId == criterion.SiteId)
+            return await (from vendorCodes in DbSet.AsNoTracking().Where(_ => _.UserId.HasValue
+                            && _.SiteId == criterion.SiteId
+                            && !_.ReassignedByUserId.HasValue)
                           join users in validUsers
                           on vendorCodes.UserId equals users.Id
                           select vendorCodes)
@@ -368,7 +370,8 @@ namespace GRA.Data.Repository
         {
             var householdUsers = _context.Users
                 .AsNoTracking()
-                .Where(_ => _.Id == headOfHouseholdId || _.HouseholdHeadUserId == headOfHouseholdId);
+                .Where(_ => _.Id == headOfHouseholdId
+                    || _.HouseholdHeadUserId == headOfHouseholdId);
 
             return await DbSet.AsNoTracking()
                 .Where(_ => _.UserId.HasValue && _.IsDonated == null && _.IsEmailAward == null)
@@ -384,14 +387,18 @@ namespace GRA.Data.Repository
         {
             var shippedNotArrived = await DbSet
                 .AsNoTracking()
-                .Where(_ => _.ShipDate != null && _.ArrivalDate == null)
+                .Where(_ => _.ShipDate != null
+                    && _.ArrivalDate == null
+                    && !_.ReassignedByUserId.HasValue)
                 .GroupBy(_ => _.BranchId)
                 .Select(_ => new { BranchId = _.Key, Count = _.Count() })
                 .ToDictionaryAsync(k => k.BranchId, v => v.Count);
 
             var orderedNotShipped = await DbSet
                 .AsNoTracking()
-                .Where(_ => _.OrderDate != null && _.ShipDate == null)
+                .Where(_ => _.OrderDate != null
+                    && _.ShipDate == null
+                    && !_.ReassignedByUserId.HasValue)
                 .GroupBy(_ => _.BranchId)
                 .Select(_ => new { BranchId = _.Key, Count = _.Count() })
                 .ToDictionaryAsync(k => k.BranchId, v => v.Count);
@@ -443,19 +450,30 @@ namespace GRA.Data.Repository
         {
             var all = DbSet.AsNoTracking();
 
-            if (!await all.AnyAsync())
+            var allCount = await all.CountAsync();
+
+            if (allCount == 0)
             {
                 return new VendorCodeStatus();
             }
 
-            var assigned = all.Where(_ => _.IsAssigned);
+            var assigned = all.Join(_context.Users,
+                    v => v.UserId,
+                    u => u.Id,
+                    (v, u) => new { v, u })
+                .Where(_ => _.v.IsAssigned && !_.u.IsDeleted)
+                .Select(_ => _.v);
             var emailAwards = assigned.Where(_ => _.IsEmailAward == true && _.IsDonated != true);
             var vendorAwards = assigned.Where(_ => _.IsEmailAward != true && _.IsDonated != true);
 
             return new VendorCodeStatus
             {
-                AssignedCodes = await assigned.CountAsync(),
-                Donated = await assigned.CountAsync(_ => _.IsDonated == true),
+                All = allCount,
+                Arrived = await vendorAwards.CountAsync(_ => _.ArrivalDate != null
+                    && !_.ReassignedByUserId.HasValue),
+                AssignedCodes = await assigned.CountAsync(_ => !_.ReassignedByUserId.HasValue),
+                Donated = await assigned.CountAsync(_ => _.IsDonated == true
+                    && !_.ReassignedByUserId.HasValue),
                 IsConfigured = true,
                 EmailAwardSelected = await emailAwards.CountAsync(),
                 EmailAwardDownloadedInReport = await emailAwards
@@ -463,12 +481,18 @@ namespace GRA.Data.Repository
                 EmailAwardPendingDownload = await emailAwards
                     .CountAsync(_ => _.EmailAwardReported == null),
                 EmailAwardSent = await emailAwards.CountAsync(_ => _.EmailAwardSent != null),
-                NoStatus = await vendorAwards.CountAsync(_ => _.ShipDate == null
-                    && _.OrderDate == null),
-                Ordered = await vendorAwards.CountAsync(_ => _.OrderDate != null),
-                Shipped = await vendorAwards.CountAsync(_ => _.ShipDate != null),
-                UnusedCodes = await all.CountAsync(_ => !_.IsAssigned),
-                VendorSelected = await vendorAwards.CountAsync()
+                NoStatus = await vendorAwards.CountAsync(_ => _.ArrivalDate == null
+                    && _.ShipDate == null
+                    && _.OrderDate == null
+                    && !_.ReassignedByUserId.HasValue),
+                Ordered = await vendorAwards.CountAsync(_ => _.OrderDate != null
+                    && !_.ReassignedByUserId.HasValue),
+                ReassignedCodes = await assigned.CountAsync(_ => _.ReassignedByUserId.HasValue),
+                Shipped = await vendorAwards.CountAsync(_ => _.ShipDate != null
+                    && !_.ReassignedByUserId.HasValue),
+                UnusedCodes = await all.CountAsync(_ => !_.IsAssigned
+                    && !_.ReassignedByUserId.HasValue),
+                VendorSelected = await vendorAwards.CountAsync(_ => !_.ReassignedByUserId.HasValue)
             };
         }
 
