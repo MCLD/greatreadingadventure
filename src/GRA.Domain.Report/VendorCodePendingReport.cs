@@ -74,9 +74,12 @@ namespace GRA.Domain.Report
                 "Shipped, not arrived"
             };
 
-            int count = 0;
+            var count = 0;
 
             var remainingPrizes = await _vendorCodeRepository.GetPendingPrizesPickupBranch();
+
+            var totalOrderedNotShipped = 0;
+            var totalShippedNotArrived = 0;
 
             foreach (var prize in remainingPrizes)
             {
@@ -97,9 +100,20 @@ namespace GRA.Domain.Report
                    prize.OrderedNotShipped,
                    prize.ShippedNotArrived
                 });
+
+                totalOrderedNotShipped += prize.OrderedNotShipped;
+                totalShippedNotArrived += prize.ShippedNotArrived;
             }
 
             report.Data = reportData.ToArray();
+
+            report.FooterRow = new object[]
+            {
+                    "Total",
+                    "",
+                    totalOrderedNotShipped,
+                    totalShippedNotArrived
+            };
 
             #endregion Collect data
 

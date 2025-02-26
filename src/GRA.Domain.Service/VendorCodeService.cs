@@ -463,14 +463,15 @@ namespace GRA.Domain.Service
                 user.EmailAwarded = vendorCodeInfo.IsEmailAwarded;
                 user.EmailAwardInstructions = vendorCodeInfo.EmailAwardInstructions;
                 user.IsDonationLocked = vendorCodeInfo.IsDonationLocked;
-                user.NeedsToAnswerVendorCodeQuestion = vendorCodeInfo.NeedsToAnswerVendorCodeQuestion;
-                user.VendorOrderStatus = vendorCodeInfo.OrderStatus;
+                user.NeedsToAnswerVendorCodeQuestion
+                    = vendorCodeInfo.NeedsToAnswerVendorCodeQuestion;
                 user.VendorCode = vendorCodeInfo.VendorCodeDisplay;
                 user.VendorCodeMessage = vendorCodeInfo.VendorCodeMessage;
                 user.VendorCodePackingSlip = vendorCodeInfo.VendorCodePackingSlip;
                 user.VendorCodeUrl = vendorCodeInfo.VendorCodeUrl;
                 user.VendorIsDamaged = vendorCodeInfo.IsDamaged;
                 user.VendorIsMissing = vendorCodeInfo.IsMissing;
+                user.VendorOrderStatus = vendorCodeInfo.OrderStatus;
             }
         }
 
@@ -713,7 +714,8 @@ namespace GRA.Domain.Service
 
                 if (_dateTimeProvider.Now >= vendorCodeType.ExpirationDate)
                 {
-                    _logger.LogError("Vendor code {VendorCodeTypeId} has expired.", vendorCodeType.Id);
+                    _logger.LogError("Vendor code {VendorCodeTypeId} has expired.",
+                        vendorCodeType.Id);
                     throw new GraException("The code you are trying to redeem has expired.");
                 }
 
@@ -1064,7 +1066,8 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError("User {UserId} doesn't have permission to import email award code statuses.", requestingUser);
+                _logger.LogError("User {UserId} doesn't have permission to import email award code statuses.",
+                    requestingUser);
                 return new JobStatus
                 {
                     PercentComplete = 0,
@@ -1787,7 +1790,7 @@ namespace GRA.Domain.Service
         }
 
         private async Task<IEnumerable<VendorCode>> GetUserVendorCodesAsync(int userId,
-                                                                                                                                                                            bool multiple)
+            bool multiple)
         {
             var authorized = false;
             var authId = GetClaimId(ClaimType.UserId);

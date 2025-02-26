@@ -135,31 +135,31 @@
                         <button type="button"
                                 class="btn-close"
                                 data-bs-dismiss="modal"
-                                aria-label="Close dialog">
-                            
-                        </button>
+                                aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
-                        <span id="modal-text">
-                            Are you sure you wish to delete the mail "@Model.Mail.Subject" ?
-                        </span>
+                    <div class="modal-body p-0">
+                        <div class="modal-body d-flex align-items-stretch">
+                            <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                                  aria-hidden="true"></span>
+                            <span id="modal-text">
+                                Are you sure you wish to delete the mail:
+                                <strong>@Model.Mail.Subject</strong>?
+                            </span>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button"
                                 class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal"
-                                style="margin-right: 1em;">
+                                data-bs-dismiss="modal">
                             Cancel
                         </button>
                         <form asp-controller="Mail"
                               asp-action="Delete"
                               method="post"
-                              role="form"
-                              style="display:inline">
+                              role="form">
                             <input asp-for="Mail.Id" name="Id" type="hidden" />
                             <button type="submit"
-                                    class="btn btn-outline-danger float-end"
+                                    class="btn btn-outline-danger"
                                     aria-label="Confirm">
                                 <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                                 Delete
