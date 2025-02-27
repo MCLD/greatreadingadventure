@@ -249,6 +249,7 @@
                                            asp-route-Categories="@Model.Categories"
                                            asp-route-Status="@Model.Status"
                                            asp-route-Favorites="@(Model.Favorites == true ? "False" : "True")"
+                                           asp-route-Find="True"
                                            class="btn @(Model.Favorites == true ? "btn-outline-success" : "btn-outline-secondary")">
                                             <span class="@(Model.Favorites == true ? "fas" : "far") fa-star fa-fw"></span>
                                             @SharedLocalizer[GRA.Annotations.Interface.MyFavorites]
@@ -411,14 +412,14 @@
 
 @section scripts {
     <script>
-        const favoriteUrl = "@Url.Action("UpdateSingleFavorite")";
+        const favoriteUrl = "@Url.Action(nameof(ChallengesController.UpdateSingleFavorite))";
         const showFavorites = "@Model.Favorites" === "True";
 
-        $("#CategoryIds").removeAttr("disabled");
+        $("#CategoryIds").prop("disabled", false);
         $("#CategoryPlaceholder").remove();
 
         $("#searchForm").on("submit", function () {
-            var categoryIds = $("#CategoryIds option:selected")
+            let categoryIds = $("#CategoryIds option:selected")
                 .map(function (a, item) { return item.value; })
                 .get();
 
@@ -433,38 +434,35 @@
         });
 
         $(".favorite-button").on("click", function () {
-            var button = $(this);
+            let button = $(this);
             if (button.hasClass("fa-spinner") == false) {
                 button.removeClass("far fa-star").addClass("fas fa-spinner fa-pulse");
-                var favorite = button.data("favorite") == "False";
-
+                let favorite = button.data("favorite") == "False";
                 $.post(favoriteUrl, { challengeId: button.data("challengeid"), favorite: favorite },
                     function (response) {
-                        setTimeout(function () {
-                            if (response.success) {
-                                if (response.favorite) {
-                                    button.addClass("fa-star");
-                                    button.data("favorite", "True");
-                                }
-                                else {
-                                    if (showFavorites) {
-                                        button.parent().parent().remove();
-                                    }
-                                    else {
-                                        button.removeClass("fas");
-                                        button.addClass("far fa-star");
-                                        button.data("favorite", "False");
-                                    }
-                                }
-                                button.removeClass("fa-spinner fa-pulse").css("transform", "none");
+                        if (response.success) {
+                            if (response.favorite) {
+                                button.addClass("fa-star");
+                                button.data("favorite", "True");
                             }
                             else {
-                                button.addClass("fa-exclamation-triangle")
-                                    .removeClass("fa-spinner fa-pulse")
-                                    .css("transform", "none");
-                                alert(response.message);
+                                if (showFavorites) {
+                                    location.reload();
+                                }
+                                else {
+                                    button.removeClass("fas");
+                                    button.addClass("far fa-star");
+                                    button.data("favorite", "False");
+                                }
                             }
-                        }, 500);
+                            button.removeClass("fa-spinner fa-pulse").css("transform", "none");
+                        }
+                        else {
+                            button.addClass("fa-exclamation-triangle")
+                                .removeClass("fa-spinner fa-pulse")
+                                .css("transform", "none");
+                            alert(response.message);
+                        }
                 });
             }
         });

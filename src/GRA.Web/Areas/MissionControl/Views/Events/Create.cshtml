@@ -123,20 +123,23 @@
                     View library list
                 </a>
             </label>
-            <div style="display:flex">
-                <select asp-for="Event.AtLocationId"
-                        asp-items="Model.LocationList"
-                        class="form-select">
-                </select>
+            <div class="d-flex align-items-center">
+                <div class="flex-grow-1">
+                    <select asp-for="Event.AtLocationId"
+                            asp-items="Model.LocationList"
+                            class="form-select">
+                    </select>
+                </div>
                 @if (Model.CanManageLocations)
                 {
-                    <button type="button"
-                            class="btn btn-outline-primary btn-sm"
-                            style="margin-left:8px;"
-                            data-bs-toggle="modal"
-                            data-bs-target="#addModal">
-                        <span class="fas fa-2x fa-plus"></span>
-                    </button>
+                    <div>
+                        <button type="button"
+                                class="btn btn-outline-primary btn-sm ms-2"
+                                data-bs-toggle="modal"
+                                data-bs-target="#addModal">
+                            <span class="fas fa-fw fa-plus"></span>
+                        </button>
+                    </div>
                 }
             </div>
             <span asp-validation-for="Event.AtLocationId" class="text-danger"></span>
@@ -326,7 +329,7 @@
                                     </button>
                                 </div>
                                 <span asp-validation-for="BadgeUploadImage" class="text-danger mb-3"></span>
-                                <div action="mb-3">
+                                <div class="mb-3">
                                     <label asp-for="BadgeAltText" class="col-form-label"></label>
                                     <span class="fas fa-info-circle wide-tooltip"
                                           title="How should this badge be described to someone who can't see it?"
@@ -580,76 +583,78 @@
 
 @if (Model.CanManageLocations)
 {
-    <div class="modal fade"
-         id="addModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="addModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title h4" id="addModalLabel">Add location</h1>
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close dialog">
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label asp-for="Location.Name" class="col-form-label"></label>
-                        <input asp-for="Location.Name" class="form-control" />
-                        <span asp-validation-for="Location.Name"
-                              class="text-danger"></span>
+    <form id="addLocationForm">
+        <div class="modal fade"
+             id="addModal"
+             tabindex="-1"
+             role="dialog"
+             aria-labelledby="addModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title h4" id="addModalLabel">Add location</h1>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close dialog">
+                        </button>
                     </div>
-                    <div class="mb-3">
-                        <label asp-for="Location.Address"
-                               class="col-form-label">
-                            Address (include city, state and zip)
-                        </label>
-                        <input asp-for="Location.Address"
-                               class="form-control addressInput" />
-                        <span asp-validation-for="Location.Address"
-                              class="text-danger"></span>
-                    </div>
-                    @if (Model.ShowGeolocation)
-                    {
-                        <div class="mb-3 hide mapContainer">
-                            <iframe height="180"
-                                    width="400"
-                                    frameborder="0"
-                                    style="border:0"></iframe>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label asp-for="Location.Name" class="col-form-label"></label>
+                            <input asp-for="Location.Name" class="form-control" />
+                            <span asp-validation-for="Location.Name"
+                                  class="text-danger"></span>
                         </div>
-                    }
-                    <div class="mb-3">
-                        <label asp-for="Location.Url" class="col-form-label"></label>
-                        <input asp-for="Location.Url" class="form-control" />
-                        <span asp-validation-for="Location.Url" class="text-danger"></span>
+                        <div class="mb-3">
+                            <label asp-for="Location.Address"
+                                   class="col-form-label">
+                                Address (include city, state and zip)
+                            </label>
+                            <input asp-for="Location.Address"
+                                   class="form-control addressInput" />
+                            <span asp-validation-for="Location.Address"
+                                  class="text-danger"></span>
+                        </div>
+                        @if (Model.ShowGeolocation)
+                        {
+                            <div class="mb-3 hide mapContainer">
+                                <iframe height="180"
+                                        width="400"
+                                        frameborder="0"
+                                        style="border:0"></iframe>
+                            </div>
+                        }
+                        <div class="mb-3">
+                            <label asp-for="Location.Url" class="col-form-label"></label>
+                            <input asp-for="Location.Url" type="url" class="form-control" />
+                            <span asp-validation-for="Location.Url" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Location.Telephone" class="col-form-label"></label>
+                            <input asp-for="Location.Telephone" type="tel" class="form-control" />
+                            <span asp-validation-for="Location.Telephone"
+                                  class="text-danger"></span>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label asp-for="Location.Telephone" class="col-form-label"></label>
-                        <input asp-for="Location.Telephone" class="form-control" />
-                        <span asp-validation-for="Location.Telephone"
-                              class="text-danger"></span>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button id="addLocation"
+                                type="button"
+                                class="btn btn-outline-primary float-end"
+                                aria-label="Confirm">
+                            Add
+                        </button>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-outline-secondary"
-                            data-bs-dismiss="modal"
-                            style="margin-right: 1em;">
-                        Cancel
-                    </button>
-                    <button id="addLocation"
-                            type="button"
-                            class="btn btn-outline-primary float-end"
-                            aria-label="Confirm">
-                        Add
-                    </button>
                 </div>
             </div>
         </div>
-    </div>
+    </form>
 }
 
 @section scripts {
@@ -757,18 +762,19 @@
     @if (Model.CanManageLocations)
     {
         <script>
+            const addLocationUrl = "@Url.Action(nameof(EventsController.AddLocationReturnList), EventsController.Name)";
+
             $(document).on("click", "#addLocation", function () {
                 let name = $("#Location_Name");
                 let address = $("#Location_Address")
-                name.valid();
-                address.valid();
+                name.validate();
+                address.validate();
+
                 if (name.valid() && address.valid()) {
-                    let address = $("#Location_Address");
-                    let jsonUrl = "@Url.Action(nameof(EventsController.AddLocationReturnList), EventsController.Name)";
                     let locationList = $("#Event_AtLocationId");
                     let telephone = $("#Location_Telephone");
                     let url = $("#Location_Url");
-                    $.getJSON(jsonUrl, {
+                    $.getJSON(addLocationUrl, {
                         name: name.val(),
                         address: address.val(),
                         url: url.val(),
@@ -777,7 +783,7 @@
                         if (response.success == true) {
                             locationList.empty();
                             locationList.append(new Option("", ""));
-                            $.each(response.data, function (index, item) {
+                            $.each(response.data, function (_, item) {
                                 locationList.append(new Option(item.text,
                                     item.value,
                                     item.selected,
@@ -804,7 +810,7 @@
         @if (Model.ShowGeolocation)
         {
             <script>
-                let mapsUrl = "https://www.google.com/maps/embed/v1/place?key=@Model.GoogleMapsAPIKey&q=";
+                const mapsUrl = "https://www.google.com/maps/embed/v1/place?key=@Model.GoogleMapsAPIKey&q=";
 
                 $(".addressInput").on("change", function () {
                     let input = $(this);
@@ -867,9 +873,10 @@
                 $('#selectedFile').val('');
             });
 
+            const codeCheckUrl = "@Url.Action(nameof(LookupController.SecretCodeInUse), LookupController.Name)";
+
             $("#SecretCode").on("blur", function () {
                 if ($(this).val() != "" && !$(this).hasClass("input-validation-error")) {
-                    let codeCheckUrl = "@Url.Action(nameof(LookupController.SecretCodeInUse), LookupController.Name)";
                     let icon = $("#SecretCode-Icon");
                     icon.removeClass("d-none fa-times fa-check");
                     icon.addClass("fa-spinner fa-spin");
@@ -910,11 +917,11 @@
             var challengeScope = "All";
             var challengeSearch = "";
             var challengesLoaded = false;
-            var challengesUrl = "@Url.Action(nameof(LookupController.GetChallengeList), LookupController.Name)";
+            const challengesUrl = "@Url.Action(nameof(LookupController.GetChallengeList), LookupController.Name)";
             var groupPage = 1;
             var groupSearch = "";
             var groupsLoaded = false;
-            var groupsUrl = "@Url.Action(nameof(LookupController.GetChallengeGroupList), LookupController.Name)";
+            const groupsUrl = "@Url.Action(nameof(LookupController.GetChallengeGroupList), LookupController.Name)";
 
             function UpdateChallengeList() {
                 $.get(challengesUrl,
@@ -1078,13 +1085,13 @@
                 }
             });
 
-            $().ready(function () {
+            $(function () {
                 $('.event-name-field').first().focus();
                 if ($("#Event_AtBranchId>option").length === 2
                     && $("#Event_AtBranchId>option:eq(0)").val() === "") {
                     $("#Event_AtBranchId>option:eq(1)").prop('selected', true);
                 }
-            })
+            });
         </script>
     }
 }
