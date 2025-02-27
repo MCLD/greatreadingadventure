@@ -758,6 +758,12 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
+                _logger.LogInformation("Message for code {Code} language {LanguageId} item {Item}: {Text}",
+                    vendorCodeTypeId,
+                    languageId,
+                    item,
+                    text);
+
                 if (string.IsNullOrEmpty(item))
                 {
                     throw new GraException("Pop-up message to change not specified.");

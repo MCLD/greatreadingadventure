@@ -55,7 +55,19 @@
         <div class="col-12">
             <small>
                 <em>
-                    To remove a category: select it and use your backspace or delete key.
+                    @if (Model.CategoryList?.Any() == true)
+                    {
+                        <span>To remove a category: select it and use your backspace or delete key.</span>
+                    }
+                    else
+                    {
+                        <span>
+                            There are no categories configured. You must
+                            <a asp-action="@nameof(SitesController.Index)"
+                               asp-controller="@GRA.Controllers.MissionControl.SitesController.Name">configure categories</a>
+                            if you wish to add them to this challenge.
+                        </span>
+                    }
                 </em>
             </small>
         </div>
@@ -139,7 +151,7 @@
                 </button>
             </div>
             <span asp-validation-for="BadgeUploadImage" class="text-danger mb-3"></span>
-            <div action="mb-3">
+            <div class="mb-3">
                 <label asp-for="BadgeAltText" class="col-form-label"></label>
                 <span class="fas fa-info-circle wide-tooltip"
                       title="How should this badge be described to someone who can't see it?"
@@ -243,29 +255,6 @@
                 }
             });
 
-        @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
-        {
-            <text>
-                        $("#saveChallenge").on("click",function(e) {
-                            e.preventDefault();
-                                                                                    if ($("#Challenge_PointsAwarded").val() / $("#Challenge_TasksToComplete").val() > @Model.MaxPointLimit) {
-                            $('#warningModal').modal("show");
-                                                                                    }
-                        else {
-                            $("#challengeForm").submit();
-                                                                                    }
-                                                                                });
-
-                        $("#warningSave").on("click", function () {
-                            $("#challengeForm").submit();
-                                                                                });
-
-                        $("#warningModal").on("hide.bs.modal", function () {
-                            ResetSpinners($("#saveChallenge"));
-                                                                                });
-            </text>
-        }
-
                 $('#clearFile').on("click", function () {
                     $('#BadgeUploadImage').val('');
                     $('.btn-file').addClass('btn-outline-secondary');
@@ -316,4 +305,26 @@
             });
         });
     </script>
+
+    @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
+    {
+        <script>
+            $("#saveChallenge").on("click",function(e) {
+                e.preventDefault();
+                if ($("#Challenge_PointsAwarded").val() / $("#Challenge_TasksToComplete").val() > @Model.MaxPointLimit) {
+                    $('#warningModal').modal("show");
+                } else {
+                    $("#challengeForm").submit();
+                }
+            });
+
+            $("#warningSave").on("click", function () {
+                $("#challengeForm").submit();
+            });
+
+            $("#warningModal").on("hide.bs.modal", function () {
+                ResetSpinners($("#saveChallenge"));
+            });
+        </script>
+    }
 }

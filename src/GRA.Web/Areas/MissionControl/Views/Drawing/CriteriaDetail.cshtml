@@ -27,6 +27,28 @@
     </div>
 }
 
+<p>
+    To perform drawings, first configure a <strong>Drawing Criteria</strong> (this page),
+    then perform the <strong>Drawing.</strong>
+</p>
+<p>
+    Configure the <strong>Drawing Criteria</strong> here. This will limit the participants who are
+    entered into the pool to be eligible for the drawing. Fields which are left blank indicate that
+    participants are not filtered/limited by the criteria of those fields. For example:
+    <ul>
+        <li>
+            If you select a particular system or branch, only participants registered with that
+            system or branch will be eligible to win the drawing. If you do not select one then
+            participants from all systems and branches will be eligible.
+        </li>
+        <li>
+            If you select one or more age groups then only participants registered in the selected
+            age group(s) will be eligible to win the drawing. If you select all age groups it is
+            the same as selecting no age groups: participants from all groups will be eligible.
+        </li>
+    </ul>
+</p>
+
 <form asp-controller="@DrawingController.Name"
       asp-action="@nameof(DrawingController.CriteriaDetail)"
       method="post"
@@ -62,6 +84,7 @@
             <label asp-for="Criterion.ProgramId" class="col-form-label"></label>
             <select asp-for="Criterion.ProgramIds"
                     asp-items="Model.ProgramList"
+                    autocomplete="off"
                     class="form-select"
                     multiple="multiple"></select>
             <span asp-validation-for="Criterion.ProgramId" class="text-danger"></span>
@@ -183,6 +206,10 @@
                         item.selected))
                 });
             });
+        });
+
+        $(function() {
+            new TomSelect("#Criterion_ProgramIds");
         });
     </script>
 }

@@ -50,10 +50,7 @@
                     </tbody>
                 </table>
             </div>
-            @if (Model.PaginateModel.MaxPage > 1)
-            {
-                <paginate paginateModel="@Model.PaginateModel"></paginate>
-            }
+            <paginate paginateModel="@Model.PaginateModel"></paginate>
         }
     </div>
 </div>
@@ -74,28 +71,29 @@
                                 class="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="Close dialog">
-                            
                         </button>
                     </div>
-                    <div class="modal-body">
-                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
-                        <span id="modal-text"></span>
+                    <div class="modal-body p-0">
+                        <div class="modal-body d-flex align-items-stretch">
+                            <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                                  aria-hidden="true"></span>
+                            <span id="modal-text"></span>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button"
                                 class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal"
-                                style="margin-right: 1em;">
+                                data-bs-dismiss="modal">
                             Cancel
                         </button>
                         <form asp-controller="Mail"
                               asp-action="Delete"
                               method="post"
-                              role="form"
-                              style="display:inline">
+                              role="form">
                             <input id="Id" name="Id" type="hidden" />
                             <button type="submit"
-                                    class="btn btn-outline-danger float-end"
+                                    class="btn btn-outline-danger"
+                                    button-spinner
                                     aria-label="Confirm">
                                 <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                                 Delete
@@ -121,18 +119,18 @@
                 $(this).children("a.rowlink").height($(this).outerHeight());
             });
         });
-
-        @if (Model.CanDelete) {
-        <text>
-        $('#deleteModal').on('show.bs.modal', function(event) {
-            var button = $(event.relatedTarget);
-            var id = button.data('id');
-            var name = button.data('name');
-            var modal = $(this);
-            modal.find('#modal-text').text('Are you sure you wish to delete the mail "' + name + '" ?');
-            modal.find('#Id').val(id);
-        })
-        </text>
-        }
     </script>
+    @if (Model.CanDelete)
+    {
+        <script>
+            $('#deleteModal').on('show.bs.modal', function(event) {
+                let button = $(event.relatedTarget);
+                let id = button.data('id');
+                let name = button.data('name');
+                let modal = $(this);
+                modal.find('#modal-text').html('Are you sure you wish to delete the mail: <strong>' + name + '</strong>?');
+                modal.find('#Id').val(id);
+            });
+        </script>
+    }
 }

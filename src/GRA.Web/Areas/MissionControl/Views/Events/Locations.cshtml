@@ -104,8 +104,8 @@
          role="dialog"
          aria-labelledby="addModalLabel">
         <div class="modal-dialog modal-lg" role="document">
-            <form asp-action="AddLocation"
-                  asp-controller="Events"
+            <form asp-action="@nameof(EventsController.AddLocation)"
+                  asp-controller="@EventsController.Name"
                   class="d-inline"
                   method="post"
                   role="form">
@@ -140,12 +140,12 @@
                         }
                         <div class="mb-3">
                             <label asp-for="Location.Url" class="col-form-label"></label>
-                            <input asp-for="Location.Url" class="form-control" />
+                            <input asp-for="Location.Url" type="url" class="form-control" />
                             <span asp-validation-for="Location.Url" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
                             <label asp-for="Location.Telephone" class="col-form-label"></label>
-                            <input asp-for="Location.Telephone" class="form-control" />
+                            <input asp-for="Location.Telephone" type="tel" class="form-control" />
                             <span asp-validation-for="Location.Telephone"
                                   class="text-danger"></span>
                         </div>
@@ -175,8 +175,8 @@
          role="dialog"
          aria-labelledby="editModalLabel">
         <div class="modal-dialog modal-lg" role="document">
-            <form asp-action="EditLocation"
-                  asp-controller="Events"
+            <form asp-action="@nameof(EventsController.EditLocation)"
+                  asp-controller="@EventsController.Name"
                   class="d-inline"
                   method="post"
                   role="form">
@@ -268,8 +268,8 @@
                             data-bs-dismiss="modal">
                         Cancel
                     </button>
-                    <form asp-controller="Events"
-                          asp-action="DeleteLocation"
+                    <form asp-action="@nameof(EventsController.DeleteLocation)"
+                          asp-controller="@EventsController.Name"
                           method="post"
                           role="form"
                           style="display:inline">

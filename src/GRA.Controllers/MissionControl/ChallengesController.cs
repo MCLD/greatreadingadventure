@@ -68,7 +68,6 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Create()
         {
             var site = await GetCurrentSiteAsync();
-            var siteUrl = await _siteLookupService.GetSiteLinkAsync(site.Id);
             PageTitle = "Create Challenge";
 
             var viewModel = new ChallengesDetailViewModel
@@ -141,7 +140,7 @@ namespace GRA.Controllers.MissionControl
                 {
                     try
                     {
-                        using (var ms = new MemoryStream())
+                        await using (var ms = new MemoryStream())
                         {
                             await model.BadgeUploadImage.CopyToAsync(ms);
                             badgeBytes = ms.ToArray();
@@ -413,7 +412,7 @@ namespace GRA.Controllers.MissionControl
                 {
                     try
                     {
-                        using (var ms = new MemoryStream())
+                        await using (var ms = new MemoryStream())
                         {
                             await model.BadgeUploadImage.CopyToAsync(ms);
                             badgeBytes = ms.ToArray();
@@ -1162,6 +1161,13 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Edit Challenge Group";
             var challengeGroup = await _challengeService.GetGroupByIdAsync(id);
             var baseUrl = await _siteLookupService.GetSiteLinkAsync(GetCurrentSiteId());
+            var urlPath = Url.Action(nameof(Controllers.ChallengesController.List),
+                Controllers.ChallengesController.Name,
+                new
+                {
+                    area = "",
+                    id = challengeGroup.Stub
+                });
 
             var viewModel = new ChallengeGroupDetailViewModel()
             {
@@ -1170,7 +1176,7 @@ namespace GRA.Controllers.MissionControl
                 Action = nameof(EditGroup),
                 RelatedEvents = await _eventService.GetByChallengeGroupIdAsync(challengeGroup.Id),
                 CanManageEvents = UserHasPermission(Permission.ManageEvents),
-                GroupUrl = $"{baseUrl}{Url.Action("List", "Challenges", new { area = "", id = challengeGroup.Stub })}"
+                GroupUrl = new Uri(baseUrl, urlPath).ToString()
             };
 
             foreach (var challenge in viewModel.ChallengeGroup.Challenges)

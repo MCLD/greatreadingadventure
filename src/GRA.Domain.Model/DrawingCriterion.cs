@@ -34,7 +34,7 @@ namespace GRA.Domain.Model
         [DisplayName("Minimum Points")]
         public int? PointsMinimum { get; set; }
 
-        [DisplayName("Select age groups (use SHIFT or CTRL to select multiple items)")]
+        [DisplayName("Limit to age group(s)")]
         public int? ProgramId { get; set; }
 
         public ICollection<int> ProgramIds { get; set; }

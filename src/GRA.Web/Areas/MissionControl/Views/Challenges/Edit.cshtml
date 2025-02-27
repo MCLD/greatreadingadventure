@@ -645,7 +645,19 @@
         <div class="col-12">
             <small>
                 <em>
-                    To remove a category: select it and use your backspace or delete key.
+                    @if (Model.CategoryList?.Any() == true)
+                    {
+                        <span>To remove a category: select it and use your backspace or delete key.</span>
+                    }
+                    else
+                    {
+                        <span>
+                            There are no categories configured. You must
+                            <a asp-action="@nameof(SitesController.Index)"
+                               asp-controller="@GRA.Controllers.MissionControl.SitesController.Name">configure categories</a>
+                            if you wish to add them to this challenge.
+                        </span>
+                    }
                 </em>
             </small>
         </div>
@@ -862,10 +874,10 @@
                             }
                         }
                     </td>
-                    <td>@task.ChallengeTaskType</td>
+                    <td class="align-middle">@task.ChallengeTaskType</td>
                     @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
                     {
-                        <td class="on-top" style="white-space:nowrap;">
+                        <td class="on-top align-middle" style="white-space:nowrap;">
                             <button type="button"
                                     data-id="@task.Id"
                                     class="btn btn-outline-secondary btn-sm decreaseTaskSort"
@@ -1120,12 +1132,18 @@
             $(".fileRemoveAlert").removeClass("d-none");
         });
 
+        $("#actionTab").on('show.bs.tab', function () {
+            $("#Task_ChallengeTaskType").val("@ChallengeTaskType.Action");
+            $("#bookTitle").prop("disabled", true);
+            $("#bookFile").prop("disabled", true);
+            $(".actionTitle").prop("disabled", false);
+        });
+
         $("#bookTab").on('show.bs.tab', function () {
             $("#Task_ChallengeTaskType").val("@ChallengeTaskType.Book");
-            $("#bookTitle").removeAttr("disabled");
-            $("#bookFile").removeAttr("disabled");
-            $(".actionTitle").attr("disabled", "disabled");
-            $("#actionFile").attr("disabled", "disabled");
+            $("#bookTitle").prop("disabled", false);
+            $("#bookFile").prop("disabled", false);
+            $(".actionTitle").prop("disabled", true);
         });
 
         $(".decreaseTaskSort").on("click", function () {

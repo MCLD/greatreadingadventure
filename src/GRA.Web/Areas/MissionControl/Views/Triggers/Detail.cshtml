@@ -197,7 +197,6 @@
             </div>
             <div class="col-12 mb-3">
                 <label asp-for="Trigger.SecretCode" class="col-form-label"></label>
-
                 <span id="SecretCode-Icon"
                       class="fa colored-icon d-none"></span>
                 <div>
@@ -205,8 +204,7 @@
                            class="form-control"
                            readonly="@Model.IsReadOnly" />
                     <span id="SecretCode-Validation"
-                          asp-validation-for="Trigger.SecretCode"
-                          class="text-success"></span>
+                          asp-validation-for="Trigger.SecretCode"></span>
                 </div>
             </div>
         </div>
@@ -377,11 +375,13 @@
     <div class="row mb-3">
         <div class="col-12">
             <label asp-for="Trigger.ActivationDate" class="col-form-label"></label>
-            <div class="mb-3 date" id="activationDatePicker">
+            <div class="gra-picker-datetime"
+                 current-value="@Model.Trigger?.ActivationDate"
+                 datetimepicker-container
+                 id="startDatePicker">
                 <input asp-for="Trigger.ActivationDate"
-                       type="form"
-                       class="form-control"
-                       readonly="@Model.IsReadOnly" />
+                       datetimepicker-input
+                       type="text" />
             </div>
             <span asp-validation-for="Trigger.ActivationDate" class="text-danger"></span>
         </div>
@@ -1158,7 +1158,8 @@
                         + "</strong>. Override the restriction?");
                 }
 
-                if (minAllowedPoints != null && $("#Trigger_Points").val() < minAllowedPoints) {
+                let codePaneActive = document.getElementById("secretCode").classList.contains("active");
+                if (!codePaneActive && minAllowedPoints != null && $("#Trigger_Points").val() < minAllowedPoints) {
                     messages.push("The activation points for this trigger are below the configured minimum of <strong>"
                         + minAllowedPoints
                         + "</strong>. Override the restriction?");
@@ -1185,6 +1186,16 @@
                 ResetSpinners();
                 $("#saveButton").removeClass("disabled");
                 $("#saveButton").find(".fa-spinner").addClass("hidden");
+            });
+        </script>
+    }
+
+    @if (Model.IsLockedFromEditing)
+    {
+        <script>
+            $(function() {
+                console.info("Disabling Trigger_ActivationDate");
+                $("#Trigger_ActivationDate").prop("disabled", true);
             });
         </script>
     }

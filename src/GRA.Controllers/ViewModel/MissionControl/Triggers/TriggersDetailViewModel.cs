@@ -47,34 +47,53 @@ namespace GRA.Controllers.ViewModel.MissionControl.Triggers
         public bool EditVendorCode { get; set; }
         public bool IgnorePointLimits { get; set; }
 
+        public bool IsLockedFromEditing
+        {
+            get
+            {
+                return !IgnorePointLimits && !string.IsNullOrEmpty(PointLimitExceededMessage);
+            }
+        }
+
         public string IsReadOnly
         {
             get
             {
-                return !IgnorePointLimits && !string.IsNullOrEmpty(PointLimitExceededMessage)
-                    ? "readonly"
-                    : null;
+                return IsLockedFromEditing ? "readonly" : null;
             }
         }
 
         public bool IsSecretCode { get; set; }
+
         public int? LowPointThreshold { get; set; }
+
         public int? MaxPointLimit { get; set; }
+
         public int? MinAllowedPoints { get; set; }
+
         public string PointLimitExceededMessage { get; set; }
+
         public SelectList ProgramList { get; set; }
+
         public ICollection<Event> RelatedEvents { get; set; }
+
         public bool RemoveAttachment { get; set; }
+
         public SelectList SystemList { get; set; }
+
         public Trigger Trigger { get; set; }
 
         [DisplayName("Challenges and triggers the participant must have earned")]
         public ICollection<TriggerRequirement> TriggerRequirements { get; set; }
 
         public string UnlockableAvatarBundle { get; set; }
+
         public SelectList UnlockableAvatarBundleList { get; set; }
+
         public bool UseBadgeMaker { get; set; }
+
         public string VendorCodeType { get; set; }
+
         public SelectList VendorCodeTypeList { get; set; }
     }
 }

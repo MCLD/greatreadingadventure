@@ -24,31 +24,23 @@
 
 <div class="row mb-2"><div class="col-12"><h3>Configure</h3></div></div>
 
-<div class="row my-1">
-    <div class="col-12">
-        @if (Model.VendorCodeType.Id == default)
-        {
-            <p>Vendor codes are not yet configured. Use this page to set them up.</p>
-        }
-        <ul>
-            <li>
-                If you wish to configure a vendor code to be awarded with a trigger, you only need
-                to configure the top fields.
-            </li>
-            <li>
-                If you'd like to give the participant a choice:
-                <ol>
-                    <li>
-                        Fill out the "Option" section
-                    </li>
-                    <li>
-                        Fill out the "Donation" section, the "Email" section, or both.
-                    </li>
-                </ol>
-            </li>
-        </ul>
-    </div>
-</div>
+@if (Model.VendorCodeType.Id == default)
+{
+    <p>Vendor codes are not yet configured. Use this page to set them up.</p>
+}
+<ul>
+    <li>
+        If you wish to configure a vendor code to be awarded with a trigger, you only need
+        to configure the top fields.
+    </li>
+    <li>
+        If you'd like to give the participant a choice:
+        <ol>
+            <li>Fill out the "Option" section</li>
+            <li>Fill out the "Donation" section, the "Email" section, or both.</li>
+        </ol>
+    </li>
+</ul>
 
 <form asp-action="@nameof(VendorCodesController.UpdateConfiguration)"
       method="post"
@@ -95,7 +87,7 @@
             <div class="mb-3">
                 <label asp-for="VendorCodeType.Url" class="col-form-label"></label>
                 <description gra-description-for="VendorCodeType.Url"></description>
-                <input asp-for="VendorCodeType.Url" class="form-control" />
+                <input type="url" asp-for="VendorCodeType.Url" class="form-control" />
                 <span asp-validation-for="VendorCodeType.Url" class="text-danger"></span>
             </div>
         </div>
@@ -304,6 +296,7 @@
     <input type="hidden" id="updateSegmentLanguageId" name="languageId" />
     <input type="hidden" id="updateSegmentItem" name="item" />
     <div class="modal fade"
+         data-bs-backdrop="static"
          id="segmentModal"
          tabindex="-1"
          role="dialog"
@@ -360,6 +353,7 @@
     <input type="hidden" id="updateLanguageId" name="languageId" />
     <input type="hidden" id="updateItem" name="item" />
     <div class="modal fade"
+         data-bs-backdrop="static"
          id="messageModal"
          tabindex="-1"
          role="dialog"
@@ -445,11 +439,13 @@
         $('#updateSegmentText').submit(function (e) {
             e.preventDefault();
             let form = $(this);
+            console.info("Submitting update message text form: %o", form);
             $.ajax({
                 url: '@Url.Action(nameof(VendorCodesController.SetSegment))',
                 type: "POST",
                 data: form.serialize(),
                 success: function (data, textStatus, jqXHR) {
+                    console.info("Update success: %o - %o", data.success, data.message);
                     if (data.success === true) {
                         location.reload();
                     } else {
@@ -458,6 +454,7 @@
                     }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
+                    console.info("Update failure: %o - %o", textStatus, errorThrown);
                     ResetSpinners();
                     window.alert("There was an " + textStatus + ": " + errorThrown);
                 }
@@ -551,12 +548,13 @@
             $('#saveSegment').prop('disabled', true);
             let languageid = $(e.relatedTarget).data('languageid');
             let item = $(e.relatedTarget).data('item');
+            console.info("ITem: %o", item);
             switch (item) {
                 case '@nameof(Model.VendorCodeType.DonationSegmentId)':
-                    $('#messageModalLabel').text('Segment pop-up message');
+                    $('#segmentModalLabel').text('Donation pop-up message');
                     break;
                 case '@nameof(Model.VendorCodeType.EmailAwardSegmentId)':
-                    $('#messageModalLabel').text('Email award pop-up message');
+                    $('#segmentModalLabel').text('Email award pop-up message');
                     break;
             }
             $('#updateSegmentLanguageId').val(languageid);
