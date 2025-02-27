@@ -255,29 +255,6 @@
                 }
             });
 
-        @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
-        {
-            <text>
-                                                $("#saveChallenge").on("click",function(e) {
-                                                    e.preventDefault();
-                                                                                                            if ($("#Challenge_PointsAwarded").val() / $("#Challenge_TasksToComplete").val() > @Model.MaxPointLimit) {
-                                                    $('#warningModal').modal("show");
-                                                                                                            }
-                                                else {
-                                                    $("#challengeForm").submit();
-                                                                                                            }
-                                                                                                        });
-
-                                                $("#warningSave").on("click", function () {
-                                                    $("#challengeForm").submit();
-                                                                                                        });
-
-                                                $("#warningModal").on("hide.bs.modal", function () {
-                                                    ResetSpinners($("#saveChallenge"));
-                                                                                                        });
-            </text>
-        }
-
                 $('#clearFile').on("click", function () {
                     $('#BadgeUploadImage').val('');
                     $('.btn-file').addClass('btn-outline-secondary');
@@ -328,4 +305,26 @@
             });
         });
     </script>
+
+    @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
+    {
+        <script>
+            $("#saveChallenge").on("click",function(e) {
+                e.preventDefault();
+                if ($("#Challenge_PointsAwarded").val() / $("#Challenge_TasksToComplete").val() > @Model.MaxPointLimit) {
+                    $('#warningModal').modal("show");
+                } else {
+                    $("#challengeForm").submit();
+                }
+            });
+
+            $("#warningSave").on("click", function () {
+                $("#challengeForm").submit();
+            });
+
+            $("#warningModal").on("hide.bs.modal", function () {
+                ResetSpinners($("#saveChallenge"));
+            });
+        </script>
+    }
 }
