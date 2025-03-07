@@ -1,0 +1,83 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.ReportCriteriaViewModel
+
+<form asp-action="@nameof(ReportingController.Run)"
+      method="post"
+      role="form">
+    <input asp-for="ReportId" type="hidden" />
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <label asp-for="VendorCodeTypeId" class="col-form-label"></label>
+            <select asp-for="VendorCodeTypeId"
+                    asp-items="Model.VendorCodeTypeList"
+                    class="form-select"
+                    data-val="true"
+                    data-val-required="Please select a vendor code."></select>
+            <span asp-validation-for="VendorCodeTypeId" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <label asp-for="SystemId" class="col-form-label"></label>
+            <select asp-for="SystemId" asp-items="Model.SystemList" class="form-select">
+                <option></option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <label asp-for="BranchId" class="col-form-label"></label>
+            <span class="fas fa-fw fa-spinner fa-pulse d-none" id="branchLookupIndicator"></span>
+            <select asp-for="BranchId" asp-items="Model.BranchList" class="form-select">
+                <option></option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <button type="submit" class="btn btn-outline-primary">
+                <span class="fas fa-file-alt fa-fw"></span>
+                Run Report!
+            </button>
+        </div>
+    </div>
+</form>
+
+@section scripts
+{
+    <script>
+        const branchLookupIndicator = $("#branchLookupIndicator");
+        const branchList = $("#BranchId");
+        const allBranchesLink = "@Html.Raw(Url.Action(nameof(GRA.Controllers.LookupController.GetBranches), GRA.Controllers.LookupController.Name, new { area = string.Empty, includeSystemName = "True", listAll = "True" }))";
+        const systemBranchesLink = "@Html.Raw(Url.Action(nameof(GRA.Controllers.LookupController.GetBranches), GRA.Controllers.LookupController.Name, new { area = string.Empty }))";
+
+        $("#SystemId").on("change", function() {
+            branchLookupIndicator.removeClass("d-none");
+            let systemId = $(this).val()
+            $.getJSON(systemId.length == 0 ? allBranchesLink : systemBranchesLink,
+                { 
+                    systemId: systemId, 
+                    branchId: branchList.val() 
+                },
+                function(response) {
+                    branchList.empty();
+                    if(systemId.length == 0) {
+                        branchList.append(new Option("", ""));
+                    }
+                    else if (response.length > 1)
+                    {
+                        branchList.append(new Option("All Branches", ""));
+                    }
+                    $.each(response, function(index, item) {
+                        branchList.append(new Option(item.text, item.value, item.selected, item.selected))
+                    });
+                }
+            ).done(function() {
+                  branchLookupIndicator.addClass("d-none");
+            });
+        });
+    </script>
+}

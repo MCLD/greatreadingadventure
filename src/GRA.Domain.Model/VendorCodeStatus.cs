@@ -20,13 +20,19 @@
         { get { return AssignedCodes + ReassignedCodes + UnusedCodes; } }
 
         public int UnusedCodes { get; set; }
+        public int VendorCodeTypeId { get; set; }
         public int VendorSelected { get; set; }
 
-        public string Percent(int items, int total, string label)
+        public string Percent(int items, int total)
         {
             return total == 0
                 ? "\u00A0"
-                : string.Format("{0:0.00}% {1}", 100.0 * items / total * 2, label);
+                : string.Format("{0:0.00}%", PercentValue(items, total));
+        }
+
+        public double PercentValue(int items, int total)
+        {
+            return total == 0 ? 0 : 100.0 * items / total;
         }
     }
 }

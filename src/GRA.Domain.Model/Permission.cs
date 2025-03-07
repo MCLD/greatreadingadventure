@@ -54,6 +54,7 @@
         SendBulkEmails,
         TriggerAttachments,
         UnDonateVendorCode,
+        VendorShippingReporting,
         ViewAllChallenges,
         ViewAllReporting,
         ViewChangeHistory,

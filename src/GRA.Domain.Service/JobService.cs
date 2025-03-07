@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service
 {
-    public class JobService : Abstract.BaseUserService<JobService>
+    public class JobService : BaseUserService<JobService>
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IJobRepository _jobRepository;
@@ -22,20 +22,18 @@ namespace GRA.Domain.Service
             IHttpContextAccessor httpContextAccessor)
             : base(logger, dateTimeProvider, userContextProvider)
         {
-            _jobRepository = jobRepository
-                ?? throw new ArgumentNullException(nameof(jobRepository));
-            _httpContextAccessor = httpContextAccessor
-                ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+            ArgumentNullException.ThrowIfNull(httpContextAccessor);
+            ArgumentNullException.ThrowIfNull(jobRepository);
+
+            _httpContextAccessor = httpContextAccessor;
+            _jobRepository = jobRepository;
         }
 
         public Task<Guid> CreateJobAsync(Job job)
         {
-            if (job == null)
-            {
-                throw new ArgumentNullException(nameof(job));
-            }
-
-            return CreateJobInternalAsync(job);
+            return job == null
+                ? throw new ArgumentNullException(nameof(job))
+                : CreateJobInternalAsync(job);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
@@ -260,7 +258,7 @@ namespace GRA.Domain.Service
         }
 
         private async Task<JobStatus> RunReportJobAsync(int jobId,
-                    CancellationToken token,
+            CancellationToken token,
             IProgress<JobStatus> progress = null)
         {
             var reportService = _httpContextAccessor

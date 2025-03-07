@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
@@ -15,65 +17,65 @@ namespace GRA.Domain.Report.Abstract
     public abstract class BaseReport
     {
         protected readonly ILogger _logger;
+        protected readonly ReportInformationAttribute _reportInformation;
         protected readonly ServiceFacade.Report _serviceFacade;
         private Stopwatch _timer;
 
-        protected StoredReportSet ReportSet { get; set; }
-
         protected BaseReport(ILogger logger, ServiceFacade.Report serviceFacade)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _serviceFacade = serviceFacade
-                ?? throw new ArgumentNullException(nameof(serviceFacade));
+            ArgumentNullException.ThrowIfNull(logger);
+            ArgumentNullException.ThrowIfNull(serviceFacade);
+
+            _logger = logger;
+            _serviceFacade = serviceFacade;
+
+            _reportInformation = GetType().GetCustomAttribute<ReportInformationAttribute>();
+
             ReportSet = new StoredReportSet
             {
                 Reports = new List<StoredReport>()
             };
         }
 
-        protected async Task<ReportRequest> StartRequestAsync(ReportRequest request)
+        public TimeSpan? Elapsed
         {
-            if (request == null)
+            get
             {
-                throw new ArgumentNullException(nameof(request));
+                if (_timer == null)
+                {
+                    return null;
+                }
+                return _timer.Elapsed;
             }
-
-            var stopwatch = _timer ??= new Stopwatch();
-            stopwatch.Start();
-
-            request.Started = _serviceFacade.DateTimeProvider.Now;
-            request.Finished = null;
-            request.Success = null;
-            request.ResultJson = null;
-            request.InstanceName = _serviceFacade.Config[ConfigurationKey.InstanceName];
-            return await _serviceFacade.ReportRequestRepository.UpdateSaveNoAuditAsync(request);
         }
 
-        protected string StopTimerOutputMs()
+        protected ReportInformationAttribute ReportAttribute
         {
-            _timer.Stop();
-            string elapsed = _timer.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture);
-            _timer = null;
-            return elapsed;
+            get
+            {
+                return GetType().GetTypeInfo().GetCustomAttribute<ReportInformationAttribute>();
+            }
         }
+
+        protected StoredReportSet ReportSet { get; set; }
 
         public abstract Task ExecuteAsync(ReportRequest request,
             CancellationToken token,
             IProgress<JobStatus> progress = null);
 
-        protected void UpdateProgress(IProgress<JobStatus> progress, int percentComplete)
+        protected static void UpdateProgress(IProgress<JobStatus> progress, int percentComplete)
         {
             UpdateProgress(progress, percentComplete, null);
         }
 
-        protected void UpdateProgress(IProgress<JobStatus> progress,
+        protected static void UpdateProgress(IProgress<JobStatus> progress,
             string message,
             string title = null)
         {
             UpdateProgress(progress, null, message, title);
         }
 
-        protected void UpdateProgress(IProgress<JobStatus> progress,
+        protected static void UpdateProgress(IProgress<JobStatus> progress,
             int? percentComplete = null,
             string message = null,
             string title = null)
@@ -94,36 +96,39 @@ namespace GRA.Domain.Report.Abstract
             }
         }
 
-        protected ReportInformationAttribute ReportAttribute
+        protected async Task FinishRequestAsync(ReportRequest request, bool success)
         {
-            get
-            {
-                return GetType().GetTypeInfo().GetCustomAttribute<ReportInformationAttribute>();
-            }
-        }
+            ArgumentNullException.ThrowIfNull(request);
 
-        public TimeSpan? Elapsed
-        {
-            get
+            string result = success ? "ran" : "cancelled";
+            _logger.LogInformation("Report {ReportName} with criterion {ReportCriteriaId} {Result} in {Elapsed} ms",
+                request.Name,
+                request.ReportCriteriaId,
+                result,
+                StopTimerOutputMs());
+
+            request.Success = success;
+            if (!success)
             {
-                if (_timer == null)
-                {
-                    return null;
-                }
-                return _timer.Elapsed;
+                request.Message = "Report generation was cancelled.";
             }
+            request.Finished = _serviceFacade.DateTimeProvider.Now;
+
+            if (success)
+            {
+                request.ResultJson = JsonSerializer.Serialize(ReportSet);
+            }
+            await _serviceFacade.ReportRequestRepository.UpdateSaveNoAuditAsync(request);
         }
 
         protected async Task<ReportCriterion> GetCriterionAsync(ReportRequest request)
         {
+            ArgumentNullException.ThrowIfNull(request);
+
             var criterion = await _serviceFacade
                 .ReportCriterionRepository
-                .GetByIdAsync(request.ReportCriteriaId);
-
-            if (criterion == null)
-            {
-                throw new GraException($"Report criteria {request.ReportCriteriaId} for report request id {request.Id} could not be found.");
-            }
+                .GetByIdAsync(request.ReportCriteriaId)
+                ?? throw new GraException($"Report criteria {request.ReportCriteriaId} for report request id {request.Id} could not be found.");
 
             if (criterion.SiteId == null)
             {
@@ -133,31 +138,9 @@ namespace GRA.Domain.Report.Abstract
             return criterion;
         }
 
-        protected async Task FinishRequestAsync(ReportRequest request, bool success)
-        {
-            string result = success ? "ran" : "cancelled";
-            _logger.LogInformation("Report {ReportName} with criterion {ReportCriteriaId} {Result} in {Elapsed} ms",
-                request.Name,
-                request.ReportCriteriaId,
-                result,
-                StopTimerOutputMs());
-
-            request.Success = success;
-            request.Finished = _serviceFacade.DateTimeProvider.Now;
-
-            if (success)
-            {
-                request.ResultJson = Newtonsoft.Json.JsonConvert.SerializeObject(ReportSet);
-            }
-            await _serviceFacade.ReportRequestRepository.UpdateSaveNoAuditAsync(request);
-        }
-
         protected Task<bool> GetSiteSettingBoolAsync(ReportCriterion criterion, string key)
         {
-            if (criterion == null)
-            {
-                throw new ArgumentNullException(nameof(criterion));
-            }
+            ArgumentNullException.ThrowIfNull(criterion);
 
             if (criterion.SiteId == null)
             {
@@ -169,6 +152,8 @@ namespace GRA.Domain.Report.Abstract
 
         protected async Task<bool> GetSiteSettingBoolInternalAsync(ReportCriterion criterion, string key)
         {
+            ArgumentNullException.ThrowIfNull(criterion);
+
             var settings
                 = await _serviceFacade
                     .SiteSettingRepository
@@ -177,6 +162,40 @@ namespace GRA.Domain.Report.Abstract
             var setting = settings.Where(_ => _.Key == key);
 
             return setting.SingleOrDefault()?.Value != null;
+        }
+
+        protected bool HasPermission(string permissionName)
+        {
+            return _serviceFacade
+                .HttpContextAccessor?
+                .HttpContext?
+                .User?
+                .HasClaim(ClaimType.Permission, permissionName) == true;
+        }
+
+        protected async Task<ReportRequest> StartRequestAsync(ReportRequest request)
+        {
+            ArgumentNullException.ThrowIfNull(request);
+
+            var stopwatch = _timer ??= new Stopwatch();
+            stopwatch.Start();
+
+            request.Started = _serviceFacade.DateTimeProvider.Now;
+            request.Finished = null;
+            request.Success = null;
+            request.ResultJson = null;
+            request.InstanceName = _serviceFacade.Config[ConfigurationKey.InstanceName];
+            return await _serviceFacade.ReportRequestRepository.UpdateSaveNoAuditAsync(request);
+        }
+
+        protected string StopTimerOutputMs()
+        {
+            _timer?.Stop();
+            string elapsed = _timer?
+                .ElapsedMilliseconds
+                .ToString(CultureInfo.InvariantCulture) ?? "0";
+            _timer = null;
+            return elapsed;
         }
     }
 }
