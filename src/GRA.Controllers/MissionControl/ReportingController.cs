@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.Reporting;
 using GRA.Domain.Model;
@@ -12,7 +14,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -74,10 +75,10 @@ namespace GRA.Controllers.MissionControl
             var report = _reportService.GetReportList().SingleOrDefault(_ => _.Id == id);
             if (report == null)
             {
-                AlertDanger = $"Could not find report of type {id}.";
-                return RedirectToAction("Index");
+                ShowAlertDanger($"Could not find report of type {id}.");
+                return RedirectToAction(nameof(Index));
             }
-            PageTitle = $"Configure {report.Name}";
+            PageTitle = $"Configure report: {report.Name}";
 
             string viewName = report.Name.Replace(" ",
                 string.Empty,
@@ -87,14 +88,15 @@ namespace GRA.Controllers.MissionControl
                 viewName = viewName[..^6];
             }
 
-            var systemList = await _siteService.GetSystemList(true);
             var branchList = await _siteService.GetAllBranches(true);
+            var groupInfoList = await _userService.GetGroupInfosAsync();
             var programList = await _siteService.GetProgramList();
             var schoolDistrictList = await _schoolService.GetDistrictsAsync();
-            var schoolList = await _schoolService.GetSchoolsAsync(schoolDistrictList.FirstOrDefault()?.Id);
-            var groupInfoList = await _userService.GetGroupInfosAsync();
-            var vendorCodeTypeList = await _vendorCodeService.GetTypeAllAsync();
+            var schoolList = await _schoolService
+                .GetSchoolsAsync(schoolDistrictList.FirstOrDefault()?.Id);
             var site = await GetCurrentSiteAsync();
+            var systemList = await _siteService.GetSystemList(true);
+            var vendorCodeTypeList = await _vendorCodeService.GetTypeAllAsync();
 
             var triggerList = await _triggerService.GetTriggersAwardingPrizesAsync();
             foreach (var trigger in triggerList)
@@ -177,8 +179,7 @@ namespace GRA.Controllers.MissionControl
                     .GetTypeById(criterion.VendorCodeTypeId.Value)).Description);
             }
 
-            viewModel.ReportSet = JsonConvert
-                .DeserializeObject<StoredReportSet>(request.ResultJson);
+            viewModel.ReportSet = JsonSerializer.Deserialize<StoredReportSet>(request.ResultJson);
 
             if (viewModel.ReportSet.Reports?.FirstOrDefault()?.AsOf != null)
             {
@@ -212,6 +213,16 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Run(ReportCriteriaViewModel viewModel)
         {
             ArgumentNullException.ThrowIfNull(viewModel);
+
+            try
+            {
+                _reportService.GetReportDetails(viewModel.ReportId);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger(gex.Message);
+                return RedirectToAction(nameof(Index));
+            }
 
             PageTitle = "Run the report";
 
@@ -249,13 +260,30 @@ namespace GRA.Controllers.MissionControl
             int reportRequestId = await _reportService
                 .RequestReport(criterion, viewModel.ReportId);
 
+            var serializedParameters = new JobDetailsRunReport
+            {
+                ReportRequestId = reportRequestId
+            };
+
+            serializedParameters.Properties.Add(JobDetailsPropertyName.PackingSlipLink,
+                Url.Action(nameof(VendorCodesController.ViewPackingSlip),
+                        VendorCodesController.Name,
+                        new { area = nameof(MissionControl), id = 0 }).TrimEnd('0'));
+
+            serializedParameters.Properties.Add(JobDetailsPropertyName.ProfileLink,
+                Url.Action(nameof(ParticipantsController.Detail),
+                        ParticipantsController.Name,
+                        new { area = nameof(MissionControl), id = 0 }).TrimEnd('0'));
+
+            serializedParameters.Properties.Add(JobDetailsPropertyName.VendorCodeLink,
+                Url.Action(nameof(ParticipantsController.VendorCodes),
+                        ParticipantsController.Name,
+                        new { area = nameof(MissionControl), id = 0 }).TrimEnd('0'));
+
             var jobToken = await _jobService.CreateJobAsync(new Job
             {
                 JobType = JobType.RunReport,
-                SerializedParameters = JsonConvert.SerializeObject(new JobDetailsRunReport
-                {
-                    ReportRequestId = reportRequestId
-                })
+                SerializedParameters = JsonSerializer.Serialize(serializedParameters)
             });
 
             return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
@@ -280,8 +308,8 @@ namespace GRA.Controllers.MissionControl
 
                 var viewModel = new ReportResultsViewModel
                 {
+                    ReportResultId = id,
                     Title = PageTitle,
-                    ReportResultId = id
                 };
 
                 if (criterion.StartDate.HasValue)
@@ -328,54 +356,82 @@ namespace GRA.Controllers.MissionControl
                         .GetTypeById(criterion.VendorCodeTypeId.Value)).Description;
                 }
 
-                viewModel.ReportSet = JsonConvert
-                    .DeserializeObject<StoredReportSet>(request.ResultJson);
-
-                foreach (var report in viewModel.ReportSet.Reports)
+                if (!string.IsNullOrEmpty(request.ResultJson))
                 {
-                    int count = 0;
-                    var displayRows = new List<List<string>>();
+                    viewModel.ReportSet = JsonSerializer
+                        .Deserialize<StoredReportSet>(request.ResultJson);
 
-                    if (report.HeaderRow != null)
+                    foreach (var report in viewModel.ReportSet.Reports)
                     {
-                        var display = new List<string>();
-                        foreach (var dataItem in report.HeaderRow)
-                        {
-                            display.Add(FormatDataItem(dataItem));
-                        }
-                        report.HeaderRow = display;
-                    }
+                        int count = 0;
+                        var displayRows = new List<List<string>>();
 
-                    foreach (var resultRow in report.Data)
-                    {
-                        var displayRow = new List<string>();
-
-                        foreach (var resultItem in resultRow)
+                        if (report.HeaderRow != null)
                         {
-                            displayRow.Add(FormatDataItem(resultItem));
+                            var display = new List<string>();
+                            foreach (var dataItem in report.HeaderRow)
+                            {
+                                display.Add(FormatDataItem(dataItem));
+                            }
+                            report.HeaderRow = display;
                         }
-                        displayRows.Add(displayRow);
-                        count++;
-                    }
-                    report.Data = displayRows;
 
-                    if (report.FooterRow != null)
-                    {
-                        var display = new List<string>();
-                        foreach (var dataItem in report.FooterRow)
+                        foreach (var resultRow in report.Data)
                         {
-                            display.Add(FormatDataItem(dataItem));
+                            var displayRow = new List<string>();
+
+                            foreach (var resultItem in resultRow)
+                            {
+                                displayRow.Add(FormatDataItem(resultItem));
+                            }
+                            displayRows.Add(displayRow);
+                            count++;
                         }
-                        report.FooterRow = display;
+                        report.Data = displayRows;
+
+                        if (report.FooterRow != null)
+                        {
+                            var display = new List<string>();
+                            foreach (var dataItem in report.FooterRow)
+                            {
+                                display.Add(FormatDataItem(dataItem));
+                            }
+                            report.FooterRow = display;
+                        }
                     }
                 }
+
+                var message = new StringBuilder();
+
+                if (request.Success == true)
+                {
+                    message.Append("This report ran successfully");
+                }
+                if (request.Success == false)
+                {
+                    message.Append("This report did not run successfully");
+                }
+                if (string.IsNullOrEmpty(request.Message))
+                {
+                    message.Append('.');
+                }
+                else
+                {
+                    if (message.Length > 0)
+                    {
+                        message.Append(": ");
+                    }
+                    message.Append("<strong>").Append(request.Message).Append("</strong>");
+                }
+
+                viewModel.Message = message.ToString();
 
                 return View(viewModel);
             }
             catch (GraException gex)
             {
-                AlertDanger = gex.Message;
-                return RedirectToAction("Index");
+                ShowAlertDanger(gex.Message);
+                return RedirectToAction(nameof(Index));
             }
         }
 

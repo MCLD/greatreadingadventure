@@ -11,6 +11,7 @@ using ExcelDataReader;
 using GRA.Abstract;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
+using GRA.Domain.Model.Report;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using GRA.Domain.Service.Models;
@@ -383,10 +384,22 @@ namespace GRA.Domain.Service
             };
         }
 
-        public async Task<VendorCodeStatus> GetStatusAsync()
+        public async Task<ICollection<VendorCodeItemStatus>>
+            GetOrderedNotShippedAsync(int vendorCodeTypeId, int? systemId, int? branchId)
+        {
+            var itemStatuses = await _vendorCodeRepository
+                .GetOrderedNotShipped(vendorCodeTypeId, systemId, branchId);
+
+            return itemStatuses.OrderBy(_ => _.OrderDate)
+                .ThenBy(_ => _.ShipDate)
+                .ThenBy(_ => _.ArrivalDate)
+                .ToList();
+        }
+
+        public async Task<VendorCodeStatus> GetStatusAsync(int vendorCodeTypeId)
         {
             VerifyManagementPermission();
-            return await _vendorCodeRepository.GetStatusAsync();
+            return await _vendorCodeRepository.GetStatusAsync(vendorCodeTypeId);
         }
 
         public async Task<ICollection<VendorCodeType>> GetTypeAllAsync()

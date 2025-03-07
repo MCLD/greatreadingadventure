@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using GRA.Abstract;
 using GRA.Controllers.RouteConstraint;
 using GRA.Domain.Model;
@@ -28,6 +29,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
+using Org.BouncyCastle.Asn1.X509.Qualified;
 using Serilog;
 using Serilog.Context;
 
@@ -590,27 +592,18 @@ namespace GRA.Web
             services.AddScoped<UserService>();
             services.AddScoped<VendorCodeService>();
 
-            services.AddScoped<Domain.Report.ActivityByProgramReport>();
-            services.AddScoped<Domain.Report.BadgeReport>();
-            services.AddScoped<Domain.Report.BadgeTopScoresReport>();
-            services.AddScoped<Domain.Report.CommunityExperiencesReport>();
-            services.AddScoped<Domain.Report.CurrentStatusByProgramReport>();
-            services.AddScoped<Domain.Report.CurrentStatusReport>();
-            services.AddScoped<Domain.Report.GroupVendorCodeReport>();
-            services.AddScoped<Domain.Report.ParticipantCountMinutesByProgram>();
-            services.AddScoped<Domain.Report.ParticipantPrizeReport>();
-            services.AddScoped<Domain.Report.ParticipantProgressReport>();
-            services.AddScoped<Domain.Report.PrizeRedemptionCountReport>();
-            services.AddScoped<Domain.Report.PrizeRedemptionReport>();
-            services.AddScoped<Domain.Report.RegistrationsAchieversBySchoolReport>();
-            services.AddScoped<Domain.Report.RegistrationsAchieversReport>();
-            services.AddScoped<Domain.Report.RemainingVendorPrizePickupReport>();
-            services.AddScoped<Domain.Report.StaffRegisteredParticipantsReport>();
-            services.AddScoped<Domain.Report.TopScoresReport>();
-            services.AddScoped<Domain.Report.VendorCodeByProgramReport>();
-            services.AddScoped<Domain.Report.VendorCodeDonationsReport>();
-            services.AddScoped<Domain.Report.VendorCodePendingReport>();
-            services.AddScoped<Domain.Report.VendorCodeReport>();
+            // inject reports
+            var reports = typeof(Domain.Report.Abstract.BaseReport)
+                .Assembly
+                .GetTypes()
+                .Where(_ => _.IsClass
+                    && !_.IsAbstract
+                    && _.IsSubclassOf(typeof(Domain.Report.Abstract.BaseReport)));
+
+            foreach(var reportType in reports)
+            {
+                services.AddScoped(reportType);
+            }
 
             // service resolution
             string initialProgramSetup = DefaultInitialProgramSetup;

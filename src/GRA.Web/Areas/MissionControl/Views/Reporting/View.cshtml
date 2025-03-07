@@ -1,140 +1,166 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.ReportResultsViewModel
-@section inHeading {
+@if (Model.ReportSet?.Reports?.Count > 0)
+{
+    @section inHeading {
     <a asp-action="@nameof(ReportingController.Download)"
        asp-route-id="@Model.ReportResultId"
        class="btn btn-outline-primary ms-auto d-print-none">
         <span class="far fa-file-excel"></span>
         Download Excel spreadsheet
     </a>
-}
+    }
 
-<div class="row mt-2">
-    <div class="col-12 mb-0">
-        <table class="table table-bordered" style="width: auto;">
-            @if (Model.StartDate.HasValue)
-            {
-                <tr>
-                    <td><strong>Start Date:</strong></td>
-                    <td>@Model.StartDate</td>
-                </tr>
-            }
-            @if (Model.EndDate.HasValue)
-            {
-                <tr>
-                    <td><strong>End Date:</strong></td>
-                    <td>@Model.EndDate</td>
-                </tr>
-            }
-            @if (!string.IsNullOrWhiteSpace(Model.SystemName))
-            {
-                <tr>
-                    <td><strong>System:</strong></td>
-                    <td>@Model.SystemName</td>
-                </tr>
-            }
-            @if (!string.IsNullOrWhiteSpace(Model.BranchName))
-            {
-                <tr>
-                    <td><strong>Branch:</strong></td>
-                    <td>@Model.BranchName</td>
-                </tr>
-            }
-            @if (!string.IsNullOrWhiteSpace(Model.ProgramName))
-            {
-                <tr>
-                    <td><strong>Program:</strong></td>
-                    <td>@Model.ProgramName</td>
-                </tr>
-            }
-            @if (!string.IsNullOrWhiteSpace(Model.GroupName))
-            {
-                <tr>
-                    <td><strong>Group:</strong></td>
-                    <td>@Model.GroupName</td>
-                </tr>
-            }
-            @if (!string.IsNullOrWhiteSpace(Model.SchoolDistrictName))
-            {
-                <tr>
-                    <td><strong>School District:</strong></td>
-                    <td>@Model.SchoolDistrictName</td>
-                </tr>
-            }
-            @if (!string.IsNullOrWhiteSpace(Model.SchoolName))
-            {
-                <tr>
-                    <td><strong>School:</strong></td>
-                    <td>@Model.SchoolName</td>
-                </tr>
-            }
-            @if (!string.IsNullOrWhiteSpace(Model.VendorCodeName))
-            {
-                <tr>
-                    <td><strong>Vendor Code:</strong></td>
-                    <td>@Model.VendorCodeName</td>
-                </tr>
-            }
-        </table>
-    </div>
-</div>
-
-@foreach (var report in Model.ReportSet.Reports)
-{
-    <div class="row">
-        @if (report.Title != Model.Title)
-        {
-            <div class="col-12">
-                <h3>@report.Title</h3>
-            </div>
-        }
-        <div class="col-12">
-            <table class="table table-sm table-bordered table-striped">
-                @if (report.HeaderRow != null)
-                {
-                    <thead>
-                        <tr>
-                            @foreach (var data in report.HeaderRow)
-                            {
-                                <th>@data</th>
-                            }
-                        </tr>
-                    </thead>
-                }
-                @foreach (var row in report.Data)
+    <div class="row mt-2">
+        <div class="col-12 mb-0">
+            <table class="table table-bordered" style="width: auto;">
+                @if (Model.StartDate.HasValue)
                 {
                     <tr>
-                        @foreach (string data in row)
-                        {
-                            <td>@Html.Raw(data)</td>
-                        }
+                        <td><strong>Start Date:</strong></td>
+                        <td>@Model.StartDate</td>
                     </tr>
                 }
-                @if (report.FooterRow != null)
+                @if (Model.EndDate.HasValue)
                 {
-                    <tfoot>
-                        <tr>
-                            @foreach (var data in report.FooterRow)
-                            {
-                                <th><strong>@data</strong></th>
-                            }
-                        </tr>
-                    </tfoot>
+                    <tr>
+                        <td><strong>End Date:</strong></td>
+                        <td>@Model.EndDate</td>
+                    </tr>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.SystemName))
+                {
+                    <tr>
+                        <td><strong>System:</strong></td>
+                        <td>@Model.SystemName</td>
+                    </tr>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.BranchName))
+                {
+                    <tr>
+                        <td><strong>Branch:</strong></td>
+                        <td>@Model.BranchName</td>
+                    </tr>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.ProgramName))
+                {
+                    <tr>
+                        <td><strong>Program:</strong></td>
+                        <td>@Model.ProgramName</td>
+                    </tr>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.GroupName))
+                {
+                    <tr>
+                        <td><strong>Group:</strong></td>
+                        <td>@Model.GroupName</td>
+                    </tr>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.SchoolDistrictName))
+                {
+                    <tr>
+                        <td><strong>School District:</strong></td>
+                        <td>@Model.SchoolDistrictName</td>
+                    </tr>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.SchoolName))
+                {
+                    <tr>
+                        <td><strong>School:</strong></td>
+                        <td>@Model.SchoolName</td>
+                    </tr>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.VendorCodeName))
+                {
+                    <tr>
+                        <td><strong>Vendor Code:</strong></td>
+                        <td>@Model.VendorCodeName</td>
+                    </tr>
                 }
             </table>
+        </div>
+    </div>
 
-            @if (report.FooterText != null)
+    @foreach (var report in Model.ReportSet.Reports)
+    {
+        <div class="row">
+            @if (report.Title != Model.Title)
             {
-                <div class="mb-3">
-                    @foreach (var data in report.FooterText)
-                    {
-                        <p>@data</p>
-                    }
+                <div class="col-12">
+                    <h3>@report.Title</h3>
                 </div>
             }
-            else
-            {
-                <div>This report was run on @report.AsOf.ToString("g").</div>
-            }
+            <div class="col-12">
+                <table class="table table-sm table-bordered table-striped">
+                    @if (report.HeaderRow != null)
+                    {
+                        <thead>
+                            <tr>
+                                @foreach (var data in report.HeaderRow)
+                                {
+                                    <th>@data</th>
+                                }
+                            </tr>
+                        </thead>
+                    }
+                    @foreach (var row in report.Data)
+                    {
+                        <tr>
+                            @foreach (string data in row)
+                            {
+                                <td>
+                                    @if (!string.IsNullOrEmpty(Model.CurrentRecordLink(report)))
+                                    {
+                                        <a href="@Model.CurrentRecordLink(report)"
+                                           target="_blank">@Html.Raw(data)</a>
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw(data)
+                                    }
+                                </td>
+                                Model.Column++;
+                            }
+                        </tr>
+                        Model.Row++;
+                        Model.Column = 0;
+                    }
+                    @if (report.FooterRow != null)
+                    {
+                        <tfoot>
+                            <tr>
+                                @foreach (var data in report.FooterRow)
+                                {
+                                    <th><strong>@data</strong></th>
+                                }
+                            </tr>
+                        </tfoot>
+                    }
+                </table>
+
+                @if (report.FooterText != null)
+                {
+                    <div class="mb-3">
+                        @foreach (var data in report.FooterText)
+                        {
+                            <p>@data</p>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div>This report was run on @report.AsOf.ToString("g").</div>
+                }
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="row mt-3">
+        <div class="col-12 col-lg-6 offset-lg-3">
+            <div class="alert alert-warning">
+                @Model.Message
+            </div>
         </div>
     </div>
 }

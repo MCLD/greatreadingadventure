@@ -2,17 +2,17 @@
 
 @if (!string.IsNullOrEmpty(Model.ReportingNote))
 {
-<div class="row mc-alertrow">
-    <div class="col-12 col-sm-8 offset-sm-2">
-        <div class="alert alert-info clearfix">
-            <span class="fas fa-3x fa-info-circle float-start"></span>
-            @Model.ReportingNote
+    <div class="row mc-alertrow">
+        <div class="col-12 col-sm-8 offset-sm-2">
+            <div class="alert alert-info clearfix">
+                <span class="fas fa-3x fa-info-circle float-start"></span>
+                @Model.ReportingNote
+            </div>
         </div>
     </div>
-</div>
 }
 
-<table class="table table-sm table-bordered table-striped" style="margin-top: 2rem;">
+<table class="table table-sm table-bordered table-striped mt-3">
     <thead>
         <tr>
             <th>Report Name</th>
@@ -23,7 +23,10 @@
         @foreach (var report in Model.Reports)
         {
             <tr>
-                <td><a asp-action="Configure" asp-route-id="@report.Id">@report.Name</a></td>
+                <td>
+                    <a asp-action="@nameof(ReportingController.Configure)"
+                       asp-route-id="@report.Id">@report.Name</a>
+                </td>
                 <td>@report.Description</td>
             </tr>
         }

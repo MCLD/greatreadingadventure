@@ -522,24 +522,24 @@ namespace GRA.Controllers.MissionControl
         [HttpGet]
         public async Task<IActionResult> Index()
         {
+            var vendorCodeTypes = await _vendorCodeService.GetTypeAllAsync();
+            var vendorCodeType = vendorCodeTypes?.FirstOrDefault();
+
+            if (vendorCodeType == null)
+            {
+                return RedirectToAction(nameof(Configure));
+            }
+
             if (UserHasPermission(Permission.ManageVendorCodes))
             {
-                var vendorCodeStatus = await _vendorCodeService.GetStatusAsync();
+                var vendorCodeStatus = await _vendorCodeService.GetStatusAsync(vendorCodeType.Id);
                 if (vendorCodeStatus.IsConfigured)
                 {
                     return View(vendorCodeStatus);
                 }
                 else
                 {
-                    var vendorCodeType = await _vendorCodeService.GetTypeAllAsync();
-                    if (vendorCodeType?.Count == 0)
-                    {
-                        return RedirectToAction(nameof(Configure));
-                    }
-                    else
-                    {
-                        return RedirectToAction(nameof(GenerateCodes));
-                    }
+                    return RedirectToAction(nameof(GenerateCodes));
                 }
             }
 

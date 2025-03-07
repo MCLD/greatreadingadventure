@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Report;
 using GRA.Domain.Model.Utility;
 
 namespace GRA.Domain.Repository
@@ -9,7 +10,10 @@ namespace GRA.Domain.Repository
     {
         Task<VendorCode> AssignCodeAsync(int vendorCodeTypeId, int userId);
 
-        Task<VendorCode> AssociateCodeAsync(int vendorCodeTypeId, int userId, string reason, int activeUserId);
+        Task<VendorCode> AssociateCodeAsync(int vendorCodeTypeId,
+            int userId,
+            string reason,
+            int activeUserId);
 
         Task<ICollection<string>> GetAllCodesAsync(int vendorCodeTypeId);
 
@@ -23,14 +27,23 @@ namespace GRA.Domain.Repository
 
         Task<ICollection<VendorCode>> GetHoldSlipsAsync(string packingSlipNumber);
 
+        Task<ICollection<VendorCodeItemStatus>> GetOrderedNotShipped(int vendorCodeTypeId,
+            int? systemId,
+            int? branchId);
+
         Task<ICollection<VendorCode>> GetPendingHouseholdCodes(int headOfHouseholdId);
 
-        //todo fix type
         Task<IList<ReportVendorCodePending>> GetPendingPrizesPickupBranch();
 
         Task<ICollection<VendorCode>> GetRemainingPrizesForBranchAsync(int branchId);
 
-        Task<VendorCodeStatus> GetStatusAsync();
+        Task<ICollection<VendorCodeItemStatus>> GetShippedNotArrived(int vendorCodeTypeId,
+                                    int? systemId,
+            int? branchId);
+
+        Task<VendorCodeStatus> GetStatusAsync(int vendorCodeTypeId);
+
+        Task<ICollection<VendorTitlesOnOrder>> GetTitlesOnOrderAsync(int vendorCodeTypeId);
 
         Task<ICollection<VendorCodeEmailAward>> GetUnreportedEmailAwardCodes(int siteId,
             int vendorCodeTypeId);

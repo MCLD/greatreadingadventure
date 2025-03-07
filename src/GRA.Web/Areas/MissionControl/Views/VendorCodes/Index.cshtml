@@ -1,110 +1,498 @@
 ﻿@model GRA.Domain.Model.VendorCodeStatus
 
+@section styles {
+    <style>
+        .vendor-code-card td {
+            width: 6rem;
+            text-align: right;
+        }
+    </style>
+}
+
 @await Html.PartialAsync("_VendorCodePartial")
 
 <div class="row">
-    <div class="col-12 col-sm-10 col-lg-8">
-        <h2>Status</h2>
-        <table class="table table-striped table-bordered table-sm">
-            <tr class="table-info">
-                <th>Assigned vendor codes</th>
-                <td>@Model.AssignedCodes.ToString("N0")</td>
-                <td>@Model.Percent(Model.AssignedCodes, Model.All, "of total")</td>
-            </tr>
-            <tr>
-                <th>Unassigned vendor codes</th>
-                <td>@Model.UnusedCodes.ToString("N0")</td>
-                <td>@Model.Percent(Model.UnusedCodes, Model.All, "of total")</td>
-            </tr>
-            <tr class="table-warning">
-                <th>Reassigned vendor codes</th>
-                <td>@Model.ReassignedCodes.ToString("N0")</td>
-                <td>@Model.Percent(Model.ReassignedCodes, Model.All, "of total")</td>
-            </tr>
-            <tr class="table-danger">
-                <th>Codes assigned to deleted users</th>
-                <td>@((Model.All - Model.TotalCodes).ToString("N0"))</td>
-                <td>@Model.Percent(Model.All - Model.TotalCodes, Model.All, "of total")</td>
-            </tr>
-            <tr class="table-success">
-                <th>Total vendor codes</th>
-                <td>@Model.All.ToString("N0")</td>
-                <td>&nbsp;</td>
-            </tr>
-            <tr>
-                <td colspan="3">&nbsp;</td>
-            </tr>
-            <tr>
-                <th>Assigned &amp; donated</th>
-                <td>@Model.Donated.ToString("N0")</td>
-                <td>@Model.Percent(Model.Donated, Model.AssignedCodes, "of assigned")</td>
-            </tr>
-            <tr>
-                <th>Assigned &amp; vendor redemption selected</th>
-                <td>@Model.VendorSelected.ToString("N0")</td>
-                <td>@Model.Percent(Model.VendorSelected, Model.AssignedCodes, "of assigned")</td>
-            </tr>
-            <tr>
-                <td colspan="3">&nbsp;</td>
-            </tr>
-            <tr>
-                <th>Assigned with no order, ship, or arrival date</th>
-                <td>@Model.NoStatus.ToString("N0")</td>
-                <td>@Model.Percent(Model.NoStatus, Model.VendorSelected, "of vendor selected")</td>
-            </tr>
-            <tr>
-                <th>Ordered Items</th>
-                <td>@Model.Ordered.ToString("N0")</td>
-                <td>@Model.Percent(Model.Ordered, Model.VendorSelected, "of vendor selected")</td>
-            </tr>
-            <tr>
-                <td colspan="3">&nbsp;</td>
-            </tr>
-            <tr class="table-info">
-                <th>Shipped Items</th>
-                <td>@Model.Shipped.ToString("N0")</td>
-                <td>@Model.Percent(Model.Shipped, Model.Ordered, "of ordered")</td>
-            </tr>
-            <tr class="table-success">
-                <th>Arrived Items</th>
-                <td>@Model.Arrived.ToString("N0")</td>
-                <td>@Model.Percent(Model.Arrived, Model.Shipped, "of shipped")</td>
-            </tr>
-            @if (Model.EmailAwardSelected > 0)
-            {
-                <tr>
-                    <td colspan="3">&nbsp;</td>
-                </tr>
-                <tr class="table-info">
-                    <th>Email award selected</th>
-                    <td>@Model.EmailAwardSelected.ToString("N0")</td>
-                    <td>
-                        @Model.Percent(Model.EmailAwardSelected, Model.AssignedCodes, "of assigned")
-                    </td>
-                </tr>
-                <tr>
-                    <th>Email award pending download</th>
-                    <td>@Model.EmailAwardPendingDownload.ToString("N0")</td>
-                    <td>
-                        @Model.Percent(Model.EmailAwardPendingDownload, Model.EmailAwardSelected, "of email selected")
-                    </td>
-                </tr>
-                <tr>
-                    <th>Email award downloaded in report</th>
-                    <td>@Model.EmailAwardDownloadedInReport.ToString("N0")</td>
-                    <td>
-                        @Model.Percent(Model.EmailAwardDownloadedInReport, Model.EmailAwardSelected, "of email selected")
-                    </td>
-                </tr>
-                <tr class="table-success">
-                    <th>Email award sent</th>
-                    <td>@Model.EmailAwardSent.ToString("N0")</td>
-                    <td>
-                        @Model.Percent(Model.EmailAwardSent, Model.EmailAwardSelected, "of email selected")
-                    </td>
-                </tr>
-            }
-        </table>
+    <div class="col-12 col-lg-6">
+        <div class="card mb-2 vendor-code-card">
+            <div class="card-header fw-bold">All Codes Status</div>
+            <div class="card-body p-0">
+                <table class="table table-striped table-bordered table-sm mb-0">
+                    <tr class="table-success">
+                        <th>Assigned vendor codes</th>
+                        <td>@Model.AssignedCodes.ToString("N0")</td>
+                        <td>@Model.Percent(Model.AssignedCodes, Model.All)</td>
+                    </tr>
+                    <tr class="table-info">
+                        <th>Unassigned vendor codes</th>
+                        <td>@Model.UnusedCodes.ToString("N0")</td>
+                        <td>@Model.Percent(Model.UnusedCodes, Model.All)</td>
+                    </tr>
+                    <tr class="table-warning">
+                        <th>Reassigned vendor codes</th>
+                        <td>@Model.ReassignedCodes.ToString("N0")</td>
+                        <td>@Model.Percent(Model.ReassignedCodes, Model.All)</td>
+                    </tr>
+                    <tr class="table-danger">
+                        <th>Codes assigned to deleted users</th>
+                        <td>@((Model.All - Model.TotalCodes).ToString("N0"))</td>
+                        <td>@Model.Percent(Model.All - Model.TotalCodes, Model.All)</td>
+                    </tr>
+                    <tr>
+                        <th>Total vendor codes</th>
+                        <td>@Model.All.ToString("N0")</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="card-footer d-print-none p-0">
+                <div class="progress-stacked">
+                    <div aria-label="Assigned vendor codes"
+                         aria-valuemin="0"
+                         aria-valuemax="100"
+                         aria-valuenow="@Model.PercentValue(Model.AssignedCodes, Model.All).ToString("N")"
+                         class="progress"
+                         role="progressbar"
+                         style="width: @Model.PercentValue(Model.AssignedCodes, Model.All).ToString("N")%">
+                        <div class="progress-bar bg-success">
+                            @if (Model.PercentValue(Model.AssignedCodes, Model.All) > 10)
+                            {
+                                <span>@Model.PercentValue(Model.AssignedCodes, Model.All).ToString("N")%</span>
+                            }
+                        </div>
+                    </div>
+                    <div aria-label="Unassigned vendor codes"
+                         aria-valuemin="0"
+                         aria-valuemax="100"
+                         aria-valuenow="@Model.PercentValue(Model.UnusedCodes, Model.All).ToString("N")"
+                         class="progress"
+                         role="progressbar"
+                         style="width: @Model.PercentValue(Model.UnusedCodes, Model.All).ToString("N")%">
+                        <div class="progress-bar bg-info">
+                            @if (Model.PercentValue(Model.UnusedCodes, Model.All) > 10)
+                            {
+                                <span>@Model.PercentValue(Model.UnusedCodes, Model.All).ToString("N")%</span>
+                            }
+                        </div>
+                    </div>
+                    <div aria-label="Reassigned vendor codes"
+                         aria-valuemin="0"
+                         aria-valuemax="100"
+                         aria-valuenow="@Model.PercentValue(Model.ReassignedCodes, Model.All).ToString("N")"
+                         class="progress"
+                         role="progressbar"
+                         style="width: @Model.PercentValue(Model.ReassignedCodes, Model.All).ToString("N")%">
+                        <div class="progress-bar bg-warning">
+                            @if (Model.PercentValue(Model.ReassignedCodes, Model.All) > 10)
+                            {
+                                <span>@Model.PercentValue(Model.ReassignedCodes, Model.All).ToString("N")%</span>
+                            }
+                        </div>
+                    </div>
+                    <div aria-label="Codes assigned to deleted users"
+                         aria-valuemin="0"
+                         aria-valuemax="100"
+                         aria-valuenow="@Model.PercentValue(Model.All - Model.TotalCodes, Model.All).ToString("N")"
+                         class="progress"
+                         role="progressbar"
+                         style="width: @Model.PercentValue(Model.All - Model.TotalCodes, Model.All).ToString("N")%">
+                        <div class="progress-bar bg-danger">
+                            @if (Model.PercentValue(Model.All - Model.TotalCodes, Model.All) > 10)
+                            {
+                                <span>@Model.PercentValue(Model.All - Model.TotalCodes, Model.All).ToString("N")%</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+    <div class="col-12 col-lg-6">
+        <div class="card mb-2 vendor-code-card">
+            <div class="card-header fw-bold">Shipping Status</div>
+            <div class="card-body p-0">
+                <table class="table table-striped table-bordered table-sm mb-0">
+                    <tr class="table-info">
+                        <th>Ordered and Shipped Items</th>
+                        <td>@Model.Shipped.ToString("N0")</td>
+                        <td>
+                            <div class="d-flex">
+                                <span class="d-print-none">
+                                    <span class="fas fa-info-circle"
+                                          data-bs-toggle="tooltip"
+                                          data-bs-title="Percentage shipped of total ordered"></span>
+                                </span>
+                                <span class="flex-grow-1">
+                                    @Model.Percent(Model.Shipped, Model.Ordered)
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="table-secondary">
+                        <th>
+                            <div class="d-flex">
+                                <div class="flex-grow-1">Ordered, not Shipped</div>
+                                <div>
+                                    <a class="btn btn-sm btn-outline-secondary px-1 py-0"
+                                       asp-action="@nameof(ReportingController.Configure)"
+                                       asp-controller="@ReportingController.Name"
+                                       asp-route-id="@GRA.Domain.Report.VendorOrderedNotShippedReport.ReportId">
+                                        <span class="fas fa-table fa-fw"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </th>
+                        <td>@((Model.Ordered - Model.Shipped).ToString("N0"))</td>
+                        <td>
+                            <div class="d-flex">
+                                <span class="d-print-none">
+                                    <span class="fas fa-info-circle"
+                                          data-bs-toggle="tooltip"
+                                          data-bs-title="Percentage not shipped of total ordered"></span>
+                                </span>
+                                <span class="flex-grow-1">
+                                    @Model.Percent(Model.Ordered - Model.Shipped, Model.Ordered)
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="p-0">
+                            <div class="progress-stacked">
+                                <div aria-label="Ordered and shipped"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100"
+                                     aria-valuenow="@Model.PercentValue(Model.Shipped, Model.Ordered).ToString("N")"
+                                     class="progress"
+                                     role="progressbar"
+                                     style="width: @Model.PercentValue(Model.Shipped, Model.Ordered).ToString("N")%">
+                                    <div class="progress-bar bg-info">
+                                        @if (Model.PercentValue(Model.Shipped, Model.Ordered) > 10)
+                                        {
+                                            <span>@Model.PercentValue(Model.Shipped, Model.Ordered).ToString("N")%</span>
+                                        }
+                                    </div>
+                                </div>
+                                <div aria-label="Ordered, not shipped"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100"
+                                     aria-valuenow="@Model.PercentValue(Model.Ordered - Model.Shipped, Model.Ordered).ToString("N")"
+                                     class="progress"
+                                     role="progressbar"
+                                     style="width: @Model.PercentValue(Model.Ordered - Model.Shipped, Model.Ordered).ToString("N")%">
+                                    <div class="progress-bar bg-secondary">
+                                        @if (Model.PercentValue(Model.Ordered - Model.Shipped, Model.Ordered) > 10)
+                                        {
+                                            <span>@Model.PercentValue(Model.Ordered - Model.Shipped, Model.Ordered).ToString("N")%</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="table-success">
+                        <th>Shipped and Arrived Items</th>
+                        <td>@Model.Arrived.ToString("N0")</td>
+                        <td>
+                            <div class="d-flex">
+                                <span class="d-print-none">
+                                    <span class="fas fa-info-circle"
+                                          data-bs-toggle="tooltip"
+                                          data-bs-title="Percentage arrived of total shipped"></span>
+                                </span>
+                                <span class="flex-grow-1">
+                                    @Model.Percent(Model.Arrived, Model.Shipped)
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="table-secondary">
+                        <th>Shipped, not Arrived</th>
+                        <td>@((Model.Shipped - Model.Arrived).ToString("N0"))</td>
+                        <td>
+                            <div class="d-flex">
+                                <span class="d-print-none">
+                                    <span class="fas fa-info-circle"
+                                          data-bs-toggle="tooltip"
+                                          data-bs-title="Percentage not arrived of total shipped"></span>
+                                </span>
+                                <span class="flex-grow-1">
+                                    @Model.Percent(Model.Shipped - Model.Arrived, Model.Shipped)
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="p-0">
+                            <div class="progress-stacked">
+                                <div aria-label="Shipped and arrived"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100"
+                                     aria-valuenow="@Model.PercentValue(Model.Arrived, Model.Shipped).ToString("N")"
+                                     class="progress"
+                                     role="progressbar"
+                                     style="width: @Model.PercentValue(Model.Arrived, Model.Shipped).ToString("N")%">
+                                    <div class="progress-bar bg-success">
+                                        @if (Model.PercentValue(Model.Arrived, Model.Shipped) > 10)
+                                        {
+                                            <span>@Model.PercentValue(Model.Arrived, Model.Shipped).ToString("N")%</span>
+                                        }
+                                    </div>
+                                </div>
+                                <div aria-label="Shipped, not arrived"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100"
+                                     aria-valuenow="@Model.PercentValue(Model.Shipped - Model.Arrived, Model.Shipped).ToString("N")"
+                                     class="progress"
+                                     role="progressbar"
+                                     style="width: @Model.PercentValue(Model.Shipped - Model.Arrived, Model.Shipped).ToString("N")%">
+                                    <div class="progress-bar bg-secondary">
+                                        @if (Model.PercentValue(Model.Shipped - Model.Arrived, Model.Shipped) > 10)
+                                        {
+                                            <span>@Model.PercentValue(Model.Shipped - Model.Arrived, Model.Shipped).ToString("N")%</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-6">
+        <div class="card mb-2 vendor-code-card">
+            <div class="card-header fw-bold">Assigned Codes, Participant Selections</div>
+            <div class="card-body p-0">
+                <table class="table table-striped table-bordered table-sm mb-0">
+                    <tr class="table-info">
+                        <th>Donation selected</th>
+                        <td>@Model.Donated.ToString("N0")</td>
+                        <td>@Model.Percent(Model.Donated, Model.AssignedCodes)</td>
+                    </tr>
+                    <tr class="table-success">
+                        <th>Vendor redemption selected</th>
+                        <td>@Model.VendorSelected.ToString("N0")</td>
+                        <td>@Model.Percent(Model.VendorSelected, Model.AssignedCodes)</td>
+                    </tr>
+                    <tr class="table-primary">
+                        <th>Email award selected</th>
+                        <td>@Model.EmailAwardSelected.ToString("N0")</td>
+                        <td>
+                            @Model.Percent(Model.EmailAwardSelected, Model.AssignedCodes)
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="card-footer d-print-none p-0">
+                <div class="progress-stacked">
+                    <div aria-label="Vendor redemption selected"
+                         aria-valuemin="0"
+                         aria-valuemax="100"
+                         aria-valuenow="@Model.PercentValue(Model.VendorSelected, Model.AssignedCodes).ToString("N")"
+                         class="progress"
+                         role="progressbar"
+                         style="width: @Model.PercentValue(Model.VendorSelected, Model.AssignedCodes).ToString("N")%">
+                        <div class="progress-bar bg-success">
+                            @if (Model.PercentValue(Model.VendorSelected, Model.AssignedCodes) > 10)
+                            {
+                                <span>@Model.PercentValue(Model.VendorSelected, Model.AssignedCodes).ToString("N")%</span>
+                            }
+                        </div>
+                    </div>
+                    <div aria-label="Email award selected"
+                         aria-valuemin="0"
+                         aria-valuemax="100"
+                         aria-valuenow="@Model.PercentValue(Model.EmailAwardSelected, Model.AssignedCodes).ToString("N")"
+                         class="progress"
+                         role="progressbar"
+                         style="width: @Model.PercentValue(Model.EmailAwardSelected, Model.AssignedCodes).ToString("N")%">
+                        <div class="progress-bar bg-success">
+                            @if (Model.PercentValue(Model.EmailAwardSelected, Model.AssignedCodes) > 10)
+                            {
+                                <span>@Model.PercentValue(Model.EmailAwardSelected, Model.AssignedCodes).ToString("N")%</span>
+                            }
+                        </div>
+                    </div>
+                    <div aria-label="Donation selected"
+                         aria-valuemin="0"
+                         aria-valuemax="100"
+                         aria-valuenow="@Model.PercentValue(Model.Donated, Model.AssignedCodes).ToString("N")"
+                         class="progress"
+                         role="progressbar"
+                         style="width: @Model.PercentValue(Model.Donated, Model.AssignedCodes).ToString("N")%">
+                        <div class="progress-bar bg-info">
+                            @if (Model.PercentValue(Model.Donated, Model.AssignedCodes) > 10)
+                            {
+                                <span>@Model.PercentValue(Model.Donated, Model.AssignedCodes).ToString("N")%</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-6">
+        <div class="card mb-2 vendor-code-card">
+            <div class="card-header fw-bold">Vendor Selected, Orders</div>
+            <div class="card-body p-0">
+                <table class="table table-striped table-bordered table-sm mb-0">
+                    <tr class="table-warning">
+                        <th>Assigned, unordered</th>
+                        <td>@Model.NoStatus.ToString("N0")</td>
+                        <td>@Model.Percent(Model.NoStatus, Model.VendorSelected)</td>
+                    </tr>
+                    <tr class="table-success">
+                        <th>Ordered</th>
+                        <td>@Model.Ordered.ToString("N0")</td>
+                        <td>@Model.Percent(Model.Ordered, Model.VendorSelected)</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="card-footer d-print-none p-0">
+                <div class="progress-stacked">
+                    <div aria-label="Assigned, unordered"
+                         aria-valuemin="0"
+                         aria-valuemax="100"
+                         aria-valuenow="@Model.PercentValue(Model.NoStatus, Model.VendorSelected).ToString("N")"
+                         class="progress"
+                         role="progressbar"
+                         style="width: @Model.PercentValue(Model.NoStatus, Model.VendorSelected).ToString("N")%">
+                        <div class="progress-bar bg-warning">
+                            @if (Model.PercentValue(Model.NoStatus, Model.VendorSelected) > 10)
+                            {
+                                <span>@Model.PercentValue(Model.NoStatus, Model.VendorSelected).ToString("N")%</span>
+                            }
+                        </div>
+                    </div>
+                    <div aria-label="Ordered"
+                         aria-valuemin="0"
+                         aria-valuemax="100"
+                         aria-valuenow="@Model.PercentValue(Model.Ordered, Model.VendorSelected).ToString("N")"
+                         class="progress"
+                         role="progressbar"
+                         style="width: @Model.PercentValue(Model.Ordered, Model.VendorSelected).ToString("N")%">
+                        <div class="progress-bar bg-success">
+                            @if (Model.PercentValue(Model.Ordered, Model.VendorSelected) > 10)
+                            {
+                                <span>@Model.PercentValue(Model.Ordered, Model.VendorSelected).ToString("N")%</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @if (Model.EmailAwardSelected > 0)
+    {
+        <div class="col-12 col-lg-6">
+            <div class="card mb-2">
+                <div class="card-header fw-bold">Email Selected</div>
+                <div class="card-body p-0">
+                    <table class="table table-striped table-bordered table-sm mb-0">
+                        <tr class="table-warning">
+                            <th>Pending download</th>
+                            <td>@Model.EmailAwardPendingDownload.ToString("N0")</td>
+                            <td>
+                                @Model.Percent(Model.EmailAwardPendingDownload, Model.EmailAwardSelected)
+                            </td>
+                        </tr>
+                        <tr class="table-success">
+                            <th>Downloaded in report</th>
+                            <td>@Model.EmailAwardDownloadedInReport.ToString("N0")</td>
+                            <td>
+                                @Model.Percent(Model.EmailAwardDownloadedInReport, Model.EmailAwardSelected)
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="card-footer d-print-none p-0">
+                    <div class="progress-stacked">
+                        <div aria-label="Pending download"
+                             aria-valuemin="0"
+                             aria-valuemax="100"
+                             aria-valuenow="@Model.PercentValue(Model.EmailAwardPendingDownload, Model.EmailAwardSelected).ToString("N")"
+                             class="progress"
+                             role="progressbar"
+                             style="width: @Model.PercentValue(Model.EmailAwardPendingDownload, Model.EmailAwardSelected).ToString("N")%">
+                            <div class="progress-bar bg-warning">
+                                @if (Model.PercentValue(Model.EmailAwardPendingDownload, Model.EmailAwardSelected) > 10)
+                                {
+                                    <span>@Model.PercentValue(Model.EmailAwardPendingDownload, Model.EmailAwardSelected).ToString("N")%</span>
+                                }
+                            </div>
+                        </div>
+                        <div aria-label="Downloaded in report"
+                             aria-valuemin="0"
+                             aria-valuemax="100"
+                             aria-valuenow="@Model.PercentValue(Model.EmailAwardDownloadedInReport, Model.EmailAwardSelected).ToString("N")"
+                             class="progress"
+                             role="progressbar"
+                             style="width: @Model.PercentValue(Model.EmailAwardDownloadedInReport, Model.EmailAwardSelected).ToString("N")%">
+                            <div class="progress-bar bg-success">
+                                @if (Model.PercentValue(Model.EmailAwardDownloadedInReport, Model.EmailAwardSelected) > 10)
+                                {
+                                    <span>@Model.PercentValue(Model.EmailAwardDownloadedInReport, Model.EmailAwardSelected).ToString("N")%</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-6">
+            <div class="card mb-2">
+                <div class="card-header fw-bold">Email Award</div>
+                <div class="card-body p-0">
+                    <table class="table table-striped table-bordered table-sm mb-0">
+                        <tr class="table-warning">
+                            <th>Not sent</th>
+                            <td>@((Model.EmailAwardSelected - Model.EmailAwardSent).ToString("N0"))</td>
+                            <td>
+                                @Model.Percent(Model.EmailAwardSelected - Model.EmailAwardSent, Model.EmailAwardSelected)
+                            </td>
+                        </tr>
+                        <tr class="table-success">
+                            <th>Sent</th>
+                            <td>@Model.EmailAwardSent.ToString("N0")</td>
+                            <td>
+                                @Model.Percent(Model.EmailAwardSent, Model.EmailAwardSelected)
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    <div class="progress-stacked">
+                        <div aria-label="Not Sent"
+                             aria-valuemin="0"
+                             aria-valuemax="100"
+                             aria-valuenow="@Model.PercentValue(Model.EmailAwardSelected - Model.EmailAwardSent, Model.EmailAwardSelected).ToString("N")"
+                             class="progress"
+                             role="progressbar"
+                             style="width: @Model.PercentValue(Model.EmailAwardSelected - Model.EmailAwardSent, Model.EmailAwardSelected).ToString("N")%">
+                            <div class="progress-bar bg-warning">
+                                @if (Model.PercentValue(Model.EmailAwardSelected - Model.EmailAwardSent, Model.EmailAwardSelected) > 10)
+                                {
+                                    <span>@Model.PercentValue(Model.EmailAwardSelected - Model.EmailAwardSent, Model.EmailAwardSelected).ToString("N")%</span>
+                                }
+                            </div>
+                        </div>
+                        <div aria-label="Sent"
+                             aria-valuemin="0"
+                             aria-valuemax="100"
+                             aria-valuenow="@Model.PercentValue(Model.EmailAwardSent, Model.EmailAwardSelected).ToString("N")"
+                             class="progress"
+                             role="progressbar"
+                             style="width: @Model.PercentValue(Model.EmailAwardSent, Model.EmailAwardSelected).ToString("N")%">
+                            <div class="progress-bar bg-success">
+                                @if (Model.PercentValue(Model.EmailAwardSent, Model.EmailAwardSelected) > 10)
+                                {
+                                    <span>@Model.PercentValue(Model.EmailAwardSent, Model.EmailAwardSelected).ToString("N")%</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 </div>
-
