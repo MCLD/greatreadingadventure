@@ -206,7 +206,19 @@
                         </td>
                     </tr>
                     <tr class="table-secondary">
-                        <th>Shipped, not Arrived</th>
+                        <th>
+                            <div class="d-flex">
+                                <div class="flex-grow-1">Shipped, not Arrived</div>
+                                <div>
+                                    <a class="btn btn-sm btn-outline-secondary px-1 py-0"
+                                       asp-action="@nameof(ReportingController.Configure)"
+                                       asp-controller="@ReportingController.Name"
+                                       asp-route-id="@GRA.Domain.Report.VendorShippedNotArrivedReport.ReportId">
+                                        <span class="fas fa-table fa-fw"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </th>
                         <td>@((Model.Shipped - Model.Arrived).ToString("N0"))</td>
                         <td>
                             <div class="d-flex">
@@ -265,7 +277,19 @@
             <div class="card-body p-0">
                 <table class="table table-striped table-bordered table-sm mb-0">
                     <tr class="table-info">
-                        <th>Donation selected</th>
+                        <th>
+                            <div class="d-flex">
+                                <div class="flex-grow-1">Donation selected</div>
+                                <div>
+                                    <a class="btn btn-sm btn-outline-secondary px-1 py-0"
+                                       asp-action="@nameof(ReportingController.Configure)"
+                                       asp-controller="@ReportingController.Name"
+                                       asp-route-id="@GRA.Domain.Report.VendorCodeDonationsReport.ReportId">
+                                        <span class="fas fa-table fa-fw"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </th>
                         <td>@Model.Donated.ToString("N0")</td>
                         <td>@Model.Percent(Model.Donated, Model.AssignedCodes)</td>
                     </tr>

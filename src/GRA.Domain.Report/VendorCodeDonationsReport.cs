@@ -11,32 +11,35 @@ using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Report
 {
-    [ReportInformation(15,
+    [ReportInformation(ReportId,
         "Vendor Code Donations Report",
         "Vendor prize donations filterable by system.",
         "Participants")]
     public class VendorCodeDonationsReport : BaseReport
     {
+        public const int ReportId = 15;
+
         private readonly IBranchRepository _branchRepository;
         private readonly IProgramRepository _programRepository;
         private readonly ISystemRepository _systemRepository;
         private readonly IUserRepository _userRepository;
 
         public VendorCodeDonationsReport(ILogger<VendorCodeDonationsReport> logger,
-            Domain.Report.ServiceFacade.Report serviceFacade,
+            ServiceFacade.Report serviceFacade,
             IBranchRepository branchRepository,
             IProgramRepository programRepository,
             ISystemRepository systemRepository,
             IUserRepository userRepository) : base(logger, serviceFacade)
         {
-            _branchRepository = branchRepository
-                ?? throw new ArgumentException(nameof(branchRepository));
-            _programRepository = programRepository
-                ?? throw new ArgumentNullException(nameof(programRepository));
-            _systemRepository = systemRepository
-                ?? throw new ArgumentException(nameof(systemRepository));
-            _userRepository = userRepository
-                ?? throw new ArgumentNullException(nameof(userRepository));
+            ArgumentNullException.ThrowIfNull(branchRepository);
+            ArgumentNullException.ThrowIfNull(programRepository);
+            ArgumentNullException.ThrowIfNull(systemRepository);
+            ArgumentNullException.ThrowIfNull(userRepository);
+
+            _branchRepository = branchRepository;
+            _programRepository = programRepository;
+            _systemRepository = systemRepository;
+            _userRepository = userRepository;
         }
 
         public override async Task ExecuteAsync(ReportRequest request,
@@ -44,6 +47,8 @@ namespace GRA.Domain.Report
             IProgress<JobStatus> progress = null)
         {
             #region Reporting initialization
+
+            ArgumentNullException.ThrowIfNull(request);
 
             request = await StartRequestAsync(request);
 

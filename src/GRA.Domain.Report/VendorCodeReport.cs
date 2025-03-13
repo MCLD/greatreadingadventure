@@ -13,7 +13,7 @@ namespace GRA.Domain.Report
 {
     [ReportInformation(13,
         "Vendor Code Report",
-        "Select a system or for all see vendor prizes earned and ordered. Includes deleted participants!",
+        "Select a system or for all see vendor prizes earned and ordered.",
         "Participants")]
     public class VendorCodeReport : BaseReport
     {
