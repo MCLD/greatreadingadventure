@@ -6,8 +6,8 @@
 }
 
 <div class="row">
-    <div class="col-12 col-md-8 offset-md-2">
-        <table class="table table-sm table-bordered" style="margin-top: 2rem;">
+    <div class="col-12 col-lg-8 offset-lg-2">
+        <table class="table table-sm table-bordered mt-2">
             <tr>
                 <th>Packing slip number</th>
                 <td>@Model.PackingSlipNumber</td>
@@ -76,11 +76,38 @@
     </div>
 </div>
 
+@if (Model.VendorCodePackingSlip?.IsReceived != true)
+{
+    <div class="col-12 col-lg-8 offset-lg-2">
+        <div class="alert alert-warning d-flex align-items-center">
+            <div class="flex-grow-1">
+                This packing slip has not been received yet.
+            </div>
+            @if (Model.CanBeReceived)
+            {
+                <div>
+                    <form asp-action="@nameof(VendorCodesController.ProcessPackingSlip)"
+                          id="processForm"
+                          method="post"
+                          role="form"
+                          enctype="multipart/form-data">
+                        <input asp-for="PackingSlipNumber" type="hidden" />
+                        <button type="submit"
+                                class="btn btn-sm btn-outline-secondary">
+                            @Model.SubmitText
+                        </button>
+                    </form>
+                </div>
+            }
+        </div>
+    </div>
+}
+
 <div class="row">
     <div class="col-12">
         @if (Model.VendorCodes?.Count() > 0)
         {
-            <div style="margin-bottom: 2rem;">
+            <div class="mb-2">
                 <form asp-action="@nameof(VendorCodesController.ProcessPackingSlip)"
                       id="processForm"
                       method="post"

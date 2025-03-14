@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
@@ -67,6 +68,8 @@ namespace GRA.Domain.Repository
 
         Task<DataWithCount<ICollection<User>>> GetUsersInRoleAsync(int roleId, BaseFilter filter);
 
+        Task<IDictionary<string, DateTime>> GetViewedPackingSlipsAsync(int userId);
+
         Task<int> GetWelcomePendingCountAsync(int welcomeEmailId, int memberLongerThanHours);
 
         Task<IEnumerable<User>> GetWelcomeRecipientsAsync(int skip,
@@ -96,5 +99,7 @@ namespace GRA.Domain.Repository
             IEnumerable<int> rolesToRemove);
 
         Task<bool> UsernameInUseAsync(int siteId, string username);
+
+        Task ViewPackingSlipAsync(int userId, string packingSlip);
     }
 }

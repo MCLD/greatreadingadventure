@@ -214,7 +214,8 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => !_.IsDeleted && (_.HouseholdHeadUserId == householdHeadUserId || _.Id == householdHeadUserId))
+                .Where(_ => !_.IsDeleted
+                    && (_.HouseholdHeadUserId == householdHeadUserId || _.Id == householdHeadUserId))
                 .OrderBy(_ => _.CreatedAt)
                 .ProjectTo<User>(_mapper.ConfigurationProvider)
                 .Select(_ => _.Id)
@@ -252,7 +253,8 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task<IDictionary<User, int>> GetStaffRegisteredParticipantsAsync(ReportCriterion criterion)
+        public async Task<IDictionary<User, int>>
+            GetStaffRegisteredParticipantsAsync(ReportCriterion criterion)
         {
             ArgumentNullException.ThrowIfNull(criterion);
 
@@ -469,6 +471,40 @@ namespace GRA.Data.Repository
                     .ApplyPagination(filter)
                     .ToListAsync()
             };
+        }
+
+        public async Task<IDictionary<string, DateTime>> GetViewedPackingSlipsAsync(int userId)
+        {
+            // UserPackingSlipViews for the current user
+            var slips = await _context.UserPackingSlipViews
+                .Where(_ => _.UserId == userId)
+                .ToListAsync();
+
+            // Any which have been received but not removed from UserPackingSlipViews
+            var receivedSlips = await _context.VendorCodePackingSlips
+                .AsNoTracking()
+                .Where(_ => slips.Select(_ => _.PackingSlip).Contains(_.PackingSlip)
+                    && _.IsReceived)
+                .Select(_ => _.PackingSlip)
+                .ToListAsync();
+
+            // Sync up UserPackingSlipViews to remove slips which have been viewed
+            if (receivedSlips?.Count > 0)
+            {
+                foreach (var receivedSlip in receivedSlips)
+                {
+                    var matchingSlips = slips.Where(_ => _.PackingSlip == receivedSlip).ToList();
+                    _context.UserPackingSlipViews.RemoveRange(matchingSlips);
+                    foreach (var matchingSlip in matchingSlips)
+                    {
+                        slips.Remove(matchingSlip);
+                    }
+                }
+                await _context.SaveChangesAsync();
+            }
+
+            // return the list of viewed and not received
+            return slips.ToDictionary(k => k.PackingSlip, v => v.ViewedAt);
         }
 
         public async Task<int> GetWelcomePendingCountAsync(int welcomeEmailId,
@@ -702,6 +738,39 @@ namespace GRA.Data.Repository
             return await DbSet.AsNoTracking()
                 .Where(_ => _.SiteId == siteId && _.Username == username && !_.IsDeleted)
                 .AnyAsync();
+        }
+
+        public async Task ViewPackingSlipAsync(int userId, string packingSlip)
+        {
+            var slipReceived = await _context
+                .VendorCodePackingSlips
+                .AsNoTracking()
+                .SingleOrDefaultAsync(_ => _.PackingSlip == packingSlip && _.IsReceived);
+
+            // if not received, log the view
+            if (slipReceived == null)
+            {
+                var packingSlipViewed = await _context
+                    .UserPackingSlipViews
+                    .Where(_ => _.UserId == userId && _.PackingSlip == packingSlip)
+                    .SingleOrDefaultAsync();
+
+                if (packingSlipViewed == null)
+                {
+                    await _context.UserPackingSlipViews.AddAsync(new Model.UserPackingSlipView
+                    {
+                        PackingSlip = packingSlip,
+                        UserId = userId,
+                        ViewedAt = _dateTimeProvider.Now
+                    });
+                }
+                else
+                {
+                    packingSlipViewed.ViewedAt = _dateTimeProvider.Now;
+                    _context.UserPackingSlipViews.Update(packingSlipViewed);
+                }
+                await _context.SaveChangesAsync();
+            }
         }
 
         private IQueryable<Model.User> ApplyUserFilter(UserFilter filter)
