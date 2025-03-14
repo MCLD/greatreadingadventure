@@ -78,34 +78,39 @@ namespace GRA.Domain.Service
         {
             SetManagementPermission(Permission.ManageVendorCodes);
 
-            _codeGenerator = codeGenerator
-                ?? throw new ArgumentNullException(nameof(codeGenerator));
-            _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
-            _jobRepository = jobRepository
-                ?? throw new ArgumentNullException(nameof(jobRepository));
-            _languageService = languageService
-                ?? throw new ArgumentNullException(nameof(languageService));
-            _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
-            _messageTemplateService = messageTemplateService
-                ?? throw new ArgumentNullException(nameof(messageTemplateService));
-            _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
-            _prizeWinnerService = prizeWinnerService
-                ?? throw new ArgumentNullException(nameof(prizeWinnerService));
-            _segmentService = segmentService
-                ?? throw new ArgumentNullException(nameof(segmentService));
-            _sharedLocalizer = sharedLocalizer
-                ?? throw new ArgumentNullException(nameof(sharedLocalizer));
-            _siteLookupService = siteLookupService
-                ?? throw new ArgumentNullException(nameof(siteLookupService));
-            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
-            _userRepository = userRepository
-                ?? throw new ArgumentNullException(nameof(userRepository));
-            _vendorCodePackingSlipRepository = vendorCodePackingSlipRepository
-                ?? throw new ArgumentNullException(nameof(vendorCodePackingSlipRepository));
-            _vendorCodeRepository = vendorCodeRepository
-                ?? throw new ArgumentNullException(nameof(vendorCodeRepository));
-            _vendorCodeTypeRepository = vendorCodeTypeRepository
-                ?? throw new ArgumentNullException(nameof(vendorCodeTypeRepository));
+            ArgumentNullException.ThrowIfNull(codeGenerator);
+            ArgumentNullException.ThrowIfNull(emailService);
+            ArgumentNullException.ThrowIfNull(jobRepository);
+            ArgumentNullException.ThrowIfNull(languageService);
+            ArgumentNullException.ThrowIfNull(mailService);
+            ArgumentNullException.ThrowIfNull(messageTemplateService);
+            ArgumentNullException.ThrowIfNull(pathResolver);
+            ArgumentNullException.ThrowIfNull(prizeWinnerService);
+            ArgumentNullException.ThrowIfNull(segmentService);
+            ArgumentNullException.ThrowIfNull(sharedLocalizer);
+            ArgumentNullException.ThrowIfNull(siteLookupService);
+            ArgumentNullException.ThrowIfNull(siteService);
+            ArgumentNullException.ThrowIfNull(userRepository);
+            ArgumentNullException.ThrowIfNull(vendorCodePackingSlipRepository);
+            ArgumentNullException.ThrowIfNull(vendorCodeRepository);
+            ArgumentNullException.ThrowIfNull(vendorCodeTypeRepository);
+
+            _codeGenerator = codeGenerator;
+            _emailService = emailService;
+            _jobRepository = jobRepository;
+            _languageService = languageService;
+            _mailService = mailService;
+            _messageTemplateService = messageTemplateService;
+            _pathResolver = pathResolver;
+            _prizeWinnerService = prizeWinnerService;
+            _segmentService = segmentService;
+            _sharedLocalizer = sharedLocalizer;
+            _siteLookupService = siteLookupService;
+            _siteService = siteService;
+            _userRepository = userRepository;
+            _vendorCodePackingSlipRepository = vendorCodePackingSlipRepository;
+            _vendorCodeRepository = vendorCodeRepository;
+            _vendorCodeTypeRepository = vendorCodeTypeRepository;
         }
 
         private Dictionary<string, VendorCodePackingSlip> PsCache { get; set; }
@@ -1696,6 +1701,11 @@ namespace GRA.Domain.Service
                     : "not inserted yet");
 
             return packingSlipSummary;
+        }
+
+        public async Task<IDictionary<string, DateTime>> ViewedPackingSlipsAsync(int userId)
+        {
+            return await _userRepository.GetViewedPackingSlipsAsync(userId);
         }
 
         private static ILookup<string, string> ValidateVendorCodeType(VendorCodeType vendorCodeType)

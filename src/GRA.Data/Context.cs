@@ -115,6 +115,7 @@ namespace GRA.Data
         public DbSet<Model.UserFavoriteChallenge> UserFavoriteChallenges { get; set; }
         public DbSet<Model.UserFavoriteEvent> UserFavoriteEvents { get; set; }
         public DbSet<Model.UserLog> UserLogs { get; set; }
+        public DbSet<Model.UserPackingSlipView> UserPackingSlipViews { get; set; }
         public DbSet<Model.UserQuestionnaire> UserQuestionnaires { get; set; }
         public DbSet<Model.UserRole> UserRoles { get; set; }
         public DbSet<Model.User> Users { get; set; }
@@ -183,6 +184,8 @@ namespace GRA.Data
                 .HasKey(_ => new { _.FeaturedChallengeGroupId, _.LanguageId });
             modelBuilder.Entity<Model.MessageTemplateText>()
                 .HasKey(_ => new { _.MessageTemplateId, _.LanguageId });
+            modelBuilder.Entity<Model.UserPackingSlipView>()
+                .HasKey(_ => new { _.UserId, _.PackingSlip });
             modelBuilder.Entity<Model.PsBackToBack>()
                 .HasKey(_ => new { _.PsAgeGroupId, _.BranchId });
             modelBuilder.Entity<Model.PsKitAgeGroup>()

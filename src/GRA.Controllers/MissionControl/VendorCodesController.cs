@@ -547,7 +547,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public IActionResult LookupPackingSlip(string id)
+        public async Task<IActionResult> LookupPackingSlip(string id)
         {
             return RedirectToAction(nameof(ViewPackingSlip), new { id });
         }
@@ -941,8 +941,16 @@ namespace GRA.Controllers.MissionControl
         {
             if (string.IsNullOrEmpty(id))
             {
-                return View("EnterPackingSlip");
+                var viewedPackingSlips = await _userService
+                    .GetViewedPackingSlipsAsync(GetActiveUserId());
+
+                return View("EnterPackingSlip", new EnterPackingSlipViewModel
+                {
+                    ViewedPackingSlips = viewedPackingSlips
+                });
             }
+
+            await _userService.ViewPackingSlipAsync(GetActiveUserId(), id);
 
             var summary = await _vendorCodeService.VerifyPackingSlipAsync(id);
             summary.CanViewDetails = UserHasPermission(Permission.ViewParticipantDetails);

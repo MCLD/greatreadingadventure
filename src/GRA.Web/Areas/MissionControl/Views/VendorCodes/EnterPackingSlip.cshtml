@@ -1,4 +1,5 @@
-﻿@model string
+﻿@using GRA.Controllers.ViewModel.MissionControl.VendorCodes
+@model EnterPackingSlipViewModel
 
 @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageVendorCodes.ToString()))
 {
@@ -8,19 +9,51 @@
 <div class="row mt-3">
     <div class="col-12 col-md-8 offset-md-2 col-xl-6 offset-xl-3">
         <form asp-action="@nameof(VendorCodesController.LookupPackingSlip)"
+              class="d-flex flex-row align-items-center flex-wrap"
               method="post"
-              role="form"
-              class="d-flex flex-row align-items-center flex-wrap">
+              role="form">
             <div class="input-group">
-                <label for="numberOfCodes"
-                       class="input-group-text">Packing slip number:</label>
+                <label class="input-group-text"
+                       for="numberOfCodes">Packing slip number:</label>
                 <input autofocus
-                       id="id"
-                       name="id"
                        class="form-control"
-                       value="@Model" />
+                       id="id"
+                       name="id" />
                 <button type="submit" class="btn btn-info">View</button>
             </div>
         </form>
     </div>
 </div>
+
+@if (Model.ViewedPackingSlips?.Count > 0)
+{
+    <div class="row mt-5">
+        <div class="col-12 col-lg-8 offset-lg-2">
+            <div class="alert alert-warning">
+                You have viewed the following packing slips which have not been marked as received.
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-lg-8 offset-lg-2">
+            <table class="table table-striped table-sm table-bordered">
+                <tr>
+                    <th>Packing slip</th>
+                    <th>Last viewed</th>
+                </tr>
+                @foreach (var packingSlip in Model.ViewedPackingSlips)
+                {
+                    <tr>
+                        <td>
+                            <a asp-action="@nameof(VendorCodesController.ViewPackingSlip)"
+                               asp-route-id="@packingSlip.Key">
+                                @packingSlip.Key
+                            </a>
+                        </td>
+                        <td>@packingSlip.Value</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+}

@@ -14,6 +14,7 @@ using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
+using MimeKit.Tnef;
 using Newtonsoft.Json;
 
 namespace GRA.Domain.Service
@@ -1060,6 +1061,11 @@ namespace GRA.Domain.Service
             return await _userRepository.GetFullNameByIdAsync(userId);
         }
 
+        public async Task<IDictionary<string, DateTime>> GetViewedPackingSlipsAsync(int userId)
+        {
+            return await _userRepository.GetViewedPackingSlipsAsync(userId);
+        }
+
         public async Task<IEnumerable<User>> GetWelcomeRecipientsAsync(int siteId,
             int skip,
             int take)
@@ -1922,6 +1928,11 @@ namespace GRA.Domain.Service
             }
 
             return false;
+        }
+
+        public async Task ViewPackingSlipAsync(int userId, string packingSlip)
+        {
+            await _userRepository.ViewPackingSlipAsync(userId, packingSlip);
         }
 
         private async Task AwardMissingJoinBadgeAsync(int userId, bool awardHousehold)
