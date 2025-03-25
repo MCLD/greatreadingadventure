@@ -555,11 +555,15 @@ namespace GRA.Domain.Service
                 }
                 activityDescription += "</strong>";
 
+                var pointsText = pointsEarned == 1
+                    ? "point"
+                    : "points";
+
                 // create the notification record
                 var notification = new Notification
                 {
                     PointsEarned = pointsEarned,
-                    Text = $"<span class=\"far fa-star\"></span> You earned <strong>{pointsEarned} points</strong> {activityDescription}!",
+                    Text = $"<span class=\"far fa-star\"></span> You earned <strong>{pointsEarned} {pointsText}</strong> {activityDescription}!",
                     UserId = userToLog.Id
                 };
 
@@ -1206,11 +1210,15 @@ namespace GRA.Domain.Service
                     badgeNotification = " and a badge";
                 }
 
+                var pointsText = pointsAwarded == 1
+                    ? "point"
+                    : "points";
+
                 // create the notification record
                 var notification = new Notification
                 {
                     PointsEarned = pointsAwarded,
-                    Text = $"<span class=\"far fa-star\"></span> You earned <strong>{pointsAwarded} points{badgeNotification}</strong> for completing the challenge: <strong>{challenge.Name}</strong>!",
+                    Text = $"<span class=\"far fa-star\"></span> You earned <strong>{pointsAwarded} {pointsText}{badgeNotification}</strong> for completing the challenge: <strong>{challenge.Name}</strong>!",
                     UserId = activeUserId,
                     ChallengeId = challengeId
                 };
