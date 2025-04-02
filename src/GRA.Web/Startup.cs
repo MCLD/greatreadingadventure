@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using GRA.Abstract;
 using GRA.Controllers.RouteConstraint;
 using GRA.Domain.Model;
@@ -29,7 +28,6 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
-using Org.BouncyCastle.Asn1.X509.Qualified;
 using Serilog;
 using Serilog.Context;
 
@@ -78,10 +76,8 @@ namespace GRA.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IPathResolver pathResolver)
         {
-            if (pathResolver == null)
-            {
-                throw new ArgumentNullException(nameof(pathResolver));
-            }
+            ArgumentNullException.ThrowIfNull(app);
+            ArgumentNullException.ThrowIfNull(pathResolver);
 
             if (_isDevelopment)
             {
@@ -310,7 +306,7 @@ namespace GRA.Web
                 services.AddResponseCompression(_ =>
                 {
                     _.Providers.Add<GzipCompressionProvider>();
-                    _.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] {
+                    _.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat([
                         "application/vnd.ms-fontobject",
                         "application/x-font-opentype",
                         "application/x-font-truetype",
@@ -322,7 +318,7 @@ namespace GRA.Web
                         "image/svg+xml",
                         "image/vnd.microsoft.icon",
                         "text/javascript"
-                    });
+                    ]);
                 });
             }
 
@@ -564,6 +560,7 @@ namespace GRA.Web
             services.AddScoped<EmailService>();
             services.AddScoped<EventImportService>();
             services.AddScoped<EventService>();
+            services.AddScoped<ExitLandingService>();
             services.AddScoped<GroupTypeService>();
             services.AddScoped<JobService>();
             services.AddScoped<LanguageService>();
@@ -600,7 +597,7 @@ namespace GRA.Web
                     && !_.IsAbstract
                     && _.IsSubclassOf(typeof(Domain.Report.Abstract.BaseReport)));
 
-            foreach(var reportType in reports)
+            foreach (var reportType in reports)
             {
                 services.AddScoped(reportType);
             }
@@ -657,6 +654,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IEmailReminderRepository, Data.Repository.EmailReminderRepository>();
             services.AddScoped<Domain.Repository.IEmailSubscriptionAuditLogRepository, Data.Repository.EmailSubscriptionAuditLogRepository>();
             services.AddScoped<Domain.Repository.IEventRepository, Data.Repository.EventRepository>();
+            services.AddScoped<Domain.Repository.IExitLandingMessagesRepository, Data.Repository.ExitLandingMessagesRepository>();
             services.AddScoped<Domain.Repository.IFeaturedChallengeGroupRepository, Data.Repository.FeaturedChallengeGroupRepository>();
             services.AddScoped<Domain.Repository.IGroupInfoRepository, Data.Repository.GroupInfoRepository>();
             services.AddScoped<Domain.Repository.IGroupTypeRepository, Data.Repository.GroupTypeRepository>();

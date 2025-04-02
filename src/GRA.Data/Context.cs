@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
@@ -49,6 +50,7 @@ namespace GRA.Data
         public DbSet<Model.EmailReminder> EmailReminders { get; set; }
         public DbSet<Model.EmailSubscriptionAuditLog> EmailSubscriptionAuditLogs { get; set; }
         public DbSet<Model.Event> Events { get; set; }
+        public DbSet<Model.ExitLandingMessageSet> ExitLandingMessageSets { get; set; }
         public DbSet<Model.FeaturedChallengeGroup> FeaturedChallengeGroups { get; set; }
         public DbSet<Model.FeaturedChallengeGroupText> FeaturedChallengeGroupTexts { get; set; }
         public DbSet<Model.GroupInfo> GroupInfos { get; set; }
@@ -156,6 +158,8 @@ namespace GRA.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            ArgumentNullException.ThrowIfNull(modelBuilder);
+
             // turn off cascading deletes
             foreach (var relationship in modelBuilder.Model
                 .GetEntityTypes()
