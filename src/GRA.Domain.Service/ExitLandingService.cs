@@ -178,8 +178,7 @@ namespace GRA.Domain.Service
                             });
                             break;
 
-                        case SiteStage.ProgramOpen:
-                        case SiteStage.Unknown:
+                        default:
                             result.Add(new DefaultMessage
                             {
                                 LanguageId = language.Id,
@@ -281,6 +280,9 @@ namespace GRA.Domain.Service
                             case nameof(ExitLandingMessageSet.LandingRightMessage):
                                 exitLandingDetail.LandingRightMessage = segment.SegmentId;
                                 break;
+
+                            default:
+                                throw new GraException($"Invalid message name: {message.MessageName}");
                         }
 
                         foreach (var otherLanguage in thisStageMessages
