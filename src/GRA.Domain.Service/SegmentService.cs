@@ -24,11 +24,13 @@ namespace GRA.Domain.Service
         {
             CacheSegmentsHours = 8;
 
-            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
-            _segmentRepository = segmentRepository
-                ?? throw new ArgumentNullException(nameof(segmentRepository));
-            _languageService = languageService
-                ?? throw new ArgumentNullException(nameof(languageService));
+            ArgumentNullException.ThrowIfNull(cache);
+            ArgumentNullException.ThrowIfNull(languageService);
+            ArgumentNullException.ThrowIfNull(segmentRepository);
+
+            _cache = cache;
+            _languageService = languageService;
+            _segmentRepository = segmentRepository;
         }
 
         public async Task<SegmentText> AddTextAsync(int activeUserId,
@@ -115,7 +117,7 @@ namespace GRA.Domain.Service
         {
             nameof(VendorCodeType.DonationSegmentId) => "Vendor Code Donation",
             nameof(VendorCodeType.EmailAwardSegmentId) => "Vendor Code Email Award",
-            _ => throw new GraException("Unknown message template type")
+            _ => item
         };
 
         private async Task<string> GetCacheTextAsync(int segmentId, int languageId)

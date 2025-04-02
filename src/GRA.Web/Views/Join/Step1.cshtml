@@ -26,7 +26,9 @@
                     <div class="row row-spacing">
                         <div class="col-12">
                             <label asp-for="FirstName" class="col-form-label"></label>
-                            <input asp-for="FirstName" class="form-control first-name-field" />
+                            <input asp-for="FirstName"
+                                   autofocus
+                                   class="form-control first-name-field" />
                             <span asp-validation-for="FirstName" class="text-danger"></span>
                         </div>
                     </div>
@@ -117,9 +119,5 @@
                 });
             });
         });
-
-        $().ready(function () {
-            $('.first-name-field').first().focus();
-        })
     </script>
 }

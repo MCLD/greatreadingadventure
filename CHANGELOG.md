@@ -6,9 +6,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## Added
+- "Ordered not Shipped" vendor report
+- "Shipped not Arrived" vendor report
+- "Titles not shipped" vendor report
+- Ability to restrict report access by permission
+- Clickable hyperlinks to Web-view on reports
+
 ## Changed
 
 - Update UI to support Bootstrap 5.3
+- Improve pattern for selecting system and/or branch report criteria
+- Better vendor code status overview
+- Add tracking of packing list viewing
+- Move exit and landing page messages to database
 
 ### Fixed
 
@@ -17,6 +28,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Update pinned curl version
 - Resolved issue with performer back-to-back dropdown on failed submit
 - Improve performer selection view in MC
+- Culture links to work regardless of case
+- Fix "points" to be singular if only one point awarded
 
 ## [4.5.0] 2024-08-29
 
