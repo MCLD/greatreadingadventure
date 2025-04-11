@@ -102,9 +102,7 @@ namespace GRA.Data.Repository
             }
         }
 
-        public async Task<bool> CodeExistsAsync(int siteId,
-            string secretCode,
-            int? triggerId = null)
+        public async Task<bool> CodeExistsAsync(int siteId, string secretCode, int? triggerId)
         {
             return await DbSet
                 .AsNoTracking()
