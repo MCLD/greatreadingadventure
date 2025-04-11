@@ -7,11 +7,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## [Unreleased]
 
 ## Added
+
 - "Ordered not Shipped" vendor report
 - "Shipped not Arrived" vendor report
 - "Titles not shipped" vendor report
 - Ability to restrict report access by permission
 - Clickable hyperlinks to Web-view on reports
+- Avatar import duration to success pop-up
 
 ## Changed
 
@@ -30,6 +32,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Improve performer selection view in MC
 - Culture links to work regardless of case
 - Fix "points" to be singular if only one point awarded
+- Workaround for broken URL entry in Challenge editor in modal
 
 ## [4.5.0] 2024-08-29
 
