@@ -151,6 +151,17 @@ footer p {
     width: 64px;
 }
 
+.badge-xs-fixed-container {
+    min-width: 64px;
+}
+
+    .badge-xs-fixed-container > img {
+        height: auto;
+        min-height: 64px;
+        width: 64px;
+    }
+
+
 .badge-sm {
     height: auto;
     width: 110px;

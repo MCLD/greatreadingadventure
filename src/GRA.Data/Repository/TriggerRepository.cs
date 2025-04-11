@@ -15,18 +15,56 @@ namespace GRA.Data.Repository
 {
     public class TriggerRepository : AuditingRepository<Model.Trigger, Trigger>, ITriggerRepository
     {
-        private const string ChallengeIcon = "fa-trophy";
-        private const string ProgramIcon = "fa-asterisk";
-        private const string TriggerIcon = "fa-cogs";
-
         private const string ChallengeDescription = "Challenge";
+        private const string ChallengeIcon = "fa-trophy";
         private const string JoinDescription = "Join Badge";
+        private const string ProgramIcon = "fa-asterisk";
         private const string QuestionnaireDescription = "Questionnaire Badge";
         private const string TriggerDescription = "Trigger";
+        private const string TriggerIcon = "fa-cogs";
 
         public TriggerRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<TriggerRepository> logger) : base(repositoryFacade, logger)
         {
+        }
+
+        public override async Task<Trigger> AddSaveAsync(int userId, Trigger trigger)
+        {
+            ArgumentNullException.ThrowIfNull(trigger);
+
+            var newTrigger = await base.AddSaveAsync(userId, trigger);
+
+            if (trigger.BadgeIds != null || trigger.ChallengeIds != null)
+            {
+                if (trigger.BadgeIds != null)
+                {
+                    foreach (var badgeId in trigger.BadgeIds)
+                    {
+                        var triggerBadge = new GRA.Data.Model.TriggerBadge
+                        {
+                            BadgeId = badgeId,
+                            TriggerId = newTrigger.Id
+                        };
+                        await _context.TriggerBadges.AddAsync(triggerBadge);
+                    }
+                }
+
+                if (trigger.ChallengeIds != null)
+                {
+                    foreach (var challengeId in trigger.ChallengeIds)
+                    {
+                        var triggerChallenge = new GRA.Data.Model.TriggerChallenge
+                        {
+                            ChallengeId = challengeId,
+                            TriggerId = newTrigger.Id
+                        };
+                        await _context.TriggerChallenges.AddAsync(triggerChallenge);
+                    }
+                }
+                await _context.SaveChangesAsync();
+            }
+
+            return newTrigger;
         }
 
         public async Task AddTriggerActivationAsync(int userId, int triggerId)
@@ -38,6 +76,14 @@ namespace GRA.Data.Repository
                 CreatedAt = _dateTimeProvider.Now
             });
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> BundleIsInUseAsync(int bundleId)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => !_.IsDeleted && _.AwardAvatarBundleId == bundleId)
+                .ProjectTo<Trigger>(_mapper.ConfigurationProvider)
+                .AnyAsync();
         }
 
         public async Task<DateTime?> CheckTriggerActivationAsync(int userId, int triggerId)
@@ -56,85 +102,120 @@ namespace GRA.Data.Repository
             }
         }
 
-        public override async Task<Trigger> GetByIdAsync(int id)
+        public async Task<bool> CodeExistsAsync(int siteId,
+            string secretCode,
+            int? triggerId = null)
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.Id == id)
-                .ProjectTo<Trigger>(_mapper.ConfigurationProvider)
-                .SingleOrDefaultAsync();
+                .Where(_ => _.SiteId == siteId
+                    && !_.IsDeleted
+                    && _.Id != triggerId
+                    && _.SecretCode == secretCode)
+                .AnyAsync();
         }
 
         // honors site id, skip, and take
         public async Task<int> CountAsync(TriggerFilter filter)
         {
+            ArgumentNullException.ThrowIfNull(filter);
             return await ApplyFilters(filter)
                 .CountAsync();
         }
 
-        public async Task<ICollection<Trigger>> PageAsync(TriggerFilter filter)
+        public async Task<int> CountRequirementsAsync(BaseFilter filter)
         {
-            var triggerList = await ApplyFilters(filter)
-                .OrderBy(_ => _.Name)
-                .ApplyPagination(filter)
-                .ProjectTo<Trigger>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+            ArgumentNullException.ThrowIfNull(filter);
 
-            foreach (var trigger in triggerList)
+            var challengeCount = await _context.Challenges.AsNoTracking()
+                .Where(_ => _.SiteId == filter.SiteId
+                    && !_.IsDeleted
+                    && _.IsActive
+                    && _.Name.Contains(filter.Search ?? string.Empty)
+                    && (filter.SystemIds == null
+                        || filter.SystemIds.Contains(_.RelatedSystemId))
+                    && (filter.BranchIds == null
+                        || filter.BranchIds.Contains(_.RelatedBranchId))
+                    && (filter.UserIds == null
+                        || filter.UserIds.Contains(_.CreatedBy))
+                    && (filter.ChallengeIds == null
+                        || !filter.ChallengeIds.Contains(_.Id)))
+                .CountAsync();
+
+            var triggerCount = await _context.Triggers.AsNoTracking()
+                .Where(_ => _.SiteId == filter.SiteId
+                    && !_.IsDeleted
+                    && _.Name.Contains(filter.Search ?? string.Empty)
+                    && (filter.SystemIds == null
+                        || filter.SystemIds.Contains(_.RelatedSystemId))
+                    && (filter.BranchIds == null
+                        || filter.BranchIds.Contains(_.RelatedBranchId))
+                    && (filter.UserIds == null
+                        || filter.UserIds.Contains(_.CreatedBy))
+                    && (filter.BadgeIds == null
+                        || !filter.BadgeIds.Contains(_.AwardBadgeId)))
+                .CountAsync();
+
+            var requirementsCount = challengeCount + triggerCount;
+
+            // Program Join/Achiever and Questionnaire badges
+            if (filter.SystemIds == null && filter.BranchIds == null && filter.UserIds == null)
             {
-                var dependents = await DependentTriggers(trigger.Id);
-                trigger.HasDependents = dependents?.Count > 1;
+                var programRequirements = await _context.Programs.AsNoTracking()
+                    .Where(_ => _.SiteId == filter.SiteId
+                        && _.JoinBadgeId.HasValue
+                        && _.JoinBadgeName.Contains(filter.Search ?? string.Empty)
+                        && (filter.BadgeIds == null
+                            || !filter.BadgeIds.Contains(_.JoinBadgeId.Value)))
+                    .CountAsync();
+
+                var questionnaireRequirements = await _context.Questionnaires.AsNoTracking()
+                    .Where(_ => _.SiteId == filter.SiteId
+                        && _.BadgeId.HasValue
+                        && _.Name.Contains(filter.Search ?? string.Empty)
+                        && (filter.BadgeIds == null
+                            || !filter.BadgeIds.Contains(_.BadgeId.Value)))
+                    .CountAsync();
+
+                requirementsCount += programRequirements + questionnaireRequirements;
             }
 
-            return triggerList;
+            return requirementsCount;
         }
 
-        private IQueryable<Model.Trigger> ApplyFilters(TriggerFilter filter)
+        public async Task<IDictionary<int, string>> DependentTriggers(int triggerId)
         {
-            var triggerList = DbSet
+            var relatedTriggerIds = _context.TriggerBadges
                 .AsNoTracking()
-                .Where(_ => !_.IsDeleted && _.SiteId == filter.SiteId);
+                .Join(_context.Triggers.AsNoTracking().Where(_ => _.Id == triggerId),
+                    tb => tb.BadgeId,
+                    t => t.AwardBadgeId,
+                    (tb, _) => tb.TriggerId);
 
-            if (filter.SystemIds?.Any() == true)
+            if (relatedTriggerIds.Any())
             {
-                triggerList = triggerList.Where(_ => filter.SystemIds.Contains(_.RelatedSystemId));
+                return await DbSet
+                    .AsNoTracking()
+                    .Where(_ => relatedTriggerIds.Contains(_.Id))
+                    .ToDictionaryAsync(k => k.Id, v => v.Name);
             }
-
-            if (filter.BranchIds?.Any() == true)
+            else
             {
-                triggerList = triggerList.Where(_ => filter.BranchIds.Contains(_.RelatedBranchId));
+                return null;
             }
-
-            if (filter.UserIds?.Any() == true)
-            {
-                triggerList = triggerList.Where(_ => filter.UserIds.Contains(_.CreatedBy));
-            }
-
-            if (filter.ProgramIds?.Any() == true)
-            {
-                triggerList = triggerList
-                    .Where(_ => filter.ProgramIds.Any(p => p == _.LimitToProgramId));
-            }
-
-            if (!string.IsNullOrWhiteSpace(filter.Search))
-            {
-                triggerList = triggerList.Where(_ => _.Name.Contains(filter.Search)
-                                                || _.SecretCode.Contains(filter.Search));
-            }
-
-            if (filter.PointsBelowOrEqual.HasValue)
-            {
-                triggerList = triggerList.Where(_ => filter.PointsBelowOrEqual >= _.Points && string.IsNullOrWhiteSpace(_.SecretCode));
-            }
-
-            if (filter.SecretCodesOnly == true)
-            {
-                triggerList = triggerList.Where(_ => !string.IsNullOrWhiteSpace(_.SecretCode));
-            }
-
-            return triggerList;
         }
 
+        public async Task<Trigger> GetByBadgeIdAsync(int badgeId)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.AwardBadgeId == badgeId)
+                .ProjectTo<Trigger>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync();
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization",
+            "CA1308:Normalize strings to uppercase",
+            Justification = "Normalize secret codes to lowercase")]
         public async Task<Trigger> GetByCodeAsync(int siteId, string secretCode, bool mustBeActive)
         {
             secretCode = secretCode?.Trim()?.ToLowerInvariant();
@@ -158,90 +239,40 @@ namespace GRA.Data.Repository
             return _mapper.Map<Trigger>(codeTrigger);
         }
 
-        public async Task<ICollection<Trigger>> GetTriggersAsync(int userId)
+        public override async Task<Trigger> GetByIdAsync(int id)
         {
-            // get user details for filtering triggers
-            var user = await _context.Users
+            return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.Id == userId)
+                .Where(_ => _.Id == id)
+                .ProjectTo<Trigger>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
-
-            // already earned triggers to exclude
-            var alreadyEarnedTriggerIds = _context.UserTriggers
-                .AsNoTracking()
-                .Where(_ => _.UserId == userId)
-                .Select(_ => _.TriggerId);
-
-            // monster trigger query
-            var triggers = await DbSet
-                .AsNoTracking()
-                .Include(_ => _.RequiredBadges)
-                .Include(_ => _.RequiredChallenges)
-                .Where(_ => _.SiteId == user.SiteId
-                    && !_.IsDeleted
-                    && !alreadyEarnedTriggerIds.Contains(_.Id)
-                    && (_.LimitToSystemId == null || _.LimitToSystemId == user.SystemId)
-                    && (_.LimitToBranchId == null || _.LimitToBranchId == user.BranchId)
-                    && (_.LimitToProgramId == null || _.LimitToProgramId == user.ProgramId)
-                    && (_.Points == 0 || _.Points <= user.PointsEarned)
-                    && string.IsNullOrEmpty(_.SecretCode)
-                    && (!_.ActivationDate.HasValue || _.ActivationDate <= _dateTimeProvider.Now))
-                .OrderBy(_ => _.Points)
-                .ThenBy(_ => _.AwardPoints)
-                .ToListAsync();
-
-            // create a list of triggers to remove based on badge and challenge earnings
-            var itemsToRemove = new List<Model.Trigger>();
-
-            // get a list of triggers that fire based on badge or challenge earnings
-            var itemTriggers = triggers.Where(_ => _.ItemsRequired > 0);
-
-            if (itemTriggers.Any())
-            {
-                // get the user's badges
-                var userBadgeIds = _context.UserBadges
-                    .AsNoTracking()
-                    .Where(_ => _.UserId == userId)
-                    .Select(_ => _.BadgeId);
-
-                // get the user's challenges
-                var userChallengeIds = _context.UserLogs
-                    .AsNoTracking()
-                    .Where(_ => _.UserId == userId && _.ChallengeId != null)
-                    .Select(_ => _.ChallengeId.Value);
-
-                foreach (var eligibleTrigger in itemTriggers)
-                {
-                    int itemsCompleted = 0;
-
-                    // get the number of completed badges
-                    if (eligibleTrigger.RequiredBadges?.Count > 0)
-                    {
-                        itemsCompleted += eligibleTrigger.RequiredBadges
-                            .Select(_ => _.BadgeId).Intersect(userBadgeIds).Count();
-                    }
-
-                    // get the number of completed challenges
-                    if (eligibleTrigger.RequiredChallenges?.Count > 0)
-                    {
-                        itemsCompleted += eligibleTrigger.RequiredChallenges
-                            .Select(_ => _.ChallengeId).Intersect(userChallengeIds).Count();
-                    }
-
-                    // remove the trigger if not enough items completed
-                    if (itemsCompleted < eligibleTrigger.ItemsRequired)
-                    {
-                        itemsToRemove.Add(eligibleTrigger);
-                    }
-                }
-            }
-
-            // return all the triggers that should be awarded to the user
-            return _mapper.Map<ICollection<Trigger>>(triggers.Except(itemsToRemove));
         }
 
-        public async Task<ICollection<TriggerRequirement>> GetTriggerRequirmentsAsync(Trigger trigger)
+        public async Task<ICollection<Trigger>> GetChallengeDependentsAsync(int challengeId)
         {
+            return await _context.TriggerChallenges
+                .AsNoTracking()
+                .Where(_ => _.ChallengeId == challengeId)
+                .Select(_ => _.Trigger)
+                .ProjectTo<Trigger>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
+        public async Task<ICollection<Trigger>> GetTriggerDependentsAsync(int triggerBadgeId)
+        {
+            return await _context.TriggerBadges
+                .AsNoTracking()
+                .Where(_ => _.BadgeId == triggerBadgeId)
+                .Select(_ => _.Trigger)
+                .ProjectTo<Trigger>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
+        public async Task<ICollection<TriggerRequirement>>
+            GetTriggerRequirmentsAsync(Trigger trigger)
+        {
+            ArgumentNullException.ThrowIfNull(trigger);
+
             var requirements = new Collection<TriggerRequirement>();
 
             foreach (var badgeId in trigger.BadgeIds)
@@ -337,78 +368,142 @@ namespace GRA.Data.Repository
             return requirements.OrderBy(_ => _.Name).ToList();
         }
 
-        public async Task<int> CountRequirementsAsync(BaseFilter filter)
+        public async Task<ICollection<Trigger>> GetTriggersAsync(int userId)
         {
-            var challengeCount = await _context.Challenges.AsNoTracking()
-                                    .Where(_ => _.SiteId == filter.SiteId
-                                        && !_.IsDeleted
-                                        && _.IsActive
-                                        && _.Name.Contains(filter.Search ?? string.Empty)
-                                        && (filter.SystemIds == null
-                                            || filter.SystemIds.Contains(_.RelatedSystemId))
-                                        && (filter.BranchIds == null
-                                            || filter.BranchIds.Contains(_.RelatedBranchId))
-                                        && (filter.UserIds == null
-                                            || filter.UserIds.Contains(_.CreatedBy))
-                                        && (filter.ChallengeIds == null
-                                            || !filter.ChallengeIds.Contains(_.Id)))
-                                    .CountAsync();
+            // get user details for filtering triggers
+            var user = await _context.Users
+                .AsNoTracking()
+                .Where(_ => _.Id == userId)
+                .SingleOrDefaultAsync();
 
-            var triggerCount = await _context.Triggers.AsNoTracking()
-                                    .Where(_ => _.SiteId == filter.SiteId
-                                        && !_.IsDeleted
-                                        && _.Name.Contains(filter.Search ?? string.Empty)
-                                        && (filter.SystemIds == null
-                                            || filter.SystemIds.Contains(_.RelatedSystemId))
-                                        && (filter.BranchIds == null
-                                            || filter.BranchIds.Contains(_.RelatedBranchId))
-                                        && (filter.UserIds == null
-                                            || filter.UserIds.Contains(_.CreatedBy))
-                                        && (filter.BadgeIds == null
-                                            || !filter.BadgeIds.Contains(_.AwardBadgeId)))
-                                    .CountAsync();
+            // already earned triggers to exclude
+            var alreadyEarnedTriggerIds = _context.UserTriggers
+                .AsNoTracking()
+                .Where(_ => _.UserId == userId)
+                .Select(_ => _.TriggerId);
 
-            var requirementsCount = challengeCount + triggerCount;
+            // monster trigger query
+            var triggers = await DbSet
+                .AsNoTracking()
+                .Include(_ => _.RequiredBadges)
+                .Include(_ => _.RequiredChallenges)
+                .Where(_ => _.SiteId == user.SiteId
+                    && !_.IsDeleted
+                    && !alreadyEarnedTriggerIds.Contains(_.Id)
+                    && (_.LimitToSystemId == null || _.LimitToSystemId == user.SystemId)
+                    && (_.LimitToBranchId == null || _.LimitToBranchId == user.BranchId)
+                    && (_.LimitToProgramId == null || _.LimitToProgramId == user.ProgramId)
+                    && (_.Points == 0 || _.Points <= user.PointsEarned)
+                    && string.IsNullOrEmpty(_.SecretCode)
+                    && (!_.ActivationDate.HasValue || _.ActivationDate <= _dateTimeProvider.Now))
+                .OrderBy(_ => _.Points)
+                .ThenBy(_ => _.AwardPoints)
+                .ToListAsync();
 
-            // Program Join/Achiever and Questionnaire badges
-            if (filter.SystemIds == null && filter.BranchIds == null && filter.UserIds == null)
+            // create a list of triggers to remove based on badge and challenge earnings
+            var itemsToRemove = new List<Model.Trigger>();
+
+            // get a list of triggers that fire based on badge or challenge earnings
+            var itemTriggers = triggers.Where(_ => _.ItemsRequired > 0);
+
+            if (itemTriggers.Any())
             {
-                var programRequirements = await _context.Programs.AsNoTracking()
-                                    .Where(_ => _.SiteId == filter.SiteId
-                                        && _.JoinBadgeId.HasValue
-                                        && _.JoinBadgeName.Contains(filter.Search ?? string.Empty)
-                                        && (filter.BadgeIds == null
-                                            || !filter.BadgeIds.Contains(_.JoinBadgeId.Value)))
-                                    .CountAsync();
+                // get the user's badges
+                var userBadgeIds = _context.UserBadges
+                    .AsNoTracking()
+                    .Where(_ => _.UserId == userId)
+                    .Select(_ => _.BadgeId);
 
-                var questionnaireRequirements = await _context.Questionnaires.AsNoTracking()
-                                    .Where(_ => _.SiteId == filter.SiteId
-                                        && _.BadgeId.HasValue
-                                        && _.Name.Contains(filter.Search ?? string.Empty)
-                                        && (filter.BadgeIds == null
-                                            || !filter.BadgeIds.Contains(_.BadgeId.Value)))
-                                    .CountAsync();
+                // get the user's challenges
+                var userChallengeIds = _context.UserLogs
+                    .AsNoTracking()
+                    .Where(_ => _.UserId == userId && _.ChallengeId != null)
+                    .Select(_ => _.ChallengeId.Value);
 
-                requirementsCount += programRequirements + questionnaireRequirements;
+                foreach (var eligibleTrigger in itemTriggers)
+                {
+                    int itemsCompleted = 0;
+
+                    // get the number of completed badges
+                    if (eligibleTrigger.RequiredBadges?.Count > 0)
+                    {
+                        itemsCompleted += eligibleTrigger.RequiredBadges
+                            .Select(_ => _.BadgeId).Intersect(userBadgeIds).Count();
+                    }
+
+                    // get the number of completed challenges
+                    if (eligibleTrigger.RequiredChallenges?.Count > 0)
+                    {
+                        itemsCompleted += eligibleTrigger.RequiredChallenges
+                            .Select(_ => _.ChallengeId).Intersect(userChallengeIds).Count();
+                    }
+
+                    // remove the trigger if not enough items completed
+                    if (itemsCompleted < eligibleTrigger.ItemsRequired)
+                    {
+                        itemsToRemove.Add(eligibleTrigger);
+                    }
+                }
             }
 
-            return requirementsCount;
+            // return all the triggers that should be awarded to the user
+            return _mapper.Map<ICollection<Trigger>>(triggers.Except(itemsToRemove));
+        }
+
+        public async Task<ICollection<Trigger>> GetTriggersAwardingBundleAsync(int bundleId)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => !_.IsDeleted && _.AwardAvatarBundleId == bundleId)
+                .ProjectTo<Trigger>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
+        public async Task<ICollection<Trigger>> GetTriggersAwardingPrizesAsync(int siteId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId && !_.IsDeleted
+                    && !string.IsNullOrWhiteSpace(_.AwardPrizeName))
+                .OrderBy(_ => _.AwardPrizeName)
+                .ProjectTo<Trigger>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
+        public async Task<ICollection<Trigger>> PageAsync(TriggerFilter filter)
+        {
+            ArgumentNullException.ThrowIfNull(filter);
+
+            var triggerList = await ApplyFilters(filter)
+                .OrderBy(_ => _.Name)
+                .ApplyPagination(filter)
+                .ProjectTo<Trigger>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+
+            foreach (var trigger in triggerList)
+            {
+                var dependents = await DependentTriggers(trigger.Id);
+                trigger.HasDependents = dependents?.Count > 1;
+            }
+
+            return triggerList;
         }
 
         public async Task<ICollection<TriggerRequirement>> PageRequirementsAsync(BaseFilter filter)
         {
+            ArgumentNullException.ThrowIfNull(filter);
+
             var challengeRequirements = await (from challenges in _context.Challenges.AsNoTracking()
-                                    .Where(_ => _.SiteId == filter.SiteId
-                                        && !_.IsDeleted && _.IsActive
-                                        && _.Name.Contains(filter.Search ?? string.Empty)
-                                        && (filter.SystemIds == null
-                                            || filter.SystemIds.Contains(_.RelatedSystemId))
-                                        && (filter.BranchIds == null
-                                            || filter.BranchIds.Contains(_.RelatedBranchId))
-                                        && (filter.UserIds == null
-                                            || filter.UserIds.Contains(_.CreatedBy))
-                                        && (filter.ChallengeIds == null
-                                            || !filter.ChallengeIds.Contains(_.Id)))
+                .Where(_ => _.SiteId == filter.SiteId
+                    && !_.IsDeleted && _.IsActive
+                    && _.Name.Contains(filter.Search ?? string.Empty)
+                    && (filter.SystemIds == null
+                        || filter.SystemIds.Contains(_.RelatedSystemId))
+                    && (filter.BranchIds == null
+                        || filter.BranchIds.Contains(_.RelatedBranchId))
+                    && (filter.UserIds == null
+                        || filter.UserIds.Contains(_.CreatedBy))
+                    && (filter.ChallengeIds == null
+                        || !filter.ChallengeIds.Contains(_.Id)))
                                                from badges in _context.Badges
                                                    .Where(_ => _.Id == challenges.BadgeId)
                                                    .DefaultIfEmpty()
@@ -420,23 +515,23 @@ namespace GRA.Data.Repository
                                                    IconDescription = ChallengeDescription,
                                                    BadgePath = badges.Filename
                                                }
-                                    )
-                                    .OrderBy(_ => _.Name)
-                                    .Take(filter.Skip.Value + filter.Take.Value)
-                                    .ToListAsync();
+                )
+                .OrderBy(_ => _.Name)
+                .Take(filter.Skip.Value + filter.Take.Value)
+                .ToListAsync();
 
             var triggerRequirements = await (from triggers in _context.Triggers.AsNoTracking()
-                                    .Where(_ => _.SiteId == filter.SiteId
-                                        && !_.IsDeleted
-                                        && _.Name.Contains(filter.Search ?? string.Empty)
-                                        && (filter.SystemIds == null
-                                            || filter.SystemIds.Contains(_.RelatedSystemId))
-                                        && (filter.BranchIds == null
-                                            || filter.BranchIds.Contains(_.RelatedBranchId))
-                                        && (filter.UserIds == null
-                                            || filter.UserIds.Contains(_.CreatedBy))
-                                        && (filter.BadgeIds == null
-                                            || !filter.BadgeIds.Contains(_.AwardBadgeId)))
+                .Where(_ => _.SiteId == filter.SiteId
+                    && !_.IsDeleted
+                    && _.Name.Contains(filter.Search ?? string.Empty)
+                    && (filter.SystemIds == null
+                        || filter.SystemIds.Contains(_.RelatedSystemId))
+                    && (filter.BranchIds == null
+                        || filter.BranchIds.Contains(_.RelatedBranchId))
+                    && (filter.UserIds == null
+                        || filter.UserIds.Contains(_.CreatedBy))
+                    && (filter.BadgeIds == null
+                        || !filter.BadgeIds.Contains(_.AwardBadgeId)))
                                              join badges in _context.Badges
                                              on triggers.AwardBadgeId equals badges.Id
                                              select new TriggerRequirement
@@ -447,10 +542,10 @@ namespace GRA.Data.Repository
                                                  IconDescription = TriggerDescription,
                                                  BadgePath = badges.Filename
                                              }
-                                    )
-                                    .OrderBy(_ => _.Name)
-                                    .Take(filter.Skip.Value + filter.Take.Value)
-                                    .ToListAsync();
+                )
+                .OrderBy(_ => _.Name)
+                .Take(filter.Skip.Value + filter.Take.Value)
+                .ToListAsync();
 
             var requirements = challengeRequirements.Concat(triggerRequirements);
 
@@ -458,11 +553,11 @@ namespace GRA.Data.Repository
             if (filter.SystemIds == null && filter.BranchIds == null && filter.UserIds == null)
             {
                 var programRequirements = await (from programs in _context.Programs.AsNoTracking()
-                                    .Where(_ => _.SiteId == filter.SiteId
-                                        && _.JoinBadgeId.HasValue
-                                        && _.JoinBadgeName.Contains(filter.Search ?? string.Empty)
-                                        && (filter.BadgeIds == null
-                                            || !filter.BadgeIds.Contains(_.JoinBadgeId.Value)))
+                    .Where(_ => _.SiteId == filter.SiteId
+                        && _.JoinBadgeId.HasValue
+                        && _.JoinBadgeName.Contains(filter.Search ?? string.Empty)
+                        && (filter.BadgeIds == null
+                            || !filter.BadgeIds.Contains(_.JoinBadgeId.Value)))
                                                  join badges in _context.Badges
                                                  on programs.JoinBadgeId equals badges.Id
                                                  select new TriggerRequirement
@@ -473,17 +568,18 @@ namespace GRA.Data.Repository
                                                      IconDescription = JoinDescription,
                                                      BadgePath = badges.Filename
                                                  }
-                                    )
-                                    .OrderBy(_ => _.Name)
-                                    .Take(filter.Skip.Value + filter.Take.Value)
-                                    .ToListAsync();
+                    )
+                    .OrderBy(_ => _.Name)
+                    .Take(filter.Skip.Value + filter.Take.Value)
+                    .ToListAsync();
 
-                var questionnaireRequirements = await (from questionnaires in _context.Questionnaires.AsNoTracking()
-                                    .Where(_ => _.SiteId == filter.SiteId
-                                        && _.BadgeId.HasValue
-                                        && _.Name.Contains(filter.Search ?? string.Empty)
-                                        && (filter.BadgeIds == null
-                                            || !filter.BadgeIds.Contains(_.BadgeId.Value)))
+                var questionnaireRequirements = await (from questionnaires in _context
+                                                       .Questionnaires.AsNoTracking()
+                    .Where(_ => _.SiteId == filter.SiteId
+                        && _.BadgeId.HasValue
+                        && _.Name.Contains(filter.Search ?? string.Empty)
+                        && (filter.BadgeIds == null
+                            || !filter.BadgeIds.Contains(_.BadgeId.Value)))
                                                        join badges in _context.Badges
                                                        on questionnaires.BadgeId equals badges.Id
                                                        select new TriggerRequirement
@@ -494,10 +590,10 @@ namespace GRA.Data.Repository
                                                            IconDescription = QuestionnaireDescription,
                                                            BadgePath = badges.Filename
                                                        }
-                                    )
-                                    .OrderBy(_ => _.Name)
-                                    .Take(filter.Skip.Value + filter.Take.Value)
-                                    .ToListAsync();
+                    )
+                    .OrderBy(_ => _.Name)
+                    .Take(filter.Skip.Value + filter.Take.Value)
+                    .ToListAsync();
 
                 requirements = requirements
                     .Concat(programRequirements)
@@ -511,63 +607,38 @@ namespace GRA.Data.Repository
                 .ToList();
         }
 
-        public async Task<bool> CodeExistsAsync(int siteId, string secretCode, int? triggerId = null)
+        public async Task RemoveUserTriggerAsync(int userId, int triggerId)
         {
-            return await DbSet
-                .AsNoTracking()
-                .Where(_ => _.SiteId == siteId
-                    && !_.IsDeleted
-                    && _.Id != triggerId
-                    && _.SecretCode == secretCode)
-                .AnyAsync();
-        }
+            var userTrigger = await _context.UserTriggers
+                .Where(_ => _.UserId == userId && _.TriggerId == triggerId)
+                .SingleOrDefaultAsync();
 
-        public override async Task<Trigger> AddSaveAsync(int userId, Trigger trigger)
-        {
-            var newTrigger = await base.AddSaveAsync(userId, trigger);
-
-            if (trigger.BadgeIds != null || trigger.ChallengeIds != null)
+            if (userTrigger != null)
             {
-                if (trigger.BadgeIds != null)
-                {
-                    foreach (var badgeId in trigger.BadgeIds)
-                    {
-                        var triggerBadge = new GRA.Data.Model.TriggerBadge
-                        {
-                            BadgeId = badgeId,
-                            TriggerId = newTrigger.Id
-                        };
-                        await _context.TriggerBadges.AddAsync(triggerBadge);
-                    }
-                }
-
-                if (trigger.ChallengeIds != null)
-                {
-                    foreach (var challengeId in trigger.ChallengeIds)
-                    {
-                        var triggerChallenge = new GRA.Data.Model.TriggerChallenge
-                        {
-                            ChallengeId = challengeId,
-                            TriggerId = newTrigger.Id
-                        };
-                        await _context.TriggerChallenges.AddAsync(triggerChallenge);
-                    }
-                }
+                _context.UserTriggers.Remove(userTrigger);
                 await _context.SaveChangesAsync();
             }
+        }
 
-            return newTrigger;
+        public async Task<bool> SecretCodeInUseAsync(int siteId, string secretCode)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.SiteId == siteId && _.SecretCode == secretCode)
+                .AnyAsync();
         }
 
         public override async Task<Trigger> UpdateSaveAsync(int userId, Trigger trigger)
         {
+            ArgumentNullException.ThrowIfNull(trigger);
+
             var updatedTrigger = await base.UpdateSaveAsync(userId, trigger);
 
             // update TriggerBadge list
             var thisTriggerBadges = _context.TriggerBadges.Where(_ => _.TriggerId == trigger.Id);
             var badgesToAdd = trigger.BadgeIds.Where(_ =>
                 !thisTriggerBadges.Select(b => b.BadgeId).Contains(_));
-            var badgesToRemove = thisTriggerBadges.Where(_ => !trigger.BadgeIds.Contains(_.BadgeId));
+            var badgesToRemove = thisTriggerBadges
+                .Where(_ => !trigger.BadgeIds.Contains(_.BadgeId));
             foreach (var badgeId in badgesToAdd)
             {
                 var triggerBadge = new GRA.Data.Model.TriggerBadge()
@@ -602,101 +673,51 @@ namespace GRA.Data.Repository
             return updatedTrigger;
         }
 
-        public async Task<IDictionary<int, string>> DependentTriggers(int triggerId)
+        private IQueryable<Model.Trigger> ApplyFilters(TriggerFilter filter)
         {
-            var relatedTriggerIds = _context.TriggerBadges
+            var triggerList = DbSet
                 .AsNoTracking()
-                .Join(_context.Triggers.AsNoTracking().Where(_ => _.Id == triggerId),
-                        tb => tb.BadgeId,
-                        t => t.AwardBadgeId,
-                        (tb, _) => tb.TriggerId);
+                .Where(_ => !_.IsDeleted && _.SiteId == filter.SiteId);
 
-            if (relatedTriggerIds.Any())
+            if (filter.SystemIds?.Count > 0)
             {
-                return await DbSet
-                    .AsNoTracking()
-                    .Where(_ => relatedTriggerIds.Contains(_.Id))
-                    .ToDictionaryAsync(k => k.Id, v => v.Name);
+                triggerList = triggerList.Where(_ => filter.SystemIds.Contains(_.RelatedSystemId));
             }
-            else
+
+            if (filter.BranchIds?.Count > 0)
             {
-                return null;
+                triggerList = triggerList.Where(_ => filter.BranchIds.Contains(_.RelatedBranchId));
             }
-        }
 
-        public async Task<ICollection<Trigger>> GetTriggerDependentsAsync(int triggerBadgeId)
-        {
-            return await _context.TriggerBadges
-                .AsNoTracking()
-                .Where(_ => _.BadgeId == triggerBadgeId)
-                .Select(_ => _.Trigger)
-                .ProjectTo<Trigger>(_mapper.ConfigurationProvider)
-                .ToListAsync();
-        }
-
-        public async Task<ICollection<Trigger>> GetChallengeDependentsAsync(int challengeId)
-        {
-            return await _context.TriggerChallenges
-                .AsNoTracking()
-                .Where(_ => _.ChallengeId == challengeId)
-                .Select(_ => _.Trigger)
-                .ProjectTo<Trigger>(_mapper.ConfigurationProvider)
-                .ToListAsync();
-        }
-
-        public async Task<bool> SecretCodeInUseAsync(int siteId, string secretCode)
-        {
-            return await DbSet.AsNoTracking()
-                .Where(_ => _.SiteId == siteId && _.SecretCode == secretCode)
-                .AnyAsync();
-        }
-
-        public async Task<Trigger> GetByBadgeIdAsync(int badgeId)
-        {
-            return await DbSet.AsNoTracking()
-                .Where(_ => _.AwardBadgeId == badgeId)
-                .ProjectTo<Trigger>(_mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync();
-        }
-
-        public async Task RemoveUserTriggerAsync(int userId, int triggerId)
-        {
-            var userTrigger = await _context.UserTriggers
-                .Where(_ => _.UserId == userId && _.TriggerId == triggerId)
-                .SingleOrDefaultAsync();
-
-            if (userTrigger != null)
+            if (filter.UserIds?.Count > 0)
             {
-                _context.UserTriggers.Remove(userTrigger);
-                await _context.SaveChangesAsync();
+                triggerList = triggerList.Where(_ => filter.UserIds.Contains(_.CreatedBy));
             }
-        }
 
-        public async Task<ICollection<Trigger>> GetTriggersAwardingBundleAsync(int bundleId)
-        {
-            return await DbSet.AsNoTracking()
-                .Where(_ => !_.IsDeleted && _.AwardAvatarBundleId == bundleId)
-                .ProjectTo<Trigger>(_mapper.ConfigurationProvider)
-                .ToListAsync();
-        }
+            if (filter.ProgramIds?.Count > 0)
+            {
+                triggerList = triggerList
+                    .Where(_ => filter.ProgramIds.Any(p => p == _.LimitToProgramId));
+            }
 
-        public async Task<bool> BundleIsInUseAsync(int bundleId)
-        {
-            return await DbSet.AsNoTracking()
-                .Where(_ => !_.IsDeleted && _.AwardAvatarBundleId == bundleId)
-                .ProjectTo<Trigger>(_mapper.ConfigurationProvider)
-                .AnyAsync();
-        }
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+            {
+                triggerList = triggerList.Where(_ => _.Name.Contains(filter.Search)
+                    || _.SecretCode.Contains(filter.Search));
+            }
 
-        public async Task<ICollection<Trigger>> GetTriggersAwardingPrizesAsync(int siteId)
-        {
-            return await DbSet
-                .AsNoTracking()
-                .Where(_ => _.SiteId == siteId && !_.IsDeleted
-                    && !string.IsNullOrWhiteSpace(_.AwardPrizeName))
-                .OrderBy(_ => _.AwardPrizeName)
-                .ProjectTo<Trigger>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+            if (filter.PointsBelowOrEqual.HasValue)
+            {
+                triggerList = triggerList.Where(_ => filter.PointsBelowOrEqual >= _.Points
+                    && string.IsNullOrWhiteSpace(_.SecretCode));
+            }
+
+            if (filter.SecretCodesOnly == true)
+            {
+                triggerList = triggerList.Where(_ => !string.IsNullOrWhiteSpace(_.SecretCode));
+            }
+
+            return triggerList;
         }
     }
 }
