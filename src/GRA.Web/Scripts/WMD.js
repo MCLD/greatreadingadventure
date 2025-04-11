@@ -192,8 +192,8 @@ Markdown.HookCollection = HookCollection;
 
     // The default text that appears in the dialog input box when entering
     // links.
-    var imageDefaultText = "http://";
-    var linkDefaultText = "http://";
+    var imageDefaultText = "https://";
+    var linkDefaultText = "https://";
 
     // -------------------------------------------------------------------
     //  END OF YOUR CHANGES
@@ -1101,10 +1101,11 @@ Markdown.HookCollection = HookCollection;
             inputUrl.appendChild(inputForm);
 
             input = doc.createElement("input");
-            input.type = "text";
+            input.type = "url";
             input.id = "TextUrl"
             input.value = defaultInputText;
             input.classList = "form-control form-control-sm";
+            input.setAttribute("onclick", "TextUrlHandler()");
             inputForm.appendChild(input);
 
             var okButton = doc.createElement("input");
@@ -1419,12 +1420,12 @@ Markdown.HookCollection = HookCollection;
             buttonRow.id = "wmd-button-row";
             buttonRow.className = 'wmd-button-row';
             buttonRow = buttonBar.appendChild(buttonRow);
-            var xPosition = 0;
+            var xPosition = 0.5;
             var makeButton = function (id, title, faImage, textOp) {
                 var button = document.createElement("li");
                 button.className = "wmd-button fas fa-fw " + faImage;
-                button.style.left = xPosition + "px";
-                xPosition += 25;
+                button.style.left = xPosition + "rem";
+                xPosition += 1.75;
                 button.id = id;
                 button.title = title;
                 if (textOp)
@@ -1437,9 +1438,9 @@ Markdown.HookCollection = HookCollection;
                 var spacer = document.createElement("li");
                 spacer.className = "wmd-spacer wmd-spacer" + num;
                 spacer.id = "wmd-spacer" + num;
-                spacer.style.left = xPosition - 10 + "px";
+                spacer.style.left = xPosition + "rem";
                 buttonRow.appendChild(spacer);
-                xPosition += 15;
+                xPosition += 0.5;
             }
 
             buttons.bold = makeButton("wmd-bold-button", getString("bold"), "fa-bold", bindCommand("doBold"));
@@ -2252,3 +2253,8 @@ Markdown.HookCollection = HookCollection;
         chunk.skipLines(2, 1, true);
     }
 })();
+
+function TextUrlHandler() {
+    let field = document.getElementById("TextUrl");
+    field.value = prompt("URL, please include http:// or https://", field.value);
+}

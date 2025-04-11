@@ -35,23 +35,23 @@ blockquote {
     background: #eee;
     border: 1px solid #ccc;
     height: 3rem;
-    margin: 1rem 0 0 0;
+    margin-bottom: 0;
     padding: 0.75rem;
     position: relative;
 }
 
 .wmd-spacer {
-    width: 0.2rem;
-    height: 1.5rem;
-    margin-left: 2rem;
-    position: absolute;
     background-color: Silver;
     display: inline-block;
+    height: 1.5rem;
     list-style: none;
+    margin-left: 0;
+    position: absolute;
+    top: 0.6rem;
+    width: 0.1rem;
 }
 
 .wmd-button {
-    padding-left: 1rem;
     position: absolute;
     display: inline-block;
     list-style: none;
