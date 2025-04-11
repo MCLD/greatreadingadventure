@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using GRA.Abstract;
@@ -41,31 +42,32 @@ namespace GRA.Domain.Service
             IPathResolver pathResolver)
             : base(logger, dateTimeProvider, userContextProvider)
         {
-            _avatarBundleRepository = avatarBundleRepository
-                ?? throw new ArgumentNullException(nameof(avatarBundleRepository));
-            _avatarColorRepository = avatarColorRepository
-                ?? throw new ArgumentNullException(nameof(avatarColorRepository));
-            _avatarElementRepository = avatarElementRepository
-                ?? throw new ArgumentNullException(nameof(avatarElementRepository));
-            _avatarItemRepository = avatarItemRepository
-                ?? throw new ArgumentNullException(nameof(avatarItemRepository));
-            _avatarLayerRepository = avatarLayerRepository
-                ?? throw new ArgumentNullException(nameof(avatarLayerRepository));
-            _jobRepository = jobRepository
-                ?? throw new ArgumentNullException(nameof(jobRepository));
-            _languageService = languageService
-                ?? throw new ArgumentNullException(nameof(languageService));
-            _triggerRepository = triggerRepository
-                ?? throw new ArgumentNullException(nameof(triggerRepository));
-            _pathResolver = pathResolver
-                ?? throw new ArgumentNullException(nameof(pathResolver));
+            ArgumentNullException.ThrowIfNull(avatarBundleRepository);
+            ArgumentNullException.ThrowIfNull(avatarColorRepository);
+            ArgumentNullException.ThrowIfNull(avatarElementRepository);
+            ArgumentNullException.ThrowIfNull(avatarItemRepository);
+            ArgumentNullException.ThrowIfNull(avatarLayerRepository);
+            ArgumentNullException.ThrowIfNull(jobRepository);
+            ArgumentNullException.ThrowIfNull(languageService);
+            ArgumentNullException.ThrowIfNull(pathResolver);
+            ArgumentNullException.ThrowIfNull(triggerRepository);
+
+            _avatarBundleRepository = avatarBundleRepository;
+            _avatarColorRepository = avatarColorRepository;
+            _avatarElementRepository = avatarElementRepository;
+            _avatarItemRepository = avatarItemRepository;
+            _avatarLayerRepository = avatarLayerRepository;
+            _jobRepository = jobRepository;
+            _languageService = languageService;
+            _pathResolver = pathResolver;
+            _triggerRepository = triggerRepository;
 
             SetManagementPermission(Permission.ManageAvatars);
         }
 
-        public async Task<AvatarBundle> AddBundleAsync(AvatarBundle bundle,
-            List<int> itemIds)
+        public async Task<AvatarBundle> AddBundleAsync(AvatarBundle bundle, List<int> itemIds)
         {
+            ArgumentNullException.ThrowIfNull(bundle);
             VerifyManagementPermission();
             var items = await _avatarItemRepository.GetByIdsAsync(itemIds);
             if (items.Any(_ => _.Unlockable != bundle.CanBeUnlocked))
@@ -90,6 +92,7 @@ namespace GRA.Domain.Service
 
         public async Task<AvatarLayer> AddLayerAsync(AvatarLayer layer)
         {
+            ArgumentNullException.ThrowIfNull(layer);
             VerifyManagementPermission();
             layer.SiteId = GetCurrentSiteId();
             var currentLayer = await _avatarLayerRepository.AddSaveAsync(
@@ -137,6 +140,7 @@ namespace GRA.Domain.Service
         public async Task<AvatarBundle> EditBundleAsync(AvatarBundle bundle,
             List<int> itemIds)
         {
+            ArgumentNullException.ThrowIfNull(bundle);
             VerifyManagementPermission();
 
             var currentBundle = await _avatarBundleRepository.GetByIdAsync(bundle.Id, false);
@@ -180,12 +184,8 @@ namespace GRA.Domain.Service
 
         public async Task<AvatarBundle> GetBundleByIdAsync(int id, bool includeDeleted = false)
         {
-            var bundle = await _avatarBundleRepository.GetByIdAsync(id, includeDeleted);
-            if (bundle == null)
-            {
-                throw new GraException("The requested bundle could not be accessed or does not exist.");
-            }
-            return bundle;
+            return await _avatarBundleRepository.GetByIdAsync(id, includeDeleted)
+                ?? throw new GraException("The requested bundle could not be accessed or does not exist.");
         }
 
         public async Task<ICollection<AvatarColor>> GetColorsByLayerAsync(int layerId)
@@ -253,6 +253,7 @@ namespace GRA.Domain.Service
         public async Task<DataWithCount<ICollection<AvatarBundle>>>
             GetPaginatedBundleListAsync(AvatarFilter filter)
         {
+            ArgumentNullException.ThrowIfNull(filter);
             VerifyManagementPermission();
             filter.SiteId = GetCurrentSiteId();
             return new DataWithCount<ICollection<AvatarBundle>>
@@ -309,7 +310,9 @@ namespace GRA.Domain.Service
                 var bundleItems = new List<AvatarItem>();
                 if (userAvatar.Count == 0)
                 {
-                    bundleItems = (await _avatarBundleRepository.GetRandomDefaultBundleAsync(siteId)).ToList();
+                    var randomBundle = await _avatarBundleRepository
+                        .GetRandomDefaultBundleAsync(siteId);
+                    bundleItems = randomBundle.ToList();
                 }
                 var filePath = _pathResolver.ResolveContentPath($"site{siteId}/avatars/");
                 foreach (var layer in layers)
@@ -330,7 +333,8 @@ namespace GRA.Domain.Service
                         {
                             layer.SelectedItem = layerSelection.AvatarItemId;
                             layer.SelectedColor = layerSelection.AvatarColorId;
-                            layer.FilePath = _pathResolver.ResolveContentPath(layerSelection.Filename);
+                            layer.FilePath = _pathResolver
+                                .ResolveContentPath(layerSelection.Filename);
                         }
                         else if (layer.AvatarColors.Count > 0)
                         {
@@ -369,7 +373,10 @@ namespace GRA.Domain.Service
                                 fileName += $"_{layer.SelectedColor}";
                             }
                             fileName += ".png";
-                            layer.FilePath = Path.Combine(filePath, $"layer{layer.Id}", $"item{layer.SelectedItem}", fileName);
+                            layer.FilePath = Path.Combine(filePath,
+                                $"layer{layer.Id}",
+                                $"item{layer.SelectedItem}",
+                                fileName);
                         }
                     }
                 }
@@ -396,7 +403,9 @@ namespace GRA.Domain.Service
 
                 token.Register(() =>
                 {
-                    _logger.LogWarning("Import avatars for user {User} was cancelled after {Elapsed} ms.", requestingUser, sw?.ElapsedMilliseconds);
+                    _logger.LogWarning("Import avatars for user {User} was cancelled after {Elapsed} ms.",
+                        requestingUser,
+                        sw?.ElapsedMilliseconds);
                 });
 
                 var jsonPath = Path.Combine(assetPath, "default avatars.json");
@@ -418,11 +427,13 @@ namespace GRA.Domain.Service
                 using (StreamReader file = File.OpenText(jsonPath))
                 {
                     var jsonString = await file.ReadToEndAsync();
-                    avatarList = JsonConvert.DeserializeObject<IEnumerable<AvatarLayer>>(jsonString);
+                    avatarList = JsonConvert
+                        .DeserializeObject<IEnumerable<AvatarLayer>>(jsonString);
                 }
 
                 var layerCount = avatarList.Count();
-                _logger.LogInformation("Found {Count} AvatarLayer objects in avatar JSON file", layerCount);
+                _logger.LogInformation("Found {Count} AvatarLayer objects in avatar JSON file",
+                    layerCount);
 
                 // Layers + background/bundles
                 var processingCount = layerCount + 1;
@@ -443,7 +454,8 @@ namespace GRA.Domain.Service
                 var destinationBasePath = _pathResolver.ResolveContentFilePath(destinationBase);
                 if (Directory.Exists(destinationBasePath))
                 {
-                    _logger.LogWarning("Destination directory {Path} already exists, attempting to remove...", destinationBasePath);
+                    _logger.LogWarning("Destination directory {Path} already exists, attempting to remove...",
+                        destinationBasePath);
                     Directory.Delete(destinationBasePath, true);
                 }
 
@@ -527,7 +539,7 @@ namespace GRA.Domain.Service
 
                     var itemCount = items.Count;
                     var currentItem = 1;
-                    foreach (var item in items)
+                    foreach (var item in items.OrderBy(_ => _.SortOrder))
                     {
                         var secondsFromLastUpdate = (int)sw.Elapsed.TotalSeconds - lastUpdateSent;
                         if (secondsFromLastUpdate >= 5)
@@ -551,7 +563,9 @@ namespace GRA.Domain.Service
                     await _avatarItemRepository.SaveAsync();
                     items = await GetItemsByLayerAsync(addedLayer.Id);
 
-                    _logger.LogInformation("Processing {Count} items in {LayerName}", items.Count, layer.Name);
+                    _logger.LogInformation("Processing {Count} items in {LayerName}",
+                        items.Count,
+                        layer.Name);
 
                     progress?.Report(new JobStatus
                     {
@@ -630,7 +644,9 @@ namespace GRA.Domain.Service
 
                     await _avatarElementRepository.SaveAsync();
                     totalFilesCopied += elementCount;
-                    _logger.LogInformation("Copied {Count} items for {LayerName}", elementCount, layer.Name);
+                    _logger.LogInformation("Copied {Count} items for {LayerName}",
+                        elementCount,
+                        layer.Name);
 
                     processedCount++;
                 }
@@ -667,7 +683,8 @@ namespace GRA.Domain.Service
                     Path.Combine(bundlePath, "notif.png"));
                 totalFilesCopied++;
 
-                _logger.LogInformation("Copied {TotalFilesCopied} items for all layers.", totalFilesCopied);
+                _logger.LogInformation("Copied {TotalFilesCopied} items for all layers.",
+                    totalFilesCopied);
 
                 if (bundleJsonExists)
                 {
@@ -698,7 +715,8 @@ namespace GRA.Domain.Service
 
                 if (jobDetails.UploadedFile)
                 {
-                    _logger.LogInformation("Upload successful, clearing out uploaded files from {AssetPath}", assetPath);
+                    _logger.LogInformation("Upload successful, clearing out uploaded files from {AssetPath}",
+                        assetPath);
                     var directoryInfo = new DirectoryInfo(assetPath);
                     try
                     {
@@ -718,20 +736,29 @@ namespace GRA.Domain.Service
                 }
 
                 sw.Stop();
-                _logger.LogInformation("Default avatars added in {TotalSeconds} seconds.", sw.Elapsed.TotalSeconds);
+                _logger.LogInformation("Default avatars added in {TotalSeconds} seconds.",
+                    sw.Elapsed.TotalSeconds);
+
+                var resultMessage = new StringBuilder("<strong>Import Complete</strong> in ")
+                    .Append(Convert.ToInt32(sw.Elapsed.TotalSeconds))
+                    .Append(" seconds");
+
+                if(deleteIssues)
+                {
+                    resultMessage.Append(" - could not delete all uploaded files");
+                }
 
                 return new JobStatus
                 {
                     PercentComplete = 100,
                     Complete = true,
-                    Status = deleteIssues
-                        ? $"<strong>Import Complete</strong> - could not delete all uploaded files"
-                        : "<strong>Import Complete</strong>"
+                    Status = resultMessage.ToString()
                 };
             }
             else
             {
-                _logger.LogError("User {RequestingUser} doesn't have permission to import avatars.", requestingUser);
+                _logger.LogError("User {RequestingUser} doesn't have permission to import avatars.",
+                    requestingUser);
                 return new JobStatus
                 {
                     PercentComplete = 0,
@@ -751,6 +778,7 @@ namespace GRA.Domain.Service
         public async Task<DataWithCount<ICollection<AvatarItem>>> PageItemsAsync(
             AvatarFilter filter)
         {
+            ArgumentNullException.ThrowIfNull(filter);
             VerifyManagementPermission();
             filter.SiteId = GetCurrentSiteId();
             return new DataWithCount<ICollection<AvatarItem>>
@@ -816,6 +844,7 @@ namespace GRA.Domain.Service
 
         public async Task<AvatarLayer> UpdateLayerAsync(AvatarLayer layer)
         {
+            ArgumentNullException.ThrowIfNull(layer);
             VerifyManagementPermission();
             layer.SiteId = GetCurrentSiteId();
             return await _avatarLayerRepository.UpdateSaveAsync(
@@ -857,13 +886,19 @@ namespace GRA.Domain.Service
                     }
                     else
                     {
-                        _logger.LogWarning($"User {activeUserId} can't select item {selection.SelectedItem.Value} and color {selection.SelectedColor} for layer {layer.Id}.");
+                        _logger.LogWarning("User {UserId} can't select item {ItemValue} and color {ItemColor} for layer {LayerId}.",
+                            activeUserId,
+                            selection.SelectedItem.Value,
+                            selection.SelectedColor,
+                            layer.Id);
                         throw new GraException($"Invalid selection for {layer.Name}");
                     }
                 }
                 else if (!layer.CanBeEmpty)
                 {
-                    _logger.LogWarning($"User {activeUserId} can't have an empty selection for layer {layer.Id}.");
+                    _logger.LogWarning("User {UserId} can't have an empty selection for layer {LayerId}.",
+                        activeUserId,
+                        layer.Id);
                     throw new GraException($"A {layer.Name} must be selected");
                 }
             }
