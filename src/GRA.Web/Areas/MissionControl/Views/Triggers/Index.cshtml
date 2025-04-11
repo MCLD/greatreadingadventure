@@ -1,4 +1,5 @@
-﻿@model GRA.Controllers.ViewModel.MissionControl.Triggers.TriggersListViewModel
+﻿@using GRA.Controllers.ViewModel.MissionControl.Triggers
+@model TriggersListViewModel
 
 <div class="row my-4">
     <div class="col">
@@ -59,10 +60,10 @@
             {
                 <li class="nav-item">
                     <a class="nav-link @(Model.ActiveNav == "Low Points" ? "active" : "")"
-                   asp-route-Search="@Model.Search"
-                   asp-route-ProgramId="@Model.ProgramId"
-                   asp-route-LowPoints="True">Low Points</a>
-            </li>
+                       asp-route-Search="@Model.Search"
+                       asp-route-ProgramId="@Model.ProgramId"
+                       asp-route-LowPoints="True">Low Points</a>
+                </li>
             }
             <li class="nav-item d-none d-sm-block"><a class="nav-link disabled">|</a></li>
             <li class="nav-item dropdown">
@@ -171,6 +172,7 @@
                     <thead>
                         <tr>
                             <th>Name</th>
+                            <th>Activation</th>
                             <th>Points Awarded</th>
                             <th>Badge</th>
                             <th>&nbsp;</th>
@@ -185,11 +187,16 @@
                                         @trigger.Name
                                     </a>
                                 </td>
+                                <td>
+                                    @TriggersListViewModel.DisplayActivation(trigger)
+                                    @Html.Raw(TriggersListViewModel.DisplayLimitations(trigger))
+                                </td>
                                 <td>@trigger.AwardPoints</td>
                                 <td class="gra-mc-icon">
-                                    <img class="img-thumbnail badge-xs"
-                                         src="~/@trigger.AwardBadgeFilename?@DateTime.Now.ToString("yyMMddHHmmss")"
-                                         asp-append-version="true" />
+                                    <div class="badge-xs-fixed-container">
+                                        <img class="img-thumbnail"
+                                             src="~/@trigger.AwardBadgeFilename?@DateTime.Now.ToString("yyMMddHHmmss")" />
+                                    </div>
                                 </td>
                                 <td class="on-top gra-mc-icon">
                                     @if (trigger.HasDependents || trigger.RelatedEventId != null)
@@ -221,7 +228,6 @@
                                             <span class="fas fa-times fa-fw"
                                                   aria-hidden="true"></span>
                                         </button>
-
                                     }
                                 </td>
                             </tr>

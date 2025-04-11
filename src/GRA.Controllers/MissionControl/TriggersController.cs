@@ -890,11 +890,11 @@ namespace GRA.Controllers.MissionControl
             int page = 1)
         {
             var filter = new TriggerFilter(page);
-            var (lowPointThresholdSet, lowPointThreshold) 
-                = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(), 
+            var (lowPointThresholdSet, lowPointThreshold)
+                = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(),
                     SiteSettingKey.Triggers.LowPointThreshold);
 
-            hideLowPoint = lowPointThreshold == 0 ? true : false;
+            hideLowPoint = lowPointThreshold == 0;
 
             if (!string.IsNullOrWhiteSpace(search))
             {
