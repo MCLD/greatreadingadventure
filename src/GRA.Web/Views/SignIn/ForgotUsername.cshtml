@@ -3,12 +3,21 @@
         <div class="col-sm-12 col-md-8 offset-md-2">
             <div class="card">
                 <div class="card-header">
-                    <h1 class="h4"><grasite property="name"></grasite> - @SharedLocalizer[GRA.Annotations.Title.UsernameRecovery]</h1>
+                    <h1 class="h4">
+                        <grasite property="name"></grasite> - 
+                        @SharedLocalizer[GRA.Annotations.Title.UsernameRecovery]
+                        </h1>
                 </div>
                 <div class="card-body">
                     <div asp-validation-summary="All"></div>
-                    <label class="form-label">@SharedLocalizer[GRA.Domain.Model.DisplayNames.EmailAddress]</label>
-                    <input name="email" type="email" class="form-control form-control-lg" autofocus />
+                    <label class="form-label">
+                        @SharedLocalizer[GRA.Domain.Model.DisplayNames.EmailAddress]
+                        </label>
+                    <input name="email" 
+                        type="email"
+                        class="form-control form-control-lg"
+                        autofocus
+                        autocomplete="email"/>
                 </div>
                 <div class="card-footer d-flex justify-content-end">
                     <a asp-action="Index" class="btn btn-outline-secondary btn-lg me-2">

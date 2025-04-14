@@ -28,6 +28,7 @@
                             <label asp-for="FirstName" class="col-form-label"></label>
                             <input asp-for="FirstName"
                                    autofocus
+                                   autocomplete="given-name"
                                    class="form-control first-name-field" />
                             <span asp-validation-for="FirstName" class="text-danger"></span>
                         </div>
@@ -36,7 +37,9 @@
                     <div class="row row-spacing">
                         <div class="col-12">
                             <label asp-for="LastName" class="col-form-label"></label>
-                            <input asp-for="LastName" class="form-control" />
+                            <input asp-for="LastName"
+                                   autocomplete="family-name"
+                                   class="form-control" />
                             <span asp-validation-for="LastName" class="text-danger"></span>
                         </div>
                     </div>
@@ -46,7 +49,9 @@
                         <div class="row row-spacing">
                             <div class="col-12">
                                 <label asp-for="PostalCode" class="col-form-label"></label>
-                                <input asp-for="PostalCode" class="form-control" />
+                                <input asp-for="PostalCode"
+                                       autocomplete="postal-code"
+                                       class="form-control" />
                                 <span asp-validation-for="PostalCode" class="text-danger"></span>
                             </div>
                         </div>

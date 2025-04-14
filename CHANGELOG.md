@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Avatar import duration to success pop-up
 - Ability to restrict challenges to activate on more than a configured amount of points
 - Trigger filter based on a configured "low point" threshhold
+- Autocomplete properties to join and sign-in forms
 
 ## Changed
 
