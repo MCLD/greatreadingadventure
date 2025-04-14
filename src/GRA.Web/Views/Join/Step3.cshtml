@@ -22,7 +22,10 @@
                         <div class="col-12">
                             <label asp-for="Username" class="col-form-label"></label>
                             <span id="Username-Icon" class="fas colored-icon d-none"></span>
-                            <input asp-for="Username" class="form-control" autofocus />
+                            <input asp-for="Username"
+                                   class="form-control"
+                                   autofocus
+                                   autocomplete="username" />
                             <span id="Username-Validation"
                                   asp-validation-for="Username"></span>
                         </div>
@@ -34,7 +37,10 @@
                             <p class="password-note">
                                 @SharedLocalizer[GRA.Annotations.Validate.PasswordRequirement]
                             </p>
-                            <input asp-for="Password" type="password" class="form-control" />
+                            <input asp-for="Password"
+                                   type="password"
+                                   class="form-control"
+                                   autocomplete="new-password" />
                             <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
                     </div>
@@ -42,7 +48,10 @@
                     <div class="row row-spacing">
                         <div class="col-12">
                             <label asp-for="ConfirmPassword" class="col-form-label"></label>
-                            <input asp-for="ConfirmPassword" type="password" class="form-control" />
+                            <input asp-for="ConfirmPassword"
+                                   type="password"
+                                   class="form-control"
+                                   autocomplete="new-password" />
                             <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                         </div>
                     </div>
@@ -60,7 +69,10 @@
                     <div class="row row-spacing">
                         <div class="col-12">
                             <label asp-for="Email" class="col-form-label"></label>
-                            <input asp-for="Email" class="form-control" type="email" />
+                            <input asp-for="Email"
+                                   class="form-control"
+                                   type="email"
+                                   autocomplete="email" />
                             <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
                     </div>
@@ -68,7 +80,10 @@
                     <div class="row row-spacing">
                         <div class="col-12">
                             <label asp-for="PhoneNumber" class="col-form-label"></label>
-                            <input asp-for="PhoneNumber" class="form-control" type="tel" />
+                            <input asp-for="PhoneNumber"
+                                   class="form-control"
+                                   type="tel"
+                                   autocomplete="tel-national" />
                             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                         </div>
                     </div>
@@ -96,7 +111,8 @@
                                 <select asp-for="EmailSubscriptionRequested"
                                         asp-items="Model.AskEmailSubscription"
                                         class="form-select"></select>
-                                <span asp-validation-for="EmailSubscriptionRequested" class="text-danger"></span>
+                                <span asp-validation-for="EmailSubscriptionRequested"
+                                      class="text-danger"></span>
                             </div>
                         </div>
                     }

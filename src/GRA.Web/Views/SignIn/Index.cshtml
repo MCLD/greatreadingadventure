@@ -17,12 +17,18 @@
                     }
                     <div class="mb-2">
                         <label asp-for="Username" class="form-label"></label>
-                        <input asp-for="Username" class="form-control form-control-lg" autofocus />
+                        <input asp-for="Username"
+                               class="form-control form-control-lg"
+                               autofocus
+                               autocomplete="username" />
                         <span asp-validation-for="Username" class="text-danger"></span>
                     </div>
                     <div>
                         <label asp-for="Password" class="form-label"></label>
-                        <input asp-for="Password" type="password" class="form-control form-control-lg" />
+                        <input asp-for="Password"
+                               type="password"
+                               class="form-control form-control-lg"
+                               autocomplete="current-password" />
                         <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
                 </div>
