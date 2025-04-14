@@ -978,6 +978,7 @@ namespace GRA.Controllers.MissionControl
 
                 ProgramList = await _siteService.GetProgramList()
             };
+
             if (mine == true)
             {
                 viewModel.BranchList = (await _siteService.GetBranches(GetId(ClaimType.SystemId)))
@@ -991,6 +992,7 @@ namespace GRA.Controllers.MissionControl
                         .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
                         .ThenBy(_ => _.Name);
                 viewModel.ActiveNav = "Low Points";
+                ShowAlertInfo($"Showing triggers which activate with {lowPointThreshold} or fewer points and no other requirements.");
             }
             else if (branchId.HasValue)
             {
@@ -1019,6 +1021,7 @@ namespace GRA.Controllers.MissionControl
                         .ThenBy(_ => _.Name);
                 viewModel.ActiveNav = "All";
             }
+
             if (programId.HasValue)
             {
                 if (programId.Value > 0)

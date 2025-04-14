@@ -707,7 +707,9 @@ namespace GRA.Data.Repository
             if (filter.PointsBelowOrEqual.HasValue)
             {
                 triggerList = triggerList.Where(_ => filter.PointsBelowOrEqual >= _.Points
-                    && string.IsNullOrWhiteSpace(_.SecretCode));
+                    && string.IsNullOrWhiteSpace(_.SecretCode)
+                    && _.RequiredBadges.Count == 0
+                    && _.RequiredChallenges.Count == 0);
             }
 
             if (filter.SecretCodesOnly == true)
