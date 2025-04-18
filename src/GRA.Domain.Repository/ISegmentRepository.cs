@@ -11,6 +11,8 @@ namespace GRA.Domain.Repository
 
         public Task<int[]> GetLanguagesAsync(int segmentId);
 
+        public Task<string> GetNameAsync(int segmentId);
+
         public Task<SegmentText> GetTextAsync(int segmentId, int languageId);
 
         public Task RemoveIfUnusedAsync(int segmentId);

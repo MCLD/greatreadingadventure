@@ -40,6 +40,15 @@ namespace GRA.Data.Repository
                 .ToArrayAsync();
         }
 
+        public async Task<string> GetNameAsync(int segmentId)
+        {
+            return await _context.Segments
+                .AsNoTracking()
+                .Where(_ => _.Id == segmentId)
+                .Select(_ => _.Name)
+                .SingleAsync();
+        }
+
         public async Task<SegmentText> GetTextAsync(int segmentId, int languageId)
         {
             return await _context.SegmentTexts

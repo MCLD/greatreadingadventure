@@ -17,10 +17,12 @@ namespace GRA.Domain.Service
         public MessageTemplateService(IDateTimeProvider dateTimeProvider,
             ILogger<MessageTemplateService> logger,
             IMessageTemplateRepository messageTemplateRepository,
-            IUserContextProvider userContextProvider) : base(logger, dateTimeProvider, userContextProvider)
+            IUserContextProvider userContextProvider)
+            : base(logger, dateTimeProvider, userContextProvider)
         {
-            _messageTemplateRepository = messageTemplateRepository
-                ?? throw new ArgumentNullException(nameof(messageTemplateRepository));
+            ArgumentNullException.ThrowIfNull(messageTemplateRepository);
+
+            _messageTemplateRepository = messageTemplateRepository;
         }
 
         public async Task<MessageTemplateText> AddTextAsync(int languageId,
@@ -98,8 +100,8 @@ namespace GRA.Domain.Service
 
         private static string GetMessageTemplateName(string item) => item switch
         {
-            nameof(VendorCodeType.DonationMessageTemplateId) => "Vendor Code Donation",
-            nameof(VendorCodeType.EmailAwardMessageTemplateId) => "Vendor Code Email Award",
+            nameof(VendorCodeType.DonationMessageTemplateId) => SegmentNames.VendorCodeDonation,
+            nameof(VendorCodeType.EmailAwardMessageTemplateId) => SegmentNames.VendorCodeEmailAward,
             nameof(VendorCodeType.MessageTemplateId) => "Vendor Code Award",
             nameof(VendorCodeType.OptionMessageTemplateId) => "Vendor Code Option",
             _ => throw new GraException("Unknown message template type")

@@ -68,14 +68,21 @@ namespace GRA.Domain.Service
             return languageStatus;
         }
 
-        public async Task<string> GetTextAsync(int segmentId, int languageId)
+        public async Task<string> GetNameAsync(int segmentId)
         {
-            var segmentTextValue = await GetCacheTextAsync(segmentId, languageId);
+            return await _segmentRepository.GetNameAsync(segmentId);
+        }
+
+        public async Task<string> GetTextAsync(int segmentId, int languageId, bool forceReload)
+        {
+            var segmentTextValue = await GetCacheTextAsync(segmentId, languageId, forceReload);
 
             if (string.IsNullOrEmpty(segmentTextValue))
             {
                 var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
-                segmentTextValue = await GetCacheTextAsync(segmentId, defaultLanguageId);
+                segmentTextValue = await GetCacheTextAsync(segmentId,
+                    defaultLanguageId,
+                    forceReload);
             }
 
             return segmentTextValue;
@@ -115,16 +122,20 @@ namespace GRA.Domain.Service
 
         private static string GetSegmentName(string item) => item switch
         {
-            nameof(VendorCodeType.DonationSegmentId) => "Vendor Code Donation",
-            nameof(VendorCodeType.EmailAwardSegmentId) => "Vendor Code Email Award",
+            nameof(VendorCodeType.DonationSegmentId) => SegmentNames.VendorCodeDonation,
+            nameof(VendorCodeType.EmailAwardSegmentId) => SegmentNames.VendorCodeEmailAward,
             _ => item
         };
 
-        private async Task<string> GetCacheTextAsync(int segmentId, int languageId)
+        private async Task<string> GetCacheTextAsync(int segmentId,
+            int languageId,
+            bool forceReload)
         {
             var cacheKey = GetCacheKey(CacheKey.SegmentText, segmentId, languageId);
 
-            var segmentTextValue = await _cache.GetStringFromCache(cacheKey);
+            string segmentTextValue = forceReload
+                ? null
+                : await _cache.GetStringFromCache(cacheKey);
 
             if (!string.IsNullOrEmpty(segmentTextValue))
             {

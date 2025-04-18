@@ -88,13 +88,13 @@ namespace GRA.Domain.Service
             return new ExitLandingDetails
             {
                 ExitLeftMessage = await _segmentService
-                    .GetTextAsync(exitLandingDetails.ExitLeftMessage, languageId),
+                    .GetTextAsync(exitLandingDetails.ExitLeftMessage, languageId, false),
                 LandingCenterMessage = await _segmentService
-                    .GetTextAsync(exitLandingDetails.LandingCenterMessage, languageId),
+                    .GetTextAsync(exitLandingDetails.LandingCenterMessage, languageId, false),
                 LandingLeftMessage = await _segmentService
-                    .GetTextAsync(exitLandingDetails.LandingLeftMessage, languageId),
+                    .GetTextAsync(exitLandingDetails.LandingLeftMessage, languageId, false),
                 LandingRightMessage = await _segmentService
-                    .GetTextAsync(exitLandingDetails.LandingRightMessage, languageId)
+                    .GetTextAsync(exitLandingDetails.LandingRightMessage, languageId, false)
             };
         }
 

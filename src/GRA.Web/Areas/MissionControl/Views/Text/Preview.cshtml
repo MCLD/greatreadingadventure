@@ -1,0 +1,20 @@
+﻿@using GRA.Controllers.ViewModel.MissionControl.Text
+@model UpdateTextViewModel
+
+@section inHeading {
+    <div class="ms-auto">
+        <a asp-action="@nameof(TextController.Update)"
+           asp-route-id="@Model.Id"
+           class="btn btn-outline-secondary d-print-none">Return to Editor</a>
+    </div>
+}
+
+<div class="row mt-4" style="font-size: larger;">
+    <div class="col-sm-6 offset-sm-3">
+        <div class="card visible-sm visible-md visible-lg" style="margin-bottom: 0.5rem;">
+            <div class="dashboard-page-container">
+                @Html.Raw(Model.SegmentText)
+            </div>
+        </div>
+    </div>
+</div>
