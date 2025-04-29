@@ -260,6 +260,7 @@ namespace GRA.Domain.Service
 
                         var segment = await _segmentService.AddTextAsync(systemUserId,
                             message.LanguageId,
+                            SegmentType.LandingPage,
                             message.Message,
                             segmentName);
 

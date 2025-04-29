@@ -548,7 +548,6 @@
             $('#saveSegment').prop('disabled', true);
             let languageid = $(e.relatedTarget).data('languageid');
             let item = $(e.relatedTarget).data('item');
-            console.info("ITem: %o", item);
             switch (item) {
                 case '@nameof(Model.VendorCodeType.DonationSegmentId)':
                     $('#segmentModalLabel').text('Donation pop-up message');

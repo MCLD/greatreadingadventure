@@ -13,8 +13,17 @@
                     <span class="lead">@ViewData[ViewDataKey.Title]</span>
                 </div>
                 <div class="card-body">
-
-                    <div class="row row-spacing">
+                    @if (!string.IsNullOrWhiteSpace(Model.WelcomeMessage))
+                    {
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="alert alert-success mb-0 welcome-message">
+                                    @Html.Raw(Model.WelcomeMessage)
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <div class="row mb-3">
                         <div class="col-12">
                             <label asp-for="Username" class="col-form-label"></label>
                             <span id="Username-Icon" class="fas colored-icon d-none"></span>
@@ -27,8 +36,7 @@
                                   class="text-success"></span>
                         </div>
                     </div>
-
-                    <div class="row row-spacing">
+                    <div class="row mb-3">
                         <div class="col-12">
                             <label asp-for="Password" class="col-form-label"></label>
                             <p class="password-note">
@@ -41,8 +49,7 @@
                             <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
                     </div>
-
-                    <div class="row row-spacing">
+                    <div class="row mb-3">
                         <div class="col-12">
                             <label asp-for="ConfirmPassword" class="col-form-label"></label>
                             <input asp-for="ConfirmPassword"
@@ -52,10 +59,8 @@
                             <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                         </div>
                     </div>
-
                     <hr />
-
-                    <div class="row row-spacing">
+                    <div class="row mb-3">
                         <div class="col-12">
                             <label asp-for="FirstName" class="col-form-label"></label>
                             <input asp-for="FirstName"
@@ -65,7 +70,7 @@
                         </div>
                     </div>
 
-                    <div class="row row-spacing">
+                    <div class="row mb-3">
                         <div class="col-12">
                             <label asp-for="LastName" class="col-form-label"></label>
                             <input asp-for="LastName"
@@ -74,10 +79,9 @@
                             <span asp-validation-for="LastName" class="text-danger"></span>
                         </div>
                     </div>
-
                     @if (Model.RequirePostalCode)
                     {
-                        <div class="row row-spacing">
+                        <div class="row mb-3">
                             <div class="col-12">
                                 <label asp-for="PostalCode" class="col-form-label"></label>
                                 <input asp-for="PostalCode"
@@ -87,10 +91,9 @@
                             </div>
                         </div>
                     }
-
                     @if (Model.SystemList.Count() > 1)
                     {
-                        <div class="row row-spacing">
+                        <div class="row mb-3">
                             <div class="col-12">
                                 <label asp-for="SystemId" class="col-form-label"></label>
                                 <select asp-for="SystemId"
@@ -106,14 +109,13 @@
                     {
                         <input asp-for="SystemId" type="hidden" />
                     }
-
                     @if (Model.BranchList != null && Model.BranchList.Count() < 1)
                     {
                         <input asp-for="BranchId" type="hidden" />
                     }
                     else
                     {
-                        <div class="row row-spacing">
+                        <div class="row mb-3">
                             <div class="col-12">
                                 <label asp-for="BranchId" class="col-form-label"></label>
                                 <select asp-for="BranchId"
@@ -123,10 +125,9 @@
                             </div>
                         </div>
                     }
-
                     @if (Model.ProgramList.Count() > 1)
                     {
-                        <div class="row row-spacing">
+                        <div class="row mb-3">
                             <div class="col-12">
                                 <label asp-for="ProgramId" class="col-form-label"></label>
                                 <select asp-for="ProgramId"
@@ -142,8 +143,7 @@
                     {
                         <input asp-for="ProgramId" type="hidden" />
                     }
-
-                    <div id="ageField" class="row row-spacing @(Model.ShowAge ? "": "d-none")">
+                    <div id="ageField" class="row mb-3 @(Model.ShowAge ? "": "d-none")">
                         <div class="col-12">
                             <label asp-for="Age" class="col-form-label"></label>
                             <input asp-for="Age" class="form-control" type="text" />
@@ -152,22 +152,18 @@
                                   class="text-danger"></span>
                         </div>
                     </div>
-
                     <div id="schoolFields" class="@(Model.ShowSchool ? "": "d-none")">
                         @await Html.PartialAsync("_SchoolSelectionPartial", Model)
                     </div>
-
                     <hr />
-
-                    <div class="row row-spacing">
+                    <div class="row mb-3">
                         <div class="col-12">
                             <p>
                                 @SharedLocalizer[GRA.Annotations.Validate.EmailPhoneNeededForPrizes]
                             </p>
                         </div>
                     </div>
-
-                    <div class="row row-spacing">
+                    <div class="row mb-3">
                         <div class="col-12">
                             <label asp-for="Email" class="col-form-label"></label>
                             <input asp-for="Email"
@@ -177,8 +173,7 @@
                             <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
                     </div>
-
-                    <div class="row row-spacing">
+                    <div class="row mb-3">
                         <div class="col-12">
                             <label asp-for="PhoneNumber" class="col-form-label"></label>
                             <input asp-for="PhoneNumber"
@@ -188,10 +183,9 @@
                             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                         </div>
                     </div>
-
                     @if (Model.AskFirstTime?.Count() > 1)
                     {
-                        <div class="row row-spacing">
+                        <div class="row mb-3">
                             <div class="col-12">
                                 <label asp-for="IsFirstTime" class="col-form-label"></label>
                                 <select asp-for="IsFirstTime"
@@ -201,10 +195,9 @@
                             </div>
                         </div>
                     }
-
                     @if (Model.AskEmailSubscription?.Count() > 1)
                     {
-                        <div class="row row-spacing">
+                        <div class="row mb-3">
                             <div class="col-12">
                                 <label asp-for="EmailSubscriptionRequested"
                                        class="col-form-label">@Model.AskEmailSubscriptionText</label>
@@ -216,10 +209,9 @@
                             </div>
                         </div>
                     }
-
                     @if (!string.IsNullOrWhiteSpace(Model.TranslationDescriptionPastTense))
                     {
-                        <div class="row row-spacing">
+                        <div class="row mb-3">
                             <div class="col-12">
                                 <label asp-for="DailyPersonalGoal" class="col-form-label"></label>
                                 <div>

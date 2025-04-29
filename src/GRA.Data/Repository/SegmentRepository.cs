@@ -31,6 +31,15 @@ namespace GRA.Data.Repository
             return _mapper.Map<SegmentText>(segmentText);
         }
 
+        public async Task<Segment> GetAsync(int segmentId)
+        {
+            return await _context.Segments
+                .AsNoTracking()
+                .Where(_ => _.Id == segmentId)
+                .ProjectTo<Segment>(_mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync();
+        }
+
         public async Task<int[]> GetLanguagesAsync(int segmentId)
         {
             return await _context.SegmentTexts
@@ -68,6 +77,14 @@ namespace GRA.Data.Repository
                     && _.LanguageId == languageId)
                 ?? throw new GraDbUpdateException($"Unable to find segment text for id {segmentId} in language {languageId}");
             _context.SegmentTexts.Remove(segmentText);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveTextsAsync(int segmentId)
+        {
+            _context.SegmentTexts.RemoveRange(_context
+                .SegmentTexts
+                .Where(_ => _.SegmentId == segmentId));
             await _context.SaveChangesAsync();
         }
 

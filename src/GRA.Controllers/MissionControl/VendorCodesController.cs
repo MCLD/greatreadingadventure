@@ -430,13 +430,13 @@ namespace GRA.Controllers.MissionControl
             }
 
             var segmentText = id.HasValue
-                 ? await _segmentService.MCGetTextAsync(id.Value, languageId)
+                 ? await _segmentService.GetDbTextAsync(id.Value, languageId)
                  : default;
 
             return Json(new
             {
                 Success = true,
-                segmentText?.Text
+                Text = segmentText
             });
         }
 
@@ -547,7 +547,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> LookupPackingSlip(string id)
+        public IActionResult LookupPackingSlip(string id)
         {
             return RedirectToAction(nameof(ViewPackingSlip), new { id });
         }
@@ -815,6 +815,7 @@ namespace GRA.Controllers.MissionControl
 
                     var addedText = await _segmentService.AddTextAsync(GetActiveUserId(),
                         languageId,
+                        SegmentType.VendorCode,
                         text,
                         item);
 

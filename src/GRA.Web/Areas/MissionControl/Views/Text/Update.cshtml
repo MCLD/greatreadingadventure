@@ -1,0 +1,86 @@
+﻿@using GRA.Controllers.ViewModel.MissionControl.Text
+@model UpdateTextViewModel
+
+@section styles {
+    <link rel="stylesheet" href="/css/markdown.min.css" />
+}
+
+@section inHeading {
+    <div class="ms-auto">
+        <a class="btn btn-outline-secondary d-print-none"
+           href="@Model.ReturnLink">Back</a>
+    </div>
+}
+
+<div class="row mt-4">
+    <div class="col-12 col-xl-6 offset-xl-3">
+        <span class="alert alert-warning d-flex align-items-stretch">
+            <span class="fas fa-exclamation-triangle fa-lg pt-1 me-3"
+                  aria-hidden="true"></span>
+            <span>
+                Please save before clicking the Full Preview button or changing languages!
+            </span>
+        </span>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <h3>
+            @(string.IsNullOrEmpty(Model.DisplayName) ? Model.SegmentName : Model.DisplayName)
+        </h3>
+    </div>
+</div>
+
+@if (Model.Id.HasValue)
+{
+    <div class="row mb-3 mt-2">
+        <div class="col-12">
+            @foreach (var language in Model.Languages)
+            {
+                <a asp-action="@nameof(TextController.Update)"
+                   asp-route-id="@Model.Id.Value"
+                   asp-route-languageId="@language.Key"
+                   class="btn btn-sm @Model.LanguageButtonClass(language.Key)">
+                    @language.Value
+                </a>
+            }
+        </div>
+    </div>
+}
+
+<form asp-action="@Model.FormAction"
+      asp-controller="@TextController.Name"
+      method="post"
+      role="form">
+    <input asp-for="CurrentLanguage" type="hidden" />
+    <input asp-for="Id" type="hidden" />
+    <input asp-for="ReturnLink" type="hidden" />
+    <input asp-for="SegmentName" type="hidden" />
+    <div class="row mb-3">
+        <div class="col-12 mb-2">
+            <div id="wmd-button-bar"></div>
+            <textarea asp-for="SegmentText" id="wmd-input" class="form-control wmd-input">
+            </textarea>
+            <span asp-validation-for="SegmentText" class="text-danger"></span>
+        </div>
+        <div class="col-12 mb-2">
+            <label class="col-form-label">Preview</label>
+            <div id="preview"></div>
+        </div>
+    </div>
+    <div class="mb-3 d-flex justify-content-end">
+        <button type="submit"
+                class="btn btn-outline-primary"
+                button-spinner>
+            <span>Save</span>
+        </button>
+    </div>
+</form>
+
+@section scripts {
+    <script src="/js/markdown.min.js"></script>
+    <script>
+        var editor = new Markdown.Editor({ allowUploads: false });
+        editor.run();
+    </script>
+}

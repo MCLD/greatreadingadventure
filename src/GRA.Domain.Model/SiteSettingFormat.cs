@@ -5,6 +5,7 @@
         Boolean,
         Integer,
         String,
-        IntegerCsv
+        IntegerCsv,
+        SegmentId
     }
 }

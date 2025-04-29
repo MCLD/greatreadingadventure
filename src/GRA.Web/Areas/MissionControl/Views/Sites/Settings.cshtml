@@ -3,44 +3,93 @@
 @await Html.PartialAsync("_SitePartial")
 
 <div asp-validation-summary="ModelOnly"></div>
-<form asp-controller="Sites" asp-action="Settings" method="post" role="form">
+<form asp-action="@nameof(SitesController.Settings)"
+      asp-controller="@SitesController.Name"
+      method="post"
+      role="form">
     <input asp-for="Id" type="hidden" />
 
     @for (int i = 0; i < Model.SiteSettingGroups.Count; i++)
     {
-        <a name="@Model.SiteSettingGroups[i].Name"></a><h2>@Model.SiteSettingGroups[i].Name</h2>
+        <a name="@Model.SiteSettingGroups[i].Name"></a>
+
+        <h2>@Model.SiteSettingGroups[i].Name</h2>
 
         @for (int j = 0; j < Model.SiteSettingGroups[i].SettingInformations.Count; j++)
         {
-            <input asp-for="SiteSettingGroups[i].SettingInformations[j].SiteSetting.Key" value="@Model.SiteSettingGroups[i].SettingInformations[j].Key" type="hidden" />
+            <input asp-for="SiteSettingGroups[i].SettingInformations[j].SiteSetting.Key"
+                   value="@Model.SiteSettingGroups[i].SettingInformations[j].Key"
+                   type="hidden" />
 
             <div class="row row-spacing">
                 <div class="col-12">
                     <label asp-for="SiteSettingGroups[i].SettingInformations[j].SiteSetting.Value">@Model.SiteSettingGroups[i].SettingInformations[j].Definition.Name</label>
-                    <span class="far fa-question-circle wide-tooltip" title="@Model.SiteSettingGroups[i].SettingInformations[j].Definition.Info" data-bs-toggle="tooltip" data-bs-placement="top"></span>
+                    <span class="far fa-question-circle wide-tooltip"
+                          title="@Model.SiteSettingGroups[i].SettingInformations[j].Definition.Info"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="top"></span>
                     @if (Model.SiteSettingGroups[i].SettingInformations[j].Definition.Format == GRA.Domain.Model.SiteSettingFormat.Boolean)
                     {
-                        <select asp-for="SiteSettingGroups[i].SettingInformations[j].SiteSetting.Value" class="form-select">
+                        <select asp-for="SiteSettingGroups[i].SettingInformations[j].SiteSetting.Value"
+                                class="form-select">
                             <option></option>
                             <option value="True">Yes</option>
                         </select>
                     }
                     else if (Model.SiteSettingGroups[i].SettingInformations[j].Definition.Format == GRA.Domain.Model.SiteSettingFormat.Integer)
                     {
-                        <input asp-for="SiteSettingGroups[i].SettingInformations[j].SiteSetting.Value" type="number" class="form-control" />
+                        <input asp-for="SiteSettingGroups[i].SettingInformations[j].SiteSetting.Value"
+                               type="number"
+                               class="form-control" />
                     }
                     else if (Model.SiteSettingGroups[i].SettingInformations[j].Definition.Format == GRA.Domain.Model.SiteSettingFormat.String ||
                     Model.SiteSettingGroups[i].SettingInformations[j].Definition.Format == GRA.Domain.Model.SiteSettingFormat.IntegerCsv)
                     {
-                        <input asp-for="SiteSettingGroups[i].SettingInformations[j].SiteSetting.Value" type="text" class="form-control" />
+                        <input asp-for="SiteSettingGroups[i].SettingInformations[j].SiteSetting.Value"
+                               type="text"
+                               class="form-control" />
                     }
-                    <span asp-validation-for="SiteSettingGroups[i].SettingInformations[j].SiteSetting.Value" class="text-danger"></span>
+                    else if (Model.SiteSettingGroups[i].SettingInformations[j].Definition.Format == GRA.Domain.Model.SiteSettingFormat.SegmentId)
+                    {
+                        <div action="d-flex">
+                            @if (Model.SiteSettingGroups[i].SettingInformations[j].SiteSetting.Value?.Length > 0)
+                            {
+                                <button class="btn btn-sm btn-warning"
+                                        data-bs-target="#deleteText"
+                                        data-bs-toggle="modal"
+                                        data-setting-id="@Model.SiteSettingGroups[i].SettingInformations[j].SiteSetting.Value"
+                                        data-setting-key="@Model.SiteSettingGroups[i].SettingInformations[j].SiteSetting.Key"
+                                        data-setting-name="@Model.SiteSettingGroups[i].SettingInformations[j].Definition.Name"
+                                        type="button">
+                                    Remove text
+                                </button>
+                                <a class="btn btn-sm btn-outline-primary"
+                                   asp-action="@nameof(TextController.Update)"
+                                   asp-area="@TextController.Area"
+                                   asp-controller="@TextController.Name"
+                                   asp-route-id="@Model.SiteSettingGroups[i].SettingInformations[j].SiteSetting.Value">
+                                    Edit message
+                                </a>
+                            }
+                            else
+                            {
+                                <a class="btn btn-sm btn-outline-primary"
+                                   asp-action="@nameof(TextController.CreateSetting)"
+                                   asp-area="@TextController.Area"
+                                   asp-controller="@TextController.Name"
+                                   asp-route-id="@Model.SiteSettingGroups[i].SettingInformations[j].Key">
+                                    Create message
+                                </a>
+                            }
+                        </div>
+                    }
+                    <span asp-validation-for="SiteSettingGroups[i].SettingInformations[j].SiteSetting.Value"
+                          class="text-danger"></span>
                 </div>
             </div>
         }
         <hr />
     }
-
     <div class="mb-3">
         <a asp-action="Index" class="btn btn-outline-secondary">Return to List</a>
         <button type="submit"
@@ -53,3 +102,50 @@
         </button>
     </div>
 </form>
+
+<form asp-action="@nameof(TextController.ClearSetting)"
+      asp-area="@TextController.Area"
+      asp-controller="@TextController.Name"
+      method="post">
+    <input type="hidden" name="deleteTextId" id="deleteTextId" />
+    <input type="hidden" name="deleteSettingKey" id="deleteSettingKey" />
+    <div class="modal" id="deleteText" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete text confirmation</h5>
+                    <button aria-label="Close"
+                            class="btn-close"
+                            type="button"
+                            data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="deleteTextMessage"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-warning">Delete text</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+@section scripts {
+    <script>
+        const deleteSettingKey = document.getElementById('deleteSettingKey');
+        const deleteTextId = document.getElementById('deleteTextId');
+        const deleteTextMessage = document.getElementById('deleteTextMessage');
+        const deleteTextModal = document.getElementById('deleteText');
+
+        deleteTextModal.addEventListener("show.bs.modal", event => {
+            deleteSettingKey.value = event.relatedTarget.dataset.settingKey;
+            deleteTextId.value = event.relatedTarget.dataset.settingId;
+            deleteTextMessage.innerHTML = `Are you sure you want to clear the text for <strong>${event.relatedTarget.dataset.settingName}</strong>?`;
+        });
+    </script>
+}
