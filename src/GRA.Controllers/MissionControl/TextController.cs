@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.Text;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GRA.Controllers.MissionControl
 {
     [Area(nameof(MissionControl))]
+    [Authorize(Policy = Policy.ManageSites)]
     public class TextController : Base.MCController
     {
         private readonly LanguageService _languageService;
