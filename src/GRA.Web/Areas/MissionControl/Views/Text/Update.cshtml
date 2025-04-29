@@ -7,14 +7,6 @@
 
 @section inHeading {
     <div class="ms-auto">
-        @if (Model.Id.HasValue)
-        {
-            <a asp-action="@nameof(DashboardController.Preview)"
-               asp-route-id="@Model.Id.Value"
-               target="_blank"
-               class="btn btn-outline-secondary me-2 d-print-none">Full Preview</a>
-        }
-
         <a class="btn btn-outline-secondary d-print-none"
            href="@Model.ReturnLink">Back</a>
     </div>
@@ -31,10 +23,11 @@
         </span>
     </div>
 </div>
-
 <div class="row">
     <div class="col-12">
-        <h3>@Model.SegmentName</h3>
+        <h3>
+            @(string.IsNullOrEmpty(Model.DisplayName) ? Model.SegmentName : Model.DisplayName)
+        </h3>
     </div>
 </div>
 
@@ -55,12 +48,14 @@
     </div>
 }
 
-<form asp-action="@nameof(TextController.Update)"
+<form asp-action="@Model.FormAction"
       asp-controller="@TextController.Name"
       method="post"
       role="form">
-    <input asp-for="Id" type="hidden" />
     <input asp-for="CurrentLanguage" type="hidden" />
+    <input asp-for="Id" type="hidden" />
+    <input asp-for="ReturnLink" type="hidden" />
+    <input asp-for="SegmentName" type="hidden" />
     <div class="row mb-3">
         <div class="col-12 mb-2">
             <div id="wmd-button-bar"></div>
@@ -73,7 +68,6 @@
             <div id="preview"></div>
         </div>
     </div>
-
     <div class="mb-3 d-flex justify-content-end">
         <button type="submit"
                 class="btn btn-outline-primary"

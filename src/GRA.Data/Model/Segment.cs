@@ -7,6 +7,7 @@ namespace GRA.Data.Model
     {
         public DateTime? EndDate { get; set; }
         public string Name { get; set; }
+        public int SegmentType { get; set; }
         public DateTime? StartDate { get; set; }
     }
 }

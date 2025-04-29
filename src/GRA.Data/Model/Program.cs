@@ -51,7 +51,5 @@ namespace GRA.Data.Model
 
         [Required]
         public int SiteId { get; set; }
-
-        public int WelcomeSegmentId { get; set; }
     }
 }

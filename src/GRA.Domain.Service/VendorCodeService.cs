@@ -1928,9 +1928,8 @@ namespace GRA.Domain.Service
                 {
                     if (vendorCodeType.DonationSegmentId.HasValue)
                     {
-                        var segmentText = await _segmentService
-                            .MCGetTextAsync(vendorCodeType.DonationSegmentId.Value, languageId);
-                        vendorCodeInfo.VendorCodeDisplay = segmentText.Text;
+                        vendorCodeInfo.VendorCodeDisplay = await _segmentService
+                            .GetDbTextAsync(vendorCodeType.DonationSegmentId.Value, languageId);
                     }
                     else
                     {
@@ -1941,9 +1940,8 @@ namespace GRA.Domain.Service
                 {
                     if (vendorCodeType.EmailAwardSegmentId.HasValue)
                     {
-                        var segmentText = await _segmentService
-                            .MCGetTextAsync(vendorCodeType.EmailAwardSegmentId.Value, languageId);
-                        vendorCodeInfo.VendorCodeDisplay = segmentText.Text;
+                        vendorCodeInfo.VendorCodeDisplay = await _segmentService
+                            .GetDbTextAsync(vendorCodeType.EmailAwardSegmentId.Value, languageId);
                     }
                     else
                     {

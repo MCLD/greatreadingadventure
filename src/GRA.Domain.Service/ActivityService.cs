@@ -76,60 +76,66 @@ namespace GRA.Domain.Service
             SiteLookupService siteLookupService,
             VendorCodeService vendorCodeService) : base(logger, dateTimeProvider, userContext)
         {
-            _attachmentRepository = attachmentRepository
-                ?? throw new ArgumentNullException(nameof(attachmentRepository));
-            _avatarBundleRepository = avatarBundleRepository
-                ?? throw new ArgumentNullException(nameof(avatarBundleRepository));
-            _avatarItemRepository = avatarItemRepository
-                ?? throw new ArgumentNullException(nameof(avatarItemRepository));
-            _badgeRepository = badgeRepository
-                ?? throw new ArgumentNullException(nameof(badgeRepository));
-            _bookRepository = bookRepository
-                ?? throw new ArgumentNullException(nameof(bookRepository));
-            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
-            _challengeRepository = challengeRepository
-                ?? throw new ArgumentNullException(nameof(challengeRepository));
-            _challengeTaskRepository = challengeTaskRepository
-                ?? throw new ArgumentNullException(nameof(challengeTaskRepository));
-            _codeSanitizer = codeSanitizer
-                ?? throw new ArgumentNullException(nameof(codeSanitizer));
-            _eventRepository = eventRepository
-                ?? throw new ArgumentNullException(nameof(eventRepository));
-            _jobRepository = jobRepository
-                ?? throw new ArgumentNullException(nameof(jobRepository));
-            _languageService = languageService
-                ?? throw new ArgumentNullException(nameof(languageService));
-            _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
-            _messageTemplateService = messageTemplateService
-                ?? throw new ArgumentNullException(nameof(messageTemplateService));
-            _notificationRepository = notificationRepository
-                ?? throw new ArgumentNullException(nameof(notificationRepository));
-            _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
-            _pointTranslationRepository = pointTranslationRepository
-                ?? throw new ArgumentNullException(nameof(pointTranslationRepository));
-            _prizeWinnerService = prizeWinnerService
-                ?? throw new ArgumentNullException(nameof(prizeWinnerService));
-            _programRepository = programRepository
-                ?? throw new ArgumentNullException(nameof(programRepository));
-            _requiredQuestionnaireRepository = requiredQuestionnaireRepository
-                ?? throw new ArgumentNullException(nameof(requiredQuestionnaireRepository));
-            _siteLookupService = siteLookupService
-                ?? throw new ArgumentNullException(nameof(siteLookupService));
-            _triggerRepository = triggerRepository
-                ?? throw new ArgumentNullException(nameof(triggerRepository));
-            _userLogRepository = userLogRepository
-                ?? throw new ArgumentNullException(nameof(userLogRepository));
-            _userRepository = userRepository
-                ?? throw new ArgumentNullException(nameof(userRepository));
-            _vendorCodeRepository = vendorCodeRepository
-                ?? throw new ArgumentNullException(nameof(vendorCodeRepository));
-            _vendorCodeService = vendorCodeService
-                ?? throw new ArgumentNullException(nameof(vendorCodeService));
-            _vendorCodeTypeRepository = vendorCodeTypeRepository
-                ?? throw new ArgumentNullException(nameof(vendorCodeTypeRepository));
+            ArgumentNullException.ThrowIfNull(attachmentRepository);
+            ArgumentNullException.ThrowIfNull(avatarBundleRepository);
+            ArgumentNullException.ThrowIfNull(avatarItemRepository);
+            ArgumentNullException.ThrowIfNull(badgeRepository);
+            ArgumentNullException.ThrowIfNull(bookRepository);
+            ArgumentNullException.ThrowIfNull(cache);
+            ArgumentNullException.ThrowIfNull(challengeRepository);
+            ArgumentNullException.ThrowIfNull(challengeTaskRepository);
+            ArgumentNullException.ThrowIfNull(codeSanitizer);
+            ArgumentNullException.ThrowIfNull(eventRepository);
+            ArgumentNullException.ThrowIfNull(jobRepository);
+            ArgumentNullException.ThrowIfNull(languageService);
+            ArgumentNullException.ThrowIfNull(mailService);
+            ArgumentNullException.ThrowIfNull(messageTemplateService);
+            ArgumentNullException.ThrowIfNull(notificationRepository);
+            ArgumentNullException.ThrowIfNull(pathResolver);
+            ArgumentNullException.ThrowIfNull(pointTranslationRepository);
+            ArgumentNullException.ThrowIfNull(prizeWinnerService);
+            ArgumentNullException.ThrowIfNull(programRepository);
+            ArgumentNullException.ThrowIfNull(requiredQuestionnaireRepository);
+            ArgumentNullException.ThrowIfNull(siteLookupService);
+            ArgumentNullException.ThrowIfNull(triggerRepository);
+            ArgumentNullException.ThrowIfNull(userLogRepository);
+            ArgumentNullException.ThrowIfNull(userRepository);
+            ArgumentNullException.ThrowIfNull(vendorCodeRepository);
+            ArgumentNullException.ThrowIfNull(vendorCodeService);
+            ArgumentNullException.ThrowIfNull(vendorCodeTypeRepository);
+
+            _attachmentRepository = attachmentRepository;
+            _avatarBundleRepository = avatarBundleRepository;
+            _avatarItemRepository = avatarItemRepository;
+            _badgeRepository = badgeRepository;
+            _bookRepository = bookRepository;
+            _cache = cache;
+            _challengeRepository = challengeRepository;
+            _challengeTaskRepository = challengeTaskRepository;
+            _codeSanitizer = codeSanitizer;
+            _eventRepository = eventRepository;
+            _jobRepository = jobRepository;
+            _languageService = languageService;
+            _mailService = mailService;
+            _messageTemplateService = messageTemplateService;
+            _notificationRepository = notificationRepository;
+            _pathResolver = pathResolver;
+            _pointTranslationRepository = pointTranslationRepository;
+            _prizeWinnerService = prizeWinnerService;
+            _programRepository = programRepository;
+            _requiredQuestionnaireRepository = requiredQuestionnaireRepository;
+            _siteLookupService = siteLookupService;
+            _triggerRepository = triggerRepository;
+            _userLogRepository = userLogRepository;
+            _userRepository = userRepository;
+            _vendorCodeRepository = vendorCodeRepository;
+            _vendorCodeService = vendorCodeService;
+            _vendorCodeTypeRepository = vendorCodeTypeRepository;
         }
 
-        public async Task<ServiceResult<int>> AddBookAsync(int userId, Book book, bool addNotification = false)
+        public async Task<ServiceResult<int>> AddBookAsync(int userId,
+            Book book,
+            bool addNotification = false)
         {
             VerifyCanLog();
             int activeUserId = GetActiveUserId();
@@ -173,7 +179,8 @@ namespace GRA.Domain.Service
             }
             else
             {
-                serviceResult.Data = await _bookRepository.AddSaveForUserAsync(activeUserId, userId, addedBook);
+                serviceResult.Data
+                    = await _bookRepository.AddSaveForUserAsync(activeUserId, userId, addedBook);
 
                 if (addNotification && book != null)
                 {
@@ -417,9 +424,10 @@ namespace GRA.Domain.Service
 
             var siteActivityEarned = await _cache.GetIntFromCacheAsync(cacheKey);
 
-            if (siteActivityEarned == null)
+            if (siteActivityEarned == null || siteActivityEarned.Value == 0)
             {
-                siteActivityEarned = await _userLogRepository.GetSiteActivityEarnedAsync(GetCurrentSiteId());
+                siteActivityEarned
+                    = await _userLogRepository.GetSiteActivityEarnedAsync(GetCurrentSiteId());
 
                 await _cache.SaveToCacheAsync(cacheKey,
                     siteActivityEarned,
@@ -441,7 +449,7 @@ namespace GRA.Domain.Service
         }
 
         public async Task<ActivityLogResult> LogActivityAsync(int userIdToLog,
-                                                    int activityAmountEarned,
+            int activityAmountEarned,
             Book book = null)
         {
             VerifyCanLog();
@@ -534,7 +542,8 @@ namespace GRA.Domain.Service
 
                 // prepare the notification text
                 string activityDescription = "for <strong>";
-                if (translation.TranslationDescriptionPresentTense.Contains("{0}", StringComparison.OrdinalIgnoreCase))
+                if (translation.TranslationDescriptionPresentTense.Contains("{0}",
+                    StringComparison.OrdinalIgnoreCase))
                 {
                     activityDescription += string.Format(
                         System.Globalization.CultureInfo.InvariantCulture,
@@ -679,7 +688,8 @@ namespace GRA.Domain.Service
                 var authUser = await _userRepository.GetByIdAsync(authUserId);
                 if (authUser.HouseholdHeadUserId.HasValue)
                 {
-                    _logger.LogError("User id {UserId} cannot log codes for a family/group", authUserId);
+                    _logger.LogError("User id {UserId} cannot log codes for a family/group",
+                        authUserId);
                     throw new GraException("Permission denied.");
                 }
 
@@ -713,7 +723,8 @@ namespace GRA.Domain.Service
             return codeApplied;
         }
 
-        public async Task<bool> LogSecretCodeAsync(int userIdToLog, string secretCode,
+        public async Task<bool> LogSecretCodeAsync(int userIdToLog,
+            string secretCode,
             bool householdLogging = false)
         {
             VerifyCanLog();
@@ -888,8 +899,7 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<User> RemoveActivityAsync(int userIdToLog,
-                                            int userLogIdToRemove)
+        public async Task<User> RemoveActivityAsync(int userIdToLog, int userLogIdToRemove)
         {
             int activeUserId = GetActiveUserId();
             var activeUser = await _userRepository.GetByIdAsync(activeUserId);
@@ -954,7 +964,8 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError("User id {UserId} cannot remove activity for user id {UserIdToLog}",
+                _logger.LogError(
+                    "User id {UserId} cannot remove activity for user id {UserIdToLog}",
                     authUserId,
                     userIdToLog);
                 throw new GraException($"User id {authUserId} cannot remove activity for user id {userIdToLog}");
@@ -1033,7 +1044,8 @@ namespace GRA.Domain.Service
 
             var activeUser = await _userRepository.GetByIdAsync(activeUserId);
 
-            if ((await _requiredQuestionnaireRepository.GetForUser(GetCurrentSiteId(), activeUser.Id,
+            if ((await _requiredQuestionnaireRepository.GetForUser(GetCurrentSiteId(),
+                activeUser.Id,
                 activeUser.Age)).Count > 0)
             {
                 _logger.LogError("User id {UserId} cannot complete challenges tasks while having a pending questionnaire.",
@@ -1041,7 +1053,8 @@ namespace GRA.Domain.Service
                 throw new GraException("Challenge tasks cannot be completed while there is a pending questionnaire to be taken.");
             }
 
-            var challenge = await _challengeRepository.GetActiveByIdAsync(challengeId, activeUserId);
+            var challenge
+                = await _challengeRepository.GetActiveByIdAsync(challengeId, activeUserId);
 
             if (challenge.IsCompleted == true)
             {
@@ -1051,8 +1064,9 @@ namespace GRA.Domain.Service
                 throw new GraException("Challenge is already completed.");
             }
 
-            var updateStatuses = await _challengeRepository.UpdateUserChallengeTasksAsync(activeUserId,
-                challengeTasks);
+            var updateStatuses
+                = await _challengeRepository.UpdateUserChallengeTasksAsync(activeUserId,
+                    challengeTasks);
 
             // re-fetch challenge with tasks completed
             challenge = await _challengeRepository.GetActiveByIdAsync(challengeId, activeUserId);
@@ -1104,7 +1118,8 @@ namespace GRA.Domain.Service
                                 _logger.LogDebug("Update success, recording UserLogId {UserLogId} and BookId {BookId}",
                                     userLogResult.UserLogId,
                                     userLogResult.BookId);
-                                await _challengeRepository.UpdateUserChallengeTaskAsync(activeUserId,
+                                await _challengeRepository.UpdateUserChallengeTaskAsync(
+                                    activeUserId,
                                     updateStatus.ChallengeTask.Id,
                                     userLogResult.UserLogId,
                                     userLogResult.BookId);
@@ -1112,7 +1127,8 @@ namespace GRA.Domain.Service
                             else if (book != null)
                             {
                                 var bookId = await AddBookAsync(activeUserId, book, true);
-                                await _challengeRepository.UpdateUserChallengeTaskAsync(activeUserId,
+                                await _challengeRepository.UpdateUserChallengeTaskAsync(
+                                    activeUserId,
                                     updateStatus.ChallengeTask.Id,
                                     null,
                                     bookId.Data);
@@ -1138,7 +1154,8 @@ namespace GRA.Domain.Service
                                     challengeTaskInfo.UserLogId);
                                 if (challengeTaskInfo.UserLogId.HasValue)
                                 {
-                                    await RemoveActivityAsync(activeUserId, challengeTaskInfo.UserLogId.Value);
+                                    await RemoveActivityAsync(activeUserId,
+                                        challengeTaskInfo.UserLogId.Value);
                                 }
 
                                 // remove the title
@@ -1148,7 +1165,8 @@ namespace GRA.Domain.Service
                                     _logger.LogDebug("Removing from {UserId} book registration {BookId}",
                                         activeUserId,
                                         challengeTaskInfo.BookId);
-                                    await RemoveBookAsync(challengeTaskInfo.BookId.Value, activeUserId);
+                                    await RemoveBookAsync(challengeTaskInfo.BookId.Value,
+                                        activeUserId);
                                 }
                             }
                         }
@@ -1315,7 +1333,7 @@ namespace GRA.Domain.Service
         }
 
         private async Task<User> AddPointsSaveAsync(int authUserId,
-                            int activeUserId,
+            int activeUserId,
             int whoEarnedUserId,
             int pointsEarned,
             bool checkTriggers = true)
@@ -1415,7 +1433,9 @@ namespace GRA.Domain.Service
             }
         }
 
-        private async Task AwardTriggersAsync(int userId, bool logPoints = true, int? siteId = null,
+        private async Task AwardTriggersAsync(int userId,
+            bool logPoints = true,
+            int? siteId = null,
             bool userIdIsCurrentUser = false)
         {
             // load the initial list of triggers that might have been achieved
@@ -1536,7 +1556,8 @@ namespace GRA.Domain.Service
             await AwardTriggersAsync(userId, logPoints, siteId, userIdIsCurrentUser);
         }
 
-        private async Task AwardUserBundle(int userId, int bundleId,
+        private async Task AwardUserBundle(int userId,
+            int bundleId,
             bool userIdIsCurrentUser = false)
         {
             var bundle = await _avatarBundleRepository.GetByIdAsync(bundleId, false);
@@ -1563,7 +1584,8 @@ namespace GRA.Domain.Service
 
                 if (bundle.AvatarItems.Count > 1)
                 {
-                    notification.Text += " See the full list of unlocked pieces in your Profile History.";
+                    notification.Text
+                        += " See the full list of unlocked pieces in your Profile History.";
                 }
 
                 await _notificationRepository.AddSaveAsync(loggingUser, notification);
@@ -1589,7 +1611,9 @@ namespace GRA.Domain.Service
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
             "CA1031:Do not catch general exception types",
             Justification = "Any exception here is a critical error and should send an email.")]
-        private async Task<VendorCode> AwardVendorCodeAsync(int userId, int? vendorCodeTypeId, int? siteId = null)
+        private async Task<VendorCode> AwardVendorCodeAsync(int userId,
+            int? vendorCodeTypeId,
+            int? siteId = null)
         {
             VendorCode assignedCode = null;
 

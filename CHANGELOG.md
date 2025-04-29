@@ -17,6 +17,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Ability to restrict challenges to activate on more than a configured amount of points
 - Trigger filter based on a configured "low point" threshhold
 - Autocomplete properties to join and sign-in forms
+- Welcome message site setting at top of join pages
+- Editing of text segments
 
 ## Changed
 

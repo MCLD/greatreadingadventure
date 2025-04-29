@@ -11,7 +11,7 @@
 
                     @await Html.PartialAsync("_MultiStepPartial")
 
-                    <div class="row row-spacing">
+                    <div class="row mb-3">
                         <div class="col-12">
                             <label asp-for="ProgramId" class="col-form-label"></label>
                             <select asp-for="ProgramId"
@@ -24,7 +24,7 @@
                         </div>
                     </div>
 
-                    <div id="ageField" class="row row-spacing @(Model.ShowAge ? "": "d-none")">
+                    <div id="ageField" class="row mb-3 @(Model.ShowAge ? "": "d-none")">
                         <div class="col-12">
                             <label asp-for="Age" class="col-form-label"></label>
                             <input asp-for="Age" class="form-control" type="text" />

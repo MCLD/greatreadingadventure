@@ -79,13 +79,14 @@
         public static readonly string AskToAddFamilyMembers = "Site.AskToAddFamilyMembers";
         public static readonly string BackgroundColor = "Site.BackgroundColor";
         public static readonly string ReadingGoalInMinutes = "Site.ReadingGoalInMinutes";
+        public static readonly string WelcomeMessage = "Site.WelcomeMessage";
     }
 
     public static class Triggers
     {
-        public static readonly string MaxPointsPerTrigger = "Triggers.MaxPointsPerTrigger";
-        public static readonly string LowPointThreshold = "Triggers.LowPointThreshold";
         public static readonly string DisallowTriggersBelowPoints = "Triggers.DisallowTriggersBelowPoints";
+        public static readonly string LowPointThreshold = "Triggers.LowPointThreshold";
+        public static readonly string MaxPointsPerTrigger = "Triggers.MaxPointsPerTrigger";
     }
 
     public static class Users

@@ -230,6 +230,10 @@ footer p {
         font-weight: bold;
     }
 
+.welcome-message > p:last-of-type {
+    margin-bottom: 0;
+}
+
 .center-label {
     text-align: center;
     width: 100%;

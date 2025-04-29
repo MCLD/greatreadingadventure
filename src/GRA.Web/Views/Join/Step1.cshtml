@@ -22,8 +22,17 @@
                     {
                         <partial name="_MultiStepPartial" />
                     }
-
-                    <div class="row row-spacing">
+                    @if (!string.IsNullOrWhiteSpace(Model.WelcomeMessage))
+                    {
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="alert alert-success mb-0 welcome-message">
+                                    @Html.Raw(Model.WelcomeMessage)
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <div class="row mb-3">
                         <div class="col-12">
                             <label asp-for="FirstName" class="col-form-label"></label>
                             <input asp-for="FirstName"
@@ -33,8 +42,7 @@
                             <span asp-validation-for="FirstName" class="text-danger"></span>
                         </div>
                     </div>
-
-                    <div class="row row-spacing">
+                    <div class="row mb-3">
                         <div class="col-12">
                             <label asp-for="LastName" class="col-form-label"></label>
                             <input asp-for="LastName"
@@ -43,10 +51,9 @@
                             <span asp-validation-for="LastName" class="text-danger"></span>
                         </div>
                     </div>
-
                     @if (Model.RequirePostalCode)
                     {
-                        <div class="row row-spacing">
+                        <div class="row mb-3">
                             <div class="col-12">
                                 <label asp-for="PostalCode" class="col-form-label"></label>
                                 <input asp-for="PostalCode"
@@ -56,10 +63,9 @@
                             </div>
                         </div>
                     }
-
                     @if (Model.SystemList.Count() > 1)
                     {
-                        <div class="row row-spacing">
+                        <div class="row mb-3">
                             <div class="col-12">
                                 <label asp-for="SystemId" class="col-form-label"></label>
                                 <select asp-for="SystemId"
@@ -75,14 +81,13 @@
                     {
                         <input asp-for="SystemId" type="hidden" />
                     }
-
                     @if (Model.BranchList != null && Model.BranchList.Count() < 1)
                     {
                         <input asp-for="BranchId" type="hidden" />
                     }
                     else
                     {
-                        <div class="row row-spacing">
+                        <div class="row mb-3">
                             <div class="col-12">
                                 <label asp-for="BranchId" class="col-form-label"></label>
                                 <select asp-for="BranchId"
@@ -108,13 +113,14 @@
 
 @section scripts {
     <script>
-        $("#SystemId").on("change", function () {
-            var systemId = $(this).val();
-            var branchList = $("#BranchId");
-            var branchId = branchList.val();
-            var url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
+        const branchLookupUrl = "@Url.Action(nameof(LookupController.GetBranches), LookupController.Name, new { Area = string.Empty })";
 
-            $.getJSON(url, { systemId: systemId, branchId: branchId }, function (response) {
+        $("#SystemId").on("change", function () {
+            let systemId = $(this).val();
+            let branchList = $("#BranchId");
+            let branchId = branchList.val();
+
+            $.getJSON(branchLookupUrl, { systemId: systemId, branchId: branchId }, function (response) {
                 branchList.empty();
                 if (response.length > 1) {
                     branchList.append(new Option("", ""));

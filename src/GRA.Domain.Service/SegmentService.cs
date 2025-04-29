@@ -35,6 +35,7 @@ namespace GRA.Domain.Service
 
         public async Task<SegmentText> AddTextAsync(int activeUserId,
             int languageId,
+            SegmentType segmentType,
             string text,
             string name)
         {
@@ -43,7 +44,8 @@ namespace GRA.Domain.Service
                     {
                         CreatedAt = _dateTimeProvider.Now,
                         CreatedBy = activeUserId,
-                        Name = GetSegmentName(name)
+                        Name = GetSegmentName(name),
+                        SegmentType = segmentType
                     });
 
             var segmentText = await _segmentRepository.AddSaveTextAsync(segment.Id,
@@ -53,6 +55,24 @@ namespace GRA.Domain.Service
             await _cache.RemoveAsync(GetCacheKey(CacheKey.SegmentText, segment.Id, languageId));
 
             return segmentText;
+        }
+
+        public async Task<Segment> GetAsync(int segmentId)
+        {
+            return await _segmentRepository.GetAsync(segmentId);
+        }
+
+        /// <summary>
+        /// Return segment text with the provided languageId (do not fall back to a the default
+        /// language if it is not present) and without using cache.
+        /// </summary>
+        /// <param name="segmentId">Segment ID to fetch</param>
+        /// <param name="languageId">Specific language ID to fetch</param>
+        /// <returns>A <see cref="SegmentText"/> object if one exists in the database.</returns>
+        public async Task<string> GetDbTextAsync(int segmentId, int languageId)
+        {
+            var segmentText = await _segmentRepository.GetTextAsync(segmentId, languageId);
+            return segmentText?.Text;
         }
 
         public async Task<IDictionary<int, int[]>> GetLanguageStatusAsync(int?[] segmentIds)
@@ -68,29 +88,29 @@ namespace GRA.Domain.Service
             return languageStatus;
         }
 
-        public async Task<string> GetNameAsync(int segmentId)
+        public async Task<string> GetTextAsync(int segmentId, int languageId)
         {
-            return await _segmentRepository.GetNameAsync(segmentId);
-        }
-
-        public async Task<string> GetTextAsync(int segmentId, int languageId, bool forceReload)
-        {
-            var segmentTextValue = await GetCacheTextAsync(segmentId, languageId, forceReload);
+            var segmentTextValue = await GetCacheTextAsync(segmentId, languageId);
 
             if (string.IsNullOrEmpty(segmentTextValue))
             {
                 var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
                 segmentTextValue = await GetCacheTextAsync(segmentId,
-                    defaultLanguageId,
-                    forceReload);
+                    defaultLanguageId);
             }
 
             return segmentTextValue;
         }
 
-        public async Task<SegmentText> MCGetTextAsync(int segmentId, int languageId)
+        public async Task RemoveSegmentAsync(int segmentId)
         {
-            return await _segmentRepository.GetTextAsync(segmentId, languageId);
+            await _segmentRepository.RemoveTextsAsync(segmentId);
+            await _segmentRepository.RemoveIfUnusedAsync(segmentId);
+
+            foreach (var language in await _languageService.GetActiveAsync())
+            {
+                await _cache.RemoveAsync(GetCacheKey(CacheKey.SegmentText, segmentId, language.Id));
+            }
         }
 
         public async Task UpdateTextAsync(int segmentId,
@@ -128,14 +148,11 @@ namespace GRA.Domain.Service
         };
 
         private async Task<string> GetCacheTextAsync(int segmentId,
-            int languageId,
-            bool forceReload)
+            int languageId)
         {
             var cacheKey = GetCacheKey(CacheKey.SegmentText, segmentId, languageId);
 
-            string segmentTextValue = forceReload
-                ? null
-                : await _cache.GetStringFromCache(cacheKey);
+            string segmentTextValue = await _cache.GetStringFromCache(cacheKey);
 
             if (!string.IsNullOrEmpty(segmentTextValue))
             {

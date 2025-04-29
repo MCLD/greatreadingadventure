@@ -88,13 +88,13 @@ namespace GRA.Domain.Service
             return new ExitLandingDetails
             {
                 ExitLeftMessage = await _segmentService
-                    .GetTextAsync(exitLandingDetails.ExitLeftMessage, languageId, false),
+                    .GetTextAsync(exitLandingDetails.ExitLeftMessage, languageId),
                 LandingCenterMessage = await _segmentService
-                    .GetTextAsync(exitLandingDetails.LandingCenterMessage, languageId, false),
+                    .GetTextAsync(exitLandingDetails.LandingCenterMessage, languageId),
                 LandingLeftMessage = await _segmentService
-                    .GetTextAsync(exitLandingDetails.LandingLeftMessage, languageId, false),
+                    .GetTextAsync(exitLandingDetails.LandingLeftMessage, languageId),
                 LandingRightMessage = await _segmentService
-                    .GetTextAsync(exitLandingDetails.LandingRightMessage, languageId, false)
+                    .GetTextAsync(exitLandingDetails.LandingRightMessage, languageId)
             };
         }
 
@@ -260,6 +260,7 @@ namespace GRA.Domain.Service
 
                         var segment = await _segmentService.AddTextAsync(systemUserId,
                             message.LanguageId,
+                            SegmentType.LandingPage,
                             message.Message,
                             segmentName);
 

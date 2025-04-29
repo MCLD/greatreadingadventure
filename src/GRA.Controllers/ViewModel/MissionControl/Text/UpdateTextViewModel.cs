@@ -13,10 +13,11 @@ namespace GRA.Controllers.ViewModel.MissionControl.Text
         }
 
         public int CurrentLanguage { get; set; }
+        public string DisplayName { get; set; }
+        public string FormAction { get; set; }
         public int? Id { get; set; }
         public IDictionary<int, string> Languages { get; }
         public string ReturnLink { get; set; }
-
         public IEnumerable<int> SegmentLanguages { get; set; }
 
         [DisplayName("Name of text")]
@@ -25,6 +26,8 @@ namespace GRA.Controllers.ViewModel.MissionControl.Text
         [DisplayName("Text")]
         [Required]
         public string SegmentText { get; set; }
+
+        public Domain.Model.SegmentType SegmentType { get; set; }
 
         public string LanguageButtonClass(int languageId)
         {

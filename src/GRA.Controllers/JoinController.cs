@@ -28,12 +28,14 @@ namespace GRA.Controllers
         private const string TwoStepSignUp = "TwoStepSignUp";
         private readonly AuthenticationService _authenticationService;
         private readonly AuthorizationCodeService _authorizationCodeService;
+        private readonly LanguageService _languageService;
         private readonly ILogger<JoinController> _logger;
         private readonly MailService _mailService;
         private readonly AutoMapper.IMapper _mapper;
         private readonly PointTranslationService _pointTranslationService;
         private readonly QuestionnaireService _questionnaireService;
         private readonly SchoolService _schoolService;
+        private readonly SegmentService _segmentService;
         private readonly SiteService _siteService;
         private readonly UserService _userService;
 
@@ -41,31 +43,37 @@ namespace GRA.Controllers
             ServiceFacade.Controller context,
             AuthenticationService authenticationService,
             AuthorizationCodeService authorizationCodeService,
+            LanguageService languageService,
             MailService mailService,
             PointTranslationService pointTranslationService,
             QuestionnaireService questionnaireService,
             SchoolService schoolService,
+            SegmentService segmentService,
             SiteService siteService,
             UserService userService) : base(context)
         {
             ArgumentNullException.ThrowIfNull(authenticationService);
             ArgumentNullException.ThrowIfNull(authorizationCodeService);
+            ArgumentNullException.ThrowIfNull(languageService);
             ArgumentNullException.ThrowIfNull(logger);
             ArgumentNullException.ThrowIfNull(mailService);
             ArgumentNullException.ThrowIfNull(pointTranslationService);
             ArgumentNullException.ThrowIfNull(questionnaireService);
             ArgumentNullException.ThrowIfNull(schoolService);
+            ArgumentNullException.ThrowIfNull(segmentService);
             ArgumentNullException.ThrowIfNull(siteService);
             ArgumentNullException.ThrowIfNull(userService);
 
             _authenticationService = authenticationService;
             _authorizationCodeService = authorizationCodeService;
+            _languageService = languageService;
             _logger = logger;
             _mailService = mailService;
             _mapper = context?.Mapper;
             _pointTranslationService = pointTranslationService;
             _questionnaireService = questionnaireService;
             _schoolService = schoolService;
+            _segmentService = segmentService;
             _siteService = siteService;
             _userService = userService;
 
@@ -220,7 +228,8 @@ namespace GRA.Controllers
                 ProgramJson = JsonConvert.SerializeObject(programViewObject),
                 SystemList = NameIdSelectList(systemList.ToList()),
                 ProgramList = NameIdSelectList(programList.ToList()),
-                SchoolList = NameIdSelectList(await _schoolService.GetSchoolsAsync())
+                SchoolList = NameIdSelectList(await _schoolService.GetSchoolsAsync()),
+                WelcomeMessage = await GetWelcomeMessageAsync()
             };
 
             if (TempData.TryGetValue(AuthCodeAssignedProgram, out object tempAuthCodeProgram))
@@ -613,7 +622,8 @@ namespace GRA.Controllers
             var viewModel = new Step1ViewModel
             {
                 RequirePostalCode = site.RequirePostalCode,
-                SystemList = NameIdSelectList(systemList.ToList())
+                SystemList = NameIdSelectList(systemList.ToList()),
+                WelcomeMessage = await GetWelcomeMessageAsync()
             };
 
             if (TempData.TryGetValue(AuthCodeAssignedProgram, out object tempAuthCodeProgram))
@@ -1099,6 +1109,26 @@ namespace GRA.Controllers
             PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, site.Name];
 
             return View(model);
+        }
+
+        private async Task<string> GetWelcomeMessageAsync()
+        {
+            var (welcomeSet, welcomeSegmentId) = await _siteLookupService
+                .GetSiteSettingIntAsync(GetCurrentSiteId(), SiteSettingKey.Site.WelcomeMessage);
+
+            if (welcomeSet)
+            {
+                var languageId = await _languageService
+                    .GetLanguageIdAsync(_userContextProvider.GetCurrentCulture()?.Name);
+
+                var message = await _segmentService.GetTextAsync(welcomeSegmentId, languageId);
+
+                if (!string.IsNullOrWhiteSpace(message))
+                {
+                    return CommonMark.CommonMarkConverter.Convert(message);
+                }
+            }
+            return null;
         }
     }
 }
