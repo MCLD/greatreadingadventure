@@ -38,6 +38,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Culture links to work regardless of case
 - Fix "points" to be singular if only one point awarded
 - Workaround for broken URL entry in Challenge editor in modal
+- Issue preventing deletion of locations without associated events
+- Issue where cloning a Community Experience would create an event
+- Issue where a failed save of a Community Experience would change it to an event
 
 ## [4.5.0] 2024-08-29
 

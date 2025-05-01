@@ -393,17 +393,6 @@ namespace GRA.Controllers.MissionControl
             bool communityExperience = false,
             bool streamingEvent = false)
         {
-            PageTitle = "Create Event";
-
-            if (communityExperience)
-            {
-                PageTitle = "Create Community Experience";
-            }
-            else if (streamingEvent)
-            {
-                PageTitle = "Create Streaming Event";
-            }
-
             var requireSecretCode = await GetSiteSettingBoolAsync(
                     SiteSettingKey.Events.RequireBadge);
             var programList = await _siteService.GetProgramList();
@@ -476,14 +465,24 @@ namespace GRA.Controllers.MissionControl
                 viewModel.BranchList = new SelectList(await _siteService
                     .GetBranches(viewModel.SystemId, true), "Id", "Name");
             }
+
             if (communityExperience)
             {
                 viewModel.NewCommunityExperience = true;
                 viewModel.UseLocation = true;
+                PageTitle = "Create Community Experience";
+            }
+            else if (streamingEvent)
+            {
+                PageTitle = "Create Streaming Event";
+            }
+            else
+            {
+                PageTitle = "Create Event";
             }
 
             var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingStringAsync(
-                GetCurrentSiteId(), SiteSettingKey.Events.GoogleMapsAPIKey);
+                    GetCurrentSiteId(), SiteSettingKey.Events.GoogleMapsAPIKey);
             viewModel.ShowGeolocation = IsSet;
             viewModel.GoogleMapsAPIKey = SetValue;
 
@@ -706,7 +705,6 @@ namespace GRA.Controllers.MissionControl
                     ShowAlertWarning("Could not create event: ", gex.Message);
                 }
             }
-            PageTitle = "Create Event";
 
             var systemList = await _siteService.GetSystemList(true);
             var branchList = await _siteService.GetBranches(model.SystemId, true);
@@ -719,8 +717,19 @@ namespace GRA.Controllers.MissionControl
             model.ProgramList = new SelectList(programList, "Id", "Name");
             model.RequireSecretCode = requireSecretCode;
 
+            if (model.Event.IsCommunityExperience)
+            {
+                PageTitle = "Create Community Experience";
+                model.NewCommunityExperience = true;
+                model.UseLocation = true;
+            }
+            else
+            {
+                PageTitle = "Create Event";
+            }
+
             var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingStringAsync(
-                GetCurrentSiteId(), SiteSettingKey.Events.GoogleMapsAPIKey);
+                    GetCurrentSiteId(), SiteSettingKey.Events.GoogleMapsAPIKey);
             model.ShowGeolocation = IsSet;
             model.GoogleMapsAPIKey = SetValue;
 

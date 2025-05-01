@@ -37,29 +37,32 @@ namespace GRA.Domain.Service
             SiteLookupService siteLookupService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
-            _branchRepository = branchRepository
-                ?? throw new ArgumentNullException(nameof(branchRepository));
-            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
-            _challengeRepository =
-                challengeRepository
-                ?? throw new ArgumentNullException(nameof(challengeRepository));
-            _challengeGroupRepository = challengeGroupRepository
-                ?? throw new ArgumentNullException(nameof(challengeGroupRepository));
-            _eventRepository = eventRepository
-                ?? throw new ArgumentNullException(nameof(eventRepository));
-            _locationRepository = locationRepository
-                ?? throw new ArgumentNullException(nameof(locationRepository));
-            _programRepository = programRepository
-                ?? throw new ArgumentNullException(nameof(programRepository));
-            _spatialDistanceRepository = spatialDistanceRepository
-                ?? throw new ArgumentNullException(nameof(spatialDistanceRepository));
-            _siteLookupService = siteLookupService
-                ?? throw new ArgumentNullException(nameof(siteLookupService));
+            ArgumentNullException.ThrowIfNull(branchRepository);
+            ArgumentNullException.ThrowIfNull(cache);
+            ArgumentNullException.ThrowIfNull(challengeGroupRepository);
+            ArgumentNullException.ThrowIfNull(challengeRepository);
+            ArgumentNullException.ThrowIfNull(eventRepository);
+            ArgumentNullException.ThrowIfNull(locationRepository);
+            ArgumentNullException.ThrowIfNull(programRepository);
+            ArgumentNullException.ThrowIfNull(siteLookupService);
+            ArgumentNullException.ThrowIfNull(spatialDistanceRepository);
+
+            _branchRepository = branchRepository;
+            _cache = cache;
+            _challengeGroupRepository = challengeGroupRepository;
+            _challengeRepository = challengeRepository;
+            _eventRepository = eventRepository;
+            _locationRepository = locationRepository;
+            _programRepository = programRepository;
+            _siteLookupService = siteLookupService;
+            _spatialDistanceRepository = spatialDistanceRepository;
         }
 
         public async Task<Event> Add(Event graEvent)
         {
+            ArgumentNullException.ThrowIfNull(graEvent);
             VerifyPermission(Permission.ManageEvents);
+
             graEvent.SiteId = GetCurrentSiteId();
             graEvent.RelatedBranchId = GetClaimId(ClaimType.BranchId);
             graEvent.RelatedSystemId = GetClaimId(ClaimType.SystemId);
@@ -78,6 +81,7 @@ namespace GRA.Domain.Service
 
         public async Task<Location> AddLocationAsync(Location location)
         {
+            ArgumentNullException.ThrowIfNull(location);
             VerifyPermission(Permission.ManageLocations);
 
             location.Address = location.Address.Trim();
@@ -91,7 +95,9 @@ namespace GRA.Domain.Service
 
         public async Task<Event> Edit(Event graEvent)
         {
+            ArgumentNullException.ThrowIfNull(graEvent);
             VerifyPermission(Permission.ManageEvents);
+
             var currentEvent = await _eventRepository.GetByIdAsync(graEvent.Id);
             graEvent.SiteId = currentEvent.SiteId;
             if (!HasPermission(Permission.ViewAllChallenges))
@@ -119,11 +125,8 @@ namespace GRA.Domain.Service
 
         public async Task<Event> GetDetails(int eventId, bool showInactiveChallenge = false)
         {
-            var graEvent = await _eventRepository.GetByIdAsync(eventId);
-            if (graEvent == null)
-            {
-                throw new GraException("Event not found.");
-            }
+            var graEvent = await _eventRepository.GetByIdAsync(eventId)
+                ?? throw new GraException("Event not found.");
 
             if (graEvent.AtBranchId != null)
             {
@@ -159,6 +162,8 @@ namespace GRA.Domain.Service
             GetPaginatedListAsync(EventFilter filter,
             bool isMissionControl = false)
         {
+            ArgumentNullException.ThrowIfNull(filter);
+
             ICollection<Event> data = null;
             int count;
 
@@ -215,7 +220,9 @@ namespace GRA.Domain.Service
         public async Task<DataWithCount<ICollection<Location>>> GetPaginatedLocationsListAsync(
             BaseFilter filter)
         {
+            ArgumentNullException.ThrowIfNull(filter);
             VerifyPermission(Permission.ManageLocations);
+
             filter.SiteId = GetCurrentSiteId();
             return new DataWithCount<ICollection<Location>>
             {
@@ -227,6 +234,8 @@ namespace GRA.Domain.Service
         public async Task<Event> GetRelatedChallengeDetails(Event graEvent,
             bool showInactiveChallenge)
         {
+            ArgumentNullException.ThrowIfNull(graEvent);
+
             if (graEvent.ChallengeId.HasValue)
             {
                 if (showInactiveChallenge)
@@ -273,18 +282,14 @@ namespace GRA.Domain.Service
             return await _eventRepository.GetSecretCodeForStreamingEventAsync(eventId);
         }
 
-        public async Task<ICollection<Event>> GetUpcomingStreamListAsync()
-        {
-            return await GetUpcomingStreamListAsync(null);
-        }
-
         public async Task<ICollection<Event>> GetUpcomingStreamListAsync(int count)
         {
-            if (count == 0)
-            {
-                return null;
-            }
-            return await GetUpcomingStreamListAsync(count);
+            return count == 0 ? null : await GetUpcomingStreamListInternalAsync(count);
+        }
+
+        public async Task<ICollection<Event>> GetUpcomingStreamListAsync()
+        {
+            return await GetUpcomingStreamListInternalAsync(null);
         }
 
         public async Task<int> Remove(int eventId)
@@ -306,6 +311,8 @@ namespace GRA.Domain.Service
 
             var location = await _locationRepository.GetByIdAsync(locationId);
 
+            await _spatialDistanceRepository.RemoveLocationReferencesAsync(locationId);
+
             await _locationRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), locationId);
 
             if (!string.IsNullOrWhiteSpace(location.Geolocation))
@@ -316,6 +323,7 @@ namespace GRA.Domain.Service
 
         public async Task<Location> UpdateLocationAsync(Location location)
         {
+            ArgumentNullException.ThrowIfNull(location);
             VerifyPermission(Permission.ManageLocations);
 
             var currentLocation = await _locationRepository.GetByIdAsync(location.Id);
@@ -343,7 +351,7 @@ namespace GRA.Domain.Service
             return currentLocation;
         }
 
-        private async Task<ICollection<Event>> GetUpcomingStreamListAsync(int? count)
+        private async Task<ICollection<Event>> GetUpcomingStreamListInternalAsync(int? count)
         {
             ICollection<Event> events = null;
 
