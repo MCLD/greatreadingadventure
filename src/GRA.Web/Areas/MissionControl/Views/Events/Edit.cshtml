@@ -358,6 +358,7 @@
         </a>
         <a asp-action="Create"
            asp-route-id="@Model.Event.Id"
+           asp-route-communityExperience="@Model.Event.IsCommunityExperience"
            class="btn btn-outline-primary me-2">
             <span class="far fa-copy"></span>
             Duplicate @(Model.Event.IsCommunityExperience ? "Community Experience" : "Event")

@@ -15,5 +15,7 @@ namespace GRA.Domain.Repository
         Task InvalidateHeadersAsync(int siteId);
 
         Task RemoveBranchReferencesAsync(int branchId);
+
+        Task RemoveLocationReferencesAsync(int locationId);
     }
 }

@@ -57,5 +57,13 @@ namespace GRA.Data.Repository
                 .RemoveRange(_context.SpatialDistanceDetails.Where(_ => _.BranchId == branchId));
             await _context.SaveChangesAsync();
         }
+
+        public async Task RemoveLocationReferencesAsync(int locationId)
+        {
+            _context.SpatialDistanceDetails.RemoveRange(_context
+                .SpatialDistanceDetails
+                .Where(_ => _.LocationId == locationId));
+            await _context.SaveChangesAsync();
+        }
     }
 }
