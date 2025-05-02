@@ -12,13 +12,11 @@ namespace GRA.Controllers
 {
     public class LookupController : Base.Controller
     {
-        private readonly ILogger<LookupController> _logger;
         private readonly AvatarService _avatarService;
+        private readonly ILogger<LookupController> _logger;
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
         private readonly UserService _userService;
-
-        public static string Name { get { return "Lookup"; } }
 
         public LookupController(ILogger<LookupController> logger,
              ServiceFacade.Controller context,
@@ -27,16 +25,21 @@ namespace GRA.Controllers
             SiteService siteService,
             UserService userService) : base(context)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _avatarService = avatarService 
-                ?? throw new ArgumentNullException(nameof(avatarService));
-            _schoolService = schoolService 
-                ?? throw new ArgumentNullException(nameof(schoolService));
-            _siteService = siteService 
-                ?? throw new ArgumentNullException(nameof(siteService));
-            _userService = userService 
-                ?? throw new ArgumentNullException(nameof(userService));
+            ArgumentNullException.ThrowIfNull(avatarService);
+            ArgumentNullException.ThrowIfNull(logger);
+            ArgumentNullException.ThrowIfNull(schoolService);
+            ArgumentNullException.ThrowIfNull(siteService);
+            ArgumentNullException.ThrowIfNull(userService);
+
+            _avatarService = avatarService;
+            _logger = logger;
+            _schoolService = schoolService;
+            _siteService = siteService;
+            _userService = userService;
         }
+
+        public static string Name
+        { get { return "Lookup"; } }
 
         public async Task<JsonResult> GetBranches(int? systemId,
             int? branchId,
@@ -67,7 +70,18 @@ namespace GRA.Controllers
             return Json(new SelectList(branchList, "Id", "Name", branchId));
         }
 
-        public async Task<JsonResult> GetSchools(int? districtId, int? schoolId,
+        public async Task<JsonResult> GetItemsInBundle(int id)
+        {
+            var bundle = await _avatarService.GetBundleByIdAsync(id, true);
+            var thumbnailList = bundle.AvatarItems
+                .Select(_ => _pathResolver.ResolveContentPath(_.Thumbnail))
+                .ToList();
+
+            return Json(thumbnailList);
+        }
+
+        public async Task<JsonResult> GetSchools(int? districtId,
+            int? schoolId,
             string schoolName = null)
         {
             var schoolList = await _schoolService.GetSchoolsAsync(districtId);
@@ -76,7 +90,9 @@ namespace GRA.Controllers
             {
                 foreach (var school in schoolList)
                 {
-                    if (string.Equals(schoolName.Trim(), school.Name, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(schoolName.Trim(),
+                        school.Name,
+                        StringComparison.OrdinalIgnoreCase))
                     {
                         schoolId = school.Id;
                         break;
@@ -90,16 +106,6 @@ namespace GRA.Controllers
         public async Task<JsonResult> UsernameInUse(string username)
         {
             return Json(await _userService.UsernameInUseAsync(username));
-        }
-
-        public async Task<JsonResult> GetItemsInBundle(int id)
-        {
-            var bundle = await _avatarService.GetBundleByIdAsync(id, true);
-            var thumbnailList = bundle.AvatarItems
-                .Select(_ => _pathResolver.ResolveContentPath(_.Thumbnail))
-                .ToList();
-
-            return Json(thumbnailList);
         }
     }
 }
