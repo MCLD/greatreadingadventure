@@ -294,7 +294,7 @@ namespace GRA.Controllers
 
             if (branchList.Count > 1)
             {
-                branchList.Insert(0, new Branch() { Id = -1 });
+                branchList.Insert(0, new Branch { Id = -1 });
             }
             else
             {
@@ -666,7 +666,7 @@ namespace GRA.Controllers
 
             if (branchList.Count > 1)
             {
-                branchList.Insert(0, new Branch() { Id = -1 });
+                branchList.Insert(0, new Branch { Id = -1 });
             }
             else
             {
