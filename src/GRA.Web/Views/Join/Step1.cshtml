@@ -119,16 +119,24 @@
             let systemId = $(this).val();
             let branchList = $("#BranchId");
             let branchId = branchList.val();
+            let listAll = systemId == '';
 
-            $.getJSON(branchLookupUrl, { systemId: systemId, branchId: branchId }, function (response) {
-                branchList.empty();
-                if (response.length > 1) {
-                    branchList.append(new Option("", ""));
-                }
-                $.each(response, function (index, item) {
-                    branchList.append(new Option(item.text, item.value, item.selected, item.selected))
+            $.getJSON(branchLookupUrl, 
+                { 
+                    branchId: branchId,
+                    includeSystemName: listAll,
+                    listAll: listAll,
+                    systemId: systemId,
+                },
+                function (response) {
+                    branchList.empty();
+                    if (response.length > 1) {
+                        branchList.append(new Option("", ""));
+                    }
+                    $.each(response, function (index, item) {
+                        branchList.append(new Option(item.text, item.value, item.selected, item.selected))
+                    });
                 });
-            });
         });
     </script>
 }

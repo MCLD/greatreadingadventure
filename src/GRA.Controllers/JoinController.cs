@@ -238,18 +238,6 @@ namespace GRA.Controllers
                 TempData.Keep(AuthCodeAssignedProgram);
             }
 
-            if (TempData.TryGetValue(AuthCodeAssignedBranch, out object tempAuthCodeBranch))
-            {
-                var branch = await _siteService
-                    .GetBranchByIdAsync((int)tempAuthCodeBranch);
-                viewModel.BranchId = branch.Id;
-                viewModel.SystemId = branch.SystemId;
-                viewModel.EmailSubscriptionRequested = "No";
-                viewModel.IsFirstTime = "No";
-                viewModel.BranchList = NameIdSelectList(Array.Empty<Branch>());
-                TempData.Keep(AuthCodeAssignedBranch);
-            }
-
             var askIfFirstTime = !TempData.ContainsKey(SinglePageSignUp)
                 && await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
             if (askIfFirstTime)
@@ -281,21 +269,38 @@ namespace GRA.Controllers
                 viewModel.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 
-            if (systemList.Count() == 1)
+            List<Branch> branchList = [];
+
+            if (TempData.TryGetValue(AuthCodeAssignedBranch, out object tempAuthCodeBranch))
+            {
+                var branch = await _siteService
+                    .GetBranchByIdAsync((int)tempAuthCodeBranch);
+                viewModel.BranchId = branch.Id;
+                viewModel.SystemId = branch.SystemId;
+                viewModel.EmailSubscriptionRequested = "No";
+                viewModel.IsFirstTime = "No";
+                TempData.Keep(AuthCodeAssignedBranch);
+            }
+            else if (systemList.Count() == 1)
             {
                 var systemId = systemList.Single().Id;
-                var branchList = await _siteService.GetBranches(systemId);
-                if (branchList.Count() > 1)
-                {
-                    branchList = branchList.Prepend(new Branch() { Id = -1 });
-                }
-                else
-                {
-                    viewModel.BranchId = branchList.SingleOrDefault()?.Id;
-                }
-                viewModel.BranchList = NameIdSelectList(branchList.ToList());
+                branchList.AddRange(await _siteService.GetBranches(systemId));
                 viewModel.SystemId = systemId;
             }
+            else
+            {
+                branchList.AddRange(await _siteService.GetAllBranches(true));
+            }
+
+            if (branchList.Count > 1)
+            {
+                branchList.Insert(0, new Branch() { Id = -1 });
+            }
+            else
+            {
+                viewModel.BranchId = branchList.SingleOrDefault()?.Id;
+            }
+            viewModel.BranchList = NameIdSelectList(branchList.ToList());
 
             if (programList.Count() == 1)
             {
@@ -638,34 +643,36 @@ namespace GRA.Controllers
                 }
             }
 
+            List<Branch> branchList = [];
+
             if (TempData.TryGetValue(AuthCodeAssignedBranch, out object tempAuthCodeBranch))
             {
                 var branch = await _siteService
                     .GetBranchByIdAsync((int)tempAuthCodeBranch);
                 viewModel.BranchId = branch.Id;
                 viewModel.SystemId = branch.SystemId;
-                viewModel.BranchList = NameIdSelectList(Array.Empty<Branch>());
                 TempData.Keep(AuthCodeAssignedBranch);
             }
             else if (systemList.Count() == 1)
             {
                 var systemId = systemList.Single().Id;
-                var branchList = await _siteService.GetBranches(systemId);
-                if (branchList.Count() > 1)
-                {
-                    branchList = branchList.Prepend(new Branch() { Id = -1 });
-                }
-                else
-                {
-                    viewModel.BranchId = branchList.SingleOrDefault()?.Id;
-                }
-                viewModel.BranchList = NameIdSelectList(branchList.ToList());
+                branchList.AddRange(await _siteService.GetBranches(systemId));
                 viewModel.SystemId = systemId;
             }
             else
             {
-                viewModel.BranchList = NameIdSelectList(await _siteService.GetAllBranches(true));
+                branchList.AddRange(await _siteService.GetAllBranches(true));
             }
+
+            if (branchList.Count > 1)
+            {
+                branchList.Insert(0, new Branch() { Id = -1 });
+            }
+            else
+            {
+                viewModel.BranchId = branchList.SingleOrDefault()?.Id;
+            }
+            viewModel.BranchList = NameIdSelectList(branchList.ToList());
 
             if (useAuthCode)
             {

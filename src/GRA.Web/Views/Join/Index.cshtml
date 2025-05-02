@@ -241,30 +241,38 @@
 
 @section scripts {
     <script>
+        const branchLookupUrl = "@Url.Action(nameof(LookupController.GetBranches), LookupController.Name, new { Area = string.Empty })";
         var programs = JSON.parse('@Html.Raw(Model.ProgramJson)');
         var selectedProgram = $.grep(programs, function (obj) {
             return obj.Id == $("#ProgramId").val();
         })[0];
 
         $("#SystemId").on("change", function () {
-            var systemId = $(this).val();
-            var branchList = $("#BranchId");
-            var branchId = branchList.val();
-            var url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
+            let systemId = $(this).val();
+            let branchList = $("#BranchId");
+            let branchId = branchList.val();
+            let listAll = systemId == '';
 
-            $.getJSON(url, { systemId: systemId, branchId: branchId }, function (response) {
-                branchList.empty();
-                if (response.length > 1) {
-                    branchList.append(new Option("", "-1"));
-                }
-                $.each(response, function (index, item) {
-                    branchList.append(new Option(item.text, item.value, item.selected, item.selected))
+            $.getJSON(branchLookupUrl,
+                {
+                    branchId: branchId,
+                    includeSystemName: listAll,
+                    listAll: listAll,
+                    systemId: systemId,
+                },
+                function (response) {
+                    branchList.empty();
+                    if (response.length > 1) {
+                        branchList.append(new Option("", ""));
+                    }
+                    $.each(response, function (index, item) {
+                        branchList.append(new Option(item.text, item.value, item.selected, item.selected))
+                    });
                 });
-            });
         });
 
         $("#ProgramId").on("change", function () {
-            var programId = $(this).val();
+            let programId = $(this).val();
             selectedProgram = $.grep(programs, function (obj) {
                 return obj.Id == programId;
             })[0];
