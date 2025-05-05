@@ -23,7 +23,6 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ManageSystems)]
     public class SystemsController : Base.MCController
     {
-        public const string Name = "Systems";
         private readonly BranchImportExportService _branchImportExportService;
         private readonly JobService _jobService;
         private readonly ILogger<SystemsController> _logger;
@@ -39,16 +38,25 @@ namespace GRA.Controllers.MissionControl
             SpatialService spatialService,
             UserService userService) : base(context)
         {
-            _branchImportExportService = branchImportExportService
-                ?? throw new ArgumentNullException(nameof(branchImportExportService));
-            _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
-            _spatialService = spatialService
-                ?? throw new ArgumentNullException(nameof(spatialService));
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            ArgumentNullException.ThrowIfNull(branchImportExportService);
+            ArgumentNullException.ThrowIfNull(jobService);
+            ArgumentNullException.ThrowIfNull(logger);
+            ArgumentNullException.ThrowIfNull(siteService);
+            ArgumentNullException.ThrowIfNull(spatialService);
+            ArgumentNullException.ThrowIfNull(userService);
+
+            _branchImportExportService = branchImportExportService;
+            _jobService = jobService;
+            _logger = logger;
+            _siteService = siteService;
+            _spatialService = spatialService;
+            _userService = userService;
+
             PageTitle = "System & branch management";
         }
+
+        public static string Name
+        { get { return "Systems"; } }
 
         [HttpPost]
         public async Task<IActionResult> AddBranch(BranchesListViewModel model)
@@ -107,6 +115,7 @@ namespace GRA.Controllers.MissionControl
             return RedirectToAction("Index", new { search = model?.Search });
         }
 
+        [HttpGet]
         public async Task<IActionResult> Branches(string search, int page = 1)
         {
             var filter = new BaseFilter(page)
@@ -122,6 +131,7 @@ namespace GRA.Controllers.MissionControl
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
+
             if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
@@ -140,10 +150,9 @@ namespace GRA.Controllers.MissionControl
                 SystemList = new SelectList(await _siteService.GetSystemList(), "Id", "Name")
             };
 
-            var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingStringAsync(
-                GetCurrentSiteId(), SiteSettingKey.Events.GoogleMapsAPIKey);
-            viewModel.ShowGeolocation = IsSet;
-            viewModel.GoogleMapsAPIKey = SetValue;
+            (viewModel.ShowGeolocation, viewModel.GoogleMapsAPIKey)
+                = await _siteLookupService.GetSiteSettingStringAsync(GetCurrentSiteId(),
+                    SiteSettingKey.Events.GoogleMapsAPIKey);
 
             return View(viewModel);
         }
@@ -240,10 +249,7 @@ namespace GRA.Controllers.MissionControl
         [HttpGet]
         public IActionResult Import()
         {
-            return View(new ImportViewModel
-            {
-                SiteId = GetCurrentSiteId()
-            });
+            return View(new ImportViewModel { SiteId = GetCurrentSiteId() });
         }
 
         [HttpPost]
@@ -272,7 +278,7 @@ namespace GRA.Controllers.MissionControl
 
                 var tempFile = _pathResolver.ResolvePrivateTempFilePath();
 
-                using (var fileStream = new FileStream(tempFile, FileMode.Create))
+                await using (var fileStream = new FileStream(tempFile, FileMode.Create))
                 {
                     await viewModel.FileUpload.CopyToAsync(fileStream);
                 }
@@ -313,6 +319,7 @@ namespace GRA.Controllers.MissionControl
             }
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index(string search, int page = 1)
         {
             var filter = new BaseFilter(page)
@@ -403,7 +410,15 @@ namespace GRA.Controllers.MissionControl
                 }
                 else
                 {
-                    ShowAlertDanger("There was an error removing the branch: ", gex);
+                    if (gex.InnerException != null)
+                    {
+                        ShowAlertDanger("There was an error removing the branch: ",
+                            gex.InnerException.Message);
+                    }
+                    else
+                    {
+                        ShowAlertDanger("There was an error removing the branch: ", gex);
+                    }
                 }
             }
             return RedirectToAction(nameof(Branches));
@@ -416,7 +431,7 @@ namespace GRA.Controllers.MissionControl
             var message = string.Empty;
 
             if (await _siteLookupService.IsSiteSettingSetAsync(GetCurrentSiteId(),
-                    SiteSettingKey.Events.GoogleMapsAPIKey))
+                SiteSettingKey.Events.GoogleMapsAPIKey))
             {
                 var branch = await _siteService.GetBranchByIdAsync(id);
                 if (string.IsNullOrEmpty(branch.Geolocation))
