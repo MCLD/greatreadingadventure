@@ -41,7 +41,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Issue preventing deletion of locations without associated events
 - Issue where cloning a Community Experience would create an event
 - Issue where a failed save of a Community Experience would change it to an event
-- Initial branch selection on join to only autoselect if there is a single configured branch
+- Initial branch selection on join to only autoselect if there is a single configured branch\
+- Fix branch deletion to reassign deleted users as well as active users
 
 ## [4.5.0] 2024-08-29
 
