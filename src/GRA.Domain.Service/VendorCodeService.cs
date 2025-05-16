@@ -365,7 +365,8 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError("User {AuthId} doesn't have permission to view details for {UserId}.",
+                _logger.LogError(
+                    "User {AuthId} doesn't have permission to view details for {UserId}.",
                     authId,
                     userId);
                 throw new GraException("Permission denied.");
@@ -375,13 +376,12 @@ namespace GRA.Domain.Service
         public async Task<PackingSlipSummary> GetHoldSlipsAsync(string packingSlipNumber)
         {
             var siteId = GetCurrentSiteId();
-            var siteLink = await _siteLookupService.GetSiteLinkAsync(siteId);
             var site = await _siteLookupService.GetByIdAsync(siteId);
             var codes = await _vendorCodeRepository.GetHoldSlipsAsync(packingSlipNumber);
             return new PackingSlipSummary
             {
                 PackingSlipNumber = packingSlipNumber,
-                ProgramInfo = $"{site.Name} - {siteLink}",
+                ProgramInfo = site.Name,
                 VendorCodes = codes.OrderBy(_ => _.Details)
                     .ThenBy(_ => _.LastName)
                     .ThenBy(_ => _.FirstName)
@@ -581,7 +581,9 @@ namespace GRA.Domain.Service
                         && code.IsDamaged != true
                         && code.IsMissing != true)
                     {
-                        bool? result = await AwardPrizeSendMailAsync(code, vendorCodeType, emailDetails);
+                        bool? result = await AwardPrizeSendMailAsync(code,
+                            vendorCodeType,
+                            emailDetails);
 
                         if (result == true)
                         {
@@ -783,7 +785,11 @@ namespace GRA.Domain.Service
                 }
                 else if (vendorCode.IsDonated == false && vendorCode.IsEmailAward == false)
                 {
-                    await SendVendorCodeMailAsync(userId, languageId, siteId, vendorCodeType, vendorCode.Code);
+                    await SendVendorCodeMailAsync(userId,
+                        languageId,
+                        siteId,
+                        vendorCodeType,
+                        vendorCode.Code);
                 }
 
                 return vendorCode;
@@ -1449,7 +1455,8 @@ namespace GRA.Domain.Service
                                                     || packingSlip != default
                                                     || trackingNumber != null))
                                             {
-                                                var code = await _vendorCodeRepository.GetByCode(coupon);
+                                                var code = await _vendorCodeRepository
+                                                    .GetByCode(coupon);
                                                 if (code == null)
                                                 {
                                                     _logger.LogError("File contained code {Code} which was not found in the database",
@@ -1661,7 +1668,8 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError("User {UserId} doesn't have permission to import vendor code statuses.",
+                _logger.LogError(
+                    "User {UserId} doesn't have permission to import vendor code statuses.",
                     requestingUser);
                 return new JobStatus
                 {
@@ -1803,7 +1811,8 @@ namespace GRA.Domain.Service
                 ps = await _vendorCodePackingSlipRepository
                     .GetByPackingSlipNumberAsync(packingSlip);
                 PsCache.Add(packingSlip, ps);
-                _logger.LogInformation("Found records for packing slip {PackingSlip} which {Status}",
+                _logger.LogInformation(
+                    "Found records for packing slip {PackingSlip} which {Status}",
                     packingSlip,
                     ps != null
                     ? $"was received on {ps.CreatedAt:d}"
@@ -1859,7 +1868,8 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError("User {AuthId} doesn't have permission to view details for {UserId}.",
+                _logger.LogError(
+                    "User {AuthId} doesn't have permission to view details for {UserId}.",
                     authId,
                     userId);
                 throw new GraException("Permission denied.");

@@ -3,8 +3,11 @@
     <style type="text/css">
         @@media print {
             @@page {
+                margin-bottom: 1rem;
+                margin-left: 1rem;
+                margin-right: 1rem;
+                margin-top: 3rem;
                 size: letter;
-                margin: 1rem;
             }
 
             body {
@@ -20,57 +23,27 @@
             display: none;
         }
 
-        .group-info {
-            position: absolute;
-            right: 15px;
-            bottom: 0;
-            font-weight: bold;
-            text-align: right;
-        }
-
         .hold-slip {
             break-inside: avoid;
-            height: 12rem;
+            height: 10rem;
         }
 
         .vertical-element {
-            max-height: 12rem;
             font-size: 1.5rem;
+            max-height: 10rem;
         }
 
         .rotate {
-            writing-mode: vertical-lr;
-            white-space: nowrap;
+            height: 10.5rem;
             overflow: hidden;
-            height: 11.5rem;
             transform: rotate(180deg);
-        }
-
-        .participant-name {
-            font-weight: bold;
-            font-size: 3rem;
-            line-height: 3.8rem;
-        }
-
-        .vendor-code {
-            font-size: 1.5rem;
-            line-height: 2.5rem;
-        }
-
-        .item-title {
-            font-weight: bold;
-            font-size: 2rem;
-            line-height: 2.7rem;
-        }
-
-        .reading-program {
-            font-size: 1.6rem;
-            font-weight: bold;
+            white-space: nowrap;
+            writing-mode: vertical-lr;
         }
 
         .print-line {
-            white-space: nowrap;
             overflow: hidden;
+            white-space: nowrap;
         }
     </style>
 }
@@ -78,40 +51,35 @@
 @foreach (var vendorCode in Model.VendorCodes)
 {
     <div class="row holdslip">
-        <div class="col-1 vertical-element">
+        <div class="col-1 fs-4">
             <div class="rotate">
                 @GRA.Domain.Model.PackingSlipSummary.LastCommaFirstUpper(vendorCode.FirstName, vendorCode.LastName)
             </div>
         </div>
-        <div class="col-11 slip-content">
-            <div class="participant-name">
-                @GRA.Domain.Model.PackingSlipSummary.LastCommaFirstUpper(vendorCode.FirstName, vendorCode.LastName)
+        <div class="col-11">
+            <div class="fs-1">
+                <strong>
+                    @GRA.Domain.Model.PackingSlipSummary.LastCommaFirstUpper(vendorCode.FirstName, vendorCode.LastName)
+                </strong>
             </div>
-            <div class="item-title">
-                @vendorCode.Details
+            <div class="fs-2">
+                @(vendorCode.Details.Length > 39 ? $"{vendorCode.Details.Substring(0, 39).TrimEnd().TrimEnd(',').TrimEnd('(').TrimEnd('/').TrimEnd()}..." : vendorCode.Details)
             </div>
-            <div class="vendor-code">
-                @vendorCode.Code @if (vendorCode.ArrivalDate.HasValue)
-                {
-                    @: - arrived @vendorCode.ArrivalDate?.ToString("d")
-                }
-            </div>
-            <div class="reading-program">
-                @Model.ProgramInfo
-            </div>
-            <div class="group-info">
-                @if (!string.IsNullOrEmpty(vendorCode.GroupName))
-                {
-                    <div>
-                        Group: @vendorCode.GroupName
-                    </div>
-                }
-                @if (!string.IsNullOrEmpty(vendorCode.ProgramName))
-                {
-                    <div>
-                        Program: @vendorCode.ProgramName
-                    </div>
-                }
+            <div class="d-flex align-items-end">
+                <div class="flex-grow-1 fs-4">
+                    <div>@vendorCode.Code</div>
+                    <div>@Model.ProgramInfo</div>
+                </div>
+                <div>
+                    @if (!string.IsNullOrEmpty(vendorCode.GroupName))
+                    {
+                        <div class="flex-nowrap text-end fs-6">Group: @vendorCode.GroupName</div>
+                    }
+                    @if (!string.IsNullOrEmpty(vendorCode.ProgramName))
+                    {
+                        <div class="flex-nowrap text-end fs-6">@vendorCode.ProgramName</div>
+                    }
+                </div>
             </div>
         </div>
     </div>
