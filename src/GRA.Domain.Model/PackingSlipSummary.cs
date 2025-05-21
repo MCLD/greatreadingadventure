@@ -26,7 +26,9 @@ namespace GRA.Domain.Model
                 sb.Append(", ");
             }
             sb.Append(firstName);
-            return sb.ToString()?.Trim();
+            return sb.Length > 29
+                ? $"{sb.ToString()[..29].TrimEnd().TrimEnd(',').TrimEnd('(').TrimEnd('/').TrimEnd()}..."
+                : sb.ToString()?.Trim();
         }
 
         public static string LastCommaFirstUpper(string firstName, string lastName)

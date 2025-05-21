@@ -312,10 +312,12 @@ namespace GRA.Data.Repository
                 .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
+            var userIds = codes.Select(_ => _.UserId).Union(codes.Select(_ => _.AssociatedUserId));
+
             var users = _context
                 .Users
                 .AsNoTracking()
-                .Where(_ => codes.Select(_ => _.UserId).Contains(_.Id))
+                .Where(_ => userIds.Contains(_.Id))
                 .Select(_ => new
                 {
                     _.FirstName,
@@ -336,9 +338,11 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .ToDictionaryAsync(k => k.Id, v => v.Name);
 
-            foreach (var code in codes.Where(_ => _.UserId.HasValue))
+            foreach (var code in codes.Where(_ => _.UserId.HasValue
+                || (!_.UserId.HasValue && _.AssociatedUserId.HasValue)))
             {
-                var user = await users.SingleOrDefaultAsync(_ => _.Id == code.UserId);
+                var userId = code.UserId ?? code.AssociatedUserId;
+                var user = await users.SingleOrDefaultAsync(_ => _.Id == userId);
                 if (user == null)
                 {
                     code.IsUserValid = false;

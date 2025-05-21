@@ -566,7 +566,12 @@ namespace GRA.Controllers.MissionControl
             if (string.IsNullOrEmpty(summary.PackingSlipNumber))
             {
                 AlertWarning = "Please enter a valid packing slip number.";
-                return View("EnterPackingSlip", summary.PackingSlipNumber);
+                return View("EnterPackingSlip", new EnterPackingSlipViewModel
+                {
+                    PackingSlipNumber = summary.PackingSlipNumber,
+                    ViewedPackingSlips = await _userService
+                        .GetViewedPackingSlipsAsync(GetActiveUserId())
+                });
             }
 
             var damagedItems = summary.DamagedItems;
@@ -615,7 +620,12 @@ namespace GRA.Controllers.MissionControl
             }
 
             ShowAlertDanger($"Could not find packing slip number {summary.PackingSlipNumber}, please contact your administrator.");
-            return View("EnterPackingSlip", summary.PackingSlipNumber);
+            return View("EnterPackingSlip", new EnterPackingSlipViewModel
+            {
+                PackingSlipNumber = summary.PackingSlipNumber,
+                ViewedPackingSlips = await _userService
+                    .GetViewedPackingSlipsAsync(GetActiveUserId())
+            });
         }
 
         [HttpPost]
@@ -922,7 +932,11 @@ namespace GRA.Controllers.MissionControl
         {
             if (string.IsNullOrEmpty(id))
             {
-                return View("EnterPackingSlip");
+                return View("EnterPackingSlip", new EnterPackingSlipViewModel
+                {
+                    ViewedPackingSlips = await _userService
+                        .GetViewedPackingSlipsAsync(GetActiveUserId())
+                });
             }
 
             var holdSlipSummary = await _vendorCodeService.GetHoldSlipsAsync(id);
@@ -934,7 +948,12 @@ namespace GRA.Controllers.MissionControl
             }
 
             ShowAlertDanger($"Could not find packing slip number {id}, please contact your administrator.");
-            return View("EnterPackingSlip", id);
+            return View("EnterPackingSlip", new EnterPackingSlipViewModel
+            {
+                PackingSlipNumber = id,
+                ViewedPackingSlips = await _userService
+                    .GetViewedPackingSlipsAsync(GetActiveUserId())
+            });
         }
 
         [HttpGet]
@@ -942,16 +961,12 @@ namespace GRA.Controllers.MissionControl
         {
             if (string.IsNullOrEmpty(id))
             {
-                var viewedPackingSlips = await _userService
-                    .GetViewedPackingSlipsAsync(GetActiveUserId());
-
                 return View("EnterPackingSlip", new EnterPackingSlipViewModel
                 {
-                    ViewedPackingSlips = viewedPackingSlips
+                    ViewedPackingSlips = await _userService
+                        .GetViewedPackingSlipsAsync(GetActiveUserId())
                 });
             }
-
-            await _userService.ViewPackingSlipAsync(GetActiveUserId(), id);
 
             var summary = await _vendorCodeService.VerifyPackingSlipAsync(id);
             summary.CanViewDetails = UserHasPermission(Permission.ViewParticipantDetails);
@@ -994,11 +1009,18 @@ namespace GRA.Controllers.MissionControl
                     summary.TrackingNumbers = tracking;
                 }
 
+                await _userService.ViewPackingSlipAsync(GetActiveUserId(), id);
+
                 return View("ViewPackingSlip", summary);
             }
 
             ShowAlertDanger($"Could not find packing slip number {id}, please contact your administrator.");
-            return View("EnterPackingSlip", id);
+            return View("EnterPackingSlip", new EnterPackingSlipViewModel
+            {
+                PackingSlipNumber = id,
+                ViewedPackingSlips = await _userService
+                    .GetViewedPackingSlipsAsync(GetActiveUserId())
+            });
         }
 
         private static int? GetMessageTemplateId(VendorCodeType vendorCodeType, string item) => item switch
