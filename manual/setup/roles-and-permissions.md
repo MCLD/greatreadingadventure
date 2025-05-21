@@ -17,6 +17,7 @@ These are the permissions available in the GRA:
 - ActivateSystemChallenges - activate challenges that are created in that user's system
 - AddChallenges - add Challenges
 - AddChallengeGroups - add Challenge Groups
+- AddParticipant - shows the "Add Participant" button at the top of Mission Control as long as the program is open or open for registrations
 - DeleteAnyMail - delete any Mail message in the software, even if it's not in their account
 - DeleteParticipants - delete any Participant in the software
 - EditChallenges - edit Challenges

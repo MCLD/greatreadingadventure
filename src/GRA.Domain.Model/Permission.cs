@@ -9,6 +9,7 @@
         ActivateSystemChallenges,
         AddChallengeGroups,
         AddChallenges,
+        AddParticipant,
         DeleteAnyMail,
         DeleteParticipants,
         EditChallengeGroups,

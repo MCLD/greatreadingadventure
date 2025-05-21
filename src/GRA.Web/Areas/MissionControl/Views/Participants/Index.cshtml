@@ -1,19 +1,22 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.ParticipantsListViewModel
 
-@if (Model.ShowGroupsButton)
+@if (Model.ShowGroupsButton || Model.CanSignUpParticipants)
 {
     <div class="row my-3">
         <div class="col-12 d-flex">
-            <ul class="nav nav-pills">
-                <li>
-                    <a asp-action="@nameof(ParticipantsController.Index)"
-                       class="nav-link active">Participants</a>
-                </li>
-                <li>
-                    <a asp-action="@nameof(ParticipantsController.Groups)"
-                       class="nav-link">Groups</a>
-                </li>
-            </ul>
+            @if (Model.ShowGroupsButton)
+            {
+                <ul class="nav nav-pills">
+                    <li>
+                        <a asp-action="@nameof(ParticipantsController.Index)"
+                           class="nav-link active">Participants</a>
+                    </li>
+                    <li>
+                        <a asp-action="@nameof(ParticipantsController.Groups)"
+                           class="nav-link">Groups</a>
+                    </li>
+                </ul>
+            }
             @if (Model.CanSignUpParticipants)
             {
                 <a asp-action="Add" class="btn btn-outline-success ms-auto">Add Participant</a>

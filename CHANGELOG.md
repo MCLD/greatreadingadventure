@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Autocomplete properties to join and sign-in forms
 - Welcome message site setting at top of join pages
 - Editing of text segments
+- "AddParticipant" permission for showing "Add Participant" button in Mission Control
 
 ## Changed
 
@@ -45,6 +46,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Fix branch deletion to reassign deleted users as well as active users
 - Formatting issues with revised packing slip
 - Error when code is assigned prior to one being earned
+- Display of "Add Participant" button in Mission Control to be related to showing the group selector
 
 ## [4.5.0] 2024-08-29
 

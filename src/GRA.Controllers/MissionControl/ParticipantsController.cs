@@ -508,10 +508,13 @@ namespace GRA.Controllers.MissionControl
                     (await _siteService.GetProgramByIdAsync(programId.Value)).Name;
             }
 
-            var siteStage = GetSiteStage();
-            if (siteStage == SiteStage.RegistrationOpen || siteStage == SiteStage.ProgramOpen)
+            if (UserHasPermission(Permission.AddParticipant))
             {
-                viewModel.CanSignUpParticipants = true;
+                var siteStage = GetSiteStage();
+                if (siteStage == SiteStage.RegistrationOpen || siteStage == SiteStage.ProgramOpen)
+                {
+                    viewModel.CanSignUpParticipants = true;
+                }
             }
 
             if (UserHasPermission(Permission.ViewGroupList)
