@@ -74,8 +74,19 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpGet]
-        public IActionResult Upload()
+        public async Task<IActionResult> Upload()
         {
+            var site = await GetCurrentSiteAsync();
+
+            if (site.ProgramStarts.HasValue && site.ProgramEnds.HasValue)
+            {
+                var programDays = (int)Math.Ceiling((site.ProgramEnds.Value - site.ProgramStarts.Value).TotalDays);
+                var scheduleUrl = Url.Action("Schedule", "Sites", new { area = "MissionControl", id = 1 });
+                if (programDays > 0)
+                {
+                    ShowAlertInfo($"You will need <strong>{programDays} </strong> daily image(s) to ensure you have one for each day of your program. " + $"Visit <a href = '{scheduleUrl}'>Site Schedule</a> to view or adjust.");
+                }
+            }
             return View();
         }
 
