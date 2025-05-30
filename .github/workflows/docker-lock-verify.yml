@@ -1,4 +1,5 @@
-name: "Docker Lock Verify - action"
+name: docker lock verify
+run-name: ${{ github.actor }} is running docker lock verify
 
 on:
   pull_request:
