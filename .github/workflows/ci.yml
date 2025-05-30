@@ -1,4 +1,5 @@
-name: "Build - action"
+name: ci
+run-name: ${{ github.actor }} is running ci
 
 on: [push, pull_request]
 

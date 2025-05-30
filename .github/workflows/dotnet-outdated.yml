@@ -1,4 +1,5 @@
-name: "Packages - action"
+name: dotnet outdated
+run-name: ${{ github.actor }} is running dotnet outdated
 
 on:
   pull_request:
