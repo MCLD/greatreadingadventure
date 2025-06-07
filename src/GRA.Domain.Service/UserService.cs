@@ -14,7 +14,6 @@ using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
-using MimeKit.Tnef;
 using Newtonsoft.Json;
 
 namespace GRA.Domain.Service
@@ -686,6 +685,14 @@ namespace GRA.Domain.Service
                 }
             }
             return changeHistory;
+        }
+
+        public async Task<User> GetContactDetailsAsync(int userId)
+        {
+            var userDetails = await _userRepository
+                .GetContactDetailsAsync(GetCurrentSiteId(), userId);
+
+            return userDetails;
         }
 
         public async Task<GroupType> GetDefaultGroupTypeAsync()

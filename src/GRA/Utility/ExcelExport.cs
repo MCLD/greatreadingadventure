@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using GRA.Domain.Model;
@@ -104,7 +106,10 @@ namespace GRA.Utility
                             .Max(_ => _.SheetId.Value) + 1;
                     }
 
-                    string sheetName = report.Title ?? "Report Results";
+                    string sheetName = report
+                        .Title?
+                        .Replace(":", "", StringComparison.OrdinalIgnoreCase);
+
                     if (sheetName.Length > 31)
                     {
                         sheetName = sheetName[..31];
@@ -114,7 +119,7 @@ namespace GRA.Utility
                     {
                         Id = relationshipId,
                         SheetId = sheetId,
-                        Name = sheetName
+                        Name = !string.IsNullOrWhiteSpace(sheetName) ? sheetName : "Report Results"
                     };
                     sheets.Append(sheet);
 
@@ -357,18 +362,55 @@ namespace GRA.Utility
 
         private static (Cell cell, int length) CreateCell(object dataItem)
         {
-            var addCell = new Cell
+            if (dataItem is JsonElement jsonElement)
             {
-                CellValue = new CellValue(dataItem.ToString()),
-                DataType = dataItem switch
+                Cell cell = jsonElement.ValueKind switch
                 {
-                    int _ or long _
-                        => (DocumentFormat.OpenXml.EnumValue<CellValues>)CellValues.Number,
-                    DateTime _ => (DocumentFormat.OpenXml.EnumValue<CellValues>)CellValues.Date,
-                    _ => (DocumentFormat.OpenXml.EnumValue<CellValues>)CellValues.String,
-                }
+                    JsonValueKind.Number => new Cell
+                    {
+                        CellValue = new CellValue(jsonElement.GetDecimal()),
+                        DataType = (EnumValue<CellValues>)CellValues.Number
+                    },
+                    JsonValueKind.String => CreateStringCell(jsonElement.GetString()),
+                    _ => CreateStringCell(jsonElement.ToString()),
+                };
+                return (cell, jsonElement.ToString().Length);
+            }
+
+            return (dataItem switch
+            {
+                int intVal => new Cell
+                {
+                    CellValue = new CellValue(intVal),
+                    DataType = (DocumentFormat.OpenXml.EnumValue<CellValues>)CellValues.Number
+                },
+                long longVal => new Cell
+                {
+                    CellValue = new CellValue(Convert.ToDecimal(longVal)),
+                    DataType = (EnumValue<CellValues>)CellValues.Number
+                },
+                DateTime dateTimeVal => new Cell
+                {
+                    CellValue = new CellValue(dateTimeVal),
+                    DataType = (EnumValue<CellValues>)CellValues.Date
+                },
+                string stringVal => CreateStringCell(stringVal),
+                _ => CreateStringCell(dataItem.ToString())
+            }, dataItem.ToString().Length);
+        }
+
+        private static Cell CreateStringCell(string value)
+        {
+            return new Cell
+            {
+                CellValue = value.Length > 0 && value.All(char.IsDigit)
+                    ? null
+                    : new CellValue(value),
+                CellFormula = value.Length > 0 && value.All(char.IsDigit)
+                    ? new CellFormula($"(\"{value}\")")
+                    : null,
+                DataType = (EnumValue<CellValues>)CellValues.String
             };
-            return (addCell, dataItem.ToString().Length);
         }
 
         private static Stylesheet GetStylesheet()

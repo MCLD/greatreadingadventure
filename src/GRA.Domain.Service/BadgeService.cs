@@ -26,22 +26,26 @@ namespace GRA.Domain.Service
         private readonly SiteLookupService _siteLookupService;
 
         public BadgeService(ILogger<BadgeService> logger,
-            GRA.Abstract.IDateTimeProvider dateTimeProvider,
+            IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IBadgeRepository badgeRepository,
             IPathResolver pathResolver,
             SiteLookupService siteLookupService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
-            _badgeRepository = badgeRepository
-                ?? throw new ArgumentNullException(nameof(badgeRepository));
-            _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
-            _siteLookupService = siteLookupService
-                ?? throw new ArgumentNullException(nameof(siteLookupService));
+            ArgumentNullException.ThrowIfNull(badgeRepository);
+            ArgumentNullException.ThrowIfNull(pathResolver);
+            ArgumentNullException.ThrowIfNull(siteLookupService);
+
+            _badgeRepository = badgeRepository;
+            _pathResolver = pathResolver;
+            _siteLookupService = siteLookupService;
         }
 
         public async Task<Badge> AddBadgeAsync(Badge badge, byte[] imageFile)
         {
+            ArgumentNullException.ThrowIfNull(badge);
+
             badge.SiteId = GetCurrentSiteId();
             var result = await _badgeRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), badge);
             result.Filename = await WriteBadgeFileAsync(result, imageFile, imageType: null);
@@ -69,10 +73,20 @@ namespace GRA.Domain.Service
             return await _badgeRepository.GetFilesBySystemAsync(systemId);
         }
 
+        public async Task<IEnumerable<string>> GetNamesAsync(IEnumerable<int> ids)
+        {
+            return await _badgeRepository.GetBadgeNamesAsync(ids);
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization",
+            "CA1308:Normalize strings to uppercase",
+            Justification = "Normalize filenames to lowercase")]
         public async Task<Badge> ReplaceBadgeFileAsync(Badge badge,
-                            byte[] imageFile,
+            byte[] imageFile,
             string uploadFilename)
         {
+            ArgumentNullException.ThrowIfNull(badge);
+
             var existingBadge = await _badgeRepository.GetByIdAsync(badge.Id);
 
             if (imageFile != null)
@@ -130,9 +144,7 @@ namespace GRA.Domain.Service
         private string GetFilePath(string filename)
         {
             string contentDir = _pathResolver.ResolveContentFilePath();
-            contentDir = System.IO.Path.Combine(contentDir,
-                    $"site{GetCurrentSiteId()}",
-                    BadgePath);
+            contentDir = Path.Combine(contentDir, $"site{GetCurrentSiteId()}", BadgePath);
 
             if (!Directory.Exists(contentDir))
             {
@@ -146,6 +158,9 @@ namespace GRA.Domain.Service
             return $"site{GetCurrentSiteId()}/{BadgePath}/{filename}";
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization",
+            "CA1308:Normalize strings to uppercase",
+            Justification = "Normalize filenames to lowercase")]
         private async Task<string> WriteBadgeFileAsync(Badge badge,
             byte[] imageFile,
             ImageType? imageType)

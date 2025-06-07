@@ -20,6 +20,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Welcome message site setting at top of join pages
 - Editing of text segments
 - "AddParticipant" permission for showing "Add Participant" button in Mission Control
+- Drawing winner spreadsheet download
+- Report criteria shows for selected badges/challenges/triggers on Excel metadata sheet
 
 ## Changed
 
@@ -47,6 +49,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Formatting issues with revised packing slip
 - Error when code is assigned prior to one being earned
 - Display of "Add Participant" button in Mission Control to be related to showing the group selector
+- Handle data types when outputting spreadsheet from JSON (i.e. from reporting)
+- Require sheet names for Excel exports to eliminate errors
+- Sequences of numbers in Excel export no longer show green tab in cells
+- Issue with drawing table of drawing winners
+- Navigation selection on the top of the Badge Top Scores report criteria form
 
 ## [4.5.0] 2024-08-29
 

@@ -22,17 +22,18 @@ namespace GRA.Domain.Report
         private readonly IVendorCodeRepository _vendorCodeRepository;
 
         public GroupVendorCodeReport(ILogger<TopScoresReport> logger,
-            Domain.Report.ServiceFacade.Report serviceFacade,
+            ServiceFacade.Report serviceFacade,
             IGroupInfoRepository groupInfoRepository,
             IUserRepository userRepository,
             IVendorCodeRepository vendorCodeRepository) : base(logger, serviceFacade)
         {
-            _groupInfoRepository = groupInfoRepository
-                ?? throw new ArgumentNullException(nameof(groupInfoRepository));
-            _userRepository = userRepository
-                ?? throw new ArgumentOutOfRangeException(nameof(userRepository));
-            _vendorCodeRepository = vendorCodeRepository
-                ?? throw new ArgumentException(nameof(vendorCodeRepository));
+            ArgumentNullException.ThrowIfNull(groupInfoRepository);
+            ArgumentNullException.ThrowIfNull(userRepository);
+            ArgumentNullException.ThrowIfNull(vendorCodeRepository);
+
+            _groupInfoRepository = groupInfoRepository;
+            _userRepository = userRepository;
+            _vendorCodeRepository = vendorCodeRepository;
         }
 
         public override async Task ExecuteAsync(ReportRequest request,
@@ -40,10 +41,11 @@ namespace GRA.Domain.Report
             IProgress<JobStatus> progress = null)
         {
             #region Reporting initialization
+
             request = await StartRequestAsync(request);
 
-            var criterion
-                = await _serviceFacade.ReportCriterionRepository.GetByIdAsync(request.ReportCriteriaId)
+            var criterion = await _serviceFacade.ReportCriterionRepository
+                    .GetByIdAsync(request.ReportCriteriaId)
                 ?? throw new GraException($"Report criteria {request.ReportCriteriaId} for report request id {request.Id} could not be found.");
 
             if (criterion.SiteId == null)
@@ -53,17 +55,14 @@ namespace GRA.Domain.Report
 
             var groupInfo = await _groupInfoRepository.GetByIdAsync(criterion.GroupInfoId.Value);
 
-            string title = groupInfo.Name;
-
-            var report = new StoredReport
-            {
-                Title = title,
-                AsOf = _serviceFacade.DateTimeProvider.Now
-            };
+            var report = new StoredReport(groupInfo.Name ?? _reportInformation.Name,
+                _serviceFacade.DateTimeProvider.Now);
             var reportData = new List<object[]>();
+
             #endregion Reporting initialization
 
             #region Collect data
+
             UpdateProgress(progress, 1, "Starting report...", request.Name);
 
             // header row
@@ -100,11 +99,13 @@ namespace GRA.Domain.Report
             #endregion Collect data
 
             #region Finish up reporting
+
             if (!token.IsCancellationRequested)
             {
                 ReportSet.Reports.Add(report);
             }
             await FinishRequestAsync(request, !token.IsCancellationRequested);
+
             #endregion Finish up reporting
         }
     }

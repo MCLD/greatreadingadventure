@@ -25,10 +25,11 @@ namespace GRA.Domain.Report
             IBranchRepository branchRepository,
             IUserRepository userRepository) : base(logger, serviceFacade)
         {
-            _branchRepository = branchRepository
-                ?? throw new ArgumentNullException(nameof(branchRepository));
-            _userRepository = userRepository
-                ?? throw new ArgumentNullException(nameof(userRepository));
+            ArgumentNullException.ThrowIfNull(branchRepository);
+            ArgumentNullException.ThrowIfNull(userRepository);
+
+            _branchRepository = branchRepository;
+            _userRepository = userRepository;
         }
 
         public override async Task ExecuteAsync(ReportRequest request,
@@ -36,10 +37,11 @@ namespace GRA.Domain.Report
             IProgress<JobStatus> progress = null)
         {
             #region Reporting initialization
+
             request = await StartRequestAsync(request);
 
-            var criterion
-                = await _serviceFacade.ReportCriterionRepository.GetByIdAsync(request.ReportCriteriaId)
+            var criterion = await _serviceFacade.ReportCriterionRepository
+                    .GetByIdAsync(request.ReportCriteriaId)
                 ?? throw new GraException($"Report criteria {request.ReportCriteriaId} for report request id {request.Id} could not be found.");
 
             if (criterion.SiteId == null)
@@ -47,18 +49,17 @@ namespace GRA.Domain.Report
                 throw new ArgumentException(nameof(criterion.SiteId));
             }
 
-            var report = new StoredReport
-            {
-                Title = ReportAttribute?.Name,
-                AsOf = _serviceFacade.DateTimeProvider.Now
-            };
+            var report = new StoredReport(_reportInformation.Name,
+                _serviceFacade.DateTimeProvider.Now);
             var reportData = new List<object[]>();
 
             var askIfFirstTime
                 = await GetSiteSettingBoolAsync(criterion, SiteSettingKey.Users.AskIfFirstTime);
+
             #endregion Reporting initialization
 
             #region Collect data
+
             UpdateProgress(progress, 1, "Starting report...", request.Name);
 
             // header row
@@ -159,14 +160,17 @@ namespace GRA.Domain.Report
             footerRow.Add(totalAchiever);
 
             report.FooterRow = footerRow.ToArray();
+
             #endregion Collect data
 
             #region Finish up reporting
+
             if (!token.IsCancellationRequested)
             {
                 ReportSet.Reports.Add(report);
             }
             await FinishRequestAsync(request, !token.IsCancellationRequested);
+
             #endregion Finish up reporting
         }
     }

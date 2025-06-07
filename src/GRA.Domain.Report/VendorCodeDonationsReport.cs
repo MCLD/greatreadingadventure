@@ -52,8 +52,7 @@ namespace GRA.Domain.Report
 
             request = await StartRequestAsync(request);
 
-            var criterion
-                = await _serviceFacade.ReportCriterionRepository
+            var criterion = await _serviceFacade.ReportCriterionRepository
                     .GetByIdAsync(request.ReportCriteriaId)
                 ?? throw new GraException($"Report criteria {request.ReportCriteriaId} for report request id {request.Id} could not be found.");
 
@@ -62,18 +61,15 @@ namespace GRA.Domain.Report
                 throw new ArgumentException(nameof(criterion.SiteId));
             }
 
-            string title = "";
+            string title = null;
 
             if (criterion.SystemId.HasValue)
             {
                 title = (await _systemRepository.GetByIdAsync(criterion.SystemId.Value)).Name;
             }
 
-            var report = new StoredReport
-            {
-                Title = title,
-                AsOf = _serviceFacade.DateTimeProvider.Now
-            };
+            var report = new StoredReport(title ?? _reportInformation.Name,
+                _serviceFacade.DateTimeProvider.Now);
             var reportData = new List<object[]>();
 
             #endregion Reporting initialization

@@ -22,17 +22,18 @@ namespace GRA.Domain.Report
         private readonly ISystemRepository _systemRepository;
 
         public PrizeRedemptionCountReport(ILogger<PrizeRedemptionCountReport> logger,
-            Domain.Report.ServiceFacade.Report serviceFacade,
+            ServiceFacade.Report serviceFacade,
             IBranchRepository branchRepository,
             IPrizeWinnerRepository prizeWinnerRepository,
             ISystemRepository systemRepository) : base(logger, serviceFacade)
         {
-            _branchRepository = branchRepository
-                ?? throw new ArgumentException(nameof(branchRepository));
-            _prizeWinnerRepository = prizeWinnerRepository
-                ?? throw new ArgumentNullException(nameof(prizeWinnerRepository));
-            _systemRepository = systemRepository
-                ?? throw new ArgumentException(nameof(systemRepository));
+            ArgumentNullException.ThrowIfNull(branchRepository);
+            ArgumentNullException.ThrowIfNull(prizeWinnerRepository);
+            ArgumentNullException.ThrowIfNull(systemRepository);
+
+            _branchRepository = branchRepository;
+            _prizeWinnerRepository = prizeWinnerRepository;
+            _systemRepository = systemRepository;
         }
 
         public override async Task ExecuteAsync(ReportRequest request,
@@ -40,10 +41,11 @@ namespace GRA.Domain.Report
             IProgress<JobStatus> progress = null)
         {
             #region Reporting initialization
+
             request = await StartRequestAsync(request);
 
-            var criterion
-                = await _serviceFacade.ReportCriterionRepository.GetByIdAsync(request.ReportCriteriaId)
+            var criterion = await _serviceFacade.ReportCriterionRepository
+                    .GetByIdAsync(request.ReportCriteriaId)
                 ?? throw new GraException($"Report criteria {request.ReportCriteriaId} for report request id {request.Id} could not be found.");
 
             if (criterion.SiteId == null)
@@ -51,16 +53,14 @@ namespace GRA.Domain.Report
                 throw new ArgumentException(nameof(criterion.SiteId));
             }
 
-            var report = new StoredReport
-            {
-                Title = ReportAttribute?.Name,
-                AsOf = _serviceFacade.DateTimeProvider.Now
-            };
-
+            var report = new StoredReport(_reportInformation.Name,
+                _serviceFacade.DateTimeProvider.Now);
             var reportData = new List<object[]>();
+
             #endregion Reporting initialization
 
             #region Adjust report criteria as needed
+
             IEnumerable<int> triggerIds = null;
 
             if (!string.IsNullOrEmpty(criterion.TriggerList))
@@ -69,19 +69,23 @@ namespace GRA.Domain.Report
                 {
                     triggerIds = criterion.TriggerList.Split(',').Select(int.Parse);
                 }
-                catch (Exception ex)
+                catch (ArgumentException ex)
                 {
-                    _logger.LogError($"Unable to convert trigger id list to numbers: {ex.Message}");
-                    _logger.LogError($"Badge id list: {criterion.TriggerList}");
+                    _logger.LogError(ex,
+                        "Unable to convert trigger id list ({TriggerIdList}) to numbers: {ErrorMessage}",
+                        criterion.TriggerList,
+                        ex.Message);
                 }
             }
             else
             {
                 throw new GraException("No prizes selected.");
             }
+
             #endregion Adjust report criteria as needed
 
             #region Collect data
+
             UpdateProgress(progress, 1, "Starting report...", request.Name);
 
             // header row
@@ -159,11 +163,13 @@ namespace GRA.Domain.Report
             #endregion Collect data
 
             #region Finish up reporting
+
             if (!token.IsCancellationRequested)
             {
                 ReportSet.Reports.Add(report);
             }
             await FinishRequestAsync(request, !token.IsCancellationRequested);
+
             #endregion Finish up reporting
         }
     }

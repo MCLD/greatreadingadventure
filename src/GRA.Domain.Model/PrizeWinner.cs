@@ -18,9 +18,12 @@ namespace GRA.Domain.Model
         public int SiteId { get; set; }
         public string StaffNotes { get; set; }
         public int? TriggerId { get; set; }
+        public string UserEmail { get; set; }
         public string UserFirstName { get; set; }
+        public int? UserHouseholdHeadUserId { get; set; }
         public int UserId { get; set; }
         public string UserLastName { get; set; }
+        public string UserPhoneNumber { get; set; }
         public string UserUsername { get; set; }
         public int? VendorCodeId { get; set; }
     }

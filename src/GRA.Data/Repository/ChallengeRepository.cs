@@ -73,7 +73,8 @@ namespace GRA.Data.Repository
                 foreach (var task in challenge.Tasks)
                 {
                     task.ActivityCount = challengeTaskTypes[task.ChallengeTaskTypeId].ActivityCount;
-                    task.PointTranslationId = challengeTaskTypes[task.ChallengeTaskTypeId].PointTranslationId;
+                    task.PointTranslationId
+                        = challengeTaskTypes[task.ChallengeTaskTypeId].PointTranslationId;
                 }
 
                 if (userId != null)
@@ -140,7 +141,8 @@ namespace GRA.Data.Repository
                 foreach (var task in challenge.Tasks)
                 {
                     task.ActivityCount = challengeTaskTypes[task.ChallengeTaskTypeId].ActivityCount;
-                    task.PointTranslationId = challengeTaskTypes[task.ChallengeTaskTypeId].PointTranslationId;
+                    task.PointTranslationId
+                        = challengeTaskTypes[task.ChallengeTaskTypeId].PointTranslationId;
                 }
 
                 challenge.Categories = await _context.ChallengeCategories
@@ -188,6 +190,15 @@ namespace GRA.Data.Repository
                 .ToListAsync();
 
             return await GetChallengeTasksTypeAsync(tasks);
+        }
+
+        public async Task<IEnumerable<string>> GetNamesAsync(IEnumerable<int> challengeIds)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => challengeIds.Contains(_.Id))
+                .Select(_ => _.Name)
+                .ToListAsync();
         }
 
         public async Task<ActivityLogResult> GetUserChallengeTaskResultAsync(int userId,
@@ -472,30 +483,30 @@ namespace GRA.Data.Repository
                     .Where(_ => !_.IsDeleted
                         && _.SiteId == filter.SiteId);
 
-            if (filter.SystemIds?.Any() == true)
+            if (filter.SystemIds?.Count > 0)
             {
                 challenges = challenges.Where(_ => filter.SystemIds.Contains(_.RelatedSystemId));
             }
-            if (filter.BranchIds?.Any() == true)
+            if (filter.BranchIds?.Count > 0)
             {
                 challenges = challenges.Where(_ => filter.BranchIds.Contains(_.RelatedBranchId));
             }
-            if (filter.ProgramIds?.Any() == true)
+            if (filter.ProgramIds?.Count > 0)
             {
                 challenges = challenges
                     .Where(_ => filter.ProgramIds.Any(p => p == _.AssociatedProgramId));
             }
-            if (filter.UserIds?.Any() == true)
+            if (filter.UserIds?.Count > 0)
             {
                 challenges = challenges.Where(_ => filter.UserIds.Contains(_.CreatedBy));
             }
 
-            if (filter.ChallengeIds?.Any() == true)
+            if (filter.ChallengeIds?.Count > 0)
             {
                 challenges = challenges.Where(_ => !filter.ChallengeIds.Contains(_.Id));
             }
 
-            if (filter.CategoryIds?.Any() == true)
+            if (filter.CategoryIds?.Count > 0)
             {
                 challenges = challenges
                     .Where(_ => _.ChallengeCategories

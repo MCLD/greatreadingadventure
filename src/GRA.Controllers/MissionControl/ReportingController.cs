@@ -21,8 +21,9 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ViewAllReporting)]
     public class ReportingController : Base.MCController
     {
+        private readonly BadgeService _badgeService;
+        private readonly ChallengeService _challengeService;
         private readonly JobService _jobService;
-
         private readonly ILogger<ReportingController> _logger;
         private readonly ReportService _reportService;
         private readonly SchoolService _schoolService;
@@ -33,6 +34,8 @@ namespace GRA.Controllers.MissionControl
 
         public ReportingController(ILogger<ReportingController> logger,
             ServiceFacade.Controller context,
+            BadgeService badgeService,
+            ChallengeService challengeService,
             JobService jobService,
             ReportService reportService,
             SchoolService schoolService,
@@ -41,8 +44,10 @@ namespace GRA.Controllers.MissionControl
             UserService userService,
             VendorCodeService vendorCodeService) : base(context)
         {
-            ArgumentNullException.ThrowIfNull(logger);
+            ArgumentNullException.ThrowIfNull(badgeService);
+            ArgumentNullException.ThrowIfNull(challengeService);
             ArgumentNullException.ThrowIfNull(jobService);
+            ArgumentNullException.ThrowIfNull(logger);
             ArgumentNullException.ThrowIfNull(reportService);
             ArgumentNullException.ThrowIfNull(schoolService);
             ArgumentNullException.ThrowIfNull(siteService);
@@ -50,14 +55,17 @@ namespace GRA.Controllers.MissionControl
             ArgumentNullException.ThrowIfNull(userService);
             ArgumentNullException.ThrowIfNull(vendorCodeService);
 
-            _logger = logger;
+            _badgeService = badgeService;
+            _challengeService = challengeService;
             _jobService = jobService;
+            _logger = logger;
             _reportService = reportService;
             _schoolService = schoolService;
             _siteService = siteService;
             _triggerService = triggerService;
             _userService = userService;
             _vendorCodeService = vendorCodeService;
+
             PageTitle = "Reporting";
         }
 
@@ -177,6 +185,60 @@ namespace GRA.Controllers.MissionControl
             {
                 criteriaDictionary.Add("Program", (await _vendorCodeService
                     .GetTypeById(criterion.VendorCodeTypeId.Value)).Description);
+            }
+
+            if (!string.IsNullOrEmpty(criterion.BadgeRequiredList))
+            {
+                var badgeIds = criterion.BadgeRequiredList.Split(',')?.Select(int.Parse);
+                var badgeNames = await _badgeService.GetNamesAsync(badgeIds);
+                if (badgeNames.Count() == 1)
+                {
+                    criteriaDictionary.Add("Badge", badgeNames.First());
+                }
+                else
+                {
+                    int count = 1;
+                    foreach (var name in badgeNames)
+                    {
+                        criteriaDictionary.Add($"Badge {count++}", name);
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(criterion.ChallengeRequiredList))
+            {
+                var challengeIds = criterion.ChallengeRequiredList.Split(',')?.Select(int.Parse);
+                var challengeNames = await _challengeService.GetNamesAsync(challengeIds);
+                if (challengeNames.Count() == 1)
+                {
+                    criteriaDictionary.Add("Challenge", challengeNames.First());
+                }
+                else
+                {
+                    int count = 1;
+                    foreach (var name in challengeNames)
+                    {
+                        criteriaDictionary.Add($"Challenge {count++}", name);
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(criterion.TriggerList))
+            {
+                var triggerIds = criterion.TriggerList.Split(',')?.Select(int.Parse);
+                var triggerNames = await _triggerService.GetNamesAsync(triggerIds);
+                if (triggerNames.Count() == 1)
+                {
+                    criteriaDictionary.Add("Trigger", triggerNames.First());
+                }
+                else
+                {
+                    int count = 1;
+                    foreach (var name in triggerNames)
+                    {
+                        criteriaDictionary.Add($"Trigger {count++}", name);
+                    }
+                }
             }
 
             viewModel.ReportSet = JsonSerializer.Deserialize<StoredReportSet>(request.ResultJson);

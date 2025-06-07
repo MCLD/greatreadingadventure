@@ -84,6 +84,37 @@ namespace GRA.Data.Repository
             return $"Badge id {badgeId}";
         }
 
+        public async Task<IEnumerable<string>> GetBadgeNamesAsync(IEnumerable<int> ids)
+        {
+            var list = new List<string>();
+
+            list.AddRange(await _context.Triggers
+                 .AsNoTracking()
+                 .Where(_ => ids.Contains(_.AwardBadgeId))
+                 .Select(_ => _.Name)
+                 .ToListAsync());
+
+            list.AddRange(await _context.Challenges
+                .AsNoTracking()
+                .Where(_ => _.BadgeId.HasValue && ids.Contains(_.BadgeId.Value))
+                .Select(_ => $"Challenge {_.Name}")
+                .ToListAsync());
+
+            list.AddRange(await _context.Programs
+                .AsNoTracking()
+                .Where(_ => _.JoinBadgeId.HasValue && ids.Contains(_.JoinBadgeId.Value))
+                .Select(_ => $"Joined {_.Name}")
+                .ToListAsync());
+
+            list.AddRange(await _context.Questionnaires
+                .AsNoTracking()
+                .Where(_ => _.BadgeId.HasValue && ids.Contains(_.BadgeId.Value))
+                .Select(_ => $"Completed questionnaire: {_.Name}")
+                .ToListAsync());
+
+            return list;
+        }
+
         public async Task<int> GetCountBySystemAsync(int systemId)
         {
             return await _context.Users.Where(_ => _.SystemId == systemId)
@@ -140,9 +171,9 @@ namespace GRA.Data.Repository
 
         public async Task<bool> UserHasBadge(int userId, int badgeId)
         {
-            return null != await _context.UserBadges
+            return await _context.UserBadges
                 .Where(_ => _.UserId == userId && _.BadgeId == badgeId)
-                .SingleOrDefaultAsync();
+                .SingleOrDefaultAsync() != null;
         }
 
         public async Task<bool> UserHasJoinBadgeAsync(int userId)

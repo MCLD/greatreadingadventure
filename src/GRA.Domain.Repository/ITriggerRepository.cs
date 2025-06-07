@@ -8,27 +8,50 @@ namespace GRA.Domain.Repository
 {
     public interface ITriggerRepository : IRepository<Trigger>
     {
-        new Task<Trigger> GetByIdAsync(int id);
         new Task<Trigger> AddSaveAsync(int userId, Trigger trigger);
-        new Task<Trigger> UpdateSaveAsync(int userId, Trigger trigger);
-        Task<ICollection<Trigger>> PageAsync(TriggerFilter filter);
-        Task<int> CountAsync(TriggerFilter filter);
-        Task<ICollection<Trigger>> GetTriggersAsync(int userId);
+
         Task AddTriggerActivationAsync(int userId, int triggerId);
-        Task<Trigger> GetByCodeAsync(int siteId, string secretCode, bool mustBeActive);
-        Task<DateTime?> CheckTriggerActivationAsync(int userId, int triggerId);
-        Task<ICollection<TriggerRequirement>> GetTriggerRequirmentsAsync(Trigger trigger);
-        Task<int> CountRequirementsAsync(BaseFilter filter);
-        Task<ICollection<TriggerRequirement>> PageRequirementsAsync(BaseFilter filter);
-        Task<bool> CodeExistsAsync(int siteId, string secretCode, int? triggerId = null);
-        Task<IDictionary<int, string>> DependentTriggers(int triggerId);
-        Task<ICollection<Trigger>> GetTriggerDependentsAsync(int triggerBadgeId);
-        Task<ICollection<Trigger>> GetChallengeDependentsAsync(int challengeId);
-        Task<bool> SecretCodeInUseAsync(int siteId, string secretCode);
-        Task<Trigger> GetByBadgeIdAsync(int badgeId);
-        Task RemoveUserTriggerAsync(int userId, int triggerId);
-        Task<ICollection<Trigger>> GetTriggersAwardingBundleAsync(int bundleId);
+
         Task<bool> BundleIsInUseAsync(int bundleId);
+
+        Task<DateTime?> CheckTriggerActivationAsync(int userId, int triggerId);
+
+        Task<bool> CodeExistsAsync(int siteId, string secretCode, int? triggerId = null);
+
+        Task<int> CountAsync(TriggerFilter filter);
+
+        Task<int> CountRequirementsAsync(BaseFilter filter);
+
+        Task<IDictionary<int, string>> DependentTriggers(int triggerId);
+
+        Task<Trigger> GetByBadgeIdAsync(int badgeId);
+
+        Task<Trigger> GetByCodeAsync(int siteId, string secretCode, bool mustBeActive);
+
+        new Task<Trigger> GetByIdAsync(int id);
+
+        Task<ICollection<Trigger>> GetChallengeDependentsAsync(int challengeId);
+
+        Task<IEnumerable<string>> GetNamesAsync(IEnumerable<int> triggerIds);
+
+        Task<ICollection<Trigger>> GetTriggerDependentsAsync(int triggerBadgeId);
+
+        Task<ICollection<TriggerRequirement>> GetTriggerRequirmentsAsync(Trigger trigger);
+
+        Task<ICollection<Trigger>> GetTriggersAsync(int userId);
+
+        Task<ICollection<Trigger>> GetTriggersAwardingBundleAsync(int bundleId);
+
         Task<ICollection<Trigger>> GetTriggersAwardingPrizesAsync(int siteId);
+
+        Task<ICollection<Trigger>> PageAsync(TriggerFilter filter);
+
+        Task<ICollection<TriggerRequirement>> PageRequirementsAsync(BaseFilter filter);
+
+        Task RemoveUserTriggerAsync(int userId, int triggerId);
+
+        Task<bool> SecretCodeInUseAsync(int siteId, string secretCode);
+
+        new Task<Trigger> UpdateSaveAsync(int userId, Trigger trigger);
     }
 }
