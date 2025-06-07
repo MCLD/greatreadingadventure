@@ -58,7 +58,6 @@ namespace GRA.Domain.Report
             }
 
             int count = 0;
-            var asof = _serviceFacade.DateTimeProvider.Now;
 
             #endregion Reporting initialization
 

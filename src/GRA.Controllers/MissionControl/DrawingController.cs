@@ -51,9 +51,11 @@ namespace GRA.Controllers.MissionControl
             int? branchId,
             bool? mine,
             int? programId,
-            int page = 1)
+            int page)
         {
             PageTitle = "Drawing Criteria";
+
+            page = page > 0 ? page : 1;
 
             var filter = new BaseFilter(page);
 
@@ -327,8 +329,9 @@ namespace GRA.Controllers.MissionControl
             }
         }
 
-        public async Task<IActionResult> Detail(int id, int page = 1)
+        public async Task<IActionResult> Detail(int id, int page)
         {
+            page = page > 0 ? page : 1;
             const int take = 15;
             int skip = take * (page - 1);
 
@@ -482,8 +485,10 @@ namespace GRA.Controllers.MissionControl
             bool? mine,
             int? programId,
             bool? archived,
-            int page = 1)
+            int page)
         {
+            page = page > 0 ? page : 1;
+
             var filter = new DrawingFilter(page);
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -685,8 +690,10 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> RedeemWinner(int prizeWinnerId,
             int drawingId,
-            int page = 1)
+            int page)
         {
+            page = page > 0 ? page : 1;
+
             try
             {
                 await _prizeWinnerService.RedeemPrizeAsync(prizeWinnerId, null);
@@ -701,8 +708,10 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> RemoveWinner(int prizeWinnerId,
             int drawingId,
-            int page = 1)
+            int page)
         {
+            page = page > 0 ? page : 1;
+
             try
             {
                 await _prizeWinnerService.RemovePrizeAsync(prizeWinnerId);
@@ -717,8 +726,10 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> UndoRedemption(int prizeWinnerId,
             int drawingId,
-            int page = 1)
+            int page)
         {
+            page = page > 0 ? page : 1;
+
             try
             {
                 await _prizeWinnerService.UndoRedemptionAsync(prizeWinnerId);
