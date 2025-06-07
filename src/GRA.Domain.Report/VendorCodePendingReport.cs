@@ -21,17 +21,18 @@ namespace GRA.Domain.Report
         private readonly IVendorCodeRepository _vendorCodeRepository;
 
         public VendorCodePendingReport(ILogger<VendorCodePendingReport> logger,
-            Domain.Report.ServiceFacade.Report serviceFacade,
+            ServiceFacade.Report serviceFacade,
             IBranchRepository branchRepository,
             IUserRepository userRepository,
             IVendorCodeRepository vendorCodeRepository) : base(logger, serviceFacade)
         {
-            _branchRepository = branchRepository
-                ?? throw new ArgumentNullException(nameof(branchRepository));
-            _userRepository = userRepository
-                ?? throw new ArgumentNullException(nameof(userRepository));
-            _vendorCodeRepository = vendorCodeRepository
-                ?? throw new ArgumentNullException(nameof(vendorCodeRepository));
+            ArgumentNullException.ThrowIfNull(branchRepository);
+            ArgumentNullException.ThrowIfNull(userRepository);
+            ArgumentNullException.ThrowIfNull(vendorCodeRepository);
+
+            _branchRepository = branchRepository;
+            _userRepository = userRepository;
+            _vendorCodeRepository = vendorCodeRepository;
         }
 
         public override async Task ExecuteAsync(ReportRequest request,
@@ -42,21 +43,17 @@ namespace GRA.Domain.Report
 
             request = await StartRequestAsync(request);
 
-            var criterion
-                    = await _serviceFacade.ReportCriterionRepository
-                        .GetByIdAsync(request.ReportCriteriaId)
-                    ?? throw new GraException($"Report criteria {request.ReportCriteriaId} for report request id {request.Id} could not be found.");
+            var criterion = await _serviceFacade.ReportCriterionRepository
+                    .GetByIdAsync(request.ReportCriteriaId)
+                ?? throw new GraException($"Report criteria {request.ReportCriteriaId} for report request id {request.Id} could not be found.");
 
             if (!criterion.SiteId.HasValue)
             {
                 throw new ArgumentException(nameof(criterion.SiteId));
             }
 
-            var report = new StoredReport
-            {
-                Title = "Vendor Code Items Pending",
-                AsOf = _serviceFacade.DateTimeProvider.Now
-            };
+            var report = new StoredReport("Vendor Code Items Pending",
+                _serviceFacade.DateTimeProvider.Now);
             var reportData = new List<object[]>();
 
             #endregion Reporting intialization

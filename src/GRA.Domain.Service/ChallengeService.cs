@@ -905,6 +905,11 @@ namespace GRA.Domain.Service
             return featuredGroup;
         }
 
+        public async Task<IEnumerable<string>> GetNamesAsync(IEnumerable<int> challengeIds)
+        {
+            return await _challengeRepository.GetNamesAsync(challengeIds);
+        }
+
         public async Task<ICollectionWithCount<FeaturedChallengeGroup>>
             GetPaginatedFeaturedGroupListAsync(BaseFilter filter)
         {

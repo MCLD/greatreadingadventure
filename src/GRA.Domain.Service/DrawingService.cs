@@ -13,12 +13,13 @@ namespace GRA.Domain.Service
     public class DrawingService : Abstract.BaseUserService<DrawingService>
     {
         private readonly IBranchRepository _branchRepository;
-        private readonly IDrawingRepository _drawingRepository;
         private readonly IDrawingCriterionRepository _drawingCriterionRepository;
+        private readonly IDrawingRepository _drawingRepository;
         private readonly IMailRepository _mailRepository;
         private readonly IPrizeWinnerRepository _prizeWinnerRepository;
         private readonly IProgramRepository _programRepository;
         private readonly ISystemRepository _systemRepository;
+
         public DrawingService(ILogger<DrawingService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
@@ -31,111 +32,26 @@ namespace GRA.Domain.Service
             ISystemRepository systemRepository)
             : base(logger, dateTimeProvider, userContextProvider)
         {
-            _branchRepository = branchRepository 
-                ?? throw new ArgumentNullException(nameof(branchRepository));
-            _drawingRepository = drawingRepository 
-                ?? throw new ArgumentNullException(nameof(drawingRepository));
-            _drawingCriterionRepository = drawingCriterionRepository 
-                ?? throw new ArgumentNullException(
-                nameof(drawingCriterionRepository));
-            _mailRepository = mailRepository 
-                ?? throw new ArgumentNullException(nameof(mailRepository));
-            _prizeWinnerRepository = prizeWinnerRepository 
-                ?? throw new ArgumentNullException(nameof(prizeWinnerRepository));
-            _programRepository = programRepository 
-                ?? throw new ArgumentNullException(nameof(programRepository));
-            _systemRepository = systemRepository 
-                ?? throw new ArgumentNullException(nameof(systemRepository));
-        }
+            ArgumentNullException.ThrowIfNull(branchRepository);
+            ArgumentNullException.ThrowIfNull(drawingCriterionRepository);
+            ArgumentNullException.ThrowIfNull(drawingRepository);
+            ArgumentNullException.ThrowIfNull(mailRepository);
+            ArgumentNullException.ThrowIfNull(prizeWinnerRepository);
+            ArgumentNullException.ThrowIfNull(programRepository);
+            ArgumentNullException.ThrowIfNull(systemRepository);
 
-        public async Task<DataWithCount<IEnumerable<Drawing>>>
-            GetPaginatedDrawingListAsync(DrawingFilter filter)
-        {
-            int authUserId = GetClaimId(ClaimType.UserId);
-            if (HasPermission(Permission.PerformDrawing))
-            {
-                filter.SiteId = GetCurrentSiteId();
-                return new DataWithCount<IEnumerable<Drawing>>
-                {
-                    Data = await _drawingRepository.PageAllAsync(filter),
-                    Count = await _drawingRepository.GetCountAsync(filter)
-                };
-            }
-            else
-            {
-                _logger.LogError($"User {authUserId} doesn't have permission to view all drawings.");
-                throw new GraException("Permission denied.");
-            }
-        }
-
-        public async Task<DataWithCount<Drawing>> GetDetailsAsync(int id, int skip, int take)
-        {
-            int authUserId = GetClaimId(ClaimType.UserId);
-            if (HasPermission(Permission.PerformDrawing))
-            {
-                try
-                {
-                    return new DataWithCount<Drawing>
-                    {
-                        Data = await _drawingRepository.GetByIdAsync(id, skip, take),
-                        Count = await _drawingRepository.GetWinnerCountAsync(id)
-                    };
-                }
-                catch (Exception)
-                {
-                    throw new GraException("The requested drawing could not be accessed or does not exist.");
-                }
-            }
-            else
-            {
-                _logger.LogError($"User {authUserId} doesn't have permission to view drawing {id}.");
-                throw new GraException("Permission denied.");
-            }
-        }
-
-        public async Task<DataWithCount<IEnumerable<DrawingCriterion>>>
-            GetPaginatedCriterionListAsync(BaseFilter filter)
-        {
-            int authUserId = GetClaimId(ClaimType.UserId);
-            if (HasPermission(Permission.PerformDrawing))
-            {
-                filter.SiteId = GetCurrentSiteId();
-                return new DataWithCount<IEnumerable<DrawingCriterion>>
-                {
-                    Data = await _drawingCriterionRepository.PageAllAsync(filter),
-                    Count = await _drawingCriterionRepository.GetCountAsync(filter)
-                };
-            }
-            else
-            {
-                _logger.LogError($"User {authUserId} doesn't have permission to view all criteria.");
-                throw new GraException("Permission denied.");
-            }
-        }
-
-        public async Task<DrawingCriterion> GetCriterionDetailsAsync(int id)
-        {
-            int authUserId = GetClaimId(ClaimType.UserId);
-            if (HasPermission(Permission.PerformDrawing))
-            {
-                try
-                {
-                    return await _drawingCriterionRepository.GetByIdAsync(id);
-                }
-                catch (Exception)
-                {
-                    throw new GraException("The requested criteria could not be accessed or does not exist.");
-                }
-            }
-            else
-            {
-                _logger.LogError($"User {authUserId} doesn't have permission to view criterion {id}.");
-                throw new GraException("Permission denied.");
-            }
+            _branchRepository = branchRepository;
+            _drawingCriterionRepository = drawingCriterionRepository;
+            _drawingRepository = drawingRepository;
+            _mailRepository = mailRepository;
+            _prizeWinnerRepository = prizeWinnerRepository;
+            _programRepository = programRepository;
+            _systemRepository = systemRepository;
         }
 
         public async Task<DrawingCriterion> AddCriterionAsync(DrawingCriterion criterion)
         {
+            ArgumentNullException.ThrowIfNull(criterion);
             int authUserId = GetClaimId(ClaimType.UserId);
             if (HasPermission(Permission.PerformDrawing))
             {
@@ -156,13 +72,16 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {authUserId} doesn't have permission to add a criterion.");
+                _logger.LogError("User {UserId} doesn't have permission to add a criterion.",
+                    authUserId);
                 throw new GraException("Permission denied.");
             }
         }
 
         public async Task<DrawingCriterion> EditCriterionAsync(DrawingCriterion criterion)
         {
+            ArgumentNullException.ThrowIfNull(criterion);
+
             int authUserId = GetClaimId(ClaimType.UserId);
             if (HasPermission(Permission.PerformDrawing))
             {
@@ -188,36 +107,163 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {authUserId} doesn't have permission to edit criterion {criterion.Id}.");
+                _logger.LogError("User {UserId} doesn't have permission to edit criterion {CriterionId}.",
+                    authUserId,
+                    criterion.Id);
                 throw new GraException("Permission denied.");
             }
+        }
+
+        public async Task<DrawingCriterion> GetCriterionDetailsAsync(int id)
+        {
+            if (HasPermission(Permission.PerformDrawing))
+            {
+                try
+                {
+                    return await _drawingCriterionRepository.GetByIdAsync(id);
+                }
+                catch (Exception)
+                {
+                    throw new GraException("The requested criteria could not be accessed or does not exist.");
+                }
+            }
+            else
+            {
+                _logger.LogError("User {UserId} doesn't have permission to view criterion {CriterionId}.",
+                    GetClaimId(ClaimType.UserId),
+                    id);
+                throw new GraException("Permission denied.");
+            }
+        }
+
+        public async Task<Drawing> GetDetailsAsync(int id)
+        {
+            if (HasPermission(Permission.PerformDrawing))
+            {
+                try
+                {
+                    return await _drawingRepository.GetDetailsWinners(id);
+                }
+                catch (Exception)
+                {
+                    throw new GraException("The requested drawing could not be accessed or does not exist.");
+                }
+            }
+            else
+            {
+                _logger.LogError("User {UserId} doesn't have permission to view drawing {Id}.",
+                    GetClaimId(ClaimType.UserId),
+                    id);
+                throw new GraException("Permission denied.");
+            }
+        }
+
+        public async Task<DataWithCount<Drawing>> GetDetailsAsync(int id, int skip, int take)
+        {
+            if (HasPermission(Permission.PerformDrawing))
+            {
+                try
+                {
+                    return new DataWithCount<Drawing>
+                    {
+                        Data = await _drawingRepository.GetDetailsWinners(id, skip, take),
+                        Count = await _drawingRepository.GetWinnerCountAsync(id)
+                    };
+                }
+                catch (Exception)
+                {
+                    throw new GraException("The requested drawing could not be accessed or does not exist.");
+                }
+            }
+            else
+            {
+                _logger.LogError("User {UserId} doesn't have permission to view drawing {Id}.",
+                    GetClaimId(ClaimType.UserId),
+                    id);
+                throw new GraException("Permission denied.");
+            }
+        }
+
+        public async Task<string> GetDrawingNameAsync(int id)
+        {
+            VerifyPermission(Permission.ViewUserPrizes);
+
+            var drawing = await _drawingRepository.GetByIdAsync(id);
+
+            return drawing?.Name;
         }
 
         public async Task<int> GetEligibleCountAsync(int id)
         {
             // todo validate site
-            int authUserId = GetClaimId(ClaimType.UserId);
             if (HasPermission(Permission.PerformDrawing))
             {
                 return await _drawingCriterionRepository.GetEligibleUserCountAsync(id);
             }
             else
             {
-                _logger.LogError($"User {authUserId} doesn't have permission to get eligible count.");
+                _logger.LogError("User {UserId} doesn't have permission to get eligible count.",
+                    GetClaimId(ClaimType.UserId));
+                throw new GraException("Permission denied.");
+            }
+        }
+
+        public async Task<DataWithCount<IEnumerable<DrawingCriterion>>>
+            GetPaginatedCriterionListAsync(BaseFilter filter)
+        {
+            ArgumentNullException.ThrowIfNull(filter);
+
+            if (HasPermission(Permission.PerformDrawing))
+            {
+                filter.SiteId = GetCurrentSiteId();
+                return new DataWithCount<IEnumerable<DrawingCriterion>>
+                {
+                    Data = await _drawingCriterionRepository.PageAllAsync(filter),
+                    Count = await _drawingCriterionRepository.GetCountAsync(filter)
+                };
+            }
+            else
+            {
+                _logger.LogError("User {UserId} doesn't have permission to view all criteria.",
+                    GetClaimId(ClaimType.UserId));
+                throw new GraException("Permission denied.");
+            }
+        }
+
+        public async Task<DataWithCount<IEnumerable<Drawing>>>
+            GetPaginatedDrawingListAsync(DrawingFilter filter)
+        {
+            ArgumentNullException.ThrowIfNull(filter);
+
+            if (HasPermission(Permission.PerformDrawing))
+            {
+                filter.SiteId = GetCurrentSiteId();
+                return new DataWithCount<IEnumerable<Drawing>>
+                {
+                    Data = await _drawingRepository.PageAllAsync(filter),
+                    Count = await _drawingRepository.GetCountAsync(filter)
+                };
+            }
+            else
+            {
+                _logger.LogError("User {UserId} doesn't have permission to view all drawings.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
         }
 
         public async Task<Drawing> PerformDrawingAsync(Drawing drawing)
         {
+            ArgumentNullException.ThrowIfNull(drawing);
+
             // todo validate site
             int siteId = GetCurrentSiteId();
             int authUserId = GetClaimId(ClaimType.UserId);
             if (HasPermission(Permission.PerformDrawing))
             {
                 // insert drawing
-                drawing.DrawingCriterion = default(DrawingCriterion);
-                drawing.Id = default(int);
+                drawing.DrawingCriterion = default;
+                drawing.Id = default;
                 drawing.RelatedBranchId = GetClaimId(ClaimType.BranchId);
                 drawing.RelatedSystemId = GetClaimId(ClaimType.SystemId);
                 drawing = await _drawingRepository.AddSaveAsync(authUserId, drawing);
@@ -241,7 +287,7 @@ namespace GRA.Domain.Service
                 {
                     rng.GetBytes(randomBytes);
                     int random = System.Math.Abs(System.BitConverter.ToInt32(randomBytes, 0));
-                    int randomUserId = remainingUsers.ElementAt(random % remainingUsers.Count);
+                    int randomUserId = remainingUsers[random % remainingUsers.Count];
 
                     var winner = new PrizeWinner
                     {
@@ -281,18 +327,10 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {authUserId} doesn't have permission to perform drawings.");
+                _logger.LogError("User {UserId} doesn't have permission to perform drawings.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
-        }
-
-        public async Task<string> GetDrawingNameAsync(int id)
-        {
-            VerifyPermission(Permission.ViewUserPrizes);
-
-            var drawing = await _drawingRepository.GetByIdAsync(id);
-
-            return drawing?.Name;
         }
 
         private async Task ValidateCriterionAsync(DrawingCriterion criterion)

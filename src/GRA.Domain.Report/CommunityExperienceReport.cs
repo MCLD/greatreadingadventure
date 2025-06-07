@@ -22,8 +22,9 @@ namespace GRA.Domain.Report
             ServiceFacade.Report serviceFacade,
             IEventRepository eventRepository) : base(logger, serviceFacade)
         {
-            _eventRepository = eventRepository
-                ?? throw new ArgumentNullException(nameof(eventRepository));
+            ArgumentNullException.ThrowIfNull(eventRepository);
+
+            _eventRepository = eventRepository;
         }
 
         public override async Task ExecuteAsync(ReportRequest request,
@@ -31,10 +32,11 @@ namespace GRA.Domain.Report
             IProgress<JobStatus> progress = null)
         {
             #region Reporting initialization
+
             request = await StartRequestAsync(request);
 
-            var criterion
-                = await _serviceFacade.ReportCriterionRepository.GetByIdAsync(request.ReportCriteriaId)
+            var criterion = await _serviceFacade.ReportCriterionRepository
+                    .GetByIdAsync(request.ReportCriteriaId)
                 ?? throw new GraException($"Report criteria {request.ReportCriteriaId} for report request id {request.Id} could not be found.");
 
             if (criterion.SiteId == null)
@@ -42,15 +44,14 @@ namespace GRA.Domain.Report
                 throw new ArgumentException(nameof(criterion.SiteId));
             }
 
-            var report = new StoredReport
-            {
-                Title = ReportAttribute?.Name,
-                AsOf = _serviceFacade.DateTimeProvider.Now
-            };
+            var report = new StoredReport(_reportInformation.Name,
+                _serviceFacade.DateTimeProvider.Now);
             var reportData = new List<object[]>();
+
             #endregion Reporting initialization
 
             #region Collect data
+
             UpdateProgress(progress, 1, "Starting report...", request.Name);
 
             // header row
@@ -101,14 +102,17 @@ namespace GRA.Domain.Report
             };
 
             report.FooterRow = footerRow.ToArray();
+
             #endregion Collect data
 
             #region Finish up reporting
+
             if (!token.IsCancellationRequested)
             {
                 ReportSet.Reports.Add(report);
             }
             await FinishRequestAsync(request, !token.IsCancellationRequested);
+
             #endregion Finish up reporting
         }
     }

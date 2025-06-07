@@ -20,8 +20,8 @@ namespace GRA.Domain.Report
         private readonly IBranchRepository _branchRepository;
         private readonly IPointTranslationRepository _pointTranslationRepository;
         private readonly IProgramRepository _programRepository;
-        private readonly IUserRepository _userRepository;
         private readonly IUserLogRepository _userLogRepository;
+        private readonly IUserRepository _userRepository;
 
         public ActivityByProgramReport(ILogger<ActivityByProgramReport> logger,
             ServiceFacade.Report serviceFacade,
@@ -31,16 +31,17 @@ namespace GRA.Domain.Report
             IUserRepository userRepository,
             IUserLogRepository userLogRepository) : base(logger, serviceFacade)
         {
-            _branchRepository = branchRepository
-                ?? throw new ArgumentNullException(nameof(branchRepository));
-            _pointTranslationRepository = pointTranslationRepository
-                ?? throw new ArgumentNullException(nameof(pointTranslationRepository));
-            _programRepository = programRepository
-                ?? throw new ArgumentNullException(nameof(programRepository));
-            _userRepository = userRepository
-                ?? throw new ArgumentNullException(nameof(userRepository));
-            _userLogRepository = userLogRepository
-                ?? throw new ArgumentNullException(nameof(userLogRepository));
+            ArgumentNullException.ThrowIfNull(branchRepository);
+            ArgumentNullException.ThrowIfNull(pointTranslationRepository);
+            ArgumentNullException.ThrowIfNull(programRepository);
+            ArgumentNullException.ThrowIfNull(userLogRepository);
+            ArgumentNullException.ThrowIfNull(userRepository);
+
+            _branchRepository = branchRepository;
+            _pointTranslationRepository = pointTranslationRepository;
+            _programRepository = programRepository;
+            _userLogRepository = userLogRepository;
+            _userRepository = userRepository;
         }
 
         public override async Task ExecuteAsync(ReportRequest request,
@@ -48,22 +49,25 @@ namespace GRA.Domain.Report
             IProgress<JobStatus> progress = null)
         {
             #region Reporting initialization
-            request = await StartRequestAsync(request);
-            var criterion = await GetCriterionAsync(request);
 
-            var report = new StoredReport
-            {
-                Title = ReportAttribute?.Name,
-                AsOf = _serviceFacade.DateTimeProvider.Now
-            };
+            request = await StartRequestAsync(request);
+
+            var criterion = await _serviceFacade.ReportCriterionRepository
+                    .GetByIdAsync(request.ReportCriteriaId)
+                ?? throw new GraException($"Report criteria {request.ReportCriteriaId} for report request id {request.Id} could not be found.");
+
+            var report = new StoredReport(_reportInformation.Name,
+                _serviceFacade.DateTimeProvider.Now);
 
             var reportData = new List<object[]>();
 
             var askIfFirstTime
                 = await GetSiteSettingBoolAsync(criterion, SiteSettingKey.Users.AskIfFirstTime);
+
             #endregion Reporting initialization
 
             #region Collect data
+
             UpdateProgress(progress, 1, "Starting report...", request.Name);
 
             // header row
@@ -92,7 +96,7 @@ namespace GRA.Domain.Report
 
                 string description = pointTranslation.ActivityDescriptionPlural;
 
-                if (!translations.ContainsKey(description))
+                if (!translations.TryGetValue(description, out ICollection<int?> value))
                 {
                     translations.Add(description, new List<int?> { pointTranslation.Id });
                     translationTotals.Add(description, 0);
@@ -110,7 +114,7 @@ namespace GRA.Domain.Report
                 }
                 else
                 {
-                    translations[description].Add(pointTranslation.Id);
+                    value.Add(pointTranslation.Id);
                 }
             }
             report.HeaderRow = headerRow.ToArray();
@@ -215,14 +219,17 @@ namespace GRA.Domain.Report
             }
 
             report.FooterRow = footerRow.ToArray();
+
             #endregion Collect data
 
             #region Finish up reporting
+
             if (!token.IsCancellationRequested)
             {
                 ReportSet.Reports.Add(report);
             }
             await FinishRequestAsync(request, !token.IsCancellationRequested);
+
             #endregion Finish up reporting
         }
     }

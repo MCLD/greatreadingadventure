@@ -105,8 +105,13 @@ namespace GRA.Domain.Service
             return await _triggerRepository.GetTriggerDependentsAsync(triggerId);
         }
 
+        public async Task<IEnumerable<string>> GetNamesAsync(IEnumerable<int> triggerIds)
+        {
+            return await _triggerRepository.GetNamesAsync(triggerIds);
+        }
+
         public async Task<DataWithCount<ICollection<Trigger>>>
-            GetPaginatedListAsync(TriggerFilter filter)
+                    GetPaginatedListAsync(TriggerFilter filter)
         {
             VerifyManagementPermission();
             ArgumentNullException.ThrowIfNull(filter);

@@ -13,15 +13,40 @@ using Microsoft.Extensions.Logging;
 namespace GRA.Data.Repository
 {
     public class DrawingRepository
-        : AuditingRepository<Model.Drawing, Domain.Model.Drawing>, IDrawingRepository
+        : AuditingRepository<Model.Drawing, Drawing>, IDrawingRepository
     {
         public DrawingRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<DrawingRepository> logger) : base(repositoryFacade, logger)
         {
         }
 
+        public async Task<int> GetCountAsync(DrawingFilter filter)
+        {
+            ArgumentNullException.ThrowIfNull(filter);
+            return await ApplyFilters(filter).CountAsync();
+        }
+
+        public async Task<Drawing> GetDetailsWinners(int id)
+        {
+            return await GetDetailsWinnersInternal(id, null, null);
+        }
+
+        public async Task<Drawing> GetDetailsWinners(int id, int skip, int take)
+        {
+            return await GetDetailsWinnersInternal(id, skip, take);
+        }
+
+        public async Task<int> GetWinnerCountAsync(int id)
+        {
+            return await _context.PrizeWinners
+                .AsNoTracking()
+                .Where(_ => _.DrawingId == id)
+                .CountAsync();
+        }
+
         public async Task<IEnumerable<Drawing>> PageAllAsync(DrawingFilter filter)
         {
+            ArgumentNullException.ThrowIfNull(filter);
             return await ApplyFilters(filter)
                 .OrderByDescending(_ => _.Id)
                 .ApplyPagination(filter)
@@ -29,10 +54,15 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task<int> GetCountAsync(DrawingFilter filter)
+        public async Task SetArchivedAsync(int userId, int drawingId, bool archive)
         {
-            return await ApplyFilters(filter)
-                .CountAsync();
+            var modelDrawing = await DbSet.Where(_ => _.Id == drawingId).SingleOrDefaultAsync();
+            var dataDrawing = _mapper.Map<Model.Drawing, Drawing>(modelDrawing);
+            if (dataDrawing != null)
+            {
+                dataDrawing.IsArchived = archive;
+                await UpdateSaveAsync(userId, dataDrawing);
+            }
         }
 
         private IQueryable<Model.Drawing> ApplyFilters(DrawingFilter filter)
@@ -42,24 +72,24 @@ namespace GRA.Data.Repository
                 .Where(_ => _.DrawingCriterion.SiteId == filter.SiteId
                     && _.IsArchived == filter.Archived);
 
-            if (filter.SystemIds?.Any() == true)
+            if (filter.SystemIds?.Count > 0)
             {
                 drawingList = drawingList
                     .Where(_ => filter.SystemIds.Contains(_.RelatedSystemId));
             }
 
-            if (filter.BranchIds?.Any() == true)
+            if (filter.BranchIds?.Count > 0)
             {
                 drawingList = drawingList
                     .Where(_ => filter.BranchIds.Contains(_.RelatedBranchId));
             }
 
-            if (filter.UserIds?.Any() == true)
+            if (filter.UserIds?.Count > 0)
             {
                 drawingList = drawingList.Where(_ => filter.UserIds.Contains(_.CreatedBy));
             }
 
-            if (filter.ProgramIds?.Any() == true)
+            if (filter.ProgramIds?.Count > 0)
             {
                 IQueryable<Model.Drawing> nullList = null;
                 IQueryable<Model.Drawing> valueList = null;
@@ -90,54 +120,44 @@ namespace GRA.Data.Repository
             if (!string.IsNullOrWhiteSpace(filter.Search))
             {
                 drawingList = drawingList.Where(_ => _.Name.Contains(filter.Search)
-                                                || _.DrawingCriterion.Name.Contains(filter.Search));
+                    || _.DrawingCriterion.Name.Contains(filter.Search));
             }
 
             return drawingList;
         }
 
-        public async Task<Drawing> GetByIdAsync(int id, int skip, int take)
+        private async Task<Drawing> GetDetailsWinnersInternal(int id, int? skip, int? take)
         {
             var drawing = await DbSet
                 .AsNoTracking()
                 .Where(_ => _.Id == id)
                 .ProjectTo<Drawing>(_mapper.ConfigurationProvider)
-                .SingleOrDefaultAsync();
+                .SingleOrDefaultAsync()
+                ?? throw new GraException($"Drawing id {id} could not be found.");
 
-            if (drawing == null)
-            {
-                throw new GraException($"Drawing id {id} could not be found.");
-            }
-
-            drawing.Winners = await _context.PrizeWinners
+            var winners = _context.PrizeWinners
                 .AsNoTracking()
                 .Where(_ => _.DrawingId == id && !_.User.IsDeleted)
                 .OrderBy(_ => _.User.LastName)
                 .ThenBy(_ => _.User.FirstName)
-                .ThenBy(_ => _.UserId)
-                .Skip(skip)
-                .Take(take)
-                .ProjectTo<PrizeWinner>(_mapper.ConfigurationProvider)
-                .ToListAsync();
-            return drawing;
-        }
+                .ThenBy(_ => _.UserId);
 
-        public async Task<int> GetWinnerCountAsync(int id)
-        {
-            return await _context.PrizeWinners
-                .AsNoTracking()
-                .Where(_ => _.DrawingId == id)
-                .CountAsync();
-        }
-
-        public async Task SetArchivedAsync(int userId, int drawingId, bool archive)
-        {
-            var drawing = _mapper.Map<Model.Drawing, Drawing>(await DbSet.Where(_ => _.Id == drawingId).SingleOrDefaultAsync());
-            if (drawing != null)
+            if (skip.HasValue && take.HasValue)
             {
-                drawing.IsArchived = archive;
-                await UpdateSaveAsync(userId, drawing);
+                drawing.Winners = await winners
+                    .Skip(skip.Value)
+                    .Take(take.Value)
+                    .ProjectTo<PrizeWinner>(_mapper.ConfigurationProvider)
+                    .ToListAsync();
             }
+            else
+            {
+                drawing.Winners = await winners
+                    .ProjectTo<PrizeWinner>(_mapper.ConfigurationProvider)
+                    .ToListAsync();
+            }
+
+            return drawing;
         }
     }
 }

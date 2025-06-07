@@ -22,17 +22,18 @@ namespace GRA.Domain.Report
         private readonly ISystemRepository _systemRepository;
 
         public PrizeRedemptionReport(ILogger<PrizeRedemptionReport> logger,
-            Domain.Report.ServiceFacade.Report serviceFacade,
+            ServiceFacade.Report serviceFacade,
             IBranchRepository branchRepository,
             IPrizeWinnerRepository prizeWinnerRepository,
             ISystemRepository systemRepository) : base(logger, serviceFacade)
         {
-            _branchRepository = branchRepository
-                ?? throw new ArgumentException(nameof(branchRepository));
-            _prizeWinnerRepository = prizeWinnerRepository
-                ?? throw new ArgumentNullException(nameof(prizeWinnerRepository));
-            _systemRepository = systemRepository
-                ?? throw new ArgumentException(nameof(systemRepository));
+            ArgumentNullException.ThrowIfNull(branchRepository);
+            ArgumentNullException.ThrowIfNull(prizeWinnerRepository);
+            ArgumentNullException.ThrowIfNull(systemRepository);
+
+            _branchRepository = branchRepository;
+            _prizeWinnerRepository = prizeWinnerRepository;
+            _systemRepository = systemRepository;
         }
 
         public override async Task ExecuteAsync(ReportRequest request,
@@ -40,10 +41,11 @@ namespace GRA.Domain.Report
             IProgress<JobStatus> progress = null)
         {
             #region Reporting initialization
+
             request = await StartRequestAsync(request);
 
-            var criterion
-                = await _serviceFacade.ReportCriterionRepository.GetByIdAsync(request.ReportCriteriaId)
+            var criterion = await _serviceFacade.ReportCriterionRepository
+                    .GetByIdAsync(request.ReportCriteriaId)
                 ?? throw new GraException($"Report criteria {request.ReportCriteriaId} for report request id {request.Id} could not be found.");
 
             if (criterion.SiteId == null)
@@ -51,7 +53,7 @@ namespace GRA.Domain.Report
                 throw new ArgumentException(nameof(criterion.SiteId));
             }
 
-            string title = "";
+            string title = null;
 
             if (criterion.BranchId.HasValue)
             {
@@ -67,15 +69,14 @@ namespace GRA.Domain.Report
                 throw new GraException("No system or branch selected.");
             }
 
-            var report = new StoredReport
-            {
-                Title = title,
-                AsOf = _serviceFacade.DateTimeProvider.Now
-            };
+            var report = new StoredReport(title ?? _reportInformation.Name,
+                _serviceFacade.DateTimeProvider.Now);
             var reportData = new List<object[]>();
+
             #endregion Reporting initialization
 
             #region Collect data
+
             UpdateProgress(progress, 1, "Starting report...", request.Name);
 
             // header row
@@ -130,14 +131,17 @@ namespace GRA.Domain.Report
             }
 
             report.Data = reportData.ToArray();
+
             #endregion Collect data
 
             #region Finish up reporting
+
             if (!token.IsCancellationRequested)
             {
                 ReportSet.Reports.Add(report);
             }
             await FinishRequestAsync(request, !token.IsCancellationRequested);
+
             #endregion Finish up reporting
         }
     }

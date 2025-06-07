@@ -55,14 +55,26 @@
                readonly />
     </div>
 </div>
-<div class="row mb-2">
+<div class="row mb-4">
     <div class="col-12">
         <label asp-for="Drawing.RedemptionInstructions" class="col-form-label"></label>
         <textarea asp-for="Drawing.RedemptionInstructions" class="form-control" readonly></textarea>
         <span asp-validation-for="Drawing.RedemptionInstructions" class="text-danger"></span>
     </div>
 </div>
-<table class="table table-sm table-bordered table-striped mt-5">
+<div class="row mb-2">
+    <div class="col-12">
+        <div class="d-flex align-items-center">
+            <div class="flex-grow-1 h2">Winners</div>
+            <div>
+                <a asp-action="@nameof(DrawingController.DownloadWinners)"
+                   asp-route-id="@Model.Drawing.Id"
+                   class="btn btn-outline-dark btn-sm">Download</a>
+            </div>
+        </div>
+    </div>
+</div>
+<table class="table table-sm table-bordered table-striped">
     <thead>
         <tr>
             <th>Redeemed?</th>
@@ -145,22 +157,24 @@
                         @winner.UserFirstName @winner.UserLastName
                     </a>
                 </td>
-                <td class="d-flex justify-content-evenly">
-                    @if (!winner.RedeemedAt.HasValue)
-                    {
-                        <button type="button"
-                                class="btn btn-outline-danger btn-sm"
-                                data-bs-toggle="modal"
-                                data-bs-target="#deleteModal"
-                                data-id="@winner.Id"
-                                data-name="@winner.UserFirstName @winner.UserLastName">
-                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
-                        </button>
-                    }
-                    else
-                    {
-                        @:&nbsp;
-                    }
+                <td>
+                    <div class="d-flex justify-content-evenly">
+                        @if (!winner.RedeemedAt.HasValue)
+                        {
+                            <button type="button"
+                                    class="btn btn-outline-danger btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal"
+                                    data-id="@winner.Id"
+                                    data-name="@winner.UserFirstName @winner.UserLastName">
+                                <span class="fas fa-times fa-fw" aria-hidden="true"></span>
+                            </button>
+                        }
+                        else
+                        {
+                            @:&nbsp;
+                        }
+                    </div>
                 </td>
             </tr>
         }

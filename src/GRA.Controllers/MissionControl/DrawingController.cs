@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.Drawing;
@@ -7,6 +8,7 @@ using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
+using GRA.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -41,10 +43,15 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Drawing";
         }
 
-        public static string Name { get { return "Drawing"; } }
+        public static string Name
+        { get { return "Drawing"; } }
 
         public async Task<IActionResult> Criteria(string search,
-            int? systemId, int? branchId, bool? mine, int? programId, int page = 1)
+            int? systemId,
+            int? branchId,
+            bool? mine,
+            int? programId,
+            int page = 1)
         {
             PageTitle = "Drawing Criteria";
 
@@ -211,13 +218,16 @@ namespace GRA.Controllers.MissionControl
                 if (model.Criterion.SystemId.HasValue)
                 {
                     model.BranchList = new SelectList(
-                        await _siteService.GetBranches(model.Criterion.SystemId.Value), "Id", "Name");
+                        await _siteService
+                            .GetBranches(model.Criterion.SystemId.Value), "Id", "Name");
                 }
                 else
                 {
-                    model.BranchList = new SelectList(await _siteService.GetAllBranches(), "Id", "Name");
+                    model.BranchList = new SelectList(await _siteService
+                        .GetAllBranches(), "Id", "Name");
                 }
-                model.ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name");
+                model.ProgramList = new SelectList(await _siteService
+                    .GetProgramList(), "Id", "Name");
                 return View(model);
             }
         }
@@ -250,11 +260,13 @@ namespace GRA.Controllers.MissionControl
                 if (viewModel.Criterion.SystemId.HasValue)
                 {
                     viewModel.BranchList = new SelectList(
-                        await _siteService.GetBranches(viewModel.Criterion.SystemId.Value), "Id", "Name");
+                        await _siteService
+                            .GetBranches(viewModel.Criterion.SystemId.Value), "Id", "Name");
                 }
                 else
                 {
-                    viewModel.BranchList = new SelectList(await _siteService.GetAllBranches(), "Id", "Name");
+                    viewModel.BranchList = new SelectList(await _siteService
+                        .GetAllBranches(), "Id", "Name");
                 }
                 return View(viewModel);
             }
@@ -301,13 +313,16 @@ namespace GRA.Controllers.MissionControl
                 if (model.Criterion.SystemId.HasValue)
                 {
                     model.BranchList = new SelectList(
-                        await _siteService.GetBranches(model.Criterion.SystemId.Value), "Id", "Name");
+                        await _siteService
+                            .GetBranches(model.Criterion.SystemId.Value), "Id", "Name");
                 }
                 else
                 {
-                    model.BranchList = new SelectList(await _siteService.GetAllBranches(), "Id", "Name");
+                    model.BranchList = new SelectList(await _siteService
+                        .GetAllBranches(), "Id", "Name");
                 }
-                model.ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name");
+                model.ProgramList = new SelectList(await _siteService
+                    .GetProgramList(), "Id", "Name");
                 return View(model);
             }
         }
@@ -341,7 +356,8 @@ namespace GRA.Controllers.MissionControl
                 var viewModel = new DrawingDetailViewModel
                 {
                     Drawing = drawing.Data,
-                    CreatedByName = await _userService.GetUsersNameByIdAsync(drawing.Data.CreatedBy),
+                    CreatedByName = await _userService
+                        .GetUsersNameByIdAsync(drawing.Data.CreatedBy),
                     CanViewParticipants = UserHasPermission(Permission.ViewParticipantDetails),
                     PaginateModel = paginateModel
                 };
@@ -355,8 +371,118 @@ namespace GRA.Controllers.MissionControl
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> DownloadWinners(int id)
+        {
+            Drawing drawing = null;
+            try
+            {
+                drawing = await _drawingService.GetDetailsAsync(id)
+                    ?? throw new GraException("Drawing not found.");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to view drawing: ", gex);
+                return RedirectToAction(nameof(Index));
+            }
+
+            string drawingName = drawing.Name;
+
+            var data = new List<IEnumerable<string>>();
+
+            var ContactDetails = new Dictionary<int, User>();
+
+            foreach (var winner in drawing.Winners)
+            {
+                User householdHead = null;
+
+                if (winner.UserHouseholdHeadUserId.HasValue)
+                {
+                    if (ContactDetails.TryGetValue(winner.UserHouseholdHeadUserId.Value,
+                        out User value))
+                    {
+                        householdHead = value;
+                    }
+                    else
+                    {
+                        householdHead = await _userService
+                            .GetContactDetailsAsync(winner.UserHouseholdHeadUserId.Value);
+                        if (householdHead != null)
+                        {
+                            ContactDetails.Add(winner.UserHouseholdHeadUserId.Value, householdHead);
+                        }
+                    }
+                }
+
+                var row = new[]
+                {
+                    winner.RedeemedAt.HasValue
+                        ? winner.RedeemedAt.ToString()
+                        : "Available to redeem",
+                    winner.UserUsername,
+                    winner.UserFirstName,
+                    winner.UserLastName,
+                    winner.UserEmail,
+                    winner.UserPhoneNumber,
+                    winner.UserHouseholdHeadUserId.HasValue
+                        ? householdHead?.Username
+                        : string.Empty,
+                    winner.UserHouseholdHeadUserId.HasValue
+                        ? householdHead?.FirstName
+                        : string.Empty,
+                    winner.UserHouseholdHeadUserId.HasValue
+                        ? householdHead?.LastName
+                        : string.Empty,
+                    winner.UserHouseholdHeadUserId.HasValue
+                        ? householdHead?.Email
+                        : string.Empty,
+                    winner.UserHouseholdHeadUserId.HasValue
+                        ? householdHead?.PhoneNumber
+                        : string.Empty
+                };
+                data.Add(row);
+            }
+
+            var ms = ExcelExport.GenerateWorkbook(new[] {
+                new StoredReport(drawingName, _dateTimeProvider.Now)
+                    {
+                        Data = data,
+                        HeaderRow = new List<string> {
+                            "Redeemed?",
+                            "Username",
+                            "First Name",
+                            "Last Name",
+                            "Email",
+                            "Phone Number",
+                            "Household Head Username",
+                            "Household Head First Name",
+                            "Household Head Last Name",
+                            "Household Head Email",
+                            "Household Head Phone Number",
+                        }
+                    }
+                },
+                new Dictionary<string, object>
+                {
+                    { "As Of", _dateTimeProvider.Now.ToString(CultureInfo.CurrentCulture) },
+                    { "Drawing", drawing.Name },
+                },
+                "As Of");
+
+            return new FileStreamResult(ms, ExcelExport.ExcelMimeType)
+            {
+                FileDownloadName = FileUtility
+                    .EnsureValidFilename($"Winners-{drawingName}.{ExcelExport.ExcelFileExtension}")
+            };
+        }
+
         public async Task<IActionResult> Index(string search,
-                                                            int? systemId, int? branchId, bool? mine, int? programId, bool? archived, int page = 1)
+                    int? systemId,
+            int? branchId,
+            bool? mine,
+            int? programId,
+            bool? archived,
+            int page = 1)
         {
             var filter = new DrawingFilter(page);
 
@@ -480,6 +606,7 @@ namespace GRA.Controllers.MissionControl
 
             return View(viewModel);
         }
+
         public async Task<IActionResult> New(int id)
         {
             try
@@ -490,7 +617,8 @@ namespace GRA.Controllers.MissionControl
                     DrawingCriterion = await _drawingService.GetCriterionDetailsAsync(id),
                     WinnerCount = 1
                 };
-                drawing.DrawingCriterion.EligibleCount = await _drawingService.GetEligibleCountAsync(id);
+                drawing.DrawingCriterion.EligibleCount
+                    = await _drawingService.GetEligibleCountAsync(id);
 
                 var viewModel = new DrawingNewViewModel()
                 {
@@ -528,7 +656,8 @@ namespace GRA.Controllers.MissionControl
 
             if (model.Drawing.WinnerCount > model.Drawing.DrawingCriterion.EligibleCount)
             {
-                ModelState.AddModelError("WinnerCount", "Cannot have more Winners than Eligible Participants");
+                ModelState.AddModelError("WinnerCount",
+                    "Cannot have more Winners than Eligible Participants");
             }
 
             if (ModelState.IsValid)
@@ -541,8 +670,8 @@ namespace GRA.Controllers.MissionControl
                 catch (GraException gex)
                 {
                     AlertInfo = gex.Message;
-                    ModelState["DrawingCriterion.EligibleCount"].RawValue =
-                        await _drawingService.GetEligibleCountAsync(model.Drawing.DrawingCriterionId);
+                    ModelState["DrawingCriterion.EligibleCount"].RawValue = await _drawingService
+                        .GetEligibleCountAsync(model.Drawing.DrawingCriterionId);
 
                     return View(model);
                 }
@@ -554,7 +683,9 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> RedeemWinner(int prizeWinnerId, int drawingId, int page = 1)
+        public async Task<IActionResult> RedeemWinner(int prizeWinnerId,
+            int drawingId,
+            int page = 1)
         {
             try
             {
@@ -564,11 +695,13 @@ namespace GRA.Controllers.MissionControl
             {
                 ShowAlertWarning("Unable to redeem prize: ", gex);
             }
-            return RedirectToAction("Detail", new { id = drawingId, page = page });
+            return RedirectToAction("Detail", new { id = drawingId, page });
         }
 
         [HttpPost]
-        public async Task<IActionResult> RemoveWinner(int prizeWinnerId, int drawingId, int page = 1)
+        public async Task<IActionResult> RemoveWinner(int prizeWinnerId,
+            int drawingId,
+            int page = 1)
         {
             try
             {
@@ -578,11 +711,13 @@ namespace GRA.Controllers.MissionControl
             {
                 ShowAlertWarning("Unable to delete winner: ", gex);
             }
-            return RedirectToAction("Detail", new { id = drawingId, page = page });
+            return RedirectToAction("Detail", new { id = drawingId, page });
         }
 
         [HttpPost]
-        public async Task<IActionResult> UndoRedemption(int prizeWinnerId, int drawingId, int page = 1)
+        public async Task<IActionResult> UndoRedemption(int prizeWinnerId,
+            int drawingId,
+            int page = 1)
         {
             try
             {
@@ -592,7 +727,7 @@ namespace GRA.Controllers.MissionControl
             {
                 ShowAlertWarning("Unable to undo redemption: ", gex);
             }
-            return RedirectToAction("Detail", new { id = drawingId, page = page });
+            return RedirectToAction("Detail", new { id = drawingId, page });
         }
     }
 }

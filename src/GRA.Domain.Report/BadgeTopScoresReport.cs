@@ -26,10 +26,11 @@ namespace GRA.Domain.Report
             IUserLogRepository userLogRepository,
             IUserRepository userRepository) : base(logger, serviceFacade)
         {
-            _userLogRepository = userLogRepository
-                ?? throw new ArgumentNullException(nameof(userLogRepository));
-            _userRepository = userRepository
-                ?? throw new ArgumentNullException(nameof(userRepository));
+            ArgumentNullException.ThrowIfNull(userLogRepository);
+            ArgumentNullException.ThrowIfNull(userRepository);
+
+            _userLogRepository = userLogRepository;
+            _userRepository = userRepository;
         }
 
         public override async Task ExecuteAsync(ReportRequest request,
@@ -37,10 +38,11 @@ namespace GRA.Domain.Report
             IProgress<JobStatus> progress = null)
         {
             #region Reporting initialization
+
             request = await StartRequestAsync(request);
 
-            var criterion
-                = await _serviceFacade.ReportCriterionRepository.GetByIdAsync(request.ReportCriteriaId)
+            var criterion = await _serviceFacade.ReportCriterionRepository
+                    .GetByIdAsync(request.ReportCriteriaId)
                 ?? throw new GraException($"Report criteria {request.ReportCriteriaId} for report request id {request.Id} could not be found.");
 
             if (criterion.SiteId == null)
@@ -48,15 +50,14 @@ namespace GRA.Domain.Report
                 throw new ArgumentException(nameof(criterion.SiteId));
             }
 
-            var report = new StoredReport
-            {
-                Title = ReportAttribute?.Name,
-                AsOf = _serviceFacade.DateTimeProvider.Now
-            };
+            var report = new StoredReport(_reportInformation.Name,
+                _serviceFacade.DateTimeProvider.Now);
             var reportData = new List<object[]>();
+
             #endregion Reporting initialization
 
             #region Adjust report criteria as needed
+
             int? badgeId = null;
             int? challengeId = null;
 
@@ -66,10 +67,12 @@ namespace GRA.Domain.Report
                 {
                     badgeId = Convert.ToInt32(criterion.BadgeRequiredList);
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (ex is FormatException or OverflowException)
                 {
-                    _logger.LogError($"Unable to convert badge id to number: {ex.Message}");
-                    _logger.LogError($"Badge id: {criterion.BadgeRequiredList}");
+                    _logger.LogError(ex,
+                        "Unable to convert badge id ({BadgeId}) to a number: {ErrorMessage}",
+                        criterion.BadgeRequiredList,
+                        ex.Message);
                 }
             }
 
@@ -79,10 +82,12 @@ namespace GRA.Domain.Report
                 {
                     challengeId = Convert.ToInt32(criterion.ChallengeRequiredList);
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (ex is FormatException or OverflowException)
                 {
-                    _logger.LogError($"Unable to convert challenge id to number: {ex.Message}");
-                    _logger.LogError($"Challenge id: {criterion.BadgeRequiredList}");
+                    _logger.LogError(ex,
+                        "Unable to convert challenge id ({ChallengeId}) to a number: {ErrorMessage}",
+                        criterion.ChallengeRequiredList,
+                        ex.Message);
                 }
             }
 
@@ -99,6 +104,7 @@ namespace GRA.Domain.Report
             #endregion Adjust report criteria as needed
 
             #region Collect data
+
             UpdateProgress(progress, 1, "Starting report...", request.Name);
 
             // header row
@@ -202,15 +208,17 @@ namespace GRA.Domain.Report
                 string.Empty,
                 totalPoints
             };
-            report.AsOf = _serviceFacade.DateTimeProvider.Now;
+
             #endregion Collect data
 
             #region Finish up reporting
+
             if (!token.IsCancellationRequested)
             {
                 ReportSet.Reports.Add(report);
             }
             await FinishRequestAsync(request, !token.IsCancellationRequested);
+
             #endregion Finish up reporting
         }
     }

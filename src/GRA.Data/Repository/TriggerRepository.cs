@@ -256,6 +256,15 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<string>> GetNamesAsync(IEnumerable<int> triggerIds)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => triggerIds.Contains(_.Id))
+                .Select(_ => _.Name)
+                .ToListAsync();
+        }
+
         public async Task<ICollection<Trigger>> GetTriggerDependentsAsync(int triggerBadgeId)
         {
             return await _context.TriggerBadges
