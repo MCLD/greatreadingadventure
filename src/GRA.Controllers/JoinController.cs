@@ -232,6 +232,15 @@ namespace GRA.Controllers
                 WelcomeMessage = await GetWelcomeMessageAsync()
             };
 
+            var allowInvalidAddress
+                = await GetSiteSettingBoolAsync(SiteSettingKey.Email.AllowInvalidEmailAddresses);
+
+            if (!allowInvalidAddress)
+            {
+                viewModel.ValidateEmailLink = Url.Action(nameof(LookupController.ValidateEmail),
+                    LookupController.Name);
+            }
+
             if (TempData.TryGetValue(AuthCodeAssignedProgram, out object tempAuthCodeProgram))
             {
                 viewModel.ProgramId = (int)tempAuthCodeProgram;
@@ -362,6 +371,17 @@ namespace GRA.Controllers
 
             TempData.Keep(SinglePageSignUp);
 
+            var allowInvalidAddress
+                = await GetSiteSettingBoolAsync(SiteSettingKey.Email.AllowInvalidEmailAddresses);
+
+            if (!allowInvalidAddress
+                && !string.IsNullOrWhiteSpace(model.Email)
+                && !EmailService.ValidateAddress(model.Email))
+            {
+                ModelState.AddModelError(nameof(model.Email),
+                    _sharedLocalizer[Annotations.Validate.EmailAddressInvalid, model.Email]);
+            }
+
             if (!askEmailSubscription)
             {
                 ModelState.Remove(nameof(model.EmailSubscriptionRequested));
@@ -372,7 +392,10 @@ namespace GRA.Controllers
                         model.EmailSubscriptionRequested, StringComparison.OrdinalIgnoreCase);
                 if (subscriptionRequested && string.IsNullOrWhiteSpace(model.Email))
                 {
-                    ModelState.AddModelError(nameof(model.Email), " ");
+                    if (!ModelState.ContainsKey(nameof(model.Email)))
+                    {
+                        ModelState.AddModelError(nameof(model.Email), " ");
+                    }
                     ModelState.AddModelError(nameof(model.EmailSubscriptionRequested),
                         _sharedLocalizer[Annotations.Required.EmailForSubscription]);
                 }
@@ -901,6 +924,15 @@ namespace GRA.Controllers
 
             var viewModel = new Step3ViewModel();
 
+            var allowInvalidAddress
+                = await GetSiteSettingBoolAsync(SiteSettingKey.Email.AllowInvalidEmailAddresses);
+
+            if (!allowInvalidAddress)
+            {
+                viewModel.ValidateEmailLink = Url.Action(nameof(LookupController.ValidateEmail),
+                    LookupController.Name);
+            }
+
             var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
             if (askIfFirstTime)
             {
@@ -940,12 +972,25 @@ namespace GRA.Controllers
             Justification = "Normalize authorization code to lowercase")]
         public async Task<IActionResult> Step3(Step3ViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             var site = await GetCurrentSiteAsync();
             var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
 
             if (!askIfFirstTime)
             {
                 ModelState.Remove(nameof(model.IsFirstTime));
+            }
+
+            var allowInvalidAddress
+                = await GetSiteSettingBoolAsync(SiteSettingKey.Email.AllowInvalidEmailAddresses);
+
+            if (!allowInvalidAddress
+                && !string.IsNullOrWhiteSpace(model.Email)
+                && !EmailService.ValidateAddress(model.Email))
+            {
+                ModelState.AddModelError(nameof(model.Email),
+                    _sharedLocalizer[Annotations.Validate.EmailAddressInvalid, model.Email]);
             }
 
             var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
@@ -960,9 +1005,12 @@ namespace GRA.Controllers
                         model.EmailSubscriptionRequested, StringComparison.OrdinalIgnoreCase);
                 if (subscriptionRequested && string.IsNullOrWhiteSpace(model.Email))
                 {
-                    ModelState.AddModelError(nameof(model.Email), " ");
+                    if (!ModelState.ContainsKey(nameof(model.Email)))
+                    {
+                        ModelState.AddModelError(nameof(model.Email), " ");
+                    }
                     ModelState.AddModelError(nameof(model.EmailSubscriptionRequested),
-                    _sharedLocalizer[Annotations.Required.EmailForSubscription]);
+                        _sharedLocalizer[Annotations.Required.EmailForSubscription]);
                 }
             }
 

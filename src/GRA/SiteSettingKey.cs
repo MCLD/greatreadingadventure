@@ -23,6 +23,9 @@
 
     public static class Email
     {
+        public static readonly string AllowInvalidEmailAddresses
+            = "Email.AllowInvalidEmailAddresses";
+
         public static readonly string MaximumWelcomeEmailSendBlock
             = "Email.MaximumWelcomeEmailSendBlock";
 

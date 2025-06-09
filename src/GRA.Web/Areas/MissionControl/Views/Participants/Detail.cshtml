@@ -85,7 +85,9 @@
             <div class="row mb-3">
                 <div class="col-12">
                     <label asp-for="User.Email" class="col-form-label"></label>
+                    <span id="Email-Icon" class="fas colored-icon d-none"></span>
                     <input asp-for="User.Email" class="form-control" />
+                    <span id="Email-Validation" class="text-warning fw-bold"></span>
                     <span asp-validation-for="User.Email" class="text-danger"></span>
                 </div>
             </div>
@@ -528,6 +530,40 @@
             });
         </script>
     }
+
+    <script>
+        const emailCheckUrl = "@Url.Action(nameof(GRA.Controllers.LookupController.ValidateEmail), LookupController.Name, new { Area = string.Empty })";
+        const emailIcon = $("#Email-Icon");
+        const emailField = $("#User_Email");
+        const emailValidation = $("#Email-Validation");
+
+        emailField.on("blur", function () {
+            emailIcon.addClass("d-none");
+            emailValidation.addClass("d-none");
+            if ($(this).val().trim() != "" && !$(this).hasClass("input-validation-error")) {
+                $(this).val($(this).val().trim());
+                emailIcon.addClass("fa-spinner fa-spin")
+                    .removeClass("d-none fa-exclamation-triangle fa-check-circle text-success text-warning");
+                $.get(emailCheckUrl, { address: $(this).val() }, function (response) {
+                    console.info("Response %o", response);
+                    if (!response.status) {
+                        $(this).removeClass("valid");
+                        $(this).addClass("input-validation-error");
+                        emailValidation.removeClass("field-validation-valid text-success d-none")
+                            .addClass("field-validation-error")
+                            .text("This email address may not be valid, please verify.");
+                        emailIcon.removeClass("fa-spinner fa-spin")
+                            .addClass("fas fa-exclamation-triangle text-warning");
+                    }
+                    else {
+                        emailValidation.addClass("d-none");
+                        emailIcon.removeClass("fa-spinner fa-spin")
+                            .addClass("fa-check-circle text-success");
+                    }
+                });
+            }
+        });
+    </script>
 
     @if (Model.User.NeedsToAnswerVendorCodeQuestion && Model.User.CanEmailAwardVendorCode && Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.EditParticipants.ToString()))
     {

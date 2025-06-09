@@ -143,7 +143,7 @@
                     {
                         <input asp-for="ProgramId" type="hidden" />
                     }
-                    <div id="ageField" class="row mb-3 @(Model.ShowAge ? "": "d-none")">
+                    <div id="ageField" class="row mb-3 @(Model.ShowAge ? "" : "d-none")">
                         <div class="col-12">
                             <label asp-for="Age" class="col-form-label"></label>
                             <input asp-for="Age" class="form-control" type="text" />
@@ -152,7 +152,7 @@
                                   class="text-danger"></span>
                         </div>
                     </div>
-                    <div id="schoolFields" class="@(Model.ShowSchool ? "": "d-none")">
+                    <div id="schoolFields" class="@(Model.ShowSchool ? "" : "d-none")">
                         @await Html.PartialAsync("_SchoolSelectionPartial", Model)
                     </div>
                     <hr />
@@ -166,11 +166,13 @@
                     <div class="row mb-3">
                         <div class="col-12">
                             <label asp-for="Email" class="col-form-label"></label>
+                            <span id="Email-Icon" class="fas colored-icon d-none"></span>
                             <input asp-for="Email"
                                    class="form-control"
                                    type="email"
                                    autocomplete="email" />
-                            <span asp-validation-for="Email" class="text-danger"></span>
+                            <span id="Email-Validation"
+                                  asp-validation-for="Email"></span>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -354,6 +356,45 @@
             usernameIcon.addClass("d-none");
         });
     </script>
+
+    @if (!string.IsNullOrEmpty(Model.ValidateEmailLink))
+    {
+        <script>
+            const emailCheckUrl = "@Model.ValidateEmailLink";
+            const emailIcon = $("#Email-Icon");
+            const emailField = $("#Email");
+            const emailValidation = $("#Email-Validation");
+
+            emailField.on("blur", function () {
+                emailIcon.addClass("d-none");
+                if ($(this).val().trim() != "" && !$(this).hasClass("input-validation-error")) {
+                    $(this).val($(this).val().trim());
+                    emailIcon.addClass("fa-spinner fa-spin")
+                        .removeClass("d-none fa-times-circle fa-check-circle text-success text-danger");
+                    $.get(emailCheckUrl, { address: $(this).val() }, function (response) {
+                        if (!response.status) {
+                            $(this).removeClass("valid");
+                            $(this).addClass("input-validation-error");
+                            emailValidation.removeClass("field-validation-valid text-success d-none")
+                                .addClass("field-validation-error")
+                                .text(response.message);
+                            emailIcon.removeClass("fa-spinner fa-spin")
+                                .addClass("fa-times-circle text-danger");
+                        }
+                        else {
+                            emailValidation.removeClass("d-none");
+                            emailIcon.removeClass("fa-spinner fa-spin")
+                                .addClass("fa-check-circle text-success");
+                        }
+                    });
+                }
+            });
+
+            emailField.on("keypress", function () {
+                emailIcon.addClass("d-none");
+            });
+        </script>
+    }
 
     @await Html.PartialAsync("_SchoolSelectionScripts", Model)
 }

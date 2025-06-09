@@ -50,6 +50,13 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Challenges).Name,
                     Format = SiteSettingFormat.Integer
                 },
+                [SiteSettingKey.Email.AllowInvalidEmailAddresses] = new SiteSettingDefinition
+                {
+                    Name = "Allow invalid email addresses",
+                    Info = "Allow invalid email address entry when participants sign-up",
+                    Category = typeof(SiteSettingKey.Email).Name,
+                    Format = SiteSettingFormat.Boolean
+                },
                 [SiteSettingKey.Email.MaximumWelcomeEmailSendBlock] = new SiteSettingDefinition
                 {
                     Name = "Welcome email maximum sending block",

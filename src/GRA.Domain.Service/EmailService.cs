@@ -39,20 +39,36 @@ namespace GRA.Domain.Service
             LanguageService languageService,
             SiteLookupService siteLookupService) : base(logger, dateTimeProvider)
         {
-            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
-            _config = config ?? throw new ArgumentNullException(nameof(config));
-            _directEmailHistoryRepository = directEmailHistoryRepository
-                ?? throw new ArgumentNullException(nameof(directEmailHistoryRepository));
-            _directEmailTemplateRepository = directEmailTemplateRepository
-                ?? throw new ArgumentNullException(nameof(directEmailTemplateRepository));
-            _emailBaseRepository = emailBaseRepository
-                ?? throw new ArgumentNullException(nameof(emailBaseRepository));
-            _languageService = languageService
-                ?? throw new ArgumentNullException(nameof(languageService));
-            _siteLookupService = siteLookupService
-                ?? throw new ArgumentNullException(nameof(siteLookupService));
-            _userRepository = userRepository
-                ?? throw new ArgumentNullException(nameof(userRepository));
+            ArgumentNullException.ThrowIfNull(cache);
+            ArgumentNullException.ThrowIfNull(config);
+            ArgumentNullException.ThrowIfNull(directEmailHistoryRepository);
+            ArgumentNullException.ThrowIfNull(directEmailTemplateRepository);
+            ArgumentNullException.ThrowIfNull(emailBaseRepository);
+            ArgumentNullException.ThrowIfNull(languageService);
+            ArgumentNullException.ThrowIfNull(siteLookupService);
+            ArgumentNullException.ThrowIfNull(userRepository);
+
+            _cache = cache;
+            _config = config;
+            _directEmailHistoryRepository = directEmailHistoryRepository;
+            _directEmailTemplateRepository = directEmailTemplateRepository;
+            _emailBaseRepository = emailBaseRepository;
+            _languageService = languageService;
+            _siteLookupService = siteLookupService;
+            _userRepository = userRepository;
+        }
+
+        /// <summary>
+        /// Run a rudimentary check to verify the validity of an email address based on the mail
+        /// toolkit.
+        /// </summary>
+        /// <param name="address">The email address as a string</param>
+        /// <returns>
+        /// True if the email address is judged to be valid, false if not.
+        /// </returns>
+        public static bool ValidateAddress(string address)
+        {
+            return MailboxAddress.TryParse(address, out var _);
         }
 
         public Task IncrementSentCountAsync(int directEmailTemplateId)
@@ -73,10 +89,7 @@ namespace GRA.Domain.Service
 
         public async Task<DirectEmailHistory> SendDirectAsync(DirectEmailDetails directEmailDetails)
         {
-            if (directEmailDetails == null)
-            {
-                throw new ArgumentNullException(nameof(directEmailDetails));
-            }
+            ArgumentNullException.ThrowIfNull(directEmailDetails);
 
             string toAddress;
             string toName;
@@ -87,7 +100,7 @@ namespace GRA.Domain.Service
             {
                 var user = await _userRepository.GetByIdAsync(directEmailDetails.ToUserId
                     ?? directEmailDetails.SendingUserId);
-                if(string.IsNullOrEmpty(user.Email))
+                if (string.IsNullOrEmpty(user.Email))
                 {
                     _logger.LogError("Unable to send email to user id {UserId}: no email address configured.",
                         directEmailDetails.ToUserId);
@@ -279,10 +292,7 @@ namespace GRA.Domain.Service
             DirectEmailHistory history,
             IDictionary<string, string> tags)
         {
-            if (history == null)
-            {
-                throw new ArgumentNullException(nameof(history));
-            }
+            ArgumentNullException.ThrowIfNull(history);
 
             var emailBase = await GetEmailBase(history.EmailBaseId, history.LanguageId);
 
@@ -325,7 +335,8 @@ namespace GRA.Domain.Service
             {
                 _logger.LogError("Unable to parse email address: {EmailAddress}",
                     history.ToEmailAddress);
-                throw new GraException($"Unable to parse email address: {history.ToEmailAddress}", ex);
+                throw new GraException($"Unable to parse email address: {history.ToEmailAddress}",
+                    ex);
             }
 
             using var client = new SmtpClient
@@ -379,9 +390,9 @@ namespace GRA.Domain.Service
                     using (LogContext.PushProperty("EmailServerResponse", history.SentResponse))
                     {
                         _logger.LogInformation("Email sent to {EmailToAddress} with subject {EmailSubject} in {Elapsed} ms",
-                        history.OverrideToEmailAddress ?? history.ToEmailAddress,
-                        history.Subject,
-                        sendTimer.ElapsedMilliseconds);
+                            history.OverrideToEmailAddress ?? history.ToEmailAddress,
+                            history.Subject,
+                            sendTimer.ElapsedMilliseconds);
                     }
                     history.Successful = true;
                 }
@@ -390,11 +401,11 @@ namespace GRA.Domain.Service
                     using (LogContext.PushProperty("EmailServerResponse", history.SentResponse))
                     {
                         _logger.LogError(ex,
-                        "Error sending email to {EmailToAddress} with subject {EmailSubject}: {ErrorMessage} in {Elapsed} ms",
-                        history.OverrideToEmailAddress ?? history.ToEmailAddress,
-                        history.Subject,
-                        sendTimer.ElapsedMilliseconds,
-                        ex.Message);
+                            "Error sending email to {EmailToAddress} with subject {EmailSubject}: {ErrorMessage} in {Elapsed} ms",
+                            history.OverrideToEmailAddress ?? history.ToEmailAddress,
+                            history.Subject,
+                            sendTimer.ElapsedMilliseconds,
+                            ex.Message);
                     }
                 }
                 finally

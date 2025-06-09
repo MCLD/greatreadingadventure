@@ -92,6 +92,7 @@ namespace GRA.Controllers.ViewModel.Join
         [MaxLength(36, ErrorMessage = ErrorMessages.MaxLength)]
         public string Username { get; set; }
 
+        public string ValidateEmailLink { get; set; }
         public string WelcomeMessage { get; set; }
     }
 }
