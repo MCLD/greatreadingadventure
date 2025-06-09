@@ -18,6 +18,8 @@ namespace GRA.Domain.Repository
 
         Task<IEnumerable<ChallengeTask>> GetChallengeTasksAsync(int challengeId, int? userId);
 
+        Task<IEnumerable<string>> GetNamesAsync(IEnumerable<int> challengeIds);
+
         Task<ActivityLogResult> GetUserChallengeTaskResultAsync(int userId, int challengeTaskId);
 
         Task<IEnumerable<int>> GetUserFavoriteChallenges(int userId,
@@ -33,8 +35,10 @@ namespace GRA.Domain.Repository
 
         Task SetValidationAsync(int userId, int challengeId, bool valid);
 
-        Task<Challenge> UpdateSaveAsync(int currentUserId, Challenge challenge,
-            List<int> categoriesToAdd, List<int> categoriesToRemove);
+        Task<Challenge> UpdateSaveAsync(int currentUserId,
+            Challenge challenge,
+            List<int> categoriesToAdd,
+            List<int> categoriesToRemove);
 
         Task UpdateUserChallengeTaskAsync(
             int userId,
@@ -42,10 +46,12 @@ namespace GRA.Domain.Repository
             int? userLogId,
             int? bookId);
 
-        Task<IEnumerable<ChallengeTaskUpdateStatus>>
-                                    UpdateUserChallengeTasksAsync(int userId, IEnumerable<ChallengeTask> challengeTasks);
+        Task<IEnumerable<ChallengeTaskUpdateStatus>> UpdateUserChallengeTasksAsync(int userId,
+            IEnumerable<ChallengeTask> challengeTasks);
 
-        Task UpdateUserFavoritesAsync(int authUserId, int userId, IEnumerable<int> favoritesToAdd,
+        Task UpdateUserFavoritesAsync(int authUserId,
+            int userId,
+            IEnumerable<int> favoritesToAdd,
             IEnumerable<int> favoritesToRemove);
 
         Task<IEnumerable<int>> ValidateChallengeIdsAsync(int siteId, IEnumerable<int> challengeIds);

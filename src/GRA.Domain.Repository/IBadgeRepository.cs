@@ -12,6 +12,8 @@ namespace GRA.Domain.Repository
 
         Task<string> GetBadgeNameAsync(int badgeId);
 
+        Task<IEnumerable<string>> GetBadgeNamesAsync(IEnumerable<int> ids);
+
         Task<int> GetCountBySystemAsync(int systemId);
 
         Task<int> GetCountForUserAsync(int userId);

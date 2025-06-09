@@ -192,18 +192,16 @@ namespace GRA.Controllers.MissionControl
                 unreportedEmailAddresses = await _vendorCodeService
                     .GetUnreportedEmailAwardCodes(vendorCodeTypeId);
 
-                var report = new StoredReport
+                var report = new StoredReport("Email Award Addresses", _dateTimeProvider.Now)
                 {
-                    AsOf = _dateTimeProvider.Now,
                     Data = unreportedEmailAddresses
-                    .Select(_ => new object[]
-                    {
-                        _.UserId,
-                        _.Name,
-                        _.Email
-                    }),
+                        .Select(_ => new object[]
+                        {
+                            _.UserId,
+                            _.Name,
+                            _.Email
+                        }),
                     HeaderRow = new[] { "User Id", "Name", "Email Address" },
-                    Title = "Email Award Addresses"
                 };
 
                 var ms = ExcelExport.GenerateWorkbook(new List<StoredReport> { report });
@@ -914,7 +912,10 @@ namespace GRA.Controllers.MissionControl
                 {
                     foreach (var errorMessage in validationError)
                     {
-                        ModelState.AddModelError(nameof(viewModel.VendorCodeType) + '.' + validationError.Key, errorMessage);
+                        ModelState.AddModelError(nameof(viewModel.VendorCodeType)
+                                + '.'
+                                + validationError.Key,
+                            errorMessage);
                     }
                 }
                 ShowAlertWarning("There were issues updating the vendor code.");
@@ -1023,21 +1024,26 @@ namespace GRA.Controllers.MissionControl
             });
         }
 
-        private static int? GetMessageTemplateId(VendorCodeType vendorCodeType, string item) => item switch
-        {
-            nameof(vendorCodeType.DonationMessageTemplateId) => vendorCodeType.DonationMessageTemplateId,
-            nameof(vendorCodeType.EmailAwardMessageTemplateId) => vendorCodeType.EmailAwardMessageTemplateId,
-            nameof(vendorCodeType.MessageTemplateId) => vendorCodeType.MessageTemplateId,
-            nameof(vendorCodeType.OptionMessageTemplateId) => vendorCodeType.OptionMessageTemplateId,
-            _ => throw new GraException("Unknown message template type")
-        };
+        private static int? GetMessageTemplateId(VendorCodeType vendorCodeType, string item)
+            => item switch
+            {
+                nameof(vendorCodeType.DonationMessageTemplateId)
+                    => vendorCodeType.DonationMessageTemplateId,
+                nameof(vendorCodeType.EmailAwardMessageTemplateId)
+                    => vendorCodeType.EmailAwardMessageTemplateId,
+                nameof(vendorCodeType.MessageTemplateId) => vendorCodeType.MessageTemplateId,
+                nameof(vendorCodeType.OptionMessageTemplateId)
+                => vendorCodeType.OptionMessageTemplateId,
+                _ => throw new GraException("Unknown message template type")
+            };
 
-        private static int? GetSegmentTextId(VendorCodeType vendorCodeType, string item) => item switch
-        {
-            nameof(vendorCodeType.DonationSegmentId) => vendorCodeType.DonationSegmentId,
-            nameof(vendorCodeType.EmailAwardSegmentId) => vendorCodeType.EmailAwardSegmentId,
-            _ => throw new GraException("Unknown segment type")
-        };
+        private static int? GetSegmentTextId(VendorCodeType vendorCodeType, string item)
+            => item switch
+            {
+                nameof(vendorCodeType.DonationSegmentId) => vendorCodeType.DonationSegmentId,
+                nameof(vendorCodeType.EmailAwardSegmentId) => vendorCodeType.EmailAwardSegmentId,
+                _ => throw new GraException("Unknown segment type")
+            };
 
         private async Task<IActionResult> ShowConfigurationAsync(ConfigureViewModel viewModel)
         {

@@ -29,14 +29,15 @@ namespace GRA.Domain.Report
             ISystemRepository systemRepository,
             IVendorCodeRepository vendorCodeRepository) : base(logger, serviceFacade)
         {
-            _branchRepository = branchRepository
-                ?? throw new ArgumentNullException(nameof(branchRepository));
-            _programRepository = programRepository
-                ?? throw new ArgumentNullException(nameof(programRepository));
-            _systemRepository = systemRepository
-                ?? throw new ArgumentNullException(nameof(systemRepository));
-            _vendorCodeRepository = vendorCodeRepository
-                ?? throw new ArgumentNullException(nameof(vendorCodeRepository));
+            ArgumentNullException.ThrowIfNull(branchRepository);
+            ArgumentNullException.ThrowIfNull(programRepository);
+            ArgumentNullException.ThrowIfNull(systemRepository);
+            ArgumentNullException.ThrowIfNull(vendorCodeRepository);
+
+            _branchRepository = branchRepository;
+            _programRepository = programRepository;
+            _systemRepository = systemRepository;
+            _vendorCodeRepository = vendorCodeRepository;
         }
 
         public override async Task ExecuteAsync(ReportRequest request,
@@ -47,8 +48,8 @@ namespace GRA.Domain.Report
 
             request = await StartRequestAsync(request);
 
-            var criterion
-                = await _serviceFacade.ReportCriterionRepository.GetByIdAsync(request.ReportCriteriaId)
+            var criterion = await _serviceFacade.ReportCriterionRepository
+                    .GetByIdAsync(request.ReportCriteriaId)
                 ?? throw new GraException($"Report criteria {request.ReportCriteriaId} for report request id {request.Id} could not be found.");
 
             if (!criterion.SiteId.HasValue)
@@ -57,7 +58,6 @@ namespace GRA.Domain.Report
             }
 
             int count = 0;
-            var asof = _serviceFacade.DateTimeProvider.Now;
 
             #endregion Reporting initialization
 
@@ -96,11 +96,8 @@ namespace GRA.Domain.Report
                     break;
                 }
 
-                var report = new StoredReport
-                {
-                    Title = program.Name,
-                    AsOf = asof
-                };
+                var report = new StoredReport(program.Name ?? _reportInformation.Name,
+                    _serviceFacade.DateTimeProvider.Now);
                 var reportData = new List<object[]>();
 
                 criterion.ProgramId = program.Id;
@@ -220,11 +217,7 @@ namespace GRA.Domain.Report
                 programReports.Add(report);
             }
 
-            var summaryReport = new StoredReport
-            {
-                Title = "Summary",
-                AsOf = asof
-            };
+            var summaryReport = new StoredReport("Summary", _serviceFacade.DateTimeProvider.Now);
 
             var summaryReportData = new List<object[]>();
 

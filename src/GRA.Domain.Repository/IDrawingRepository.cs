@@ -7,10 +7,16 @@ namespace GRA.Domain.Repository
 {
     public interface IDrawingRepository : IRepository<Drawing>
     {
-        Task<IEnumerable<Drawing>> PageAllAsync(DrawingFilter filter);
         Task<int> GetCountAsync(DrawingFilter filter);
-        Task<Drawing> GetByIdAsync(int id, int skip, int take);
+
+        Task<Drawing> GetDetailsWinners(int id, int skip, int take);
+
+        Task<Drawing> GetDetailsWinners(int id);
+
         Task<int> GetWinnerCountAsync(int id);
+
+        Task<IEnumerable<Drawing>> PageAllAsync(DrawingFilter filter);
+
         Task SetArchivedAsync(int userId, int drawingId, bool archive);
     }
 }

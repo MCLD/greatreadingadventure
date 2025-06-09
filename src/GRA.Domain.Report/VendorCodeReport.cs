@@ -29,14 +29,15 @@ namespace GRA.Domain.Report
             IVendorCodeRepository vendorCodeRepository,
             IVendorCodeTypeRepository vendorCodeTypeRepository) : base(logger, serviceFacade)
         {
-            _branchRepository = branchRepository
-                ?? throw new ArgumentException(nameof(branchRepository));
-            _systemRepository = systemRepository
-                ?? throw new ArgumentException(nameof(systemRepository));
-            _vendorCodeRepository = vendorCodeRepository
-                ?? throw new ArgumentException(nameof(vendorCodeRepository));
-            _vendorCodeTypeRepository = vendorCodeTypeRepository
-                ?? throw new ArgumentNullException(nameof(vendorCodeTypeRepository));
+            ArgumentNullException.ThrowIfNull(branchRepository);
+            ArgumentNullException.ThrowIfNull(systemRepository);
+            ArgumentNullException.ThrowIfNull(vendorCodeRepository);
+            ArgumentNullException.ThrowIfNull(vendorCodeTypeRepository);
+
+            _branchRepository = branchRepository;
+            _systemRepository = systemRepository;
+            _vendorCodeRepository = vendorCodeRepository;
+            _vendorCodeTypeRepository = vendorCodeTypeRepository;
         }
 
         public override async Task ExecuteAsync(ReportRequest request,
@@ -46,8 +47,8 @@ namespace GRA.Domain.Report
             #region Reporting initialization
             request = await StartRequestAsync(request);
 
-            var criterion
-                = await _serviceFacade.ReportCriterionRepository.GetByIdAsync(request.ReportCriteriaId)
+            var criterion = await _serviceFacade.ReportCriterionRepository
+                    .GetByIdAsync(request.ReportCriteriaId)
                 ?? throw new GraException($"Report criteria {request.ReportCriteriaId} for report request id {request.Id} could not be found.");
 
             if (criterion.SiteId == null)
@@ -55,18 +56,15 @@ namespace GRA.Domain.Report
                 throw new ArgumentException(nameof(criterion.SiteId));
             }
 
-            string title = "";
+            string title = null;
 
             if (criterion.SystemId.HasValue)
             {
                 title = (await _systemRepository.GetByIdAsync(criterion.SystemId.Value)).Name;
             }
 
-            var report = new StoredReport
-            {
-                Title = title,
-                AsOf = _serviceFacade.DateTimeProvider.Now
-            };
+            var report = new StoredReport(title ?? _reportInformation.Name,
+                _serviceFacade.DateTimeProvider.Now);
             var reportData = new List<object[]>();
 
             var askIfFirstTime

@@ -27,12 +27,13 @@ namespace GRA.Domain.Report
             IChallengeRepository challengeRepository,
             IUserLogRepository userLogRepository) : base(logger, serviceFacade)
         {
-            _badgeRepository = badgeRepository
-                ?? throw new ArgumentNullException(nameof(badgeRepository));
-            _challengeRepository = challengeRepository
-                ?? throw new ArgumentNullException(nameof(challengeRepository));
-            _userLogRepository = userLogRepository
-                ?? throw new ArgumentNullException(nameof(userLogRepository));
+            ArgumentNullException.ThrowIfNull(badgeRepository);
+            ArgumentNullException.ThrowIfNull(challengeRepository);
+            ArgumentNullException.ThrowIfNull(userLogRepository);
+
+            _badgeRepository = badgeRepository;
+            _challengeRepository = challengeRepository;
+            _userLogRepository = userLogRepository;
         }
 
         public override async Task ExecuteAsync(ReportRequest request,
@@ -40,19 +41,23 @@ namespace GRA.Domain.Report
             IProgress<JobStatus> progress = null)
         {
             #region Reporting initialization
+
             request = await StartRequestAsync(request);
 
-            var criterion
-                = await _serviceFacade.ReportCriterionRepository.GetByIdAsync(request.ReportCriteriaId)
+            var criterion = await _serviceFacade.ReportCriterionRepository
+                    .GetByIdAsync(request.ReportCriteriaId)
                 ?? throw new GraException($"Report criteria {request.ReportCriteriaId} for report request id {request.Id} could not be found.");
 
-            var report = new StoredReport();
+            var report = new StoredReport(_reportInformation.Name,
+                _serviceFacade.DateTimeProvider.Now);
             var reportData = new List<object[]>();
 
             int count = 0;
+
             #endregion Reporting initialization
 
             #region Adjust report criteria as needed
+
             IEnumerable<int> badgeIds = null;
             IEnumerable<int> challengeIds = null;
 
@@ -62,10 +67,12 @@ namespace GRA.Domain.Report
                 {
                     badgeIds = criterion.BadgeRequiredList.Split(',').Select(int.Parse);
                 }
-                catch (Exception ex)
+                catch (ArgumentException ex)
                 {
-                    _logger.LogError($"Unable to convert badge id list to numbers: {ex.Message}");
-                    _logger.LogError($"Badge id list: {criterion.BadgeRequiredList}");
+                    _logger.LogError(ex,
+                        "Unable to convert badge id list ({BadgeIdList}) to numbers: {ErrorMessage}",
+                        criterion.BadgeRequiredList,
+                        ex.Message);
                 }
             }
 
@@ -75,25 +82,29 @@ namespace GRA.Domain.Report
                 {
                     challengeIds = criterion.ChallengeRequiredList.Split(',').Select(int.Parse);
                 }
-                catch (Exception ex)
+                catch (ArgumentException ex)
                 {
-                    _logger.LogError($"Unable to convert challenge id list to numbers: {ex.Message}");
-                    _logger.LogError($"Challenge id list: {criterion.BadgeRequiredList}");
+                    _logger.LogError(ex,
+                        "Unable to convert challenge id list ({ChallengeIdList}) to numbers: {ErrorMessage}",
+                        criterion.ChallengeRequiredList,
+                        ex.Message);
                 }
             }
 
             int totalCount = challengeIds?.Count() ?? 0;
             totalCount += badgeIds?.Count() ?? 0;
+
             #endregion Adjust report criteria as needed
 
             #region Collect data
+
             UpdateProgress(progress, 1, "Starting report...", request.Name);
 
             // header row
-            report.HeaderRow = new object[] {
+            report.HeaderRow = [
                 "Earned Item",
                 "Participants"
-            };
+            ];
 
             // running totals
             long totalEarnedItems = 0;
@@ -107,19 +118,19 @@ namespace GRA.Domain.Report
                         break;
                     }
 
-                    var badgeName = await _badgeRepository.GetBadgeNameAsync(badgeId);
+                    var badgeName = await _badgeRepository.GetBadgeNamesAsync([badgeId]);
                     var earned = await _userLogRepository.EarnedBadgeCountAsync(criterion, badgeId);
 
                     UpdateProgress(progress,
                         ++count * 100 / totalCount,
-                        $"Processing badge: {badgeName}...",
+                        $"Processing badge: {string.Join(", ", badgeName)}...",
                         request.Name);
 
-                    reportData.Add(new object[]
-                    {
-                    badgeName,
-                    earned
-                    });
+                    reportData.Add(
+                    [
+                        string.Join(", ", badgeName),
+                        earned
+                    ]);
 
                     totalEarnedItems += earned;
                 }
@@ -135,18 +146,19 @@ namespace GRA.Domain.Report
                     }
 
                     var challenge = await _challengeRepository.GetByIdAsync(challengeId);
-                    var earned = await _userLogRepository.CompletedChallengeCountAsync(criterion, challengeId);
+                    var earned = await _userLogRepository.CompletedChallengeCountAsync(criterion,
+                        challengeId);
 
                     UpdateProgress(progress,
                         ++count * 100 / totalCount,
                         $"Processing challenge: {challenge.Name}...",
                         request.Name);
 
-                    reportData.Add(new object[]
-                    {
-                    challenge.Name,
-                    earned
-                    });
+                    reportData.Add(
+                    [
+                        challenge.Name,
+                        earned
+                    ]);
 
                     totalEarnedItems += earned;
                 }
@@ -154,20 +166,22 @@ namespace GRA.Domain.Report
 
             report.Data = reportData.OrderByDescending(_ => _[1]);
 
-            report.FooterRow = new object[]
-            {
+            report.FooterRow =
+            [
                 "Total",
                 totalEarnedItems
-            };
-            report.AsOf = _serviceFacade.DateTimeProvider.Now;
+            ];
+
             #endregion Collect data
 
             #region Finish up reporting
+
             if (!token.IsCancellationRequested)
             {
                 ReportSet.Reports.Add(report);
             }
             await FinishRequestAsync(request, !token.IsCancellationRequested);
+
             #endregion Finish up reporting
         }
     }

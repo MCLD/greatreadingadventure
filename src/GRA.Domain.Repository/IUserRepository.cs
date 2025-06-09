@@ -27,6 +27,8 @@ namespace GRA.Domain.Repository
 
         Task<User> GetByUsernameAsync(string username);
 
+        Task<User> GetContactDetailsAsync(int siteId, int userId);
+
         Task<int> GetCountAsync(UserFilter filter);
 
         Task<int> GetCountAsync(ReportCriterion request);

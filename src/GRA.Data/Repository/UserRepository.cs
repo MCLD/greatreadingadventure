@@ -22,8 +22,9 @@ namespace GRA.Data.Repository
             ILogger<UserRepository> logger,
             Security.Abstract.IPasswordHasher passwordHasher) : base(repositoryFacade, logger)
         {
-            _passwordHasher = passwordHasher
-                ?? throw new ArgumentNullException(nameof(passwordHasher));
+            ArgumentNullException.ThrowIfNull(passwordHasher);
+
+            _passwordHasher = passwordHasher;
         }
 
         public async Task AddRoleAsync(int currentUserId, int userId, int roleId)
@@ -148,6 +149,23 @@ namespace GRA.Data.Repository
             {
                 return null;
             }
+        }
+
+        public async Task<User> GetContactDetailsAsync(int siteId, int userId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId && !_.IsDeleted && _.Id == userId)
+                .Select(_ => new User
+                {
+                    Email = _.Email,
+                    FirstName = _.FirstName,
+                    Id = _.Id,
+                    LastName = _.LastName,
+                    PhoneNumber = _.PhoneNumber,
+                    Username = _.Username
+                })
+                .SingleOrDefaultAsync();
         }
 
         public async Task<int> GetCountAsync(ReportCriterion request)
@@ -778,17 +796,17 @@ namespace GRA.Data.Repository
             var userList = DbSet.AsNoTracking()
                 .Where(_ => !_.IsDeleted && _.SiteId == filter.SiteId);
 
-            if (filter.SystemIds?.Any() == true)
+            if (filter.SystemIds?.Count > 0)
             {
                 userList = userList.Where(_ => filter.SystemIds.Contains(_.SystemId));
             }
 
-            if (filter.BranchIds?.Any() == true)
+            if (filter.BranchIds?.Count > 0)
             {
                 userList = userList.Where(_ => filter.BranchIds.Contains(_.BranchId));
             }
 
-            if (filter.ProgramIds?.Any() == true)
+            if (filter.ProgramIds?.Count > 0)
             {
                 userList = userList
                     .Where(_ => filter.ProgramIds.Cast<int>().Contains(_.ProgramId));

@@ -33,6 +33,7 @@ namespace GRA.Controllers.MissionControl
         private const int PerformersPerPage = 15;
 
         private const string SelectionPageTitle = "{0} ({1} selections)";
+        private static readonly char[] CommaSpaceSeparator = new[] { ',', ' ' };
         private static readonly DateTime DefaultPerformerScheduleEndTime = DateTime.Parse("8:00 PM");
 
         private static readonly DateTime DefaultPerformerScheduleStartTime = DateTime.Parse("8:00 AM");
@@ -49,10 +50,14 @@ namespace GRA.Controllers.MissionControl
             SiteService siteService)
             : base(context)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _performerSchedulingService = performerSchedulingService
-                ?? throw new ArgumentNullException(nameof(performerSchedulingService));
-            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
+            ArgumentNullException.ThrowIfNull(logger);
+            ArgumentNullException.ThrowIfNull(performerSchedulingService);
+            ArgumentNullException.ThrowIfNull(siteService);
+
+            _logger = logger;
+            _performerSchedulingService = performerSchedulingService;
+            _siteService = siteService;
+
             PageTitle = "Performer Management";
         }
 
@@ -176,10 +181,8 @@ namespace GRA.Controllers.MissionControl
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();
 
-            var storedReport = new StoredReport
+            var storedReport = new StoredReport("Scheduled Programs", _dateTimeProvider.Now)
             {
-                AsOf = _dateTimeProvider.Now,
-                Title = "Scheduled Programs",
                 HeaderRow = new[]
                 {
                     "Performer Name",
@@ -263,14 +266,12 @@ namespace GRA.Controllers.MissionControl
         [HttpGet]
         public async Task<IActionResult> PerformerExport()
         {
-            ICollection<PsPerformer> performerList;
-            performerList = await _performerSchedulingService.GetAllPerformersAsync();
+            var performerList = await _performerSchedulingService.GetAllPerformersAsync();
 
-            var report = new StoredReport
+            var report = new StoredReport("Email Award Addresses", _dateTimeProvider.Now)
             {
-                AsOf = _dateTimeProvider.Now,
                 Data = performerList
-                .Where(_ => _.IsApproved != false)
+                .Where(_ => _.IsApproved)
                 .OrderBy(_ => _.Name)
                 .Select(_ => new object[]
                 {
@@ -280,8 +281,7 @@ namespace GRA.Controllers.MissionControl
                         _.Email,
                         _.Phone
                 }),
-                HeaderRow = new[] { "Name", "VendorID", "Address", "Email", "Phone" },
-                Title = "Email Award Addresses"
+                HeaderRow = new[] { "Name", "VendorID", "Address", "Email", "Phone" }
             };
 
             var fileName = $"{report.AsOf:yyyyMMdd}-PerformerList";
@@ -864,7 +864,7 @@ namespace GRA.Controllers.MissionControl
             var selections = await _performerSchedulingService
                 .GetBranchProgramSelectionsByPerformerAsync(performer.Id);
 
-            if (!selections.Any())
+            if (selections.Count == 0)
             {
                 ShowAlertInfo("No performances found for selected performer.");
                 return RedirectToAction(nameof(Performers));
@@ -1039,8 +1039,8 @@ namespace GRA.Controllers.MissionControl
 
             if (hasIntervalString)
             {
-                var intervalOptions = intervalString.Split(new[] { ',', ' ' },
-                                StringSplitOptions.RemoveEmptyEntries);
+                var intervalOptions = intervalString.Split(CommaSpaceSeparator,
+                    StringSplitOptions.RemoveEmptyEntries);
 
                 viewModel.BackToBackSelection = new SelectList(intervalOptions);
             }
@@ -1109,7 +1109,7 @@ namespace GRA.Controllers.MissionControl
 
             if (hasIntervalString)
             {
-                var intervalOptions = intervalString.Split(new[] { ',', ' ' },
+                var intervalOptions = intervalString.Split(CommaSpaceSeparator,
                     StringSplitOptions.RemoveEmptyEntries);
 
                 viewModel.BackToBackSelection = new SelectList(intervalOptions);
