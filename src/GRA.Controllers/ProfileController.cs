@@ -389,6 +389,13 @@ namespace GRA.Controllers
                 ModelState.Remove(nameof(model.IsFirstTime));
             }
 
+            if (!string.IsNullOrWhiteSpace(model.User.Email)
+                && !EmailService.ValidateAddress(model.User.Email))
+            {
+                ModelState.AddModelError("User.Email",
+                    _sharedLocalizer[Annotations.Validate.Email, DisplayNames.EmailAddress]);
+            }
+
             var (askEmailSubscription, askEmailSubscriptionText)
                 = await GetSiteSettingStringAsync(SiteSettingKey.Users.AskEmailSubPermission);
             if (!askEmailSubscription)
@@ -401,7 +408,10 @@ namespace GRA.Controllers
                         model.EmailSubscriptionRequested, StringComparison.OrdinalIgnoreCase);
                 if (subscriptionRequested && string.IsNullOrWhiteSpace(model.User.Email))
                 {
-                    ModelState.AddModelError("User.Email", " ");
+                    if (!ModelState.ContainsKey("User.Email"))
+                    {
+                        ModelState.AddModelError("User.Email", " ");
+                    }
                     ModelState.AddModelError(nameof(model.EmailSubscriptionRequested),
                         _sharedLocalizer[Annotations.Validate.EmailSubscription]);
                 }
@@ -1576,7 +1586,7 @@ namespace GRA.Controllers
                     .GetByProgramIdAsync(model.User.ProgramId);
                 model.TranslationDescriptionPastTense = pointTranslation
                     .TranslationDescriptionPastTense
-                    .Replace("{0}", "",StringComparison.OrdinalIgnoreCase)
+                    .Replace("{0}", "", StringComparison.OrdinalIgnoreCase)
                     .Trim();
                 model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }

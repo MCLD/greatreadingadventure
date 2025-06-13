@@ -19,9 +19,9 @@ namespace GRA.Controllers
         private readonly UserService _userService;
 
         public LookupController(ILogger<LookupController> logger,
-             ServiceFacade.Controller context,
-             AvatarService avatarService,
-             SchoolService schoolService,
+            ServiceFacade.Controller context,
+            AvatarService avatarService,
+            SchoolService schoolService,
             SiteService siteService,
             UserService userService) : base(context)
         {
@@ -106,6 +106,36 @@ namespace GRA.Controllers
         public async Task<JsonResult> UsernameInUse(string username)
         {
             return Json(await _userService.UsernameInUseAsync(username));
+        }
+
+        /// <summary>
+        /// Run a rudimentary check to verify the validity of an email address based on the mail
+        /// toolkit.
+        /// </summary>
+        /// <param name="address">The email address as a string</param>
+        /// <returns>
+        /// <para>JSON object with the following properties:</para>
+        /// <para>
+        /// - status: true if valid, false it not
+        /// - message: if status is false, message provides a localized explanation of the issue
+        /// </para>
+        /// </returns>
+        [HttpGet]
+        public JsonResult ValidateEmail(string address)
+        {
+            if (EmailService.ValidateAddress(address))
+            {
+                return Json(new { Status = true });
+            }
+            else
+            {
+                return Json(new
+                {
+                    Status = false,
+                    Message = _sharedLocalizer[Annotations.Validate.Email,
+                        DisplayNames.EmailAddress].Value
+                });
+            }
         }
     }
 }

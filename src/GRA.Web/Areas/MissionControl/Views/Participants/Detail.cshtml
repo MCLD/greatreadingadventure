@@ -29,7 +29,9 @@
 
 @await Html.PartialAsync("_ParticipantPartial")
 
-<form asp-controller="Participants" method="post" role="form">
+<form asp-controller="@ParticipantsController.Name"
+      method="post"
+      role="form">
     <input asp-for="Id" type="hidden" />
     <input asp-for="HouseholdCount" type="hidden" />
     <input asp-for="PrizeCount" type="hidden" />
@@ -85,8 +87,10 @@
             <div class="row mb-3">
                 <div class="col-12">
                     <label asp-for="User.Email" class="col-form-label"></label>
+                    <span id="Email-Icon" class="fas colored-icon d-none"></span>
                     <input asp-for="User.Email" class="form-control" />
-                    <span asp-validation-for="User.Email" class="text-danger"></span>
+                    <span asp-validation-for="User.Email"
+                          id="Email-Validation"></span>
                 </div>
             </div>
 
@@ -122,7 +126,7 @@
                 </div>
             </div>
 
-            <div id="ageField" class="row mb-3 @(Model.ShowAge ? "": "d-none")">
+            <div id="ageField" class="row mb-3 @(Model.ShowAge ? "" : "d-none")">
                 <div class="col-12">
                     <label asp-for="User.Age" class="col-form-label"></label>
                     <input asp-for="User.Age" class="form-control" type="text" />
@@ -130,7 +134,7 @@
                 </div>
             </div>
 
-            <div id="schoolFields" class="@(Model.ShowSchool ? "": "d-none")">
+            <div id="schoolFields" class="@(Model.ShowSchool ? "" : "d-none")">
                 @if (Model.CanEditDetails)
                 {
                     @await Html.PartialAsync("_SchoolSelectionPartial", Model)
@@ -283,7 +287,7 @@
                                 {
                                     @:/ Item is missing
                                 }
-                                @:<button class="btn btn-sm btn-warning" type="button" data-bs-toggle="modal" data-bs-target="#missingDamaged">Update status</button>
+                                                    @:<button class="btn btn-sm btn-warning" type="button" data-bs-toggle="modal" data-bs-target="#missingDamaged">Update status</button>
                             }
                         </div>
                     </div>
@@ -528,6 +532,41 @@
             });
         </script>
     }
+
+    <script>
+        const emailCheckUrl = "@Url.Action(nameof(GRA.Controllers.LookupController.ValidateEmail), LookupController.Name, new { Area = string.Empty })";
+        const emailIcon = $("#Email-Icon");
+        const emailField = $("#User_Email");
+        const emailValidation = $("#Email-Validation");
+
+        emailField.on("blur", function () {
+            emailIcon.addClass("d-none");
+            if ($(this).val().trim() != "" && !$(this).hasClass("input-validation-error")) {
+                $(this).val($(this).val().trim());
+                emailIcon.addClass("fa-spinner fa-spin")
+                    .removeClass("d-none fa-times-circle fa-check-circle text-success text-danger");
+                $.get(emailCheckUrl, { address: $(this).val() }, function (response) {
+                    if (!response.status) {
+                        $(this).removeClass("valid");
+                        $(this).addClass("input-validation-error");
+                        emailValidation.removeClass("field-validation-valid text-success d-none")
+                            .addClass("field-validation-error")
+                            .text(response.message);
+                        emailIcon.removeClass("fa-spinner fa-spin")
+                            .addClass("fa-times-circle text-danger");
+                    }
+                    else {
+                        emailValidation.removeClass("d-none");
+                        emailIcon.removeClass("fa-spinner fa-spin")
+                            .addClass("fa-check-circle text-success");
+                    }
+                });
+            }
+        });
+
+        emailField.on("keypress", function () {
+            emailIcon.addClass("d-none");
+        });    </script>
 
     @if (Model.User.NeedsToAnswerVendorCodeQuestion && Model.User.CanEmailAwardVendorCode && Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.EditParticipants.ToString()))
     {
