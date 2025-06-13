@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Drawing winner spreadsheet download
 - Report criteria shows for selected badges/challenges/triggers on Excel metadata sheet
 - Hints about how many daily images are needed on daily image upload page
+- Add enhanced email address validity check
 
 ## Changed
 

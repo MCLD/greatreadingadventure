@@ -36,8 +36,9 @@
             <div class="row row-spacing">
                 <div class="col-12">
                     <label asp-for="User.Email" class="col-form-label"></label>
+                    <span id="Email-Icon" class="fas colored-icon d-none"></span>
                     <input asp-for="User.Email" class="form-control" type="email" />
-                    <span asp-validation-for="User.Email" class="text-danger"></span>
+                    <span asp-validation-for="User.Email" id="Email-Validation"></span>
                 </div>
             </div>
 
@@ -75,7 +76,7 @@
                 </div>
             </div>
 
-            <div id="ageField" class="row row-spacing @(Model.ShowAge ? "": "d-none")">
+            <div id="ageField" class="row row-spacing @(Model.ShowAge ? "" : "d-none")">
                 <div class="col-12">
                     <label asp-for="User.Age" class="col-form-label"></label>
                     <input asp-for="User.Age" class="form-control" type="text" />
@@ -83,7 +84,7 @@
                 </div>
             </div>
 
-            <div id="schoolFields" class="@(Model.ShowSchool ? "": "d-none")">
+            <div id="schoolFields" class="@(Model.ShowSchool ? "" : "d-none")">
                 @await Html.PartialAsync("_SchoolSelectionPartial", Model)
             </div>
 
@@ -217,6 +218,12 @@
                 message.text("");
             }
         }
+
+        graBindEmailValidation("@Url.Action(nameof(GRA.Controllers.LookupController.ValidateEmail), LookupController.Name, new { area = string.Empty })",
+            $("#User_Email"),
+            $("#Email-Validation"),
+            $("#Email-Icon")
+        );
     </script>
 
     @await Html.PartialAsync("_SchoolSelectionScripts", Model)

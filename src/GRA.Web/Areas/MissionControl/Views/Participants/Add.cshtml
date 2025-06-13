@@ -1,6 +1,10 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.ParticipantsAddViewModel
 
-<form asp-controller="Participants" asp-action="Add" method="post" role="form" novalidate>
+<form asp-action="@nameof(ParticipantsController.Add)"
+      asp-controller="@ParticipantsController.Name"
+      method="post"
+      novalidate
+      role="form">
     <div class="row">
         <div class="col-12">
 
@@ -99,7 +103,7 @@
                 <input asp-for="ProgramId" type="hidden" />
             }
 
-            <div id="ageField" class="row mb-3 @(Model.ShowAge ? "": "d-none")">
+            <div id="ageField" class="row mb-3 @(Model.ShowAge ? "" : "d-none")">
                 <div class="col-12">
                     <label asp-for="Age" class="col-form-label"></label>
                     <input asp-for="Age" class="form-control" type="text" />
@@ -107,7 +111,7 @@
                 </div>
             </div>
 
-            <div id="schoolFields" class="@(Model.ShowSchool ? "": "d-none")">
+            <div id="schoolFields" class="@(Model.ShowSchool ? "" : "d-none")">
                 @await Html.PartialAsync("_SchoolSelectionPartial", Model)
             </div>
 
@@ -124,8 +128,9 @@
             <div class="row mb-3">
                 <div class="col-12">
                     <label asp-for="Email" class="col-form-label"></label>
+                    <span id="Email-Icon" class="fas colored-icon d-none"></span>
                     <input asp-for="Email" class="form-control" type="email" />
-                    <span asp-validation-for="Email" class="text-danger"></span>
+                    <span asp-validation-for="Email" id="Email-Validation"></span>
                 </div>
             </div>
 
@@ -303,6 +308,12 @@
         usernameField.on("keypress", function () {
             usernameIcon.addClass("d-none");
         });
+
+        graBindEmailValidation("@Url.Action(nameof(GRA.Controllers.LookupController.ValidateEmail), LookupController.Name, new { area = string.Empty })",
+            $("#Email"),
+            $("#Email-Validation"),
+            $("#Email-Icon")
+        );
     </script>
 
     @await Html.PartialAsync("_SchoolSelectionScripts", Model)

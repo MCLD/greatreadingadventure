@@ -2588,6 +2588,15 @@ namespace GRA.Controllers.MissionControl
                     "The Schedule End date cannot be before the Schedule Start date.");
             }
 
+            if (!string.IsNullOrWhiteSpace(model.Settings.ContactEmail)
+                && !EmailService.ValidateAddress(model.Settings.ContactEmail))
+            {
+                ModelState.AddModelError("Settings.ContactEmail",
+                    _sharedLocalizer[Annotations.Validate.Email, DisplayNames.EmailAddress]);
+            }
+
+
+
             if (ModelState.IsValid)
             {
                 try

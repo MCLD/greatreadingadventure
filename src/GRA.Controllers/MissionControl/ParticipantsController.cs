@@ -214,6 +214,13 @@ namespace GRA.Controllers.MissionControl
                 ModelState.Remove(nameof(model.IsFirstTime));
             }
 
+            if (!string.IsNullOrWhiteSpace(model.Email)
+                && !EmailService.ValidateAddress(model.Email))
+            {
+                ModelState.AddModelError(nameof(model.Email),
+                    _sharedLocalizer[Annotations.Validate.Email, DisplayNames.EmailAddress]);
+            }
+
             var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
                SiteSettingKey.Users.AskEmailSubPermission);
             if (!askEmailSubscription)
@@ -226,7 +233,10 @@ namespace GRA.Controllers.MissionControl
                         model.EmailSubscriptionRequested, StringComparison.OrdinalIgnoreCase);
                 if (subscriptionRequested && string.IsNullOrWhiteSpace(model.Email))
                 {
-                    ModelState.AddModelError(nameof(model.Email), " ");
+                    if (!ModelState.ContainsKey(nameof(model.Email)))
+                    {
+                        ModelState.AddModelError(nameof(model.Email), " ");
+                    }
                     ModelState.AddModelError(nameof(model.EmailSubscriptionRequested),
                     "To receive email updates please supply an email address to send them to.");
                 }
@@ -634,12 +644,23 @@ namespace GRA.Controllers.MissionControl
             {
                 ModelState.AddModelError("User.Username", "The Username field is required.");
             }
+
+            if (!string.IsNullOrWhiteSpace(model.User.Email)
+                && !EmailService.ValidateAddress(model.User.Email))
+            {
+                ModelState.AddModelError("User.Email",
+                    _sharedLocalizer[Annotations.Validate.Email, DisplayNames.EmailAddress]);
+            }
+
             var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
                 SiteSettingKey.Users.AskEmailSubPermission);
             if (askEmailSubscription && model.User.IsEmailSubscribed
                 && string.IsNullOrWhiteSpace(model.User.Email))
             {
-                ModelState.AddModelError("User.Email", " ");
+                if (!ModelState.ContainsKey("User.Email"))
+                {
+                    ModelState.AddModelError("User.Email", " ");
+                }
                 ModelState.AddModelError("User.IsEmailSubscribed",
                 "To receive email updates please supply an email address to send them to.");
             }
@@ -1003,6 +1024,13 @@ namespace GRA.Controllers.MissionControl
                 ModelState.Remove(nameof(model.IsFirstTime));
             }
 
+            if (!string.IsNullOrWhiteSpace(model.User.Email)
+                && !EmailService.ValidateAddress(model.User.Email))
+            {
+                ModelState.AddModelError("User.Email",
+                    _sharedLocalizer[Annotations.Validate.Email, DisplayNames.EmailAddress]);
+            }
+
             var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
                 SiteSettingKey.Users.AskEmailSubPermission);
             if (!askEmailSubscription)
@@ -1015,7 +1043,10 @@ namespace GRA.Controllers.MissionControl
                         model.EmailSubscriptionRequested, StringComparison.OrdinalIgnoreCase);
                 if (subscriptionRequested && string.IsNullOrWhiteSpace(model.User.Email))
                 {
-                    ModelState.AddModelError("User.Email", " ");
+                    if (!ModelState.ContainsKey("User.Email"))
+                    {
+                        ModelState.AddModelError("User.Email", " ");
+                    }
                     ModelState.AddModelError(nameof(model.EmailSubscriptionRequested),
                     "To receive email updates please supply an email address to send them to.");
                 }

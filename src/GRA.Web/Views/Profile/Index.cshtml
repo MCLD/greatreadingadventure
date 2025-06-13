@@ -24,9 +24,9 @@
                             <input asp-for="User.VendorCode" type="hidden" />
                             <input asp-for="User.VendorCodeMessage" type="hidden" />
                             @if ((!string.IsNullOrWhiteSpace(Model.User.VendorCode)
-                            || Model.User.NeedsToAnswerVendorCodeQuestion)
-                            && (Model.User.VendorOrderStatus == null
-                            || Model.User.VendorOrderStatus == VendorOrderStatus.Pending))
+                                || Model.User.NeedsToAnswerVendorCodeQuestion)
+                                && (Model.User.VendorOrderStatus == null
+                                || Model.User.VendorOrderStatus == VendorOrderStatus.Pending))
                             {
                                 <div class="row">
                                     <div class="col-12">
@@ -138,9 +138,13 @@
                             <div class="row mb-2">
                                 <div class="col-12 col-lg-6">
                                     <label asp-for="User.Email" class="col-form-label"></label>
-                                    <input asp-for="User.Email" class="form-control" type="email" />
+                                    <span id="Email-Icon" class="fas colored-icon d-none"></span>
+                                    <input asp-for="User.Email"
+                                           autocomplete="email"
+                                           class="form-control"
+                                           type="email" />
                                     <span asp-validation-for="User.Email"
-                                          class="text-danger"></span>
+                                          id="Email-Validation"></span>
                                 </div>
                                 <div class="col-12 col-lg-6">
                                     <label asp-for="User.PhoneNumber"
@@ -461,6 +465,12 @@
                 message.text("");
             }
         }
+
+        graBindEmailValidation("@Url.Action(nameof(GRA.Controllers.LookupController.ValidateEmail), LookupController.Name)",
+            $("#User_Email"),
+            $("#Email-Validation"),
+            $("#Email-Icon")
+        );
     </script>
 
     @if (Model.User.NeedsToAnswerVendorCodeQuestion && Model.User.CanEmailAwardVendorCode)

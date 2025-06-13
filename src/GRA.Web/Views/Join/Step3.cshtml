@@ -69,11 +69,12 @@
                     <div class="row mb-3">
                         <div class="col-12">
                             <label asp-for="Email" class="col-form-label"></label>
+                            <span id="Email-Icon" class="fas colored-icon d-none"></span>
                             <input asp-for="Email"
+                                   autocomplete="email"
                                    class="form-control"
-                                   type="email"
-                                   autocomplete="email" />
-                            <span asp-validation-for="Email" class="text-danger"></span>
+                                   type="email" />
+                            <span asp-validation-for="Email" id="Email-Validation"></span>
                         </div>
                     </div>
 
@@ -183,5 +184,11 @@
         usernameField.on("keypress", function () {
             usernameIcon.addClass("d-none");
         });
+
+        graBindEmailValidation("@Url.Action(nameof(GRA.Controllers.LookupController.ValidateEmail), LookupController.Name)",
+            $("#Email"),
+            $("#Email-Validation"),
+            $("#Email-Icon")
+        );
     </script>
 }

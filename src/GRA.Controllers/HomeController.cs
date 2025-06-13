@@ -104,14 +104,25 @@ namespace GRA.Controllers
         {
             if (!string.IsNullOrEmpty(viewModel?.Email))
             {
-                var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
-                var currentLanguageId = await _languageService
-                    .GetLanguageIdAsync(currentCultureName);
-                await _emailReminderService
-                    .AddEmailReminderAsync(viewModel.Email,
-                    viewModel.SignUpSource,
-                    currentLanguageId);
-                ShowAlertInfo(_sharedLocalizer[Annotations.Info.LetYouKnowWhen], "envelope");
+                if (EmailService.ValidateAddress(viewModel.Email.Trim()))
+                {
+                    var currentLanguageId = await _languageService
+                        .GetLanguageIdAsync(_userContextProvider.GetCurrentCulture()?.Name);
+                    await _emailReminderService
+                        .AddEmailReminderAsync(viewModel.Email,
+                        viewModel.SignUpSource,
+                        currentLanguageId);
+                    ShowAlertDanger(_sharedLocalizer[Annotations.Validate.EmailAddressInvalid,
+                        viewModel.Email.Trim()]);
+                }
+                else
+                {
+                    ShowAlertInfo(_sharedLocalizer[Annotations.Info.LetYouKnowWhen], "envelope");
+                }
+            }
+            else
+            {
+                ShowAlertWarning(_sharedLocalizer[Annotations.Required.EmailForSubscription]);
             }
             return RedirectToAction(nameof(Index));
         }

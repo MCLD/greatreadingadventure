@@ -12,18 +12,22 @@
     <div class="row">
         <div class="col-12 col-lg-6 mb-3">
             <label asp-for="Settings.ContactEmail" class="col-form-label required-field"></label>
-            <input asp-for="Settings.ContactEmail" class="form-control" />
-            <span asp-validation-for="Settings.ContactEmail" class="text-danger"></span>
+            <span id="Email-Icon" class="fas colored-icon d-none"></span>
+            <input asp-for="Settings.ContactEmail" class="form-control" type="email" />
+            <span asp-validation-for="Settings.ContactEmail" id="Email-Validation"></span>
         </div>
 
         <div class="col-12 col-lg-6 mb-3">
-            <label asp-for="Settings.SelectionsPerBranch" class="col-form-label required-field"></label>
+            <label asp-for="Settings.SelectionsPerBranch" class="col-form-label required-field">
+
+            </label>
             <input asp-for="Settings.SelectionsPerBranch" class="form-control" />
             <span asp-validation-for="Settings.SelectionsPerBranch" class="text-danger"></span>
         </div>
 
         <div class="col-12 col-lg-6 mb-3">
-            <label asp-for="Settings.RegistrationOpen" class="col-form-label required-field"></label>
+            <label asp-for="Settings.RegistrationOpen" class="col-form-label required-field">
+            </label>
             <div current-value="@Model.Settings.RegistrationOpen"
                  class="gra-picker-datetime"
                  datetimepicker-container
@@ -35,7 +39,8 @@
             <span asp-validation-for="Settings.RegistrationOpen" class="text-danger"></span>
         </div>
         <div class="col-12 col-lg-6 mb-3">
-            <label asp-for="Settings.RegistrationClosed" class="col-form-label required-field"></label>
+            <label asp-for="Settings.RegistrationClosed" class="col-form-label required-field">
+            </label>
             <div current-value="@Model.Settings.RegistrationClosed"
                  class="gra-picker-datetime"
                  datetimepicker-container
@@ -45,7 +50,8 @@
             <span asp-validation-for="Settings.RegistrationClosed" class="text-danger"></span>
         </div>
         <div class="col-12 col-lg-6 mb-3">
-            <label asp-for="Settings.SchedulingPreview" class="col-form-label required-field"></label>
+            <label asp-for="Settings.SchedulingPreview" class="col-form-label required-field">
+            </label>
             <div current-value="@Model.Settings.SchedulingPreview"
                  class="gra-picker-datetime"
                  datetimepicker-container
@@ -65,7 +71,8 @@
             <span asp-validation-for="Settings.SchedulingOpen" class="text-danger"></span>
         </div>
         <div class="col-12 col-lg-6 mb-3">
-            <label asp-for="Settings.SchedulingClosed" class="col-form-label required-field"></label>
+            <label asp-for="Settings.SchedulingClosed" class="col-form-label required-field">
+            </label>
             <div current-value="@Model.Settings.SchedulingClosed"
                  class="gra-picker-datetime"
                  datetimepicker-container
@@ -86,7 +93,8 @@
         </div>
 
         <div class="col-12 col-lg-6 mb-3">
-            <label asp-for="Settings.ScheduleStartDate" class="col-form-label required-field"></label>
+            <label asp-for="Settings.ScheduleStartDate" class="col-form-label required-field">
+            </label>
             <div current-value="@Model.Settings.ScheduleStartDate"
                  class="gra-picker-date"
                  datetimepicker-container
@@ -125,9 +133,11 @@
         </div>
 
         <div class="col-12 col-lg-6 mb-3">
-            <label asp-for="Settings.BranchAvailabilitySupplementalText" class="col-form-label"></label>
+            <label asp-for="Settings.BranchAvailabilitySupplementalText" class="col-form-label">
+            </label>
             <input asp-for="Settings.BranchAvailabilitySupplementalText" class="form-control" />
-            <span asp-validation-for="Settings.BranchAvailabilitySupplementalText" class="text-danger"></span>
+            <span asp-validation-for="Settings.BranchAvailabilitySupplementalText"
+                  class="text-danger"></span>
         </div>
 
         <div class="col-12 col-lg-6 mb-3">
@@ -160,3 +170,11 @@
         <span class="buttonText">Save</span>
     </button>
 </form>
+
+<script>
+    graBindEmailValidation("@Url.Action(nameof(GRA.Controllers.LookupController.ValidateEmail), LookupController.Name, new { area = string.Empty })",
+        $("#Settings_ContactEmail"),
+        $("#Email-Validation"),
+        $("#Email-Icon")
+    );
+</script>

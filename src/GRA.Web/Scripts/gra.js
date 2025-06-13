@@ -155,6 +155,39 @@ function graInitalizePickerTime(element) {
     });
 }
 
+/* function to validate email addresses */
+
+function graBindEmailValidation(emailCheckUrl, emailField, emailValidation, emailIcon) {
+    emailField.on("blur", function () {
+        emailIcon.addClass("d-none");
+        if ($(this).val().trim() != "" && !$(this).hasClass("input-validation-error")) {
+            $(this).val($(this).val().trim());
+            emailIcon.addClass("fa-spinner fa-spin")
+                .removeClass("d-none fa-times-circle fa-check-circle text-success text-danger");
+            $.get(emailCheckUrl, { address: $(this).val() }, function (response) {
+                if (!response.status) {
+                    $(this).removeClass("valid");
+                    $(this).addClass("input-validation-error");
+                    emailValidation.removeClass("field-validation-valid text-success d-none")
+                        .addClass("field-validation-error")
+                        .text(response.message);
+                    emailIcon.removeClass("fa-spinner fa-spin")
+                        .addClass("fa-times-circle text-danger");
+                }
+                else {
+                    emailValidation.removeClass("d-none");
+                    emailIcon.removeClass("fa-spinner fa-spin")
+                        .addClass("fa-check-circle text-success");
+                }
+            });
+        }
+    });
+
+    emailField.on("keypress", function () {
+        emailIcon.addClass("d-none");
+    });
+}
+
 /* event binding */
 
 window.onunload = function () {
@@ -171,7 +204,7 @@ $().ready(function () {
             prevArrow:
                 "<span class=\"far fa-2x fa-arrow-alt-circle-left gra-carousel-nav gra-carousel-prev\"></span>",
             nextArrow:
-               "<span class=\"far fa-2x fa-arrow-alt-circle-right gra-carousel-nav gra-carousel-next\"></span>",
+                "<span class=\"far fa-2x fa-arrow-alt-circle-right gra-carousel-nav gra-carousel-next\"></span>",
             responsive: [
                 {
                     breakpoint: 993,
