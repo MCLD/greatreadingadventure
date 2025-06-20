@@ -31,7 +31,8 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Daily Tips";
         }
 
-        public static string Name { get { return "DailyTips"; } }
+        public static string Name
+        { get { return "DailyTips"; } }
 
         [HttpGet]
         public async Task<IActionResult> Index(int page)
@@ -65,6 +66,22 @@ namespace GRA.Controllers.MissionControl
                     await _dailyLiteracyTipService.GetImagesByTipIdAsync(tip.Id));
             }
 
+            var site = await GetCurrentSiteAsync();
+
+            if (site.ProgramStarts.HasValue && site.ProgramEnds.HasValue)
+            {
+                var days = (int)Math.Ceiling(
+                    (site.ProgramEnds.Value - site.ProgramStarts.Value).TotalDays);
+                if (days > 0)
+                {
+                    var programLink = Url.Action(nameof(ProgramsController.Index),
+                        ProgramsController.Name,
+                        new { area = ProgramsController.Area });
+
+                    ShowAlertInfo($"You will need <strong>{days}</strong> daily image(s) to ensure you have one for each day of your program. Visit <a href=\"{programLink}\">Program Management</a> to assign daily tips to a program.");
+                }
+            }
+
             return View(new TipListViewModel
             {
                 DailyTips = tips.Data,
@@ -80,11 +97,15 @@ namespace GRA.Controllers.MissionControl
 
             if (site.ProgramStarts.HasValue && site.ProgramEnds.HasValue)
             {
-                var programDays = (int)Math.Ceiling((site.ProgramEnds.Value - site.ProgramStarts.Value).TotalDays);
-                var scheduleUrl = Url.Action("Schedule", "Sites", new { area = "MissionControl", id = 1 });
-                if (programDays > 0)
+                var days = (int)Math.Ceiling(
+                    (site.ProgramEnds.Value - site.ProgramStarts.Value).TotalDays);
+                if (days > 0)
                 {
-                    ShowAlertInfo($"You will need <strong>{programDays} </strong> daily image(s) to ensure you have one for each day of your program. " + $"Visit <a href = '{scheduleUrl}'>Site Schedule</a> to view or adjust.");
+                    var scheduleLink = Url.Action(nameof(SitesController.Schedule),
+                        SitesController.Name,
+                        new { area = SitesController.Area, id = 1 });
+
+                    ShowAlertInfo($"You will need <strong>{days}</strong> daily image(s) to ensure you have one for each day of your program. Visit <a href=\"{scheduleLink}\">Site Schedule</a> to view or adjust your program schedule.");
                 }
             }
             return View();

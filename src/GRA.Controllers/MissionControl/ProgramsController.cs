@@ -47,6 +47,9 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Program management";
         }
 
+        public static string Area
+        { get { return nameof(MissionControl); } }
+
         public static string Name
         { get { return "Programs"; } }
 
