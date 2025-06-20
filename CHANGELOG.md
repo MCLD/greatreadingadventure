@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - "AddParticipant" permission for showing "Add Participant" button in Mission Control
 - Drawing winner spreadsheet download
 - Report criteria shows for selected badges/challenges/triggers on Excel metadata sheet
+- Hints about how many daily images are needed on daily image upload page
 
 ## Changed
 
