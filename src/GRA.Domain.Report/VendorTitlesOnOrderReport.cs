@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 namespace GRA.Domain.Report
 {
     [ReportInformation(ReportId,
-        "Vendor Titles on Order",
+        "Vendor Titles On Order",
         "Unshipped titles on order with a count and earliest/most recent order dates.",
         "Vendor",
         RequiredPermission)]
@@ -84,7 +84,8 @@ namespace GRA.Domain.Report
 
             int row = 0;
 
-            foreach (var title in vendorCodeTitles.OrderByDescending(_ => _.Count))
+            foreach (var title in vendorCodeTitles.OrderByDescending(_ => _.Count)
+                .ThenBy(_ => _.EarliestDate))
             {
                 if (token.IsCancellationRequested)
                 {

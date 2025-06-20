@@ -105,7 +105,11 @@ namespace GRA.Domain.Report
             properties.TryGetValue(JobDetailsPropertyName.ProfileLink, out var profileLink);
             properties.TryGetValue(JobDetailsPropertyName.VendorCodeLink, out var vendorCodeLink);
 
-            foreach (var status in vendorCodeItemStatuses)
+            foreach (var status in vendorCodeItemStatuses
+                .OrderBy(_ => _.OrderDate)
+                .ThenBy(_ => _.OrderDetails)
+                .ThenBy(_ => _.LastName)
+                .ThenBy(_ => _.FirstName))
             {
                 if (token.IsCancellationRequested)
                 {
