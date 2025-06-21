@@ -112,12 +112,12 @@ namespace GRA.Controllers
                         .AddEmailReminderAsync(viewModel.Email,
                         viewModel.SignUpSource,
                         currentLanguageId);
-                    ShowAlertDanger(_sharedLocalizer[Annotations.Validate.EmailAddressInvalid,
-                        viewModel.Email.Trim()]);
+                    ShowAlertInfo(_sharedLocalizer[Annotations.Info.LetYouKnowWhen], "envelope");
                 }
                 else
                 {
-                    ShowAlertInfo(_sharedLocalizer[Annotations.Info.LetYouKnowWhen], "envelope");
+                    ShowAlertDanger(_sharedLocalizer[Annotations.Validate.EmailAddressInvalid,
+                        viewModel.Email.Trim()]);
                 }
             }
             else
