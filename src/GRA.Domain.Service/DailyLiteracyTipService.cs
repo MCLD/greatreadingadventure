@@ -126,6 +126,22 @@ namespace GRA.Domain.Service
             };
         }
 
+        public async Task<DataWithCount<ICollection<DailyLiteracyTip>>> GetPaginatedImageListAsync(
+                    BaseFilter filter)
+        {
+            VerifyManagementPermission();
+            if (filter == null)
+            {
+                filter = new BaseFilter();
+            }
+            filter.SiteId = GetCurrentSiteId();
+            return new DataWithCount<ICollection<DailyLiteracyTip>>
+            {
+                Data = await _dailyLiteracyTipRepository.PageAsync(filter),
+                Count = await _dailyLiteracyTipRepository.CountAsync(filter)
+            };
+        }
+
         public async Task RemoveAsync(int dailyLiteracyTipId)
         {
             VerifyManagementPermission();

@@ -90,6 +90,17 @@ namespace GRA.Controllers.MissionControl
             });
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> Detail(int page) 
+        {
+            var filter = new BaseFilter(page);
+            var tips = await _dailyLiteracyTipService.GetPaginatedImageListAsync(filter);
+
+            return View();
+        }
+
+
         [HttpGet]
         public async Task<IActionResult> Upload()
         {
