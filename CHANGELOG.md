@@ -55,6 +55,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Sequences of numbers in Excel export no longer show green tab in cells
 - Issue with drawing table of drawing winners
 - Navigation selection on the top of the Badge Top Scores report criteria form
+- Page preview links in Mission Control
 
 ## [4.5.0] 2024-08-29
 

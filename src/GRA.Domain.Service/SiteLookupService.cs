@@ -72,7 +72,7 @@ namespace GRA.Domain.Service
 
         public int? GetSiteDay(Site site)
         {
-            if (site.ProgramStarts.HasValue)
+            if (site?.ProgramStarts.HasValue == true)
             {
                 var daysElapsed = (_dateTimeProvider.Now.Date - site.ProgramStarts.Value.Date).Days;
                 return daysElapsed + 1;
@@ -81,6 +81,26 @@ namespace GRA.Domain.Service
             {
                 return null;
             }
+        }
+
+        public async Task<Uri> GetSiteLinkAsync(int siteId, string path)
+        {
+            var site = await GetByIdAsync(siteId);
+            var builder = new UriBuilder
+            {
+                Host = _httpContextAccessor.HttpContext.Request.Host.Host,
+                Path = site.IsDefault ? path : site.Path + '/' + path,
+                Scheme = site.IsHttpsForced
+                    ? "https"
+                    : _httpContextAccessor.HttpContext.Request.Scheme
+            };
+            var port = _httpContextAccessor.HttpContext.Request.Host.Port;
+            if (port.HasValue && port != 80 && port != 443)
+            {
+                builder.Port = port.Value;
+            }
+
+            return builder.Uri;
         }
 
         public async Task<Uri> GetSiteLinkAsync(int siteId)
@@ -170,7 +190,7 @@ namespace GRA.Domain.Service
             {
                 return (IsSet: true, SetValue: value);
             }
-            return (IsSet: false, SetValue: default(int));
+            return (IsSet: false, SetValue: default);
         }
 
         /// <summary>
@@ -210,6 +230,8 @@ namespace GRA.Domain.Service
 
         public SiteStage GetSiteStage(Site site)
         {
+            ArgumentNullException.ThrowIfNull(site);
+
             if (site.AccessClosed == null
                 && site.ProgramEnds == null
                 && site.ProgramStarts == null
@@ -353,10 +375,7 @@ namespace GRA.Domain.Service
                 _config[ConfigurationKey.InitialAuthorizationCode]);
             _logger.LogInformation("Inserted initial authorization code");
 
-            return new List<Site>
-            {
-                site
-            };
+            return [site];
         }
     }
 }
