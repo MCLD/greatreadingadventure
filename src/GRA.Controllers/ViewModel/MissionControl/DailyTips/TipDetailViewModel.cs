@@ -4,7 +4,7 @@ using GRA.Domain.Model;
 
 namespace GRA.Controllers.ViewModel.MissionControl.DailyTips
 {
-    public class TipDetailViewModel
+    public class TipDetailViewModel : PaginateViewModel
     {
         public PaginateViewModel PaginateModel { get; set; }
         public ICollection<DailyLiteracyTipImage> Images { get; set; }

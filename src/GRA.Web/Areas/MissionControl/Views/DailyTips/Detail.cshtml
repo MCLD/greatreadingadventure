@@ -1,0 +1,36 @@
+﻿@model TipDetailViewModel
+
+@using GRA.Controllers.ViewModel.MissionControl.DailyTips
+
+<h2>Tip: @Model.Tip.Name</h2>
+<p>@Model.Tip.Message</p>
+
+<div class="row">
+    <div class="col-12">
+        <table class="table table-striped table-bordered table-sm">
+            <tr>
+                <th>Day</th>
+                <th>Name</th>
+                <th>Extension</th>
+            </tr>
+            @if (Model?.Images?.Any() != true)
+            {
+                <tr>
+                    <td class="warning" colspan="3">No images found for this tip.</td>
+                </tr>
+            }
+            else
+            {
+                foreach (var image in Model.Images)
+                {
+                    <tr>
+                        <td>@image.Day</td>
+                        <td>@image.Name</td>
+                        <td>@image.Extension</td>
+                    </tr>
+                }
+            }
+        </table>
+        <paginate paginateModel="@Model.PaginateModel"></paginate>
+    </div>
+</div>

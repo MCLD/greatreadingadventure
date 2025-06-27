@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Threading.Tasks;
+using GRA.Controllers.Helpers;
 using GRA.Controllers.ViewModel.MissionControl.DailyTips;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
@@ -90,16 +91,43 @@ namespace GRA.Controllers.MissionControl
             });
         }
 
-
         [HttpGet]
-        public async Task<IActionResult> Detail(int page) 
+        public async Task<IActionResult> Detail(int tipId, int page)
         {
-            var filter = new BaseFilter(page);
-            var tips = await _dailyLiteracyTipService.GetPaginatedImageListAsync(filter);
+            page = page == 0 ? 1 : page;
 
-            return View();
+            var filter = new DailyImageFilter
+            {
+                DailyLiteracyTipId = tipId,
+            };
+
+            var imageData = await _dailyLiteracyTipService.GetPaginatedImageListAsync(filter);
+
+            var paginateModel = new PaginateViewModel
+            {
+                ItemCount = imageData.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+
+            if (paginateModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+
+            var tip = await _dailyLiteracyTipService.GetByIdAsync(tipId);
+
+            return View(new TipDetailViewModel
+            {
+                Tip = tip,
+                Images = imageData.Data,
+                PaginateModel = paginateModel
+            });
         }
-
 
         [HttpGet]
         public async Task<IActionResult> Upload()
