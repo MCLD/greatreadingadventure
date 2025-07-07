@@ -9,7 +9,8 @@
 <div class="row py-4">
     <div class="col-12">
         <a class="btn btn-outline-success"
-           asp-action="">
+           asp-action="Add"
+        asp-route-tipId = "@Model.Tip.Id">
             <span class="far fa-file-archive fa-fw"></span>
             Add new Daily Tips
         </a>

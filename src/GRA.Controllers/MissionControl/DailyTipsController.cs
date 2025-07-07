@@ -3,7 +3,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Threading.Tasks;
-using GRA.Controllers.Helpers;
+using GRA.Abstract;
 using GRA.Controllers.ViewModel.MissionControl.DailyTips;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
@@ -22,12 +22,18 @@ namespace GRA.Controllers.MissionControl
 
         private readonly DailyLiteracyTipService _dailyLiteracyTipService;
 
+        private readonly IPathResolver _pathResolver;
+
         public DailyTipsController(ServiceFacade.Controller context,
-            DailyLiteracyTipService dailyLiteracyTipService)
+            DailyLiteracyTipService dailyLiteracyTipService,
+            IPathResolver pathResolver)
             : base(context)
         {
             _dailyLiteracyTipService = dailyLiteracyTipService
                 ?? throw new ArgumentNullException(nameof(dailyLiteracyTipService));
+
+            _pathResolver = pathResolver
+                ?? throw new ArgumentNullException(nameof(pathResolver));
 
             PageTitle = "Daily Tips";
         }
@@ -150,25 +156,21 @@ namespace GRA.Controllers.MissionControl
             return View();
         }
 
-                [HttpGet]
+        [HttpGet]
         public async Task<IActionResult> Add(int tipId)
         {
-            var site = await GetCurrentSiteAsync();
+            var tip = await _dailyLiteracyTipService.GetByIdAsync(tipId);
 
-            if (site.ProgramStarts.HasValue && site.ProgramEnds.HasValue)
+            if (tip == null)
             {
-                var days = (int)Math.Ceiling(
-                    (site.ProgramEnds.Value - site.ProgramStarts.Value).TotalDays);
-                if (days > 0)
-                {
-                    var scheduleLink = Url.Action(nameof(SitesController.Schedule),
-                        SitesController.Name,
-                        new { area = SitesController.Area, id = 1 });
-
-                    ShowAlertInfo($"You will need <strong>{days}</strong> daily image(s) to ensure you have one for each day of your program. Visit <a href=\"{scheduleLink}\">Site Schedule</a> to view or adjust your program schedule.");
-                }
+                ShowAlertDanger($"Tip not found with ID <strong>{tipId}</strong>.");
+                return RedirectToAction(nameof(Index));
             }
-            return View();
+
+            return View(new TipImageAddViewModel
+            {
+                DailyTipId = tipId
+            });
         }
 
         [HttpPost]
@@ -233,6 +235,49 @@ namespace GRA.Controllers.MissionControl
             }
 
             return RedirectToAction(nameof(Upload));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Add(TipImageAddViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+
+            var tip = await _dailyLiteracyTipService.GetByIdAsync(viewModel.DailyTipId);
+            if (tip == null)
+            {
+                ShowAlertDanger($"Tip not found with ID <strong>{viewModel.DailyTipId}</strong>.");
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+                var originalFileName = Path.GetFileName(viewModel.ImageFile.FileName);
+
+                var extension = Path.GetExtension(originalFileName);
+
+                var nameWithoutExtension = Path.GetFileNameWithoutExtension(originalFileName);
+
+                var image = new DailyLiteracyTipImage
+                {
+                    DailyLiteracyTipId = viewModel.DailyTipId,
+                    Extension = extension,
+                    Name = nameWithoutExtension
+                };
+
+                await _dailyLiteracyTipService.AddImageAsync(image);
+
+                ShowAlertSuccess("Image added!");
+                return RedirectToAction(nameof(Detail), new { tipId = viewModel.DailyTipId });
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger($"Error: {gex.Message}");
+            }
+
+            return View(viewModel);
         }
     }
 }
