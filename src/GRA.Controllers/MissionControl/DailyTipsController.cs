@@ -150,6 +150,27 @@ namespace GRA.Controllers.MissionControl
             return View();
         }
 
+                [HttpGet]
+        public async Task<IActionResult> Add(int tipId)
+        {
+            var site = await GetCurrentSiteAsync();
+
+            if (site.ProgramStarts.HasValue && site.ProgramEnds.HasValue)
+            {
+                var days = (int)Math.Ceiling(
+                    (site.ProgramEnds.Value - site.ProgramStarts.Value).TotalDays);
+                if (days > 0)
+                {
+                    var scheduleLink = Url.Action(nameof(SitesController.Schedule),
+                        SitesController.Name,
+                        new { area = SitesController.Area, id = 1 });
+
+                    ShowAlertInfo($"You will need <strong>{days}</strong> daily image(s) to ensure you have one for each day of your program. Visit <a href=\"{scheduleLink}\">Site Schedule</a> to view or adjust your program schedule.");
+                }
+            }
+            return View();
+        }
+
         [HttpPost]
         [RequestSizeLimit(MaxFileSize)]
         [RequestFormLimits(MultipartBodyLengthLimit = MaxFileSize)]

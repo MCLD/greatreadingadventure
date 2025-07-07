@@ -1,0 +1,111 @@
+﻿@model TipAddViewModel
+
+@using GRA.Controllers.ViewModel.MissionControl.DailyTips
+@using Microsoft.AspNetCore.Mvc.ModelBinding
+
+<div class="row" style="margin-top: 2rem;">
+    <div class="col-12">
+        <p>Configure a new set of daily tip images.</p>
+        <ul>
+            <li>
+                Daily tip images can be associated with a program and will be shown on the
+                participant's dashboard for that prgram
+            </li>
+            <li>
+                The system can show one tip per day.
+            </li>
+            <li>
+                Images are imported in alphabetical order and associated with a day of the
+                program (i.e. the first sorted filename will show on the first day of the program)
+                so name your images accordingly.
+            </li>
+            <li>
+                If the files are named with numbers, ensure they are zero-padded to make sorting
+                work properly (e.g. if there are less than 100: 01.jpg, 02.jpg).
+            </li>
+            <li>
+                Ensure you have enough image files to cover the number of days in your program.
+            </li>
+            <li>
+                Create a zip file of just the images to upload on this page.
+            </li>
+            <li>
+                Once configured you can assign daily tips to a program in
+                <a asp-controller="@GRA.Controllers.MissionControl.ProgramsController.Name"
+                   asp-action="@nameof(GRA.Controllers.MissionControl.ProgramsController.Index)">
+                    Program management
+                </a>.
+            </li>
+        </ul>
+    </div>
+</div>
+
+<form asp-action="@nameof(GRA.Controllers.MissionControl.DailyTipsController.Upload)"
+      method="post"
+      role="form"
+      enctype="multipart/form-data">
+    <div class="row" style="margin-top: 2rem; margin-bottom: 2rem;">
+        <div class="col-12">
+            <div class="mb-3">
+                <label asp-for="Name" class="col-form-label"></label>*
+                <description gra-description-for="Name"></description>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Message" class="col-form-label"></label>*
+                <description gra-description-for="Message"></description>
+                <input asp-for="Message" class="form-control" />
+                <span asp-validation-for="Message" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="IsLarge" class="col-form-label"></label>*
+                <description gra-description-for="IsLarge"></description>
+                <select asp-for="IsLarge" class="form-select">
+                    <option value="True">Yes</option>
+                    <option value="False">No</option>
+                </select>
+                <span asp-validation-for="IsLarge" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label for="selectedFile">Select a .zip file:</label>
+                <div class="input-group">
+                    <input type="file" asp-for="UploadedFile" class="form-control" accept=".zip" />
+                </div>
+                <span asp-validation-for="UploadedFile" class="text-danger"></span>
+            </div>
+            <div>
+                <button class="btn btn-outline-primary btn-spinner" type="submit" button-spinner>
+                    <span class="fas fa-file-upload"></span>
+                    Upload
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section scripts {
+    <script>
+        $(':file').on('fileselect', function (event, numFiles, label) {
+            var input = $(this).parents('.input-group').find(':text'),
+                log = numFiles > 1 ? numFiles = ' files selected' : label;
+
+            if (input.length) {
+                input.val(log);
+                $('.btn-file').removeClass('btn-secondary');
+                $('.btn-file').addClass('btn-outline-success');
+            }
+            else {
+                input.val('');
+                $('.btn-file').addClass('btn-secondary');
+                $('.btn-file').removeClass('btn-outline-success');
+            }
+        });
+        $(document).on('change', ':file', function () {
+            var input = $(this),
+                numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+            input.trigger('fileselect', [numFiles, label]);
+        });
+    </script>
+}
