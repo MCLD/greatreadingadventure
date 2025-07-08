@@ -23,12 +23,11 @@
                 <th>Day</th>
                 <th>Name</th>
                 <th>Extension</th>
+                <th>Actions</th>
             </tr>
             @if (Model?.Images?.Any() != true)
             {
-                <tr>
-                    <td class="warning" colspan="3">No images found for this tip.</td>
-                </tr>
+                <div class="alert alert-warning">No images for this tip.</div>
             }
             else
             {
@@ -38,7 +37,19 @@
                         <td>@image.Day</td>
                         <td>@image.Name</td>
                         <td>@image.Extension</td>
+                        <td class="btn-group ps-2" role="group">
+                            <button type="button"
+                                    class="btn btn-outline-danger btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal"
+                                    data-id="@image.DailyLiteracyTipId"
+                                    data-name="@image.Name">
+                                <span class="fas fa-times fa-fw"
+                                      aria-hidden="true"></span>
+                            </button>
+                        </td>
                     </tr>
+
                 }
             }
         </table>
