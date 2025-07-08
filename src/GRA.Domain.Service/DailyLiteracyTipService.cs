@@ -166,7 +166,8 @@ namespace GRA.Domain.Service
             var authId = GetClaimId(ClaimType.UserId);
             var siteId = GetCurrentSiteId();
             var currentImage = await _dailyLiteracyTipImageRepository.GetByIdAsync(imageId);
-            if (currentImage.DailyLiteracyTip.SiteId != siteId)
+            var tip = await _dailyLiteracyTipRepository.GetByIdAsync(currentImage.DailyLiteracyTipId);
+            if (tip.SiteId != siteId)
             {
                 _logger.LogError($"User {authId} cannot remove daily image {currentImage.Id} for site {currentImage.DailyLiteracyTip.SiteId}.");
                 throw new GraException($"Permission denied - Daily Literacy Tip image belongs to site id {currentImage.DailyLiteracyTip.SiteId}");

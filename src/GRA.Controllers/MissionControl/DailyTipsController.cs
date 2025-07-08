@@ -279,5 +279,21 @@ namespace GRA.Controllers.MissionControl
 
             return View(viewModel);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteImage(int imageId, int tipId)
+        {
+            try
+            {
+                await _dailyLiteracyTipService.RemoveImageAsync(imageId);
+                ShowAlertSuccess("Image deleted.");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger($"Error deleting image: {gex.Message}");
+            }
+
+            return RedirectToAction(nameof(Detail), new { tipId });
+        }
     }
 }

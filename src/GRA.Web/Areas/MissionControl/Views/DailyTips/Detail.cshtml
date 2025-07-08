@@ -38,15 +38,15 @@
                         <td>@image.Name</td>
                         <td>@image.Extension</td>
                         <td class="btn-group ps-2" role="group">
-                            <button type="button"
-                                    class="btn btn-outline-danger btn-sm"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal"
-                                    data-id="@image.DailyLiteracyTipId"
-                                    data-name="@image.Name">
-                                <span class="fas fa-times fa-fw"
-                                      aria-hidden="true"></span>
-                            </button>
+                            <form asp-action="DeleteImage"
+                                  asp-route-imageId="@image.Id"
+                                  asp-route-tipId="@Model.Tip.Id"
+                                  method="post"
+                                  class="d-inline">
+                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                    <span class="fas fa-times fa-fw" aria-hidden="true"></span>
+                                </button>
+                            </form>
                         </td>
                     </tr>
 
