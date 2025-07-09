@@ -55,11 +55,9 @@ namespace GRA.Domain.Service
             {
                 throw new GraException("Unable to add empty image.");
             }
-            var filter = new DailyImageFilter()
-            {
-                DailyLiteracyTipId = image.DailyLiteracyTipId
-            };
-            image.Day = await _dailyLiteracyTipImageRepository.CountAsync(filter);
+            var latestDay = await _dailyLiteracyTipImageRepository.GetLatestDayAsync(image.DailyLiteracyTipId);
+
+            image.Day = latestDay + 1;
 
             return await _dailyLiteracyTipImageRepository.AddSaveAsync(GetClaimId(ClaimType.UserId),
                 image);
