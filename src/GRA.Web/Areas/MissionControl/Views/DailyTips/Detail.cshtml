@@ -1,77 +1,86 @@
-﻿@model TipDetailViewModel
-
+﻿@model GRA.Controllers.ViewModel.MissionControl.DailyTips.TipDetailViewModel
 @using GRA.Controllers.ViewModel.MissionControl.DailyTips
 
 <h2>Tip: @Model.Tip.Name</h2>
 <p>@Model.Tip.Message</p>
 
-
 <div class="row py-4">
     <div class="col-12">
         <a class="btn btn-outline-success"
            asp-action="Add"
-        asp-route-tipId = "@Model.Tip.Id">
+           asp-route-tipId="@Model.Tip.Id">
             <span class="far fa-file-archive fa-fw"></span>
             Add new Daily Tips
         </a>
     </div>
 </div>
+
 <div class="row">
     <div class="col-12">
         <table class="table link-table table-bordered table-sm">
             <thead>
-            <tr>
-                <th>Day</th>
-                <th>Name</th>
-                <th>Extension</th>
-                <th>Actions</th>
-            </tr>
+                <tr>
+                    <th>Preview</th>
+                    <th>Day</th>
+                    <th>Name</th>
+                    <th>Extension</th>
+                    <th>Actions</th>
+                </tr>
             </thead>
-            @if (Model?.Images?.Any() != true)
-            {
-                <div class="alert alert-warning">No images found.</div>
-            }
-            else
-            {
-                foreach (var image in Model.Images)
+            <tbody>
+                @if (Model?.Images?.Any() != true)
                 {
                     <tr>
-                        <td>@image.Day</td>
-                        <td>@image.Name</td>
-                        <td>@image.Extension</td>
-                        <td class="btn-group ps-2" role="group">
-                            <form asp-action="DeleteImage"
-                                       asp-route-imageId="@image.Id"
-                                       asp-route-tipId="@Model.Tip.Id"
-                                       method="post"
-                                       class="d-inline">
-                                <button type="submit" class="btn btn-outline-danger btn-sm">
-                                    <span class="fas fa-times fa-fw" aria-hidden="true"></span>
-                                </button>
-                            </form>
-
-                            <button type="button"
-                                    class="btn btn-outline-secondary btn-sm decreasePosition"
-                                    data-id="@image.Id"
-                                    disabled="@(image == Model.Images.First() ? "disabled" : null)">
-                                <span class="fas fa-arrow-up fa-fw"></span>
-                            </button>
-
-                            <button type="button"
-                                    class="btn btn-outline-secondary btn-sm increasePosition"
-                                    data-id="@image.Id"
-                                    disabled="@(image == Model.Images.Last() ? "disabled" : null)">
-                                <span class="fas fa-arrow-down fa-fw"></span>
-                            </button>
+                        <td colspan="5">
+                            <div class="alert alert-warning mb-0">No images found.</div>
                         </td>
                     </tr>
                 }
-            }
+                else
+                {
+                    foreach (var image in Model.Images)
+                    {
+                            <tr>
+                                <td>
+                                    <img src="@image.ImagePath"
+                                         alt="@image.Name"/>
+                                </td>
+                                <td>@image.Day</td>
+                                <td>@image.Name</td>
+                                <td>@image.Extension</td>
+                                <td class="btn-group ps-2" role="group">
+                                    <form asp-action="DeleteImage"
+                                          asp-route-imageId="@image.Id"
+                                          asp-route-tipId="@Model.Tip.Id"
+                                          method="post"
+                                          class="d-inline">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
+                                        </button>
+                                    </form>
+
+                                    <button type="button"
+                                            class="btn btn-outline-secondary btn-sm decreasePosition"
+                                            data-id="@image.Id"
+                                            disabled="@(image == Model.Images.First() ? "disabled" : null)">
+                                        <span class="fas fa-arrow-up fa-fw"></span>
+                                    </button>
+
+                                    <button type="button"
+                                            class="btn btn-outline-secondary btn-sm increasePosition"
+                                            data-id="@image.Id"
+                                            disabled="@(image == Model.Images.Last() ? "disabled" : null)">
+                                        <span class="fas fa-arrow-down fa-fw"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                    }
+                }
+            </tbody>
         </table>
         <paginate paginateModel="@Model.PaginateModel"></paginate>
     </div>
 </div>
-
 
 @section Scripts {
     <script>

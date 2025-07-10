@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GRA.Abstract;
@@ -126,11 +127,22 @@ namespace GRA.Controllers.MissionControl
             }
 
             var tip = await _dailyLiteracyTipService.GetByIdAsync(tipId);
+            var site = await GetCurrentSiteAsync();
+
+            var imageModels = imageData.Data.Select(image => new DailyLiteracyTipImageViewModel
+            {
+                Id = image.Id,
+                Day = image.Day,
+                Name = image.Name,
+                Extension = image.Extension,
+                ImagePath = _pathResolver.ResolveContentPath($"site{site.Id}/dailyimages/dailyliteracytip{tip.Id}/{image.Name}{image.Extension}")
+            }
+            ).ToList();
 
             return View(new TipDetailViewModel
             {
                 Tip = tip,
-                Images = imageData.Data,
+                Images = imageModels,
                 PaginateModel = paginateModel
             });
         }
