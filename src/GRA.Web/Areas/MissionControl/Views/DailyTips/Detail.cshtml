@@ -19,15 +19,17 @@
 <div class="row">
     <div class="col-12">
         <table class="table table-striped table-bordered table-sm">
+            <thead>
             <tr>
                 <th>Day</th>
                 <th>Name</th>
                 <th>Extension</th>
                 <th>Actions</th>
             </tr>
+            </thead>
             @if (Model?.Images?.Any() != true)
             {
-                <div class="alert alert-warning">No images for this tip.</div>
+                <div class="alert alert-warning">No images found.</div>
             }
             else
             {
@@ -39,26 +41,107 @@
                         <td>@image.Extension</td>
                         <td class="btn-group ps-2" role="group">
                             <form asp-action="DeleteImage"
-                                  asp-route-imageId="@image.Id"
-                                  asp-route-tipId="@Model.Tip.Id"
-                                  method="post"
-                                  class="d-inline">
+                                       asp-route-imageId="@image.Id"
+                                       asp-route-tipId="@Model.Tip.Id"
+                                       method="post"
+                                       class="d-inline">
                                 <button type="submit" class="btn btn-outline-danger btn-sm">
                                     <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                                 </button>
-                                <button type="button" class="btn btn-outline-secondary btn-sm">
-                                    <span class="fas fa-arrow-up fa-fw"></span>
-                                </button>
-                                <button type="button" class="btn btn-outline-secondary btn-sm">
-                                    <span class="fas fa-arrow-down fa-fw"></span>
-                                </button>
                             </form>
+
+                            <button type="button"
+                                    class="btn btn-outline-secondary btn-sm decreasePosition"
+                                    data-id="@image.Id"
+                                    disabled="@(image == Model.Images.First() ? "disabled" : null)">
+                                <span class="fas fa-arrow-up fa-fw"></span>
+                            </button>
+
+                            <button type="button"
+                                    class="btn btn-outline-secondary btn-sm increasePosition"
+                                    data-id="@image.Id"
+                                    disabled="@(image == Model.Images.Last() ? "disabled" : null)">
+                                <span class="fas fa-arrow-down fa-fw"></span>
+                            </button>
                         </td>
                     </tr>
-
                 }
             }
         </table>
         <paginate paginateModel="@Model.PaginateModel"></paginate>
     </div>
 </div>
+
+
+@section Scripts {
+    <script>
+        const decreasePositionUrl = '@Url.Action("MoveImageUp", "DailyTips")';
+        const increasePositionUrl = '@Url.Action("MoveImageDown", "DailyTips")';
+
+        function AdjustPosition(e) 
+        {
+            const button = $(e.currentTarget);
+            const child = button.children("span");
+
+            if (child.hasClass("fa-spinner")) return;
+
+            const isIncrement = button.hasClass("increasePosition");
+            const id = button.data("id");
+            const url = isIncrement ? increasePositionUrl : decreasePositionUrl;
+
+            const currentRow = button.closest("tr");
+            const tbody = currentRow.closest("tbody");
+
+            let rows = tbody.children("tr");
+            const index = rows.index(currentRow);
+
+            if ((isIncrement && index === rows.length - 1) ||
+                (!isIncrement && index === 0)) 
+            {
+                return;
+            }
+
+            const targetRow = isIncrement ? rows.eq(index + 1) : rows.eq(index - 1);
+
+            currentRow.addClass("table-info");
+            child.removeClass("fa-arrow-up fa-arrow-down").addClass("fa-spinner fa-pulse");
+
+            $.post(url, { id: id }, function (success) 
+            {
+                if (success === true) 
+                {
+                    if (isIncrement) 
+                    {
+                        currentRow.insertAfter(targetRow);
+                    } 
+                    else 
+                    {
+                        currentRow.insertBefore(targetRow);
+                    }
+
+                    rows = tbody.children("tr");
+                    rows.each(function (i) 
+                    {
+                        const $row = $(this);
+                        $row.find(".increasePosition").prop("disabled", i === rows.length - 1);
+                        $row.find(".decreasePosition").prop("disabled", i === 0);
+                    });
+
+                    location.reload();
+                } 
+                else 
+                {
+                    alert("Error reordering image.");
+                }
+
+                child.removeClass("fa-spinner fa-pulse")
+                    .addClass(isIncrement ? "fa-arrow-down" : "fa-arrow-up");
+
+                setTimeout(() => currentRow.removeClass("table-info"), 300);
+            });
+        }
+
+        $(".increasePosition").on("click", AdjustPosition);
+        $(".decreasePosition").on("click", AdjustPosition);
+    </script>
+}

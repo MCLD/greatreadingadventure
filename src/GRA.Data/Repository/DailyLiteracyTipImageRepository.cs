@@ -92,5 +92,48 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.DailyLiteracyTipId == filter.DailyLiteracyTipId);
         }
+
+        public async Task IncreaseDayAsync(int userId, int imageId, int siteId)
+        {
+            var image = await DbSet.Include(_ => _.DailyLiteracyTip)
+              .FirstOrDefaultAsync(_ => _.Id == imageId);
+
+            if (image == null || image.DailyLiteracyTip.SiteId != siteId) return;
+
+            var next = await DbSet.FirstOrDefaultAsync(_ =>
+              _.DailyLiteracyTipId == image.DailyLiteracyTipId && _.Day == image.Day + 1);
+
+            if (next == null) return;
+
+            await SwapDaysAsync(userId, image, next);
+        }
+
+        public async Task DecreaseDayAsync(int userId, int imageId, int siteId)
+        {
+            var image = await DbSet.Include(_ => _.DailyLiteracyTip)
+              .FirstOrDefaultAsync(_ => _.Id == imageId);
+
+            if (image == null || image.DailyLiteracyTip.SiteId != siteId) return;
+
+            var prev = await DbSet.FirstOrDefaultAsync(_ =>
+              _.DailyLiteracyTipId == image.DailyLiteracyTipId && _.Day == image.Day - 1);
+
+            if (prev == null) return;
+
+            await SwapDaysAsync(userId, image, prev);
+        }
+
+        private async Task SwapDaysAsync(int userId,
+            Model.DailyLiteracyTipImage a,
+            Model.DailyLiteracyTipImage b)
+        {
+            var temp = a.Day;
+            a.Day = b.Day;
+            b.Day = temp;
+
+            _context.Update(a);
+            _context.Update(b);
+            await _context.SaveChangesAsync();
+        }
     }
 }

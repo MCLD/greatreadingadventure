@@ -295,5 +295,33 @@ namespace GRA.Controllers.MissionControl
 
             return RedirectToAction(nameof(Detail), new { tipId });
         }
+
+        [HttpPost]
+        public async Task<IActionResult> MoveImageUp(int id)
+        {
+            try
+            {
+                await _dailyLiteracyTipService.MoveImageUpAsync(id);
+                return Json(true);
+            }
+            catch
+            {
+                return Json(false);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MoveImageDown(int id)
+        {
+            try
+            {
+                await _dailyLiteracyTipService.MoveImageDownAsync(id);
+                return Json(true);
+            }
+            catch
+            {
+                return Json(false);
+            }
+        }
     }
 }

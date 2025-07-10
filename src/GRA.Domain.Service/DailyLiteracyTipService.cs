@@ -286,5 +286,19 @@ namespace GRA.Domain.Service
 
             return (added, issues);
         }
+
+        public async Task MoveImageUpAsync(int imageId)
+        {
+            var userId = GetClaimId(ClaimType.UserId);
+            var siteId = GetCurrentSiteId();
+            await _dailyLiteracyTipImageRepository.DecreaseDayAsync(userId, imageId, siteId);
+        }
+
+        public async Task MoveImageDownAsync(int imageId)
+        {
+            var userId = GetClaimId(ClaimType.UserId);
+            var siteId = GetCurrentSiteId();
+            await _dailyLiteracyTipImageRepository.IncreaseDayAsync(userId, imageId, siteId);
+        }
     }
 }
