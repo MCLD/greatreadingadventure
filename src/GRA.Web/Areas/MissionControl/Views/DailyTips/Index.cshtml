@@ -14,37 +14,57 @@
 
 <div class="row">
     <div class="col-12">
-        <table class="table table-sm table-bordered table-striped">
-            <tr>
-                <th>Name</th>
-                <th>Message</th>
-                <th>Number of tips</th>
-                <th>Pop-up Size</th>
-            </tr>
-            @if (Model?.DailyTips?.Any() != true)
-            {
+        <table class="table table-sm table-bordered link-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Message</th>
+                    <th>Number of tips</th>
+                    <th>Pop-up Size</th>
+                </tr>
+            </thead>
+                <tbody>
+                @if (Model?.DailyTips?.Any() != true)
+                {
                 <tr>
                     <td class="warning" colspan="4">No daily tips found.</td>
                 </tr>
-            }
-            else
-            {
-                foreach (var tip in Model.DailyTips)
-                {
-                    <tr>
-                        <td>
-                            <a asp-action="Detail"
-                               asp-route-tipId="@tip.Id"
-                               asp-route-page="1">
-                                @tip.Name
-                            </a>
-                        </td>
-                        <td>@tip.Message</td>
-                        <td>@(Model?.TipCount?.ContainsKey(tip.Id) == true ? Model.TipCount[tip.Id] : "0")</td>
-                        <td>@(tip.IsLarge ? "900 pixels (large)" : "600 pixels (small)")</td>
-                    </tr>
                 }
-            }
-        </table>
+                else
+                {
+                    foreach (var tip in Model.DailyTips)
+                    {
+                        <tr>
+                            <td class="td-class">
+                                <a asp-action="Detail"
+                                   asp-route-tipId="@tip.Id"
+                                   asp-route-page="1"
+                                   class="rowlink">
+                                    @tip.Name
+                                </a>
+                            </td>
+                            <td>@tip.Message</td>
+                            <td>@(Model?.TipCount?.ContainsKey(tip.Id) == true ? Model.TipCount[tip.Id] : "0")</td>
+                            <td>@(tip.IsLarge ? "900 pixels (large)" : "600 pixels (small)")</td>
+                        </tr>
+                    }
+                }
+    </tbody>
+</table>
     </div>
 </div>
+
+@section Scripts {
+            <script>
+                $(document).ready(function () {
+                    $('.td-class').each(function () {
+                        $(this).children("a.rowlink").height($(this).outerHeight());
+                    });
+                });
+                $(window).resize(function () {
+                    $('.td-class').each(function () {
+                        $(this).children("a.rowlink").height($(this).outerHeight());
+                    });
+                });
+            </script>
+}

@@ -18,7 +18,7 @@
 </div>
 <div class="row">
     <div class="col-12">
-        <table class="table table-striped table-bordered table-sm">
+        <table class="table link-table table-bordered table-sm">
             <thead>
             <tr>
                 <th>Day</th>
@@ -85,9 +85,9 @@
 
             if (child.hasClass("fa-spinner")) return;
 
-            const isIncrement = button.hasClass("increasePosition");
+            const increment = button.hasClass("increasePosition");
             const id = button.data("id");
-            const url = isIncrement ? increasePositionUrl : decreasePositionUrl;
+            const url = increment ? increasePositionUrl : decreasePositionUrl;
 
             const currentRow = button.closest("tr");
             const tbody = currentRow.closest("tbody");
@@ -95,13 +95,13 @@
             let rows = tbody.children("tr");
             const index = rows.index(currentRow);
 
-            if ((isIncrement && index === rows.length - 1) ||
-                (!isIncrement && index === 0)) 
+            if ((increment && index === rows.length - 1) ||
+                    (!increment && index === 0)) 
             {
                 return;
             }
 
-            const targetRow = isIncrement ? rows.eq(index + 1) : rows.eq(index - 1);
+            const targetRow = increment ? rows.eq(index + 1) : rows.eq(index - 1);
 
             currentRow.addClass("table-info");
             child.removeClass("fa-arrow-up fa-arrow-down").addClass("fa-spinner fa-pulse");
@@ -110,7 +110,7 @@
             {
                 if (success === true) 
                 {
-                    if (isIncrement) 
+                    if (increment) 
                     {
                         currentRow.insertAfter(targetRow);
                     } 
@@ -135,7 +135,7 @@
                 }
 
                 child.removeClass("fa-spinner fa-pulse")
-                    .addClass(isIncrement ? "fa-arrow-down" : "fa-arrow-up");
+                        .addClass(increment ? "fa-arrow-down" : "fa-arrow-up");
 
                 setTimeout(() => currentRow.removeClass("table-info"), 300);
             });
