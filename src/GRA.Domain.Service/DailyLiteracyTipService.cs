@@ -165,10 +165,16 @@ namespace GRA.Domain.Service
             var siteId = GetCurrentSiteId();
             var currentImage = await _dailyLiteracyTipImageRepository.GetByIdAsync(imageId);
             var tip = await _dailyLiteracyTipRepository.GetByIdAsync(currentImage.DailyLiteracyTipId);
+            var filePath = _pathResolver.ResolveContentFilePath($"site{siteId}/dailyimages/dailyliteracytip{tip.Id}/{currentImage.Name}{currentImage.Extension}");
             if (tip.SiteId != siteId)
             {
                 _logger.LogError($"User {authId} cannot remove daily image {currentImage.Id} for site {currentImage.DailyLiteracyTip.SiteId}.");
                 throw new GraException($"Permission denied - Daily Literacy Tip image belongs to site id {currentImage.DailyLiteracyTip.SiteId}");
+            }
+
+            if(File.Exists(filePath))
+            {
+                File.Delete(filePath);
             }
 
             await _dailyLiteracyTipImageRepository.RemoveSaveAsync(authId, imageId);
