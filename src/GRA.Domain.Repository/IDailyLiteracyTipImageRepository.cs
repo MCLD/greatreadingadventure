@@ -18,5 +18,9 @@ namespace GRA.Domain.Repository
         new Task RemoveSaveAsync(int userId, int imageId);
 
         Task UpdateSaveAsync(int userId, DailyLiteracyTipImage image, int newDay);
+
+        Task IncreaseDayAsync(int imageId, int siteId);
+
+        Task DecreaseDayAsync(int imageId, int siteId);
     }
 }

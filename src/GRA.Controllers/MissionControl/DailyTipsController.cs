@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GRA.Abstract;
 using GRA.Controllers.ViewModel.MissionControl.DailyTips;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
@@ -21,12 +23,18 @@ namespace GRA.Controllers.MissionControl
 
         private readonly DailyLiteracyTipService _dailyLiteracyTipService;
 
+        private readonly IPathResolver _pathResolver;
+
         public DailyTipsController(ServiceFacade.Controller context,
-            DailyLiteracyTipService dailyLiteracyTipService)
+            DailyLiteracyTipService dailyLiteracyTipService,
+            IPathResolver pathResolver)
             : base(context)
         {
             _dailyLiteracyTipService = dailyLiteracyTipService
                 ?? throw new ArgumentNullException(nameof(dailyLiteracyTipService));
+
+            _pathResolver = pathResolver
+                ?? throw new ArgumentNullException(nameof(pathResolver));
 
             PageTitle = "Daily Tips";
         }
@@ -91,6 +99,55 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpGet]
+        public async Task<IActionResult> Detail(int tipId, int page)
+        {
+            page = page == 0 ? 1 : page;
+
+            var filter = new DailyImageFilter(page)
+            {
+                DailyLiteracyTipId = tipId,
+            };
+
+            var imageData = await _dailyLiteracyTipService.GetPaginatedImageListAsync(filter);
+
+            var paginateModel = new PaginateViewModel
+            {
+                ItemCount = imageData.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+
+            if (paginateModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+
+            var tip = await _dailyLiteracyTipService.GetByIdAsync(tipId);
+            var site = await GetCurrentSiteAsync();
+
+            var imageModels = imageData.Data.Select(_ => new DailyLiteracyTipImageViewModel
+            {
+                Id = _.Id,
+                Day = _.Day,
+                Name = _.Name,
+                Extension = _.Extension,
+                ImagePath = _pathResolver.ResolveContentPath($"/site{site.Id}/dailyimages/dailyliteracytip{tip.Id}/{_.Name}{_.Extension}")
+            }
+            );
+
+            return View(new TipDetailViewModel
+            {
+                Tip = tip,
+                Images = imageModels.ToList(),
+                PaginateModel = paginateModel
+            });
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Upload()
         {
             var site = await GetCurrentSiteAsync();
@@ -109,6 +166,23 @@ namespace GRA.Controllers.MissionControl
                 }
             }
             return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Add(int tipId)
+        {
+            var tip = await _dailyLiteracyTipService.GetByIdAsync(tipId);
+
+            if (tip == null)
+            {
+                ShowAlertDanger($"Tip not found with ID <strong>{tipId}</strong>.");
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(new TipImageAddViewModel
+            {
+                DailyTipId = tipId
+            });
         }
 
         [HttpPost]
@@ -173,6 +247,93 @@ namespace GRA.Controllers.MissionControl
             }
 
             return RedirectToAction(nameof(Upload));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Add(TipImageAddViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+
+            var tip = await _dailyLiteracyTipService.GetByIdAsync(viewModel.DailyTipId);
+            if (tip == null)
+            {
+                ShowAlertDanger($"Tip not found with ID <strong>{viewModel.DailyTipId}</strong>.");
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+                var originalFileName = Path.GetFileName(viewModel.ImageFile.FileName);
+
+                var extension = Path.GetExtension(originalFileName);
+
+                var nameWithoutExtension = Path.GetFileNameWithoutExtension(originalFileName);
+
+                var image = new DailyLiteracyTipImage
+                {
+                    DailyLiteracyTipId = viewModel.DailyTipId,
+                    Extension = extension,
+                    Name = nameWithoutExtension
+                };
+
+                await _dailyLiteracyTipService.AddImageAsync(image);
+
+                ShowAlertSuccess("Image added!");
+                return RedirectToAction(nameof(Detail), new { tipId = viewModel.DailyTipId });
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger($"Error: {gex.Message}");
+            }
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteImage(int imageId, int tipId)
+        {
+            try
+            {
+                await _dailyLiteracyTipService.RemoveImageAsync(imageId);
+                ShowAlertSuccess("Image deleted.");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger($"Error deleting image: {gex.Message}");
+            }
+
+            return RedirectToAction(nameof(Detail), new { tipId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MoveImageUp(int id)
+        {
+            try
+            {
+                await _dailyLiteracyTipService.MoveImageUpAsync(id);
+                return Json(true);
+            }
+            catch
+            {
+                return Json(false);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MoveImageDown(int id)
+        {
+            try
+            {
+                await _dailyLiteracyTipService.MoveImageDownAsync(id);
+                return Json(true);
+            }
+            catch
+            {
+                return Json(false);
+            }
         }
     }
 }

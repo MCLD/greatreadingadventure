@@ -92,5 +92,64 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.DailyLiteracyTipId == filter.DailyLiteracyTipId);
         }
+
+        public async Task IncreaseDayAsync(int imageId, int siteId)
+        {
+            var images = await DbSet
+                    .Include(_ => _.DailyLiteracyTip)
+                    .Where(_ => _.DailyLiteracyTip.DailyLiteracyTipImages.Any(i => i.Id == imageId))
+                    .OrderBy(_ => _.Day)
+                    .ToListAsync();
+
+            var image = images.FirstOrDefault(_ => _.Id == imageId);
+            if (image == null || image.DailyLiteracyTip.SiteId != siteId)
+            {
+                return;
+            }
+
+            var next = images.FirstOrDefault(_ => _.Day == image.Day + 1);
+            if (next == null)
+            {
+                return;
+            }
+
+            await SwapDaysAsync(image, next);
+        }
+
+        public async Task DecreaseDayAsync(int imageId, int siteId)
+        {
+            var images = await DbSet
+                    .Include(_ => _.DailyLiteracyTip)
+                    .Where(_ => _.DailyLiteracyTip.DailyLiteracyTipImages.Any(i => i.Id == imageId))
+                    .OrderBy(_ => _.Day)
+                    .ToListAsync();
+
+            var image = images.FirstOrDefault(_ => _.Id == imageId);
+            if (image == null || image.DailyLiteracyTip.SiteId != siteId)
+            {
+                return;
+            }
+
+            var prev = images.FirstOrDefault(_ => _.Day == image.Day - 1);
+            if (prev == null)
+            {
+                return;
+            }
+
+            await SwapDaysAsync(image, prev);
+        }
+
+        private async Task SwapDaysAsync(
+            Model.DailyLiteracyTipImage a,
+            Model.DailyLiteracyTipImage b)
+        {
+            var temp = a.Day;
+            a.Day = b.Day;
+            b.Day = temp;
+
+            _context.Update(a);
+            _context.Update(b);
+            await _context.SaveChangesAsync();
+        }
     }
 }

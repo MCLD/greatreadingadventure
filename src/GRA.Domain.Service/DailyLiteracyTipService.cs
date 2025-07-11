@@ -55,11 +55,9 @@ namespace GRA.Domain.Service
             {
                 throw new GraException("Unable to add empty image.");
             }
-            var filter = new DailyImageFilter()
-            {
-                DailyLiteracyTipId = image.DailyLiteracyTipId
-            };
-            image.Day = await _dailyLiteracyTipImageRepository.CountAsync(filter);
+            var latestDay = await _dailyLiteracyTipImageRepository.GetLatestDayAsync(image.DailyLiteracyTipId);
+
+            image.Day = latestDay + 1;
 
             return await _dailyLiteracyTipImageRepository.AddSaveAsync(GetClaimId(ClaimType.UserId),
                 image);
@@ -126,6 +124,22 @@ namespace GRA.Domain.Service
             };
         }
 
+        public async Task<DataWithCount<ICollection<DailyLiteracyTip>>> GetPaginatedImageListAsync(
+                    BaseFilter filter)
+        {
+            VerifyManagementPermission();
+            if (filter == null)
+            {
+                filter = new BaseFilter();
+            }
+            filter.SiteId = GetCurrentSiteId();
+            return new DataWithCount<ICollection<DailyLiteracyTip>>
+            {
+                Data = await _dailyLiteracyTipRepository.PageAsync(filter),
+                Count = await _dailyLiteracyTipRepository.CountAsync(filter)
+            };
+        }
+
         public async Task RemoveAsync(int dailyLiteracyTipId)
         {
             VerifyManagementPermission();
@@ -150,10 +164,17 @@ namespace GRA.Domain.Service
             var authId = GetClaimId(ClaimType.UserId);
             var siteId = GetCurrentSiteId();
             var currentImage = await _dailyLiteracyTipImageRepository.GetByIdAsync(imageId);
-            if (currentImage.DailyLiteracyTip.SiteId != siteId)
+            var tip = await _dailyLiteracyTipRepository.GetByIdAsync(currentImage.DailyLiteracyTipId);
+            var filePath = _pathResolver.ResolveContentFilePath($"site{siteId}/dailyimages/dailyliteracytip{tip.Id}/{currentImage.Name}{currentImage.Extension}");
+            if (tip.SiteId != siteId)
             {
                 _logger.LogError($"User {authId} cannot remove daily image {currentImage.Id} for site {currentImage.DailyLiteracyTip.SiteId}.");
                 throw new GraException($"Permission denied - Daily Literacy Tip image belongs to site id {currentImage.DailyLiteracyTip.SiteId}");
+            }
+
+            if(File.Exists(filePath))
+            {
+                File.Delete(filePath);
             }
 
             await _dailyLiteracyTipImageRepository.RemoveSaveAsync(authId, imageId);
@@ -270,6 +291,18 @@ namespace GRA.Domain.Service
             }
 
             return (added, issues);
+        }
+
+        public async Task MoveImageUpAsync(int imageId)
+        {
+            var siteId = GetCurrentSiteId();
+            await _dailyLiteracyTipImageRepository.DecreaseDayAsync(imageId, siteId);
+        }
+
+        public async Task MoveImageDownAsync(int imageId)
+        {
+            var siteId = GetCurrentSiteId();
+            await _dailyLiteracyTipImageRepository.IncreaseDayAsync(imageId, siteId);
         }
     }
 }
