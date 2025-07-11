@@ -95,17 +95,19 @@ namespace GRA.Data.Repository
 
         public async Task IncreaseDayAsync(int imageId, int siteId)
         {
-            var image = await DbSet.Include(_ => _.DailyLiteracyTip)
-              .FirstOrDefaultAsync(_ => _.Id == imageId);
+            var images = await DbSet
+                    .Include(_ => _.DailyLiteracyTip)
+                    .Where(_ => _.DailyLiteracyTip.DailyLiteracyTipImages.Any(i => i.Id == imageId))
+                    .OrderBy(_ => _.Day)
+                    .ToListAsync();
 
+            var image = images.FirstOrDefault(_ => _.Id == imageId);
             if (image == null || image.DailyLiteracyTip.SiteId != siteId)
             {
                 return;
             }
 
-            var next = await DbSet.FirstOrDefaultAsync(_ =>
-              _.DailyLiteracyTipId == image.DailyLiteracyTipId && _.Day == image.Day + 1);
-
+            var next = images.FirstOrDefault(_ => _.Day == image.Day + 1);
             if (next == null)
             {
                 return;
@@ -116,15 +118,23 @@ namespace GRA.Data.Repository
 
         public async Task DecreaseDayAsync(int imageId, int siteId)
         {
-            var image = await DbSet.Include(_ => _.DailyLiteracyTip)
-              .FirstOrDefaultAsync(_ => _.Id == imageId);
+            var images = await DbSet
+                    .Include(_ => _.DailyLiteracyTip)
+                    .Where(_ => _.DailyLiteracyTip.DailyLiteracyTipImages.Any(i => i.Id == imageId))
+                    .OrderBy(_ => _.Day)
+                    .ToListAsync();
 
-            if (image == null || image.DailyLiteracyTip.SiteId != siteId) return;
+            var image = images.FirstOrDefault(_ => _.Id == imageId);
+            if (image == null || image.DailyLiteracyTip.SiteId != siteId)
+            {
+                return;
+            }
 
-            var prev = await DbSet.FirstOrDefaultAsync(_ =>
-              _.DailyLiteracyTipId == image.DailyLiteracyTipId && _.Day == image.Day - 1);
-
-            if (prev == null) return;
+            var prev = images.FirstOrDefault(_ => _.Day == image.Day - 1);
+            if (prev == null)
+            {
+                return;
+            }
 
             await SwapDaysAsync(image, prev);
         }
