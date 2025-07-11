@@ -103,7 +103,7 @@ namespace GRA.Controllers.MissionControl
         {
             page = page == 0 ? 1 : page;
 
-            var filter = new DailyImageFilter
+            var filter = new DailyImageFilter(page)
             {
                 DailyLiteracyTipId = tipId,
             };
