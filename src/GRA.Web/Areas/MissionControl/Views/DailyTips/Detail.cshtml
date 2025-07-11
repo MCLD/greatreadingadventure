@@ -20,10 +20,10 @@
         <table class="table link-table table-bordered table-sm">
             <thead>
                 <tr>
-                    <th>Preview</th>
                     <th>Day</th>
                     <th>Name</th>
                     <th>Extension</th>
+                    <th>Preview</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -41,13 +41,14 @@
                     foreach (var image in Model.Images)
                     {
                             <tr>
-                                <td>
-                                    <img src="@image.ImagePath"
-                                         alt="@image.Name"/>
-                                </td>
                                 <td>@image.Day</td>
                                 <td>@image.Name</td>
                                 <td>@image.Extension</td>
+                                <td>
+                                    <img src="@Url.Content($"~/{image.ImagePath}")"
+                                         alt="@image.Name"
+                                        style="max-height: calc(50vh - 100px); overflow-y:auto;" />
+                                </td>
                                 <td class="btn-group ps-2" role="group">
                                     <form asp-action="DeleteImage"
                                           asp-route-imageId="@image.Id"

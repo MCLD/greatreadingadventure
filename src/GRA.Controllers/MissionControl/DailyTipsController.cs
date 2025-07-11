@@ -135,7 +135,7 @@ namespace GRA.Controllers.MissionControl
                 Day = image.Day,
                 Name = image.Name,
                 Extension = image.Extension,
-                ImagePath = _pathResolver.ResolveContentPath($"site{site.Id}/dailyimages/dailyliteracytip{tip.Id}/{image.Name}{image.Extension}")
+                ImagePath = _pathResolver.ResolveContentPath($"/site{site.Id}/dailyimages/dailyliteracytip{tip.Id}/{image.Name}{image.Extension}")
             }
             ).ToList();
 
