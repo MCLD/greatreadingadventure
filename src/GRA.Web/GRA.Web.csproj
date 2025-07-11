@@ -47,14 +47,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Areas\MissionControl\Views\DailyTips\Details.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="Areas\MissionControl\Views\DailyTips\Index - Copy.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\GRA.Domain.Model\GRA.Domain.Model.csproj">
       <TreatAsUsed>true</TreatAsUsed>
     </ProjectReference>
