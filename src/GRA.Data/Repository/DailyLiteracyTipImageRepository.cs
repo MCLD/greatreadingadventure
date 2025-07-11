@@ -93,7 +93,7 @@ namespace GRA.Data.Repository
                 .Where(_ => _.DailyLiteracyTipId == filter.DailyLiteracyTipId);
         }
 
-        public async Task IncreaseDayAsync(int userId, int imageId, int siteId)
+        public async Task IncreaseDayAsync(int imageId, int siteId)
         {
             var image = await DbSet.Include(_ => _.DailyLiteracyTip)
               .FirstOrDefaultAsync(_ => _.Id == imageId);
@@ -111,10 +111,10 @@ namespace GRA.Data.Repository
                 return;
             }
 
-            await SwapDaysAsync(userId, image, next);
+            await SwapDaysAsync(image, next);
         }
 
-        public async Task DecreaseDayAsync(int userId, int imageId, int siteId)
+        public async Task DecreaseDayAsync(int imageId, int siteId)
         {
             var image = await DbSet.Include(_ => _.DailyLiteracyTip)
               .FirstOrDefaultAsync(_ => _.Id == imageId);
@@ -126,10 +126,10 @@ namespace GRA.Data.Repository
 
             if (prev == null) return;
 
-            await SwapDaysAsync(userId, image, prev);
+            await SwapDaysAsync(image, prev);
         }
 
-        private async Task SwapDaysAsync(int userId,
+        private async Task SwapDaysAsync(
             Model.DailyLiteracyTipImage a,
             Model.DailyLiteracyTipImage b)
         {

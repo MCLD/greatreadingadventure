@@ -295,16 +295,14 @@ namespace GRA.Domain.Service
 
         public async Task MoveImageUpAsync(int imageId)
         {
-            var userId = GetClaimId(ClaimType.UserId);
             var siteId = GetCurrentSiteId();
-            await _dailyLiteracyTipImageRepository.DecreaseDayAsync(userId, imageId, siteId);
+            await _dailyLiteracyTipImageRepository.DecreaseDayAsync(imageId, siteId);
         }
 
         public async Task MoveImageDownAsync(int imageId)
         {
-            var userId = GetClaimId(ClaimType.UserId);
             var siteId = GetCurrentSiteId();
-            await _dailyLiteracyTipImageRepository.IncreaseDayAsync(userId, imageId, siteId);
+            await _dailyLiteracyTipImageRepository.IncreaseDayAsync(imageId, siteId);
         }
     }
 }
