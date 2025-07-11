@@ -129,20 +129,20 @@ namespace GRA.Controllers.MissionControl
             var tip = await _dailyLiteracyTipService.GetByIdAsync(tipId);
             var site = await GetCurrentSiteAsync();
 
-            var imageModels = imageData.Data.Select(image => new DailyLiteracyTipImageViewModel
+            var imageModels = imageData.Data.Select(_ => new DailyLiteracyTipImageViewModel
             {
-                Id = image.Id,
-                Day = image.Day,
-                Name = image.Name,
-                Extension = image.Extension,
-                ImagePath = _pathResolver.ResolveContentPath($"/site{site.Id}/dailyimages/dailyliteracytip{tip.Id}/{image.Name}{image.Extension}")
+                Id = _.Id,
+                Day = _.Day,
+                Name = _.Name,
+                Extension = _.Extension,
+                ImagePath = _pathResolver.ResolveContentPath($"/site{site.Id}/dailyimages/dailyliteracytip{tip.Id}/{_.Name}{_.Extension}")
             }
-            ).ToList();
+            );
 
             return View(new TipDetailViewModel
             {
                 Tip = tip,
-                Images = imageModels,
+                Images = imageModels.ToList(),
                 PaginateModel = paginateModel
             });
         }

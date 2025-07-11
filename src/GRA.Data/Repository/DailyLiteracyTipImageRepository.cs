@@ -98,12 +98,18 @@ namespace GRA.Data.Repository
             var image = await DbSet.Include(_ => _.DailyLiteracyTip)
               .FirstOrDefaultAsync(_ => _.Id == imageId);
 
-            if (image == null || image.DailyLiteracyTip.SiteId != siteId) return;
+            if (image == null || image.DailyLiteracyTip.SiteId != siteId)
+            {
+                return;
+            }
 
             var next = await DbSet.FirstOrDefaultAsync(_ =>
               _.DailyLiteracyTipId == image.DailyLiteracyTipId && _.Day == image.Day + 1);
 
-            if (next == null) return;
+            if (next == null)
+            {
+                return;
+            }
 
             await SwapDaysAsync(userId, image, next);
         }
