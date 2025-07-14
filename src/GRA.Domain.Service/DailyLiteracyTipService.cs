@@ -108,6 +108,11 @@ namespace GRA.Domain.Service
             };
         }
 
+        public async Task<IEnumerable<DailyLiteracyTipImage>> GetAllImagesAsync(int dailyLiteracyTipId)
+        {
+            return await _dailyLiteracyTipImageRepository.GetAllForTipAsync(dailyLiteracyTipId);
+        }
+
         public async Task<DataWithCount<ICollection<DailyLiteracyTip>>> GetPaginatedListAsync(
                     BaseFilter filter)
         {
@@ -172,11 +177,10 @@ namespace GRA.Domain.Service
             }
             var filePath = _pathResolver.ResolveContentFilePath($"site{siteId}/dailyimages/dailyliteracytip{tip.Id}/{currentImage.Name}{currentImage.Extension}");
 
-            if(File.Exists(filePath))
+            if (File.Exists(filePath))
             {
                 File.Delete(filePath);
             }
-
         }
 
         public async Task UpdateAsync(DailyLiteracyTip dailyLiteracyTip)
@@ -296,7 +300,6 @@ namespace GRA.Domain.Service
         {
             return await _dailyLiteracyTipImageRepository.ImageNameExistsAsync(tipId, name, extension);
         }
-
 
         public async Task MoveImageUpAsync(int imageId)
         {

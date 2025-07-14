@@ -8,5 +8,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.DailyTips
     {
         public ICollection<DailyLiteracyTipImageViewModel> Images { get; set; }
         public DailyLiteracyTip Tip { get; set; }
+        public List<int> AllImageIds { get; set; }
     }
 }

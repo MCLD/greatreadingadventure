@@ -123,13 +123,19 @@ namespace GRA.Controllers.MissionControl
             }
             );
 
+            var allImageIds = (await _dailyLiteracyTipService.GetAllImagesAsync(tipId))
+                .OrderBy(_ => _.Day)
+                .Select(_ => _.Id)
+                .ToList();
+
             var model = new TipDetailViewModel
             {
                 Tip = tip,
                 Images = imageModels.ToList(),
                 ItemCount = imageData.Count,
                 CurrentPage = page,
-                ItemsPerPage = filter.Take.Value
+                ItemsPerPage = filter.Take.Value,
+                AllImageIds = allImageIds
             };
 
             if (model.PastMaxPage)

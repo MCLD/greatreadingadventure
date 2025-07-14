@@ -43,6 +43,15 @@ namespace GRA.Data.Repository
                 .MaxAsync(_ => (int?)_.Day) ?? 0;
         }
 
+        public async Task<IEnumerable<DailyLiteracyTipImage>> GetAllForTipAsync(int tipId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.DailyLiteracyTipId == tipId)
+                .ProjectTo<DailyLiteracyTipImage>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
         public async Task<ICollection<DailyLiteracyTipImage>> PageAsync(DailyImageFilter filter)
         {
             return await ApplyFilters(filter)

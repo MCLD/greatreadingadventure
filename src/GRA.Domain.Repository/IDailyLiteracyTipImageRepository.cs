@@ -13,6 +13,8 @@ namespace GRA.Domain.Repository
 
         Task<int> GetLatestDayAsync(int dailyLiteracyTipId);
 
+        Task<IEnumerable<DailyLiteracyTipImage>> GetAllForTipAsync(int tipId);
+
         Task<ICollection<DailyLiteracyTipImage>> PageAsync(DailyImageFilter filter);
 
         new Task RemoveSaveAsync(int userId, int imageId);

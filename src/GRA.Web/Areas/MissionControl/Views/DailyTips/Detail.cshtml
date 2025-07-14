@@ -38,45 +38,50 @@
                 {
                     foreach (var image in Model.Images)
                     {
-                            <tr>
-                                <td>@image.Day</td>
-                                <td>
-                                    <img src="@Url.Content($"~/{image.ImagePath}")"
-                                         alt="@image.Name"
-                                        style="max-height: calc(50vh - 100px); overflow-y:auto;" />
-                                </td>
-                                <td>
+                        var currentIndex = Model.AllImageIds.IndexOf(image.Id);
+                        var isFirstOverall = currentIndex == 0;
+                        var isLastOverall = currentIndex == Model.AllImageIds.Count - 1;
+
+                        <tr>
+                            <td>@image.Day</td>
+                            <td>
+                                <img src="@Url.Content($"~/{image.ImagePath}")"
+                                     alt="@image.Name"
+                                     style="max-height: calc(50vh - 100px); overflow-y:auto;" />
+                            </td>
+                            <td>
                                 <div class="btn-group" role="group">
                                     <form asp-action="DeleteImage"
                                           asp-route-imageId="@image.Id"
                                           asp-route-tipId="@Model.Tip.Id"
                                           method="post"
                                           class="d-inline">
-                                    <button type="submit" class="btn btn-outline-danger btn-sm" button-spinner>
+                                        <button type="submit" class="btn btn-outline-danger btn-sm" button-spinner>
                                             <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                                         </button>
                                     </form>
 
                                     <button type="button"
-                                        class="btn btn-outline-secondary btn-sm decreasePosition" button-spinner
+                                            class="btn btn-outline-secondary btn-sm decreasePosition" button-spinner
                                             data-id="@image.Id"
-                                            disabled="@(image == Model.Images.First() ? "disabled" : null)">
+                                            disabled="@(isFirstOverall ? "disabled" : null)">
                                         <span class="fas fa-arrow-up fa-fw"></span>
                                     </button>
 
                                     <button type="button"
-                                        class="btn btn-outline-secondary btn-sm increasePosition" button-spinner
+                                            class="btn btn-outline-secondary btn-sm increasePosition" button-spinner
                                             data-id="@image.Id"
-                                            disabled="@(image == Model.Images.Last() ? "disabled" : null)">
+                                            disabled="@(isLastOverall ? "disabled" : null)">
                                         <span class="fas fa-arrow-down fa-fw"></span>
                                     </button>
                                 </div>
-                                </td>
-                            </tr>
+                            </td>
+                        </tr>
                     }
                 }
             </tbody>
         </table>
+
         <paginate paginateModel="@Model"></paginate>
     </div>
 </div>
@@ -86,8 +91,7 @@
         const decreasePositionUrl = '@Url.Action(nameof(DailyTipsController.MoveImageUp), DailyTipsController.Name)';
         const increasePositionUrl = '@Url.Action(nameof(DailyTipsController.MoveImageDown), DailyTipsController.Name)';
 
-        function AdjustPosition(e) 
-        {
+        function AdjustPosition(e) {
             const button = $(e.currentTarget);
             const child = button.children("span");
 
@@ -96,55 +100,22 @@
             const url = increment ? increasePositionUrl : decreasePositionUrl;
 
             const currentRow = button.closest("tr");
-            const tbody = currentRow.closest("tbody");
-
-            let rows = tbody.children("tr");
-            const index = rows.index(currentRow);
-
-            if ((increment && index === rows.length - 1) ||
-                    (!increment && index === 0)) 
-            {
-                return;
-            }
-
-            const targetRow = increment ? rows.eq(index + 1) : rows.eq(index - 1);
-
             currentRow.addClass("table-info");
             child.removeClass("fa-arrow-up fa-arrow-down").addClass("fa-pulse");
 
-            $.post(url, { id: id }, function (success) 
-            {
-                if (success === true) 
-                {
-                    if (increment) 
-                    {
-                        currentRow.insertAfter(targetRow);
-                    } 
-                    else 
-                    {
-                        currentRow.insertBefore(targetRow);
+            $.post(url, { id: id })
+                .done(function (success) {
+                    if (success === true || success === "true") {
+                        location.reload();
+                    } else {
+                        alert("Error moving image.");
+                        resetSpinners();
                     }
-
-                    rows = tbody.children("tr");
-                    rows.each(function (i) 
-                    {
-                        const $row = $(this);
-                        $row.find(".increasePosition").prop("disabled", i === rows.length - 1);
-                        $row.find(".decreasePosition").prop("disabled", i === 0);
-                    });
-
-                    location.reload();
-                } 
-                else 
-                {
-                    alert("Error reordering image.");
-                }
-
-                child.removeClass("fa-pulse")
-                        .addClass(increment ? "fa-arrow-down" : "fa-arrow-up");
-
-                setTimeout(() => currentRow.removeClass("table-info"), 300);
-            });
+                })
+                .fail(function (xhr, status, error) {
+                    alert("Error moving image.");
+                    resetSpinners();
+                });
         }
 
         $(".increasePosition").on("click", AdjustPosition);
