@@ -4,6 +4,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using GRA.Abstract;
 using GRA.Controllers.ViewModel.MissionControl.DailyTips;
 using GRA.Controllers.ViewModel.Shared;
@@ -109,23 +110,6 @@ namespace GRA.Controllers.MissionControl
             };
 
             var imageData = await _dailyLiteracyTipService.GetPaginatedImageListAsync(filter);
-
-            var paginateModel = new PaginateViewModel
-            {
-                ItemCount = imageData.Count,
-                CurrentPage = page,
-                ItemsPerPage = filter.Take.Value
-            };
-
-            if (paginateModel.PastMaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
-            }
-
             var tip = await _dailyLiteracyTipService.GetByIdAsync(tipId);
             var site = await GetCurrentSiteAsync();
 
@@ -139,12 +123,25 @@ namespace GRA.Controllers.MissionControl
             }
             );
 
-            return View(new TipDetailViewModel
+            var model = new TipDetailViewModel
             {
                 Tip = tip,
                 Images = imageModels.ToList(),
-                PaginateModel = paginateModel
-            });
+                ItemCount = imageData.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+
+            if (model.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = model.LastPage ?? 1
+                    });
+            }
+
+            return View(model);
         }
 
         [HttpGet]
