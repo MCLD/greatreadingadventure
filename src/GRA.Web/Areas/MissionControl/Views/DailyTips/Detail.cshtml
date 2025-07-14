@@ -21,8 +21,6 @@
             <thead>
                 <tr>
                     <th>Day</th>
-                    <th>Name</th>
-                    <th>Extension</th>
                     <th>Preview</th>
                     <th>Actions</th>
                 </tr>
@@ -42,14 +40,13 @@
                     {
                             <tr>
                                 <td>@image.Day</td>
-                                <td>@image.Name</td>
-                                <td>@image.Extension</td>
                                 <td>
                                     <img src="@Url.Content($"~/{image.ImagePath}")"
                                          alt="@image.Name"
                                         style="max-height: calc(50vh - 100px); overflow-y:auto;" />
                                 </td>
-                                <td class="btn-group ps-2" role="group">
+                                <td>
+                                <div class="btn-group" role="group">
                                     <form asp-action="DeleteImage"
                                           asp-route-imageId="@image.Id"
                                           asp-route-tipId="@Model.Tip.Id"
@@ -73,6 +70,7 @@
                                             disabled="@(image == Model.Images.Last() ? "disabled" : null)">
                                         <span class="fas fa-arrow-down fa-fw"></span>
                                     </button>
+                                </div>
                                 </td>
                             </tr>
                     }
