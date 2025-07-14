@@ -1407,12 +1407,11 @@ namespace GRA.Controllers.MissionControl
             string search,
             int page = 1)
         {
-            var filter = new UserFilter(page)
+            var filter = new UserFilter(page, 10)
             {
                 UserIds = new List<int>() { userId },
                 Search = search,
                 CanAddToHousehold = true,
-                Take = 10
             };
             if (branchId.HasValue)
             {

@@ -823,7 +823,7 @@ namespace GRA.Data.Repository
             if (filter.CanAddToHousehold)
             {
                 var householdHeadList = DbSet.AsNoTracking()
-                    .Where(_ => _.HouseholdHeadUserId.HasValue)
+                    .Where(_ => !_.IsDeleted && _.HouseholdHeadUserId.HasValue)
                     .Select(u => u.HouseholdHeadUserId)
                     .Distinct();
 
@@ -832,7 +832,7 @@ namespace GRA.Data.Repository
                         && !householdHeadList.Contains(_.Id)
                         && !_.HouseholdHeadUserId.HasValue);
             }
-            else if (filter.UserIds?.Any() == true)
+            else if (filter.UserIds?.Count > 0)
             {
                 userList = userList.Where(_ => filter.UserIds.Contains(_.Id));
             }
