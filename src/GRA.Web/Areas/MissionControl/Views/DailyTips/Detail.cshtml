@@ -55,20 +55,20 @@
                                           asp-route-tipId="@Model.Tip.Id"
                                           method="post"
                                           class="d-inline">
-                                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm" button-spinner>
                                             <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                                         </button>
                                     </form>
 
                                     <button type="button"
-                                            class="btn btn-outline-secondary btn-sm decreasePosition"
+                                        class="btn btn-outline-secondary btn-sm decreasePosition" button-spinner
                                             data-id="@image.Id"
                                             disabled="@(image == Model.Images.First() ? "disabled" : null)">
                                         <span class="fas fa-arrow-up fa-fw"></span>
                                     </button>
 
                                     <button type="button"
-                                            class="btn btn-outline-secondary btn-sm increasePosition"
+                                        class="btn btn-outline-secondary btn-sm increasePosition" button-spinner
                                             data-id="@image.Id"
                                             disabled="@(image == Model.Images.Last() ? "disabled" : null)">
                                         <span class="fas fa-arrow-down fa-fw"></span>
@@ -85,15 +85,13 @@
 
 @section Scripts {
     <script>
-        const decreasePositionUrl = '@Url.Action("MoveImageUp", "DailyTips")';
-        const increasePositionUrl = '@Url.Action("MoveImageDown", "DailyTips")';
+        const decreasePositionUrl = '@Url.Action(nameof(DailyTipsController.MoveImageUp), DailyTipsController.Name)';
+        const increasePositionUrl = '@Url.Action(nameof(DailyTipsController.MoveImageDown), DailyTipsController.Name)';
 
         function AdjustPosition(e) 
         {
             const button = $(e.currentTarget);
             const child = button.children("span");
-
-            if (child.hasClass("fa-spinner")) return;
 
             const increment = button.hasClass("increasePosition");
             const id = button.data("id");
@@ -114,7 +112,7 @@
             const targetRow = increment ? rows.eq(index + 1) : rows.eq(index - 1);
 
             currentRow.addClass("table-info");
-            child.removeClass("fa-arrow-up fa-arrow-down").addClass("fa-spinner fa-pulse");
+            child.removeClass("fa-arrow-up fa-arrow-down").addClass("fa-pulse");
 
             $.post(url, { id: id }, function (success) 
             {
@@ -144,7 +142,7 @@
                     alert("Error reordering image.");
                 }
 
-                child.removeClass("fa-spinner fa-pulse")
+                child.removeClass("fa-pulse")
                         .addClass(increment ? "fa-arrow-down" : "fa-arrow-up");
 
                 setTimeout(() => currentRow.removeClass("table-info"), 300);
