@@ -93,6 +93,14 @@ namespace GRA.Data.Repository
                 .Where(_ => _.DailyLiteracyTipId == filter.DailyLiteracyTipId);
         }
 
+        public async Task<bool> ImageNameExistsAsync(int tipId, string name, string extension)
+        {
+            return await DbSet.AnyAsync(_ =>
+            _.DailyLiteracyTipId == tipId &&
+            _.Name == name &&
+            _.Extension == extension);
+        }
+
         public async Task IncreaseDayAsync(int imageId, int siteId)
         {
             var images = await DbSet

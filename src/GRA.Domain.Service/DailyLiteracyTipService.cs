@@ -292,6 +292,12 @@ namespace GRA.Domain.Service
             return (added, issues);
         }
 
+        public async Task<bool> ImageNameExistsAsync(int tipId, string name, string extension)
+        {
+            return await _dailyLiteracyTipImageRepository.ImageNameExistsAsync(tipId, name, extension);
+        }
+
+
         public async Task MoveImageUpAsync(int imageId)
         {
             var siteId = GetCurrentSiteId();

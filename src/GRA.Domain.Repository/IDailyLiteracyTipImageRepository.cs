@@ -19,6 +19,8 @@ namespace GRA.Domain.Repository
 
         Task UpdateSaveAsync(int userId, DailyLiteracyTipImage image, int newDay);
 
+        Task<bool> ImageNameExistsAsync(int tipId, string name, string extension);
+
         Task IncreaseDayAsync(int imageId, int siteId);
 
         Task DecreaseDayAsync(int imageId, int siteId);

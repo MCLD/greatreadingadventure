@@ -269,11 +269,20 @@ namespace GRA.Controllers.MissionControl
 
                 var nameWithoutExtension = Path.GetFileNameWithoutExtension(originalFileName);
 
+                var newName = nameWithoutExtension;
+
+                int counter = 1;
+
+                while (await _dailyLiteracyTipService.ImageNameExistsAsync(viewModel.DailyTipId, newName, extension))
+                {
+                    newName = $"{nameWithoutExtension}-{counter}";
+                }
+
                 var image = new DailyLiteracyTipImage
                 {
                     DailyLiteracyTipId = viewModel.DailyTipId,
                     Extension = extension,
-                    Name = nameWithoutExtension
+                    Name = newName
                 };
 
                 await _dailyLiteracyTipService.AddImageAsync(image);
