@@ -143,9 +143,7 @@ namespace GRA.Data.Repository
             Model.DailyLiteracyTipImage a,
             Model.DailyLiteracyTipImage b)
         {
-            var temp = a.Day;
-            a.Day = b.Day;
-            b.Day = temp;
+            (b.Day, a.Day) = (a.Day, b.Day);
 
             _context.Update(a);
             _context.Update(b);
