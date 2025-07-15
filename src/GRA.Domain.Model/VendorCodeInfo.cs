@@ -40,6 +40,9 @@ namespace GRA.Domain.Model
         public DateTime? PickupDate { get; set; }
         public string ReassignedByLink { get; set; }
         public string ReassignedByUser { get; set; }
+        public DateTime? ReshipmentDetectedDate { get; set; }
+        public string ReshipmentPackingSlipLink { get; set; }
+        public string ReshipmentPriorPackingSlip { get; set; }
         public VendorCode VendorCode { get; set; }
         public string VendorCodeDisplay { get; set; }
         public string VendorCodeMessage { get; set; }

@@ -1908,6 +1908,9 @@ namespace GRA.Domain.Service
                 }
                 vendorCodeInfo.IsEmailAwarded = vendorCode.IsEmailAward;
 
+                vendorCodeInfo.ReshipmentDetectedDate = vendorCode.ReshipmentDetectedDate;
+                vendorCodeInfo.ReshipmentPriorPackingSlip = vendorCode.ReshipmentPriorPackingSlip;
+
                 if ((vendorCode.CanBeDonated || vendorCode.CanBeEmailAward)
                     && vendorCode.IsDonated == null && vendorCode.IsEmailAward == null)
                 {
@@ -2188,6 +2191,19 @@ namespace GRA.Domain.Service
                 code.OrderDate = orderDate;
             }
 
+            if (orderDate.HasValue
+                && code.ShipDate.HasValue
+                && code.OrderDate > code.ShipDate)
+            {
+                _logger.LogInformation("Received vendor update for code {VendorCode} with order date {OrderDate:d} occuring after existing ship date {ShipDate:d} - clearing ship date.",
+                    code.Code,
+                    orderDate,
+                    code.ShipDate);
+                code.ReshipmentDetectedDate = _dateTimeProvider.Now;
+                code.ReshipmentPriorPackingSlip = code.PackingSlip;
+                code.ShipDate = null;
+            }
+
             if (shipDate != null)
             {
                 code.ShipDate = shipDate;
@@ -2208,10 +2224,14 @@ namespace GRA.Domain.Service
 
             if (code.IsDamaged == true || code.IsMissing == true)
             {
+                _logger.LogInformation("Received vendor update for code {VendorCode} which was flagged as {DamagedOrMissing}, resetting flags and arrival/ship dates.",
+                    code.Code,
+                    code.IsDamaged == true ? "damaged" : "missing");
                 code.ArrivalDate = null;
                 code.IsDamaged = null;
                 code.IsMissing = null;
                 code.PackingSlip = packingSlip;
+                code.ShipDate = shipDate;
                 code.TrackingNumber = trackingNumber;
             }
             else
