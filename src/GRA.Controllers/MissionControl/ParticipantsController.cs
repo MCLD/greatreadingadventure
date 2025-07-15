@@ -1407,12 +1407,11 @@ namespace GRA.Controllers.MissionControl
             string search,
             int page = 1)
         {
-            var filter = new UserFilter(page)
+            var filter = new UserFilter(page, 10)
             {
                 UserIds = new List<int>() { userId },
                 Search = search,
                 CanAddToHousehold = true,
-                Take = 10
             };
             if (branchId.HasValue)
             {
@@ -2823,6 +2822,13 @@ namespace GRA.Controllers.MissionControl
                             VendorCodesController.Name,
                             new { id = vendorCode.VendorCode?.PackingSlip });
                 }
+                foreach (var vendorCode in viewModel.CurrentCodes.Where(_ => _.VendorCode?.ReshipmentPriorPackingSlip?.Length > 0))
+                {
+                    vendorCode.ReshipmentPackingSlipLink
+                        = Url.Action(nameof(VendorCodesController.ViewPackingSlip),
+                            VendorCodesController.Name,
+                            new { id = vendorCode.VendorCode?.ReshipmentPriorPackingSlip });
+                }
             }
 
             foreach (var code in viewModel.AssociatedCodes)
@@ -2840,6 +2846,13 @@ namespace GRA.Controllers.MissionControl
                     code.PackingSlipLink = Url.Action(nameof(VendorCodesController.ViewPackingSlip),
                         VendorCodesController.Name,
                         new { id = code.VendorCode.PackingSlip });
+                }
+                if (!string.IsNullOrEmpty(code.VendorCode?.ReshipmentPriorPackingSlip))
+                {
+                    code.ReshipmentPackingSlipLink
+                        = Url.Action(nameof(VendorCodesController.ViewPackingSlip),
+                            VendorCodesController.Name,
+                            new { id = code.VendorCode.ReshipmentPriorPackingSlip });
                 }
             }
             SetPageTitle(user, "Assigned Vendor Codes");

@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Drawing winner spreadsheet download
 - Report criteria shows for selected badges/challenges/triggers on Excel metadata sheet
 - Hints about how many daily images are needed on daily image upload page
+- Handling of re-shipped vendor items when an imported order date is after a recorded ship date
 
 ## Changed
 
@@ -55,6 +56,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Sequences of numbers in Excel export no longer show green tab in cells
 - Issue with drawing table of drawing winners
 - Navigation selection on the top of the Badge Top Scores report criteria form
+- Page preview links in Mission Control
+- Issue with proper pagination while searching to add household member in MC
+- Issue with filtering of deleted participants while searching to add household member in MC
 
 ## [4.5.0] 2024-08-29
 
