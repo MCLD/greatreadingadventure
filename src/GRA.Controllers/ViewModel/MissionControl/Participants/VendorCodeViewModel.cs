@@ -79,6 +79,21 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
                     .Append(codeInfo.VendorCode.PackingSlip)
                     .Append("</strong></a></div>");
             }
+            if (codeInfo?.VendorCode?.ReshipmentDetectedDate.HasValue == true)
+            {
+                sb.Append("<div><em>Reshipment detected during vendor import on ")
+                    .Append(codeInfo?.VendorCode?.ReshipmentDetectedDate);
+
+                if (!string.IsNullOrEmpty(codeInfo?.VendorCode?.ReshipmentPriorPackingSlip))
+                {
+                    sb.Append(" (prior packing slip: <a href=\"")
+                        .Append(codeInfo.ReshipmentPackingSlipLink)
+                        .Append("\"><strong>")
+                        .Append(codeInfo?.VendorCode?.ReshipmentPriorPackingSlip)
+                        .Append("</strong></a>)");
+                }
+                sb.Append(".</em></div>");
+            }
             if (!string.IsNullOrEmpty(codeInfo?.VendorCode?.ReasonForReassignment))
             {
                 sb.Append("<div>Reason/explanation: ")

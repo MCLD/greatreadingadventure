@@ -2,7 +2,7 @@
 {
     public class UserFilter : BaseFilter
     {
-        public UserFilter(int? page = null) : base(page)
+        public UserFilter(int? page = null, int take = 15) : base(page, take)
         {
             SortBy = SortUsersBy.LastName;
         }

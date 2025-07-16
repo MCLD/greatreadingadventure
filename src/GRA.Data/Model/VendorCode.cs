@@ -44,6 +44,19 @@ namespace GRA.Data.Model
 
         public DateTime? ReassignedAt { get; set; }
         public int? ReassignedByUserId { get; set; }
+
+        /// <summary>
+        /// If an import has an order date after a ship date it's detected as a reshipment, this
+        /// is the date and time that the reshipment was detected.
+        /// </summary>
+        public DateTime? ReshipmentDetectedDate { get; set; }
+
+        /// <summary>
+        /// If a reshipment was detected, this was the prior packing slip.
+        /// </summary>
+        [MaxLength(255)]
+        public string ReshipmentPriorPackingSlip { get; set; }
+
         public DateTime? ShipDate { get; set; }
 
         [Required]
