@@ -51,15 +51,13 @@
                             </td>
                             <td>
                                 <div class="btn-group" role="group">
-                                    <form asp-action="DeleteImage"
-                                          asp-route-imageId="@image.Id"
-                                          asp-route-tipId="@Model.Tip.Id"
-                                          method="post"
-                                          class="d-inline">
-                                        <button type="submit" class="btn btn-outline-danger btn-sm" button-spinner>
-                                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
-                                        </button>
-                                    </form>
+                                    <button type="button"
+                                                class="btn btn-outline-danger btn-sm deleteImage"
+                                                data-id="@image.Id"
+                                                data-tipid="@Model.Tip.Id"
+                                                button-spinner>
+                                        <span class="fas fa-times fa-fw" aria-hidden="true"></span>
+                                    </button>
 
                                     <button type="button"
                                             class="btn btn-outline-secondary btn-sm decreasePosition" button-spinner
@@ -90,6 +88,7 @@
     <script>
         const decreasePositionUrl = '@Url.Action(nameof(DailyTipsController.MoveImageUp), DailyTipsController.Name)';
         const increasePositionUrl = '@Url.Action(nameof(DailyTipsController.MoveImageDown), DailyTipsController.Name)';
+        const deleteImageUrl = '@Url.Action(nameof(DailyTipsController.DeleteImage), DailyTipsController.Name)';
 
         function AdjustPosition(e) {
             const button = $(e.currentTarget);
@@ -120,5 +119,19 @@
 
         $(".increasePosition").on("click", AdjustPosition);
         $(".decreasePosition").on("click", AdjustPosition);
+
+        $(".deleteImage").on("click", function () {
+            const button = $(this);
+            const imageId = button.data("id");
+            const tipId = button.data("tipid");
+
+            $.post(deleteImageUrl, { imageId: imageId, tipId: tipId })
+                .done(function () {
+                    location.reload();
+                })
+                .fail(function () {
+                    alert("Error deleting image.");
+                });
+        });
     </script>
 }
