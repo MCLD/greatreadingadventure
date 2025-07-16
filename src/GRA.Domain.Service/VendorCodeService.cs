@@ -2195,13 +2195,21 @@ namespace GRA.Domain.Service
                 && code.ShipDate.HasValue
                 && code.OrderDate > code.ShipDate)
             {
-                _logger.LogInformation("Received vendor update for code {VendorCode} with order date {OrderDate:d} occuring after existing ship date {ShipDate:d} - clearing ship date.",
+                // we are considering this item to be a re-order under the same vendor code
+                _logger.LogInformation("Vendor update {VendorCode} order {OrderDate:d} is after ship {ShipDate:d} - clearing: {Damaged} damaged and {Missing} missing flags, ship date, marking reshipped.",
                     code.Code,
                     orderDate,
-                    code.ShipDate);
+                    code.ShipDate,
+                    code.IsDamaged,
+                    code.IsMissing);
+                var priorPackingSlip = code.PackingSlip;
+                code.ArrivalDate = null;
+                code.IsDamaged = false;
+                code.IsMissing = false;
+                code.PackingSlip = packingSlip;
                 code.ReshipmentDetectedDate = _dateTimeProvider.Now;
-                code.ReshipmentPriorPackingSlip = code.PackingSlip;
-                code.ShipDate = null;
+                code.ReshipmentPriorPackingSlip = priorPackingSlip;
+                code.TrackingNumber = trackingNumber;
             }
 
             if (shipDate != null)
@@ -2222,19 +2230,7 @@ namespace GRA.Domain.Service
                 code.IsDonated = false;
             }
 
-            if (code.IsDamaged == true || code.IsMissing == true)
-            {
-                _logger.LogInformation("Received vendor update for code {VendorCode} which was flagged as {DamagedOrMissing}, resetting flags and arrival/ship dates.",
-                    code.Code,
-                    code.IsDamaged == true ? "damaged" : "missing");
-                code.ArrivalDate = null;
-                code.IsDamaged = null;
-                code.IsMissing = null;
-                code.PackingSlip = packingSlip;
-                code.ShipDate = shipDate;
-                code.TrackingNumber = trackingNumber;
-            }
-            else
+            if (code.IsDamaged != true && code.IsMissing != true)
             {
                 if (arrivalDate != null && code.ArrivalDate == null)
                 {
