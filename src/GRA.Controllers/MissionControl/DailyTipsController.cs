@@ -270,18 +270,14 @@ namespace GRA.Controllers.MissionControl
             try
             {
                 var originalFileName = Path.GetFileName(viewModel.ImageFile.FileName);
-
                 var extension = Path.GetExtension(originalFileName);
-
                 var nameWithoutExtension = Path.GetFileNameWithoutExtension(originalFileName);
-
                 var newName = nameWithoutExtension;
 
                 int counter = 1;
-
                 while (await _dailyLiteracyTipService.ImageNameExistsAsync(viewModel.DailyTipId, newName, extension))
                 {
-                    newName = $"{nameWithoutExtension}-{counter}";
+                    newName = $"{nameWithoutExtension}-{counter++}";
                 }
 
                 var image = new DailyLiteracyTipImage
@@ -291,7 +287,7 @@ namespace GRA.Controllers.MissionControl
                     Name = newName
                 };
 
-                await _dailyLiteracyTipService.AddImageAsync(image);
+                await _dailyLiteracyTipService.AddImageAsync(image, viewModel.ImageFile);
 
                 ShowAlertSuccess("Image added!");
                 return RedirectToAction(nameof(Detail), new { tipId = viewModel.DailyTipId });

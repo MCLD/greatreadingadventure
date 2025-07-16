@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using GRA.Abstract;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
@@ -48,19 +49,29 @@ namespace GRA.Domain.Service
                 dailyLiteracyTip);
         }
 
-        public async Task<DailyLiteracyTipImage> AddImageAsync(DailyLiteracyTipImage image)
+        public async Task AddImageAsync(DailyLiteracyTipImage image, IFormFile file)
         {
             VerifyManagementPermission();
-            if (image == null)
-            {
-                throw new GraException("Unable to add empty image.");
-            }
-            var latestDay = await _dailyLiteracyTipImageRepository.GetLatestDayAsync(image.DailyLiteracyTipId);
 
+            if (image == null || file == null)
+            {
+                throw new GraException("Image or file is missing.");
+            }
+
+            var latestDay = await _dailyLiteracyTipImageRepository.GetLatestDayAsync(image.DailyLiteracyTipId);
             image.Day = latestDay + 1;
 
-            return await _dailyLiteracyTipImageRepository.AddSaveAsync(GetClaimId(ClaimType.UserId),
-                image);
+            await _dailyLiteracyTipImageRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), image);
+
+            var siteId = GetCurrentSiteId();
+            var filePath = _pathResolver.ResolveContentFilePath($"site{siteId}/dailyimages/dailyliteracytip{image.DailyLiteracyTipId}/{image.Name}{image.Extension}");
+
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+
+            await using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
         }
 
         public Task<(int, IList<string>)> AddImagesZipAsync(int dailyLiteracyTipId,
