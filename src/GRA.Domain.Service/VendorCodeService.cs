@@ -2202,14 +2202,17 @@ namespace GRA.Domain.Service
                     code.ShipDate,
                     code.IsDamaged,
                     code.IsMissing);
-                var priorPackingSlip = code.PackingSlip;
+                var priorPackingSlip = code.PackingSlip?.Trim();
                 code.ArrivalDate = null;
                 code.IsDamaged = false;
                 code.IsMissing = false;
-                code.PackingSlip = packingSlip;
+                code.PackingSlip = packingSlip?.Trim();
                 code.ReshipmentDetectedDate = _dateTimeProvider.Now;
                 code.ReshipmentPriorPackingSlip = priorPackingSlip;
-                code.TrackingNumber = trackingNumber;
+                if (!string.IsNullOrWhiteSpace(trackingNumber))
+                {
+                    code.TrackingNumber = trackingNumber;
+                }
             }
 
             if (shipDate != null)
@@ -2217,7 +2220,7 @@ namespace GRA.Domain.Service
                 code.ShipDate = shipDate;
             }
 
-            if (!string.IsNullOrEmpty(details))
+            if (!string.IsNullOrWhiteSpace(details))
             {
                 code.Details = details.Length > 255
                     ? details[..255]
@@ -2237,12 +2240,12 @@ namespace GRA.Domain.Service
                     code.ArrivalDate = arrivalDate;
                 }
 
-                if (packingSlip != default)
+                if (!string.IsNullOrWhiteSpace(packingSlip))
                 {
-                    code.PackingSlip = packingSlip;
+                    code.PackingSlip = packingSlip?.Trim();
                 }
 
-                if (!string.IsNullOrEmpty(trackingNumber))
+                if (!string.IsNullOrWhiteSpace(trackingNumber))
                 {
                     code.TrackingNumber = trackingNumber;
                 }
