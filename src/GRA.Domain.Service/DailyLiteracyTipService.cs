@@ -90,6 +90,11 @@ namespace GRA.Domain.Service
             return await _dailyLiteracyTipRepository.GetByIdAsync(id);
         }
 
+        public async Task<DailyLiteracyTipImage> GetImageByIdAsync(int imageId)
+        {
+            return await _dailyLiteracyTipImageRepository.GetByIdAsync(imageId);
+        }
+
         public async Task<DailyLiteracyTipImage> GetImageByDayAsync(int dailyLiteracyTipId, int day)
         {
             return await _dailyLiteracyTipImageRepository.GetByDay(dailyLiteracyTipId, day);

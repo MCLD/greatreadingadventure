@@ -316,17 +316,20 @@ namespace GRA.Controllers.MissionControl
             return RedirectToAction(nameof(Detail), new { tipId });
         }
 
+
         [HttpPost]
         public async Task<IActionResult> MoveImageUp(int id)
         {
             try
             {
+                var image = await _dailyLiteracyTipService.GetImageByIdAsync(id);
                 await _dailyLiteracyTipService.MoveImageUpAsync(id);
-                return Json(true);
+                return RedirectToAction(nameof(Detail), new { tipId = image.DailyLiteracyTipId });
             }
-            catch
+            catch (Exception ex)
             {
-                return Json(false);
+                ShowAlertDanger($"Error moving image up: {ex.Message}");
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -335,12 +338,14 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
+                var image = await _dailyLiteracyTipService.GetImageByIdAsync(id);
                 await _dailyLiteracyTipService.MoveImageDownAsync(id);
-                return Json(true);
+                return RedirectToAction(nameof(Detail), new { tipId = image.DailyLiteracyTipId });
             }
-            catch
+            catch (Exception ex)
             {
-                return Json(false);
+                ShowAlertDanger($"Error moving image down: {ex.Message}");
+                return RedirectToAction(nameof(Index));
             }
         }
     }
