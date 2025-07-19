@@ -1,16 +1,15 @@
-﻿@model TipListViewModel
+﻿@using GRA.Controllers.ViewModel.MissionControl.DailyTips
+@model TipListViewModel
 
-@using GRA.Controllers.ViewModel.MissionControl.DailyTips
-
-<div class="row py-4">
-    <div class="col-12">
+@section inHeading {
+    <div class="ms-auto">
         <a class="btn btn-outline-success"
            asp-action="@nameof(GRA.Controllers.MissionControl.DailyTipsController.Upload)">
             <span class="far fa-file-archive fa-fw"></span>
             Upload new Daily Tips
         </a>
     </div>
-</div>
+}
 
 <div class="row">
     <div class="col-12">
@@ -23,12 +22,12 @@
                     <th>Pop-up Size</th>
                 </tr>
             </thead>
-                <tbody>
+            <tbody>
                 @if (Model?.DailyTips?.Any() != true)
                 {
-                <tr>
-                    <td class="warning" colspan="4">No daily tips found.</td>
-                </tr>
+                    <tr>
+                        <td class="warning" colspan="4">No daily tips found.</td>
+                    </tr>
                 }
                 else
                 {
@@ -36,7 +35,7 @@
                     {
                         <tr>
                             <td class="td-class">
-                                <a asp-action="Detail"
+                                <a asp-action="@nameof(GRA.Controllers.MissionControl.DailyTipsController.Detail)"
                                    asp-route-tipId="@tip.Id"
                                    class="rowlink">
                                     @tip.Name
@@ -48,22 +47,22 @@
                         </tr>
                     }
                 }
-    </tbody>
-</table>
+            </tbody>
+        </table>
     </div>
 </div>
 
 @section Scripts {
-            <script>
-                $(document).ready(function () {
-                    $('.td-class').each(function () {
-                        $(this).children("a.rowlink").height($(this).outerHeight());
-                    });
-                });
-                $(window).resize(function () {
-                    $('.td-class').each(function () {
-                        $(this).children("a.rowlink").height($(this).outerHeight());
-                    });
-                });
-            </script>
+    <script>
+        $(document).ready(function () {
+            $('.td-class').each(function () {
+                $(this).children("a.rowlink").height($(this).outerHeight());
+            });
+        });
+        $(window).resize(function () {
+            $('.td-class').each(function () {
+                $(this).children("a.rowlink").height($(this).outerHeight());
+            });
+        });
+    </script>
 }

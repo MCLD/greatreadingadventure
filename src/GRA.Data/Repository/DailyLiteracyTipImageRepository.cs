@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
@@ -22,8 +23,30 @@ namespace GRA.Data.Repository
 
         public async Task<int> CountAsync(DailyImageFilter filter)
         {
-            return await ApplyFilters(filter)
-                .CountAsync();
+            return await ApplyFilters(filter).CountAsync();
+        }
+
+        public async Task DecreaseDayAsync(int imageId, int siteId)
+        {
+            var images = await DbSet
+                    .Include(_ => _.DailyLiteracyTip)
+                    .Where(_ => _.DailyLiteracyTip.DailyLiteracyTipImages.Any(i => i.Id == imageId))
+                    .OrderBy(_ => _.Day)
+                    .ToListAsync();
+
+            var image = images.FirstOrDefault(_ => _.Id == imageId);
+            if (image == null || image.DailyLiteracyTip.SiteId != siteId)
+            {
+                return;
+            }
+
+            var prev = images.FirstOrDefault(_ => _.Day == image.Day - 1);
+            if (prev == null)
+            {
+                return;
+            }
+
+            await SwapDaysAsync(image, prev);
         }
 
         public async Task<DailyLiteracyTipImage> GetByDay(int dailyLiteracyTipId, int day)
@@ -32,6 +55,12 @@ namespace GRA.Data.Repository
                 .Where(_ => _.DailyLiteracyTipId == dailyLiteracyTipId && _.Day == day)
                 .ProjectTo<DailyLiteracyTipImage>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
+        }
+
+        public async Task<Tuple<int, int>> GetFirstLastDayAsync(int dailyLiteracyTipId)
+        {
+            return Tuple.Create(await DbSet.AsNoTracking().Select(_ => _.Day).MinAsync(),
+                await DbSet.AsNoTracking().Select(_ => _.Day).MaxAsync());
         }
 
         public async Task<int> GetLatestDayAsync(int dailyLiteracyTipId)
@@ -43,13 +72,35 @@ namespace GRA.Data.Repository
                 .MaxAsync(_ => (int?)_.Day) ?? 0;
         }
 
-        public async Task<IEnumerable<DailyLiteracyTipImage>> GetAllForTipAsync(int tipId)
+        public async Task<bool> ImageNameExistsAsync(int tipId, string name, string extension)
         {
-            return await DbSet
-                .AsNoTracking()
-                .Where(_ => _.DailyLiteracyTipId == tipId)
-                .ProjectTo<DailyLiteracyTipImage>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+            return await DbSet.AnyAsync(_ =>
+                _.DailyLiteracyTipId == tipId &&
+                _.Name == name &&
+                _.Extension == extension);
+        }
+
+        public async Task IncreaseDayAsync(int imageId, int siteId)
+        {
+            var images = await DbSet
+                    .Include(_ => _.DailyLiteracyTip)
+                    .Where(_ => _.DailyLiteracyTip.DailyLiteracyTipImages.Any(i => i.Id == imageId))
+                    .OrderBy(_ => _.Day)
+                    .ToListAsync();
+
+            var image = images.FirstOrDefault(_ => _.Id == imageId);
+            if (image == null || image.DailyLiteracyTip.SiteId != siteId)
+            {
+                return;
+            }
+
+            var next = images.FirstOrDefault(_ => _.Day == image.Day + 1);
+            if (next == null)
+            {
+                return;
+            }
+
+            await SwapDaysAsync(image, next);
         }
 
         public async Task<ICollection<DailyLiteracyTipImage>> PageAsync(DailyImageFilter filter)
@@ -100,60 +151,6 @@ namespace GRA.Data.Repository
             return DbSet
                 .AsNoTracking()
                 .Where(_ => _.DailyLiteracyTipId == filter.DailyLiteracyTipId);
-        }
-
-        public async Task<bool> ImageNameExistsAsync(int tipId, string name, string extension)
-        {
-            return await DbSet.AnyAsync(_ =>
-            _.DailyLiteracyTipId == tipId &&
-            _.Name == name &&
-            _.Extension == extension);
-        }
-
-        public async Task IncreaseDayAsync(int imageId, int siteId)
-        {
-            var images = await DbSet
-                    .Include(_ => _.DailyLiteracyTip)
-                    .Where(_ => _.DailyLiteracyTip.DailyLiteracyTipImages.Any(i => i.Id == imageId))
-                    .OrderBy(_ => _.Day)
-                    .ToListAsync();
-
-            var image = images.FirstOrDefault(_ => _.Id == imageId);
-            if (image == null || image.DailyLiteracyTip.SiteId != siteId)
-            {
-                return;
-            }
-
-            var next = images.FirstOrDefault(_ => _.Day == image.Day + 1);
-            if (next == null)
-            {
-                return;
-            }
-
-            await SwapDaysAsync(image, next);
-        }
-
-        public async Task DecreaseDayAsync(int imageId, int siteId)
-        {
-            var images = await DbSet
-                    .Include(_ => _.DailyLiteracyTip)
-                    .Where(_ => _.DailyLiteracyTip.DailyLiteracyTipImages.Any(i => i.Id == imageId))
-                    .OrderBy(_ => _.Day)
-                    .ToListAsync();
-
-            var image = images.FirstOrDefault(_ => _.Id == imageId);
-            if (image == null || image.DailyLiteracyTip.SiteId != siteId)
-            {
-                return;
-            }
-
-            var prev = images.FirstOrDefault(_ => _.Day == image.Day - 1);
-            if (prev == null)
-            {
-                return;
-            }
-
-            await SwapDaysAsync(image, prev);
         }
 
         private async Task SwapDaysAsync(

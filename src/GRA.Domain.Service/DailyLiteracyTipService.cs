@@ -4,12 +4,12 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using GRA.Abstract;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service
@@ -29,11 +29,13 @@ namespace GRA.Domain.Service
             : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageDailyLiteracyTips);
-            _dailyLiteracyTipImageRepository = dailyLiteracyTipImageRepository
-                ?? throw new ArgumentNullException(nameof(dailyLiteracyTipImageRepository));
-            _dailyLiteracyTipRepository = dailyLiteracyTipRepository
-                ?? throw new ArgumentNullException(nameof(dailyLiteracyTipRepository));
-            _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
+            ArgumentNullException.ThrowIfNull(dailyLiteracyTipImageRepository);
+            ArgumentNullException.ThrowIfNull(dailyLiteracyTipRepository);
+            ArgumentNullException.ThrowIfNull(pathResolver);
+
+            _dailyLiteracyTipImageRepository = dailyLiteracyTipImageRepository;
+            _dailyLiteracyTipRepository = dailyLiteracyTipRepository;
+            _pathResolver = pathResolver;
         }
 
         public async Task<DailyLiteracyTip> AddAsync(DailyLiteracyTip dailyLiteracyTip)
@@ -58,31 +60,29 @@ namespace GRA.Domain.Service
                 throw new GraException("Image or file is missing.");
             }
 
-            var latestDay = await _dailyLiteracyTipImageRepository.GetLatestDayAsync(image.DailyLiteracyTipId);
+            var latestDay = await _dailyLiteracyTipImageRepository
+                .GetLatestDayAsync(image.DailyLiteracyTipId);
             image.Day = latestDay + 1;
 
-            await _dailyLiteracyTipImageRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), image);
+            await _dailyLiteracyTipImageRepository
+                .AddSaveAsync(GetClaimId(ClaimType.UserId), image);
 
             var siteId = GetCurrentSiteId();
             var filePath = _pathResolver.ResolveContentFilePath($"site{siteId}/dailyimages/dailyliteracytip{image.DailyLiteracyTipId}/{image.Name}{image.Extension}");
 
             Directory.CreateDirectory(Path.GetDirectoryName(filePath));
 
-            await using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
+            await using var stream = new FileStream(filePath, FileMode.Create);
+            await file.CopyToAsync(stream);
         }
 
         public Task<(int, IList<string>)> AddImagesZipAsync(int dailyLiteracyTipId,
             ZipArchive archive)
         {
             VerifyManagementPermission();
-            if (archive == null)
-            {
-                throw new ArgumentNullException(nameof(archive));
-            }
-            return AddImagesZipInternalAsync(dailyLiteracyTipId, archive);
+            return archive == null
+                ? throw new ArgumentNullException(nameof(archive))
+                : AddImagesZipInternalAsync(dailyLiteracyTipId, archive);
         }
 
         public async Task<DailyLiteracyTip> GetByIdAsync(int id)
@@ -90,14 +90,19 @@ namespace GRA.Domain.Service
             return await _dailyLiteracyTipRepository.GetByIdAsync(id);
         }
 
-        public async Task<DailyLiteracyTipImage> GetImageByIdAsync(int imageId)
+        public async Task<Tuple<int, int>> GetFirstLastDayAsync(int dailyTipId)
         {
-            return await _dailyLiteracyTipImageRepository.GetByIdAsync(imageId);
+            return await _dailyLiteracyTipImageRepository.GetFirstLastDayAsync(dailyTipId);
         }
 
         public async Task<DailyLiteracyTipImage> GetImageByDayAsync(int dailyLiteracyTipId, int day)
         {
             return await _dailyLiteracyTipImageRepository.GetByDay(dailyLiteracyTipId, day);
+        }
+
+        public async Task<DailyLiteracyTipImage> GetImageByIdAsync(int imageId)
+        {
+            return await _dailyLiteracyTipImageRepository.GetByIdAsync(imageId);
         }
 
         public async Task<int> GetImagesByTipIdAsync(int dailyLiteracyTipId)
@@ -124,27 +129,6 @@ namespace GRA.Domain.Service
             };
         }
 
-        public async Task<IEnumerable<DailyLiteracyTipImage>> GetAllImagesAsync(int dailyLiteracyTipId)
-        {
-            return await _dailyLiteracyTipImageRepository.GetAllForTipAsync(dailyLiteracyTipId);
-        }
-
-        public async Task<DataWithCount<ICollection<DailyLiteracyTip>>> GetPaginatedListAsync(
-                    BaseFilter filter)
-        {
-            VerifyManagementPermission();
-            if (filter == null)
-            {
-                filter = new BaseFilter();
-            }
-            filter.SiteId = GetCurrentSiteId();
-            return new DataWithCount<ICollection<DailyLiteracyTip>>
-            {
-                Data = await _dailyLiteracyTipRepository.PageAsync(filter),
-                Count = await _dailyLiteracyTipRepository.CountAsync(filter)
-            };
-        }
-
         public async Task<DataWithCount<ICollection<DailyLiteracyTip>>> GetPaginatedImageListAsync(
                     BaseFilter filter)
         {
@@ -158,12 +142,45 @@ namespace GRA.Domain.Service
             };
         }
 
+        public async Task<DataWithCount<ICollection<DailyLiteracyTip>>> GetPaginatedListAsync(
+                            BaseFilter filter)
+        {
+            VerifyManagementPermission();
+            filter ??= new BaseFilter();
+            filter.SiteId = GetCurrentSiteId();
+            return new DataWithCount<ICollection<DailyLiteracyTip>>
+            {
+                Data = await _dailyLiteracyTipRepository.PageAsync(filter),
+                Count = await _dailyLiteracyTipRepository.CountAsync(filter)
+            };
+        }
+
+        public async Task<bool> ImageNameExistsAsync(int tipId, string name, string extension)
+        {
+            return await _dailyLiteracyTipImageRepository
+                .ImageNameExistsAsync(tipId, name, extension);
+        }
+
+        public async Task MoveImageDownAsync(int imageId)
+        {
+            var siteId = GetCurrentSiteId();
+            await _dailyLiteracyTipImageRepository.IncreaseDayAsync(imageId, siteId);
+        }
+
+        public async Task MoveImageUpAsync(int imageId)
+        {
+            var siteId = GetCurrentSiteId();
+            await _dailyLiteracyTipImageRepository.DecreaseDayAsync(imageId, siteId);
+        }
+
         public async Task RemoveAsync(int dailyLiteracyTipId)
         {
             VerifyManagementPermission();
             var authId = GetClaimId(ClaimType.UserId);
             var siteId = GetCurrentSiteId();
-            var dailyLiteracyTip = await _dailyLiteracyTipRepository.GetByIdAsync(dailyLiteracyTipId);
+            var dailyLiteracyTip = await _dailyLiteracyTipRepository
+                .GetByIdAsync(dailyLiteracyTipId);
+
             if (dailyLiteracyTip.SiteId != siteId)
             {
                 _logger.LogError($"User {authId} cannot delete point translation {dailyLiteracyTipId} for site {dailyLiteracyTip.SiteId}.");
@@ -182,7 +199,8 @@ namespace GRA.Domain.Service
             var authId = GetClaimId(ClaimType.UserId);
             var siteId = GetCurrentSiteId();
             var currentImage = await _dailyLiteracyTipImageRepository.GetByIdAsync(imageId);
-            var tip = await _dailyLiteracyTipRepository.GetByIdAsync(currentImage.DailyLiteracyTipId);
+            var tip = await _dailyLiteracyTipRepository
+                .GetByIdAsync(currentImage.DailyLiteracyTipId);
 
             await _dailyLiteracyTipImageRepository.RemoveSaveAsync(authId, imageId);
 
@@ -310,23 +328,6 @@ namespace GRA.Domain.Service
             }
 
             return (added, issues);
-        }
-
-        public async Task<bool> ImageNameExistsAsync(int tipId, string name, string extension)
-        {
-            return await _dailyLiteracyTipImageRepository.ImageNameExistsAsync(tipId, name, extension);
-        }
-
-        public async Task MoveImageUpAsync(int imageId)
-        {
-            var siteId = GetCurrentSiteId();
-            await _dailyLiteracyTipImageRepository.DecreaseDayAsync(imageId, siteId);
-        }
-
-        public async Task MoveImageDownAsync(int imageId)
-        {
-            var siteId = GetCurrentSiteId();
-            await _dailyLiteracyTipImageRepository.IncreaseDayAsync(imageId, siteId);
         }
     }
 }
