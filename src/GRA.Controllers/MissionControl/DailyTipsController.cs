@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
@@ -25,14 +26,136 @@ namespace GRA.Controllers.MissionControl
             DailyLiteracyTipService dailyLiteracyTipService)
             : base(context)
         {
-            _dailyLiteracyTipService = dailyLiteracyTipService
-                ?? throw new ArgumentNullException(nameof(dailyLiteracyTipService));
+            ArgumentNullException.ThrowIfNull(dailyLiteracyTipService);
+
+            _dailyLiteracyTipService = dailyLiteracyTipService;
 
             PageTitle = "Daily Tips";
         }
 
         public static string Name
         { get { return "DailyTips"; } }
+
+        [HttpGet]
+        public async Task<IActionResult> Add(int tipId)
+        {
+            var tip = await _dailyLiteracyTipService.GetByIdAsync(tipId);
+
+            if (tip == null)
+            {
+                ShowAlertDanger($"Tip not found with ID <strong>{tipId}</strong>.");
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(new TipImageAddViewModel
+            {
+                DailyTipId = tipId
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Add(TipImageAddViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+
+            var tip = await _dailyLiteracyTipService.GetByIdAsync(viewModel.DailyTipId);
+            if (tip == null)
+            {
+                ShowAlertDanger($"Tip not found with ID <strong>{viewModel.DailyTipId}</strong>.");
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+                var originalFileName = Path.GetFileName(viewModel.ImageFile.FileName);
+                var extension = Path.GetExtension(originalFileName);
+                var nameWithoutExtension = Path.GetFileNameWithoutExtension(originalFileName);
+                var newName = nameWithoutExtension;
+
+                int counter = 1;
+                while (await _dailyLiteracyTipService.ImageNameExistsAsync(viewModel.DailyTipId, newName, extension))
+                {
+                    newName = $"{nameWithoutExtension}-{counter++}";
+                }
+
+                var image = new DailyLiteracyTipImage
+                {
+                    DailyLiteracyTipId = viewModel.DailyTipId,
+                    Extension = extension,
+                    Name = newName
+                };
+
+                await _dailyLiteracyTipService.AddImageAsync(image, viewModel.ImageFile);
+
+                ShowAlertSuccess("Image added!");
+                return RedirectToAction(nameof(Detail), new { tipId = viewModel.DailyTipId });
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger($"Error: {gex.Message}");
+            }
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteImage(int imageId, int tipId)
+        {
+            try
+            {
+                await _dailyLiteracyTipService.RemoveImageAsync(imageId);
+                ShowAlertSuccess("Image deleted.");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger($"Error deleting image: {gex.Message}");
+            }
+
+            return RedirectToAction(nameof(Detail), new { tipId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Detail(int tipId, int page)
+        {
+            page = page == 0 ? 1 : page;
+
+            var filter = new DailyImageFilter(page)
+            {
+                DailyLiteracyTipId = tipId,
+            };
+
+            var imageData = await _dailyLiteracyTipService.GetPaginatedImageListAsync(filter);
+
+            var model = new TipDetailViewModel
+            {
+                CurrentPage = page,
+                ItemCount = imageData.Count,
+                ItemsPerPage = filter.Take.Value
+            };
+
+            if (model.PastMaxPage)
+            {
+                return RedirectToRoute(new { page = model.LastPage ?? 1 });
+            }
+
+            model.Tip = await _dailyLiteracyTipService.GetByIdAsync(tipId);
+            var site = await GetCurrentSiteAsync();
+
+            ((List<DailyLiteracyTipImage>)model.Images).AddRange(imageData.Data);
+
+            foreach (var image in model.Images)
+            {
+                model.Paths.Add(image.Id,
+                    _pathResolver.ResolveContentPath($"/site{site.Id}/dailyimages/dailyliteracytip{model.Tip.Id}/{image.Name}{image.Extension}"));
+            }
+
+            model.FirstAndLast = await _dailyLiteracyTipService.GetFirstLastDayAsync(tipId);
+
+            return View(model);
+        }
 
         [HttpGet]
         public async Task<IActionResult> Index(int page)
@@ -45,8 +168,8 @@ namespace GRA.Controllers.MissionControl
 
             var paginateModel = new PaginateViewModel
             {
-                ItemCount = tips.Count,
                 CurrentPage = page,
+                ItemCount = tips.Count,
                 ItemsPerPage = filter.Take.Value
             };
 
@@ -88,6 +211,18 @@ namespace GRA.Controllers.MissionControl
                 PaginateModel = paginateModel,
                 TipCount = tipCount
             });
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> MoveImageDown([FromBody] int id)
+        {
+            return await MoveImageAsync(id, false);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> MoveImageUp([FromBody] int id)
+        {
+            return await MoveImageAsync(id, true);
         }
 
         [HttpGet]
@@ -173,6 +308,50 @@ namespace GRA.Controllers.MissionControl
             }
 
             return RedirectToAction(nameof(Upload));
+        }
+
+        private async Task<JsonResult> MoveImageAsync(int id, bool up)
+        {
+            var image = await _dailyLiteracyTipService.GetImageByIdAsync(id);
+            if (image == null)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Invalid daily literacy tip id."
+                });
+            }
+
+            var minMax = await _dailyLiteracyTipService
+                .GetFirstLastDayAsync(image.DailyLiteracyTipId);
+
+            if (up && image.Day == minMax.Item1)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "This is already the first image."
+                });
+            }
+            else if (!up && image.Day == minMax.Item2)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "This is already the last image."
+                });
+            }
+
+            if (up)
+            {
+                await _dailyLiteracyTipService.MoveImageUpAsync(id);
+            }
+            else
+            {
+                await _dailyLiteracyTipService.MoveImageDownAsync(id);
+            }
+
+            return Json(new { success = true });
         }
     }
 }
