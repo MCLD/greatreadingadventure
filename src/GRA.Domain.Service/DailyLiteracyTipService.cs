@@ -269,62 +269,73 @@ namespace GRA.Domain.Service
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
-            "CA1031:Do not catch general exception types",
-            Justification = "Don't fail the entire import on issues with single images")]
-        private async Task<(int, IList<string>)> AddImagesZipInternalAsync(int dailyLiteracyTipId,
-            ZipArchive archive)
-        {
-            VerifyManagementPermission();
-            var issues = new List<string>();
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
+          "CA1031:Do not catch general exception types",
+          Justification = "Don't fail the entire import on issues with single images")]
+        private async Task<(int, IList<string>)> AddImagesZipInternalAsync(int dailyLiteracyTipId,
+          ZipArchive archive)
+        {
+            VerifyManagementPermission();
+            var issues = new List<string>();
 
-            var rootPath = _pathResolver.ResolveContentFilePath($"site{GetCurrentSiteId()}");
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
 
-            var tipDirectoryInfo = Directory.CreateDirectory(Path.Combine(rootPath,
-                "dailyimages",
-                $"dailyliteracytip{dailyLiteracyTipId}"));
+            var rootPath = _pathResolver.ResolveContentFilePath($"site{GetCurrentSiteId()}");
 
-            int dayCounter = await _dailyLiteracyTipImageRepository
-                .GetLatestDayAsync(dailyLiteracyTipId);
-            dayCounter++;
+            var tipDirectoryInfo = Directory.CreateDirectory(Path.Combine(rootPath,
+              "dailyimages",
+              $"dailyliteracytip{dailyLiteracyTipId}"));
 
-            int added = 0;
+            int dayCounter = await _dailyLiteracyTipImageRepository
+              .GetLatestDayAsync(dailyLiteracyTipId);
+            dayCounter++;
 
-            foreach (var file in archive.Entries.OrderBy(_ => _.Name))
-            {
-                try
-                {
-                    string fullPath = Path.Combine(tipDirectoryInfo.FullName, file.Name);
-                    int dupeCheck = 1;
-                    while (File.Exists(fullPath))
-                    {
-                        fullPath = Path.Combine(tipDirectoryInfo.FullName,
-                            Path.GetFileNameWithoutExtension(file.Name)
-                                + $"-{dupeCheck++}"
-                                + Path.GetExtension(file.Name));
-                    }
-                    file.ExtractToFile(fullPath);
+            int added = 0;
 
-                    await _dailyLiteracyTipImageRepository
-                        .AddSaveAsync(GetClaimId(ClaimType.UserId),
-                            new DailyLiteracyTipImage
-                            {
-                                DailyLiteracyTipId = dailyLiteracyTipId,
-                                Day = dayCounter++,
-                                Extension = Path.GetExtension(fullPath),
-                                Name = Path.GetFileNameWithoutExtension(fullPath)
-                            });
+            foreach (var file in archive.Entries.OrderBy(_ => _.Name))
+            {
+                try
+                {
+                    var extension = Path.GetExtension(file.Name)?.ToLowerInvariant();
+                    if (string.IsNullOrWhiteSpace(extension) || !allowedExtensions.Contains(extension))
+                    {
+                        _logger.LogWarning("Skipped file {FileName} due to invalid extension: {Extension}", file.Name, extension);
+                        issues.Add($"Skipped {file.Name}: unsupported image file type.");
+                        continue;
+                    }
 
-                    added++;
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning("Issue adding Daily Literacy Tip image {EntryName}: {ErrorMessage}", file.Name, ex.Message);
-                    issues.Add($"Error adding {file.Name}: {ex.Message}");
-                }
-            }
+                    var originalName = Path.GetFileNameWithoutExtension(file.Name);
+                    var safeName = originalName;
+                    int dupeCheck = 1;
+                    string fullPath = Path.Combine(tipDirectoryInfo.FullName, $"{safeName}{extension}");
 
-            return (added, issues);
-        }
-    }
+                    while (File.Exists(fullPath))
+                    {
+                        safeName = $"{originalName}-{dupeCheck++}";
+                        fullPath = Path.Combine(tipDirectoryInfo.FullName, $"{safeName}{extension}");
+                    }
+
+                    file.ExtractToFile(fullPath);
+
+                    await _dailyLiteracyTipImageRepository.AddSaveAsync(GetClaimId(ClaimType.UserId),
+                      new DailyLiteracyTipImage
+                      {
+                          DailyLiteracyTipId = dailyLiteracyTipId,
+                          Day = dayCounter++,
+                          Extension = extension,
+                          Name = safeName
+                      });
+
+                    added++;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning("Issue adding Daily Literacy Tip image {EntryName}: {ErrorMessage}", file.Name, ex.Message);
+                    issues.Add($"Error adding {file.Name}: {ex.Message}");
+                }
+            }
+
+            return (added, issues);
+        }
+    }
 }
