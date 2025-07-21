@@ -47,6 +47,7 @@
                                     <button class="btn btn-outline-danger btn-sm"
                                             data-bs-toggle="modal"
                                             data-bs-target="#deleteModal"
+                                            data-day="@Model.Images[index].Day"
                                             data-imageid="@Model.Images[index].Id"
                                             data-tipid="@Model.Images[index].DailyLiteracyTipId"
                                             title="Delete image">
@@ -97,7 +98,7 @@
                 <div class="modal-body">
                     <p>
                         Are you sure you wish to delete the image for day
-                        <strong class="delete-day"></strong>?
+                        <strong id="delete-day"></strong>?
                     </p>
                 </div>
                 <div class="modal-footer">
@@ -147,6 +148,7 @@
         document.getElementById('deleteModal').addEventListener('show.bs.modal', e => {
             document.getElementById('deleteImageId').value = e.relatedTarget.dataset.imageid;
             document.getElementById('deleteTipId').value = e.relatedTarget.dataset.tipid;
+            document.getElementById('delete-day').innerHTML = e.relatedTarget.dataset.day;
         });
     </script>
 }
