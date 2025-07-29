@@ -29,10 +29,10 @@ namespace GRA.Data.Repository
         public async Task DecreaseDayAsync(int imageId, int siteId)
         {
             var images = await DbSet
-                    .Include(_ => _.DailyLiteracyTip)
-                    .Where(_ => _.DailyLiteracyTip.DailyLiteracyTipImages.Any(i => i.Id == imageId))
-                    .OrderBy(_ => _.Day)
-                    .ToListAsync();
+                .Include(_ => _.DailyLiteracyTip)
+                .Where(_ => _.DailyLiteracyTip.DailyLiteracyTipImages.Any(i => i.Id == imageId))
+                .OrderBy(_ => _.Day)
+                .ToListAsync();
 
             var image = images.FirstOrDefault(_ => _.Id == imageId);
             if (image == null || image.DailyLiteracyTip.SiteId != siteId)
@@ -59,8 +59,24 @@ namespace GRA.Data.Repository
 
         public async Task<Tuple<int, int>> GetFirstLastDayAsync(int dailyLiteracyTipId)
         {
-            return Tuple.Create(await DbSet.AsNoTracking().Select(_ => _.Day).MinAsync(),
-                await DbSet.AsNoTracking().Select(_ => _.Day).MaxAsync());
+            var minDay = await DbSet
+                .AsNoTracking()
+                .Where(_ => _.DailyLiteracyTipId == dailyLiteracyTipId)
+                .MinAsync(_ => (int?)_.Day);
+
+            if (minDay.HasValue)
+            {
+                var maxDay = await DbSet
+                    .AsNoTracking()
+                    .Where(_ => _.DailyLiteracyTipId == dailyLiteracyTipId)
+                    .MaxAsync(_ => (int?)_.Day);
+
+                if (maxDay.HasValue)
+                {
+                    return Tuple.Create(minDay.Value, maxDay.Value);
+                }
+            }
+            return null;
         }
 
         public async Task<int> GetLatestDayAsync(int dailyLiteracyTipId)
@@ -83,10 +99,10 @@ namespace GRA.Data.Repository
         public async Task IncreaseDayAsync(int imageId, int siteId)
         {
             var images = await DbSet
-                    .Include(_ => _.DailyLiteracyTip)
-                    .Where(_ => _.DailyLiteracyTip.DailyLiteracyTipImages.Any(i => i.Id == imageId))
-                    .OrderBy(_ => _.Day)
-                    .ToListAsync();
+                .Include(_ => _.DailyLiteracyTip)
+                .Where(_ => _.DailyLiteracyTip.DailyLiteracyTipImages.Any(i => i.Id == imageId))
+                .OrderBy(_ => _.Day)
+                .ToListAsync();
 
             var image = images.FirstOrDefault(_ => _.Id == imageId);
             if (image == null || image.DailyLiteracyTip.SiteId != siteId)
@@ -133,13 +149,13 @@ namespace GRA.Data.Repository
                 {
                     await DbSet.Where(_ => _.DailyLiteracyTipId == image.DailyLiteracyTipId
                         && _.Day > image.Day && _.Day <= newDay)
-                        .ForEachAsync(_ => _.Day--);
+                            .ForEachAsync(_ => _.Day--);
                 }
                 else
                 {
                     await DbSet.Where(_ => _.DailyLiteracyTipId == image.DailyLiteracyTipId
                         && _.Day < image.Day && _.Day >= newDay)
-                        .ForEachAsync(_ => _.Day++);
+                            .ForEachAsync(_ => _.Day++);
                 }
                 image.Day = newDay;
                 await base.UpdateSaveAsync(userId, image);

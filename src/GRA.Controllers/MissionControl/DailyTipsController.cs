@@ -56,6 +56,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Add(TipImageAddViewModel viewModel)
         {
+            ArgumentNullException.ThrowIfNull(viewModel);
+
             if (!ModelState.IsValid)
             {
                 return View(viewModel);
@@ -324,6 +326,15 @@ namespace GRA.Controllers.MissionControl
 
             var minMax = await _dailyLiteracyTipService
                 .GetFirstLastDayAsync(image.DailyLiteracyTipId);
+
+            if (minMax == null)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "This sequence has no images."
+                });
+            }
 
             if (up && image.Day == minMax.Item1)
             {

@@ -174,100 +174,100 @@ namespace GRA.Domain.Service
         }
 
         public async Task RemoveAsync(int dailyLiteracyTipId)
-        {
-            VerifyManagementPermission();
-            var authId = GetClaimId(ClaimType.UserId);
-            var siteId = GetCurrentSiteId();
-            var dailyLiteracyTip = await _dailyLiteracyTipRepository
-                .GetByIdAsync(dailyLiteracyTipId);
+        {
+            VerifyManagementPermission();
+            var authId = GetClaimId(ClaimType.UserId);
+            var siteId = GetCurrentSiteId();
+            var dailyLiteracyTip = await _dailyLiteracyTipRepository
+              .GetByIdAsync(dailyLiteracyTipId);
 
-            if (dailyLiteracyTip.SiteId != siteId)
-            {
-                _logger.LogError("User {UserId} cannot delete Daily Literacy Tip {TipId} for site {TipSiteId}.", authId, dailyLiteracyTipId, dailyLiteracyTip.SiteId);
-                throw new GraException($"Permission denied - Daily Literacy Tip belongs to site id {dailyLiteracyTip.SiteId}.");
-            }
-            if (await _dailyLiteracyTipRepository.IsInUseAsync(dailyLiteracyTipId))
-            {
-                throw new GraException($"{dailyLiteracyTip.Name} is in use by programs and/or challenge tasks.");
-            }
-            await _dailyLiteracyTipRepository.RemoveSaveAsync(authId, dailyLiteracyTipId);
-        }
+            if (dailyLiteracyTip.SiteId != siteId)
+            {
+                _logger.LogError("User {UserId} cannot delete Daily Literacy Tip {TipId} for site {TipSiteId}.", authId, dailyLiteracyTipId, dailyLiteracyTip.SiteId);
+                throw new GraException($"Permission denied - Daily Literacy Tip belongs to site id {dailyLiteracyTip.SiteId}.");
+            }
+            if (await _dailyLiteracyTipRepository.IsInUseAsync(dailyLiteracyTipId))
+            {
+                throw new GraException($"{dailyLiteracyTip.Name} is in use by programs and/or challenge tasks.");
+            }
+            await _dailyLiteracyTipRepository.RemoveSaveAsync(authId, dailyLiteracyTipId);
+        }
 
-        public async Task RemoveImageAsync(int imageId)
-        {
-            VerifyManagementPermission();
-            var authId = GetClaimId(ClaimType.UserId);
-            var siteId = GetCurrentSiteId();
-            var currentImage = await _dailyLiteracyTipImageRepository.GetByIdAsync(imageId);
-            var tip = await _dailyLiteracyTipRepository
-                .GetByIdAsync(currentImage.DailyLiteracyTipId);
+        public async Task RemoveImageAsync(int imageId)
+        {
+            VerifyManagementPermission();
+            var authId = GetClaimId(ClaimType.UserId);
+            var siteId = GetCurrentSiteId();
+            var currentImage = await _dailyLiteracyTipImageRepository.GetByIdAsync(imageId);
+            var tip = await _dailyLiteracyTipRepository
+              .GetByIdAsync(currentImage.DailyLiteracyTipId);
 
-            await _dailyLiteracyTipImageRepository.RemoveSaveAsync(authId, imageId);
+            await _dailyLiteracyTipImageRepository.RemoveSaveAsync(authId, imageId);
 
-            if (tip.SiteId != siteId)
-            {
-                _logger.LogError("User {UserId} cannot remove Daily Literacy Tip image {ImageId} for site {ImageSiteId}.", authId, currentImage.Id, currentImage.DailyLiteracyTip.SiteId);
-                throw new GraException($"Permission denied - Daily Literacy Tip image belongs to site id {currentImage.DailyLiteracyTip.SiteId}");
-            }
+            if (tip.SiteId != siteId)
+            {
+                _logger.LogError("User {UserId} cannot remove Daily Literacy Tip image {ImageId} for site {ImageSiteId}.", authId, currentImage.Id, currentImage.DailyLiteracyTip.SiteId);
+                throw new GraException($"Permission denied - Daily Literacy Tip image belongs to site id {currentImage.DailyLiteracyTip.SiteId}");
+            }
 
-            var filePath = _pathResolver.ResolveContentFilePath($"site{siteId}/dailyimages/dailyliteracytip{tip.Id}/{currentImage.Name}{currentImage.Extension}");
+            var filePath = _pathResolver.ResolveContentFilePath($"site{siteId}/dailyimages/dailyliteracytip{tip.Id}/{currentImage.Name}{currentImage.Extension}");
 
-            if (File.Exists(filePath))
-            {
-                File.Delete(filePath);
-            }
-        }
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+        }
 
-        public async Task UpdateAsync(DailyLiteracyTip dailyLiteracyTip)
-        {
-            VerifyManagementPermission();
-            if (dailyLiteracyTip == null)
-            {
-                throw new GraException("Unable to update empty daily literacy tip");
-            }
-            var authId = GetClaimId(ClaimType.UserId);
-            var siteId = GetCurrentSiteId();
-            var currentDailyLiteracyTip = await _dailyLiteracyTipRepository.GetByIdAsync(dailyLiteracyTip.Id);
-            if (currentDailyLiteracyTip.SiteId != siteId)
-            {
-                _logger.LogError("User {UserId} cannot update Daily Literacy Tip {TipId} for site {TipSiteId}.", authId, currentDailyLiteracyTip.Id, currentDailyLiteracyTip.SiteId);
-                throw new GraException($"Permission denied - Daily Literacy Tip belongs to site id {currentDailyLiteracyTip.SiteId}");
-            }
+        public async Task UpdateAsync(DailyLiteracyTip dailyLiteracyTip)
+        {
+            VerifyManagementPermission();
+            if (dailyLiteracyTip == null)
+            {
+                throw new GraException("Unable to update empty daily literacy tip");
+            }
+            var authId = GetClaimId(ClaimType.UserId);
+            var siteId = GetCurrentSiteId();
+            var currentDailyLiteracyTip = await _dailyLiteracyTipRepository.GetByIdAsync(dailyLiteracyTip.Id);
+            if (currentDailyLiteracyTip.SiteId != siteId)
+            {
+                _logger.LogError("User {UserId} cannot update Daily Literacy Tip {TipId} for site {TipSiteId}.", authId, currentDailyLiteracyTip.Id, currentDailyLiteracyTip.SiteId);
+                throw new GraException($"Permission denied - Daily Literacy Tip belongs to site id {currentDailyLiteracyTip.SiteId}");
+            }
 
-            currentDailyLiteracyTip.Message = dailyLiteracyTip.Message;
-            currentDailyLiteracyTip.Name = dailyLiteracyTip.Name;
+            currentDailyLiteracyTip.Message = dailyLiteracyTip.Message;
+            currentDailyLiteracyTip.Name = dailyLiteracyTip.Name;
 
-            await _dailyLiteracyTipRepository.UpdateSaveAsync(authId, currentDailyLiteracyTip);
-        }
+            await _dailyLiteracyTipRepository.UpdateSaveAsync(authId, currentDailyLiteracyTip);
+        }
 
-        public async Task UpdateImageAsync(DailyLiteracyTipImage image)
-        {
-            VerifyManagementPermission();
-            if (image == null)
-            {
-                throw new GraException("Unable to update empty daily literacy tip image");
-            }
-            var authId = GetClaimId(ClaimType.UserId);
-            var siteId = GetCurrentSiteId();
-            var currentImage = await _dailyLiteracyTipImageRepository.GetByIdAsync(image.Id);
-            if (currentImage.DailyLiteracyTip.SiteId != siteId)
-            {
-                _logger.LogError("User {UserId} cannot update Daily Literacy Tip image {ImageId} for site {ImageSiteId}.", authId, currentImage.Id, currentImage.DailyLiteracyTip.SiteId);
-                throw new GraException($"Permission denied - Daily Literacy Tip image belongs to site id {currentImage.DailyLiteracyTip.SiteId}");
-            }
+        public async Task UpdateImageAsync(DailyLiteracyTipImage image)
+        {
+            VerifyManagementPermission();
+            if (image == null)
+            {
+                throw new GraException("Unable to update empty daily literacy tip image");
+            }
+            var authId = GetClaimId(ClaimType.UserId);
+            var siteId = GetCurrentSiteId();
+            var currentImage = await _dailyLiteracyTipImageRepository.GetByIdAsync(image.Id);
+            if (currentImage.DailyLiteracyTip.SiteId != siteId)
+            {
+                _logger.LogError("User {UserId} cannot update Daily Literacy Tip image {ImageId} for site {ImageSiteId}.", authId, currentImage.Id, currentImage.DailyLiteracyTip.SiteId);
+                throw new GraException($"Permission denied - Daily Literacy Tip image belongs to site id {currentImage.DailyLiteracyTip.SiteId}");
+            }
 
-            currentImage.Name = image.Name;
-            currentImage.Extension = image.Extension;
+            currentImage.Name = image.Name;
+            currentImage.Extension = image.Extension;
 
-            if (image.Day != currentImage.Day)
-            {
-                await _dailyLiteracyTipImageRepository.UpdateSaveAsync(authId, currentImage, image.Day);
-            }
-            else
-            {
-                await _dailyLiteracyTipImageRepository.UpdateSaveAsync(authId, currentImage);
-            }
-        }
+            if (image.Day != currentImage.Day)
+            {
+                await _dailyLiteracyTipImageRepository.UpdateSaveAsync(authId, currentImage, image.Day);
+            }
+            else
+            {
+                await _dailyLiteracyTipImageRepository.UpdateSaveAsync(authId, currentImage);
+            }
+        }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
           "CA1031:Do not catch general exception types",
@@ -277,8 +277,6 @@ namespace GRA.Domain.Service
         {
             VerifyManagementPermission();
             var issues = new List<string>();
-
-            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
 
             var rootPath = _pathResolver.ResolveContentFilePath($"site{GetCurrentSiteId()}");
 
@@ -296,8 +294,9 @@ namespace GRA.Domain.Service
             {
                 try
                 {
-                    var extension = Path.GetExtension(file.Name)?.ToLowerInvariant();
-                    if (string.IsNullOrWhiteSpace(extension) || !allowedExtensions.Contains(extension))
+                    var extension = Path.GetExtension(file.Name);
+                    if (!ValidFiles.ImageExtensions.Contains(extension,
+                        StringComparer.OrdinalIgnoreCase))
                     {
                         _logger.LogWarning("Skipped file {FileName} due to invalid extension: {Extension}", file.Name, extension);
                         issues.Add($"Skipped {file.Name}: unsupported image file type.");

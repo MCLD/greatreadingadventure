@@ -38,7 +38,7 @@
                         <tr>
                             <td>@Model.Images[index].Day</td>
                             <td>
-                                <img src="@Url.Content($"~/{Model.Paths[Model.Images[index].Id]}")"
+                                <img src="@Url.Content($"~/{Model.Paths[Model.Images[index].Id]}")?@Model.CacheBuster"
                                      alt="@Model.Images[index].Name"
                                      style="max-height: calc(50vh - 100px); overflow-y:auto;" />
                             </td>
