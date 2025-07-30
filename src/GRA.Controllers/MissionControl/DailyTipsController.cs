@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.DailyTips;
@@ -47,9 +48,12 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Index));
             }
 
+            var allowedExtensions = string.Join(",", ValidFiles.ImageExtensions);
+
             return View(new TipImageAddViewModel
             {
-                DailyTipId = tipId
+                DailyTipId = tipId,
+                AllowedExtensions = allowedExtensions
             });
         }
 
@@ -70,15 +74,21 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Index));
             }
 
+            var extension = Path.GetExtension(viewModel.ImageFile.FileName);
+            if (!ValidFiles.ImageExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase))
+            {
+                ModelState.AddModelError(nameof(viewModel.ImageFile), "Unsupported image file type.");
+                return View(viewModel);
+            }
+
             try
             {
                 var originalFileName = Path.GetFileName(viewModel.ImageFile.FileName);
-                var extension = Path.GetExtension(originalFileName);
                 var nameWithoutExtension = Path.GetFileNameWithoutExtension(originalFileName);
                 var newName = nameWithoutExtension;
 
                 int counter = 1;
-                while (await _dailyLiteracyTipService.ImageNameExistsAsync(viewModel.DailyTipId, newName, extension))
+                while (await _dailyLiteracyTipService.ImageNameExistsAsync(viewModel.DailyTipId, newName, extension)).ImageNameExistsAsync(viewModel.DailyTipId, newName, extension))
                 {
                     newName = $"{nameWithoutExtension}-{counter++}";
                 }
@@ -103,8 +113,9 @@ namespace GRA.Controllers.MissionControl
             return View(viewModel);
         }
 
+
         [HttpPost]
-        public async Task<IActionResult> DeleteImage(int imageId, int tipId, int page = 1)
+        public async Task<IActionResult> DeleteImage(int imageId, int tipId, int page)
         {
             try
             {

@@ -13,5 +13,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.DailyTips
         [Required]
         [Display(Name = "Image")]
         public IFormFile ImageFile { get; set; }
+
+        public string AllowedExtensions { get; set; }
     }
 }

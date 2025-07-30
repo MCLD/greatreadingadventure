@@ -10,7 +10,7 @@
 
     <div class="mb-3">
         <label asp-for="ImageFile" class="form-label">Image File</label>
-        <input type="file" asp-for="ImageFile" class="form-control" accept="image/*" />
+        <input type="file" asp-for="ImageFile" class="form-control" accept="@Model.AllowedExtensions" />
         <span asp-validation-for="ImageFile" class="text-danger"></span>
     </div>
 
