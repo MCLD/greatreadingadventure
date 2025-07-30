@@ -104,7 +104,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteImage(int imageId, int tipId)
+        public async Task<IActionResult> DeleteImage(int imageId, int tipId, int page = 1)
         {
             try
             {
@@ -116,7 +116,7 @@ namespace GRA.Controllers.MissionControl
                 ShowAlertDanger($"Error deleting image: {gex.Message}");
             }
 
-            return RedirectToAction(nameof(Detail), new { tipId });
+            return RedirectToAction(nameof(Detail), new { tipId, page });
         }
 
         [HttpGet]

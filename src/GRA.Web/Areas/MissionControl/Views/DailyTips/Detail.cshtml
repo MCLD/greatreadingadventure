@@ -4,8 +4,8 @@
 @section inHeading {
     <div class="ms-auto">
         <a class="btn btn-outline-success"
-           asp-action="@nameof(GRA.Controllers.MissionControl.DailyTipsController.Add)"
-           asp-route-tipId="@Model.Tip.Id">
+                 asp-action="@nameof(GRA.Controllers.MissionControl.DailyTipsController.Add)"
+                 asp-route-tipId="@Model.Tip.Id">
             <span class="far fa-file-archive fa-fw"></span>
             Add new Daily Tip
         </a>
@@ -39,34 +39,34 @@
                             <td>@Model.Images[index].Day</td>
                             <td>
                                 <img src="@Url.Content($"~/{Model.Paths[Model.Images[index].Id]}")?@Model.CacheBuster"
-                                     alt="@Model.Images[index].Name"
-                                     style="max-height: calc(50vh - 100px); overflow-y:auto;" />
+                                                        alt="@Model.Images[index].Name"
+                                                        style="max-height: calc(50vh - 100px); overflow-y:auto;" />
                             </td>
                             <td>
                                 <div class="btn-group" role="group">
                                     <button class="btn btn-outline-danger btn-sm"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal"
-                                            data-day="@Model.Images[index].Day"
-                                            data-imageid="@Model.Images[index].Id"
-                                            data-tipid="@Model.Images[index].DailyLiteracyTipId"
-                                            title="Delete image">
+                                                                  data-bs-toggle="modal"
+                                                                  data-bs-target="#deleteModal"
+                                                                  data-day="@Model.Images[index].Day"
+                                                                  data-imageid="@Model.Images[index].Id"
+                                                                  data-tipid="@Model.Images[index].DailyLiteracyTipId"
+                                                                  title="Delete image">
                                         <span class="fas fa-times fa-fw" aria-hidden="true"></span>
                                     </button>
                                     <button class="btn btn-outline-secondary btn-sm adjustPosition"
-                                            button-spinner
-                                            data-id="@Model.Images[index].Id"
-                                            disabled="@(Model.Images[index].Day == Model.FirstAndLast.Item1 ? "true" : null)"
-                                            href="#"
-                                            title="Move up">
+                                                                  button-spinner
+                                                                  data-id="@Model.Images[index].Id"
+                                                                  disabled="@(Model.Images[index].Day == Model.FirstAndLast.Item1 ? "true" : null)"
+                                                                  href="#"
+                                                                  title="Move up">
                                         <span class="fas fa-arrow-up fa-fw"></span>
                                     </button>
                                     <button class="btn btn-outline-secondary btn-sm adjustPosition increasePosition"
-                                            button-spinner
-                                            data-id="@Model.Images[index].Id"
-                                            disabled="@(Model.Images[index].Day == Model.FirstAndLast.Item2)"
-                                            href="#"
-                                            title="Move down">
+                                                                  button-spinner
+                                                                  data-id="@Model.Images[index].Id"
+                                                                  disabled="@(Model.Images[index].Day == Model.FirstAndLast.Item2)"
+                                                                  href="#"
+                                                                  title="Move down">
                                         <span class="fas fa-arrow-down fa-fw"></span>
                                     </button>
                                 </div>
@@ -81,19 +81,21 @@
 </div>
 
 <form asp-action="@nameof(DailyTipsController.DeleteImage)"
-      asp-controller="@DailyTipsController.Name"
-      method="POST">
+         asp-controller="@DailyTipsController.Name"
+         method="POST">
     <input type="hidden" id="deleteImageId" name="imageid" />
     <input type="hidden" id="deleteTipId" name="tipid" />
+    <input type="hidden" id="deletePage" name="page" value="@Model.CurrentPage" />
+
     <div class="modal" tabindex="-1" data-bs-backdrop="static" id="deleteModal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Delete image</h5>
                     <button aria-label="Close"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            type="button"></button>
+                                          class="btn-close"
+                                          data-bs-dismiss="modal"
+                                          type="button"></button>
                 </div>
                 <div class="modal-body">
                     <p>
@@ -119,26 +121,26 @@
 
         function TipImageAdjustPosition(e) {
             fetch(e.currentTarget.classList.contains("increasePosition")
-                    ? increasePositionUrl
-                    : decreasePositionUrl, {
+                ? increasePositionUrl
+                : decreasePositionUrl, {
                 method: "POST",
                 headers: { "Content-Type": "application/json"},
                 body: e.currentTarget.dataset.id
             })
-            .then(_ => _.json())
-            .then(_ => {
-                if(_.success === true) {
-                    location.reload();
-                } else {
-                    ResetSpinners();
-                    alert(_.message);
-                }
-            })
-            .catch(_ => {
+                .then(_ => _.json())
+                .then(_ => {
+                    if(_.success === true) {
+                        location.reload();
+                    } else {
+                        ResetSpinners();
+                        alert(_.message);
+                    }
+                })
+                .catch(_ => {
                 console.error("Fetch error: %o", _)
-                ResetSpinners();
-                alert("An error occurred adjusting the image order.");
-            });
+                    ResetSpinners();
+                    alert("An error occurred adjusting the image order.");
+                });
         }
 
         document.querySelectorAll('.adjustPosition').forEach(_ => {
@@ -149,6 +151,7 @@
             document.getElementById('deleteImageId').value = e.relatedTarget.dataset.imageid;
             document.getElementById('deleteTipId').value = e.relatedTarget.dataset.tipid;
             document.getElementById('delete-day').innerHTML = e.relatedTarget.dataset.day;
+            document.getElementById('deletePage').value = '@Model.CurrentPage';
         });
     </script>
 }
