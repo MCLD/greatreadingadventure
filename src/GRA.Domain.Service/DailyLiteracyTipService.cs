@@ -272,8 +272,7 @@ namespace GRA.Domain.Service
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
           "CA1031:Do not catch general exception types",
           Justification = "Don't fail the entire import on issues with single images")]
-        private async Task<(int, IList<string>)> AddImagesZipInternalAsync(int dailyLiteracyTipId,
-          ZipArchive archive)
+        private async Task<(int, IList<string>)> AddImagesZipInternalAsync(int dailyLiteracyTipId, ZipArchive archive)
         {
             VerifyManagementPermission();
             var issues = new List<string>();
@@ -292,11 +291,16 @@ namespace GRA.Domain.Service
 
             foreach (var file in archive.Entries.OrderBy(_ => _.Name))
             {
+                if (string.IsNullOrWhiteSpace(file.Name))
+                {
+                    continue;
+                }
+
                 try
                 {
                     var extension = Path.GetExtension(file.Name);
                     if (!ValidFiles.ImageExtensions.Contains(extension,
-                        StringComparer.OrdinalIgnoreCase))
+                      StringComparer.OrdinalIgnoreCase))
                     {
                         _logger.LogWarning("Skipped file {FileName} due to invalid extension: {Extension}", file.Name, extension);
                         issues.Add($"Skipped {file.Name}: unsupported image file type.");
@@ -332,6 +336,12 @@ namespace GRA.Domain.Service
                     _logger.LogWarning("Issue adding Daily Literacy Tip image {EntryName}: {ErrorMessage}", file.Name, ex.Message);
                     issues.Add($"Error adding {file.Name}: {ex.Message}");
                 }
+            }
+            if (added == 0)
+            {
+                const string noValidImagesMessage = "No valid image files were found in the archive.";
+                _logger.LogWarning(noValidImagesMessage);
+                issues.Add(noValidImagesMessage);
             }
 
             return (added, issues);
