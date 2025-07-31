@@ -10,6 +10,7 @@ using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
+using SixLabors.ImageSharp;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -88,7 +89,7 @@ namespace GRA.Controllers.MissionControl
                 var newName = nameWithoutExtension;
 
                 int counter = 1;
-                while (await _dailyLiteracyTipService.ImageNameExistsAsync(viewModel.DailyTipId, newName, extension)).ImageNameExistsAsync(viewModel.DailyTipId, newName, extension))
+                while (await _dailyLiteracyTipService.ImageNameExistsAsync(viewModel.DailyTipId, newName, extension))
                 {
                     newName = $"{nameWithoutExtension}-{counter++}";
                 }
@@ -265,8 +266,8 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Upload(TipUploadViewModel viewmodel)
         {
             if (viewmodel?.UploadedFile == null
-                || !string.Equals(Path.GetExtension(viewmodel.UploadedFile.FileName), ".zip",
-                    StringComparison.OrdinalIgnoreCase))
+              || !string.Equals(Path.GetExtension(viewmodel.UploadedFile.FileName), ".zip",
+                StringComparison.OrdinalIgnoreCase))
             {
                 AlertDanger = "You must select a .zip file.";
                 ModelState.AddModelError("UploadedFile", "You must select a .zip file.");
@@ -274,33 +275,53 @@ namespace GRA.Controllers.MissionControl
 
             if (ModelState.IsValid && viewmodel != null)
             {
-                var dailyTip = await _dailyLiteracyTipService.AddAsync(new DailyLiteracyTip
-                {
-                    IsLarge = viewmodel.IsLarge,
-                    Message = viewmodel.Message,
-                    Name = viewmodel.Name,
-                });
-
-                if (dailyTip == null)
-                {
-                    ShowAlertDanger("Unable to create Daily Tip in the database.");
-                    return RedirectToAction(nameof(Upload));
-                }
+                DailyLiteracyTip dailyTip = null;
 
                 try
                 {
                     using var archive = new ZipArchive(viewmodel.UploadedFile.OpenReadStream());
 
-                    var (added, issues)
-                        = await _dailyLiteracyTipService.AddImagesZipAsync(dailyTip.Id, archive);
+                    bool isLarge = false;
+                    int largeSize = 600;
+
+                    var firstImageEntry = archive.Entries.Where(e => !string.IsNullOrEmpty(e.Name) 
+                        && ValidFiles.ImageExtensions.Contains(Path.GetExtension(e.Name),  
+                        StringComparer.OrdinalIgnoreCase))
+                        .OrderBy(e => e.Name)
+                        .FirstOrDefault();
+
+                    if (firstImageEntry != null)
+                    {
+                        await using var imageStream = firstImageEntry.Open();
+                        using var image = await Image.LoadAsync(imageStream);
+                        if (image.Width > largeSize)
+                        {
+                            isLarge = true;
+                        }
+                    }
+
+                    dailyTip = await _dailyLiteracyTipService.AddAsync(new DailyLiteracyTip
+                    {
+                        IsLarge = isLarge,
+                        Message = viewmodel.Message,
+                        Name = viewmodel.Name,
+                    });
+
+                    if (dailyTip == null)
+                    {
+                        ShowAlertDanger("Unable to create Daily Tip in the database.");
+                        return RedirectToAction(nameof(Upload));
+                    }
+
+                    var (added, issues) = await _dailyLiteracyTipService.AddImagesZipAsync(dailyTip.Id, archive);
 
                     if (issues?.Count > 0)
                     {
                         var warning = new StringBuilder("<strong>Added ")
-                            .Append(added)
-                            .Append("</strong> daily images, encountered the following <strong>")
-                            .Append(issues.Count)
-                            .AppendLine(" issues</strong>:<ul>");
+                          .Append(added)
+                          .Append("</strong> daily images, encountered the following <strong>")
+                          .Append(issues.Count)
+                          .AppendLine(" issues</strong>:<ul>");
                         foreach (var issue in issues)
                         {
                             warning.Append("<li>").Append(issue).AppendLine("</li>");
@@ -316,10 +337,12 @@ namespace GRA.Controllers.MissionControl
                 catch (GraException gex)
                 {
                     ShowAlertDanger($"An error occurred adding images: {gex.Message}");
-                    await _dailyLiteracyTipService.RemoveAsync(dailyTip.Id);
+                    if (dailyTip != null)
+                    {
+                        await _dailyLiteracyTipService.RemoveAsync(dailyTip.Id);
+                    }
                 }
             }
-
             return RedirectToAction(nameof(Upload));
         }
 
