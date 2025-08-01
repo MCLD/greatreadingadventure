@@ -72,9 +72,6 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization",
-            "CA1308:Normalize strings to uppercase",
-            Justification = "Normalize file names and extensions to lowercase")]
         public async Task<IActionResult> AddEditStreaming(EventsDetailViewModel model)
         {
             ArgumentNullException.ThrowIfNull(model);
@@ -101,7 +98,8 @@ namespace GRA.Controllers.MissionControl
                     && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker))
                 {
                     if (!ValidImageExtensions.Contains(
-                        Path.GetExtension(model.BadgeUploadImage.FileName).ToLowerInvariant()))
+                        Path.GetExtension(model.BadgeUploadImage.FileName),
+                            StringComparer.OrdinalIgnoreCase))
                     {
                         ModelState.AddModelError("BadgeUploadImage",
                             $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
@@ -492,9 +490,6 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization",
-            "CA1308:Normalize strings to uppercase",
-            Justification = "Normalize filenames to lowercase")]
         public async Task<IActionResult> Create(EventsDetailViewModel model)
         {
             ArgumentNullException.ThrowIfNull(model);
@@ -546,7 +541,8 @@ namespace GRA.Controllers.MissionControl
                     && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker))
                 {
                     if (!ValidImageExtensions.Contains(
-                        Path.GetExtension(model.BadgeUploadImage.FileName).ToLowerInvariant()))
+                        Path.GetExtension(model.BadgeUploadImage.FileName),
+                            StringComparer.OrdinalIgnoreCase))
                     {
                         ModelState.AddModelError("BadgeUploadImage",
                             $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
@@ -1143,8 +1139,8 @@ namespace GRA.Controllers.MissionControl
         {
             PageTitle = "Import Events";
             if (eventFileCsv == null
-                || !ValidCsvExtensions
-                    .Contains(Path.GetExtension(eventFileCsv.FileName).ToUpperInvariant()))
+                || !ValidFiles.CsvExtensions.Contains(Path.GetExtension(eventFileCsv.FileName),
+                    StringComparer.OrdinalIgnoreCase))
             {
                 AlertDanger = "You must select a .csv file.";
                 ModelState.AddModelError("eventFileCsv", "You must select a .csv file.");

@@ -1,44 +1,68 @@
-﻿@model TipListViewModel
+﻿@using GRA.Controllers.ViewModel.MissionControl.DailyTips
+@model TipListViewModel
 
-@using GRA.Controllers.ViewModel.MissionControl.DailyTips
-
-<div class="row py-4">
-    <div class="col-12">
+@section inHeading {
+    <div class="ms-auto">
         <a class="btn btn-outline-success"
            asp-action="@nameof(GRA.Controllers.MissionControl.DailyTipsController.Upload)">
             <span class="far fa-file-archive fa-fw"></span>
             Upload new Daily Tips
         </a>
     </div>
-</div>
+}
 
 <div class="row">
     <div class="col-12">
-        <table class="table table-striped table-bordered table-sm">
-            <tr>
-                <th>Name</th>
-                <th>Message</th>
-                <th>Number of tips</th>
-                <th>Pop-up Size</th>
-            </tr>
-            @if (Model?.DailyTips?.Any() != true)
-            {
+        <table class="table table-sm table-bordered link-table">
+            <thead>
                 <tr>
-                    <td class="warning" colspan="4">No daily tips found.</td>
+                    <th>Name</th>
+                    <th>Message</th>
+                    <th>Number of tips</th>
+                    <th>Pop-up Size</th>
                 </tr>
-            }
-            else
-            {
-                foreach (var tip in Model.DailyTips)
+            </thead>
+            <tbody>
+                @if (Model?.DailyTips?.Any() != true)
                 {
                     <tr>
-                        <td>@tip.Name</td>
-                        <td>@tip.Message</td>
-                        <td>@(Model?.TipCount?.ContainsKey(tip.Id) == true ? Model.TipCount[tip.Id] : "0")</td>
-                        <td>@(tip.IsLarge ? "900 pixels (large)" : "600 pixels (small)")</td>
+                        <td class="warning" colspan="4">No daily tips found.</td>
                     </tr>
                 }
-            }
+                else
+                {
+                    foreach (var tip in Model.DailyTips)
+                    {
+                        <tr>
+                            <td class="td-class">
+                                <a asp-action="@nameof(GRA.Controllers.MissionControl.DailyTipsController.Detail)"
+                                   asp-route-tipId="@tip.Id"
+                                   class="rowlink">
+                                    @tip.Name
+                                </a>
+                            </td>
+                            <td>@tip.Message</td>
+                            <td>@(Model?.TipCount?.ContainsKey(tip.Id) == true ? Model.TipCount[tip.Id] : "0")</td>
+                            <td>@(tip.IsLarge ? "900 pixels (large)" : "600 pixels (small)")</td>
+                        </tr>
+                    }
+                }
+            </tbody>
         </table>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.td-class').each(function () {
+                $(this).children("a.rowlink").height($(this).outerHeight());
+            });
+        });
+        $(window).resize(function () {
+            $('.td-class').each(function () {
+                $(this).children("a.rowlink").height($(this).outerHeight());
+            });
+        });
+    </script>
+}

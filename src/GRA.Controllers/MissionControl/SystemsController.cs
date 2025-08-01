@@ -257,15 +257,16 @@ namespace GRA.Controllers.MissionControl
         {
             if (viewModel?.FileUpload == null)
             {
-                AlertDanger = $"You must upload a file to import of this type(s): {string.Join(", ", ValidCsvExtensions)}";
+                AlertDanger = $"You must upload a file to import of this type(s): {string.Join(", ", ValidFiles.CsvExtensions)}";
                 return RedirectToAction(nameof(Import));
             }
             else
             {
-                if (!ValidCsvExtensions
-                    .Contains(Path.GetExtension(viewModel.FileUpload.FileName).ToUpperInvariant()))
+                if (!ValidFiles.CsvExtensions
+                        .Contains(Path.GetExtension(viewModel.FileUpload.FileName),
+                            StringComparer.OrdinalIgnoreCase))
                 {
-                    AlertDanger = $"File must be one of the following type(s): {string.Join(", ", ValidCsvExtensions)}";
+                    AlertDanger = $"File must be one of the following type(s): {string.Join(", ", ValidFiles.CsvExtensions)}";
                     return RedirectToAction(nameof(Import));
                 }
             }
