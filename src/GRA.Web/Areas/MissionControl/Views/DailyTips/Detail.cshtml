@@ -69,6 +69,15 @@
                                                                   title="Move down">
                                         <span class="fas fa-arrow-down fa-fw"></span>
                                     </button>
+                                    <button class="btn btn-outline-primary btn-sm"
+                                                                  data-bs-toggle="modal"
+                                                                  data-bs-target="#setDayModal"
+                                                                  data-imageid="@Model.Images[index].Id"
+                                                                  data-day="@Model.Images[index].Day"
+                                                                  data-tipid="@Model.Images[index].DailyLiteracyTipId"
+                                                                  title="Set day manually">
+                                        <span class="fas fa-pencil-alt fa-fw"></span>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -92,10 +101,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Delete image</h5>
-                    <button aria-label="Close"
-                                          class="btn-close"
-                                          data-bs-dismiss="modal"
-                                          type="button"></button>
+                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
                 </div>
                 <div class="modal-body">
                     <p>
@@ -104,10 +110,33 @@
                     </p>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-outline-secondary" data-bs-dismiss="modal" type="button">
-                        Close
-                    </button>
+                    <button class="btn btn-outline-secondary" data-bs-dismiss="modal" type="button">Close</button>
                     <button class="btn btn-outline-danger" type="submit">Delete image</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form asp-action="SetImageDay" method="POST">
+    <input type="hidden" id="setDayImageId" name="imageId" />
+    <input type="hidden" id="setDayTipId" name="tipId" />
+    <input type="hidden" id="setDayPage" name="page" value="@Model.CurrentPage" />
+
+    <div class="modal fade" id="setDayModal" tabindex="-1" aria-labelledby="setDayModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="setDayModalLabel">Set Image Day</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <label for="manualDayInput" class="form-label">Enter new day number:</label>
+                    <input type="number" class="form-control" id="manualDayInput" name="newDay" min="1" required />
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-secondary" data-bs-dismiss="modal" type="button">Cancel</button>
+                    <button class="btn btn-outline-primary" type="submit">Set Day</button>
                 </div>
             </div>
         </div>
@@ -120,16 +149,14 @@
         const increasePositionUrl = '@Url.Action(nameof(DailyTipsController.MoveImageDown), DailyTipsController.Name)';
 
         function TipImageAdjustPosition(e) {
-            fetch(e.currentTarget.classList.contains("increasePosition")
-                ? increasePositionUrl
-                : decreasePositionUrl, {
+            fetch(e.currentTarget.classList.contains("increasePosition") ? increasePositionUrl : decreasePositionUrl, {
                 method: "POST",
-                headers: { "Content-Type": "application/json"},
+                headers: { "Content-Type": "application/json" },
                 body: e.currentTarget.dataset.id
             })
                 .then(_ => _.json())
                 .then(_ => {
-                    if(_.success === true) {
+                    if (_.success === true) {
                         location.reload();
                     } else {
                         ResetSpinners();
@@ -137,7 +164,7 @@
                     }
                 })
                 .catch(_ => {
-                console.error("Fetch error: %o", _)
+                    console.error("Fetch error: %o", _)
                     ResetSpinners();
                     alert("An error occurred adjusting the image order.");
                 });
@@ -152,6 +179,14 @@
             document.getElementById('deleteTipId').value = e.relatedTarget.dataset.tipid;
             document.getElementById('delete-day').innerHTML = e.relatedTarget.dataset.day;
             document.getElementById('deletePage').value = '@Model.CurrentPage';
+        });
+
+        document.getElementById('setDayModal').addEventListener('show.bs.modal', e => {
+            const trigger = e.relatedTarget;
+            document.getElementById('setDayImageId').value = trigger.dataset.imageid;
+            document.getElementById('setDayTipId').value = trigger.dataset.tipid;
+            document.getElementById('setDayPage').value = '@Model.CurrentPage';
+            document.getElementById('manualDayInput').value = trigger.dataset.day;
         });
     </script>
 }
