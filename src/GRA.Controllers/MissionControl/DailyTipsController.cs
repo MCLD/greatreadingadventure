@@ -114,7 +114,6 @@ namespace GRA.Controllers.MissionControl
             return View(viewModel);
         }
 
-
         [HttpPost]
         public async Task<IActionResult> DeleteImage(int imageId, int tipId, int page)
         {
@@ -284,8 +283,8 @@ namespace GRA.Controllers.MissionControl
                     bool isLarge = false;
                     int largeSize = 600;
 
-                    var firstImageEntry = archive.Entries.Where(e => !string.IsNullOrEmpty(e.Name) 
-                        && ValidFiles.ImageExtensions.Contains(Path.GetExtension(e.Name),  
+                    var firstImageEntry = archive.Entries.Where(e => !string.IsNullOrEmpty(e.Name)
+                        && ValidFiles.ImageExtensions.Contains(Path.GetExtension(e.Name),
                         StringComparer.OrdinalIgnoreCase))
                         .OrderBy(e => e.Name)
                         .FirstOrDefault();
