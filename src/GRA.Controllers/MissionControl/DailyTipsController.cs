@@ -345,6 +345,23 @@ namespace GRA.Controllers.MissionControl
             return RedirectToAction(nameof(Upload));
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SetImageDay(int imageId, int tipId, int newDay, int page)
+        {
+            try
+            {
+                await _dailyLiteracyTipService.SetImageDayAsync(imageId, newDay);
+                ShowAlertSuccess("Image day updated.");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger($"Error setting day: {gex.Message}");
+            }
+
+            return RedirectToAction(nameof(Detail), new { tipId, page });
+        }
+
+
         private async Task<JsonResult> MoveImageAsync(int id, bool up)
         {
             var image = await _dailyLiteracyTipService.GetImageByIdAsync(id);
