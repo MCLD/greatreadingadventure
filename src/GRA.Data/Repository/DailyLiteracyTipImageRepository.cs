@@ -79,35 +79,6 @@ namespace GRA.Data.Repository
             return null;
         }
 
-
-        public async Task UpdateDayAndShiftOthersAsync(int imageId, int newDay, int siteId)
-        {
-            var image = await DbSet.Include(i => i.DailyLiteracyTip)
-                .Where(i => i.Id == imageId)
-                .FirstOrDefaultAsync();
-
-            var tipId = image.DailyLiteracyTipId;
-            var currentDay = image.Day;
-
-            if (newDay < currentDay)
-            {
-                var toShift = DbSet.Where(i => i.DailyLiteracyTipId == tipId
-                    && i.Day >= newDay && i.Day < currentDay);
-                await toShift.ForEachAsync(i => i.Day++);
-            }
-            else
-            {
-                var toShift = DbSet.Where(i => i.DailyLiteracyTipId == tipId
-                    && i.Day <= newDay && i.Day > currentDay);
-                await toShift.ForEachAsync(i => i.Day--);
-            }
-
-            image.Day = newDay;
-
-            await _context.SaveChangesAsync();
-        }
-
-
         public async Task<int> GetLatestDayAsync(int dailyLiteracyTipId)
         {
             return await DbSet
@@ -168,6 +139,33 @@ namespace GRA.Data.Repository
                 .ForEachAsync(_ => _.Day--);
 
             await base.RemoveSaveAsync(userId, id);
+        }
+
+        public async Task UpdateDayAndShiftOthersAsync(int imageId, int newDay, int siteId)
+        {
+            var image = await DbSet.Include(i => i.DailyLiteracyTip)
+                .Where(i => i.Id == imageId)
+                .FirstOrDefaultAsync();
+
+            var tipId = image.DailyLiteracyTipId;
+            var currentDay = image.Day;
+
+            if (newDay < currentDay)
+            {
+                var shift = DbSet.Where(i => i.DailyLiteracyTipId == tipId
+                    && i.Day >= newDay && i.Day < currentDay);
+                await shift.ForEachAsync(i => i.Day++);
+            }
+            else
+            {
+                var shift = DbSet.Where(i => i.DailyLiteracyTipId == tipId
+                    && i.Day <= newDay && i.Day > currentDay);
+                await shift.ForEachAsync(i => i.Day--);
+            }
+
+            image.Day = newDay;
+
+            await _context.SaveChangesAsync();
         }
 
         public async Task UpdateSaveAsync(int userId, DailyLiteracyTipImage image, int newDay)

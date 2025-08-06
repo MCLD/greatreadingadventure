@@ -218,6 +218,30 @@ namespace GRA.Domain.Service
             }
         }
 
+        public async Task SetImageDayAsync(int imageId, int newDay)
+        {
+            VerifyManagementPermission();
+
+            var image = await _dailyLiteracyTipImageRepository.GetByIdAsync(imageId);
+            if (image == null)
+            {
+                throw new GraException("Image not found.");
+            }
+
+            var tipId = image.DailyLiteracyTipId;
+            var count = await _dailyLiteracyTipImageRepository
+              .CountAsync(new DailyImageFilter { DailyLiteracyTipId = tipId });
+
+            newDay = Math.Max(1, Math.Min(newDay, count));
+
+            if (newDay == image.Day)
+            {
+                return;
+            }
+
+            await _dailyLiteracyTipImageRepository.UpdateDayAndShiftOthersAsync(imageId, newDay, GetCurrentSiteId());
+        }
+
         public async Task UpdateAsync(DailyLiteracyTip dailyLiteracyTip)
         {
             VerifyManagementPermission();
@@ -268,32 +292,6 @@ namespace GRA.Domain.Service
                 await _dailyLiteracyTipImageRepository.UpdateSaveAsync(authId, currentImage);
             }
         }
-
-        public async Task SetImageDayAsync(int imageId, int newDay)
-        {
-            VerifyManagementPermission();
-
-            var image = await _dailyLiteracyTipImageRepository.GetByIdAsync(imageId);
-            if (image == null)
-            {
-                throw new GraException("Image not found.");
-            }
-
-            var tipId = image.DailyLiteracyTipId;
-            var count = await _dailyLiteracyTipImageRepository
-              .CountAsync(new DailyImageFilter { DailyLiteracyTipId = tipId });
-
-            newDay = Math.Max(1, Math.Min(newDay, count));
-
-            if (newDay == image.Day)
-            {
-                return;
-            }
-
-            await _dailyLiteracyTipImageRepository.UpdateDayAndShiftOthersAsync(imageId, newDay, GetCurrentSiteId());
-        }
-
-
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
           "CA1031:Do not catch general exception types",

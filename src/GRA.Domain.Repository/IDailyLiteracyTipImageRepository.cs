@@ -20,13 +20,13 @@ namespace GRA.Domain.Repository
 
         Task<bool> ImageNameExistsAsync(int tipId, string name, string extension);
 
-        Task UpdateDayAndShiftOthersAsync(int imageId, int newDay, int siteId);
-
         Task IncreaseDayAsync(int imageId, int siteId);
 
         Task<ICollection<DailyLiteracyTipImage>> PageAsync(DailyImageFilter filter);
 
         new Task RemoveSaveAsync(int userId, int imageId);
+
+        Task UpdateDayAndShiftOthersAsync(int imageId, int newDay, int siteId);
 
         Task UpdateSaveAsync(int userId, DailyLiteracyTipImage image, int newDay);
     }
