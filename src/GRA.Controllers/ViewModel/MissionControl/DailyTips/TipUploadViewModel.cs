@@ -5,10 +5,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.DailyTips
 {
     public class TipUploadViewModel
     {
-        [Required]
-        [Display(Name = "Are the images wider than 600 pixels?",
-            Description = "Images will show in a larger pop-up if you choose yes")]
-        public bool IsLarge { get; set; }
 
         [Required]
         [MaxLength(50)]

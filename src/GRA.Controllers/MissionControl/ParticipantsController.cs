@@ -1495,9 +1495,6 @@ namespace GRA.Controllers.MissionControl
 
         [Authorize(Policy = Policy.ImportHouseholdMembers)]
         [HttpPost]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization",
-            "CA1308:Normalize strings to uppercase",
-            Justification = "Normalize file paths to lowercase")]
         public async Task<IActionResult> HouseholdImport(HouseholdImportViewModel model)
         {
             ArgumentNullException.ThrowIfNull(model);
@@ -1536,11 +1533,12 @@ namespace GRA.Controllers.MissionControl
                 }
             }
 
-            if (model.UserExcelFile != null && !ValidExcelExtensions
-                .Contains(Path.GetExtension(model.UserExcelFile.FileName).ToLowerInvariant()))
+            if (model.UserExcelFile != null && !ValidFiles.ExcelExtensions
+                    .Contains(Path.GetExtension(model.UserExcelFile.FileName),
+                        StringComparer.OrdinalIgnoreCase))
             {
                 ModelState.AddModelError("UserExcelFile",
-                    $"File must be one of the following types: {string.Join(", ", ValidUploadExtensions)}");
+                    $"File must be one of the following types: {string.Join(", ", ValidFiles.ExcelExtensions)}");
             }
 
             if (ModelState.IsValid)

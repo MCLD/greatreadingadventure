@@ -19,6 +19,12 @@ namespace GRA.Data.Repository
         {
         }
 
+        public async Task<int> CountAsync(BaseFilter filter)
+        {
+            return await ApplyFilters(filter)
+                .CountAsync();
+        }
+
         public async Task<IEnumerable<DailyLiteracyTip>> GetAllAsync(int siteId)
         {
             return await DbSet.AsNoTracking()
@@ -28,10 +34,11 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task<int> CountAsync(BaseFilter filter)
+        public async Task<bool> IsInUseAsync(int dailyLiteracyTipId)
         {
-            return await ApplyFilters(filter)
-                .CountAsync();
+            return await _context.Programs.AsNoTracking()
+                .Where(_ => _.DailyLiteracyTipId == dailyLiteracyTipId)
+                .AnyAsync();
         }
 
         public async Task<ICollection<DailyLiteracyTip>> PageAsync(BaseFilter filter)
@@ -48,13 +55,6 @@ namespace GRA.Data.Repository
             return DbSet
                 .AsNoTracking()
                 .Where(_ => _.SiteId == filter.SiteId);
-        }
-
-        public async Task<bool> IsInUseAsync(int dailyLiteracyTipId)
-        {
-            return await _context.Programs.AsNoTracking()
-                .Where(_ => _.DailyLiteracyTipId == dailyLiteracyTipId)
-                .AnyAsync();
         }
     }
 }

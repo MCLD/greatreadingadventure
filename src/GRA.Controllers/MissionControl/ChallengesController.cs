@@ -129,8 +129,8 @@ namespace GRA.Controllers.MissionControl
                     && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) && !model.UseBadgeMaker))
                 {
                     if (!ValidImageExtensions.Contains(Path
-                        .GetExtension(model.BadgeUploadImage.FileName)
-                        .ToLowerInvariant()))
+                        .GetExtension(model.BadgeUploadImage.FileName),
+                            StringComparer.OrdinalIgnoreCase))
                     {
                         ModelState.AddModelError("BadgeUploadImage",
                             $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
@@ -402,8 +402,8 @@ namespace GRA.Controllers.MissionControl
                 && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker))
             {
                 if (!ValidImageExtensions.Contains(Path
-                    .GetExtension(model.BadgeUploadImage.FileName)
-                    .ToLowerInvariant()))
+                    .GetExtension(model.BadgeUploadImage.FileName),
+                        StringComparer.OrdinalIgnoreCase))
                 {
                     ModelState.AddModelError("BadgeUploadImage",
                         $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
@@ -870,12 +870,12 @@ namespace GRA.Controllers.MissionControl
                 ModelState.Remove(key);
             }
 
-            if (viewModel.TaskUploadFile != null && !ValidUploadExtensions.Contains(Path
-                    .GetExtension(viewModel.TaskUploadFile.FileName)
-                    .ToLowerInvariant()))
+            if (viewModel.TaskUploadFile != null && !ValidFiles.UploadExtensions.Contains(Path
+                    .GetExtension(viewModel.TaskUploadFile.FileName),
+                        StringComparer.OrdinalIgnoreCase))
             {
                 ModelState.AddModelError("BadgeUploadImage",
-                    $"File upload must be one of the following types: {string.Join(", ", ValidUploadExtensions)}");
+                    $"File upload must be one of the following types: {string.Join(", ", ValidFiles.UploadExtensions)}");
             }
 
             if (ModelState.IsValid)
@@ -1007,12 +1007,12 @@ namespace GRA.Controllers.MissionControl
             }
 
             if (viewModel.TaskUploadFile != null
-                && !ValidUploadExtensions.Contains(Path
-                    .GetExtension(viewModel.TaskUploadFile.FileName)
-                    .ToLowerInvariant()))
+                && !ValidFiles.UploadExtensions.Contains(Path
+                    .GetExtension(viewModel.TaskUploadFile.FileName),
+                        StringComparer.OrdinalIgnoreCase))
             {
                 ModelState.AddModelError("BadgeUploadImage",
-                    $"File upload must be one of the following types: {string.Join(", ", ValidUploadExtensions)}");
+                    $"File upload must be one of the following types: {string.Join(", ", ValidFiles.UploadExtensions)}");
             }
 
             if (ModelState.IsValid)
@@ -1493,8 +1493,8 @@ namespace GRA.Controllers.MissionControl
             }
 
             if (!ValidImageExtensions.Contains(Path
-                .GetExtension(model.UploadedImage.FileName)
-                .ToLowerInvariant()))
+                .GetExtension(model.UploadedImage.FileName),
+                    StringComparer.OrdinalIgnoreCase))
             {
                 ShowAlertDanger($"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                 return RedirectToAction(nameof(FeaturedDetails),
