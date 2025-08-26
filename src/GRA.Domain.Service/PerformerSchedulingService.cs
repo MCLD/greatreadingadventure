@@ -116,7 +116,7 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.SchedulePerformers))
             {
-                _logger.LogError($"User {authId} doesn't have permission to select kit.");
+                _logger.LogError("User {AuthId} doesn't have permission to select kit.", authId);
                 throw new GraException("Permission denied.");
             }
 
@@ -167,7 +167,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.SchedulePerformers))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to schedule program.");
+                _logger.LogError("User {UserId} doesn't have permission to schedule program.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             var authId = GetClaimId(ClaimType.UserId);
@@ -294,7 +295,8 @@ namespace GRA.Domain.Service
 
             if (!HasPermission(Permission.AccessPerformerRegistration))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to add a performer.");
+                _logger.LogError("User {UserId} doesn't have permission to add a performer.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
@@ -333,7 +335,8 @@ namespace GRA.Domain.Service
                 && (performer.UserId != authId
                     || !HasPermission(Permission.AccessPerformerRegistration)))
             {
-                _logger.LogError($"User {authId} doesn't have permission to set performer {performer.Id} images.");
+                _logger.LogError("User {AuthId} doesn't have permission to set performer {PerformerId} images.",
+                    authId, performer.Id);
                 throw new GraException("Permission denied.");
             }
 
@@ -373,7 +376,7 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.AccessPerformerRegistration))
             {
-                _logger.LogError($"User id {authId} does not have persmission to add program.");
+                _logger.LogError("User id {AuthId} does not have persmission to add program.", authId);
                 throw new GraException("Permission denied.");
             }
 
@@ -402,7 +405,8 @@ namespace GRA.Domain.Service
                 if (performer.UserId != authId
                     || !HasPermission(Permission.AccessPerformerRegistration))
                 {
-                    _logger.LogError($"User id {authId} does not have persmission to add program {programId} image.");
+                    _logger.LogError("User id {AuthId} does not have persmission to add program {ProgramId} image.",
+                        authId, programId);
                     throw new GraException("Permission denied.");
                 }
             }
@@ -442,7 +446,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.SchedulePerformers))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to verify branch age group selection.");
+                _logger.LogError("User {UserId} doesn't have permission to verify branch age group selection.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
@@ -456,7 +461,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                    && !HasPermission(Permission.SchedulePerformers))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to verify branch back to back status");
+                _logger.LogError("User {UserId} doesn't have permission to verify branch back to back status",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
@@ -486,7 +492,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && (currentPerformer.UserId != authId || !HasPermission(Permission.AccessPerformerRegistration)))
             {
-                _logger.LogError($"User {authId} doesn't have permission to edit performer {currentPerformer.Id}.");
+                _logger.LogError("User {AuthId} doesn't have permission to edit performer {PerformerId}.",
+                    authId, currentPerformer.Id);
                 throw new GraException("Permission denied.");
             }
 
@@ -554,7 +561,8 @@ namespace GRA.Domain.Service
                 && (performer.UserId != authId
                     || !HasPermission(Permission.AccessPerformerRegistration)))
             {
-                _logger.LogError($"User {authId} doesn't have permission to set performer {performer.Id} schedule.");
+                _logger.LogError("User {AuthId} doesn't have permission to set performer {PerformerId} schedule.",
+                    authId, performer.Id);
                 throw new GraException("Permission denied.");
             }
 
@@ -573,8 +581,8 @@ namespace GRA.Domain.Service
 
             if (schedule.Count != totalDates)
             {
-                _logger.LogError($"Invalid schedule date count for user {authId}:" +
-                    $"{schedule.Count} instead of {totalDates}");
+                _logger.LogError("Invalid schedule date count for user {AuthId}:" +
+                    "{Schedule} instead of {TotalDates}", authId, schedule.Count, totalDates);
                 throw new GraException("Invalid date count.");
             }
             var invalidDates = schedule
@@ -585,7 +593,7 @@ namespace GRA.Domain.Service
 
             if (invalidDates.Count > 0)
             {
-                _logger.LogError($"Invalid schedule dates for user {authId}: "
+                _logger.LogError("Invalid schedule dates for user {AuthId}: ", authId
                     + string.Join(", ", invalidDates.Select(_ => _.ParsedDate)));
                 throw new GraException("Invalid dates selected.");
             }
@@ -630,7 +638,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view age group.");
+                _logger.LogError("User {UserId} doesn't have permission to view age group.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
@@ -650,7 +659,8 @@ namespace GRA.Domain.Service
                 && !HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer scheduling blackout dates.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer scheduling blackout dates.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psAgeGroupRepository.GetAllAsync();
@@ -674,7 +684,8 @@ namespace GRA.Domain.Service
                 && !HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer scheduling blackout dates.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer scheduling blackout dates.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psBlackoutDateRepository.GetAllAsync();
@@ -696,7 +707,8 @@ namespace GRA.Domain.Service
                 && !HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer scheduling branch ids.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer scheduling branch ids.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
@@ -715,7 +727,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view kit.");
+                _logger.LogError("User {UserId} doesn't have permission to view kit.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
@@ -747,7 +760,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view kit index list.");
+                _logger.LogError("User {UserId} doesn't have permission to view kit index list.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psKitRepository.GetIndexListAsync();
@@ -765,7 +779,8 @@ namespace GRA.Domain.Service
                 && !HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer scheduling branch.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer scheduling branch.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
@@ -779,7 +794,8 @@ namespace GRA.Domain.Service
                 && !HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer scheduling system branches.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer scheduling system branches.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
@@ -817,7 +833,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view kit list.");
+                _logger.LogError("User {UserId} doesn't have permission to view kit list.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
@@ -830,7 +847,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer list.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer list.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psPerformerRepository.PageAsync(filter);
@@ -842,7 +860,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view program list.");
+                _logger.LogError("User {UserId} doesn't have permission to view program list.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psProgramRepository.PageAsync(filter);
@@ -853,7 +872,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer age groups.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer age groups.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psPerformerRepository.GetPerformerAgeGroupsAsync(performerId);
@@ -865,7 +885,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer branches.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer branches.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psPerformerRepository.GetPerformerBranchIdsAsync(performerId, systemId);
@@ -877,7 +898,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer branch selections.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer branch selections.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psBranchSelectionRepository.GetByPerformerIdAsync(performerId, date);
@@ -893,7 +915,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
@@ -935,7 +958,8 @@ namespace GRA.Domain.Service
             var authId = GetClaimId(ClaimType.UserId);
             if (authId != userId)
             {
-                _logger.LogError($"User {authId} doesn't have permission to view performer information for user {userId}.");
+                _logger.LogError("User {AuthId} doesn't have permission to view performer information for user {UserId}.",
+                    authId, userId);
                 throw new GraException("Permission denied.");
             }
 
@@ -978,7 +1002,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer date schedule.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer date schedule.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psPerformerScheduleRepository.GetPerformerDateScheduleAsync(performerId,
@@ -990,7 +1015,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer index list.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer index list.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psPerformerRepository.GetIndexListAsync(onlyApproved);
@@ -1001,7 +1027,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer program count.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer program count.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psProgramRepository.GetCountByPerformerAsync(performerId);
@@ -1013,7 +1040,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer schedule.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer schedule.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psPerformerScheduleRepository.GetByPerformerIdAsync(performerId);
@@ -1030,7 +1058,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer system availability.");
+                _logger.LogError("User {UserId)} doesn't have permission to view performer system availability.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psPerformerRepository.GetPerformerSystemAvailability(performerId,
@@ -1056,7 +1085,8 @@ namespace GRA.Domain.Service
                 if (performer.UserId != authId
                     || !HasPermission(Permission.AccessPerformerRegistration))
                 {
-                    _logger.LogError($"User id {authId} does not have persmission to view program {id}.");
+                    _logger.LogError("User id {AuthId} does not have persmission to view program {Id}.",
+                        authId, id);
                     throw new GraException("Permission denied.");
                 }
             }
@@ -1084,7 +1114,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view program index list.");
+                _logger.LogError("User {UserId} doesn't have permission to view program index list.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psProgramRepository.GetIndexListAsync(ageGroupId, onlyApproved);
@@ -1139,7 +1170,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view branch selections.");
+                _logger.LogError("User {UserId} doesn't have permission to view branch selections.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
@@ -1152,7 +1184,8 @@ namespace GRA.Domain.Service
                 && !HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer scheduling settings.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer scheduling settings.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
@@ -1166,7 +1199,8 @@ namespace GRA.Domain.Service
                 && !HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer scheduling system list.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer scheduling system list.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
@@ -1191,7 +1225,8 @@ namespace GRA.Domain.Service
                 && !HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer scheduling system.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer scheduling system.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
@@ -1208,7 +1243,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.SchedulePerformers))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to verify program availability at branch.");
+                _logger.LogError("User {UserId} doesn't have permission to verify program availability at branch.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
@@ -1313,7 +1349,8 @@ namespace GRA.Domain.Service
                 if (performer.UserId != authId
                     || !HasPermission(Permission.AccessPerformerRegistration))
                 {
-                    _logger.LogError($"User {authId} doesn't have permission to remove performer image {imageId}.");
+                    _logger.LogError("User {AuthId} doesn't have permission to remove performer image {ImageId}.",
+                        authId, imageId);
                     throw new GraException("Permission denied.");
                 }
             }
@@ -1345,7 +1382,7 @@ namespace GRA.Domain.Service
                 if (performer.UserId != authId
                     || !HasPermission(Permission.AccessPerformerRegistration))
                 {
-                    _logger.LogError($"User id {authId} does not have persmission to remove program {programId}.");
+                    _logger.LogError("User id {AuthId} does not have persmission to remove program {ProgramId}.", authId, programId);
                     throw new GraException("Permission denied.");
                 }
             }
@@ -1376,7 +1413,8 @@ namespace GRA.Domain.Service
                 if (performer.UserId != authId
                     || !HasPermission(Permission.AccessPerformerRegistration))
                 {
-                    _logger.LogError($"User {authId} doesn't have permission to remove program image {imageId}.");
+                    _logger.LogError("User {AuthId} doesn't have permission to remove program image {ImageId}.",
+                        authId, imageId);
                     throw new GraException("Permission denied.");
                 }
             }
@@ -1463,7 +1501,8 @@ namespace GRA.Domain.Service
                 && (performer.UserId != authId
                     || !HasPermission(Permission.AccessPerformerRegistration)))
             {
-                _logger.LogError($"User {authId} doesn't have permission to set performer {performer.Id} registration completed.");
+                _logger.LogError("User {AuthId} doesn't have permission to set performer {PerformerId} registration completed.",
+                    authId, performer.Id);
                 throw new GraException("Permission denied.");
             }
 
@@ -1677,7 +1716,8 @@ namespace GRA.Domain.Service
                 if (performer.UserId != authId
                     || !HasPermission(Permission.AccessPerformerRegistration))
                 {
-                    _logger.LogError($"User id {authId} does not have persmission to edit program {currentProgram.Id}.");
+                    _logger.LogError("User id {AuthId} does not have persmission to edit program {ProgramId}.",
+                        authId, currentProgram.Id);
                     throw new GraException("Permission denied.");
                 }
             }
@@ -1755,7 +1795,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.SchedulePerformers))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to validate shceudle time.");
+                _logger.LogError("User {UserId} doesn't have permission to validate shceudle time.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
