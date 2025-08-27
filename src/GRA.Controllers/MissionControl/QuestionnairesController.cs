@@ -174,7 +174,9 @@ namespace GRA.Controllers.MissionControl
                         .GetByIdAsync(questionnaireId, false);
                     if (questionnaire.IsLocked)
                     {
-                        _logger.LogError($"User {GetId(ClaimType.UserId)} cannot edit {questionId} for locked questionnaire {questionnaireId}.");
+                        _logger.LogError("User {UserId} cannot edit {QuestionId} for locked questionnaire {QuestionnaireId}.",
+                            GetId(ClaimType.UserId), questionId, questionnaireId
+                            );
                         throw new GraException("Questionnaire is locked and cannot be edited.");
                     }
 
@@ -197,7 +199,8 @@ namespace GRA.Controllers.MissionControl
                     if (answerOrderList.Count > 0
                         && answerOrderList.Count != newAnswersList.Count + updateAnswersList.Count)
                     {
-                        _logger.LogError($"User {GetId(ClaimType.UserId)} requested an invalid sort for question {questionId}.");
+                        _logger.LogError("User {UserId} requested an invalid sort for question {QuestionId}.",
+                            GetId(ClaimType.UserId), questionId);
                         throw new GraException("Invalid answer sort selection.");
                     }
 
@@ -208,7 +211,8 @@ namespace GRA.Controllers.MissionControl
                         && !parameterDictionary.ContainsKey($"update_{correctAnswerId}")
                         && !parameterDictionary.ContainsKey($"new_{correctAnswerId}"))
                     {
-                        _logger.LogError($"User {GetId(ClaimType.UserId)} selected an invalid correct answer for question {questionId}.");
+                        _logger.LogError("User {UserId} selected an invalid correct answer for question {QuestionId}.",
+                            GetId(ClaimType.UserId), questionId);
                         throw new GraException("Invalid correct answer selected.");
                     }
 
@@ -261,7 +265,8 @@ namespace GRA.Controllers.MissionControl
                         var invalidAnswers = updateAnswersList.Keys.Except(answers.Select(_ => _.Id));
                         if (invalidAnswers.Any())
                         {
-                            _logger.LogError($"User {GetId(ClaimType.UserId)} cannot update answer {invalidAnswers.First()} for question {question.Id}.");
+                            _logger.LogError("User {UserId} cannot update answer {InvalidAnswerName} for question {QuestionId}.",
+                                GetId(ClaimType.UserId), invalidAnswers.First(), question.Id);
                             throw new GraException("Invalid answer to update.");
                         }
                         foreach (var updateAnswer in updateAnswersList)
@@ -280,7 +285,8 @@ namespace GRA.Controllers.MissionControl
                         invalidAnswers = deleteAnswersList.Except(answers.Select(_ => _.Id));
                         if (invalidAnswers.Any())
                         {
-                            _logger.LogError($"User {GetId(ClaimType.UserId)} cannot delete answer {invalidAnswers.First()} for question {question.Id}.");
+                            _logger.LogError("User {UserId} cannot delete answer {InvalidAnswerName} for question {QuestionId}.",
+                                GetId(ClaimType.UserId), invalidAnswers.First(), question.Id);
                             throw new GraException("Invalid answer to delete.");
                         }
                         foreach (var answerId in deleteAnswersList)
