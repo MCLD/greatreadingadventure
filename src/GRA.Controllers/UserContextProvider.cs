@@ -92,7 +92,8 @@ namespace GRA.Controllers
                     }
                     else
                     {
-                        _logger.LogDebug($"User {userId} has multiple {claimType} claims with the same value, using the first: {claim.First().Value}");
+                        _logger.LogDebug("User {UserId} has multiple {ClaimType} claims with the same value, using the first: {ClaimValue}",
+                            userId, claimType, claim.First().Value);
                         return claim.First().Value;
                     }
             }
