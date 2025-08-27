@@ -130,12 +130,14 @@ namespace GRA.Domain.Service
                             issues++;
                             if (rex.InnerException != null)
                             {
-                                _logger.LogError($"Event insertion error: {rex.InnerException.Message}");
+                                _logger.LogError("Event insertion error: {Message}", 
+                                    rex.InnerException.Message);
                                 notes.Add($"<li>Problem inserting {record.Name}: {rex.InnerException.Message}</li>");
                             }
                             else
                             {
-                                _logger.LogError($"Event insertion error: {rex.Message}");
+                                _logger.LogError("Event insertion error: {Message}",
+                                    rex.Message);
                                 notes.Add($"<li>Problem inserting {record.Name}: {rex.Message}</li>");
                             }
                         }
