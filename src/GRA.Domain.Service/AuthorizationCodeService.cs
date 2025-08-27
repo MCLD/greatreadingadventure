@@ -63,7 +63,8 @@ namespace GRA.Domain.Service
                 authorizationCode.Id);
             if (currentAuthorizationCode.SiteId != siteId)
             {
-                _logger.LogError($"User {authId} cannot update authorization code {currentAuthorizationCode.Id} for site {currentAuthorizationCode.SiteId}.");
+                _logger.LogError("User {AuthId} cannot update authorization code {AuthCodeId} for site {SiteId}.",
+                    authId, currentAuthorizationCode.Id, currentAuthorizationCode.SiteId);
                 throw new GraException($"Permission denied - authorization code belongs to site id {currentAuthorizationCode.SiteId}.");
             }
             var existingCode = await _authorizationCodeRepository
@@ -92,7 +93,8 @@ namespace GRA.Domain.Service
             var authorizationCode = await _authorizationCodeRepository.GetByIdAsync(authorizationCodeId);
             if (authorizationCode.SiteId != siteId)
             {
-                _logger.LogError($"User {authId} cannot delete authorization code {authorizationCodeId} for site {authorizationCode.SiteId}.");
+                _logger.LogError("User {AuthId} cannot delete authorization code {AuthorizationCodeId} for site {SiteId}.",
+                    authId, authorizationCodeId, authorizationCode.SiteId);
                 throw new GraException($"Permission denied - authorization code belongs to site id {authorizationCode.SiteId}.");
             }
             await _authorizationCodeRepository.RemoveSaveAsync(authId, authorizationCodeId);
