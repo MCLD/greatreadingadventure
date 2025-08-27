@@ -67,7 +67,8 @@ namespace GRA.Controllers.Filter
             }
             catch (Exception ex)
             {
-                _logger.LogTrace($"Attempted Mission Control access while not logged in: {ex.Message}");
+                _logger.LogTrace("Attempted Mission Control access while not logged in: {Message}"
+                    , ex.Message);
             }
 
             if (httpContext.User.HasClaim(ClaimType.Permission, nameof(Permission.ReadAllMail)))
