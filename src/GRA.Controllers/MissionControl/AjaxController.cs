@@ -75,7 +75,9 @@ namespace GRA.Controllers.MissionControl
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError($"WMD fileupload error Type: {file.ContentType} Size: {file.Length} Exception: {ex}");
+                        _logger.LogError("WMD fileupload error Type: {ContentType} Size: {Length} Exception: {Message}",
+                            file.ContentType, file.Length, ex
+                            );
                         return Json("Error");
                     }
                 }
