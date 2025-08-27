@@ -87,14 +87,18 @@ namespace GRA.Domain.Service
                         var stringResult = await response.Content.ReadAsStringAsync();
                         jsonResult = JsonConvert.DeserializeObject(stringResult);
 
-                        if (jsonResult.status == "ZERO_RESULTS")
+                        string status = jsonResult?.status?.ToString();
+
+                        if (status == "ZERO_RESULTS")
                         {
                             serviceResult.Status = ServiceResultStatus.Warning;
                             serviceResult.Message = "No results found for address.";
                         }
-                        else if (jsonResult.status != "OK")
+                        else if (status != "OK")
                         {
-                            _logger.LogError($"Error getting geocoding results for address {address}: {jsonResult.status}");
+                            _logger.LogError("Error getting geocoding results for address {Address}: {Status}",
+                            formattedAddress, status);
+
                             serviceResult.Status = ServiceResultStatus.Error;
                             serviceResult.Message = "An error occured, please try again later.";
                         }
@@ -116,7 +120,7 @@ namespace GRA.Domain.Service
                     }
                     catch (HttpRequestException ex)
                     {
-                        _logger.LogCritical(ex, $"Google API error: {ex.Message}");
+                        _logger.LogCritical(ex, "Google API error: {Message}", ex.Message);
                         serviceResult.Status = ServiceResultStatus.Error;
                         serviceResult.Message = "An error occured, please try again later.";
                     }
