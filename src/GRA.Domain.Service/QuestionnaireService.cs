@@ -91,7 +91,8 @@ namespace GRA.Domain.Service
             var currentQuestionnaire = await _questionnaireRepository.GetByIdAsync(questionnaire.Id);
             if (currentQuestionnaire.IsLocked)
             {
-                _logger.LogError($"User {authId} cannot update locked questionnaire {currentQuestionnaire.Id}.");
+                _logger.LogError("User {AuthId} cannot update locked questionnaire {QuestionnaireId}.",
+                    authId, currentQuestionnaire.Id);
                 throw new GraException("Questionnaire is locked and cannot be edited.");
             }
 
@@ -108,7 +109,8 @@ namespace GRA.Domain.Service
             var questionnaire = await _questionnaireRepository.GetByIdAsync(questionnaireId, false);
             if (questionnaire.IsLocked)
             {
-                _logger.LogError($"User {authId} cannot update locked questionnaire {questionnaire.Id}.");
+                _logger.LogError("User {AuthId} cannot update locked questionnaire {QuestionnaireId}.",
+                    authId, questionnaire.Id);
                 throw new GraException("Questionnaire is locked and cannot be edited.");
             }
 
@@ -251,7 +253,8 @@ namespace GRA.Domain.Service
                 GetForUser(GetCurrentSiteId(), userId, userAge);
             if (!requiredQuestionnaires.Contains(questionnaireId))
             {
-                _logger.LogError($"User {userId} is not eligible to answer questionnaire {questionnaireId}.");
+                _logger.LogError("User {UserId} is not eligible to answer questionnaire {QuestionnaireId}.",
+                    userId, questionnaireId);
                 throw new GraException("Not eligible to answer that questionnaire.");
             }
 
@@ -261,7 +264,8 @@ namespace GRA.Domain.Service
             if (questions.Select(_ => _.Id).Except(questionnaireQuestions.Select(_ => _.Id)).Any()
                 || questionnaireQuestions.Count() != questions.Count)
             {
-                _logger.LogError($"User {userId} submitted invalid questions for questionnaire {questionnaireId}.");
+                _logger.LogError("User {UserId} submitted invalid questions for questionnaire {QuestionnaireId}.",
+                    userId, questionnaireId);
                 throw new GraException("Invalid questions answered.");
             }
 
@@ -272,7 +276,8 @@ namespace GRA.Domain.Service
                     .Select(_ => _.ParticipantAnswer)
                     .SingleOrDefault()))
                 {
-                    _logger.LogError($"User {userId} submitted invalid answers for question {question.Id}.");
+                    _logger.LogError("User {UserId} submitted invalid answers for question {QuestionId}.",
+                        userId, question.Id);
                     throw new GraException("Invalid answer selected.");
                 }
             }
