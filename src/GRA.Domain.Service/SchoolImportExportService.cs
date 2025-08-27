@@ -106,12 +106,13 @@ namespace GRA.Domain.Service
                         issues++;
                         if (rex.InnerException != null)
                         {
-                            _logger.LogError($"School import error: {rex.InnerException.Message}");
+                            _logger.LogError("School import error: {Message}",
+                                rex.InnerException.Message);
                             notes.Add($"<li>Problem inserting record {recordCount + 2}: {rex.InnerException.Message}</li>");
                         }
                         else
                         {
-                            _logger.LogError($"School import error: {rex.Message}");
+                            _logger.LogError("School import error: {Message}", rex.Message);
                             notes.Add($"<li>Problem inserting record {recordCount + 2}: {rex.Message}</li>");
                         }
                     }
