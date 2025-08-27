@@ -128,7 +128,7 @@ namespace GRA.Data.Repository
                 .SingleOrDefault();
             if (mail == null)
             {
-                _logger.LogError($"Could not find mail id {mailId}");
+                _logger.LogError("Could not find mail id {MailId}", mailId);
                 throw new GraException($"Could not find mail id {mailId}");
             }
             mail.IsNew = false;
