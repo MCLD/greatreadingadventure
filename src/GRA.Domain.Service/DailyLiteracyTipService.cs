@@ -134,7 +134,8 @@ namespace GRA.Domain.Service
             var dailyLiteracyTip = await _dailyLiteracyTipRepository.GetByIdAsync(dailyLiteracyTipId);
             if (dailyLiteracyTip.SiteId != siteId)
             {
-                _logger.LogError($"User {authId} cannot delete point translation {dailyLiteracyTipId} for site {dailyLiteracyTip.SiteId}.");
+                _logger.LogError("User {AuthId} cannot delete point translation {DailyLiteracyTipId} for site {SiteId}.",
+                    authId, dailyLiteracyTipId, dailyLiteracyTip.SiteId);
                 throw new GraException($"Permission denied - point translation belongs to site id {dailyLiteracyTip.SiteId}.");
             }
             if (await _dailyLiteracyTipRepository.IsInUseAsync(dailyLiteracyTipId))
@@ -152,7 +153,8 @@ namespace GRA.Domain.Service
             var currentImage = await _dailyLiteracyTipImageRepository.GetByIdAsync(imageId);
             if (currentImage.DailyLiteracyTip.SiteId != siteId)
             {
-                _logger.LogError($"User {authId} cannot remove daily image {currentImage.Id} for site {currentImage.DailyLiteracyTip.SiteId}.");
+                _logger.LogError("User {AuthId} cannot remove daily image {CurrentImageId} for site {SiteId}.",
+                    authId, currentImage.Id, currentImage.DailyLiteracyTip.SiteId);
                 throw new GraException($"Permission denied - Daily Literacy Tip image belongs to site id {currentImage.DailyLiteracyTip.SiteId}");
             }
 
@@ -172,7 +174,8 @@ namespace GRA.Domain.Service
                 dailyLiteracyTip.Id);
             if (currentDailyLiteracyTip.SiteId != siteId)
             {
-                _logger.LogError($"User {authId} cannot update point translation {currentDailyLiteracyTip.Id} for site {currentDailyLiteracyTip.SiteId}.");
+                _logger.LogError("User {AuthId} cannot update point translation {TipId} for site {SiteId}.",
+                    authId, currentDailyLiteracyTip.Id, currentDailyLiteracyTip.SiteId);
                 throw new GraException($"Permission denied - Daily Literacy Tip belongs to site id {currentDailyLiteracyTip.SiteId}");
             }
 
@@ -194,7 +197,8 @@ namespace GRA.Domain.Service
             var currentImage = await _dailyLiteracyTipImageRepository.GetByIdAsync(image.Id);
             if (currentImage.DailyLiteracyTip.SiteId != siteId)
             {
-                _logger.LogError($"User {authId} cannot update daily image {currentImage.Id} for site {currentImage.DailyLiteracyTip.SiteId}.");
+                _logger.LogError("User {AuthId} cannot update daily image {ImageId} for site {SiteId}.",
+                    authId, currentImage.Id, currentImage.DailyLiteracyTip.SiteId);
                 throw new GraException($"Permission denied - daily literacy tip image belongs to site id {currentImage.DailyLiteracyTip.SiteId}");
             }
 
