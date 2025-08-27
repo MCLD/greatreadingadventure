@@ -79,12 +79,14 @@ namespace GRA.Domain.Service
                         {
                             if (rex.InnerException != null)
                             {
-                                _logger.LogError($"Error reading household user import: {rex.InnerException.Message}");
+                                _logger.LogError("Error reading household user import: {Message}",
+                                    rex.InnerException.Message);
                                 errors.Add($"<li>Problem reading record {recordCount + 2}: {rex.InnerException.Message}</li>");
                             }
                             else
                             {
-                                _logger.LogError($"Error reading household user import: {rex.Message}");
+                                _logger.LogError("Error reading household user import: {Message}",
+                                    rex.Message);
                                 errors.Add($"<li>Problem reading record {recordCount + 2}: {rex.Message}</li>");
                             }
                         }
@@ -158,7 +160,8 @@ namespace GRA.Domain.Service
                                         ageColumnId = i;
                                         break;
                                     default:
-                                        _logger.LogInformation($"Unrecognized column {columnName} in household import.");
+                                        _logger.LogInformation("Unrecognized column {Column} in household import.",
+                                            columnName);
                                         break;
                                 }
                             }
@@ -188,7 +191,8 @@ namespace GRA.Domain.Service
                                 }
                                 catch (Exception ex)
                                 {
-                                    _logger.LogError($"Invalid value for first name, row {row}: {ex.Message}");
+                                    _logger.LogError("Invalid value for first name, row {Row}: {Message}",
+                                        row, ex.Message);
                                     errors.Add($"Invalid value for first name on line {row}: {ex.Message}");
                                 }
 
@@ -207,7 +211,8 @@ namespace GRA.Domain.Service
                                 }
                                 catch (Exception ex)
                                 {
-                                    _logger.LogError($"Invalid value for last name, row {row}: {ex.Message}");
+                                    _logger.LogError("Invalid value for last name, row {Row}: {Message}",
+                                        row, ex.Message);
                                     errors.Add($"Invalid value for last name on line {row}: {ex.Message}");
                                 }
 
@@ -238,7 +243,8 @@ namespace GRA.Domain.Service
                                     }
                                     catch (Exception ex)
                                     {
-                                        _logger.LogError($"Invalid value for age, row {row}: {ex.Message}");
+                                        _logger.LogError("Invalid value for age, row {Row}: {Message}",
+                                            row, ex.Message);
                                         errors.Add($"Invalid value for age on line {row}: {ex.Message}");
                                     }
                                 }
