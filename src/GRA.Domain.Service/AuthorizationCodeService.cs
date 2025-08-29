@@ -45,7 +45,7 @@ namespace GRA.Domain.Service
             var inUse = await _authorizationCodeRepository.GetByCodeAsync(siteId, authorizationCode.Code);
             if (inUse != null)
             {
-                throw new GraException($"Code is already in use.");
+                throw new GraException("Code is already in use.");
             }
 
             authorizationCode.SiteId = siteId;
@@ -71,7 +71,7 @@ namespace GRA.Domain.Service
                 .GetByCodeAsync(siteId, authorizationCode.Code);
             if (existingCode != null && existingCode.Id != currentAuthorizationCode.Id)
             {
-                throw new GraException($"Code is already in use.");
+                throw new GraException("Code is already in use.");
             }
 
             currentAuthorizationCode.Code = authorizationCode.Code;

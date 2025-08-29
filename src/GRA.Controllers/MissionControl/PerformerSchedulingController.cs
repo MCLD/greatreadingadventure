@@ -898,7 +898,7 @@ namespace GRA.Controllers.MissionControl
             }
             catch (GraException gex)
             {
-                ShowAlertDanger($"Unable to select kit: ", gex);
+                ShowAlertDanger("Unable to select kit: {Kit}", gex);
             }
 
             if (branchSelection?.KitId != null)
