@@ -10,11 +10,11 @@ using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service
 {
-    public class ReportRunService : BaseUserService<ReportRunService>
+    public class ReportRequestService : BaseUserService<ReportRequestService>
     {
         private readonly IReportRequestRepository _reportRequestRepository;
 
-        public ReportRunService(ILogger<ReportRunService> logger,
+        public ReportRequestService(ILogger<ReportRequestService> logger,
             IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IReportRequestRepository reportRequestRepository)
@@ -24,7 +24,7 @@ namespace GRA.Domain.Service
             SetManagementPermission(Permission.ViewAllReporting);
         }
 
-        public async Task<DataWithCount<ICollection<ReportRunSummary>>> GetPaginatedReportRunsAsync(
+        public async Task<DataWithCount<ICollection<ReportRequestSummary>>> GetPaginatedReportRequestsAsync(
             ReportRequestFilter filter)
         {
             VerifyManagementPermission();
@@ -38,7 +38,7 @@ namespace GRA.Domain.Service
                 "Listing report runs {SiteId} skip {Skip} take {Take} filterReportId {ReportId} user {UserId}",
                 filter.SiteId, filter.Skip, filter.Take, filter.ReportId, GetClaimId(ClaimType.UserId));
 
-            return new DataWithCount<ICollection<ReportRunSummary>> { Data = data, Count = count };
+            return new DataWithCount<ICollection<ReportRequestSummary>> { Data = data, Count = count };
         }
     }
 }

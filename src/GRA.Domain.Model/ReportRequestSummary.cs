@@ -2,7 +2,7 @@
 
 namespace GRA.Domain.Model
 {
-    public class ReportRunSummary
+    public class ReportRequestSummary
     {
         public int Id { get; set; }
         public int ReportId { get; set; }

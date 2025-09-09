@@ -5,9 +5,9 @@ using GRA.Domain.Model.Filters;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Reporting
 {
-    public class ReportRunViewModel
+    public class ReportHistoryViewModel
     {
-        public ICollection<ReportRunSummary> Runs { get; set; }
+        public ICollection<ReportRequestSummary> Requests { get; set; }
         public PaginateViewModel Pagination { get; set; }
         public ReportRequestFilter Filter { get; set; }
     }

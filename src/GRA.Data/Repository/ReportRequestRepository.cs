@@ -19,12 +19,12 @@ namespace GRA.Data.Repository
         public Task<int> CountAsync(ReportRequestFilter filter)
             => ApplyFilters(filter).CountAsync();
 
-        public async Task<ICollection<ReportRunSummary>> PageAsync(ReportRequestFilter filter)
+        public async Task<ICollection<ReportRequestSummary>> PageAsync(ReportRequestFilter filter)
         {
             return await ApplyFilters(filter)
                 .OrderByDescending(_ => _.CreatedAt)
                 .ApplyPagination(filter)
-                .Select(_ => new ReportRunSummary
+                .Select(_ => new ReportRequestSummary
                 {
                     Id = _.Id,
                     ReportId = _.ReportId,

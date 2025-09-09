@@ -8,6 +8,6 @@ namespace GRA.Domain.Repository
     public interface IReportRequestRepository : IRepository<ReportRequest>
     {
         Task<int> CountAsync(ReportRequestFilter filter);
-        Task<ICollection<ReportRunSummary>> PageAsync(ReportRequestFilter filter);
+        Task<ICollection<ReportRequestSummary>> PageAsync(ReportRequestFilter filter);
     }
 }

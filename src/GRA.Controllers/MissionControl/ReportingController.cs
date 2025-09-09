@@ -28,7 +28,7 @@ namespace GRA.Controllers.MissionControl
         private readonly JobService _jobService;
         private readonly ILogger<ReportingController> _logger;
         private readonly ReportService _reportService;
-        private readonly ReportRunService _reportRunService;
+        private readonly ReportRequestService _reportRequestService;
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
         private readonly TriggerService _triggerService;
@@ -41,7 +41,7 @@ namespace GRA.Controllers.MissionControl
             ChallengeService challengeService,
             JobService jobService,
             ReportService reportService,
-            ReportRunService reportRunService,
+            ReportRequestService reportRequestService,
             SchoolService schoolService,
             SiteService siteService,
             TriggerService triggerService,
@@ -53,7 +53,7 @@ namespace GRA.Controllers.MissionControl
             ArgumentNullException.ThrowIfNull(jobService);
             ArgumentNullException.ThrowIfNull(logger);
             ArgumentNullException.ThrowIfNull(reportService);
-            ArgumentNullException.ThrowIfNull(reportRunService);
+            ArgumentNullException.ThrowIfNull(reportRequestService);
             ArgumentNullException.ThrowIfNull(schoolService);
             ArgumentNullException.ThrowIfNull(siteService);
             ArgumentNullException.ThrowIfNull(triggerService);
@@ -65,7 +65,7 @@ namespace GRA.Controllers.MissionControl
             _jobService = jobService;
             _logger = logger;
             _reportService = reportService;
-            _reportRunService = reportRunService;
+            _reportRequestService = reportRequestService;
             _schoolService = schoolService;
             _siteService = siteService;
             _triggerService = triggerService;
@@ -288,7 +288,7 @@ namespace GRA.Controllers.MissionControl
 
             var result = await _reportRunService.GetPaginatedReportRunsAsync(filter);
 
-            var viewModel = new ReportRunViewModel
+            var viewModel = new ReportHistoryViewModel
             {
                 Runs = result.Data,
                 Pagination = new PaginateViewModel
