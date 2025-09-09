@@ -14,10 +14,14 @@ namespace GRA.Data.Repository
         : AuditingRepository<Model.ReportRequest, ReportRequest>, IReportRequestRepository
     {
         public ReportRequestRepository(ServiceFacade.Repository facade,
-            ILogger<ReportRequestRepository> logger) : base(facade, logger) { }
+            ILogger<ReportRequestRepository> logger) : base(facade, logger)
+        {
+        }
 
-        public Task<int> CountAsync(ReportRequestFilter filter)
-            => ApplyFilters(filter).CountAsync();
+        public async Task<int> CountAsync(ReportRequestFilter filter)
+        {
+            return await ApplyFilters(filter).CountAsync();
+        }
 
         public async Task<ICollection<ReportRequestSummary>> PageAsync(ReportRequestFilter filter)
         {
@@ -36,16 +40,15 @@ namespace GRA.Data.Repository
                     Started = _.Started,
                     Finished = _.Finished
                 })
-                .AsNoTracking()
                 .ToListAsync();
         }
 
         private IQueryable<Model.ReportRequest> ApplyFilters(ReportRequestFilter filter)
         {
             var query =
-                from rr in DbSet
-                join rc in _context.ReportCriteria on rr.ReportCriteriaId equals rc.Id
-                where rc.SiteId == filter.SiteId
+                from rr in DbSet.AsNoTracking()
+                join rc in _context.Set<Model.ReportCriterion>() on rr.ReportCriteriaId equals rc.Id
+                where (!filter.SiteId.HasValue || rc.SiteId == filter.SiteId.Value)
                 select rr;
 
             if (filter.ReportId.HasValue)
@@ -60,7 +63,7 @@ namespace GRA.Data.Repository
             if (filter.EndDate.HasValue)
                 query = query.Where(_ => _.CreatedAt <= filter.EndDate.Value);
 
-            return query.AsNoTracking();
+            return query;
         }
     }
 }

@@ -286,12 +286,12 @@ namespace GRA.Controllers.MissionControl
                 EndDate = endDate
             };
 
-            var result = await _reportRunService.GetPaginatedReportRunsAsync(filter);
+            var result = await _reportRequestService.GetPaginatedListAsync(filter);
 
             var viewModel = new ReportHistoryViewModel
             {
-                Runs = result.Data,
-                Pagination = new PaginateViewModel
+                Requests = result.Data,
+                PaginateModel = new PaginateViewModel
                 {
                     ItemCount = result.Count,
                     ItemsPerPage = take,

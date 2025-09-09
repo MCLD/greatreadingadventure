@@ -17,7 +17,7 @@
         </tr>
       </thead>
       <tbody>
-                @foreach (var r in Model.Runs)
+                @foreach (var r in Model.Requests)
                 {
                     var duration = (r.Started.HasValue && r.Finished.HasValue)
                         ? (r.Finished.Value - r.Started.Value)
@@ -62,5 +62,5 @@
 </div>
 
 <div class="mt-3">
-  <paginate paginateModel="@Model.Pagination"></paginate>
+  <paginate paginateModel="@Model.PaginateModel"></paginate>
 </div>

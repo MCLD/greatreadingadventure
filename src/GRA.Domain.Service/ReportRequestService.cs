@@ -24,19 +24,14 @@ namespace GRA.Domain.Service
             SetManagementPermission(Permission.ViewAllReporting);
         }
 
-        public async Task<DataWithCount<ICollection<ReportRequestSummary>>> GetPaginatedReportRequestsAsync(
+        public async Task<DataWithCount<ICollection<ReportRequestSummary>>> GetPaginatedListAsync(
             ReportRequestFilter filter)
         {
             VerifyManagementPermission();
-
             filter.SiteId = GetCurrentSiteId();
 
             var data = await _reportRequestRepository.PageAsync(filter);
             var count = await _reportRequestRepository.CountAsync(filter);
-
-            _logger.LogInformation(
-                "Listing report runs {SiteId} skip {Skip} take {Take} filterReportId {ReportId} user {UserId}",
-                filter.SiteId, filter.Skip, filter.Take, filter.ReportId, GetClaimId(ClaimType.UserId));
 
             return new DataWithCount<ICollection<ReportRequestSummary>> { Data = data, Count = count };
         }

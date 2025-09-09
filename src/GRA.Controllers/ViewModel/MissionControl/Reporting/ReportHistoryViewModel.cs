@@ -8,7 +8,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Reporting
     public class ReportHistoryViewModel
     {
         public ICollection<ReportRequestSummary> Requests { get; set; }
-        public PaginateViewModel Pagination { get; set; }
+        public PaginateViewModel PaginateModel { get; set; }
         public ReportRequestFilter Filter { get; set; }
     }
 }
