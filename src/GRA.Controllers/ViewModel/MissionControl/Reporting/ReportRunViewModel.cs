@@ -5,7 +5,7 @@ using GRA.Domain.Model.Filters;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Reporting
 {
-    public class ReportRunIndexViewModel
+    public class ReportRunViewModel
     {
         public ICollection<ReportRunSummary> Runs { get; set; }
         public PaginateViewModel Pagination { get; set; }

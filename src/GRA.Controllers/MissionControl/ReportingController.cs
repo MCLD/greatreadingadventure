@@ -7,7 +7,9 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.Reporting;
+using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using GRA.Utility;
 using Microsoft.AspNetCore.Authorization;
@@ -26,6 +28,7 @@ namespace GRA.Controllers.MissionControl
         private readonly JobService _jobService;
         private readonly ILogger<ReportingController> _logger;
         private readonly ReportService _reportService;
+        private readonly ReportRunService _reportRunService;
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
         private readonly TriggerService _triggerService;
@@ -38,6 +41,7 @@ namespace GRA.Controllers.MissionControl
             ChallengeService challengeService,
             JobService jobService,
             ReportService reportService,
+            ReportRunService reportRunService,
             SchoolService schoolService,
             SiteService siteService,
             TriggerService triggerService,
@@ -49,6 +53,7 @@ namespace GRA.Controllers.MissionControl
             ArgumentNullException.ThrowIfNull(jobService);
             ArgumentNullException.ThrowIfNull(logger);
             ArgumentNullException.ThrowIfNull(reportService);
+            ArgumentNullException.ThrowIfNull(reportRunService);
             ArgumentNullException.ThrowIfNull(schoolService);
             ArgumentNullException.ThrowIfNull(siteService);
             ArgumentNullException.ThrowIfNull(triggerService);
@@ -60,6 +65,7 @@ namespace GRA.Controllers.MissionControl
             _jobService = jobService;
             _logger = logger;
             _reportService = reportService;
+            _reportRunService = reportRunService;
             _schoolService = schoolService;
             _siteService = siteService;
             _triggerService = triggerService;
@@ -257,6 +263,44 @@ namespace GRA.Controllers.MissionControl
             {
                 FileDownloadName = $"{PageTitle}.{ExcelExport.ExcelFileExtension}"
             };
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> History(int page = 1, int take = 20,
+    int? reportId = null, int? requestedBy = null,
+    DateTime? startDate = null, DateTime? endDate = null)
+        {
+            if (page < 1) { page = 1; }
+            if (take < 5) { take = 5; }
+            if (take > 100) { take = 100; }
+
+            var skip = (page - 1) * take;
+
+            var filter = new ReportRequestFilter
+            {
+                Skip = skip,
+                Take = take,
+                ReportId = reportId,
+                RequestedByUserId = requestedBy,
+                StartDate = startDate,
+                EndDate = endDate
+            };
+
+            var result = await _reportRunService.GetPaginatedReportRunsAsync(filter);
+
+            var viewModel = new ReportRunViewModel
+            {
+                Runs = result.Data,
+                Pagination = new PaginateViewModel
+                {
+                    ItemCount = result.Count,
+                    ItemsPerPage = take,
+                    CurrentPage = page
+                },
+                Filter = filter
+            };
+
+            return View(viewModel);
         }
 
         [HttpGet]
