@@ -266,20 +266,17 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpGet]
-        public async Task<IActionResult> History(int page = 1, int take = 20,
-    int? reportId = null, int? requestedBy = null,
-    DateTime? startDate = null, DateTime? endDate = null)
+        public async Task<IActionResult> History(
+            int page = 1,
+            int? reportId = null,
+            int? requestedBy = null,
+            DateTime? startDate = null,
+            DateTime? endDate = null)
         {
-            if (page < 1) { page = 1; }
-            if (take < 5) { take = 5; }
-            if (take > 100) { take = 100; }
+            if (page < 1) page = 1;
 
-            var skip = (page - 1) * take;
-
-            var filter = new ReportRequestFilter
+            var filter = new ReportRequestFilter(page)
             {
-                Skip = skip,
-                Take = take,
                 ReportId = reportId,
                 RequestedByUserId = requestedBy,
                 StartDate = startDate,
@@ -288,15 +285,29 @@ namespace GRA.Controllers.MissionControl
 
             var result = await _reportRequestService.GetPaginatedListAsync(filter);
 
+            var paginate = new PaginateViewModel
+            {
+                ItemCount = result.Count,
+                ItemsPerPage = filter.Take!.Value,
+                CurrentPage = page
+            };
+
+            if (paginate.PastMaxPage)
+            {
+                return RedirectToAction(nameof(History), new
+                {
+                    page = paginate.LastPage ?? 1,
+                    reportId,
+                    requestedBy,
+                    startDate,
+                    endDate
+                });
+            }
+
             var viewModel = new ReportHistoryViewModel
             {
                 Requests = result.Data,
-                PaginateModel = new PaginateViewModel
-                {
-                    ItemCount = result.Count,
-                    ItemsPerPage = take,
-                    CurrentPage = page
-                },
+                PaginateModel = paginate,
                 Filter = filter
             };
 
