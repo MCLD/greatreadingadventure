@@ -267,11 +267,11 @@ namespace GRA.Controllers.MissionControl
 
         [HttpGet]
         public async Task<IActionResult> History(
-            int page = 1,
-            int? reportId = null,
-            int? requestedBy = null,
-            DateTime? startDate = null,
-            DateTime? endDate = null)
+                    int page = 1,
+                    int? reportId = null,
+                    int? requestedBy = null,
+                    DateTime? startDate = null,
+                    DateTime? endDate = null)
         {
             if (page < 1) page = 1;
 
@@ -285,18 +285,20 @@ namespace GRA.Controllers.MissionControl
 
             var result = await _reportRequestService.GetPaginatedListAsync(filter);
 
-            var paginate = new PaginateViewModel
+            var viewModel = new ReportHistoryViewModel
             {
+                Requests = result.Data,
+                Filter = filter,
                 ItemCount = result.Count,
                 ItemsPerPage = filter.Take!.Value,
                 CurrentPage = page
             };
 
-            if (paginate.PastMaxPage)
+            if (viewModel.PastMaxPage)
             {
                 return RedirectToAction(nameof(History), new
                 {
-                    page = paginate.LastPage ?? 1,
+                    page = viewModel.LastPage ?? 1,
                     reportId,
                     requestedBy,
                     startDate,
@@ -304,16 +306,9 @@ namespace GRA.Controllers.MissionControl
                 });
             }
 
-            var viewModel = new ReportHistoryViewModel
-            {
-                Requests = result.Data,
-                PaginateModel = paginate,
-                Filter = filter
-            };
-
             return View(viewModel);
         }
-
+    
         [HttpGet]
         public IActionResult Index()
         {
