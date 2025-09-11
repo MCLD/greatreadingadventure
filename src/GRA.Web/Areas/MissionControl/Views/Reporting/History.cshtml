@@ -5,7 +5,7 @@
     <div class="fw-bold flex-grow-1">Report History</div>
   </div>
   <div class="card-body p-0">
-    <table class="table table-sm align-middle mb-0 link-table">
+    <table class="table table-sm table-bordered link-table">
       <thead>
         <tr>
           <th>Generated At</th>
@@ -17,6 +17,14 @@
         </tr>
       </thead>
       <tbody>
+          @if (Model?.Requests?.Any() != true)
+                {
+                    <tr>
+                        <td class="warning" colspan="6">No report runs found.</td>
+                    </tr>
+                }
+          else
+          {
                 @foreach (var r in Model.Requests)
                 {
                     var duration = (r.Started.HasValue && r.Finished.HasValue)
@@ -52,13 +60,14 @@
                             }
                   </td>
                   <td class="text-end">@((duration?.TotalSeconds ?? 0).ToString("0"))s</td>
-                  <td class="text-nowrap on-top">
+                  <td class="on-top gra-mc-icon">
                     <a class="btn btn-outline-secondary btn-sm" href="@Url.Action("Download", new { id = r.Id })">
                       <span class="fas fa-file-excel"></span> Excel
                     </a>
                   </td>
                 </tr>
                 }
+          }
       </tbody>
     </table>
   </div>
