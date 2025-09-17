@@ -38,7 +38,7 @@ Environment variables:
 - GHCR_PAT - optional - GitHub Container Registry Personal Access Token
 - GHCR_USER - optional - username to log in to the GitHub Container Registry
 
-Version 1.3.0 released 2023-06-21
+Version 1.3.2 released 2025-09-17
 EOF
     exit
 }
@@ -199,10 +199,10 @@ if [[ -z ${BLD_DOCKER_IMAGE-} ]]; then
 fi
 
 # Perform release prep if necessary and script is present
-if [[ $BLD_RELEASE = "true" && -f "release-prep.bash" ]]; then
+if [[ $BLD_RELEASE = "true" && -x "release-prep.bash" ]]; then
     msg "${BLUE}===${NOFORMAT} Running release preparation for version $BLD_RELEASE_VERSION"
     #shellcheck disable=SC1091
-    source release-prep.bash
+    ./release-prep.bash
     msg "${GREEN}===${NOFORMAT} Release preparation script complete"
 fi
 
@@ -302,7 +302,7 @@ if [[ $BLD_PUSH = true ]]; then
     
     # Perform release publish in the Docker machine if configuration is present
     
-    if [[ $BLD_RELEASE = "true" && -f "release-publish.bash" && publish -eq 1 ]]; then
+    if [[ $BLD_RELEASE = "true" && -x "release-publish.bash" && publish -eq 1 ]]; then
         msg "${BLUE}===${NOFORMAT} Publishing release package for $BLD_RELEASE_VERSION"
         mkdir -p publish
         if [[ -f "release.env" ]]; then
@@ -311,6 +311,7 @@ if [[ $BLD_PUSH = true ]]; then
             --entrypoint "/app/release-publish.bash" \
             --env-file release.env \
             -e BLD_RELEASE_VERSION="$BLD_RELEASE_VERSION" \
+            -v "${PWD}/:/app" \
             -v "${PWD}/package:/package" \
             "$BLD_FULL_DOCKER_IMAGE"
         else
@@ -318,6 +319,7 @@ if [[ $BLD_PUSH = true ]]; then
             --rm \
             --entrypoint "/app/release-publish.bash" \
             -e BLD_RELEASE_VERSION="$BLD_RELEASE_VERSION" \
+            -v "${PWD}/:/app" \
             -v "${PWD}/package:/package" \
             "$BLD_FULL_DOCKER_IMAGE"
         fi
