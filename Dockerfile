@@ -14,7 +14,7 @@ RUN dotnet restore
 
 # Add SQLite migration
 RUN export PATH="$PATH:/root/.dotnet/tools" && \
-    dotnet tool install --version 8.0.16 --global dotnet-ef && \
+    dotnet tool install --version 8.0.20 --global dotnet-ef && \
     dotnet ef migrations add ${IMAGE_VERSION} --project src/GRA.Data.SQLite/GRA.Data.SQLite.csproj
 
 # Build project and run tests
@@ -34,7 +34,7 @@ WORKDIR /app
 
 # Install curl for health monitoring
 RUN apt-get update \
-	&& apt-get install --no-install-recommends -y curl=7.88.1-10+deb12u12 \
+	&& apt-get install --no-install-recommends -y curl=7.88.1-10+deb12u14 \
 	&& rm -rf /var/lib/apt/lists/*
 
 # Bring in metadata via --build-arg to publish
