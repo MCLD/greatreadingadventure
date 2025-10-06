@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -10,7 +11,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.DailyTips
     {
         public TipDetailViewModel()
         {
-            CacheBuster = DateTime.Now.ToString("yyMMddHHmmss");
+            CacheBuster = DateTime.Now.ToString("yyMMddHHmmss", CultureInfo.InvariantCulture);
             Images = [];
             Paths = new Dictionary<int, string>();
         }

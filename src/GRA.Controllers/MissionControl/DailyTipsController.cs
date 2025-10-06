@@ -20,6 +20,7 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ManageDailyLiteracyTips)]
     public class DailyTipsController : Base.MCController
     {
+        private const int LargeImageSize = 600;
         private const long MaxFileSize = 100L * 1024L * 1024L;
 
         private readonly DailyLiteracyTipService _dailyLiteracyTipService;
@@ -297,7 +298,6 @@ namespace GRA.Controllers.MissionControl
                     using var archive = new ZipArchive(viewmodel.UploadedFile.OpenReadStream());
 
                     bool isLarge = false;
-                    int largeSize = 600;
 
                     var firstImageEntry = archive.Entries.Where(e => !string.IsNullOrEmpty(e.Name)
                         && ValidFiles.ImageExtensions.Contains(Path.GetExtension(e.Name),
@@ -309,7 +309,7 @@ namespace GRA.Controllers.MissionControl
                     {
                         await using var imageStream = firstImageEntry.Open();
                         using var image = await Image.LoadAsync(imageStream);
-                        if (image.Width > largeSize)
+                        if (image.Width > LargeImageSize)
                         {
                             isLarge = true;
                         }
@@ -360,6 +360,7 @@ namespace GRA.Controllers.MissionControl
             }
             return RedirectToAction(nameof(Upload));
         }
+
         private async Task<JsonResult> MoveImageAsync(int id, bool up)
         {
             var image = await _dailyLiteracyTipService.GetImageByIdAsync(id);

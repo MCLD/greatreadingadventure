@@ -222,12 +222,8 @@ namespace GRA.Domain.Service
         {
             VerifyManagementPermission();
 
-            var image = await _dailyLiteracyTipImageRepository.GetByIdAsync(imageId);
-            if (image == null)
-            {
-                throw new GraException("Image not found.");
-            }
-
+            var image = await _dailyLiteracyTipImageRepository.GetByIdAsync(imageId)
+                ?? throw new GraException("Image not found.");
             var tipId = image.DailyLiteracyTipId;
             var count = await _dailyLiteracyTipImageRepository
               .CountAsync(new DailyImageFilter { DailyLiteracyTipId = tipId });
