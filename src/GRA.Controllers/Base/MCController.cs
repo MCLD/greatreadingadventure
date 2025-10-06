@@ -7,13 +7,6 @@ namespace GRA.Controllers.Base
     [ServiceFilter(typeof(MissionControlFilter), Order = 2)]
     public abstract class MCController : Controller
     {
-        protected static readonly string[] ValidCsvExtensions = { ".CSV" };
-
-        protected static readonly string[] ValidExcelExtensions = { ".xls", ".xlsx" };
-
-        protected static readonly string[] ValidUploadExtensions
-            = { ".jpeg", ".jpg", ".pdf", ".png" };
-
         protected MCController(ServiceFacade.Controller context) : base(context)
         {
         }
