@@ -9,14 +9,10 @@ using Microsoft.Extensions.Logging;
 
 namespace GRA.Data.Repository
 {
-    public class MailRepository
-        : AuditingRepository<Model.Mail, Mail>, IMailRepository
+    public class MailRepository(ServiceFacade.Repository repositoryFacade,
+        ILogger<MailRepository> logger)
+                : AuditingRepository<Model.Mail, Mail>(repositoryFacade, logger), IMailRepository
     {
-        public MailRepository(ServiceFacade.Repository repositoryFacade,
-            ILogger<MailRepository> logger) : base(repositoryFacade, logger)
-        {
-        }
-
         public async Task<IEnumerable<Mail>> PageAllAsync(int siteId, int skip, int take)
         {
             return await DbSet
@@ -65,11 +61,8 @@ namespace GRA.Data.Repository
 
         public async Task MarkAdminReplied(int mailId)
         {
-            var mail = await GetByIdAsync(mailId);
-            if (mail == null)
-            {
-                throw new GraException($"Mail id {mailId} not found.");
-            }
+            var mail = await GetByIdAsync(mailId)
+                ?? throw new GraException($"Mail id {mailId} not found.");
             mail.IsRepliedTo = true;
             await UpdateSaveNoAuditAsync(mail);
         }

@@ -25,18 +25,21 @@ namespace GRA.Controllers.MissionControl
            QuestionnaireService questionnaireService)
             : base(context)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _questionnaireService = questionnaireService
-                ?? throw new ArgumentNullException(nameof(questionnaireService));
+            ArgumentNullException.ThrowIfNull(logger);
+            ArgumentNullException.ThrowIfNull(questionnaireService);
+
+            _logger = logger;
+            _questionnaireService = questionnaireService;
+
             PageTitle = "Questionnaire management";
         }
 
         public async Task<IActionResult> Index(int page = 1)
         {
-            BaseFilter filter = new BaseFilter(page);
+            var filter = new BaseFilter(page);
             var questionnaireList = await _questionnaireService.GetPaginatedListAsync(filter);
 
-            PaginateViewModel paginateModel = new PaginateViewModel
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = questionnaireList.Count,
                 CurrentPage = page,
@@ -52,7 +55,7 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            QuestionnairesListViewModel viewModel = new QuestionnairesListViewModel
+            var viewModel = new QuestionnairesListViewModel
             {
                 Questionnaires = questionnaireList.Data,
                 PaginateModel = paginateModel
@@ -80,6 +83,9 @@ namespace GRA.Controllers.MissionControl
                 }
                 catch (GraException gex)
                 {
+                    _logger.LogError(gex,
+                        "Unable to create questionnaire: {ErrorMessage}",
+                        gex.Message);
                     ShowAlertDanger("Unable to create questionnaire: ", gex);
                 }
             }
@@ -90,7 +96,7 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-                QuestionnairesDetailViewModel viewModel = new QuestionnairesDetailViewModel
+                var viewModel = new QuestionnairesDetailViewModel
                 {
                     Questionnaire = await _questionnaireService.GetByIdAsync(id, true)
                 };
@@ -113,7 +119,7 @@ namespace GRA.Controllers.MissionControl
                     var questionnaire = await _questionnaireService.UpdateAsync(model.Questionnaire);
                     if (!string.IsNullOrWhiteSpace(model.QuestionSortOrder))
                     {
-                        List<int> questionOrderList = model.QuestionSortOrder
+                        var questionOrderList = model.QuestionSortOrder
                             .Replace("question[]=", "")
                             .Split('&')
                             .Where(_ => !string.IsNullOrWhiteSpace(_))
@@ -174,9 +180,10 @@ namespace GRA.Controllers.MissionControl
                         .GetByIdAsync(questionnaireId, false);
                     if (questionnaire.IsLocked)
                     {
-                        _logger.LogError("User {UserId} cannot edit {QuestionId} for locked questionnaire {QuestionnaireId}.",
-                            GetId(ClaimType.UserId), questionId, questionnaireId
-                            );
+                        _logger.LogError("User {UserId} cannot edit question id {QuestionId} for locked questionnaire id {QuestionnaireId}.",
+                            GetId(ClaimType.UserId),
+                            questionId,
+                            questionnaireId);
                         throw new GraException("Questionnaire is locked and cannot be edited.");
                     }
 
@@ -189,7 +196,7 @@ namespace GRA.Controllers.MissionControl
                         .Where(_ => _.Key.StartsWith("update_"))
                         .ToDictionary(_ => int.Parse(_.Key.Replace("update_", "")), _ => _.Value);
 
-                    List<string> answerOrderList = parameterDictionary["AnswerSortOrder"].ToString()
+                    var answerOrderList = parameterDictionary["AnswerSortOrder"].ToString()
                                .Replace("answer[]=", "")
                                .Split('&')
                                .Where(_ => !string.IsNullOrWhiteSpace(_))
@@ -200,7 +207,8 @@ namespace GRA.Controllers.MissionControl
                         && answerOrderList.Count != newAnswersList.Count + updateAnswersList.Count)
                     {
                         _logger.LogError("User {UserId} requested an invalid sort for question {QuestionId}.",
-                            GetId(ClaimType.UserId), questionId);
+                            GetId(ClaimType.UserId),
+                            questionId);
                         throw new GraException("Invalid answer sort selection.");
                     }
 
@@ -212,7 +220,8 @@ namespace GRA.Controllers.MissionControl
                         && !parameterDictionary.ContainsKey($"new_{correctAnswerId}"))
                     {
                         _logger.LogError("User {UserId} selected an invalid correct answer for question {QuestionId}.",
-                            GetId(ClaimType.UserId), questionId);
+                            GetId(ClaimType.UserId),
+                            questionId);
                         throw new GraException("Invalid correct answer selected.");
                     }
 
@@ -266,12 +275,14 @@ namespace GRA.Controllers.MissionControl
                         if (invalidAnswers.Any())
                         {
                             _logger.LogError("User {UserId} cannot update answer {InvalidAnswerName} for question {QuestionId}.",
-                                GetId(ClaimType.UserId), invalidAnswers.First(), question.Id);
+                                GetId(ClaimType.UserId),
+                                invalidAnswers.FirstOrDefault(),
+                                question.Id);
                             throw new GraException("Invalid answer to update.");
                         }
                         foreach (var updateAnswer in updateAnswersList)
                         {
-                            var answer = answers.Where(_ => _.Id == updateAnswer.Key).SingleOrDefault();
+                            var answer = answers.SingleOrDefault(_ => _.Id == updateAnswer.Key);
                             answer.Text = updateAnswer.Value;
                             if (answerOrderList.Count > 0)
                             {
@@ -286,7 +297,9 @@ namespace GRA.Controllers.MissionControl
                         if (invalidAnswers.Any())
                         {
                             _logger.LogError("User {UserId} cannot delete answer {InvalidAnswerName} for question {QuestionId}.",
-                                GetId(ClaimType.UserId), invalidAnswers.First(), question.Id);
+                                GetId(ClaimType.UserId),
+                                invalidAnswers.First(),
+                                question.Id);
                             throw new GraException("Invalid answer to delete.");
                         }
                         foreach (var answerId in deleteAnswersList)
@@ -297,7 +310,7 @@ namespace GRA.Controllers.MissionControl
 
                     // Get the updated answer list and return question and answers
                     var answerList = await _questionnaireService.GetAnswersByQuestionIdAsync(question.Id);
-                    return Json(new { success = true, question = question, answers = answerList });
+                    return Json(new { success = true, question, answers = answerList });
                 }
                 catch (GraException gex)
                 {

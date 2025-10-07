@@ -9,6 +9,7 @@ using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 
@@ -36,9 +37,12 @@ namespace GRA.Controllers.MissionControl
             PerformerSchedulingService performerSchedulingService)
             : base(context)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _performerSchedulingService = performerSchedulingService
-                ?? throw new ArgumentNullException(nameof(performerSchedulingService));
+            ArgumentNullException.ThrowIfNull(logger);
+            ArgumentNullException.ThrowIfNull(performerSchedulingService);
+
+            _logger = logger;
+            _performerSchedulingService = performerSchedulingService;
+
             PageTitle = "Performer Scheduling";
         }
 
@@ -89,6 +93,15 @@ namespace GRA.Controllers.MissionControl
                 {
                     success = false,
                     message = "Program selection has not yet started."
+                });
+            }
+
+            if (branchSelection == null)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "You must supply information to edit."
                 });
             }
 
@@ -898,7 +911,7 @@ namespace GRA.Controllers.MissionControl
             }
             catch (GraException gex)
             {
-                ShowAlertDanger("Unable to select kit: {Kit}", gex);
+                ShowAlertDanger($"Unable to select kit: {Kit}", gex);
             }
 
             if (branchSelection?.KitId != null)
@@ -915,6 +928,8 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.SchedulePerformers)]
         public async Task<IActionResult> SelectProgram(ProgramViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             var settings = await _performerSchedulingService.GetSettingsAsync();
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage != PsSchedulingStage.SchedulingOpen)
