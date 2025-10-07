@@ -591,12 +591,6 @@ namespace GRA.Controllers.MissionControl
                 item.Thumbnail = _pathResolver.ResolveContentPath(item.Thumbnail);
             }
 
-            if (itemList.Data.Count > 0)
-            {
-                var avatarLayerName = await _avatarService.GetDefaultLayerNameByIdAsync(id);
-                PageTitle = $"Avatar Items: {avatarLayerName}";
-            }
-
             var viewModel = new ItemsListViewModel
             {
                 Items = itemList.Data,
@@ -607,6 +601,9 @@ namespace GRA.Controllers.MissionControl
                 Unavailable = computedUnavailable,
                 Unlockable = computedUnlockable
             };
+
+            var avatarLayerName = await _avatarService.GetDefaultLayerNameByIdAsync(id);
+            PageTitle = $"Avatar Items: {avatarLayerName}";
 
             return View(viewModel);
         }

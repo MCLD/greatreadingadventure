@@ -13,5 +13,7 @@ namespace GRA.Domain.Model
         public string Color { get; set; }
         public int SortOrder { get; set; }
         public ICollection<AvatarColorText> Texts { get; set; }
+
+        public string AltText { get; set; }
     }
 }

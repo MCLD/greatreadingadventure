@@ -39,6 +39,8 @@ namespace GRA.Domain.Model
         public int UnavailableItems { get; set; }
         public int UnlockableItems { get; set; }
 
+        public string AltText { get; set; }
+
         public ICollection<AvatarColor> AvatarColors { get; set; }
         public ICollection<AvatarItem> AvatarItems { get; set; }
 

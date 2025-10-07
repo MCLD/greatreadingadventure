@@ -28,12 +28,20 @@ namespace GRA.Data.Repository
             await _context.AvatarColorTexts.AddRangeAsync(addTexts);
         }
 
-        public async Task<ICollection<AvatarColor>> GetByLayerAsync(int layerId)
+        public async Task<ICollection<AvatarColor>> GetByLayerAsync(int layerId, int languageId)
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => _.AvatarLayerId == layerId)
                 .OrderBy(_ => _.SortOrder)
-                .ProjectTo<AvatarColor>(_mapper.ConfigurationProvider)
+                .Select(_ => new AvatarColor
+                {
+                    AltText = _.Texts
+                        .Where(_ => _.LanguageId == languageId)
+                        .FirstOrDefault()
+                        .AltText,
+                    Color = _.Color,
+                    Id = _.Id
+                })
                 .ToListAsync();
         }
 

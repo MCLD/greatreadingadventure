@@ -73,8 +73,9 @@ else if (Model.HasOrderStatus)
                                 @foreach (var layer in Model.AvatarElements)
                                 {
                                     <img src="~/@layer.Filename"
-                                         style="z-index: @(layer.AvatarItem.AvatarLayerPosition + 1)"
-                                         class="avatar-layer-dashboard" />
+                                         style="z-index: @(layer.LayerPosition + 1)"
+                                         class="avatar-layer-dashboard"
+										 alt="@layer.AltText"/>
                                 }
                             </div>
                         }

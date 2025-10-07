@@ -190,7 +190,11 @@ namespace GRA.Domain.Service
 
         public async Task<ICollection<AvatarColor>> GetColorsByLayerAsync(int layerId)
         {
-            return await _avatarColorRepository.GetByLayerAsync(layerId);
+            var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
+            var currentLanguageId =
+                await _languageService.GetLanguageIdAsync(currentCultureName);
+
+            return await _avatarColorRepository.GetByLayerAsync(layerId, currentLanguageId);
         }
 
         public async Task<string> GetDefaultLayerNameByIdAsync(int layerId)
@@ -284,13 +288,21 @@ namespace GRA.Domain.Service
 
         public async Task<ICollection<AvatarElement>> GetUserAvatarAsync()
         {
-            return await _avatarElementRepository.GetUserAvatarAsync(GetActiveUserId());
+            var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
+            var currentLanguageId =
+                await _languageService.GetLanguageIdAsync(currentCultureName);
+            return await _avatarElementRepository.GetUserAvatarAsync(GetActiveUserId(),
+                currentLanguageId);
         }
 
         public async Task<ICollection<AvatarItem>> GetUsersItemsByLayerAsync(int layerId)
         {
+            var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
+            var currentLanguageId =
+                await _languageService.GetLanguageIdAsync(currentCultureName);
             var userId = GetClaimId(ClaimType.UserId);
-            return await _avatarItemRepository.GetUserItemsByLayerAsync(userId, layerId);
+            return await _avatarItemRepository.GetUserItemsByLayerAsync(userId, layerId,
+                currentLanguageId);
         }
 
         public async Task<List<AvatarBundle>> GetUserUnlockBundlesAsync()
@@ -319,7 +331,8 @@ namespace GRA.Domain.Service
 
             if (layers.Count > 0)
             {
-                var userAvatar = await _avatarElementRepository.GetUserAvatarAsync(activeUserId);
+                var userAvatar = await _avatarElementRepository.GetUserAvatarAsync(activeUserId,
+                    currentLanguageId);
                 var bundleItems = new List<AvatarItem>();
                 if (userAvatar.Count == 0)
                 {
@@ -335,15 +348,16 @@ namespace GRA.Domain.Service
                     layer.Name = layerText["Name"];
                     layer.RemoveLabel = layerText["RemoveLabel"];
                     layer.AvatarItems = await _avatarItemRepository
-                               .GetUserItemsByLayerAsync(activeUserId, layer.Id);
+                               .GetUserItemsByLayerAsync(activeUserId, layer.Id, currentLanguageId);
                     layer.Icon = _pathResolver.ResolveContentPath(layer.Icon);
 
                     if (userAvatar.Count > 0)
                     {
                         var layerSelection = userAvatar.SingleOrDefault(_ =>
-                            _.AvatarItem.AvatarLayerId == layer.Id);
+                            _.LayerId == layer.Id);
                         if (layerSelection != null)
                         {
+                            layer.AltText = layerSelection.AltText;
                             layer.SelectedItem = layerSelection.AvatarItemId;
                             layer.SelectedColor = layerSelection.AvatarColorId;
                             layer.FilePath = _pathResolver
@@ -877,7 +891,7 @@ namespace GRA.Domain.Service
                 text.AltText = text.AltText?.Trim();
 
                 var currentText = currentTexts
-                    .Where(_ => _.AvatarColorId == text.AvatarColorId 
+                    .Where(_ => _.AvatarColorId == text.AvatarColorId
                         && _.LanguageId == text.LanguageId)
                     .SingleOrDefault();
 
@@ -921,7 +935,7 @@ namespace GRA.Domain.Service
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unable to update avatar color texts: {ErrorMessage}", 
+                _logger.LogError(ex, "Unable to update avatar color texts: {ErrorMessage}",
                     ex.Message);
                 throw new GraException($"Unable to update avatar color texts: {ex.Message}");
             }
@@ -944,7 +958,7 @@ namespace GRA.Domain.Service
                 text.AltText = text.AltText?.Trim();
 
                 var currentText = currentTexts
-                    .Where(_ => _.AvatarItemId == text.AvatarItemId 
+                    .Where(_ => _.AvatarItemId == text.AvatarItemId
                         && _.LanguageId == text.LanguageId)
                     .SingleOrDefault();
 
@@ -988,7 +1002,7 @@ namespace GRA.Domain.Service
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unable to update avatar item texts: {ErrorMessage}", 
+                _logger.LogError(ex, "Unable to update avatar item texts: {ErrorMessage}",
                     ex.Message);
                 throw new GraException($"Unable to update avatar item texts: {ex.Message}");
             }

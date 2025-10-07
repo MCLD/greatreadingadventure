@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
@@ -144,7 +145,8 @@ namespace GRA.Data.Repository
         }
 
         public async Task<ICollection<AvatarItem>> GetUserItemsByLayerAsync(int userId,
-                                            int layerId)
+                                            int layerId,
+                                            int languageId)
         {
             var userUnlockedItems = _context.UserAvatarItems.AsNoTracking()
                 .Where(_ => _.UserId == userId
@@ -155,7 +157,15 @@ namespace GRA.Data.Repository
                 .Where(_ => _.AvatarLayerId == layerId
                     && (!_.Unlockable || userUnlockedItems.Select(u => u.Id).Contains(_.Id)))
                 .OrderBy(_ => _.SortOrder)
-                .ProjectTo<AvatarItem>(_mapper.ConfigurationProvider)
+                .Select(_ => new AvatarItem
+                {
+                    AltText = _.Texts
+                        .Where(_ => _.LanguageId == languageId)
+                        .FirstOrDefault()
+                        .AltText,
+                    Id = _.Id,
+                    Thumbnail = _.Thumbnail
+                })
                 .ToListAsync();
         }
 
