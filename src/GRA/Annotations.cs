@@ -107,6 +107,8 @@
             public const string AndOtherActivities = "and other activities";
             public const string AndTheir = "and their {0}";
             public const string Apply = "Apply";
+            public const string AvatarLayerAltText = "View {0} options";
+            public const string AvatarLayerBundleAltText = "View bundle options";
             public const string AvatarBundleAltText = "This badge was awarded when you unlocked the avatar bundle: {0}";
             public const string AvatarSaved = "Avatar saved.";
             public const string Back = "Back";
