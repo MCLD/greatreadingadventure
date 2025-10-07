@@ -16,19 +16,20 @@ namespace GRA.Domain.Service
 {
     public class DailyLiteracyTipService : BaseUserService<DailyLiteracyTipService>
     {
+        private const string noValidImagesMessage = "No valid image files were found in the archive.";
+
         private readonly IDailyLiteracyTipImageRepository _dailyLiteracyTipImageRepository;
         private readonly IDailyLiteracyTipRepository _dailyLiteracyTipRepository;
         private readonly IPathResolver _pathResolver;
 
         public DailyLiteracyTipService(ILogger<DailyLiteracyTipService> logger,
-            GRA.Abstract.IDateTimeProvider dateTimeProvider,
+            IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IDailyLiteracyTipImageRepository dailyLiteracyTipImageRepository,
             IDailyLiteracyTipRepository dailyLiteracyTipRepository,
             IPathResolver pathResolver)
             : base(logger, dateTimeProvider, userContextProvider)
         {
-            SetManagementPermission(Permission.ManageDailyLiteracyTips);
             ArgumentNullException.ThrowIfNull(dailyLiteracyTipImageRepository);
             ArgumentNullException.ThrowIfNull(dailyLiteracyTipRepository);
             ArgumentNullException.ThrowIfNull(pathResolver);
@@ -36,6 +37,8 @@ namespace GRA.Domain.Service
             _dailyLiteracyTipImageRepository = dailyLiteracyTipImageRepository;
             _dailyLiteracyTipRepository = dailyLiteracyTipRepository;
             _pathResolver = pathResolver;
+
+            SetManagementPermission(Permission.ManageDailyLiteracyTips);
         }
 
         public async Task<DailyLiteracyTip> AddAsync(DailyLiteracyTip dailyLiteracyTip)
@@ -183,7 +186,10 @@ namespace GRA.Domain.Service
 
             if (dailyLiteracyTip.SiteId != siteId)
             {
-                _logger.LogError("User {UserId} cannot delete Daily Literacy Tip {TipId} for site {TipSiteId}.", authId, dailyLiteracyTipId, dailyLiteracyTip.SiteId);
+                _logger.LogError("User {AuthId} cannot delete Daily Literacy Tip {TipId} for site {TipSiteId}.",
+                    authId,
+                    dailyLiteracyTipId,
+                    dailyLiteracyTip.SiteId);
                 throw new GraException($"Permission denied - Daily Literacy Tip belongs to site id {dailyLiteracyTip.SiteId}.");
             }
             if (await _dailyLiteracyTipRepository.IsInUseAsync(dailyLiteracyTipId))
@@ -206,7 +212,10 @@ namespace GRA.Domain.Service
 
             if (tip.SiteId != siteId)
             {
-                _logger.LogError("User {UserId} cannot remove Daily Literacy Tip image {ImageId} for site {ImageSiteId}.", authId, currentImage.Id, currentImage.DailyLiteracyTip.SiteId);
+                _logger.LogError("User {AuthId} cannot remove Daily Literacy Tip image {ImageId} for site {ImageSiteId}.",
+                    authId,
+                    currentImage.Id,
+                    currentImage.DailyLiteracyTip.SiteId);
                 throw new GraException($"Permission denied - Daily Literacy Tip image belongs to site id {currentImage.DailyLiteracyTip.SiteId}");
             }
 
@@ -235,7 +244,8 @@ namespace GRA.Domain.Service
                 return;
             }
 
-            await _dailyLiteracyTipImageRepository.UpdateDayAndShiftOthersAsync(imageId, newDay, GetCurrentSiteId());
+            await _dailyLiteracyTipImageRepository
+                .UpdateDayAndShiftOthersAsync(imageId, newDay, GetCurrentSiteId());
         }
 
         public async Task UpdateAsync(DailyLiteracyTip dailyLiteracyTip)
@@ -247,10 +257,14 @@ namespace GRA.Domain.Service
             }
             var authId = GetClaimId(ClaimType.UserId);
             var siteId = GetCurrentSiteId();
-            var currentDailyLiteracyTip = await _dailyLiteracyTipRepository.GetByIdAsync(dailyLiteracyTip.Id);
+            var currentDailyLiteracyTip = await _dailyLiteracyTipRepository
+                .GetByIdAsync(dailyLiteracyTip.Id);
             if (currentDailyLiteracyTip.SiteId != siteId)
             {
-                _logger.LogError("User {UserId} cannot update Daily Literacy Tip {TipId} for site {TipSiteId}.", authId, currentDailyLiteracyTip.Id, currentDailyLiteracyTip.SiteId);
+                _logger.LogError("User {AuthId} cannot update Daily Literacy Tip {TipId} for site {TipSiteId}.",
+                    authId,
+                    currentDailyLiteracyTip.Id,
+                    currentDailyLiteracyTip.SiteId);
                 throw new GraException($"Permission denied - Daily Literacy Tip belongs to site id {currentDailyLiteracyTip.SiteId}");
             }
 
@@ -272,7 +286,10 @@ namespace GRA.Domain.Service
             var currentImage = await _dailyLiteracyTipImageRepository.GetByIdAsync(image.Id);
             if (currentImage.DailyLiteracyTip.SiteId != siteId)
             {
-                _logger.LogError("User {UserId} cannot update Daily Literacy Tip image {ImageId} for site {ImageSiteId}.", authId, currentImage.Id, currentImage.DailyLiteracyTip.SiteId);
+                _logger.LogError("User {AuthId} cannot update Daily Literacy Tip image {ImageId} for site {ImageSiteId}.",
+                    authId,
+                    currentImage.Id,
+                    currentImage.DailyLiteracyTip.SiteId);
                 throw new GraException($"Permission denied - Daily Literacy Tip image belongs to site id {currentImage.DailyLiteracyTip.SiteId}");
             }
 
@@ -281,7 +298,8 @@ namespace GRA.Domain.Service
 
             if (image.Day != currentImage.Day)
             {
-                await _dailyLiteracyTipImageRepository.UpdateSaveAsync(authId, currentImage, image.Day);
+                await _dailyLiteracyTipImageRepository
+                    .UpdateSaveAsync(authId, currentImage, image.Day);
             }
             else
             {
@@ -292,7 +310,8 @@ namespace GRA.Domain.Service
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
           "CA1031:Do not catch general exception types",
           Justification = "Don't fail the entire import on issues with single images")]
-        private async Task<(int, IList<string>)> AddImagesZipInternalAsync(int dailyLiteracyTipId, ZipArchive archive)
+        private async Task<(int, IList<string>)> AddImagesZipInternalAsync(int dailyLiteracyTipId,
+            ZipArchive archive)
         {
             VerifyManagementPermission();
             var issues = new List<string>();
@@ -322,7 +341,9 @@ namespace GRA.Domain.Service
                     if (!ValidFiles.ImageExtensions.Contains(extension,
                       StringComparer.OrdinalIgnoreCase))
                     {
-                        _logger.LogWarning("Skipped file {FileName} due to invalid extension: {Extension}", file.Name, extension);
+                        _logger.LogWarning("Skipped file {FileName} due to invalid extension: {Extension}",
+                            file.Name,
+                            extension);
                         issues.Add($"Skipped {file.Name}: unsupported image file type.");
                         continue;
                     }
@@ -330,36 +351,41 @@ namespace GRA.Domain.Service
                     var originalName = Path.GetFileNameWithoutExtension(file.Name);
                     var safeName = originalName;
                     int dupeCheck = 1;
-                    string fullPath = Path.Combine(tipDirectoryInfo.FullName, $"{safeName}{extension}");
+                    string fullPath = Path
+                        .Combine(tipDirectoryInfo.FullName, $"{safeName}{extension}");
 
                     while (File.Exists(fullPath))
                     {
                         safeName = $"{originalName}-{dupeCheck++}";
-                        fullPath = Path.Combine(tipDirectoryInfo.FullName, $"{safeName}{extension}");
+                        fullPath = Path
+                            .Combine(tipDirectoryInfo.FullName, $"{safeName}{extension}");
                     }
 
                     file.ExtractToFile(fullPath);
 
-                    await _dailyLiteracyTipImageRepository.AddSaveAsync(GetClaimId(ClaimType.UserId),
-                      new DailyLiteracyTipImage
-                      {
-                          DailyLiteracyTipId = dailyLiteracyTipId,
-                          Day = dayCounter++,
-                          Extension = extension,
-                          Name = safeName
-                      });
+                    await _dailyLiteracyTipImageRepository
+                        .AddSaveAsync(GetClaimId(ClaimType.UserId),
+                              new DailyLiteracyTipImage
+                              {
+                                  DailyLiteracyTipId = dailyLiteracyTipId,
+                                  Day = dayCounter++,
+                                  Extension = extension,
+                                  Name = safeName
+                              });
 
                     added++;
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning("Issue adding Daily Literacy Tip image {EntryName}: {ErrorMessage}", file.Name, ex.Message);
+                    _logger.LogWarning(ex,
+                        "Issue adding Daily Literacy Tip image {EntryName}: {ErrorMessage}",
+                        file.Name,
+                        ex.Message);
                     issues.Add($"Error adding {file.Name}: {ex.Message}");
                 }
             }
             if (added == 0)
             {
-                const string noValidImagesMessage = "No valid image files were found in the archive.";
                 _logger.LogWarning(noValidImagesMessage);
                 issues.Add(noValidImagesMessage);
             }
