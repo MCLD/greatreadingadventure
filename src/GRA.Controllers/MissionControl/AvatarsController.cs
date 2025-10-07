@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.Avatar;
 using GRA.Controllers.ViewModel.Shared;
@@ -26,6 +29,7 @@ namespace GRA.Controllers.MissionControl
         private const long MaxFileSize = 100L * 1024L * 1024L;
         private readonly AvatarService _avatarService;
         private readonly JobService _jobService;
+        private readonly LanguageService _languageService;
         private readonly ILogger<AvatarsController> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
@@ -33,17 +37,20 @@ namespace GRA.Controllers.MissionControl
             ServiceFacade.Controller context,
             AvatarService avatarService,
             JobService jobService,
+            LanguageService languageService,
             IWebHostEnvironment webHostEnvironment)
             : base(context)
         {
             ArgumentNullException.ThrowIfNull(logger);
             ArgumentNullException.ThrowIfNull(avatarService);
             ArgumentNullException.ThrowIfNull(jobService);
+            ArgumentNullException.ThrowIfNull(languageService);
             ArgumentNullException.ThrowIfNull(webHostEnvironment);
 
             _logger = logger;
             _avatarService = avatarService;
             _jobService = jobService;
+            _languageService = languageService;
             _webHostEnvironment = webHostEnvironment;
 
             PageTitle = "Avatars";
@@ -233,6 +240,68 @@ namespace GRA.Controllers.MissionControl
             return View(viewModel);
         }
 
+        public async Task<IActionResult> ColorTexts(bool textMissing = true,
+            int page = 1)
+        {
+            var filter = new AvatarFilter(page)
+            {
+                TextMissing = textMissing
+            };
+
+            var colorList = await _avatarService.PageColorsAsync(filter);
+
+            var paginateModel = new PaginateViewModel
+            {
+                CurrentPage = page,
+                ItemCount = colorList.Count,
+                ItemsPerPage = filter.Take.Value
+            };
+            if (paginateModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+
+            var viewModel = new ColorTextListViewModel
+            {
+                AltTextMaxLength = typeof(AvatarColorText)
+                    .GetProperty(nameof(AvatarColorText.AltText))
+                    .GetCustomAttribute<MaxLengthAttribute>()
+                    ?.Length,
+                Colors = colorList.Data,
+                Languages = await _languageService.GetActiveAsync(),
+                PaginateModel = paginateModel,
+                TextMissing = textMissing
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ColorTexts(ColorTextListViewModel model)
+        {
+            ArgumentNullException.ThrowIfNull(model);
+
+            try
+            {
+                await _avatarService.UpdateColorTextsAsync(model.Texts);
+                ShowAlertSuccess("Avatar colors updated.");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger(gex.Message);
+            }
+
+            return RedirectToAction(nameof(ColorTexts), new
+            {
+                page = model.PaginateModel.CurrentPage,
+                textMissing = model.TextMissing
+            });
+        }
+
         [HttpPost]
         public async Task<IActionResult> DecreaseItemSort(ItemsListViewModel model)
         {
@@ -365,6 +434,109 @@ namespace GRA.Controllers.MissionControl
             });
         }
 
+        public async Task<IActionResult> ItemTexts(bool textMissing = true,
+            int page = 1)
+        {
+            var filter = new AvatarFilter(page)
+            {
+                TextMissing = textMissing
+            };
+
+            var itemList = await _avatarService.PageItemsAsync(filter);
+
+            var paginateModel = new PaginateViewModel
+            {
+                CurrentPage = page,
+                ItemCount = itemList.Count,
+                ItemsPerPage = filter.Take.Value
+            };
+            if (paginateModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+
+            foreach (var item in itemList.Data)
+            {
+                item.AvatarLayerName = await _avatarService
+                    .GetDefaultLayerNameByIdAsync(item.AvatarLayerId);
+                item.Thumbnail = _pathResolver.ResolveContentPath(item.Thumbnail);
+            }
+
+            var viewModel = new ItemTextListViewModel
+            {
+                AltTextMaxLength = typeof(AvatarItemText)
+                    .GetProperty(nameof(AvatarItemText.AltText))
+                    .GetCustomAttribute<MaxLengthAttribute>()
+                    ?.Length,
+                Items = itemList.Data,
+                Languages = await _languageService.GetActiveAsync(),
+                PaginateModel = paginateModel,
+                TextMissing = textMissing
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ItemTexts(ItemTextListViewModel model)
+        {
+            ArgumentNullException.ThrowIfNull(model);
+
+            var errorList = new List<string>();
+
+            if (model.DeleteIds != null)
+            {
+                var deletedIds = new List<int>();
+                foreach (var itemId in model.DeleteIds)
+                {
+                    try
+                    {
+                        await _avatarService.DeleteItemAsync(itemId);
+                        deletedIds.Add(itemId);
+                    }
+                    catch (GraException gex)
+                    {
+                        var item = await _avatarService.GetItemByIdAsync(itemId);
+                        errorList.Add($"Unable to delete item \"{item.Name}\": {gex.Message}");
+                    }
+                }
+
+                model.Texts = model.Texts.Where(_ => !deletedIds.Contains(_.AvatarItemId));
+            }
+            try
+            {
+                await _avatarService.UpdateItemTextsAsync(model.Texts);
+            }
+            catch (GraException gex)
+            {
+                errorList.Add(gex.Message);
+            }
+
+            if (errorList.Count > 0)
+            {
+                var issues = new StringBuilder("Unable to update avatar items:<ul>");
+                foreach (var error in errorList)
+                {
+                    issues.Append("<li>").Append(error).AppendLine("</li>");
+                }
+                ShowAlertDanger(issues.ToString());
+            }
+            else
+            {
+                ShowAlertSuccess("Avatar items updated.");
+            }
+
+            return RedirectToAction(nameof(ItemTexts), new
+            {
+                page = model.PaginateModel.CurrentPage,
+                textMissing = model.TextMissing
+            });
+        }
+
         public async Task<IActionResult> Layer(int id,
             string search,
             bool available = false,
@@ -421,7 +593,8 @@ namespace GRA.Controllers.MissionControl
 
             if (itemList.Data.Count > 0)
             {
-                PageTitle = $"Avatar Items: {itemList.Data.First().AvatarLayerName}";
+                var avatarLayerName = await _avatarService.GetDefaultLayerNameByIdAsync(id);
+                PageTitle = $"Avatar Items: {avatarLayerName}";
             }
 
             var viewModel = new ItemsListViewModel

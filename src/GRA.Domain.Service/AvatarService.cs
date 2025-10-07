@@ -193,12 +193,25 @@ namespace GRA.Domain.Service
             return await _avatarColorRepository.GetByLayerAsync(layerId);
         }
 
+        public async Task<string> GetDefaultLayerNameByIdAsync(int layerId)
+        {
+            VerifyManagementPermission();
+            var languageId = await _languageService.GetDefaultLanguageIdAsync();
+            return await _avatarLayerRepository.GetNameByLanguageIdAsync(layerId, languageId);
+        }
+
         public async Task<AvatarItem> GetItemByLayerPositionSortOrderAsync(int layerPosition,
             int sortOrder)
         {
             VerifyManagementPermission();
             return await _avatarItemRepository.GetByLayerPositionSortOrderAsync(layerPosition,
                 sortOrder);
+        }
+
+        public async Task<AvatarItem> GetItemByIdAsync(int id)
+        {
+            VerifyManagementPermission();
+            return await _avatarItemRepository.GetByIdAsync(id);
         }
 
         public async Task<ICollection<AvatarItem>> GetItemsByIdsAsync(List<int> ids)
@@ -743,7 +756,7 @@ namespace GRA.Domain.Service
                     .Append(Convert.ToInt32(sw.Elapsed.TotalSeconds))
                     .Append(" seconds");
 
-                if(deleteIssues)
+                if (deleteIssues)
                 {
                     resultMessage.Append(" - could not delete all uploaded files");
                 }
@@ -775,17 +788,22 @@ namespace GRA.Domain.Service
             await _avatarItemRepository.IncreaseSortPosition(GetCurrentSiteId(), id);
         }
 
+        public async Task<DataWithCount<ICollection<AvatarColor>>> PageColorsAsync(
+            AvatarFilter filter)
+        {
+            ArgumentNullException.ThrowIfNull(filter);
+            VerifyManagementPermission();
+            filter.SiteId = GetCurrentSiteId();
+            return await _avatarColorRepository.PageAsync(filter);
+        }
+
         public async Task<DataWithCount<ICollection<AvatarItem>>> PageItemsAsync(
             AvatarFilter filter)
         {
             ArgumentNullException.ThrowIfNull(filter);
             VerifyManagementPermission();
             filter.SiteId = GetCurrentSiteId();
-            return new DataWithCount<ICollection<AvatarItem>>
-            {
-                Data = await _avatarItemRepository.PageAsync(filter),
-                Count = await _avatarItemRepository.CountAsync(filter)
-            };
+            return await _avatarItemRepository.PageAsync(filter);
         }
 
         public async Task RemoveBundleAsync(int id)
@@ -840,6 +858,140 @@ namespace GRA.Domain.Service
         {
             await _avatarBundleRepository.UpdateHasBeenViewedAsync(GetActiveUserId(),
                 bundleId);
+        }
+
+        public async Task UpdateColorTextsAsync(IEnumerable<AvatarColorText> colorTexts)
+        {
+            ArgumentNullException.ThrowIfNull(colorTexts);
+            VerifyManagementPermission();
+
+            var colorIds = colorTexts.Select(_ => _.AvatarColorId).Distinct();
+            var currentTexts = await _avatarColorRepository.GetTextsByColorIdsAsync(colorIds);
+
+            var textsToAdd = new List<AvatarColorText>();
+            var textsToRemove = new List<AvatarColorText>();
+            var textsToUpdate = new List<AvatarColorText>();
+
+            foreach (var text in colorTexts)
+            {
+                text.AltText = text.AltText?.Trim();
+
+                var currentText = currentTexts
+                    .Where(_ => _.AvatarColorId == text.AvatarColorId 
+                        && _.LanguageId == text.LanguageId)
+                    .SingleOrDefault();
+
+                if (!string.IsNullOrWhiteSpace(text.AltText))
+                {
+                    if (currentText == null)
+                    {
+
+                        textsToAdd.Add(text);
+                    }
+                    else
+                    {
+                        currentText.AltText = text.AltText;
+                        textsToUpdate.Add(currentText);
+                    }
+                }
+                else if (currentText != null)
+                {
+                    textsToRemove.Add(currentText);
+                }
+            }
+
+            try
+            {
+                if (textsToAdd.Count > 0 || textsToRemove.Count > 0 || textsToUpdate.Count > 0)
+                {
+                    if (textsToAdd.Count > 0)
+                    {
+                        await _avatarColorRepository.AddTextsAsync(textsToAdd);
+                    }
+                    if (textsToRemove.Count > 0)
+                    {
+                        _avatarColorRepository.RemoveTexts(textsToRemove);
+                    }
+                    if (textsToUpdate.Count > 0)
+                    {
+                        _avatarColorRepository.UpdateTexts(textsToUpdate);
+                    }
+                    await _avatarColorRepository.SaveAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unable to update avatar color texts: {ErrorMessage}", 
+                    ex.Message);
+                throw new GraException($"Unable to update avatar color texts: {ex.Message}");
+            }
+        }
+
+        public async Task UpdateItemTextsAsync(IEnumerable<AvatarItemText> itemTexts)
+        {
+            ArgumentNullException.ThrowIfNull(itemTexts);
+            VerifyManagementPermission();
+
+            var itemIds = itemTexts.Select(_ => _.AvatarItemId).Distinct();
+            var currentTexts = await _avatarItemRepository.GetTextsByItemIdsAsync(itemIds);
+
+            var textsToAdd = new List<AvatarItemText>();
+            var textsToRemove = new List<AvatarItemText>();
+            var textsToUpdate = new List<AvatarItemText>();
+
+            foreach (var text in itemTexts)
+            {
+                text.AltText = text.AltText?.Trim();
+
+                var currentText = currentTexts
+                    .Where(_ => _.AvatarItemId == text.AvatarItemId 
+                        && _.LanguageId == text.LanguageId)
+                    .SingleOrDefault();
+
+                if (!string.IsNullOrWhiteSpace(text.AltText))
+                {
+                    if (currentText == null)
+                    {
+
+                        textsToAdd.Add(text);
+                    }
+                    else
+                    {
+                        currentText.AltText = text.AltText;
+                        textsToUpdate.Add(currentText);
+                    }
+                }
+                else if (currentText != null)
+                {
+                    textsToRemove.Add(currentText);
+                }
+            }
+
+            try
+            {
+                if (textsToAdd.Count > 0 || textsToRemove.Count > 0 || textsToUpdate.Count > 0)
+                {
+                    if (textsToAdd.Count > 0)
+                    {
+                        await _avatarItemRepository.AddTextsAsync(textsToAdd);
+                    }
+                    if (textsToRemove.Count > 0)
+                    {
+                        _avatarItemRepository.RemoveTexts(textsToRemove);
+                    }
+                    if (textsToUpdate.Count > 0)
+                    {
+                        _avatarItemRepository.UpdateTexts(textsToUpdate);
+                    }
+                    await _avatarItemRepository.SaveAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unable to update avatar item texts: {ErrorMessage}", 
+                    ex.Message);
+                throw new GraException($"Unable to update avatar item texts: {ex.Message}");
+            }
         }
 
         public async Task<AvatarLayer> UpdateLayerAsync(AvatarLayer layer)

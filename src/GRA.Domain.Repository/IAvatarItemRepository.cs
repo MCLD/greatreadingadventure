@@ -12,8 +12,7 @@ namespace GRA.Domain.Repository
         Task<bool> HasUserUnlockedItemAsync(int userId, int itemId);
         Task<ICollection<int>> GetUserUnlockedItemsAsync(int userId);
         Task AddUserItemsAsync(int userId, List<int> itemIds);
-        Task<int> CountAsync(AvatarFilter filter);
-        Task<ICollection<AvatarItem>> PageAsync(AvatarFilter filter);
+        Task<DataWithCount<ICollection<AvatarItem>>> PageAsync(AvatarFilter filter);
         Task<int> GetLayerAvailableItemCountAsync(int layerId);
         Task<int> GetLayerUnavailableItemCountAsync(int layerId);
         Task<int> GetLayerUnlockableItemCountAsync(int layerId);
@@ -26,5 +25,9 @@ namespace GRA.Domain.Repository
         Task RemoveUserItemAsync(int id);
         void RemoveUserUnlockedItem(int id);
         Task<List<AvatarItem>> GetBundleItemsAsync(int bundleId);
+        Task<IEnumerable<AvatarItemText>> GetTextsByItemIdsAsync(IEnumerable<int> itemIds);
+        Task AddTextsAsync(IEnumerable<AvatarItemText> texts);
+        void RemoveTexts(IEnumerable<AvatarItemText> texts);
+        void UpdateTexts(IEnumerable<AvatarItemText> texts);
     }
 }

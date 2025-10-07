@@ -10,6 +10,7 @@ namespace GRA.Domain.Model.Filters
         public bool CanBeUnlocked { get; set; }
         public ICollection<int> ItemIds { get; set; }
         public int? LayerId { get; set; }
+        public bool? TextMissing { get; set; }
 
         public AvatarFilter(int? page = null, int take = 10) : base(page, take) { }
     }
