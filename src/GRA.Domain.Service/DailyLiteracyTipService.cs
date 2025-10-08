@@ -212,7 +212,10 @@ namespace GRA.Domain.Service
 
             if (tip.SiteId != siteId)
             {
-                _logger.LogError("User {UserId} cannot remove Daily Literacy Tip image {ImageId} for site {ImageSiteId}.", authId, currentImage.Id, tip.SiteId);
+                _logger.LogError("User {AuthId} cannot remove Daily Literacy Tip image {ImageId} for site {TipSiteId}.",
+                    authId,
+                    currentImage.Id,
+                    tip.SiteId);
                 throw new GraException($"Permission denied - Daily Literacy Tip image belongs to site id {tip.SiteId}");
             }
 
