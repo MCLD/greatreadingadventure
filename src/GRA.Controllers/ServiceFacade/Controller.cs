@@ -9,7 +9,7 @@ namespace GRA.Controllers.ServiceFacade
 {
     public class Controller
     {
-        public readonly AutoMapper.IMapper Mapper;
+        public readonly MapsterMapper.IMapper Mapper;
         public readonly IConfiguration Config;
         public readonly IDateTimeProvider DateTimeProvider;
         public readonly IPathResolver PathResolver;
@@ -18,7 +18,7 @@ namespace GRA.Controllers.ServiceFacade
         public readonly SiteLookupService SiteLookupService;
 
         public Controller(
-            AutoMapper.IMapper mapper,
+            MapsterMapper.IMapper mapper,
             IConfiguration config,
             IDateTimeProvider dateTimeProvider,
             IPathResolver pathResolver,

@@ -4,9 +4,11 @@ using System.IO;
 using System.Linq;
 using GRA.Abstract;
 using GRA.Controllers.RouteConstraint;
+using GRA.Data.Profile;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
 using GRA.Domain.Service.Abstract;
+using Mapster;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
@@ -267,6 +269,8 @@ namespace GRA.Web
                     await next();
                 }
             });
+
+            MappingConfig.RegisterMappings();
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -706,7 +710,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IVendorCodeRepository, Data.Repository.VendorCodeRepository>();
             services.AddScoped<Domain.Repository.IVendorCodeTypeRepository, Data.Repository.VendorCodeTypeRepository>();
 
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddMapster();
 
             services.AddScoped<JobTaskRunner>();
             services.AddHostedService<JobBackgroundService>();

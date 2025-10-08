@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -23,7 +23,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.PerformerId == performerId)
-                .ProjectTo<PsPerformerSchedule>(_mapper.ConfigurationProvider)
+                .ProjectToType<PsPerformerSchedule>()
                 .ToListAsync();
         }
 
@@ -32,7 +32,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => _.PerformerId == performerId && _.Date == date.Date)
-                .ProjectTo<PsPerformerSchedule>(_mapper.ConfigurationProvider)
+                .ProjectToType<PsPerformerSchedule>()
                 .FirstOrDefaultAsync();
         }
 

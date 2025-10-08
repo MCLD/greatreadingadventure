@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -94,7 +94,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.VendorCodeId == vendorCodeId)
-                .ProjectTo<PrizeWinner>(_mapper.ConfigurationProvider)
+                .ProjectToType<PrizeWinner>()
                 .SingleOrDefaultAsync();
         }
 
@@ -117,7 +117,7 @@ namespace GRA.Data.Repository
                           join users in validUsers
                           on prizes.RedeemedBy equals users.Id
                           select prizes)
-                          .ProjectTo<PrizeWinner>(_mapper.ConfigurationProvider)
+                          .ProjectToType<PrizeWinner>()
                           .ToListAsync();
         }
 
@@ -135,7 +135,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => _.UserId == userId && _.DrawingId == drawingId)
-                .ProjectTo<PrizeWinner>(_mapper.ConfigurationProvider)
+                .ProjectToType<PrizeWinner>()
                 .FirstOrDefaultAsync();
         }
 
@@ -157,7 +157,7 @@ namespace GRA.Data.Repository
                           join users in validUsers
                           on prizes.UserId equals users.Id
                           select prizes)
-                          .ProjectTo<PrizeWinner>(_mapper.ConfigurationProvider)
+                          .ProjectToType<PrizeWinner>()
                           .ToListAsync();
         }
 
@@ -165,7 +165,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => _.UserId == userId && _.TriggerId == triggerId)
-                .ProjectTo<PrizeWinner>(_mapper.ConfigurationProvider)
+                .ProjectToType<PrizeWinner>()
                 .FirstOrDefaultAsync();
         }
 
@@ -174,7 +174,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .Where(_ => _.UserId == userId && _.VendorCodeId != null)
                 .AsNoTracking()
-                .ProjectTo<PrizeWinner>(_mapper.ConfigurationProvider)
+                .ProjectToType<PrizeWinner>()
                 .ToListAsync();
         }
 
@@ -185,7 +185,7 @@ namespace GRA.Data.Repository
                 .OrderBy(_ => _.RedeemedAt.HasValue)
                 .ThenByDescending(_ => _.RedeemedAt.Value)
                 .ApplyPagination(filter)
-                .ProjectTo<PrizeWinner>(_mapper.ConfigurationProvider)
+                .ProjectToType<PrizeWinner>()
                 .ToListAsync();
         }
 

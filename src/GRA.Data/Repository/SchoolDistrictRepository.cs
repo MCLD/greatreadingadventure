@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -25,7 +25,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.SiteId == siteId)
                 .OrderBy(_ => _.Name)
-                .ProjectTo<SchoolDistrict>(_mapper.ConfigurationProvider)
+                .ProjectToType<SchoolDistrict>()
                 .ToListAsync();
         }
 
@@ -40,7 +40,7 @@ namespace GRA.Data.Repository
             return await ApplyFilters(filter)
                 .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
-                .ProjectTo<SchoolDistrict>(_mapper.ConfigurationProvider)
+                .ProjectToType<SchoolDistrict>()
                 .ToListAsync();
         }
 

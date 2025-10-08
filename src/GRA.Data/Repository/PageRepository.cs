@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -23,7 +23,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.PageHeaderId == headerId)
-                .ProjectTo<Page>(_mapper.ConfigurationProvider)
+                .ProjectToType<Page>()
                 .ToListAsync();
         }
 
@@ -32,7 +32,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.PageHeaderId == headerId && _.LanguageId == languageId)
-                .ProjectTo<Page>(_mapper.ConfigurationProvider)
+                .ProjectToType<Page>()
                 .SingleOrDefaultAsync();
         }
 
@@ -49,7 +49,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => pageHeaderId.Contains(_.PageHeaderId)
                     && _.LanguageId == languageId)
-                .ProjectTo<Page>(_mapper.ConfigurationProvider)
+                .ProjectToType<Page>()
                 .SingleOrDefaultAsync();
         }
 
@@ -63,7 +63,7 @@ namespace GRA.Data.Repository
                 .OrderBy(_ => _.PageName)
                 .Skip(skip)
                 .Take(take)
-                .ProjectTo<Page>(_mapper.ConfigurationProvider)
+                .ProjectToType<Page>()
                 .ToListAsync();
         }
 
@@ -105,7 +105,7 @@ namespace GRA.Data.Repository
                     .OrderBy(_ => _.FooterText);
             }
 
-            var finalPages = await pages.ProjectTo<Page>(_mapper.ConfigurationProvider).ToListAsync();
+            var finalPages = await pages.ProjectToType<Page>().ToListAsync();
 
             foreach (var page in finalPages)
             {

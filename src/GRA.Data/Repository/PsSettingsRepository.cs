@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -24,7 +24,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.SiteId == siteId)
-                .ProjectTo<PsSettings>(_mapper.ConfigurationProvider)
+                .ProjectToType<PsSettings>()
                 .SingleOrDefaultAsync();
         }
 
@@ -39,7 +39,7 @@ namespace GRA.Data.Repository
                 .Select(_ => _.Branch)
                 .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
-                .ProjectTo<Branch>(_mapper.ConfigurationProvider)
+                .ProjectToType<Branch>()
                 .ToListAsync();
 
             return new DataWithCount<ICollection<Branch>>
@@ -78,7 +78,7 @@ namespace GRA.Data.Repository
             }
 
             return await branches
-                .ProjectTo<Branch>(_mapper.ConfigurationProvider)
+                .ProjectToType<Branch>()
                 .ToListAsync();
         }
 
@@ -91,7 +91,7 @@ namespace GRA.Data.Repository
             return await _context.Branches
                 .AsNoTracking()
                 .Where(_ => _.Id == branchId && !branchExcluded.Any())
-                .ProjectTo<Branch>(_mapper.ConfigurationProvider)
+                .ProjectToType<Branch>()
                 .FirstOrDefaultAsync();
         }
 

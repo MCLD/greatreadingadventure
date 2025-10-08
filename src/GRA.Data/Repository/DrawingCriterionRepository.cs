@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -50,7 +50,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => _.Id == id)
-                .ProjectTo<DrawingCriterion>(_mapper.ConfigurationProvider)
+                .ProjectToType<DrawingCriterion>()
                 .SingleOrDefaultAsync();
         }
 
@@ -82,7 +82,7 @@ namespace GRA.Data.Repository
                 .OrderBy(_ => _.Name)
                 .ThenBy(_ => _.Id)
                 .ApplyPagination(filter)
-                .ProjectTo<DrawingCriterion>(_mapper.ConfigurationProvider)
+                .ProjectToType<DrawingCriterion>()
                 .ToListAsync();
         }
 

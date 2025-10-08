@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -23,7 +23,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.UserId == userId)
                 .OrderBy(_ => _.CreatedAt)
-                .ProjectTo<Notification>(_mapper.ConfigurationProvider)
+                .ProjectToType<Notification>()
                 .ToListAsync();
         }
 

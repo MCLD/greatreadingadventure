@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -22,7 +22,7 @@ namespace GRA.Data.Repository
             return await DbSet.AsNoTracking()
                 .Where(_ => _.SiteId == siteid)
                 .OrderBy(_ => _.Id)
-                .ProjectTo<GroupType>(_mapper.ConfigurationProvider)
+                .ProjectToType<GroupType>()
                 .FirstOrDefaultAsync();
         }
 
@@ -51,7 +51,7 @@ namespace GRA.Data.Repository
                 .OrderBy(_ => _.Name)
                 .Skip(skip)
                 .Take(take)
-                .ProjectTo<GroupType>(_mapper.ConfigurationProvider)
+                .ProjectToType<GroupType>()
                 .ToListAsync();
             return (list, count);
         }

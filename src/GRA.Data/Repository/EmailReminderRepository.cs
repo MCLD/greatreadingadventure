@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -34,7 +34,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.SignUpSource == signUpSource)
                 .OrderBy(_ => _.CreatedAt)
-                .ProjectTo<EmailReminder>(_mapper.ConfigurationProvider)
+                .ProjectToType<EmailReminder>()
                 .ToListAsync();
         }
 
@@ -89,7 +89,7 @@ namespace GRA.Data.Repository
                 .OrderBy(_ => _.CreatedAt)
                 .Skip(skip)
                 .Take(System.Math.Min(take, 100))
-                .ProjectTo<EmailReminder>(_mapper.ConfigurationProvider)
+                .ProjectToType<EmailReminder>()
                 .ToListAsync();
         }
 

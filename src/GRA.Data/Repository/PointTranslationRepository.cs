@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -24,7 +24,7 @@ namespace GRA.Data.Repository
             return await DbSet.AsNoTracking()
                 .Where(_ => _.SiteId == siteId)
                 .OrderBy(_ => _.TranslationName)
-                .ProjectTo<PointTranslation>(_mapper.ConfigurationProvider)
+                .ProjectToType<PointTranslation>()
                 .ToListAsync();
         }
 
@@ -39,7 +39,7 @@ namespace GRA.Data.Repository
             return await ApplyFilters(filter)
                 .OrderBy(_ => _.TranslationName)
                 .ApplyPagination(filter)
-                .ProjectTo<PointTranslation>(_mapper.ConfigurationProvider)
+                .ProjectToType<PointTranslation>()
                 .ToListAsync();
         }
 

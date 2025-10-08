@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -30,7 +30,7 @@ namespace GRA.Data.Repository
                 .Where(_ => _.user.SiteId == siteId)
                 .Select(_ => _.group)
                 .OrderBy(_ => _.Name)
-                .ProjectTo<GroupInfo>(_mapper.ConfigurationProvider)
+                .ProjectToType<GroupInfo>()
                 .ToListAsync();
         }
 
@@ -39,7 +39,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.UserId == householdHeadUserId)
-                .ProjectTo<GroupInfo>(_mapper.ConfigurationProvider)
+                .ProjectToType<GroupInfo>()
                 .SingleOrDefaultAsync();
         }
 
@@ -71,7 +71,7 @@ namespace GRA.Data.Repository
             var groupList = await groups
                 .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
-                .ProjectTo<GroupInfo>(_mapper.ConfigurationProvider)
+                .ProjectToType<GroupInfo>()
                 .ToListAsync();
 
             return new DataWithCount<ICollection<GroupInfo>>

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
@@ -53,7 +53,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .OrderBy(_ => _.Name)
-                .ProjectTo<EmailBase>(_mapper.ConfigurationProvider)
+                .ProjectToType<EmailBase>()
                 .ToListAsync();
         }
 
@@ -62,7 +62,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.IsDefault)
-                .ProjectTo<EmailBase>(_mapper.ConfigurationProvider)
+                .ProjectToType<EmailBase>()
                 .SingleOrDefaultAsync();
         }
 
@@ -80,7 +80,7 @@ namespace GRA.Data.Repository
         {
             var emailBase = await DbSet
                 .AsNoTracking()
-                .ProjectTo<EmailBase>(_mapper.ConfigurationProvider)
+                .ProjectToType<EmailBase>()
                 .SingleOrDefaultAsync(_ => _.Id == emailBaseId);
 
             if (emailBase != null)
@@ -88,7 +88,7 @@ namespace GRA.Data.Repository
                 emailBase.EmailBaseText = await _context
                     .EmailBaseTexts
                     .AsNoTracking()
-                    .ProjectTo<EmailBaseText>(_mapper.ConfigurationProvider)
+                    .ProjectToType<EmailBaseText>()
                     .SingleOrDefaultAsync(_ => _.EmailBaseId == emailBaseId
                         && _.LanguageId == languageId);
             }
@@ -100,7 +100,7 @@ namespace GRA.Data.Repository
             var emailBase = await DbSet
                 .AsNoTracking()
                 .Where(_ => _.Id == emailBaseId)
-                .ProjectTo<EmailBase>(_mapper.ConfigurationProvider)
+                .ProjectToType<EmailBase>()
                 .SingleOrDefaultAsync();
 
             if (emailBase != null)
@@ -108,7 +108,7 @@ namespace GRA.Data.Repository
                 emailBase.EmailBaseText = await _context
                     .EmailBaseTexts
                     .AsNoTracking()
-                    .ProjectTo<EmailBaseText>(_mapper.ConfigurationProvider)
+                    .ProjectToType<EmailBaseText>()
                     .SingleOrDefaultAsync(_ => _.EmailBaseId == emailBase.Id
                         && _.LanguageId == languageId);
             }
@@ -142,7 +142,7 @@ namespace GRA.Data.Repository
             var templateList = await templates
                 .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
-                .ProjectTo<EmailBase>(_mapper.ConfigurationProvider)
+                .ProjectToType<EmailBase>()
                 .ToListAsync();
 
             return new ICollectionWithCount<EmailBase>

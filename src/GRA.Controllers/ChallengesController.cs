@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using DocumentFormat.OpenXml.InkML;
 using GRA.Controllers.ViewModel.Challenges;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
@@ -29,7 +28,7 @@ namespace GRA.Controllers
         private readonly ChallengeService _challengeService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogger<ChallengesController> _logger;
-        private readonly AutoMapper.IMapper _mapper;
+        private readonly MapsterMapper.IMapper _mapper;
         private readonly SiteService _siteService;
 
         public ChallengesController(ILogger<ChallengesController> logger,

@@ -6,10 +6,11 @@ using GRA.Domain.Model;
 
 namespace GRA.Controllers
 {
-    public class MappingProfile : AutoMapper.Profile
+    public class MappingProfile
     {
         public MappingProfile()
         {
+            /*
             // Domain to ViewModel Mappings
             CreateMap<ViewModel.Shared.ProgramSettingsViewModel, Program>().ReverseMap();
             CreateMap<SinglePageViewModel, User>().ReverseMap();
@@ -35,6 +36,7 @@ namespace GRA.Controllers
             CreateMap<Site, SiteConfigurationViewModel>();
             CreateMap<Site, SiteScheduleViewModel>();
             CreateMap<Site, SiteSocialMediaViewModel>();
+            */
         }
     }
 }

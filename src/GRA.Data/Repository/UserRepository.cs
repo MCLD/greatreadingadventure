@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -113,7 +113,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => !_.IsSystemUser && string.IsNullOrWhiteSpace(_.UnsubscribeToken))
-                .ProjectTo<User>(_mapper.ConfigurationProvider)
+                .ProjectToType<User>()
                 .ToListAsync();
         }
 
@@ -122,7 +122,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.Id == id && !_.IsDeleted)
-                .ProjectTo<User>(_mapper.ConfigurationProvider)
+                .ProjectToType<User>()
                 .SingleOrDefaultAsync();
         }
 
@@ -131,7 +131,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.SiteId == siteId && _.UnsubscribeToken == token)
-                .ProjectTo<User>(_mapper.ConfigurationProvider)
+                .ProjectToType<User>()
                 .SingleOrDefaultAsync();
         }
 
@@ -202,7 +202,7 @@ namespace GRA.Data.Repository
             var user = await DbSet
                 .AsNoTracking()
                 .Where(_ => _.Id == userId)
-                .ProjectTo<User>(_mapper.ConfigurationProvider)
+                .ProjectToType<User>()
                 .SingleOrDefaultAsync();
             return user?.FullName;
         }
@@ -215,7 +215,7 @@ namespace GRA.Data.Repository
                 .OrderBy(_ => _.FirstName)
                 .ThenBy(_ => _.LastName)
                 .ThenBy(_ => _.Username)
-                .ProjectTo<User>(_mapper.ConfigurationProvider)
+                .ProjectToType<User>()
                 .ToListAsync();
         }
 
@@ -235,7 +235,7 @@ namespace GRA.Data.Repository
                 .Where(_ => !_.IsDeleted
                     && (_.HouseholdHeadUserId == householdHeadUserId || _.Id == householdHeadUserId))
                 .OrderBy(_ => _.CreatedAt)
-                .ProjectTo<User>(_mapper.ConfigurationProvider)
+                .ProjectToType<User>()
                 .Select(_ => _.Id)
                 .ToListAsync();
         }
@@ -258,7 +258,7 @@ namespace GRA.Data.Repository
                 .ThenBy(_ => _.FirstName)
                 .ThenBy(_ => _.LastName)
                 .ThenBy(_ => _.Username)
-                .ProjectTo<User>(_mapper.ConfigurationProvider)
+                .ProjectToType<User>()
                 .ToListAsync();
         }
 
@@ -396,7 +396,7 @@ namespace GRA.Data.Repository
             return await ApplyUserFilter(criterion)
                 .OrderByDescending(_ => _.PointsEarned)
                 .Take(scoresToReturn)
-                .ProjectTo<User>(_mapper.ConfigurationProvider)
+                .ProjectToType<User>()
                 .ToListAsync();
         }
 
@@ -449,7 +449,7 @@ namespace GRA.Data.Repository
         {
             ArgumentNullException.ThrowIfNull(criterion);
             return await ApplyUserFilter(criterion)
-                .ProjectTo<User>(_mapper.ConfigurationProvider)
+                .ProjectToType<User>()
                 .ToListAsync();
         }
 
@@ -457,7 +457,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => _.Email == email)
-                .ProjectTo<User>(_mapper.ConfigurationProvider)
+                .ProjectToType<User>()
                 .ToListAsync();
         }
 
@@ -669,7 +669,7 @@ namespace GRA.Data.Repository
 
             return await userList
                 .ApplyPagination(filter)
-                .ProjectTo<User>(_mapper.ConfigurationProvider)
+                .ProjectToType<User>()
                 .ToListAsync();
         }
 
@@ -685,7 +685,7 @@ namespace GRA.Data.Repository
                 .ThenBy(_ => _.Username)
                 .Skip(skip)
                 .Take(take)
-                .ProjectTo<User>(_mapper.ConfigurationProvider)
+                .ProjectToType<User>()
                 .ToListAsync();
         }
 

@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -60,7 +60,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                    .Where(_ => _.ChallengeGroupId == challengeGroupId)
-                   .ProjectTo<Event>(_mapper.ConfigurationProvider)
+                   .ProjectToType<Event>()
                    .ToListAsync();
         }
 
@@ -68,7 +68,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => _.ChallengeId == challengeId)
-                .ProjectTo<Event>(_mapper.ConfigurationProvider)
+                .ProjectToType<Event>()
                 .ToListAsync();
         }
 
@@ -77,7 +77,7 @@ namespace GRA.Data.Repository
             var currentEvent = await DbSet
                 .AsNoTracking()
                 .Where(_ => _.Id == id)
-                .ProjectTo<Event>(_mapper.ConfigurationProvider)
+                .ProjectToType<Event>()
                 .SingleOrDefaultAsync();
 
             if (currentEvent != null)
@@ -156,7 +156,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => _.RelatedTriggerId == triggerId)
-                .ProjectTo<Event>(_mapper.ConfigurationProvider)
+                .ProjectToType<Event>()
                 .ToListAsync();
         }
 
@@ -263,7 +263,7 @@ namespace GRA.Data.Repository
             }
 
             return await eventQuery.ApplyPagination(filter)
-                .ProjectTo<Event>(_mapper.ConfigurationProvider)
+                .ProjectToType<Event>()
                 .ToListAsync();
         }
 

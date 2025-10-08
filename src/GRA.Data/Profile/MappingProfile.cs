@@ -1,145 +1,131 @@
 ﻿using System.Linq;
+using Mapster;
 
 namespace GRA.Data.Profile
 {
-    public class MappingProfile : AutoMapper.Profile
+    public static class MappingConfig
     {
-        public MappingProfile()
+        public static void RegisterMappings()
         {
             // Data to Domain Mappings
-            CreateMap<Model.Answer, Domain.Model.Answer>();
-            CreateMap<Model.Attachment, Domain.Model.Attachment>();
-            CreateMap<Model.AuthorizationCode, Domain.Model.AuthorizationCode>();
-            CreateMap<Model.AvatarBundle, Domain.Model.AvatarBundle>()
-                .ForMember(dest => dest.AvatarItems,
-                    opt => opt.MapFrom(src => src.AvatarBundleItems.Select(_ => _.AvatarItem)));
-            CreateMap<Model.AvatarColor, Domain.Model.AvatarColor>();
-            CreateMap<Model.AvatarElement, Domain.Model.AvatarElement>();
-            CreateMap<Model.AvatarItem, Domain.Model.AvatarItem>();
-            CreateMap<Model.AvatarLayer, Domain.Model.AvatarLayer>()
-                .ForMember(dest => dest.AvatarColors, opt =>
-                {
-                    opt.MapFrom(src => src.AvatarColors.OrderBy(_ => _.SortOrder));
-                    opt.ExplicitExpansion();
-                })
-                .ForMember(dest => dest.AvatarItems, opt =>
-                {
-                    opt.MapFrom(src => src.AvatarItems.OrderBy(_ => _.SortOrder));
-                    opt.ExplicitExpansion();
-                });
-            CreateMap<Model.Badge, Domain.Model.Badge>();
-            CreateMap<Model.Book, Domain.Model.Book>();
-            CreateMap<Model.Branch, Domain.Model.Branch>();
-            CreateMap<Model.Broadcast, Domain.Model.Broadcast>();
-            CreateMap<Model.Carousel, Domain.Model.Carousel>();
-            CreateMap<Model.CarouselItem, Domain.Model.CarouselItem>();
-            CreateMap<Model.Category, Domain.Model.Category>();
-            CreateMap<Model.Challenge, Domain.Model.Challenge>()
-                .ForMember(dest => dest.Categories, opt => opt.MapFrom(
-                    src => src.ChallengeCategories.Select(_ => _.Category)));
-            CreateMap<Model.ChallengeGroup, Domain.Model.ChallengeGroup>()
-                .ForMember(dest => dest.ChallengeIds, opt => opt.MapFrom(
-                    src => src.ChallengeGroupChallenges.Select(_ => _.ChallengeId).ToList()));
-            CreateMap<Model.ChallengeTask, Domain.Model.ChallengeTask>();
-            CreateMap<Model.DailyLiteracyTip, Domain.Model.DailyLiteracyTip>();
-            CreateMap<Model.DailyLiteracyTipImage, Domain.Model.DailyLiteracyTipImage>();
-            CreateMap<Model.DashboardContent, Domain.Model.DashboardContent>();
-            CreateMap<Model.DirectEmailHistory, Domain.Model.DirectEmailHistory>();
-            CreateMap<Model.DirectEmailTemplate, Domain.Model.DirectEmailTemplate>();
-            CreateMap<Model.DirectEmailTemplateText, Domain.Model.DirectEmailTemplateText>();
-            CreateMap<Model.Drawing, Domain.Model.Drawing>();
-            CreateMap<Model.DrawingCriterion, Domain.Model.DrawingCriterion>()
-                .ForMember(dest => dest.ProgramIds, opt => opt.MapFrom(src
-                => src.CriterionPrograms.Select(_ => _.ProgramId).ToList()));
-            CreateMap<Model.EmailBase, Domain.Model.EmailBase>();
-            CreateMap<Model.EmailBaseText, Domain.Model.EmailBaseText>();
-            CreateMap<Model.EmailReminder, Domain.Model.EmailReminder>();
-            CreateMap<Model.EmailSubscriptionAuditLog, Domain.Model.EmailSubscriptionAuditLog>()
-                .ForMember(dest => dest.CreatedByName, opt => opt
-                    .MapFrom(src => $"{src.CreatedByUser.FirstName} {src.CreatedByUser.LastName}"));
-            CreateMap<Model.Event, Domain.Model.Event>()
-                .ForMember(dest => dest.Challenge, opt => opt.Ignore())
-                .ForMember(dest => dest.ChallengeGroup, opt => opt.Ignore());
-            CreateMap<Model.ExitLandingMessageSet, Domain.Model.ExitLandingMessageSet>();
-            CreateMap<Model.FeaturedChallengeGroup, Domain.Model.FeaturedChallengeGroup>();
-            CreateMap<Model.FeaturedChallengeGroupText, Domain.Model.FeaturedChallengeGroupText>();
-            CreateMap<Model.GroupInfo, Domain.Model.GroupInfo>();
-            CreateMap<Model.GroupType, Domain.Model.GroupType>();
-            CreateMap<Model.Job, Domain.Model.Job>();
-            CreateMap<Model.Language, Domain.Model.Language>();
-            CreateMap<Model.Location, Domain.Model.Location>();
-            CreateMap<Model.Mail, Domain.Model.Mail>();
-            CreateMap<Model.MessageTemplate, Domain.Model.MessageTemplate>();
-            CreateMap<Model.MessageTemplateText, Domain.Model.MessageTemplateText>();
-            CreateMap<Model.NewsCategory, Domain.Model.NewsCategory>()
-                .ForMember(dest => dest.PostCount, opt => opt.MapFrom(src => src.Posts.Count));
-            CreateMap<Model.NewsPost, Domain.Model.NewsPost>();
-            CreateMap<Model.Notification, Domain.Model.Notification>();
-            CreateMap<Model.PageHeader, Domain.Model.PageHeader>()
-                .ForMember(dest => dest.PageLanguages,
-                    opt => opt.MapFrom(src => src.Pages.Select(_ => _.Language.Description)));
-            CreateMap<Model.Page, Domain.Model.Page>();
-            CreateMap<Model.PointTranslation, Domain.Model.PointTranslation>();
-            CreateMap<Model.PrizeWinner, Domain.Model.PrizeWinner>()
-                .ForMember(dest => dest.PrizeName,
-                    opt => opt.MapFrom(src => src.Drawing.Name ?? src.Trigger.AwardPrizeName));
-            CreateMap<Model.Program, Domain.Model.Program>();
-            CreateMap<Model.PsAgeGroup, Domain.Model.PsAgeGroup>();
-            CreateMap<Model.PsBlackoutDate, Domain.Model.PsBlackoutDate>();
-            CreateMap<Model.PsBranchSelection, Domain.Model.PsBranchSelection>()
-                .ForMember(dest => dest.StartsAt, opt => opt.MapFrom(src =>
-                    src.ScheduleStartTime.ToShortTimeString()))
-                .ForMember(dest => dest.EndsAt, opt => opt.MapFrom(src =>
-                    src.ScheduleStartTime.AddMinutes(src.ScheduleDuration).ToShortTimeString()));
-            CreateMap<Model.PsSettings, Domain.Model.PsSettings>();
-            CreateMap<Model.PsKit, Domain.Model.PsKit>();
-            CreateMap<Model.PsKitImage, Domain.Model.PsKitImage>();
-            CreateMap<Model.PsPerformer, Domain.Model.PsPerformer>();
-            CreateMap<Model.PsPerformerImage, Domain.Model.PsPerformerImage>();
-            CreateMap<Model.PsPerformerSchedule, Domain.Model.PsPerformerSchedule>();
-            CreateMap<Model.PsProgram, Domain.Model.PsProgram>();
-            CreateMap<Model.PsProgramImage, Domain.Model.PsProgramImage>();
-            CreateMap<Model.Question, Domain.Model.Question>()
-                .ForMember(dest => dest.Answers, opt =>
-                {
-                    opt.MapFrom(src => src.Answers.OrderBy(_ => _.SortOrder));
-                    opt.ExplicitExpansion();
-                });
-            CreateMap<Model.Questionnaire, Domain.Model.Questionnaire>()
-                .ForMember(dest => dest.Questions,
-                    opt => opt.MapFrom(src => src.Questions
-                        .Where(_ => !_.IsDeleted)
-                        .OrderBy(_ => _.SortOrder)));
-            CreateMap<Model.RecoveryToken, Domain.Model.RecoveryToken>();
-            CreateMap<Model.ReportCriterion, Domain.Model.ReportCriterion>();
-            CreateMap<Model.ReportRequest, Domain.Model.ReportRequest>();
-            CreateMap<Model.RequiredQuestionnaire, Domain.Model.RequiredQuestionnaire>();
-            CreateMap<Model.Role, Domain.Model.Role>();
-            CreateMap<Model.School, Domain.Model.School>();
-            CreateMap<Model.SchoolDistrict, Domain.Model.SchoolDistrict>();
-            CreateMap<Model.Segment, Domain.Model.Segment>();
-            CreateMap<Model.SegmentText, Domain.Model.SegmentText>();
-            CreateMap<Model.Site, Domain.Model.Site>();
-            CreateMap<Model.SiteSetting, Domain.Model.SiteSetting>();
-            CreateMap<Model.Social, Domain.Model.Social>();
-            CreateMap<Model.SocialHeader, Domain.Model.SocialHeader>();
-            CreateMap<Model.SpatialDistanceDetail, Domain.Model.SpatialDistanceDetail>();
-            CreateMap<Model.SpatialDistanceHeader, Domain.Model.SpatialDistanceHeader>();
-            CreateMap<Model.System, Domain.Model.System>()
-                .ForMember(_ => _.Branches,
-                    opt => opt.MapFrom(src => src.Branches.OrderBy(_ => _.Name)));
-            CreateMap<Model.Trigger, Domain.Model.Trigger>()
-                .ForMember(dest => dest.BadgeIds, opt => opt.MapFrom(src
-                => src.RequiredBadges.Select(_ => _.BadgeId).ToList()))
-                .ForMember(dest => dest.ChallengeIds, opt => opt.MapFrom(src
-                => src.RequiredChallenges.Select(_ => _.ChallengeId).ToList()));
-            CreateMap<Model.User, Domain.Model.User>();
-            CreateMap<Model.UserLog, Domain.Model.UserLog>();
-            CreateMap<Model.VendorCode, Domain.Model.VendorCode>();
-            CreateMap<Model.VendorCodePackingSlip, Domain.Model.VendorCodePackingSlip>();
-            CreateMap<Model.VendorCodeType, Domain.Model.VendorCodeType>();
+            //CreateMap<Model.Answer, Domain.Model.Answer>();
+            //CreateMap<Model.Attachment, Domain.Model.Attachment>();
+            //CreateMap<Model.AuthorizationCode, Domain.Model.AuthorizationCode>();
+            TypeAdapterConfig<Model.AvatarBundle, Domain.Model.AvatarBundle>.NewConfig()
+                .Map(dest => dest.AvatarItems,
+                    src => src.AvatarBundleItems.Select(_ => _.AvatarItem));
+
+            //CreateMap<Model.AvatarColor, Domain.Model.AvatarColor>();
+            //CreateMap<Model.AvatarElement, Domain.Model.AvatarElement>();
+            //CreateMap<Model.AvatarItem, Domain.Model.AvatarItem>();
+            TypeAdapterConfig<Model.AvatarLayer, Domain.Model.AvatarLayer>.NewConfig()
+                .Map(dest => dest.AvatarColors, src => src.AvatarColors.OrderBy(_ => _.SortOrder)) //explicit expansion removed
+                .Map(dest => dest.AvatarItems, src => src.AvatarItems.OrderBy(_ => _.SortOrder)); //explicit expansion removed
+
+            //CreateMap<Model.Badge, Domain.Model.Badge>();
+            //CreateMap<Model.Book, Domain.Model.Book>();
+            //CreateMap<Model.Branch, Domain.Model.Branch>();
+            //CreateMap<Model.Broadcast, Domain.Model.Broadcast>();
+            //CreateMap<Model.Carousel, Domain.Model.Carousel>();
+            //CreateMap<Model.CarouselItem, Domain.Model.CarouselItem>();
+            //CreateMap<Model.Category, Domain.Model.Category>();
+            TypeAdapterConfig<Model.Challenge, Domain.Model.Challenge>.NewConfig()
+                .Map(dest => dest.Categories,
+                    src => src.ChallengeCategories.Select(_ => _.Category));
+            TypeAdapterConfig<Model.ChallengeGroup, Domain.Model.ChallengeGroup>.NewConfig()
+                .Map(dest => dest.ChallengeIds,
+                    src => src.ChallengeGroupChallenges.Select(_ => _.ChallengeId)); // .ToList() removed afer .Select
+            //CreateMap<Model.ChallengeTask, Domain.Model.ChallengeTask>();
+            //CreateMap<Model.DailyLiteracyTip, Domain.Model.DailyLiteracyTip>();
+            //CreateMap<Model.DailyLiteracyTipImage, Domain.Model.DailyLiteracyTipImage>();
+            //CreateMap<Model.DashboardContent, Domain.Model.DashboardContent>();
+            //CreateMap<Model.DirectEmailHistory, Domain.Model.DirectEmailHistory>();
+            //CreateMap<Model.DirectEmailTemplate, Domain.Model.DirectEmailTemplate>();
+            //CreateMap<Model.DirectEmailTemplateText, Domain.Model.DirectEmailTemplateText>();
+            //CreateMap<Model.Drawing, Domain.Model.Drawing>();
+            TypeAdapterConfig<Model.DrawingCriterion, Domain.Model.DrawingCriterion>.NewConfig()
+                .Map(dest => dest.ProgramIds,
+                    src => src.CriterionPrograms.Select(_ => _.ProgramId)); // .ToList() removed afer .Select
+            //CreateMap<Model.EmailBase, Domain.Model.EmailBase>();
+            //CreateMap<Model.EmailBaseText, Domain.Model.EmailBaseText>();
+            //CreateMap<Model.EmailReminder, Domain.Model.EmailReminder>();
+            TypeAdapterConfig<Model.EmailSubscriptionAuditLog, Domain.Model.EmailSubscriptionAuditLog>.NewConfig()
+                .Map(dest => dest.CreatedByName,
+                    src => $"{src.CreatedByUser.FirstName} {src.CreatedByUser.LastName}");
+            TypeAdapterConfig<Model.Event, Domain.Model.Event>.NewConfig()
+                .Ignore(dest => dest.Challenge)
+                .Ignore(dest => dest.ChallengeGroup);
+            //CreateMap<Model.ExitLandingMessageSet, Domain.Model.ExitLandingMessageSet>();
+            //CreateMap<Model.FeaturedChallengeGroup, Domain.Model.FeaturedChallengeGroup>();
+            //CreateMap<Model.FeaturedChallengeGroupText, Domain.Model.FeaturedChallengeGroupText>();
+            //CreateMap<Model.GroupInfo, Domain.Model.GroupInfo>();
+            //CreateMap<Model.GroupType, Domain.Model.GroupType>();
+            //CreateMap<Model.Job, Domain.Model.Job>();
+            //CreateMap<Model.Language, Domain.Model.Language>();
+            //CreateMap<Model.Location, Domain.Model.Location>();
+            //CreateMap<Model.Mail, Domain.Model.Mail>();
+            //CreateMap<Model.MessageTemplate, Domain.Model.MessageTemplate>();
+            //CreateMap<Model.MessageTemplateText, Domain.Model.MessageTemplateText>();
+            TypeAdapterConfig<Model.NewsCategory, Domain.Model.NewsCategory>.NewConfig()
+                .Map(dest => dest.PostCount, src => src.Posts.Count());
+            //CreateMap<Model.NewsPost, Domain.Model.NewsPost>();
+            //CreateMap<Model.Notification, Domain.Model.Notification>();
+            TypeAdapterConfig<Model.PageHeader, Domain.Model.PageHeader>.NewConfig()
+                .Map(dest => dest.PageLanguages,
+                    src => src.Pages.Select(_ => _.Language.Description));
+            //CreateMap<Model.Page, Domain.Model.Page>();
+            //CreateMap<Model.PointTranslation, Domain.Model.PointTranslation>();
+            TypeAdapterConfig<Model.PrizeWinner, Domain.Model.PrizeWinner>.NewConfig()
+                .Map(dest => dest.PrizeName, src => src.Drawing.Name ?? src.Trigger.AwardPrizeName);
+            //CreateMap<Model.Program, Domain.Model.Program>();
+            //CreateMap<Model.PsAgeGroup, Domain.Model.PsAgeGroup>();
+            //CreateMap<Model.PsBlackoutDate, Domain.Model.PsBlackoutDate>();
+            TypeAdapterConfig<Model.PsBranchSelection, Domain.Model.PsBranchSelection>.NewConfig()
+                .Map(dest => dest.StartsAt, src => src.ScheduleStartTime.ToShortTimeString())
+                .Map(dest => dest.EndsAt, src => src.ScheduleStartTime.AddMinutes(src.ScheduleDuration)
+                    .ToShortTimeString());
+            //CreateMap<Model.PsSettings, Domain.Model.PsSettings>();
+            //CreateMap<Model.PsKit, Domain.Model.PsKit>();
+            //CreateMap<Model.PsKitImage, Domain.Model.PsKitImage>();
+            //CreateMap<Model.PsPerformer, Domain.Model.PsPerformer>();
+            //CreateMap<Model.PsPerformerImage, Domain.Model.PsPerformerImage>();
+            //CreateMap<Model.PsPerformerSchedule, Domain.Model.PsPerformerSchedule>();
+            //CreateMap<Model.PsProgram, Domain.Model.PsProgram>();
+            //CreateMap<Model.PsProgramImage, Domain.Model.PsProgramImage>();
+            TypeAdapterConfig<Model.Question, Domain.Model.Question>.NewConfig()
+                .Map(dest => dest.Answers, src => src.Answers.OrderBy(_ => _.SortOrder)); //explicit expansion removed
+            TypeAdapterConfig<Model.Questionnaire, Domain.Model.Questionnaire>.NewConfig()
+                .Map(dest => dest.Questions, 
+                    src => src.Questions.Where(_ => !_.IsDeleted).OrderBy(_ => _.SortOrder));
+            //CreateMap<Model.RecoveryToken, Domain.Model.RecoveryToken>();
+            //CreateMap<Model.ReportCriterion, Domain.Model.ReportCriterion>();
+            //CreateMap<Model.ReportRequest, Domain.Model.ReportRequest>();
+            //CreateMap<Model.RequiredQuestionnaire, Domain.Model.RequiredQuestionnaire>();
+            //CreateMap<Model.Role, Domain.Model.Role>();
+            //CreateMap<Model.School, Domain.Model.School>();
+            //CreateMap<Model.SchoolDistrict, Domain.Model.SchoolDistrict>();
+            //CreateMap<Model.Segment, Domain.Model.Segment>();
+            //CreateMap<Model.SegmentText, Domain.Model.SegmentText>();
+            //CreateMap<Model.Site, Domain.Model.Site>();
+            //CreateMap<Model.SiteSetting, Domain.Model.SiteSetting>();
+            //CreateMap<Model.Social, Domain.Model.Social>();
+            //CreateMap<Model.SocialHeader, Domain.Model.SocialHeader>();
+            //CreateMap<Model.SpatialDistanceDetail, Domain.Model.SpatialDistanceDetail>();
+            //CreateMap<Model.SpatialDistanceHeader, Domain.Model.SpatialDistanceHeader>();
+            TypeAdapterConfig<Model.System, Domain.Model.System>.NewConfig()
+                .Map(dest => dest.Branches, src => src.Branches.OrderBy(_ => _.Name));
+            TypeAdapterConfig<Model.Trigger, Domain.Model.Trigger>.NewConfig()
+                .Map(dest => dest.BadgeIds, src => src.RequiredBadges.Select(_ => _.BadgeId)) // .ToList() removed afer .Select
+                .Map(dest => dest.ChallengeIds, 
+                    src => src.RequiredChallenges.Select(_ => _.ChallengeId));// .ToList() removed afer .Select
+            //CreateMap<Model.User, Domain.Model.User>();
+            //CreateMap<Model.UserLog, Domain.Model.UserLog>();
+            //CreateMap<Model.VendorCode, Domain.Model.VendorCode>();
+            //CreateMap<Model.VendorCodePackingSlip, Domain.Model.VendorCodePackingSlip>();
+            //CreateMap<Model.VendorCodeType, Domain.Model.VendorCodeType>();
 
             // Domain to Data Mappings
+            /*
             CreateMap<Domain.Model.Answer, Model.Answer>();
             CreateMap<Domain.Model.Attachment, Model.Attachment>();
             CreateMap<Domain.Model.AuthorizationCode, Model.AuthorizationCode>();
@@ -225,6 +211,7 @@ namespace GRA.Data.Profile
             CreateMap<Domain.Model.VendorCode, Model.VendorCode>();
             CreateMap<Domain.Model.VendorCodePackingSlip, Model.VendorCodePackingSlip>();
             CreateMap<Domain.Model.VendorCodeType, Model.VendorCodeType>();
+            */
         }
     }
 }

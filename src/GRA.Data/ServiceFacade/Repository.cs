@@ -7,12 +7,12 @@ namespace GRA.Data.ServiceFacade
     public class Repository
     {
         public readonly Context context;
-        public readonly AutoMapper.IMapper mapper;
+        public readonly MapsterMapper.IMapper mapper;
         public readonly IConfiguration config;
         public readonly IDateTimeProvider dateTimeProvider;
         public readonly IEntitySerializer entitySerializer;
         public Repository(Context context,
-            AutoMapper.IMapper mapper,
+            MapsterMapper.IMapper mapper,
             IConfiguration config,
             IDateTimeProvider dateTimeProvider,
             IEntitySerializer entitySerializer)

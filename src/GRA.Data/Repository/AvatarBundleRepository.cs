@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -28,7 +28,7 @@ namespace GRA.Data.Repository
                .Where(_ => _.UserId == userId
                       && !_.IsDeleted)
                .OrderBy(_ => _.CreatedAt)
-               .ProjectTo<UserLog>(_mapper.ConfigurationProvider)
+               .ProjectToType<UserLog>()
                .ToListAsync();
 
             foreach (var userLog in userLogs.Where(_ => _.BadgeId != null))
@@ -72,7 +72,7 @@ namespace GRA.Data.Repository
             }
 
             return await bundles
-                .ProjectTo<AvatarBundle>(_mapper.ConfigurationProvider)
+                .ProjectToType<AvatarBundle>()
                 .SingleOrDefaultAsync();
         }
 
@@ -87,7 +87,7 @@ namespace GRA.Data.Repository
             return await ApplyFilters(filter)
                 .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
-                .ProjectTo<AvatarBundle>(_mapper.ConfigurationProvider)
+                .ProjectToType<AvatarBundle>()
                 .ToListAsync();
         }
 
@@ -158,7 +158,7 @@ namespace GRA.Data.Repository
                 bundles = bundles.Where(_ => _.CanBeUnlocked == unlockable.Value && !_.IsDeleted);
             }
 
-            return await bundles.ProjectTo<AvatarBundle>(_mapper.ConfigurationProvider)
+            return await bundles.ProjectToType<AvatarBundle>()
                 .ToListAsync();
         }
 

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -44,7 +44,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.UserId == userId)
                 .Select(_ => _.Book)
-                .ProjectTo<Book>(_mapper.ConfigurationProvider)
+                .ProjectToType<Book>()
                 .ToListAsync();
         }
 
@@ -128,7 +128,7 @@ namespace GRA.Data.Repository
 
             var data = await bookList
                 .ApplyPagination(filter)
-                .ProjectTo<Book>(_mapper.ConfigurationProvider)
+                .ProjectToType<Book>()
                 .ToListAsync();
 
             return new DataWithCount<ICollection<Book>>
@@ -156,7 +156,7 @@ namespace GRA.Data.Repository
         {
             return await _context.Books.AsNoTracking()
                 .Where(_ => _.Title == book.Title && _.Author == book.Author)
-                .ProjectTo<Book>(_mapper.ConfigurationProvider)
+                .ProjectToType<Book>()
                 .FirstOrDefaultAsync();
         }
     }

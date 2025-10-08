@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -80,7 +80,7 @@ namespace GRA.Data.Repository
                 .Where(_ => _.SiteId == siteId
                     && ((_.SortOrder > firstSortOrder && _.SortOrder < secondSortOrder)
                         || (_.SortOrder < firstSortOrder && _.SortOrder > secondSortOrder)))
-                .ProjectTo<FeaturedChallengeGroup>(_mapper.ConfigurationProvider)
+                .ProjectToType<FeaturedChallengeGroup>()
                 .ToListAsync();
         }
 
@@ -139,7 +139,7 @@ namespace GRA.Data.Repository
             }
 
             return await nextFeatuedGroup
-                .ProjectTo<FeaturedChallengeGroup>(_mapper.ConfigurationProvider)
+                .ProjectToType<FeaturedChallengeGroup>()
                 .FirstOrDefaultAsync();
         }
 
@@ -164,7 +164,7 @@ namespace GRA.Data.Repository
             var data = await featuredGroups
                 .OrderBy(_ => _.SortOrder)
                 .ApplyPagination(filter)
-                .ProjectTo<FeaturedChallengeGroup>(_mapper.ConfigurationProvider)
+                .ProjectToType<FeaturedChallengeGroup>()
                 .ToListAsync();
 
             return new ICollectionWithCount<FeaturedChallengeGroup>
@@ -220,7 +220,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.FeaturedChallengeGroupId == featuredGroupId
                     && _.LanguageId == languageId)
-                .ProjectTo<FeaturedChallengeGroupText>(_mapper.ConfigurationProvider)
+                .ProjectToType<FeaturedChallengeGroupText>()
                 .SingleOrDefaultAsync();
         }
 
@@ -230,7 +230,7 @@ namespace GRA.Data.Repository
             return await _context.FeaturedChallengeGroupTexts
                 .AsNoTracking()
                 .Where(_ => _.FeaturedChallengeGroupId == featuredGroupId)
-                .ProjectTo<FeaturedChallengeGroupText>(_mapper.ConfigurationProvider)
+                .ProjectToType<FeaturedChallengeGroupText>()
                 .ToListAsync();
         }
 

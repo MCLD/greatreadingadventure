@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -32,7 +32,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.StartDate <= asOf)
                 .OrderByDescending(_ => _.StartDate)
-                .ProjectTo<Domain.Model.SocialHeader>(_mapper.ConfigurationProvider)
+                .ProjectToType<Domain.Model.SocialHeader>()
                 .FirstOrDefaultAsync();
 
             if (socialHeader != null)
@@ -53,7 +53,7 @@ namespace GRA.Data.Repository
             return await ApplyFilters(filter)
                 .OrderByDescending(_ => _.StartDate)
                 .ApplyPagination(filter)
-                .ProjectTo<Domain.Model.SocialHeader>(_mapper.ConfigurationProvider)
+                .ProjectToType<Domain.Model.SocialHeader>()
                 .ToListAsync();
         }
 

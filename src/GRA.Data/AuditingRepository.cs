@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Abstract;
 using GRA.Data.Abstract;
 using GRA.Data.Model;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
+using Mapster;
+using MapsterMapper;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Configuration;
@@ -26,7 +28,7 @@ namespace GRA.Data
         protected readonly IDateTimeProvider _dateTimeProvider;
         protected readonly IEntitySerializer _entitySerializer;
         protected readonly ILogger _logger;
-        protected readonly AutoMapper.IMapper _mapper;
+        protected readonly IMapper _mapper;
         private readonly DbSet<AuditLog> _auditSet;
         private DbSet<DbEntity> _dbSet;
 
@@ -129,7 +131,7 @@ namespace GRA.Data
                 .OrderBy(_ => _.Id)
                 .Skip(skip)
                 .Take(take)
-                .ProjectTo<DomainEntity>(_mapper.ConfigurationProvider)
+                .ProjectToType<DomainEntity>()
                 .ToListAsync();
         }
 

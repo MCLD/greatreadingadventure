@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Abstract;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -16,7 +16,7 @@ namespace GRA.Data.Repository
     {
         protected readonly Context _context;
         protected readonly ILogger _logger;
-        protected readonly AutoMapper.IMapper _mapper;
+        protected readonly MapsterMapper.IMapper _mapper;
         protected readonly IConfiguration _config;
         protected readonly IDateTimeProvider _dateTimeProvider;
         protected readonly IEntitySerializer _entitySerializer;
@@ -42,7 +42,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.UserId == userId)
                 .OrderBy(_ => _.CreatedAt)
-                .ProjectTo<EmailSubscriptionAuditLog>(_mapper.ConfigurationProvider)
+                .ProjectToType<EmailSubscriptionAuditLog>()
                 .ToListAsync();
         }
 

@@ -35,7 +35,7 @@ namespace GRA.Controllers
         private readonly EventService _eventService;
         private readonly ILogger<ProfileController> _logger;
         private readonly MailService _mailService;
-        private readonly AutoMapper.IMapper _mapper;
+        private readonly MapsterMapper.IMapper _mapper;
         private readonly PointTranslationService _pointTranslationService;
         private readonly PrizeWinnerService _prizeWinnerService;
         private readonly QuestionnaireService _questionnaireService;

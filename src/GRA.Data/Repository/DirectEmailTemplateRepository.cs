@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Model.Utility;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
@@ -96,14 +96,14 @@ namespace GRA.Data.Repository
         {
             var directEmailTemplate = await DbSet
                 .AsNoTracking()
-                .ProjectTo<DirectEmailTemplate>(_mapper.ConfigurationProvider)
+                .ProjectToType<DirectEmailTemplate>()
                 .SingleOrDefaultAsync(_ => _.Id == directEmailTemplateId);
             if (directEmailTemplate != null)
             {
                 directEmailTemplate.DirectEmailTemplateText = await _context
                     .DirectEmailTemplateTexts
                     .AsNoTracking()
-                    .ProjectTo<DirectEmailTemplateText>(_mapper.ConfigurationProvider)
+                    .ProjectToType<DirectEmailTemplateText>()
                     .SingleOrDefaultAsync(_ => _.DirectEmailTemplateId == directEmailTemplateId
                         && _.LanguageId == languageId);
             }
@@ -115,14 +115,14 @@ namespace GRA.Data.Repository
         {
             var directEmailTemplate = await DbSet
                 .AsNoTracking()
-                .ProjectTo<DirectEmailTemplate>(_mapper.ConfigurationProvider)
+                .ProjectToType<DirectEmailTemplate>()
                 .SingleOrDefaultAsync(_ => _.SystemEmailId == systemEmailId);
             if (directEmailTemplate != null)
             {
                 directEmailTemplate.DirectEmailTemplateText = await _context
                     .DirectEmailTemplateTexts
                     .AsNoTracking()
-                    .ProjectTo<DirectEmailTemplateText>(_mapper.ConfigurationProvider)
+                    .ProjectToType<DirectEmailTemplateText>()
                     .SingleOrDefaultAsync(_ => _.DirectEmailTemplateId == directEmailTemplate.Id
                         && _.LanguageId == languageId);
             }
@@ -286,7 +286,7 @@ namespace GRA.Data.Repository
         {
             var directEmailTemplate = await DbSet
                 .Where(_ => _.Id == directEmailTemplateId && !_.SentBulk)
-                .ProjectTo<DirectEmailTemplate>(_mapper.ConfigurationProvider)
+                .ProjectToType<DirectEmailTemplate>()
                 .SingleOrDefaultAsync();
 
             if (directEmailTemplate != null)

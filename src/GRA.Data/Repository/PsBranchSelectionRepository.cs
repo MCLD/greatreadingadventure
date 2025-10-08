@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -24,7 +24,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.Branch.Id == branchId && !_.IsDeleted)
                 .OrderBy(_ => _.SelectedAt)
-                .ProjectTo<PsBranchSelection>(_mapper.ConfigurationProvider)
+                .ProjectToType<PsBranchSelection>()
                 .ToListAsync();
         }
 
@@ -40,7 +40,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.KitId.HasValue && _.KitId == kitId && !_.IsDeleted)
-                .ProjectTo<PsBranchSelection>(_mapper.ConfigurationProvider)
+                .ProjectToType<PsBranchSelection>()
                 .ToListAsync();
         }
 
@@ -69,7 +69,7 @@ namespace GRA.Data.Repository
 
             return await query
                 .OrderBy(_ => _.RequestedStartTime)
-                .ProjectTo<PsBranchSelection>(_mapper.ConfigurationProvider)
+                .ProjectToType<PsBranchSelection>()
                 .ToListAsync();
         }
 
@@ -78,7 +78,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.SecretCode == secretCode && !_.IsDeleted)
-                .ProjectTo<PsBranchSelection>(_mapper.ConfigurationProvider)
+                .ProjectToType<PsBranchSelection>()
                 .FirstOrDefaultAsync();
         }
 

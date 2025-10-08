@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -36,7 +36,7 @@ namespace GRA.Data.Repository
             return await _context.Segments
                 .AsNoTracking()
                 .Where(_ => _.Id == segmentId)
-                .ProjectTo<Segment>(_mapper.ConfigurationProvider)
+                .ProjectToType<Segment>()
                 .SingleOrDefaultAsync();
         }
 
@@ -53,7 +53,7 @@ namespace GRA.Data.Repository
         {
             return await _context.SegmentTexts
                 .AsNoTracking()
-                .ProjectTo<SegmentText>(_mapper.ConfigurationProvider)
+                .ProjectToType<SegmentText>()
                 .SingleOrDefaultAsync(_ => _.LanguageId == languageId
                     && _.SegmentId == segmentId);
         }

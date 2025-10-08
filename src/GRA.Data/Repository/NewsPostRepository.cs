@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -97,7 +97,7 @@ namespace GRA.Data.Repository
                 .OrderByDescending(_ => !_.PublishedAt.HasValue)
                 .ThenByDescending(_ => _.UpdatedAt ?? _.PublishedAt)
                 .ApplyPagination(filter)
-                .ProjectTo<NewsPost>(_mapper.ConfigurationProvider)
+                .ProjectToType<NewsPost>()
                 .ToListAsync();
 
             return new DataWithCount<IEnumerable<NewsPost>>

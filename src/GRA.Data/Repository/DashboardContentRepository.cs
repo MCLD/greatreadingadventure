@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -25,7 +25,7 @@ namespace GRA.Data.Repository
             return await ApplyFilters(filter)
                 .OrderBy(_ => _.StartTime)
                 .ApplyPagination(filter)
-                .ProjectTo<DashboardContent>(_mapper.ConfigurationProvider)
+                .ProjectToType<DashboardContent>()
                 .ToListAsync();
         }
 
@@ -70,7 +70,7 @@ namespace GRA.Data.Repository
                     .Where(_ => _.StartTime <= _dateTimeProvider.Now)
                     .OrderByDescending(_ => _.StartTime)
                     .Take(1)
-                    .ProjectTo<DashboardContent>(_mapper.ConfigurationProvider)
+                    .ProjectToType<DashboardContent>()
                     .SingleOrDefaultAsync();
         }
     }
