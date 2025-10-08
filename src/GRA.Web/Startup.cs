@@ -532,7 +532,7 @@ namespace GRA.Web
             services.AddScoped<WebSocketHandler>();
 
             // filters
-            services.AddScoped<Controllers.Filter.MissionControlFilter>();
+            services.AddScoped<Controllers.Filter.MissionControlFilterAttribute>();
             services.AddScoped<Controllers.Filter.NotificationFilter>();
             services.AddScoped<Controllers.Filter.SessionTimeoutFilterAttribute>();
             services.AddScoped<Controllers.Filter.SiteFilterAttribute>();

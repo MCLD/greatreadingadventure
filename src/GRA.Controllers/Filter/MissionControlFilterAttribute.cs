@@ -9,17 +9,10 @@ using Microsoft.Extensions.Logging;
 
 namespace GRA.Controllers.Filter
 {
-    public class MissionControlFilter : Attribute, IAsyncResourceFilter
+    [AttributeUsage(AttributeTargets.Class)]
+    public sealed class MissionControlFilterAttribute : Attribute, IAsyncResourceFilter
     {
-        private readonly ILogger<MissionControlFilter> _logger;
-        private readonly IUserContextProvider _userContextProvider;
-        private readonly MailService _mailService;
-        private readonly PerformerSchedulingService _performerSchedulingService;
-        private readonly QuestionnaireService _questionnaireService;
-        private readonly SiteLookupService _siteLookupService;
-        private readonly UserService _userService;
-
-        public MissionControlFilter(ILogger<MissionControlFilter> logger,
+        public MissionControlFilterAttribute(ILogger<MissionControlFilterAttribute> logger,
             IUserContextProvider userContextProvider,
             MailService mailService,
             PerformerSchedulingService performerSchedulingService,
@@ -27,32 +20,47 @@ namespace GRA.Controllers.Filter
             SiteLookupService siteLookupService,
             UserService userService)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _userContextProvider = userContextProvider
-                ?? throw new ArgumentNullException(nameof(userContextProvider));
-            _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
-            _performerSchedulingService = performerSchedulingService
-                ?? throw new ArgumentNullException(nameof(performerSchedulingService));
-            _questionnaireService = questionnaireService
-                ?? throw new ArgumentNullException(nameof(questionnaireService));
-            _siteLookupService = siteLookupService
-                ?? throw new ArgumentNullException(nameof(siteLookupService));
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            ArgumentNullException.ThrowIfNull(logger);
+            ArgumentNullException.ThrowIfNull(mailService);
+            ArgumentNullException.ThrowIfNull(performerSchedulingService);
+            ArgumentNullException.ThrowIfNull(questionnaireService);
+            ArgumentNullException.ThrowIfNull(siteLookupService);
+            ArgumentNullException.ThrowIfNull(userContextProvider);
+            ArgumentNullException.ThrowIfNull(userService);
+
+            Logger = logger;
+            MailService = mailService;
+            PerformerSchedulingService = performerSchedulingService;
+            QuestionnaireService = questionnaireService;
+            SiteLookupService = siteLookupService;
+            UserContextProvider = userContextProvider;
+            UserService = userService;
         }
+
+        public ILogger<MissionControlFilterAttribute> Logger { get; }
+        public MailService MailService { get; }
+        public PerformerSchedulingService PerformerSchedulingService { get; }
+        public QuestionnaireService QuestionnaireService { get; }
+        public SiteLookupService SiteLookupService { get; }
+        public IUserContextProvider UserContextProvider { get; }
+        public UserService UserService { get; }
 
         public async Task OnResourceExecutionAsync(ResourceExecutingContext context,
             ResourceExecutionDelegate next)
         {
+            ArgumentNullException.ThrowIfNull(context);
+            ArgumentNullException.ThrowIfNull(next);
+
             var httpContext = context.HttpContext;
             try
             {
-                var userId = _userContextProvider.GetId(httpContext.User, ClaimType.UserId);
+                var userId = UserContextProvider.GetId(httpContext.User, ClaimType.UserId);
                 var activeId = httpContext.Session.GetInt32(SessionKey.ActiveUserId);
                 if (userId != activeId)
                 {
                     httpContext.Session.SetInt32(SessionKey.ActiveUserId, userId);
-                    var user = await _userService.GetDetails(userId);
-                    var questionnaireId = await _questionnaireService
+                    var user = await UserService.GetDetails(userId);
+                    var questionnaireId = await QuestionnaireService
                             .GetRequiredQuestionnaire(user.Id, user.Age);
                     if (questionnaireId.HasValue)
                     {
@@ -65,9 +73,11 @@ namespace GRA.Controllers.Filter
                     }
                 }
             }
-            catch (Exception ex)
+            catch (GraException gex)
             {
-                _logger.LogTrace($"Attempted Mission Control access while not logged in: {ex.Message}");
+                Logger.LogTrace(gex,
+                    "Attempted Mission Control access while not logged in: {Message}",
+                    gex.Message);
             }
 
             if (httpContext.User.HasClaim(ClaimType.Permission, nameof(Permission.ReadAllMail)))
@@ -75,19 +85,21 @@ namespace GRA.Controllers.Filter
                 try
                 {
                     httpContext.Items[ItemKey.UnreadCount]
-                        = await _mailService.GetAdminUnreadCountAsync();
+                        = await MailService.GetAdminUnreadCountAsync();
                 }
-                catch (Exception ex)
+                catch (GraException gex)
                 {
-                    _logger.LogError("Error getting admin mail unread count: {Message}", ex.Message);
+                    Logger.LogError(gex,
+                        "Error getting admin mail unread count: {Message}",
+                        gex.Message);
                 }
             }
 
             if (httpContext.User.HasClaim(ClaimType.Permission,
                 nameof(Permission.ViewPerformerDetails)))
             {
-                var settings = await _performerSchedulingService.GetSettingsAsync();
-                var schedulingStage = _performerSchedulingService
+                var settings = await PerformerSchedulingService.GetSettingsAsync();
+                var schedulingStage = PerformerSchedulingService
                     .GetSchedulingStage(settings);
                 if (schedulingStage != PsSchedulingStage.Unavailable)
                 {
@@ -96,7 +108,7 @@ namespace GRA.Controllers.Filter
             }
 
             var siteId = httpContext.Session.GetInt32(SessionKey.SiteId);
-            if (siteId != null && await _siteLookupService.GetSiteSettingBoolAsync((int)siteId,
+            if (siteId != null && await SiteLookupService.GetSiteSettingBoolAsync((int)siteId,
                 SiteSettingKey.VendorCodes.ShowPackingSlip))
             {
                 httpContext.Items.Add(ItemKey.ShowPackingSlips, true);

@@ -25,27 +25,48 @@ namespace GRA.Domain.Service
         public SpatialService(ILogger<SpatialService> logger,
             IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
-            IGraCache cache,
-            SiteLookupService siteLookupService,
             IBranchRepository branchRepository,
+            IGraCache cache,
             ILocationRepository locationRepository,
-            ISpatialDistanceRepository spatialDistanceRepository)
+            ISpatialDistanceRepository spatialDistanceRepository,
+            SiteLookupService siteLookupService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
-            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
-            _siteLookupService = siteLookupService
-                ?? throw new ArgumentNullException(nameof(siteLookupService));
-            _branchRepository = branchRepository
-                ?? throw new ArgumentNullException(nameof(branchRepository));
-            _locationRepository = locationRepository
-                ?? throw new ArgumentNullException(nameof(locationRepository));
-            _spatialDistanceRepository = spatialDistanceRepository
-                ?? throw new ArgumentNullException(nameof(spatialDistanceRepository));
+            ArgumentNullException.ThrowIfNull(branchRepository);
+            ArgumentNullException.ThrowIfNull(cache);
+            ArgumentNullException.ThrowIfNull(locationRepository);
+            ArgumentNullException.ThrowIfNull(siteLookupService);
+            ArgumentNullException.ThrowIfNull(spatialDistanceRepository);
+
+            _branchRepository = branchRepository;
+            _cache = cache;
+            _locationRepository = locationRepository;
+            _siteLookupService = siteLookupService;
+            _spatialDistanceRepository = spatialDistanceRepository;
         }
 
-        public async Task<ServiceResult<string>>
-            GetGeocodedAddressAsync(string address)
+        public static double GetHaversineDistance(double latitude1,
+            double longitude1,
+            double latitude2,
+            double longitude2)
         {
+            const int R = 3959; // In miles
+            var latitudeArc = ToRadians(latitude2 - latitude1);
+            var longitudeArc = ToRadians(longitude2 - longitude1);
+            var latitude1Radians = ToRadians(latitude1);
+            var latitude2Radians = ToRadians(latitude2);
+
+            var a = (Math.Sin(latitudeArc / 2) * Math.Sin(latitudeArc / 2))
+                + (Math.Sin(longitudeArc / 2) * Math.Sin(longitudeArc / 2)
+                * Math.Cos(latitude1Radians) * Math.Cos(latitude2Radians));
+
+            return R * 2 * Math.Asin(Math.Sqrt(a));
+        }
+
+        public async Task<ServiceResult<string>> GetGeocodedAddressAsync(string address)
+        {
+            ArgumentNullException.ThrowIfNull(address);
+
             var serviceResult = new ServiceResult<string>();
 
             var (geocodingEnabled, APIKey) = await _siteLookupService.GetSiteSettingStringAsync(
@@ -76,79 +97,68 @@ namespace GRA.Domain.Service
             {
                 dynamic jsonResult;
 
-                using (var client = new HttpClient())
+                using var client = new HttpClient();
+                try
                 {
-                    try
+                    var encodedAddress = WebUtility.UrlEncode(formattedAddress);
+                    var uri = new Uri($"https://maps.googleapis.com/maps/api/geocode/json?address={encodedAddress}&key={APIKey}");
+                    var response = await client.GetAsync(uri);
+                    response.EnsureSuccessStatusCode();
+
+                    var stringResult = await response.Content.ReadAsStringAsync();
+                    jsonResult = JsonConvert.DeserializeObject(stringResult);
+
+                    string status = jsonResult?.status?.ToString();
+
+                    if (status == "ZERO_RESULTS")
                     {
-                        var encodedAddress = WebUtility.UrlEncode(formattedAddress);
-                        var response = await client.GetAsync($"https://maps.googleapis.com/maps/api/geocode/json?address={encodedAddress}&key={APIKey}");
-                        response.EnsureSuccessStatusCode();
-
-                        var stringResult = await response.Content.ReadAsStringAsync();
-                        jsonResult = JsonConvert.DeserializeObject(stringResult);
-
-                        if (jsonResult.status == "ZERO_RESULTS")
-                        {
-                            serviceResult.Status = ServiceResultStatus.Warning;
-                            serviceResult.Message = "No results found for address.";
-                        }
-                        else if (jsonResult.status != "OK")
-                        {
-                            _logger.LogError($"Error getting geocoding results for address {address}: {jsonResult.status}");
-                            serviceResult.Status = ServiceResultStatus.Error;
-                            serviceResult.Message = "An error occured, please try again later.";
-                        }
-                        else
-                        {
-                            var result = jsonResult.results[0];
-                            double latitude = result.geometry.location.lat;
-                            double longitude = result.geometry.location.lng;
-
-                            geolocation = $"{latitude},{longitude}";
-
-                            await _cache.SaveToCacheAsync(cacheKey,
-                                geolocation,
-                                ExpireInTimeSpan(60));
-
-                            serviceResult.Status = ServiceResultStatus.Success;
-                            serviceResult.Data = geolocation;
-                        }
+                        serviceResult.Status = ServiceResultStatus.Warning;
+                        serviceResult.Message = "No results found for address.";
                     }
-                    catch (HttpRequestException ex)
+                    else if (status != "OK")
                     {
-                        _logger.LogCritical(ex, $"Google API error: {ex.Message}");
+                        _logger.LogError("Error getting geocoding results for address {Address}: {Status}",
+                            formattedAddress,
+                            status);
+
                         serviceResult.Status = ServiceResultStatus.Error;
                         serviceResult.Message = "An error occured, please try again later.";
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        _logger.LogCritical(ex, ex.Message);
-                        serviceResult.Status = ServiceResultStatus.Error;
-                        serviceResult.Message = "An error occured, please try again later.";
+                        var result = jsonResult.results[0];
+                        double latitude = result.geometry.location.lat;
+                        double longitude = result.geometry.location.lng;
+
+                        geolocation = $"{latitude},{longitude}";
+
+                        await _cache.SaveToCacheAsync(cacheKey,
+                            geolocation,
+                            ExpireInTimeSpan(60));
+
+                        serviceResult.Status = ServiceResultStatus.Success;
+                        serviceResult.Data = geolocation;
                     }
+                }
+                catch (HttpRequestException hrex)
+                {
+                    _logger.LogCritical(hrex, "Google API error: {ErrorMessage}", hrex.Message);
+                    serviceResult.Status = ServiceResultStatus.Error;
+                    serviceResult.Message = "An error occured, please try again later.";
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogCritical(ex, "Error: {ErrorMessage}", ex.Message);
+                    serviceResult.Status = ServiceResultStatus.Error;
+                    serviceResult.Message = "An error occured, please try again later.";
                 }
             }
             return serviceResult;
         }
 
-        public double GetHaversineDistance(double latitude1, double longitude1,
-            double latitude2, double longitude2)
-        {
-            const int R = 3959; // In miles
-            var latitudeArc = ToRadians(latitude2 - latitude1);
-            var longitudeArc = ToRadians(longitude2 - longitude1);
-            var latitude1Radians = ToRadians(latitude1);
-            var latitude2Radians = ToRadians(latitude2);
-
-            var a = (Math.Sin(latitudeArc / 2) * Math.Sin(latitudeArc / 2))
-                + (Math.Sin(longitudeArc / 2) * Math.Sin(longitudeArc / 2)
-                * Math.Cos(latitude1Radians) * Math.Cos(latitude2Radians));
-
-            return R * 2 * Math.Asin(Math.Sqrt(a));
-        }
-
         public async Task<int> GetSpatialDistanceIdForGeolocationAsync(string geolocation)
         {
+            ArgumentNullException.ThrowIfNull(geolocation);
             var siteId = GetCurrentSiteId();
 
             var headerId = await _spatialDistanceRepository

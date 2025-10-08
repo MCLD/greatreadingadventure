@@ -19,7 +19,7 @@ namespace GRA.Domain.Service
         public static readonly string PerformerImagePath = "performerimages";
         public static readonly string ProgramImagePath = "programimages";
         public static readonly string ReferencesPath = "performerreferences";
-        private static readonly Regex AlphanumericRegex = new Regex("[^a-zA-Z0-9 -]");
+        private static readonly Regex AlphanumericRegex = new("[^a-zA-Z0-9 -]");
         private readonly IPathResolver _pathResolver;
         private readonly IPsAgeGroupRepository _psAgeGroupRepository;
         private readonly IPsBlackoutDateRepository _psBlackoutDateRepository;
@@ -86,6 +86,7 @@ namespace GRA.Domain.Service
 
         public async Task<PsAgeGroup> AddAgeGroupAsync(PsAgeGroup ageGroup)
         {
+            ArgumentNullException.ThrowIfNull(ageGroup);
             VerifyManagementPermission();
             ageGroup.Name = ageGroup.Name?.Trim();
 
@@ -96,6 +97,7 @@ namespace GRA.Domain.Service
         public async Task<PsBlackoutDate> AddBlackoutDateAsync(PsBlackoutDate blackoutDate)
         {
             VerifyManagementPermission();
+            ArgumentNullException.ThrowIfNull(blackoutDate);
             blackoutDate.Reason = blackoutDate.Reason?.Trim();
 
             return await _psBlackoutDateRepository.AddSaveAsync(GetClaimId(ClaimType.UserId),
@@ -116,10 +118,10 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.SchedulePerformers))
             {
-                _logger.LogError($"User {authId} doesn't have permission to select kit.");
+                _logger.LogError("User {AuthId} doesn't have permission to select kit.", authId);
                 throw new GraException("Permission denied.");
             }
-
+            ArgumentNullException.ThrowIfNull(branchSelection);
             if (!branchSelection.KitId.HasValue)
             {
                 throw new GraException("No kit selected.");
@@ -151,9 +153,9 @@ namespace GRA.Domain.Service
 
             branchSelection.BackToBackProgram = false;
             branchSelection.ProgramId = null;
-            branchSelection.RequestedStartTime = default(DateTime);
+            branchSelection.RequestedStartTime = default;
             branchSelection.SelectedAt = _dateTimeProvider.Now;
-            branchSelection.ScheduleStartTime = default(DateTime);
+            branchSelection.ScheduleStartTime = default;
             branchSelection.ScheduleDuration = 0;
             branchSelection.CreatedBy = authId;
 
@@ -167,11 +169,12 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.SchedulePerformers))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to schedule program.");
+                _logger.LogError("User {UserId} doesn't have permission to schedule program.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             var authId = GetClaimId(ClaimType.UserId);
-
+            ArgumentNullException.ThrowIfNull(branchSelection);
             if (!branchSelection.ProgramId.HasValue)
             {
                 throw new GraException("No program selected.");
@@ -239,6 +242,7 @@ namespace GRA.Domain.Service
         public async Task<PsKit> AddKitAsync(PsKit kit, List<int> ageSelection)
         {
             VerifyManagementPermission();
+            ArgumentNullException.ThrowIfNull(kit);
             var authId = GetClaimId(ClaimType.UserId);
 
             kit.Description = kit.Description?.Trim();
@@ -294,10 +298,11 @@ namespace GRA.Domain.Service
 
             if (!HasPermission(Permission.AccessPerformerRegistration))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to add a performer.");
+                _logger.LogError("User {UserId} doesn't have permission to add a performer.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
-
+            ArgumentNullException.ThrowIfNull(performer);
             var existingPerformer = await _psPerformerRepository.GetByUserIdAsync(authId);
             if (existingPerformer != null)
             {
@@ -333,7 +338,9 @@ namespace GRA.Domain.Service
                 && (performer.UserId != authId
                     || !HasPermission(Permission.AccessPerformerRegistration)))
             {
-                _logger.LogError($"User {authId} doesn't have permission to set performer {performer.Id} images.");
+                _logger.LogError("User {AuthId} doesn't have permission to set performer {PerformerId} images.",
+                    authId,
+                    performer.Id);
                 throw new GraException("Permission denied.");
             }
 
@@ -373,10 +380,10 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.AccessPerformerRegistration))
             {
-                _logger.LogError($"User id {authId} does not have persmission to add program.");
+                _logger.LogError("User id {AuthId} does not have persmission to add program.", authId);
                 throw new GraException("Permission denied.");
             }
-
+            ArgumentNullException.ThrowIfNull(program);
             program.Description = program.Description?.Trim();
             program.Setup = program.Setup?.Trim();
             program.Title = program.Title?.Trim();
@@ -402,7 +409,9 @@ namespace GRA.Domain.Service
                 if (performer.UserId != authId
                     || !HasPermission(Permission.AccessPerformerRegistration))
                 {
-                    _logger.LogError($"User id {authId} does not have persmission to add program {programId} image.");
+                    _logger.LogError("User id {AuthId} does not have persmission to add program {ProgramId} image.",
+                        authId,
+                        programId);
                     throw new GraException("Permission denied.");
                 }
             }
@@ -442,7 +451,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.SchedulePerformers))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to verify branch age group selection.");
+                _logger.LogError("User {UserId} doesn't have permission to verify branch age group selection.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
@@ -456,7 +466,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                    && !HasPermission(Permission.SchedulePerformers))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to verify branch back to back status");
+                _logger.LogError("User {UserId} doesn't have permission to verify branch back to back status",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
@@ -465,6 +476,7 @@ namespace GRA.Domain.Service
 
         public async Task DeleteBranchSelectionAsync(PsBranchSelection branchSelection)
         {
+            ArgumentNullException.ThrowIfNull(branchSelection);
             var currentBranchSelection = await _psBranchSelectionRepository.GetByIdAsync(
                 branchSelection.Id);
             currentBranchSelection.IsDeleted = true;
@@ -475,18 +487,18 @@ namespace GRA.Domain.Service
         public async Task<PsPerformer> EditPerformerAsync(PsPerformer performer,
             List<int> branchAvailability)
         {
+            ArgumentNullException.ThrowIfNull(performer);
             var authId = GetClaimId(ClaimType.UserId);
 
-            var currentPerformer = await _psPerformerRepository.GetByIdAsync(performer.Id);
-            if (currentPerformer == null)
-            {
-                throw new GraException("The requested performer could not be accessed or does not exist.");
-            }
+            var currentPerformer = await _psPerformerRepository.GetByIdAsync(performer.Id)
+                ?? throw new GraException("The requested performer could not be accessed or does not exist.");
 
             if (!HasPermission(Permission.ManagePerformers)
                 && (currentPerformer.UserId != authId || !HasPermission(Permission.AccessPerformerRegistration)))
             {
-                _logger.LogError($"User {authId} doesn't have permission to edit performer {currentPerformer.Id}.");
+                _logger.LogError("User {AuthId} doesn't have permission to edit performer {PerformerId}.",
+                    authId,
+                    currentPerformer.Id);
                 throw new GraException("Permission denied.");
             }
 
@@ -527,7 +539,7 @@ namespace GRA.Domain.Service
                     }
                 }
 
-                if (branchesToAdd.Count > 0)
+                if (branchesToAdd?.Count > 0)
                 {
                     await _psPerformerRepository.AddPerformerBranchListAsync(currentPerformer.Id,
                         branchesToAdd);
@@ -554,10 +566,12 @@ namespace GRA.Domain.Service
                 && (performer.UserId != authId
                     || !HasPermission(Permission.AccessPerformerRegistration)))
             {
-                _logger.LogError($"User {authId} doesn't have permission to set performer {performer.Id} schedule.");
+                _logger.LogError("User {AuthId} doesn't have permission to set performer {PerformerId} schedule.",
+                    authId,
+                    performer.Id);
                 throw new GraException("Permission denied.");
             }
-
+            ArgumentNullException.ThrowIfNull(schedule);
             var settings = await GetSettingsAsync();
             var blackoutDates = await GetBlackoutDatesAsync();
 
@@ -573,8 +587,10 @@ namespace GRA.Domain.Service
 
             if (schedule.Count != totalDates)
             {
-                _logger.LogError($"Invalid schedule date count for user {authId}:" +
-                    $"{schedule.Count} instead of {totalDates}");
+                _logger.LogError("Invalid schedule date count for user {AuthId}: {Schedule} instead of {TotalDates}",
+                    authId,
+                    schedule.Count,
+                    totalDates);
                 throw new GraException("Invalid date count.");
             }
             var invalidDates = schedule
@@ -585,8 +601,9 @@ namespace GRA.Domain.Service
 
             if (invalidDates.Count > 0)
             {
-                _logger.LogError($"Invalid schedule dates for user {authId}: "
-                    + string.Join(", ", invalidDates.Select(_ => _.ParsedDate)));
+                _logger.LogError("Invalid schedule dates for user {AuthId}: {InvalidDates}",
+                    authId,
+                    string.Join(", ", invalidDates.Select(_ => _.ParsedDate)));
                 throw new GraException("Invalid dates selected.");
             }
 
@@ -630,7 +647,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view age group.");
+                _logger.LogError("User {UserId} doesn't have permission to view age group.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
@@ -650,7 +668,8 @@ namespace GRA.Domain.Service
                 && !HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer scheduling blackout dates.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer scheduling blackout dates.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psAgeGroupRepository.GetAllAsync();
@@ -674,7 +693,8 @@ namespace GRA.Domain.Service
                 && !HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer scheduling blackout dates.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer scheduling blackout dates.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psBlackoutDateRepository.GetAllAsync();
@@ -696,7 +716,8 @@ namespace GRA.Domain.Service
                 && !HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer scheduling branch ids.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer scheduling branch ids.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
@@ -715,15 +736,13 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view kit.");
+                _logger.LogError("User {UserId} doesn't have permission to view kit.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
-            var kit = await _psKitRepository.GetByIdAsync(kitId);
-            if (kit == null)
-            {
-                throw new GraException("The requested kit could not be accessed or does not exist.");
-            }
+            var kit = await _psKitRepository.GetByIdAsync(kitId)
+                ?? throw new GraException("The requested kit could not be accessed or does not exist.");
 
             if (includeAgeGroups)
             {
@@ -747,7 +766,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view kit index list.");
+                _logger.LogError("User {UserId} doesn't have permission to view kit index list.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psKitRepository.GetIndexListAsync();
@@ -765,7 +785,8 @@ namespace GRA.Domain.Service
                 && !HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer scheduling branch.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer scheduling branch.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
@@ -779,7 +800,8 @@ namespace GRA.Domain.Service
                 && !HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer scheduling system branches.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer scheduling system branches.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
@@ -817,7 +839,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view kit list.");
+                _logger.LogError("User {UserId} doesn't have permission to view kit list.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
@@ -830,7 +853,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer list.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer list.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psPerformerRepository.PageAsync(filter);
@@ -842,7 +866,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view program list.");
+                _logger.LogError("User {UserId} doesn't have permission to view program list.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psProgramRepository.PageAsync(filter);
@@ -853,7 +878,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer age groups.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer age groups.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psPerformerRepository.GetPerformerAgeGroupsAsync(performerId);
@@ -865,7 +891,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer branches.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer branches.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psPerformerRepository.GetPerformerBranchIdsAsync(performerId, systemId);
@@ -877,7 +904,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer branch selections.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer branch selections.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psBranchSelectionRepository.GetByPerformerIdAsync(performerId, date);
@@ -893,15 +921,13 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
-            var performer = await _psPerformerRepository.GetByIdAsync(id, onlyApproved);
-            if (performer == null)
-            {
-                throw new GraException("The requested performer could not be accessed or does not exist.");
-            }
+            var performer = await _psPerformerRepository.GetByIdAsync(id, onlyApproved)
+                ?? throw new GraException("The requested performer could not be accessed or does not exist.");
             if (includeBranches)
             {
                 performer.Branches = await _psPerformerRepository.GetPerformerBranchesAsync(
@@ -935,7 +961,9 @@ namespace GRA.Domain.Service
             var authId = GetClaimId(ClaimType.UserId);
             if (authId != userId)
             {
-                _logger.LogError($"User {authId} doesn't have permission to view performer information for user {userId}.");
+                _logger.LogError("User {AuthId} doesn't have permission to view performer information for user {UserId}.",
+                    authId,
+                    userId);
                 throw new GraException("Permission denied.");
             }
 
@@ -978,7 +1006,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer date schedule.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer date schedule.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psPerformerScheduleRepository.GetPerformerDateScheduleAsync(performerId,
@@ -990,7 +1019,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer index list.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer index list.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psPerformerRepository.GetIndexListAsync(onlyApproved);
@@ -1001,7 +1031,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer program count.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer program count.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psProgramRepository.GetCountByPerformerAsync(performerId);
@@ -1013,7 +1044,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer schedule.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer schedule.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psPerformerScheduleRepository.GetByPerformerIdAsync(performerId);
@@ -1030,7 +1062,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer system availability.");
+                _logger.LogError("User {UserId)} doesn't have permission to view performer system availability.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psPerformerRepository.GetPerformerSystemAvailability(performerId,
@@ -1043,12 +1076,8 @@ namespace GRA.Domain.Service
             bool onlyApproved = false)
         {
             var authId = GetClaimId(ClaimType.UserId);
-            var program = await _psProgramRepository.GetByIdAsync(id, onlyApproved);
-            if (program == null)
-            {
-                throw new GraException("The requested program could not be accessed or does not exist.");
-            }
-
+            var program = await _psProgramRepository.GetByIdAsync(id, onlyApproved)
+                ?? throw new GraException("The requested program could not be accessed or does not exist.");
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
@@ -1056,7 +1085,9 @@ namespace GRA.Domain.Service
                 if (performer.UserId != authId
                     || !HasPermission(Permission.AccessPerformerRegistration))
                 {
-                    _logger.LogError($"User id {authId} does not have persmission to view program {id}.");
+                    _logger.LogError("User id {AuthId} does not have persmission to view program {Id}.",
+                        authId,
+                        id);
                     throw new GraException("Permission denied.");
                 }
             }
@@ -1084,7 +1115,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view program index list.");
+                _logger.LogError("User {UserId} doesn't have permission to view program index list.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
             return await _psProgramRepository.GetIndexListAsync(ageGroupId, onlyApproved);
@@ -1139,7 +1171,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view branch selections.");
+                _logger.LogError("User {UserId} doesn't have permission to view branch selections.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
@@ -1152,7 +1185,8 @@ namespace GRA.Domain.Service
                 && !HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer scheduling settings.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer scheduling settings.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
@@ -1166,7 +1200,8 @@ namespace GRA.Domain.Service
                 && !HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer scheduling system list.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer scheduling system list.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
@@ -1191,7 +1226,8 @@ namespace GRA.Domain.Service
                 && !HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer scheduling system.");
+                _logger.LogError("User {UserId} doesn't have permission to view performer scheduling system.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
@@ -1208,7 +1244,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.SchedulePerformers))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to verify program availability at branch.");
+                _logger.LogError("User {UserId} doesn't have permission to verify program availability at branch.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 
@@ -1238,13 +1275,8 @@ namespace GRA.Domain.Service
         public async Task RemoveKitAsync(int kitId)
         {
             VerifyManagementPermission();
-            var kit = await _psKitRepository.GetByIdAsync(kitId);
-
-            if (kit == null)
-            {
-                throw new GraException("The requested kit could not be accessed or does not exist.");
-            }
-
+            var kit = await _psKitRepository.GetByIdAsync(kitId)
+                ?? throw new GraException("The requested kit could not be accessed or does not exist.");
             var ageGroupIds = (await _psKitRepository.GetKitAgeGroupsAsync(kit.Id))
                 .Select(_ => _.Id).ToList();
             await _psKitRepository.RemoveKitAgeGroupsAsync(kit.Id, ageGroupIds);
@@ -1269,13 +1301,8 @@ namespace GRA.Domain.Service
         public async Task RemovePerformerAsync(int performerId)
         {
             VerifyManagementPermission();
-            var performer = await _psPerformerRepository.GetByIdAsync(performerId);
-
-            if (performer == null)
-            {
-                throw new GraException("The requested performer could not be accessed or does not exist.");
-            }
-
+            var performer = await _psPerformerRepository.GetByIdAsync(performerId)
+                ?? throw new GraException("The requested performer could not be accessed or does not exist.");
             var performerImages = await _psPerformerImageRepository.GetByPerformerIdAsync(
                 performer.Id);
             foreach (var image in performerImages)
@@ -1313,7 +1340,9 @@ namespace GRA.Domain.Service
                 if (performer.UserId != authId
                     || !HasPermission(Permission.AccessPerformerRegistration))
                 {
-                    _logger.LogError($"User {authId} doesn't have permission to remove performer image {imageId}.");
+                    _logger.LogError("User {AuthId} doesn't have permission to remove performer image {ImageId}.",
+                        authId,
+                        imageId);
                     throw new GraException("Permission denied.");
                 }
             }
@@ -1332,12 +1361,8 @@ namespace GRA.Domain.Service
                 throw new GraException("Cannot remove programs after scheduling has opened.");
             }
 
-            var program = await _psProgramRepository.GetByIdAsync(programId);
-            if (program == null)
-            {
-                throw new GraException("The requested program could not be accessed or does not exist.");
-            }
-
+            var program = await _psProgramRepository.GetByIdAsync(programId)
+                ?? throw new GraException("The requested program could not be accessed or does not exist.");
             if (!HasPermission(Permission.ManagePerformers))
             {
                 var performer = await _psPerformerRepository
@@ -1345,7 +1370,9 @@ namespace GRA.Domain.Service
                 if (performer.UserId != authId
                     || !HasPermission(Permission.AccessPerformerRegistration))
                 {
-                    _logger.LogError($"User id {authId} does not have persmission to remove program {programId}.");
+                    _logger.LogError("User id {AuthId} does not have persmission to remove program {ProgramId}.",
+                        authId,
+                        programId);
                     throw new GraException("Permission denied.");
                 }
             }
@@ -1376,7 +1403,9 @@ namespace GRA.Domain.Service
                 if (performer.UserId != authId
                     || !HasPermission(Permission.AccessPerformerRegistration))
                 {
-                    _logger.LogError($"User {authId} doesn't have permission to remove program image {imageId}.");
+                    _logger.LogError("User {AuthId} doesn't have permission to remove program image {ImageId}.",
+                        authId,
+                        imageId);
                     throw new GraException("Permission denied.");
                 }
             }
@@ -1388,11 +1417,8 @@ namespace GRA.Domain.Service
         {
             VerifyManagementPermission();
 
-            var performer = await _psPerformerRepository.GetByIdAsync(performerId);
-            if (performer == null)
-            {
-                throw new GraException("The requested performer could not be accessed or does not exist.");
-            }
+            var performer = await _psPerformerRepository.GetByIdAsync(performerId)
+                ?? throw new GraException("The requested performer could not be accessed or does not exist.");
             performer.IsApproved = isApproved;
 
             await _psPerformerRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), performer);
@@ -1463,7 +1489,9 @@ namespace GRA.Domain.Service
                 && (performer.UserId != authId
                     || !HasPermission(Permission.AccessPerformerRegistration)))
             {
-                _logger.LogError($"User {authId} doesn't have permission to set performer {performer.Id} registration completed.");
+                _logger.LogError("User {AuthId} doesn't have permission to set performer {PerformerId} registration completed.",
+                    authId,
+                    performer.Id);
                 throw new GraException("Permission denied.");
             }
 
@@ -1532,7 +1560,7 @@ namespace GRA.Domain.Service
         public async Task UpdateBranchKitSelectionAsync(PsBranchSelection branchSelection)
         {
             VerifyManagementPermission();
-
+            ArgumentNullException.ThrowIfNull(branchSelection);
             var currentBranchSelection = await _psBranchSelectionRepository.GetByIdAsync(
                 branchSelection.Id);
 
@@ -1572,6 +1600,7 @@ namespace GRA.Domain.Service
 
         public async Task UpdateBranchProgramContactAsync(PsBranchSelection branchSelection)
         {
+            ArgumentNullException.ThrowIfNull(branchSelection);
             var currentBranchSelection = await _psBranchSelectionRepository.GetByIdAsync(
                 branchSelection.Id);
 
@@ -1635,14 +1664,11 @@ namespace GRA.Domain.Service
         public async Task<PsKit> UpdateKitAsync(PsKit kit, List<int> ageSelection)
         {
             VerifyManagementPermission();
+            ArgumentNullException.ThrowIfNull(kit);
             var authId = GetClaimId(ClaimType.UserId);
 
-            var currentKit = await _psKitRepository.GetByIdAsync(kit.Id);
-            if (currentKit == null)
-            {
-                throw new GraException("The requested kit could not be accessed or does not exist.");
-            }
-
+            var currentKit = await _psKitRepository.GetByIdAsync(kit.Id)
+                ?? throw new GraException("The requested kit could not be accessed or does not exist.");
             currentKit.Description = kit.Description?.Trim();
             currentKit.Name = kit.Name?.Trim();
             currentKit.Website = kit.Website?.Trim();
@@ -1661,15 +1687,11 @@ namespace GRA.Domain.Service
 
         public async Task<PsProgram> UpdateProgramAsync(PsProgram program, List<int> ageSelection)
         {
+            ArgumentNullException.ThrowIfNull(program);
             var authId = GetClaimId(ClaimType.UserId);
 
-            var currentProgram = await _psProgramRepository.GetByIdAsync(program.Id);
-
-            if (currentProgram == null)
-            {
-                throw new GraException("The requested program could not be accessed or does not exist.");
-            }
-
+            var currentProgram = await _psProgramRepository.GetByIdAsync(program.Id)
+                ?? throw new GraException("The requested program could not be accessed or does not exist.");
             if (!HasPermission(Permission.ManagePerformers))
             {
                 var performer = await _psPerformerRepository
@@ -1677,7 +1699,9 @@ namespace GRA.Domain.Service
                 if (performer.UserId != authId
                     || !HasPermission(Permission.AccessPerformerRegistration))
                 {
-                    _logger.LogError($"User id {authId} does not have persmission to edit program {currentProgram.Id}.");
+                    _logger.LogError("User id {AuthId} does not have persmission to edit program {ProgramId}.",
+                        authId,
+                        currentProgram.Id);
                     throw new GraException("Permission denied.");
                 }
             }
@@ -1712,6 +1736,7 @@ namespace GRA.Domain.Service
         public async Task UpdateSettingsAsync(PsSettings settings)
         {
             VerifyManagementPermission();
+            ArgumentNullException.ThrowIfNull(settings);
             var authId = GetClaimId(ClaimType.UserId);
 
             settings.BranchAvailabilitySupplementalText = settings
@@ -1755,7 +1780,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.SchedulePerformers))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to validate shceudle time.");
+                _logger.LogError("User {UserId} doesn't have permission to validate shceudle time.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
 

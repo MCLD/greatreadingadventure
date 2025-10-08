@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GRA.Controllers.Base
 {
-    [ServiceFilter(typeof(MissionControlFilter), Order = 2)]
+    [ServiceFilter(typeof(MissionControlFilterAttribute), Order = 2)]
     public abstract class MCController : Controller
     {
         protected MCController(ServiceFacade.Controller context) : base(context)
