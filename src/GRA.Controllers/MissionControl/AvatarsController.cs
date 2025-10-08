@@ -239,10 +239,13 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Avatar Bundles";
             return View(viewModel);
         }
-
-        public async Task<IActionResult> ColorTexts(bool textMissing = true,
-            int page = 1)
+        
+        public async Task<IActionResult> ColorTexts(int? page,
+            bool? textMissing)
         {
+            page = page ?? 1;
+            textMissing = textMissing ?? true;
+
             var filter = new AvatarFilter(page)
             {
                 TextMissing = textMissing
@@ -250,32 +253,28 @@ namespace GRA.Controllers.MissionControl
 
             var colorList = await _avatarService.PageColorsAsync(filter);
 
-            var paginateModel = new PaginateViewModel
+            var viewModel = new ColorTextListViewModel
             {
-                CurrentPage = page,
+                AltTextMaxLength = typeof(AvatarColorText)
+                .GetProperty(nameof(AvatarColorText.AltText))
+                .GetCustomAttribute<MaxLengthAttribute>()
+                ?.Length,
+                Colors = colorList.Data,
+                CurrentPage = page.Value,
                 ItemCount = colorList.Count,
-                ItemsPerPage = filter.Take.Value
+                ItemsPerPage = filter.Take.Value,
+                TextMissing = textMissing.Value
             };
-            if (paginateModel.PastMaxPage)
+            if (viewModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
                     {
-                        page = paginateModel.LastPage ?? 1
+                        page = viewModel.LastPage ?? 1
                     });
             }
 
-            var viewModel = new ColorTextListViewModel
-            {
-                AltTextMaxLength = typeof(AvatarColorText)
-                    .GetProperty(nameof(AvatarColorText.AltText))
-                    .GetCustomAttribute<MaxLengthAttribute>()
-                    ?.Length,
-                Colors = colorList.Data,
-                Languages = await _languageService.GetActiveAsync(),
-                PaginateModel = paginateModel,
-                TextMissing = textMissing
-            };
+            viewModel.Languages = await _languageService.GetActiveAsync();
 
             return View(viewModel);
         }
@@ -297,7 +296,7 @@ namespace GRA.Controllers.MissionControl
 
             return RedirectToAction(nameof(ColorTexts), new
             {
-                page = model.PaginateModel.CurrentPage,
+                page = model.CurrentPage,
                 textMissing = model.TextMissing
             });
         }
@@ -434,9 +433,11 @@ namespace GRA.Controllers.MissionControl
             });
         }
 
-        public async Task<IActionResult> ItemTexts(bool textMissing = true,
-            int page = 1)
+        public async Task<IActionResult> ItemTexts(int? page,
+            bool? textMissing)
         {
+            page = page ?? 1;
+            textMissing = textMissing ?? true;
             var filter = new AvatarFilter(page)
             {
                 TextMissing = textMissing
@@ -444,39 +445,35 @@ namespace GRA.Controllers.MissionControl
 
             var itemList = await _avatarService.PageItemsAsync(filter);
 
-            var paginateModel = new PaginateViewModel
-            {
-                CurrentPage = page,
-                ItemCount = itemList.Count,
-                ItemsPerPage = filter.Take.Value
-            };
-            if (paginateModel.PastMaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
-            }
-
-            foreach (var item in itemList.Data)
-            {
-                item.AvatarLayerName = await _avatarService
-                    .GetDefaultLayerNameByIdAsync(item.AvatarLayerId);
-                item.Thumbnail = _pathResolver.ResolveContentPath(item.Thumbnail);
-            }
-
             var viewModel = new ItemTextListViewModel
             {
                 AltTextMaxLength = typeof(AvatarItemText)
                     .GetProperty(nameof(AvatarItemText.AltText))
                     .GetCustomAttribute<MaxLengthAttribute>()
                     ?.Length,
+                CurrentPage = page.Value,
+                ItemCount = itemList.Count,
                 Items = itemList.Data,
-                Languages = await _languageService.GetActiveAsync(),
-                PaginateModel = paginateModel,
-                TextMissing = textMissing
+                ItemsPerPage = filter.Take.Value,
+                TextMissing = textMissing.Value
             };
+            if (viewModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = viewModel.LastPage ?? 1
+                    });
+            }
+
+            foreach (var item in viewModel.Items)
+            {
+                item.AvatarLayerName = await _avatarService
+                    .GetDefaultLayerNameByIdAsync(item.AvatarLayerId);
+                item.Thumbnail = _pathResolver.ResolveContentPath(item.Thumbnail);
+            }
+
+            viewModel.Languages = await _languageService.GetActiveAsync();
 
             return View(viewModel);
         }
@@ -532,7 +529,7 @@ namespace GRA.Controllers.MissionControl
 
             return RedirectToAction(nameof(ItemTexts), new
             {
-                page = model.PaginateModel.CurrentPage,
+                page = model.CurrentPage,
                 textMissing = model.TextMissing
             });
         }

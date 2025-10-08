@@ -31,6 +31,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Hints about how many daily images are needed on daily image upload page
 - Handling of re-shipped vendor items when an imported order date is after a recorded ship date
 - Mission Control interface for managing daily images
+- Alt texts to avatar color, item and layer selector images
+- Mission Control interface to set avatar color and item alt texts
 
 ## Changed
 
