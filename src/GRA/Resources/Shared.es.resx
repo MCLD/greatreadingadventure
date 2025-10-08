@@ -361,10 +361,6 @@
     <value>Código Secreto</value>
     <comment>Dashboard prompt for entering a secret code</comment>
   </data>
-  <data name="See more of your badges" xml:space="preserve">
-    <value>Vea más de sus medallas</value>
-    <comment>Dashboard link to view participant's badge gallery, displayed underneath their badges</comment>
-  </data>
   <data name="See your activity history." xml:space="preserve">
     <value>Vea su historial de actividad.</value>
     <comment>Dashboard link to view history of program activities</comment>
@@ -492,6 +488,26 @@
   <data name="Your password must be at least 6 characters long and include a number." xml:space="preserve">
     <value>Su contraseña debe de ser por lo menos de 6 caracteres de largo y debe incluir un número.</value>
     <comment>Password requirements shown to participants.</comment>
+  </data>
+  <data name="Joined {0}!" xml:space="preserve">
+    <value>¡Participacion Confirmada {0}!</value>
+    <comment>Confirmation to the participant that they have joined the program. {0} is replaced with the name of the program.</comment>
+  </data>
+  <data name="When you complete &lt;strong&gt;{0}&lt;/strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt; and a badge." xml:space="preserve">
+    <value>Al completar &lt;strong&gt;{0}&lt;/strong&gt;, recibira &lt;strong&gt;{1}&lt;/strong&gt; y una medalla.</value>
+    <comment>Inform the participant that when they complete a task, they receive a reward and a badge. {0} is the task, {1} is the reward.</comment>
+  </data>
+  <data name="When you complete &lt;strong&gt;{0}&lt;/strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt;." xml:space="preserve">
+    <value>Al completar &lt;strong&gt;{0}&lt;/strong&gt;, recibira &lt;strong&gt;{1}&lt;/strong&gt;.</value>
+    <comment>Inform the participant that when they complete a task, they receive a reward. {0} is the task, {1} is the reward.</comment>
+  </data>
+  <data name="Thanks for participating in {0}!" xml:space="preserve">
+    <value>¡Gracias por participar en {0}!</value>
+    <comment>Thank visitors for participating in the program. {0} is replaced with the name of the program.</comment>
+  </data>
+  <data name="You can still sign in to review your history and achievements." xml:space="preserve">
+    <value>Ingrese a su sesión para revisar su historial y logros.</value>
+    <comment>Inform the participant that they can review the records of their participation and their accomplishments by signing in.</comment>
   </data>
   <data name="ZIP Code" xml:space="preserve">
     <value>Código Postal</value>
@@ -633,13 +649,73 @@
     <value>Iniciar la sesión a {0}</value>
     <comment>Prompt a user to sign in to the site, {0} is replaced with the name of the site</comment>
   </data>
+  <data name="Remind Me!" xml:space="preserve">
+    <value>¡Recuérdame!</value>
+    <comment>Submission button text for the participant's email address to be reminded prior to the program starting.</comment>
+  </data>
   <data name="Submit your email address below and we'll remind you when the program starts." xml:space="preserve">
     <value>Envíe su dirección de correo electrónico a continuación y le avisaremos cuando comience el programa.</value>
     <comment>Prompt for a participant's email to send a reminder when the program starts.</comment>
   </data>
+  <data name="Add a calendar reminder" xml:space="preserve">
+    <value>Agregar un recordatorio de calendario</value>
+    <comment>Landing page button to download a calendar reminder file (when opened it will add a calendar reminder on the visitor's computer)</comment>
+  </data>
+  <data name="For more information about this reading program, visit your local library!" xml:space="preserve">
+    <value>¡Para más información sobre este programa de lectura, visite su biblioteca local!</value>
+    <comment>Landing page call to action for learning more</comment>
+  </data>
+  <data name="Join to get started on your reading adventure!" xml:space="preserve">
+    <value>¡Únete para comenzar tu aventura de lectura!</value>
+    <comment>Landing page text encouraging registration once the program has started.</comment>
+  </data>
+  <data name="Our program starts soon but you can join now to be ready to go when the program starts!" xml:space="preserve">
+    <value>¡Nuestro programa comienza pronto, pero puede unirse hoy para estar listo cuando comience el programa!</value>
+    <comment>Landing page text encouraging registration once registration is open but prior to the program start date.</comment>
+  </data>
+  <data name="Reading for 20 minutes a day helps build a strong lifelong reading habit." xml:space="preserve">
+    <value>Leer 20 minutos al día ayuda a desarrollar un fuerte hábito de lectura para toda la vida.</value>
+    <comment>Landing page message to encourage reading 20 minutes a day.</comment>
+  </data>
+  <data name="Reading is fundamental for developing literacy skills!" xml:space="preserve">
+    <value>¡La lectura es fundamental para desarrollar las habilidades de alfabetización!</value>
+    <comment>Landing page message informing that reading is fundamental for developing literacy skills.</comment>
+  </data>
+  <data name="Thanks for participating in {0}. You can still sign in to review your history and achievements." xml:space="preserve">
+    <value>Gracias por participar en {0}. Todavía puede acceder a revisar su historial y logros.</value>
+    <comment>Landing page text thanking visitors for participating after the program has ended when they can still log in to see their history and achievements. {0} is replaced with the name of the program.</comment>
+  </data>
+  <data name="Welcome to {0}." xml:space="preserve">
+    <value>Bienvenido a {0}.</value>
+    <comment>Landing page welcome text; {0} is replaced with the name of the site.</comment>
+  </data>
+  <data name="When the program starts, you'll be able to join right here. Come back soon!" xml:space="preserve">
+    <value>Cuando empiece el programa podrás unirte aquí. ¡Vuelve pronto!</value>
+    <comment>Landing page message to show visitors when the start date of the program isn't specified.</comment>
+  </data>
+  <data name="While you're there, go on a journey of discovery! Visit fabulous destinations such as Hogwarts, Narnia, Oz, and Middle Earth!" xml:space="preserve">
+    <value>¡Mientras esté allí, emprenda en un viaje de descubrimiento! ¡Visite destinos fabulosos como Hogwarts, Narnia, Oz y Media Tierra!</value>
+    <comment>Landing page after the call to action for learning more; things to experience at the library</comment>
+  </data>
+  <data name="Would you like a reminder email for our next reading program? Enter your email address below and click the 'Remind me' button and we'll send you a reminder when you can join." xml:space="preserve">
+    <value>¿Desea recibir un recordatorio por correo electrónico para nuestro próximo programa de lectura? Registre su correo electrónico a continuación. Haga clic en el botón de ‘Recuérdame' y te enviaremos un recordatorio cuando puedas unirte.</value>
+    <comment>Landing page text asking if visitors want a reminder for the next program.</comment>
+  </data>
+  <data name="You can join our program starting on {0}!" xml:space="preserve">
+    <value>¡Usted puede participar en nuestro programa a partir del {0}!</value>
+    <comment>Landing page message to show visitors when the start date of the program is; {0} is replaced with the start date of the program.</comment>
+  </data>
+  <data name="You must enter a code!" xml:space="preserve">
+    <value>¡Debes introducir un código!</value>
+    <comment>Validation prompt if the user clicked the secret code submission button without entering a secret code.</comment>
+  </data>
   <data name="Can we send you a few emails throughout the program?" xml:space="preserve">
     <value>¿Podemos enviarle algunos correos electrónicos durante el programa?</value>
     <comment>Prompt as to whether or not emails can be sent throughout the program - this is user configurable so it may not match</comment>
+  </data>
+  <data name="All Age Groups" xml:space="preserve">
+    <value>Todos los grupos de edad</value>
+    <comment>Select all programs in a program selection drop-down list</comment>
   </data>
   <data name="Clear" xml:space="preserve">
     <value>Limpiar</value>
@@ -649,9 +725,21 @@
     <value>Experiencias Comunitarias</value>
     <comment>Name for community experiences</comment>
   </data>
+  <data name="Distance" xml:space="preserve">
+    <value>Distancia</value>
+    <comment>Column title showing events: approximate distance from the search location</comment>
+  </data>
   <data name="End Date" xml:space="preserve">
     <value>Fecha Final</value>
     <comment>Prompt to select an ending date for a date range</comment>
+  </data>
+  <data name="Enter an address or ZIP code" xml:space="preserve">
+    <value>Ingrese una dirección o código postal</value>
+    <comment>Prompt to enter an address or ZIP code to search for events</comment>
+  </data>
+  <data name="Enter text to search for an event here" xml:space="preserve">
+    <value>Ingrese texto para buscar un evento aquí</value>
+    <comment>Prompt to enter text to search for events</comment>
   </data>
   <data name="Events &amp; Community Experiences" xml:space="preserve">
     <value>Eventos y Experiencias Comunitarias</value>
@@ -661,9 +749,21 @@
     <value>Encontrar</value>
     <comment>Button text to perform a search</comment>
   </data>
+  <data name="Location" xml:space="preserve">
+    <value>Ubicación</value>
+    <comment>Prompt to select the name of a location</comment>
+  </data>
   <data name="Near Location" xml:space="preserve">
     <value>Ubicación Cercana</value>
     <comment>Prompt to search for items near this location</comment>
+  </data>
+  <data name="No Events" xml:space="preserve">
+    <value>No Hay Eventos</value>
+    <comment>Explain that no matching events were found when a search was performed</comment>
+  </data>
+  <data name="Search Title &amp; Description" xml:space="preserve">
+    <value>Búsqueda por Título &amp; Descripción</value>
+    <comment>Prompt to search by title and description</comment>
   </data>
   <data name="Start Date" xml:space="preserve">
     <value>Fecha de Inicio</value>
@@ -680,106 +780,6 @@
   <data name="Where" xml:space="preserve">
     <value>Donde</value>
     <comment>Column title showing events: where the event occurs</comment>
-  </data>
-  <data name="Badge" xml:space="preserve">
-    <value>Medallas</value>
-    <comment>Column heading showing which badge will be unlocked when a task is completed</comment>
-  </data>
-  <data name="Category" xml:space="preserve">
-    <value>Categoria</value>
-    <comment>Prompt or display title for which category an item is in (such as a challenge)</comment>
-  </data>
-  <data name="Name" xml:space="preserve">
-    <value>Nombre</value>
-    <comment>Column heading for the name of an item (like a challenge or an event)</comment>
-  </data>
-  <data name="Points you'll earn" xml:space="preserve">
-    <value>Puntos que ganara</value>
-    <comment>Column heading showing many points a participant will earn for completing a task</comment>
-  </data>
-  <data name="Add a calendar reminder" xml:space="preserve">
-    <value>Agregar un recordatorio de calendario</value>
-    <comment>Landing page button to download a calendar reminder file (when opened it will add a calendar reminder on the visitor's computer)</comment>
-  </data>
-  <data name="For more information about this reading program, visit your local library!" xml:space="preserve">
-    <value>¡Para más información sobre este programa de lectura, visite su biblioteca local!</value>
-    <comment>Landing page call to action for learning more</comment>
-  </data>
-  <data name="Reading for 20 minutes a day helps build a strong lifelong reading habit." xml:space="preserve">
-    <value>Leer 20 minutos al día ayuda a desarrollar un fuerte hábito de lectura para toda la vida.</value>
-    <comment>Landing page message to encourage reading 20 minutes a day.</comment>
-  </data>
-  <data name="Remind Me!" xml:space="preserve">
-    <value>¡Recuérdame!</value>
-    <comment>Submission button text for the participant's email address to be reminded prior to the program starting.</comment>
-  </data>
-  <data name="While you're there, go on a journey of discovery! Visit fabulous destinations such as Hogwarts, Narnia, Oz, and Middle Earth!" xml:space="preserve">
-    <value>¡Mientras esté allí, emprenda en un viaje de descubrimiento! ¡Visite destinos fabulosos como Hogwarts, Narnia, Oz y Media Tierra!</value>
-    <comment>Landing page after the call to action for learning more; things to experience at the library</comment>
-  </data>
-  <data name="You can join our program starting on {0}!" xml:space="preserve">
-    <value>¡Usted puede participar en nuestro programa a partir del {0}!</value>
-    <comment>Landing page message to show visitors when the start date of the program is; {0} is replaced with the start date of the program.</comment>
-  </data>
-  <data name="Reading is fundamental for developing literacy skills!" xml:space="preserve">
-    <value>¡La lectura es fundamental para desarrollar las habilidades de alfabetización!</value>
-    <comment>Landing page message informing that reading is fundamental for developing literacy skills.</comment>
-  </data>
-  <data name="Join to get started on your reading adventure!" xml:space="preserve">
-    <value>¡Únete para comenzar tu aventura de lectura!</value>
-    <comment>Landing page text encouraging registration once the program has started.</comment>
-  </data>
-  <data name="Our program starts soon but you can join now to be ready to go when the program starts!" xml:space="preserve">
-    <value>¡Nuestro programa comienza pronto, pero puede unirse hoy para estar listo cuando comience el programa!</value>
-    <comment>Landing page text encouraging registration once registration is open but prior to the program start date.</comment>
-  </data>
-  <data name="Thanks for participating in {0}. You can still sign in to review your history and achievements." xml:space="preserve">
-    <value>Gracias por participar en {0}. Todavía puede acceder a revisar su historial y logros.</value>
-    <comment>Landing page text thanking visitors for participating after the program has ended when they can still log in to see their history and achievements. {0} is replaced with the name of the program.</comment>
-  </data>
-  <data name="Welcome to {0}." xml:space="preserve">
-    <value>Bienvenido a {0}.</value>
-    <comment>Landing page welcome text; {0} is replaced with the name of the site.</comment>
-  </data>
-  <data name="When the program starts, you'll be able to join right here. Come back soon!" xml:space="preserve">
-    <value>Cuando empiece el programa podrás unirte aquí. ¡Vuelve pronto!</value>
-    <comment>Landing page message to show visitors when the start date of the program isn't specified.</comment>
-  </data>
-  <data name="Would you like a reminder email for our next reading program? Enter your email address below and click the 'Remind me' button and we'll send you a reminder when you can join." xml:space="preserve">
-    <value>¿Desea recibir un recordatorio por correo electrónico para nuestro próximo programa de lectura? Registre su correo electrónico a continuación. Haga clic en el botón de ‘Recuérdame' y te enviaremos un recordatorio cuando puedas unirte.</value>
-    <comment>Landing page text asking if visitors want a reminder for the next program.</comment>
-  </data>
-  <data name="You must enter a code!" xml:space="preserve">
-    <value>¡Debes introducir un código!</value>
-    <comment>Validation prompt if the user clicked the secret code submission button without entering a secret code.</comment>
-  </data>
-  <data name="All Age Groups" xml:space="preserve">
-    <value>Todos los grupos de edad</value>
-    <comment>Select all programs in a program selection drop-down list</comment>
-  </data>
-  <data name="Distance" xml:space="preserve">
-    <value>Distancia</value>
-    <comment>Column title showing events: approximate distance from the search location</comment>
-  </data>
-  <data name="Enter an address or ZIP code" xml:space="preserve">
-    <value>Ingrese una dirección o código postal</value>
-    <comment>Prompt to enter an address or ZIP code to search for events</comment>
-  </data>
-  <data name="Enter text to search for an event here" xml:space="preserve">
-    <value>Ingrese texto para buscar un evento aquí</value>
-    <comment>Prompt to enter text to search for events</comment>
-  </data>
-  <data name="Location" xml:space="preserve">
-    <value>Ubicación</value>
-    <comment>Prompt to select the name of a location</comment>
-  </data>
-  <data name="No Events" xml:space="preserve">
-    <value>No Hay Eventos</value>
-    <comment>Explain that no matching events were found when a search was performed</comment>
-  </data>
-  <data name="Search Title &amp; Description" xml:space="preserve">
-    <value>Búsqueda por Título &amp; Descripción</value>
-    <comment>Prompt to search by title and description</comment>
   </data>
   <data name="{0} at {1}" xml:space="preserve">
     <value>{0} a {1}</value>
@@ -808,6 +808,14 @@
   <data name="Back to Challenges" xml:space="preserve">
     <value>Volver a Los Desafíos</value>
     <comment>Button text to return to the list of challenges</comment>
+  </data>
+  <data name="Badge" xml:space="preserve">
+    <value>Medallas</value>
+    <comment>Column heading showing which badge will be unlocked when a task is completed</comment>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Categoria</value>
+    <comment>Prompt or display title for which category an item is in (such as a challenge)</comment>
   </data>
   <data name="Challenge Group: {0}" xml:space="preserve">
     <value>Grupo de Desafío: {0}</value>
@@ -845,6 +853,10 @@
     <value>Mis Favoritos</value>
     <comment>Button which will display to a participant items that they flagged as their favorites</comment>
   </data>
+  <data name="Name" xml:space="preserve">
+    <value>Nombre</value>
+    <comment>Column heading for the name of an item (like a challenge or an event)</comment>
+  </data>
   <data name="No Challenges" xml:space="preserve">
     <value>No Hay Desafíos</value>
     <comment>Explain that no matching challenges were found when a search was performed</comment>
@@ -852,6 +864,10 @@
   <data name="Please customize your avatar and save it, then you can share it!" xml:space="preserve">
     <value>Por favor, personalize su avatar y guárdelo, ¡entonces podra compartirlo!</value>
     <comment>Participant has tried to share their avatar before saving it, inform them they must customize and save it first and then they can try sharing it.</comment>
+  </data>
+  <data name="Points you'll earn" xml:space="preserve">
+    <value>Puntos que ganara</value>
+    <comment>Column heading showing many points a participant will earn for completing a task</comment>
   </data>
   <data name="Progress" xml:space="preserve">
     <value>Progreso</value>
@@ -889,13 +905,9 @@
     <value>Comparta su Avatar</value>
     <comment>Title for the avatar sharing page</comment>
   </data>
-  <data name="When you complete &lt;strong&gt;{0}&lt;/strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt; and a badge." xml:space="preserve">
-    <value>Al completar &lt;strong&gt;{0}&lt;/strong&gt;, recibira &lt;strong&gt;{1}&lt;/strong&gt; y una medalla.</value>
-    <comment>Inform the participant that when they complete a task, they receive a reward and a badge. {0} is the task, {1} is the reward.</comment>
-  </data>
-  <data name="When you complete &lt;strong&gt;{0}&lt;/strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt;." xml:space="preserve">
-    <value>Al completar &lt;strong&gt;{0}&lt;/strong&gt;, recibira &lt;strong&gt;{1}&lt;/strong&gt;.</value>
-    <comment>Inform the participant that when they complete a task, they receive a reward. {0} is the task, {1} is the reward.</comment>
+  <data name="View Certificate" xml:space="preserve">
+    <value>Ver Certificado</value>
+    <comment>Button text to view an attached file to a challenge task</comment>
   </data>
   <data name="Your status has been saved!" xml:space="preserve">
     <value>¡Su estado ha sido guardado!</value>
@@ -1016,6 +1028,10 @@
   <data name="Edit Book" xml:space="preserve">
     <value>Editar Libro</value>
     <comment>Title to edit a book in the participant's book list</comment>
+  </data>
+  <data name="Family" xml:space="preserve">
+    <value>Familia</value>
+    <comment>Title shown when viewing a Family of participants. Will also be used in a sentence.</comment>
   </data>
   <data name="Free book code" xml:space="preserve">
     <value>Código de libro gratis</value>
@@ -1337,25 +1353,17 @@
     <value>Perfil actualizado.</value>
     <comment>Message shown once a profile update is saved.</comment>
   </data>
-  <data name="Family" xml:space="preserve">
-    <value>Familia</value>
-    <comment>Title shown when viewing a Family of participants. Will also be used in a sentence.</comment>
-  </data>
-  <data name="Joined {0}!" xml:space="preserve">
-    <value>¡Participacion Confirmada {0}!</value>
-    <comment>Confirmation to the participant that they have joined the program. {0} is replaced with the name of the program.</comment>
-  </data>
-  <data name="Thanks for participating in {0}!" xml:space="preserve">
-    <value>¡Gracias por participar en {0}!</value>
-    <comment>Thank visitors for participating in the program. {0} is replaced with the name of the program.</comment>
-  </data>
-  <data name="You can still sign in to review your history and achievements." xml:space="preserve">
-    <value>Ingrese a su sesión para revisar su historial y logros.</value>
-    <comment>Inform the participant that they can review the records of their participation and their accomplishments by signing in.</comment>
-  </data>
   <data name="Select a Bundle" xml:space="preserve">
     <value>Seleccione Su Paquete</value>
     <comment>A bundle is a collection of avatar parts that are unlocked during participation. This text goes in a drop-down allowing the user to select a particular bundle to explore the parts it contains.</comment>
+  </data>
+  <data name="Bundle" xml:space="preserve">
+    <value>Paquete</value>
+    <comment>A bundle is a collection of avatar parts that are unlocked during participation.</comment>
+  </data>
+  <data name="No unlocked bundles" xml:space="preserve">
+    <value>No hay paquetes desbloqueados</value>
+    <comment>The user has not unlocked any bundles.</comment>
   </data>
   <data name="Add Book" xml:space="preserve">
     <value>Agregar Libro</value>
@@ -1377,17 +1385,69 @@
     <value>Ilustración de un bosque.</value>
     <comment>The alt tag on the front page banner image for those who cannot see the image; the image is an illustration of a forest.</comment>
   </data>
+  <data name="An error occurred, please log in to change your email subscription preferences." xml:space="preserve">
+    <value>Ocurrió un error, inicie sesión para cambiar sus preferencias de suscripción de correo electrónico.</value>
+    <comment>Message shown to a participant if they've clicked an unsubscribe link but there has been an issue looking their record up.</comment>
+  </data>
+  <data name="You are already unsubscribed from emails." xml:space="preserve">
+    <value>Ya ha cancelado su suscripción a los correos electrónicos.</value>
+    <comment>Message shown if the participant has clicked an unsubscribe link when they are unsubscribed.</comment>
+  </data>
+  <data name="Badges" xml:space="preserve">
+    <value>Insignias</value>
+    <comment>Button to view the participant's badges.</comment>
+  </data>
+  <data name="Earned on {0}" xml:space="preserve">
+    <value>Obtenido en {0}</value>
+    <comment>Text indicating when an item (such as a badge) was earned, {0} is replaced with the date it was earned</comment>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Estatus</value>
+    <comment>Prompt to select which challenges to view based on completion status</comment>
+  </data>
+  <data name="View All" xml:space="preserve">
+    <value>Ver Todo</value>
+    <comment>Selection for viewing all of an item (such as challenges)</comment>
+  </data>
+  <data name="View Completed" xml:space="preserve">
+    <value>Ver Completado</value>
+    <comment>Selection for viewing challenges that have been completed</comment>
+  </data>
+  <data name="View Uncompleted" xml:space="preserve">
+    <value>Ver Sin Completar</value>
+    <comment>Selection for viewing challenges that have not been completed</comment>
+  </data>
+  <data name="Visited" xml:space="preserve">
+    <value>Visitó</value>
+    <comment>Prompt to select which events to view based on if they've been visited</comment>
+  </data>
+  <data name="You earned this badge for attending the event: &lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;" xml:space="preserve">
+    <value>Obtuvo esta insignia por asistir al evento: &lt;a href="{0}" target="_blank"&gt;{1}&lt;/a&gt;</value>
+    <comment>Message explaining how the participant earned the badge, {0} is a link to the eventand {1} is the name of the event</comment>
+  </data>
+  <data name="You earned this badge for completing the challenge: &lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;" xml:space="preserve">
+    <value>Obtuvo esta insignia por completar el desafío: &lt;a href="{0}" target="_blank"&gt;{1}&lt;/a&gt;</value>
+    <comment>Message explaining how the participant earned the badge, {0} is a link to the challenge and {1} is the name of the challenge</comment>
+  </data>
+  <data name="One or more of the selected {0} could not be favorited." xml:space="preserve">
+    <value>Uno o más de los {0} seleccionados no pudieron ser elegidos.</value>
+    <comment>Error message explaining that one or more {0} could not be favorited.</comment>
+  </data>
+  <data name="Error retrieving badge information." xml:space="preserve">
+    <value>Error al recuperar la información de la insignia.</value>
+    <comment>Message letting the participant know there was an error retrieving the information associated with one of their badges.</comment>
+  </data>
   <data name="To activate an authorization code, please sign in or &lt;a href=&quot;{0}&quot;&gt;join&lt;/a&gt;." xml:space="preserve">
     <value>Para activar un código de autorización, inicie la sesión o &lt;a href="{0}"&gt;participar&lt;/a&gt;.</value>
     <comment>If they desire to join with an authorization code and, tried accessing Mission Control's AuthorizationCode</comment>
   </data>
+  <data name="Streaming Events" xml:space="preserve">
+    <value>Eventos de transmisión</value>
+    <comment>Navigation link and title for streaming events</comment>
+  </data>
   <data name="Not streaming yet" xml:space="preserve">
     <value>Todavía no se está transmitiendo</value>
     <comment>Button text when streaming the event is not available yet</comment>
-  </data>
-  <data name="Program is over" xml:space="preserve">
-    <value>El evento ha terminado</value>
-    <comment>Disabled button for streaming programs if it is over</comment>
   </data>
   <data name="Stream" xml:space="preserve">
     <value>Transmite</value>
@@ -1397,21 +1457,21 @@
     <value>Transmitir ahora!</value>
     <comment>Button that participants click to see a streaming event</comment>
   </data>
-  <data name="Streaming Events" xml:space="preserve">
-    <value>Eventos de transmisión</value>
-    <comment>Navigation link and title for streaming events</comment>
+  <data name="Program is over" xml:space="preserve">
+    <value>El evento ha terminado</value>
+    <comment>Disabled button for streaming programs if it is over</comment>
   </data>
   <data name="Stream starts" xml:space="preserve">
     <value>Empieza la transmisión</value>
     <comment>Heading for the field with the date and time that a streaming event begins</comment>
   </data>
-  <data name="Bundle" xml:space="preserve">
-    <value>Paquete</value>
-    <comment>A bundle is a collection of avatar parts that are unlocked during participation.</comment>
+  <data name="Viewed" xml:space="preserve">
+    <value>Visto</value>
+    <comment>Prompt to select which events to view based on if they've been viewed</comment>
   </data>
-  <data name="No unlocked bundles" xml:space="preserve">
-    <value>No hay paquetes desbloqueados</value>
-    <comment>The user has not unlocked any bundles.</comment>
+  <data name="You've earned a free book! Head over to &lt;a href=&quot;{0}&quot;&gt;&lt;strong&gt;My Profile&lt;/strong&gt;&lt;/a&gt; page to choose what to do with it." xml:space="preserve">
+    <value>Usted se ha ganado un libro gratis!  Vallase a &lt;a href="{0}"&gt;&lt;strong&gt;Mi Perfil&lt;/strong&gt;&lt;/a&gt; para que escoga lo que quiere hacer con el.</value>
+    <comment>Dashboard message telling participant they've earned a free book and where to go to redeem it.</comment>
   </data>
   <data name="Choose an option:" xml:space="preserve">
     <value>Escoga una opcion:</value>
@@ -1424,10 +1484,6 @@
   <data name="Receive an e-audiobook" xml:space="preserve">
     <value>Reciba un audiolibro electronico</value>
     <comment>Button text for the participant to redeem their free book as an e-audiobook</comment>
-  </data>
-  <data name="You've earned a free book! Head over to &lt;a href=&quot;{0}&quot;&gt;&lt;strong&gt;My Profile&lt;/strong&gt;&lt;/a&gt; page to choose what to do with it." xml:space="preserve">
-    <value>Usted se ha ganado un libro gratis!  Vallase a &lt;a href="{0}"&gt;&lt;strong&gt;Mi Perfil&lt;/strong&gt;&lt;/a&gt; para que escoga lo que quiere hacer con el.</value>
-    <comment>Dashboard message telling participant they've earned a free book and where to go to redeem it.</comment>
   </data>
   <data name="You've earned a free book! Head over to &lt;a href=&quot;{0}&quot;&gt;&lt;strong&gt;My Profile&lt;/strong&gt;&lt;/a&gt; page by {1} to choose what to do with it." xml:space="preserve">
     <value>Usted se ha ganado un libro gratis!  Vallase a &lt;a href="{0}"&gt;Mi Perfil&lt;/a&gt; para que escoga lo que quiere hacer con el antes del {1}.</value>
@@ -1457,69 +1513,13 @@
     <value>Detalles de la Insignia</value>
     <comment>Heading of a pop-up showing information about an earned badge</comment>
   </data>
-  <data name="Badges" xml:space="preserve">
-    <value>Insignias</value>
-    <comment>Button to view the participant's badges.</comment>
-  </data>
-  <data name="Earned on {0}" xml:space="preserve">
-    <value>Obtenido en {0}</value>
-    <comment>Text indicating when an item (such as a badge) was earned, {0} is replaced with the date it was earned</comment>
-  </data>
-  <data name="Error retrieving badge information." xml:space="preserve">
-    <value>Error al recuperar la información de la insignia.</value>
-    <comment>Message letting the participant know there was an error retrieving the information associated with one of their badges.</comment>
-  </data>
-  <data name="One or more of the selected {0} could not be favorited." xml:space="preserve">
-    <value>Uno o más de los {0} seleccionados no pudieron ser elegidos.</value>
-    <comment>Error message explaining that one or more {0} could not be favorited.</comment>
-  </data>
-  <data name="Status" xml:space="preserve">
-    <value>Estatus</value>
-    <comment>Prompt to select which challenges to view based on completion status</comment>
-  </data>
-  <data name="View All" xml:space="preserve">
-    <value>Ver Todo</value>
-    <comment>Selection for viewing all of an item (such as challenges)</comment>
-  </data>
-  <data name="View Completed" xml:space="preserve">
-    <value>Ver Completado</value>
-    <comment>Selection for viewing challenges that have been completed</comment>
-  </data>
-  <data name="View Uncompleted" xml:space="preserve">
-    <value>Ver Sin Completar</value>
-    <comment>Selection for viewing challenges that have not been completed</comment>
-  </data>
-  <data name="Viewed" xml:space="preserve">
-    <value>Visto</value>
-    <comment>Prompt to select which events to view based on if they've been viewed</comment>
-  </data>
-  <data name="Visited" xml:space="preserve">
-    <value>Visitó</value>
-    <comment>Prompt to select which events to view based on if they've been visited</comment>
-  </data>
-  <data name="You earned this badge for attending the event: &lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;" xml:space="preserve">
-    <value>Obtuvo esta insignia por asistir al evento: &lt;a href="{0}" target="_blank"&gt;{1}&lt;/a&gt;</value>
-    <comment>Message explaining how the participant earned the badge, {0} is a link to the eventand {1} is the name of the event</comment>
-  </data>
-  <data name="You earned this badge for completing the challenge: &lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;" xml:space="preserve">
-    <value>Obtuvo esta insignia por completar el desafío: &lt;a href="{0}" target="_blank"&gt;{1}&lt;/a&gt;</value>
-    <comment>Message explaining how the participant earned the badge, {0} is a link to the challenge and {1} is the name of the challenge</comment>
-  </data>
-  <data name="An error occurred, please log in to change your email subscription preferences." xml:space="preserve">
-    <value>Ocurrió un error, inicie sesión para cambiar sus preferencias de suscripción de correo electrónico.</value>
-    <comment>Message shown to a participant if they've clicked an unsubscribe link but there has been an issue looking their record up.</comment>
+  <data name="You have not earned any badges yet." xml:space="preserve">
+    <value>Aún no ha ganado ninguna medalla.</value>
+    <comment>Displayed in the participant profile if they view the badges tab but have not earned any badges yet.</comment>
   </data>
   <data name="Need to change your {0}? Use the mail icon at the top of the screen to contact us." xml:space="preserve">
     <value>¿Necesita cambiar su {0}? Utilice el icono de correo en la parte superior de la pantalla para contactarnos.</value>
     <comment>Tooltip for editing protected fields imploring the user to use the mail facility to ask for the item to be changed.</comment>
-  </data>
-  <data name="You are already unsubscribed from emails." xml:space="preserve">
-    <value>Ya ha cancelado su suscripción a los correos electrónicos.</value>
-    <comment>Message shown if the participant has clicked an unsubscribe link when they are unsubscribed.</comment>
-  </data>
-  <data name="You have not earned any badges yet." xml:space="preserve">
-    <value>Aún no ha ganado ninguna medalla.</value>
-    <comment>Displayed in the participant profile if they view the badges tab but have not earned any badges yet.</comment>
   </data>
   <data name="Close dialog." xml:space="preserve">
     <value>Cerrar dialogo.</value>
@@ -1536,6 +1536,10 @@
   <data name="Explore {0}" xml:space="preserve">
     <value>Explora {0}</value>
     <comment>Text for the footer link to participant's branch, {0} is the name of the branch</comment>
+  </data>
+  <data name="See more of your badges" xml:space="preserve">
+    <value>Vea más de sus medallas</value>
+    <comment>Dashboard link to view participant's badge gallery, displayed underneath their badges</comment>
   </data>
   <data name="All Participating Libraries" xml:space="preserve">
     <value>Todas las Bibliotecas Participantes</value>
@@ -1617,10 +1621,6 @@
     <value>Certificados</value>
     <comment>Button to view the participant's certificates.</comment>
   </data>
-  <data name="View Certificate" xml:space="preserve">
-    <value>Ver Certificado</value>
-    <comment>Button text to view an attached file to a challenge task</comment>
-  </data>
   <data name="Download" xml:space="preserve">
     <value>Descargar</value>
     <comment>Span text for download links.</comment>
@@ -1684,5 +1684,11 @@
   <data name="All Challenges" xml:space="preserve">
     <value>Todo los desafíos</value>
     <comment>Link to clear filters and display all Challenges</comment>
+  </data>
+  <data name="View {0} options" xml:space="preserve">
+    <value>Ver opciones de {0}</value>
+  </data>
+  <data name="View bundle options" xml:space="preserve">
+    <value>Ver opciones de paquete</value>
   </data>
 </root>
