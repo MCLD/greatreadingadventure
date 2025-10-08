@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
-## [Unreleased]
+## [4.6.0] 2024-10-09
 
 ## Added
 
@@ -46,7 +46,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Issue preventing deletion of locations without associated events
 - Issue where cloning a Community Experience would create an event
 - Issue where a failed save of a Community Experience would change it to an event
-- Initial branch selection on join to only autoselect if there is a single configured branch\
+- Initial branch selection on join to only autoselect if there is a single configured branch
 - Fix branch deletion to reassign deleted users as well as active users
 - Formatting issues with revised packing slip
 - Error when code is assigned prior to one being earned
@@ -544,6 +544,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Everything! First release of 4.0.
 
+[4.6.0]: https://github.com/mcld/greatreadingadventure/tree/v4.6.0
 [4.5.0]: https://github.com/mcld/greatreadingadventure/tree/v4.5.0
 [4.4.2]: https://github.com/mcld/greatreadingadventure/tree/v4.4.2
 [4.4.1]: https://github.com/mcld/greatreadingadventure/tree/v4.4.1

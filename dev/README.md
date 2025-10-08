@@ -6,7 +6,7 @@ GRA code should successfully compile using either the free [Visual Studio Code](
 
 Framework history:
 
-- Current work (versions 4.5.x) use [.NET 8.0](https://docs.microsoft.com/en-us/dotnet/core/whats-new/dotnet-8)
+- Current work (versions 4.5.0 and 4.6.x) use [.NET 8.0](https://docs.microsoft.com/en-us/dotnet/core/whats-new/dotnet-8)
 - Versions 4.4.x use [.NET 7.0](https://docs.microsoft.com/en-us/dotnet/core/whats-new/dotnet-7)
 - Version 4.3.17 uses [.NET 6.0](https://docs.microsoft.com/en-us/dotnet/core/whats-new/dotnet-6)
 - Versions 4.2 and 4.2.1 use [.NET 5.0](https://docs.microsoft.com/en-us/dotnet/core/whats-new/dotnet-5)
