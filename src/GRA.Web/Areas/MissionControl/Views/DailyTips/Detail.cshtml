@@ -118,7 +118,7 @@
     </div>
 </form>
 
-<form asp-action="SetImageDay" method="POST">
+<form asp-action="@nameof(DailyTipsController.SetImageDay)" method="POST">
     <input type="hidden" id="setDayImageId" name="imageId" />
     <input type="hidden" id="setDayTipId" name="tipId" />
     <input type="hidden" id="setDayPage" name="page" value="@Model.CurrentPage" />
