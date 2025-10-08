@@ -24,6 +24,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Report criteria shows for selected badges/challenges/triggers on Excel metadata sheet
 - Hints about how many daily images are needed on daily image upload page
 - Handling of re-shipped vendor items when an imported order date is after a recorded ship date
+- Mission Control interface for managing daily images
 
 ## Changed
 
@@ -32,6 +33,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Better vendor code status overview
 - Add tracking of packing list viewing
 - Move exit and landing page messages to database
+- Remove references to ValueTuple
 
 ### Fixed
 
@@ -59,6 +61,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Page preview links in Mission Control
 - Issue with proper pagination while searching to add household member in MC
 - Issue with filtering of deleted participants while searching to add household member in MC
+- Replace string interpolation in logging statements
 
 ## [4.5.0] 2024-08-29
 
