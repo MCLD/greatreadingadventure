@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [4.6.0] 2024-10-09
 
+## Fixed
+
+- Display of modals after Bootstrap 5.3 upgrade
+
+## [4.6.0] 2024-10-09
+
 ## Added
 
 - "Ordered not Shipped" vendor report
