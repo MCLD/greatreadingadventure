@@ -44,7 +44,7 @@ ARG IMAGE_REVISION=unknown
 ARG IMAGE_VERSION=unknown
 
 # Configure image labels
-LABEL branch=$branch \
+LABEL branch=$BRANCH \
     maintainer="Maricopa County Library District developers <development@mcldaz.org>" \
     org.opencontainers.image.authors="Maricopa County Library District developers <development@mcldaz.org>" \
     org.opencontainers.image.created=$IMAGE_CREATED \
