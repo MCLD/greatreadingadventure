@@ -8,7 +8,6 @@ namespace GRA.Data.Config
         public static void RegisterMappings()
         {
             // Data to Domain Mappings
-
             TypeAdapterConfig<Model.AvatarBundle, Domain.Model.AvatarBundle>.NewConfig()
                 .IgnoreIf((src, _) => src.AvatarBundleItems == null, dest => dest.AvatarItems)
                 .Map(dest => dest.AvatarItems,
@@ -35,9 +34,10 @@ namespace GRA.Data.Config
                 .Map(dest => dest.ProgramIds,
                     src => src.CriterionPrograms.Select(_ => _.ProgramId));
 
-            TypeAdapterConfig<Model.EmailSubscriptionAuditLog, Domain.Model.EmailSubscriptionAuditLog>.NewConfig()
-                .Map(dest => dest.CreatedByName,
-                    src => $"{src.CreatedByUser.FirstName} {src.CreatedByUser.LastName}");
+            TypeAdapterConfig<Model.EmailSubscriptionAuditLog,
+                Domain.Model.EmailSubscriptionAuditLog>.NewConfig()
+                    .Map(dest => dest.CreatedByName,
+                        src => $"{src.CreatedByUser.FirstName} {src.CreatedByUser.LastName}");
 
             TypeAdapterConfig<Model.Event, Domain.Model.Event>.NewConfig()
                 .Ignore(dest => dest.Challenge)
@@ -45,7 +45,7 @@ namespace GRA.Data.Config
 
             TypeAdapterConfig<Model.NewsCategory, Domain.Model.NewsCategory>.NewConfig()
                 .IgnoreIf((src, _) => src.Posts == null, dest => dest.PostCount)
-                .Map(dest => dest.PostCount, src => src.Posts.Count());
+                .Map(dest => dest.PostCount, src => src.Posts.Count);
 
             TypeAdapterConfig<Model.PageHeader, Domain.Model.PageHeader>.NewConfig()
                 .IgnoreIf((src, _) => src.Pages == null, dest => dest.PageLanguages)
@@ -59,8 +59,9 @@ namespace GRA.Data.Config
 
             TypeAdapterConfig<Model.PsBranchSelection, Domain.Model.PsBranchSelection>.NewConfig()
                 .Map(dest => dest.StartsAt, src => src.ScheduleStartTime.ToShortTimeString())
-                .Map(dest => dest.EndsAt, src => src.ScheduleStartTime.AddMinutes(src.ScheduleDuration)
-                    .ToShortTimeString());
+                .Map(dest => dest.EndsAt,
+                    src => src.ScheduleStartTime.AddMinutes(src.ScheduleDuration)
+                        .ToShortTimeString());
 
             // Forked in QuestionnaireRepository and QuestionRepository
             TypeAdapterConfig<Model.Question, Domain.Model.Question>.NewConfig()
@@ -81,7 +82,6 @@ namespace GRA.Data.Config
                 .IgnoreIf((src, _) => src.RequiredChallenges == null, dest => dest.ChallengeIds)
                 .Map(dest => dest.ChallengeIds,
                     src => src.RequiredChallenges.Select(_ => _.ChallengeId));
-
         }
     }
 }

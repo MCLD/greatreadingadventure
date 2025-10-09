@@ -1576,7 +1576,7 @@ namespace GRA.Controllers
                     .GetByProgramIdAsync(model.User.ProgramId);
                 model.TranslationDescriptionPastTense = pointTranslation
                     .TranslationDescriptionPastTense
-                    .Replace("{0}", "",StringComparison.OrdinalIgnoreCase)
+                    .Replace("{0}", "", StringComparison.OrdinalIgnoreCase)
                     .Trim();
                 model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
