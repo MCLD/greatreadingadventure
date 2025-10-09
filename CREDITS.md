@@ -64,11 +64,6 @@ The Great Reading Adventure uses open source components. You can find informatio
 - [Microsoft .NET](https://dotnet.microsoft.com/) is a general purpose development platform maintained by Microsoft and the .NET community on GitHub. It is cross-platform, supporting Windows, macOS and Linux, and can be used in device, cloud, and embedded/IoT scenarios.
 - Source on GitHub: [dotnet/aspnetcore](https://github.com/dotnet/aspnetcore) - [MIT License](https://github.com/dotnet/aspnetcore/blob/main/LICENSE.txt)
 
-### AutoMapper
-
-- [AutoMapper](http://automapper.org/): A convention-based object-object mapper.
-- Source on GitHub: [automapper/automapper](https://github.com/AutoMapper/AutoMapper) - [MIT License](https://github.com/AutoMapper/AutoMapper/blob/master/LICENSE.txt)
-
 ### Bootstrap
 
 - A sleek, intuitive, and powerful mobile first front-end framework for faster and easier web development.
@@ -148,6 +143,11 @@ The Great Reading Adventure uses open source components. You can find informatio
 
 - A cross-platform .NET library for IMAP, POP3, and SMTP.
 - Source on GitHub: [jstedfast/MailKit](https://github.com/jstedfast/MailKit) - [MIT License](https://github.com/jstedfast/MailKit/blob/master/License.md)
+
+### Mapster
+
+- An object-object mapper.
+- Source on GitHub: [MapsterMapper/Mapster](https://github.com/MapsterMapper/Mapster) - [MIT License](https://github.com/MapsterMapper/Mapster/blob/master/LICENSE)
 
 ### Moment.js
 
