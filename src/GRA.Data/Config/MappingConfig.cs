@@ -10,7 +10,7 @@ namespace GRA.Data.Config
             // Data to Domain Mappings
 
             TypeAdapterConfig<Model.AvatarBundle, Domain.Model.AvatarBundle>.NewConfig()
-                .IgnoreIf((src, dest) => src.AvatarBundleItems == null, dest => dest.AvatarItems)
+                .IgnoreIf((src, _) => src.AvatarBundleItems == null, dest => dest.AvatarItems)
                 .Map(dest => dest.AvatarItems,
                     src => src.AvatarBundleItems.Select(_ => _.AvatarItem));
 
@@ -20,18 +20,18 @@ namespace GRA.Data.Config
                 .Ignore(dest => dest.AvatarItems);
 
             TypeAdapterConfig<Model.Challenge, Domain.Model.Challenge>.NewConfig()
-                .IgnoreIf((src, dest) => src.ChallengeCategories == null, dest => dest.Categories)
+                .IgnoreIf((src, _) => src.ChallengeCategories == null, dest => dest.Categories)
                 .Map(dest => dest.Categories,
                     src => src.ChallengeCategories.Select(_ => _.Category));
 
             TypeAdapterConfig<Model.ChallengeGroup, Domain.Model.ChallengeGroup>.NewConfig()
-                .IgnoreIf((src, dest) => src.ChallengeGroupChallenges == null,
+                .IgnoreIf((src, _) => src.ChallengeGroupChallenges == null,
                     dest => dest.ChallengeIds)
                 .Map(dest => dest.ChallengeIds,
                     src => src.ChallengeGroupChallenges.Select(_ => _.ChallengeId));
 
             TypeAdapterConfig<Model.DrawingCriterion, Domain.Model.DrawingCriterion>.NewConfig()
-                .IgnoreIf((src, dest) => src.CriterionPrograms == null, dest => dest.ProgramIds)
+                .IgnoreIf((src, _) => src.CriterionPrograms == null, dest => dest.ProgramIds)
                 .Map(dest => dest.ProgramIds,
                     src => src.CriterionPrograms.Select(_ => _.ProgramId));
 
@@ -44,16 +44,16 @@ namespace GRA.Data.Config
                 .Ignore(dest => dest.ChallengeGroup);
 
             TypeAdapterConfig<Model.NewsCategory, Domain.Model.NewsCategory>.NewConfig()
-                .IgnoreIf((src, dest) => src.Posts == null, dest => dest.PostCount)
+                .IgnoreIf((src, _) => src.Posts == null, dest => dest.PostCount)
                 .Map(dest => dest.PostCount, src => src.Posts.Count());
 
             TypeAdapterConfig<Model.PageHeader, Domain.Model.PageHeader>.NewConfig()
-                .IgnoreIf((src, dest) => src.Pages == null, dest => dest.PageLanguages)
+                .IgnoreIf((src, _) => src.Pages == null, dest => dest.PageLanguages)
                 .Map(dest => dest.PageLanguages,
                     src => src.Pages.Select(_ => _.Language.Description));
 
             TypeAdapterConfig<Model.PrizeWinner, Domain.Model.PrizeWinner>.NewConfig()
-                .IgnoreIf((src, dest) => src.Drawing == null && src.Trigger == null,
+                .IgnoreIf((src, _) => src.Drawing == null && src.Trigger == null,
                     dest => dest.PrizeName)
                 .Map(dest => dest.PrizeName, src => src.Drawing.Name ?? src.Trigger.AwardPrizeName);
 
@@ -67,18 +67,18 @@ namespace GRA.Data.Config
                 .Ignore(dest => dest.Answers);
 
             TypeAdapterConfig<Model.Questionnaire, Domain.Model.Questionnaire>.NewConfig()
-                .IgnoreIf((src, dest) => src.Questions == null, dest => dest.Questions)
+                .IgnoreIf((src, _) => src.Questions == null, dest => dest.Questions)
                 .Map(dest => dest.Questions,
                     src => src.Questions.Where(_ => !_.IsDeleted).OrderBy(_ => _.SortOrder));
 
             TypeAdapterConfig<Model.System, Domain.Model.System>.NewConfig()
-                .IgnoreIf((src, dest) => src.Branches == null, dest => dest.Branches)
+                .IgnoreIf((src, _) => src.Branches == null, dest => dest.Branches)
                 .Map(dest => dest.Branches, src => src.Branches.OrderBy(_ => _.Name));
 
             TypeAdapterConfig<Model.Trigger, Domain.Model.Trigger>.NewConfig()
-                .IgnoreIf((src, dest) => src.RequiredBadges == null, dest => dest.BadgeIds)
+                .IgnoreIf((src, _) => src.RequiredBadges == null, dest => dest.BadgeIds)
                 .Map(dest => dest.BadgeIds, src => src.RequiredBadges.Select(_ => _.BadgeId))
-                .IgnoreIf((src, dest) => src.RequiredChallenges == null, dest => dest.ChallengeIds)
+                .IgnoreIf((src, _) => src.RequiredChallenges == null, dest => dest.ChallengeIds)
                 .Map(dest => dest.ChallengeIds,
                     src => src.RequiredChallenges.Select(_ => _.ChallengeId));
 
