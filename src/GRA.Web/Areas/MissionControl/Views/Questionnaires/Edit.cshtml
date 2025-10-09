@@ -213,7 +213,7 @@
             var name = $(this).data("name");
             var text = $(this).data("text");
             var correctAnswerId = $(this).data("correctanswerid");
-            var modal = $("#saveModal").modal();
+            var modal = $("#saveModal").modal("show");
             answerList.empty();
             modal.find("#saveModalLabel").text('@(!Model.Questionnaire.IsLocked ? "Edit" : "View") Question - "' + name + '"');
             modal.find("#Question_Id").val(id);
@@ -238,7 +238,7 @@
             });
 
             $("#addQuestionButton").on("click", function () {
-                var modal = $("#saveModal").modal();
+                var modal = $("#saveModal").modal("show");
                 modal.find("#saveModalLabel").text("Add Question");
                 modal.find("#Question_Id").val("-1");
                 modal.find("#Question_Name").val("");
