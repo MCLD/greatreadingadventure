@@ -1,6 +1,6 @@
 # Upgrading
 
-**There is no upgrade path from versions 2 or 3 to this release** due to significant architectural changes. Follow these instructions to upgrade from a previous release of version 4. When upgrading from version to 4.4 note that you'll need to ensure you have the appropriate version of the [ASP.NET Core Hosting Bundle](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/?view=aspnetcore-8.0) on the server.
+**There is no upgrade path from versions 2 or 3 to this release** due to significant architectural changes. Follow these instructions to upgrade from a previous release of version 4. When upgrading from a version prior to 4.5 note that you'll need to ensure you have the appropriate version of the [ASP.NET Core Hosting Bundle](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/?view=aspnetcore-8.0) on the server.
 
 Note that during the upgrade there will be an interruption in service so it may be ideal to schedule this upgrade in off hours.
 

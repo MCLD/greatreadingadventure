@@ -16,7 +16,7 @@
     <RepositoryType>Git</RepositoryType>
     <RepositoryUrl>https://github.com/mcld/greatreadingadventure/</RepositoryUrl>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>4.5.1</Version>
+    <Version>4.6.1</Version>
   </PropertyGroup>
 
   <ItemGroup>

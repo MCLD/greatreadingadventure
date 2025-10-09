@@ -15,7 +15,7 @@
     <RepositoryUrl>https://github.com/mcld/greatreadingadventure/</RepositoryUrl>
     <TargetFramework>net8.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <Version>4.5.1</Version>
+    <Version>4.6.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
