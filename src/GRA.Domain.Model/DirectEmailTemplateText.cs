@@ -13,8 +13,6 @@ namespace GRA.Domain.Model
         [Required]
         public int CreatedBy { get; set; }
 
-        public DirectEmailTemplate DirectEmailTemplate { get; set; }
-
         [Key]
         public int DirectEmailTemplateId { get; set; }
 

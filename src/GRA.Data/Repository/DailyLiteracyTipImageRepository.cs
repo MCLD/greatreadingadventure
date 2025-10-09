@@ -168,27 +168,6 @@ namespace GRA.Data.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateSaveAsync(int userId, DailyLiteracyTipImage image, int newDay)
-        {
-            if (image != null)
-            {
-                if (newDay > image.Day)
-                {
-                    await DbSet.Where(_ => _.DailyLiteracyTipId == image.DailyLiteracyTipId
-                        && _.Day > image.Day && _.Day <= newDay)
-                            .ForEachAsync(_ => _.Day--);
-                }
-                else
-                {
-                    await DbSet.Where(_ => _.DailyLiteracyTipId == image.DailyLiteracyTipId
-                        && _.Day < image.Day && _.Day >= newDay)
-                            .ForEachAsync(_ => _.Day++);
-                }
-                image.Day = newDay;
-                await base.UpdateSaveAsync(userId, image);
-            }
-        }
-
         private IQueryable<Model.DailyLiteracyTipImage> ApplyFilters(DailyImageFilter filter)
         {
             return DbSet

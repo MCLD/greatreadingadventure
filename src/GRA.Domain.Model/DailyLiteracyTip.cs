@@ -1,12 +1,9 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Domain.Model
 {
     public class DailyLiteracyTip : Abstract.BaseDomainEntity
     {
-        public ICollection<DailyLiteracyTipImage> DailyLiteracyTipImages { get; set; }
-
         public bool IsLarge { get; set; }
 
         [MaxLength(50)]
