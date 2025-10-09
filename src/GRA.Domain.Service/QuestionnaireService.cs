@@ -15,10 +15,11 @@ namespace GRA.Domain.Service
         private readonly IAnswerRepository _answerRepository;
         private readonly IBadgeRepository _badgeRepository;
         private readonly INotificationRepository _notificationRepository;
-        private readonly IQuestionRepository _questionRepository;
         private readonly IQuestionnaireRepository _questionnaireRepository;
+        private readonly IQuestionRepository _questionRepository;
         private readonly IRequiredQuestionnaireRepository _requiredQuestionnaireRepository;
         private readonly IUserLogRepository _userLogRepository;
+
         public QuestionnaireService(ILogger<QuestionnaireService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
@@ -32,39 +33,34 @@ namespace GRA.Domain.Service
             : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageQuestionnaires);
-            _answerRepository = answerRepository 
-                ?? throw new ArgumentNullException(nameof(answerRepository));
-            _badgeRepository = badgeRepository 
-                ?? throw new ArgumentNullException(nameof(badgeRepository));
-            _notificationRepository = notificationRepository 
-                ?? throw new ArgumentNullException(nameof(notificationRepository));
-            _questionRepository = questionRepository 
-                ?? throw new ArgumentNullException(nameof(questionRepository));
-            _questionnaireRepository = questionnaireRepository 
-                ?? throw new ArgumentNullException(nameof(questionnaireRepository));
-            _requiredQuestionnaireRepository = requiredQuestionnaireRepository 
-                ?? throw new ArgumentNullException(nameof(requiredQuestionnaireRepository));
-            _userLogRepository = userLogRepository 
-                ?? throw new ArgumentNullException(nameof(userLogRepository));
+            ArgumentNullException.ThrowIfNull(answerRepository);
+            ArgumentNullException.ThrowIfNull(badgeRepository);
+            ArgumentNullException.ThrowIfNull(notificationRepository);
+            ArgumentNullException.ThrowIfNull(questionRepository);
+            ArgumentNullException.ThrowIfNull(questionnaireRepository);
+            ArgumentNullException.ThrowIfNull(requiredQuestionnaireRepository);
+            ArgumentNullException.ThrowIfNull(userLogRepository);
+
+            _answerRepository = answerRepository;
+            _badgeRepository = badgeRepository;
+            _notificationRepository = notificationRepository;
+            _questionRepository = questionRepository;
+            _questionnaireRepository = questionnaireRepository;
+            _requiredQuestionnaireRepository = requiredQuestionnaireRepository;
+            _userLogRepository = userLogRepository;
         }
 
-        public async Task<DataWithCount<ICollection<Questionnaire>>> GetPaginatedListAsync(
-            BaseFilter filter)
+        public async Task<Answer> AddAnswerAsync(Answer answer)
         {
             VerifyManagementPermission();
-            filter.SiteId = GetCurrentSiteId();
-            return new DataWithCount<ICollection<Questionnaire>>
-            {
-                Data = await _questionnaireRepository.PageAsync(filter),
-                Count = await _questionnaireRepository.CountAsync(filter)
-            };
+            return await _answerRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), answer);
         }
 
         // add questionnaire
         public async Task<Questionnaire> AddAsync(Questionnaire questionnaire)
         {
             VerifyManagementPermission();
-
+            ArgumentNullException.ThrowIfNull(questionnaire);
             questionnaire.SiteId = GetCurrentSiteId();
             questionnaire.RelatedBranchId = GetClaimId(ClaimType.BranchId);
             questionnaire.RelatedSystemId = GetClaimId(ClaimType.SystemId);
@@ -73,7 +69,7 @@ namespace GRA.Domain.Service
                 GetClaimId(ClaimType.UserId),
                 questionnaire);
 
-            if (questionnaire.Questions != null && questionnaire.Questions.Count > 0)
+            if (questionnaire.Questions?.Count > 0)
             {
                 return await AddQuestionsAsync(addedQuestionnaire.Id, questionnaire.Questions);
             }
@@ -83,56 +79,10 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<Questionnaire> UpdateAsync(Questionnaire questionnaire)
+        public async Task<Question> AddQuestionAsync(Question question)
         {
             VerifyManagementPermission();
-            int authId = GetClaimId(ClaimType.UserId);
-
-            var currentQuestionnaire = await _questionnaireRepository.GetByIdAsync(questionnaire.Id);
-            if (currentQuestionnaire.IsLocked)
-            {
-                _logger.LogError($"User {authId} cannot update locked questionnaire {currentQuestionnaire.Id}.");
-                throw new GraException("Questionnaire is locked and cannot be edited.");
-            }
-
-            currentQuestionnaire.Name = questionnaire.Name;
-            currentQuestionnaire.IsLocked = questionnaire.IsLocked;
-            return await _questionnaireRepository.UpdateSaveAsync(authId, currentQuestionnaire);
-        }
-
-        public async Task UpdateQuestionListAsync(int questionnaireId, List<int> questionOrderList)
-        {
-            VerifyManagementPermission();
-            int authId = GetClaimId(ClaimType.UserId);
-
-            var questionnaire = await _questionnaireRepository.GetByIdAsync(questionnaireId, false);
-            if (questionnaire.IsLocked)
-            {
-                _logger.LogError($"User {authId} cannot update locked questionnaire {questionnaire.Id}.");
-                throw new GraException("Questionnaire is locked and cannot be edited.");
-            }
-
-            var questions = questionnaire.Questions;
-            var questionsIdList = questions.Select(_ => _.Id);
-            var invalidQuestions = questionOrderList.Except(questionsIdList);
-            if (invalidQuestions.Any())
-            {
-                _logger.LogError($"User {authId} cannot update question {invalidQuestions.First()} for questionnaire {questionnaireId}.");
-                throw new GraException("Invalid question selection.");
-            }
-
-            var questionUpdateList = questions.Where(_ => questionOrderList.Contains(_.Id));
-            foreach (var question in questionUpdateList)
-            {
-                question.SortOrder = questionOrderList.IndexOf(question.Id);
-                await _questionRepository.UpdateSaveAsync(authId, question);
-            }
-
-            var questionDeleteList = questions.Except(questionUpdateList);
-            foreach (var question in questionDeleteList)
-            {
-                await _questionRepository.RemoveSaveAsync(authId, question.Id);
-            }
+            return await _questionRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), question);
         }
 
         // add question and answers to questionnaire
@@ -140,6 +90,7 @@ namespace GRA.Domain.Service
             IEnumerable<Question> questions)
         {
             VerifyManagementPermission();
+            ArgumentNullException.ThrowIfNull(questions);
             int authId = GetClaimId(ClaimType.UserId);
 
             foreach (var question in questions)
@@ -157,10 +108,9 @@ namespace GRA.Domain.Service
             return await _questionnaireRepository.GetByIdAsync(questionnaireId);
         }
 
-        public async Task RemoveAsync(int id)
+        public async Task<ICollection<Answer>> GetAnswersByQuestionIdAsync(int questionId)
         {
-            VerifyManagementPermission();
-            await _questionnaireRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), id);
+            return await _answerRepository.GetByQuestionIdAsync(questionId);
         }
 
         public async Task<Questionnaire> GetByIdAsync(int questionnaireId, bool includeAnswers)
@@ -168,17 +118,21 @@ namespace GRA.Domain.Service
             var questionnaire = await _questionnaireRepository
                 .GetByIdAsync(questionnaireId, includeAnswers);
 
-            if (questionnaire == null)
-            {
-                throw new GraException("The requested questionnaire could not be accessed or does not exist.");
-            }
-
-            return questionnaire;
+            return questionnaire
+                ?? throw new GraException("The requested questionnaire could not be accessed or does not exist.");
         }
 
-        public async Task<ICollection<Answer>> GetAnswersByQuestionIdAsync(int questionId)
+        public async Task<DataWithCount<ICollection<Questionnaire>>> GetPaginatedListAsync(
+                                                            BaseFilter filter)
         {
-            return await _answerRepository.GetByQuestionIdAsync(questionId);
+            VerifyManagementPermission();
+            ArgumentNullException.ThrowIfNull(filter);
+            filter.SiteId = GetCurrentSiteId();
+            return new DataWithCount<ICollection<Questionnaire>>
+            {
+                Data = await _questionnaireRepository.PageAsync(filter),
+                Count = await _questionnaireRepository.CountAsync(filter)
+            };
         }
 
         public async Task<Question> GetQuestionByIdAsync(int questionId)
@@ -189,39 +143,8 @@ namespace GRA.Domain.Service
         public async Task<IList<Question>> GetQuestionsByQuestionnaireIdAsync(int questionnaireId,
             bool includeAnswers)
         {
-            return await _questionRepository.GetByQuestionnaireIdAsync(questionnaireId, includeAnswers);
-        }
-
-        public async Task<Question> AddQuestionAsync(Question question)
-        {
-            VerifyManagementPermission();
-            return await _questionRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), question);
-        }
-
-        public async Task<Question> UpdateQuestionAsync(Question question)
-        {
-            VerifyManagementPermission();
-            int authId = GetClaimId(ClaimType.UserId);
-
-            return await _questionRepository.UpdateSaveAsync(authId, question);
-        }
-
-        public async Task<Answer> AddAnswerAsync(Answer answer)
-        {
-            VerifyManagementPermission();
-            return await _answerRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), answer);
-        }
-
-        public async Task UpdateAnswerAsync(Answer answer)
-        {
-            VerifyManagementPermission();
-            await _answerRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), answer);
-        }
-
-        public async Task RemoveAnswerAsync(int answerId)
-        {
-            VerifyManagementPermission();
-            await _answerRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), answerId);
+            return await _questionRepository
+                .GetByQuestionnaireIdAsync(questionnaireId, includeAnswers);
         }
 
         public async Task<int?> GetRequiredQuestionnaire(int userId, int? userAge)
@@ -237,6 +160,7 @@ namespace GRA.Domain.Service
                 return null;
             }
         }
+
         public async Task<bool> HasRequiredQuestionnaire(int userId, int? userAge,
             int questionnaireId)
         {
@@ -244,14 +168,33 @@ namespace GRA.Domain.Service
                 .UserHasRequiredQuestionnaire(GetCurrentSiteId(), userId, userAge, questionnaireId);
         }
 
-        public async Task SubmitQuestionnaire(int questionnaireId, int userId, int? userAge,
+        public async Task RemoveAnswerAsync(int answerId)
+        {
+            VerifyManagementPermission();
+            await _answerRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), answerId);
+        }
+
+        public async Task RemoveAsync(int id)
+        {
+            VerifyManagementPermission();
+            await _questionnaireRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), id);
+        }
+
+        public async Task SubmitQuestionnaire(int questionnaireId,
+            int userId,
+            int? userAge,
             IList<Question> questions)
         {
+            ArgumentNullException.ThrowIfNull(questions);
+
             var requiredQuestionnaires = await _requiredQuestionnaireRepository.
                 GetForUser(GetCurrentSiteId(), userId, userAge);
             if (!requiredQuestionnaires.Contains(questionnaireId))
             {
-                _logger.LogError($"User {userId} is not eligible to answer questionnaire {questionnaireId}.");
+                _logger.LogError(
+                    "User {UserId} is not eligible to answer questionnaire {QuestionnaireId}.",
+                    userId,
+                    questionnaireId);
                 throw new GraException("Not eligible to answer that questionnaire.");
             }
 
@@ -261,7 +204,10 @@ namespace GRA.Domain.Service
             if (questions.Select(_ => _.Id).Except(questionnaireQuestions.Select(_ => _.Id)).Any()
                 || questionnaireQuestions.Count() != questions.Count)
             {
-                _logger.LogError($"User {userId} submitted invalid questions for questionnaire {questionnaireId}.");
+                _logger.LogError(
+                    "User {UserId} submitted invalid questions for questionnaire {QuestionnaireId}.",
+                    userId,
+                    questionnaireId);
                 throw new GraException("Invalid questions answered.");
             }
 
@@ -272,12 +218,16 @@ namespace GRA.Domain.Service
                     .Select(_ => _.ParticipantAnswer)
                     .SingleOrDefault()))
                 {
-                    _logger.LogError($"User {userId} submitted invalid answers for question {question.Id}.");
+                    _logger.LogError(
+                        "User {UserId} submitted invalid answers for question {QuestionId}.",
+                        userId,
+                        question.Id);
                     throw new GraException("Invalid answer selected.");
                 }
             }
 
-            await _requiredQuestionnaireRepository.SubmitQuestionnaire(questionnaireId, userId,
+            await _requiredQuestionnaireRepository.SubmitQuestionnaire(questionnaireId,
+                userId,
                 questions);
 
             if (questionnaire.BadgeId.HasValue)
@@ -285,6 +235,85 @@ namespace GRA.Domain.Service
                 await QuestionnaireNotificationBadge(questionnaire, userId);
                 var badge = await _badgeRepository.GetByIdAsync(questionnaire.BadgeId.Value);
                 await _badgeRepository.AddUserBadge(userId, questionnaire.BadgeId.Value);
+            }
+        }
+
+        public async Task UpdateAnswerAsync(Answer answer)
+        {
+            VerifyManagementPermission();
+            await _answerRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), answer);
+        }
+
+        public async Task<Questionnaire> UpdateAsync(Questionnaire questionnaire)
+        {
+            VerifyManagementPermission();
+            ArgumentNullException.ThrowIfNull(questionnaire);
+            int authId = GetClaimId(ClaimType.UserId);
+
+            var currentQuestionnaire = await _questionnaireRepository
+                .GetByIdAsync(questionnaire.Id);
+
+            if (currentQuestionnaire.IsLocked)
+            {
+                _logger.LogError(
+                    "User {AuthId} cannot update locked questionnaire {QuestionnaireId}.",
+                    authId,
+                    currentQuestionnaire.Id);
+                throw new GraException("Questionnaire is locked and cannot be edited.");
+            }
+
+            currentQuestionnaire.Name = questionnaire.Name;
+            currentQuestionnaire.IsLocked = questionnaire.IsLocked;
+            return await _questionnaireRepository.UpdateSaveAsync(authId, currentQuestionnaire);
+        }
+
+        public async Task<Question> UpdateQuestionAsync(Question question)
+        {
+            VerifyManagementPermission();
+            int authId = GetClaimId(ClaimType.UserId);
+
+            return await _questionRepository.UpdateSaveAsync(authId, question);
+        }
+
+        public async Task UpdateQuestionListAsync(int questionnaireId, List<int> questionOrderList)
+        {
+            VerifyManagementPermission();
+            ArgumentNullException.ThrowIfNull(questionOrderList);
+            int authId = GetClaimId(ClaimType.UserId);
+
+            var questionnaire = await _questionnaireRepository.GetByIdAsync(questionnaireId, false);
+            if (questionnaire.IsLocked)
+            {
+                _logger.LogError(
+                    "User {AuthId} cannot update locked questionnaire {QuestionnaireId}.",
+                    authId,
+                    questionnaire.Id);
+                throw new GraException("Questionnaire is locked and cannot be edited.");
+            }
+
+            var questions = questionnaire.Questions;
+            var questionsIdList = questions.Select(_ => _.Id);
+            var invalidQuestions = questionOrderList.Except(questionsIdList);
+            if (invalidQuestions.Any())
+            {
+                _logger.LogError("User {AuthId} cannot update question {InvalidQuestion} for questionnaire {QuestionnaireId}.",
+                    authId,
+                    invalidQuestions.First(),
+                    questionnaireId);
+                throw new GraException("Invalid question selection.");
+            }
+
+            var questionUpdateList = questions.Where(_ => questionOrderList.Contains(_.Id));
+            foreach (var question in questionUpdateList)
+            {
+                question.SortOrder = questionOrderList.IndexOf(question.Id);
+                await _questionRepository.UpdateSaveAsync(authId, question);
+            }
+
+            var questionDeleteList = questions.Except(questionUpdateList);
+            foreach (var question in questionDeleteList)
+            {
+                await _questionRepository.RemoveSaveAsync(authId, question.Id);
             }
         }
 

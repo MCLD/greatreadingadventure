@@ -59,15 +59,6 @@
                 <span asp-validation-for="Message" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <label asp-for="IsLarge" class="col-form-label"></label>*
-                <description gra-description-for="IsLarge"></description>
-                <select asp-for="IsLarge" class="form-select">
-                    <option value="True">Yes</option>
-                    <option value="False">No</option>
-                </select>
-                <span asp-validation-for="IsLarge" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
                 <label for="selectedFile">Select a .zip file:</label>
                 <div class="input-group">
                     <input type="file" asp-for="UploadedFile" class="form-control" accept=".zip" />

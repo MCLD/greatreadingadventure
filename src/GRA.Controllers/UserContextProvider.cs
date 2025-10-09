@@ -22,11 +22,13 @@ namespace GRA.Controllers
             IHttpContextAccessor httpContextAccessor,
             SiteLookupService siteLookupService)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _httpContextAccessor = httpContextAccessor
-                ?? throw new ArgumentNullException(nameof(httpContextAccessor));
-            _siteLookupService = siteLookupService
-                ?? throw new ArgumentNullException(nameof(siteLookupService));
+            ArgumentNullException.ThrowIfNull(httpContextAccessor);
+            ArgumentNullException.ThrowIfNull(logger);
+            ArgumentNullException.ThrowIfNull(siteLookupService);
+
+            _httpContextAccessor = httpContextAccessor;
+            _logger = logger;
+            _siteLookupService = siteLookupService;
         }
 
         public UserContext GetContext()
@@ -55,19 +57,13 @@ namespace GRA.Controllers
 
         public bool UserHasPermission(ClaimsPrincipal user, string permissionName)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            ArgumentNullException.ThrowIfNull(user);
             return user.HasClaim(ClaimType.Permission, permissionName);
         }
 
         public string UserClaim(ClaimsPrincipal user, string claimType)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            ArgumentNullException.ThrowIfNull(user);
 
             var claim = user
                 .Claims
@@ -85,14 +81,14 @@ namespace GRA.Controllers
                     var distinct = claim.Select(_ => _.Value).Distinct();
                     if (distinct.Count() > 1)
                     {
-                        throw new GraException(string.Format("User {0} has multiple {1} claims: {2}",
-                            userId,
-                            claimType,
-                            string.Join(",", claim.Select(_ => _.Value))));
+                        throw new GraException($"User {userId} has multiple {claimType} claims: {string.Join(",", claim.Select(_ => _.Value))}");
                     }
                     else
                     {
-                        _logger.LogDebug($"User {userId} has multiple {claimType} claims with the same value, using the first: {claim.First().Value}");
+                        _logger.LogDebug("User {UserId} has multiple {ClaimType} claims with the same value, using the first: {ClaimValue}",
+                            userId,
+                            claimType,
+                            claim.FirstOrDefault()?.Value);
                         return claim.First().Value;
                     }
             }

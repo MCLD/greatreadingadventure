@@ -1,0 +1,192 @@
+﻿@using GRA.Controllers.ViewModel.MissionControl.DailyTips
+@model TipDetailViewModel
+
+@section inHeading {
+    <div class="ms-auto">
+        <a class="btn btn-outline-success"
+                 asp-action="@nameof(GRA.Controllers.MissionControl.DailyTipsController.Add)"
+                 asp-route-tipId="@Model.Tip.Id">
+            <span class="far fa-file-archive fa-fw"></span>
+            Add new Daily Tip
+        </a>
+    </div>
+}
+
+<div class="row mt-2">
+    <div class="col-12">
+        <table class="table link-table table-bordered table-sm">
+            <thead>
+                <tr>
+                    <th>Day</th>
+                    <th>Preview</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model?.Images?.Any() != true)
+                {
+                    <tr>
+                        <td colspan="5">
+                            <div class="alert alert-warning mb-0">No images found.</div>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    for (var index = 0; index < Model.Images.Count; index++)
+                    {
+                        <tr>
+                            <td>@Model.Images[index].Day</td>
+                            <td>
+                                <img src="@Url.Content($"~/{Model.Paths[Model.Images[index].Id]}")?@Model.CacheBuster"
+                                                        alt="@Model.Images[index].Name"
+                                                        style="max-height: calc(50vh - 100px); overflow-y:auto;" />
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <button class="btn btn-outline-danger btn-sm"
+                                                                  data-bs-toggle="modal"
+                                                                  data-bs-target="#deleteModal"
+                                                                  data-day="@Model.Images[index].Day"
+                                                                  data-imageid="@Model.Images[index].Id"
+                                                                  data-tipid="@Model.Images[index].DailyLiteracyTipId"
+                                                                  title="Delete image">
+                                        <span class="fas fa-times fa-fw" aria-hidden="true"></span>
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm adjustPosition"
+                                                                  button-spinner
+                                                                  data-id="@Model.Images[index].Id"
+                                                                  disabled="@(Model.Images[index].Day == Model.FirstAndLast.Item1 ? "true" : null)"
+                                                                  href="#"
+                                                                  title="Move up">
+                                        <span class="fas fa-arrow-up fa-fw"></span>
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm adjustPosition increasePosition"
+                                                                  button-spinner
+                                                                  data-id="@Model.Images[index].Id"
+                                                                  disabled="@(Model.Images[index].Day == Model.FirstAndLast.Item2)"
+                                                                  href="#"
+                                                                  title="Move down">
+                                        <span class="fas fa-arrow-down fa-fw"></span>
+                                    </button>
+                                    <button class="btn btn-outline-primary btn-sm"
+                                                                  data-bs-toggle="modal"
+                                                                  data-bs-target="#setDayModal"
+                                                                  data-imageid="@Model.Images[index].Id"
+                                                                  data-day="@Model.Images[index].Day"
+                                                                  data-tipid="@Model.Images[index].DailyLiteracyTipId"
+                                                                  title="Set day manually">
+                                        <span class="fas fa-pencil-alt fa-fw"></span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+        <paginate paginateModel="@Model"></paginate>
+    </div>
+</div>
+
+<form asp-action="@nameof(DailyTipsController.DeleteImage)"
+         asp-controller="@DailyTipsController.Name"
+         method="POST">
+    <input type="hidden" id="deleteImageId" name="imageid" />
+    <input type="hidden" id="deleteTipId" name="tipid" />
+    <input type="hidden" id="deletePage" name="page" value="@Model.CurrentPage" />
+
+    <div class="modal" tabindex="-1" data-bs-backdrop="static" id="deleteModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete image</h5>
+                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Are you sure you wish to delete the image for day
+                        <strong id="delete-day"></strong>?
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-secondary" data-bs-dismiss="modal" type="button">Close</button>
+                    <button class="btn btn-outline-danger" type="submit">Delete image</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form asp-action="@nameof(DailyTipsController.SetImageDay)" method="POST">
+    <input type="hidden" id="setDayImageId" name="imageId" />
+    <input type="hidden" id="setDayTipId" name="tipId" />
+    <input type="hidden" id="setDayPage" name="page" value="@Model.CurrentPage" />
+
+    <div class="modal fade" id="setDayModal" tabindex="-1" aria-labelledby="setDayModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="setDayModalLabel">Set Image Day</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <label for="manualDayInput" class="form-label">Enter new day number:</label>
+                    <input type="number" class="form-control" id="manualDayInput" name="newDay" min="1" required />
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-secondary" data-bs-dismiss="modal" type="button">Cancel</button>
+                    <button class="btn btn-outline-primary" type="submit">Set Day</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section scripts {
+    <script>
+        const decreasePositionUrl = '@Url.Action(nameof(DailyTipsController.MoveImageUp), DailyTipsController.Name)';
+        const increasePositionUrl = '@Url.Action(nameof(DailyTipsController.MoveImageDown), DailyTipsController.Name)';
+
+        function TipImageAdjustPosition(e) {
+            fetch(e.currentTarget.classList.contains("increasePosition") ? increasePositionUrl : decreasePositionUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: e.currentTarget.dataset.id
+            })
+                .then(_ => _.json())
+                .then(_ => {
+                    if (_.success === true) {
+                        location.reload();
+                    } else {
+                        ResetSpinners();
+                        alert(_.message);
+                    }
+                })
+                .catch(_ => {
+                    console.error("Fetch error: %o", _)
+                    ResetSpinners();
+                    alert("An error occurred adjusting the image order.");
+                });
+        }
+
+        document.querySelectorAll('.adjustPosition').forEach(_ => {
+            _.addEventListener('click', TipImageAdjustPosition)
+        })
+
+        document.getElementById('deleteModal').addEventListener('show.bs.modal', e => {
+            document.getElementById('deleteImageId').value = e.relatedTarget.dataset.imageid;
+            document.getElementById('deleteTipId').value = e.relatedTarget.dataset.tipid;
+            document.getElementById('delete-day').innerHTML = e.relatedTarget.dataset.day;
+            document.getElementById('deletePage').value = '@Model.CurrentPage';
+        });
+
+        document.getElementById('setDayModal').addEventListener('show.bs.modal', e => {
+            const trigger = e.relatedTarget;
+            document.getElementById('setDayImageId').value = trigger.dataset.imageid;
+            document.getElementById('setDayTipId').value = trigger.dataset.tipid;
+            document.getElementById('setDayPage').value = '@Model.CurrentPage';
+            document.getElementById('manualDayInput').value = trigger.dataset.day;
+        });
+    </script>
+}

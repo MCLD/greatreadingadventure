@@ -1,0 +1,20 @@
+﻿@model TipImageAddViewModel
+
+@using GRA.Controllers.ViewModel.MissionControl.DailyTips
+@using Microsoft.AspNetCore.Mvc.ModelBinding
+
+<h2>Add Image to Daily Tip</h2>
+
+<form asp-action="Add" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="DailyTipId" />
+
+    <div class="mb-3">
+        <label asp-for="ImageFile" class="form-label">Image File</label>
+        <input type="file" asp-for="ImageFile" class="form-control" accept="@Model.AllowedExtensions" />
+        <span asp-validation-for="ImageFile" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-outline-primary">
+        <span class="fas fa-upload"></span> Upload Image
+    </button>
+</form>

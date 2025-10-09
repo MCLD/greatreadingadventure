@@ -24,8 +24,4 @@
     <ProjectReference Include="..\GRA.Domain.Model\GRA.Domain.Model.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="System.ValueTuple" Version="4.6.1" />
-  </ItemGroup>
-
 </Project>

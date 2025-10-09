@@ -21,8 +21,9 @@ namespace GRA.Domain.Service
             IUserContextProvider userContextProvider,
             SchoolService schoolService) : base(logger, dateTimeProvider, userContextProvider)
         {
-            _schoolService = schoolService
-                ?? throw new ArgumentNullException(nameof(schoolService));
+            ArgumentNullException.ThrowIfNull(schoolService);
+
+            _schoolService = schoolService;
         }
 
         public async Task<(ImportStatus, string)> FromCsvAsync(StreamReader csvStream)
@@ -55,7 +56,7 @@ namespace GRA.Domain.Service
 
                         if (record.District.Length > 255)
                         {
-                            record.District = record.District.Substring(0, 255);
+                            record.District = record.District[..255];
                             string warning = $"<li>District too long, truncated: <strong>{record.District}</strong>.</li>";
                             if (!notes.Contains(warning))
                             {
@@ -65,7 +66,7 @@ namespace GRA.Domain.Service
 
                         if (record.Name.Length > 255)
                         {
-                            record.Name = record.Name.Substring(0, 255);
+                            record.Name = record.Name[..255];
                             string warning = $"<li>Type too long, truncated: <strong>{record.Name}</strong>.</li>";
                             if (!notes.Contains(warning))
                             {
@@ -74,7 +75,7 @@ namespace GRA.Domain.Service
                         }
 
                         int districtId;
-                        if (districtIndex.Keys.Contains(record.District.Trim()))
+                        if (districtIndex.ContainsKey(record.District.Trim()))
                         {
                             districtId = districtIndex[record.District.Trim()];
                         }
@@ -106,12 +107,16 @@ namespace GRA.Domain.Service
                         issues++;
                         if (rex.InnerException != null)
                         {
-                            _logger.LogError($"School import error: {rex.InnerException.Message}");
+                            _logger.LogError(rex,
+                                "School import error: {ErrorMessage}",
+                                rex.InnerException.Message);
                             notes.Add($"<li>Problem inserting record {recordCount + 2}: {rex.InnerException.Message}</li>");
                         }
                         else
                         {
-                            _logger.LogError($"School import error: {rex.Message}");
+                            _logger.LogError(rex,
+                                "School import error: {ErrorMessage}",
+                                rex.Message);
                             notes.Add($"<li>Problem inserting record {recordCount + 2}: {rex.Message}</li>");
                         }
                     }
@@ -137,21 +142,19 @@ namespace GRA.Domain.Service
             }
             catch (Exception ex)
             {
-                string error = $"CSV parsing error: {ex.Message}";
-                _logger.LogError(error);
-                return (ImportStatus.Danger, error);
+                _logger.LogError(ex, "CSV parse error: {ErrorMessage}", ex.Message);
+                return (ImportStatus.Danger, $"CSV parsing error: {ex.Message}");
             }
         }
 
         public async Task<byte[]> ToCsvAsync()
         {
-            using var memoryStream = new System.IO.MemoryStream();
-            using var writer = new System.IO.StreamWriter(memoryStream);
-            using var csv = new CsvHelper.CsvWriter(writer,
+            await using var memoryStream = new MemoryStream();
+            await using var writer = new StreamWriter(memoryStream);
+            await using var csv = new CsvHelper.CsvWriter(writer,
                 new CsvConfiguration(CultureInfo.InvariantCulture));
 
-            await csv
-                .WriteRecordsAsync(await _schoolService.GetForExportAsync());
+            await csv.WriteRecordsAsync(await _schoolService.GetForExportAsync());
 
             await csv.FlushAsync();
             await writer.FlushAsync();

@@ -5,7 +5,6 @@ namespace GRA.Domain.Model
     public class DailyLiteracyTipImage : Abstract.BaseDomainEntity
     {
         public int DailyLiteracyTipId { get; set; }
-        public DailyLiteracyTip DailyLiteracyTip { get; set; }
 
         [MaxLength(255)]
         [Required]
