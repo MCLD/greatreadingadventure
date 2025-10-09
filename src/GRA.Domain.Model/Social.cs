@@ -26,8 +26,6 @@ namespace GRA.Domain.Model
         [Required]
         public int LanguageId { get; set; }
 
-        public SocialHeader SocialHeader { get; set; }
-
         [Key]
         [Required]
         public int SocialHeaderId { get; set; }
