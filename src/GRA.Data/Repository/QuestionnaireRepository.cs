@@ -49,9 +49,12 @@ namespace GRA.Data.Repository
 
             if (includeAnswers)
             {
-                // TODO
+                var forkedConfig = _mapper.Config
+                    .Fork(_ => _.NewConfig<Model.Question, Question>()
+                        .Map(dest => dest.Answers, src => src.Answers.OrderBy(_ => _.SortOrder)));
+
                 return await questionnaire
-                    .ProjectToType<Questionnaire>()
+                    .ProjectToType<Questionnaire>(forkedConfig)
                     .SingleOrDefaultAsync();
             }
             else

@@ -30,11 +30,15 @@ namespace GRA.Data.Repository
 
         public async Task<ICollection<AvatarLayer>> GetAllWithColorsAsync(int siteId)
         {
+            var forkedConfig = _mapper.Config
+                .Fork(_ => _.NewConfig<Model.AvatarLayer, AvatarLayer>()
+                    .Ignore(dest => dest.AvatarItems));
+
             return await DbSet.AsNoTracking()
                 .Where(_ => _.SiteId == siteId)
                 .OrderBy(_ => _.GroupId)
                 .ThenBy(_ => _.SortOrder)
-                .ProjectToType<AvatarLayer>()
+                .ProjectToType<AvatarLayer>(forkedConfig)
                 .ToListAsync();
         }
 

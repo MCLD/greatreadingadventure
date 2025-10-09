@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using GRA.Abstract;
 using GRA.Controllers.RouteConstraint;
-using GRA.Data.Profile;
+using GRA.Data.Config;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
 using GRA.Domain.Service.Abstract;
@@ -269,8 +269,6 @@ namespace GRA.Web
                     await next();
                 }
             });
-
-            MappingConfig.RegisterMappings();
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -711,6 +709,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IVendorCodeTypeRepository, Data.Repository.VendorCodeTypeRepository>();
 
             services.AddMapster();
+            MappingConfig.RegisterMappings();
 
             services.AddScoped<JobTaskRunner>();
             services.AddHostedService<JobBackgroundService>();
