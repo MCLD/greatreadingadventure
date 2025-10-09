@@ -11,7 +11,7 @@ header:
       url: "http://demo.greatreadingadventure.com/"
 excerpt: >
   The Great Reading Adventure is free open-source software designed to manage online library reading programs.<br />
-  <small><a href="https://github.com/MCLD/greatreadingadventure/releases/latest">Latest release v4.5.0</a></small>
+  <small><a href="https://github.com/MCLD/greatreadingadventure/releases/latest">Latest release v4.6.0</a></small>
 ---
 
 The GRA is free to use, modify, and share. Source code is available on [GitHub](https://github.com/MCLD/greatreadingadventure). Active development is managed by the [Maricopa County Library District](https://mcldaz.org/). Questions? Join the [discussions](https://github.com/MCLD/greatreadingadventure/discussions)!

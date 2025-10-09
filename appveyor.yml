@@ -1,4 +1,4 @@
-version: 4.5.1-build{build}
+version: 4.6.1-build{build}
 image: Visual Studio 2022
 clone_depth: 1
 before_build:

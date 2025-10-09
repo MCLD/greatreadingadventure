@@ -25,6 +25,7 @@
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <UserSecretsId>gra-e773e45a-3078-4b1b-842d-c7a8f7d310a6</UserSecretsId>
     <Version>4.6.1</Version>
+>>>>>>> upstream/main
   </PropertyGroup>
 
   <ItemGroup>
