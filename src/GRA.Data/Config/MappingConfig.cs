@@ -36,6 +36,7 @@ namespace GRA.Data.Config
 
             TypeAdapterConfig<Model.EmailSubscriptionAuditLog,
                 Domain.Model.EmailSubscriptionAuditLog>.NewConfig()
+                .IgnoreIf((src, _) => src.CreatedByUser == null, dest => dest.CreatedByName)
                     .Map(dest => dest.CreatedByName,
                         src => $"{src.CreatedByUser.FirstName} {src.CreatedByUser.LastName}");
 
