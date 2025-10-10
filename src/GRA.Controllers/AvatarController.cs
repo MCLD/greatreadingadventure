@@ -251,11 +251,11 @@ namespace GRA.Controllers
                     }
                     var siteUrl = await _siteLookupService.GetSiteLinkAsync(site.Id);
                     var contentPath = _pathResolver.ResolveContentPath(path);
-                    viewModel.AvatarImageUrl = Path.Combine(siteUrl.ToString(), contentPath)
-                        .Replace("\\", "/", StringComparison.OrdinalIgnoreCase);
+                    viewModel.AvatarImageUrl = Path.Combine(siteUrl.ToString(), contentPath);
 
-                    var shareUrl = siteUrl + Url.Action(nameof(ShareController.Avatar), "Share")
-                        + $"/{filename}";
+                    var shareUrl = new Uri(siteUrl, 
+                        Path.Combine(Url.Action(nameof(ShareController.Avatar).ToString(), "Share"), 
+                            filename));
                     var facebookShareUrl = $"https://www.facebook.com/sharer/sharer.php?u={shareUrl}";
                     var twitterShareUrl = $"https://twitter.com/intent/tweet?url={shareUrl}";
                     if (!string.IsNullOrWhiteSpace(site.TwitterAvatarMessage))

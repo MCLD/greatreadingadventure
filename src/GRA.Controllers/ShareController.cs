@@ -37,8 +37,7 @@ namespace GRA.Controllers
                 var siteUrl = await _siteLookupService.GetSiteLinkAsync(site.Id);
                 var contentPath = _pathResolver
                     .ResolveContentPath($"site{site.Id}/useravatars/{id}.png");
-                var imageUrl = Path.Combine(siteUrl.ToString(), contentPath)
-                    .Replace("\\", "/", StringComparison.OrdinalIgnoreCase);
+                var imageUrl = Path.Combine(siteUrl.ToString(), contentPath);
                 var viewModel = new ShareAvatarViewModel()
                 {
                     ImageUrl = imageUrl,
