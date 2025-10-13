@@ -12,8 +12,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.PerformerManagement
         public List<int> BranchAvailability { get; set; }
         public string BranchAvailabilityString { get; set; }
 
-        public IFormFile References { get; set; }
-
         public int BranchCount { get; set; }
         public string VendorIdPrompt { get; set; }
         public string VendorCodeFormat { get; set; }

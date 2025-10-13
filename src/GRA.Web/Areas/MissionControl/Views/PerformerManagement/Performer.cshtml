@@ -84,14 +84,16 @@
                    class="btn btn-outline-primary d-print-none">View/Manage Images</a>
             </div>
         </div>
-        <div class="row mb-3">
-            <div class="col-12 text-center">
-                <a aria-label="View References (Opens new window)"
-                   href="~/@Model.ReferencesPath"
-                   target="_blank"
-                   class="btn btn-outline-primary d-print-none">View References</a>
-            </div>
-        </div>
+		<div class="row mb-3">
+			<div class="col-12 text-center">
+				<button type="button"
+						class="btn btn-outline-primary d-print-none"
+						data-bs-toggle="modal"
+						data-bs-target="#referencesModal">
+					View References
+				</button>
+			</div>
+		</div>
         @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewParticipantDetails.ToString()))
         {
             <div class="row mb-3">
@@ -106,13 +108,17 @@
     </div>
     <div class="col-12 col-sm-7 col-md-8">
         <div class="mb-3">
-            <label>Name</label>
+            <label asp-for="Performer.Name"></label>
             <div>@Model.Performer.Name</div>
         </div>
         <div class="mb-3">
             <label>Billing Address</label>
             <div>@Model.Performer.BillingAddress</div>
         </div>
+		<div class="mb-3">
+			<label asp-for="Performer.ContactName"></label>
+			<div>@Model.Performer.ContactName</div>
+		</div>
         <div class="mb-3">
             <label>Email @(Model.Performer.PhonePreferred ? "" : "(preferred)") </label>
             <div>@Model.Performer.Email</div>
@@ -204,7 +210,7 @@
                             </td>
                             <td>@program.MinimumCapacity &ndash; @program.MaximumCapacity</td>
                             <td>@program.ProgramLengthMinutes</td>
-                            <td>$@program.Cost</td>
+                            <td>@program.Cost.ToString("C")</td>
                             @if (Model.SchedulingStage < GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
                             {
                                 <td class="on-top">
@@ -410,6 +416,29 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="row">
+	<div class="modal fade"
+		 id="referencesModal"
+		 tabindex="-1"
+		 role="dialog"
+		 aria-labelledby="referencesModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title h4" id="referencesModalLabel">References</h1>
+					<button type="button"
+							class="btn-close"
+							data-bs-dismiss="modal"
+							aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<span id="modal-text" class="pre-wrap">@Model.Performer.References</span>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 @section scripts {

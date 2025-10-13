@@ -74,11 +74,18 @@
                     @Html.Raw("<div class=\"row\">");
                 }
                 <div class="col-12 col-md-4" style="margin-bottom: 2rem;">
-                    <div style="padding:10px;border:1px solid black;">
+                    <div class="text-center" style="padding:10px;border:1px solid black;">
                         <img src="~/@Model.ProgramImages[i].Filename" class="img-fluid" style="margin: 0 auto;" />
                         @if (Model.IsEditable)
                         {
-                            <input class="deleteSelection form-control" type="checkbox" data-id="@Model.ProgramImages[i].Id" />
+                            <input class="form-check-input deleteSelection" 
+								type="checkbox"
+								id="check-@i"
+								data-id="@Model.ProgramImages[i].Id" />
+							<label class="form-check-label"
+								   for="check-@i">
+								Select Image
+							</label>
                         }
                     </div>
                 </div>

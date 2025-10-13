@@ -11,7 +11,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.PerformerManagement
         public PsSchedulingStage SchedulingStage { get; set; }
         public IEnumerable<Domain.Model.System> Systems { get; set; }
         public string ImagePath { get; set; }
-        public string ReferencesPath { get; set; }
         public Uri Uri { get; set; }
         public PsProgram ProgramToDelete { get; set; }
         public bool Approve { get; set; }

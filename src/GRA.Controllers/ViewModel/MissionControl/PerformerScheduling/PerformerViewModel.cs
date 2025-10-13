@@ -13,7 +13,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.PerformerScheduling
         public int? NextPerformer { get; set; }
         public PsPerformer Performer { get; set; }
         public int? PrevPerformer { get; set; }
-        public string ReferencesPath { get; set; }
         public int ReturnPage { get; set; }
         public PsSettings Settings { get; set; }
         public GRA.Domain.Model.System System { get; set; }

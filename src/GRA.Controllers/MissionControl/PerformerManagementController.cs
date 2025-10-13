@@ -333,7 +333,6 @@ namespace GRA.Controllers.MissionControl
                 BlackoutDates = await _performerSchedulingService.GetBlackoutDatesAsync(),
                 BranchAvailability = performer.Branches.Select(_ => _.Id).ToList(),
                 Performer = performer,
-                ReferencesPath = _pathResolver.ResolveContentPath(performer.ReferencesFilename),
                 SchedulingStage = schedulingStage,
                 Settings = settings,
                 Systems = await _performerSchedulingService
@@ -502,31 +501,12 @@ namespace GRA.Controllers.MissionControl
                     "Please select the libraries where they are willing to perform.");
             }
 
-            if (model.References != null
-                && !string.Equals(Path.GetExtension(model.References.FileName),
-                ".pdf",
-                StringComparison.OrdinalIgnoreCase))
-            {
-                ModelState.AddModelError("References", "Please attach a .pdf file.");
-            }
-
             if (ModelState.IsValid)
             {
                 model.Performer.AllBranches = branchAvailability.Count == branchIds.Count();
 
                 var performer = await _performerSchedulingService.EditPerformerAsync(
                     model.Performer, branchAvailability);
-
-                if (model.References != null)
-                {
-                    await using var fileStream = model.References.OpenReadStream();
-                    await using var ms = new MemoryStream();
-                    fileStream.CopyTo(ms);
-                    await _performerSchedulingService.SetPerformerReferencesAsync(
-                        model.Performer.Id,
-                        ms.ToArray(),
-                        Path.GetExtension(model.References.FileName));
-                }
 
                 ShowAlertSuccess($"Performer {performer.Name} updated!");
                 return RedirectToAction(nameof(Performer), new { id = performer.Id });

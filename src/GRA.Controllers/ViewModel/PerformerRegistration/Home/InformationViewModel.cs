@@ -15,7 +15,6 @@ namespace GRA.Controllers.ViewModel.PerformerRegistration.Home
         public string BranchAvailabilityString { get; set; }
 
         public List<IFormFile> Images { get; set; }
-        public IFormFile References { get; set; }
         public int MaxUploadMB { get; set; }
 
         public int BranchCount { get; set; }

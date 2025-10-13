@@ -8,10 +8,15 @@ namespace GRA.Domain.Model
     {
         public int UserId { get; set; }
 
-        [DisplayName("Performer name")]
+        [DisplayName("Presenter/Organization name")]
         [MaxLength(255, ErrorMessage = "Please enter no more than {1} characters for {0}.")]
         [Required]
         public string Name { get; set; }
+
+        [DisplayName("Contact name")]
+        [MaxLength(255, ErrorMessage = "Please enter no more than {1} characters for {0}.")]
+        [Required]
+        public string ContactName { get; set; }
 
         [DisplayName("Billing address")]
         [MaxLength(500, ErrorMessage = "Please enter no more than {1} characters for {0}.")]
@@ -46,8 +51,8 @@ namespace GRA.Domain.Model
 
         public bool AllBranches { get; set; }
 
-        [MaxLength(255, ErrorMessage = "Please enter no more than {1} characters for {0}.")]
-        public string ReferencesFilename { get; set; }
+        [MaxLength(2000, ErrorMessage = "Please enter no more than {1} characters for {0}.")]
+        public string References { get; set; }
 
         public bool SetSchedule { get; set; }
         public bool RegistrationCompleted { get; set; }
