@@ -4,11 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
-## [4.6.0] 2024-10-09
+## [Unreleased]
+
+- Setting performer programs to be unapproved
+- Performer field for contact name
+- Performer setting for cover sheet fields
+
+## Changed
+
+- Performer references to be a text input instead of file
 
 ## Fixed
 
 - Display of modals after Bootstrap 5.3 upgrade
+- Performer cost to display in currency format
 
 ## [4.6.0] 2024-10-09
 
