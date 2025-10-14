@@ -96,9 +96,11 @@ namespace GRA.Data.Repository
             return namedResult;
         }
 
-        public async Task<long> CompletedChallengeCountAsync(ReportCriterion request,
-            int? challengeId = null)
+        public async Task<(long earned, long earnedAchiever)>
+            CompletedChallengeCountAsync(ReportCriterion request, int? challengeId = null)
         {
+            ArgumentNullException.ThrowIfNull(request);
+
             var eligibleUsers = GetEligibleUsers(request);
 
             var challengeCount = DbSet
@@ -125,12 +127,20 @@ namespace GRA.Data.Repository
                     .Where(_ => _.ChallengeId == challengeId);
             }
 
-            return await challengeCount.CountAsync();
+            var earned = await challengeCount.CountAsync();
+
+            var earnedAchiever = request.IncludeAchieverStatus
+                ? await challengeCount.CountAsync(_ => _.User.AchievedAt != null)
+                : 0;
+
+            return (earned, earnedAchiever);
         }
 
-        public async Task<long> EarnedBadgeCountAsync(ReportCriterion request,
-            int? badgeId = null)
+        public async Task<(long earned, long earnedAchiever)>
+            EarnedBadgeCountAsync(ReportCriterion request, int? badgeId = null)
         {
+            ArgumentNullException.ThrowIfNull(request);
+
             var eligibleUsers = GetEligibleUsers(request);
 
             var badgeCount = DbSet
@@ -157,7 +167,13 @@ namespace GRA.Data.Repository
                     .Where(_ => _.BadgeId == badgeId);
             }
 
-            return await badgeCount.CountAsync();
+            var earned = await badgeCount.CountAsync();
+
+            var earnedAchiever = request.IncludeAchieverStatus
+                ? await badgeCount.CountAsync(_ => _.User.AchievedAt != null)
+                : 0;
+
+            return (earned, earnedAchiever);
         }
 
         public async Task<int> GetActivityEarnedForUserAsync(int userId)
@@ -258,11 +274,11 @@ namespace GRA.Data.Repository
                             userLog.Description = $"{translation.TranslationDescriptionPastTense} {translation.ActivityDescription}";
                         }
 
-                        if (userLog.BookId != null) 
+                        if (userLog.BookId != null)
                         {
                             var book = _context.Books
                                 .AsNoTracking()
-                                .Where(_ => _.Id == userLog.BookId) 
+                                .Where(_ => _.Id == userLog.BookId)
                                 .SingleOrDefault();
 
                             if (book != null)

@@ -66,16 +66,18 @@ namespace GRA.Domain.Service
             var summaryJson = await _cache.GetStringFromCache(cacheKey);
             if (string.IsNullOrEmpty(summaryJson))
             {
+                var (earnedBadges, _) = await _userLogRepository.EarnedBadgeCountAsync(request);
+                var (earnedChallenges, _) = await _userLogRepository
+                    .CompletedChallengeCountAsync(request);
                 var summary = new StatusSummary
                 {
-                    RegisteredUsers = await _userRepository.GetCountAsync(request),
                     Achievers = await _userRepository.GetAchieverCountAsync(request),
-                    PointsEarned = await _userLogRepository.PointsEarnedTotalAsync(request),
-                    CompletedChallenges = await _userLogRepository
-                        .CompletedChallengeCountAsync(request),
-                    BadgesEarned = await _userLogRepository.EarnedBadgeCountAsync(request),
+                    AsOf = _dateTimeProvider.Now,
+                    BadgesEarned = earnedBadges,
+                    CompletedChallenges = earnedChallenges,
                     DaysUntilEnd = await GetDaysUntilEnd(),
-                    AsOf = _dateTimeProvider.Now
+                    PointsEarned = await _userLogRepository.PointsEarnedTotalAsync(request),
+                    RegisteredUsers = await _userRepository.GetCountAsync(request)
                 };
                 await _cache.SaveToCacheAsync(cacheKey,
                     JsonSerializer.Serialize(summary),

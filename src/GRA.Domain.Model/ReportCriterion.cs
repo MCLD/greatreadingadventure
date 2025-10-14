@@ -15,6 +15,7 @@ namespace GRA.Domain.Model
 
         public bool Favorite { get; set; }
         public int? GroupInfoId { get; set; }
+        public bool IncludeAchieverStatus { get; set; }
         public bool IsFirstTimeParticipant { get; set; }
         public int? MaximumAllowableActivity { get; set; }
 
