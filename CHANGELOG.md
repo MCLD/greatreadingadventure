@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Setting performer programs to be unapproved
 - Performer field for contact name
-- Performer setting for cover sheet fields
+- Performer scheduling settings for cover sheet fields
 
 ## Changed
 
@@ -17,7 +17,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## Fixed
 
 - Display of modals after Bootstrap 5.3 upgrade
-- Performer cost to display in currency format
+- Performer program cost to display in currency format
 
 ## [4.6.0] 2024-10-09
 
