@@ -387,6 +387,7 @@ namespace GRA.Domain.Service
             }
             ArgumentNullException.ThrowIfNull(program);
             program.Description = program.Description?.Trim();
+            program.IsApproved = true;
             program.Setup = program.Setup?.Trim();
             program.Title = program.Title?.Trim();
 
@@ -411,7 +412,7 @@ namespace GRA.Domain.Service
                 if (performer.UserId != authId
                     || !HasPermission(Permission.AccessPerformerRegistration))
                 {
-                    _logger.LogError("User id {AuthId} does not have persmission to add program {ProgramId} image.",
+                    _logger.LogError("User id {AuthId} does not have permission to add program {ProgramId} image.",
                         authId,
                         programId);
                     throw new GraException("Permission denied.");
@@ -947,7 +948,7 @@ namespace GRA.Domain.Service
             if (includePrograms)
             {
                 performer.Programs = await _psProgramRepository.GetByPerformerIdAsync(
-                    performer.Id);
+                    performer.Id, onlyApproved);
             }
             if (includeSchedule)
             {
@@ -1032,7 +1033,8 @@ namespace GRA.Domain.Service
             return await _psPerformerRepository.GetIndexListAsync(onlyApproved);
         }
 
-        public async Task<int> GetPerformerProgramCountAsync(int performerId)
+        public async Task<int> GetPerformerProgramCountAsync(int performerId, 
+            bool onlyApproved = false)
         {
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
@@ -1041,7 +1043,7 @@ namespace GRA.Domain.Service
                     GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
-            return await _psProgramRepository.GetCountByPerformerAsync(performerId);
+            return await _psProgramRepository.GetCountByPerformerAsync(performerId, onlyApproved);
         }
 
         public async Task<ICollection<PsPerformerSchedule>> GetPerformerScheduleAsync(
@@ -1091,7 +1093,7 @@ namespace GRA.Domain.Service
                 if (performer.UserId != authId
                     || !HasPermission(Permission.AccessPerformerRegistration))
                 {
-                    _logger.LogError("User id {AuthId} does not have persmission to view program {Id}.",
+                    _logger.LogError("User id {AuthId} does not have permission to view program {Id}.",
                         authId,
                         id);
                     throw new GraException("Permission denied.");
@@ -1370,7 +1372,7 @@ namespace GRA.Domain.Service
                 if (performer.UserId != authId
                     || !HasPermission(Permission.AccessPerformerRegistration))
                 {
-                    _logger.LogError("User id {AuthId} does not have persmission to remove program {ProgramId}.",
+                    _logger.LogError("User id {AuthId} does not have permission to remove program {ProgramId}.",
                         authId,
                         programId);
                     throw new GraException("Permission denied.");
@@ -1442,6 +1444,17 @@ namespace GRA.Domain.Service
 
             performer.RegistrationCompleted = true;
             await _psPerformerRepository.UpdateSaveAsync(authId, performer);
+        }
+
+        public async Task SetProgramApprovedAsync (int programId, bool isApproved)
+        {
+            VerifyManagementPermission();
+
+            var program = await _psProgramRepository.GetByIdAsync(programId)
+                ?? throw new GraException("The requested program could not be accessed or does not exist.");
+            program.IsApproved = isApproved;
+
+            await _psProgramRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), program);
         }
 
         public async Task SetSelectionSecretCodeAsync(int selectionId, string secretCode)
@@ -1644,7 +1657,7 @@ namespace GRA.Domain.Service
                 if (performer.UserId != authId
                     || !HasPermission(Permission.AccessPerformerRegistration))
                 {
-                    _logger.LogError("User id {AuthId} does not have persmission to edit program {ProgramId}.",
+                    _logger.LogError("User id {AuthId} does not have permission to edit program {ProgramId}.",
                         authId,
                         currentProgram.Id);
                     throw new GraException("Permission denied.");
@@ -1743,7 +1756,7 @@ namespace GRA.Domain.Service
 
             if (scheduleDate?.StartTime.HasValue == false)
             {
-                throw new GraException("The peformer is not available on that day.");
+                throw new GraException("The performer is not available on that day.");
             }
 
             var scheduleStartTime = scheduleDate?.StartTime ?? DateTime.Parse("8:00 AM");
@@ -1760,7 +1773,7 @@ namespace GRA.Domain.Service
                 || programStart.AddMinutes(programLength).TimeOfDay > scheduleEndTime.TimeOfDay
                 || programStart.AddMinutes(programLength).Date != programStart.Date)
             {
-                throw new GraException("The peformer is not available at that time.");
+                throw new GraException("The performer is not available at that time.");
             }
 
             var setupStartTime = programStart.AddMinutes(-program.SetupTimeMinutes).TimeOfDay;
@@ -1783,7 +1796,7 @@ namespace GRA.Domain.Service
                 || (_.ScheduleStartTime.TimeOfDay >= setupStartTime
                     && _.ScheduleStartTime.AddMinutes(_.ScheduleDuration).TimeOfDay <= breakdownEndTime)))
             {
-                throw new GraException("The peformer is already booked during that time.");
+                throw new GraException("The performer is already booked during that time.");
             }
 
             if (bookedTimes.Any(_ => (_.ScheduleStartTime.AddMinutes(_.ScheduleDuration + 60).TimeOfDay >= setupStartTime

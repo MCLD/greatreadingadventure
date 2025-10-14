@@ -600,7 +600,7 @@ namespace GRA.Controllers.MissionControl
                 performer.AvailableInSystem = await _performerSchedulingService
                     .GetPerformerSystemAvailabilityAsync(performer.Id, systemId);
                 performer.ProgramCount = await _performerSchedulingService
-                    .GetPerformerProgramCountAsync(performer.Id);
+                    .GetPerformerProgramCountAsync(performer.Id, onlyApproved: true);
             }
 
             var viewModel = new PerformerListViewModel

@@ -158,6 +158,7 @@
 						<th>Capacity</th>
 						<th>Length (minutes)</th>
 						<th>Cost</th>
+						<th>Status</th>
 						@if (Model.IsEditable)
 						{
 							<th>&nbsp;</th>
@@ -176,6 +177,7 @@
 							<td>@program.MinimumCapacity &ndash; @program.MaximumCapacity</td>
 							<td>@program.ProgramLengthMinutes</td>
 							<td>@program.Cost.ToString("C")</td>
+							<td><span class="far fa-lg @(program.IsApproved ? "fa-check-circle text-success" : "fa-times-circle text-danger")"></span></td>
 							@if (Model.IsEditable)
 							{
 								<td class="on-top">

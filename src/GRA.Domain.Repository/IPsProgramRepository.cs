@@ -8,10 +8,11 @@ namespace GRA.Domain.Repository
     public interface IPsProgramRepository : IRepository<PsProgram>
     {
         Task<PsProgram> GetByIdAsync(int id, bool onlyApproved = false);
-        Task<ICollection<PsProgram>> GetByPerformerIdAsync(int performerId);
+        Task<ICollection<PsProgram>> GetByPerformerIdAsync(int performerId, 
+            bool onlyApproved = false);
         Task<DataWithCount<ICollection<PsProgram>>> PageAsync(PerformerSchedulingFilter filter);
         Task<List<int>> GetIndexListAsync(int? ageGroupId = null, bool onlyApproved = false);
-        Task<int> GetCountByPerformerAsync(int performerId);
+        Task<int> GetCountByPerformerAsync(int performerId, bool onlyApproved = false);
         Task<bool> IsValidAgeGroupAsync(int programId, int ageGroupId);
         Task<ICollection<PsAgeGroup>> GetProgramAgeGroupsAsync(int programId);
         Task AddProgramAgeGroupsAsync(int programId, List<int> ageGroupIds);

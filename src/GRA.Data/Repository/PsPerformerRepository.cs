@@ -27,7 +27,11 @@ namespace GRA.Data.Repository
 
             if (onlyApproved)
             {
-                performer = performer.Where(_ => _.IsApproved);
+                performer = performer
+                    .Where(_ => _.IsApproved 
+                        && _context.PsPrograms
+                            .Where(p => p.IsApproved)
+                            .Any(p => p.PerformerId == _.Id));
             }
 
             return await performer
@@ -51,7 +55,11 @@ namespace GRA.Data.Repository
 
             if (filter.IsApproved.HasValue)
             {
-                performers = performers.Where(_ => _.IsApproved == filter.IsApproved);
+                performers = performers
+                    .Where(_ => _.IsApproved == filter.IsApproved
+                        && _context.PsPrograms
+                            .Where(p => p.IsApproved == filter.IsApproved)
+                            .Any(p => p.PerformerId == _.Id));
             }
 
             var count = await performers.CountAsync();
@@ -76,7 +84,11 @@ namespace GRA.Data.Repository
 
             if (onlyApproved)
             {
-                performers = performers.Where(_ => _.IsApproved);
+                performers = performers
+                    .Where(_ => _.IsApproved
+                        && _context.PsPrograms
+                            .Where(p => p.IsApproved)
+                            .Any(p => p.PerformerId == _.Id));
             }
 
             return await performers

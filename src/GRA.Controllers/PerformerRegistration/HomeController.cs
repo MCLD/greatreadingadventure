@@ -372,7 +372,7 @@ namespace GRA.Controllers.PerformerRegistration
 
                 viewModel.Performer = new PsPerformer
                 {
-                    Name = user.FullName,
+                    ContactName = user.FullName,
                     Email = user.Email,
                     Phone = user.PhoneNumber
                 };
@@ -737,6 +737,11 @@ namespace GRA.Controllers.PerformerRegistration
             {
                 viewModel.Image = _pathResolver.ResolveContentPath(
                     program.Images[0].Filename);
+            }
+
+            if (!program.IsApproved)
+            {
+                ShowAlertWarning($"There are issues with this program and it will not be available for selection. Please contact {settings.ContactEmail} if you have any questions.");
             }
 
             return View(viewModel);

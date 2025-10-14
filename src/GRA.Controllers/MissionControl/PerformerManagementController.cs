@@ -963,7 +963,9 @@ namespace GRA.Controllers.MissionControl
 
             var viewModel = new ProgramViewModel
             {
+                Approve = !program.IsApproved,
                 Program = program,
+                SchedulingStage = schedulingStage,
                 EnablePerformerLivestreamQuestions = await
                     GetSiteSettingBoolAsync(SiteSettingKey.Performer.EnableLivestreamQuestions)
             };
@@ -1026,6 +1028,34 @@ namespace GRA.Controllers.MissionControl
             }
 
             return View(nameof(ProgramDetails), viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ProgramApprove(ProgramViewModel model)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage == PsSchedulingStage.Unavailable)
+            {
+                return RedirectToAction(nameof(Settings));
+            }
+            else if (schedulingStage <= PsSchedulingStage.RegistrationClosed)
+            {
+                try
+                {
+                    await _performerSchedulingService.SetProgramApprovedAsync(model.Program.Id,
+                        model.Approve);
+                    ShowAlertSuccess($"Program {(model.Approve ? "Approved" : "Unapproved")}!");
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger($"Unable to {(model.Approve ? "Approve" : "Unapprove")} program: ", 
+                        gex);
+                    return RedirectToAction(nameof(Performers));
+                }
+            }
+
+            return RedirectToAction(nameof(Performer), new { id = model.Program.PerformerId });
         }
 
         [HttpPost]

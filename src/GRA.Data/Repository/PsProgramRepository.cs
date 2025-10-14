@@ -27,7 +27,7 @@ namespace GRA.Data.Repository
 
             if (onlyApproved)
             {
-                program = program.Where(_ => _.Performer.IsApproved);
+                program = program.Where(_ => _.IsApproved && _.Performer.IsApproved);
             }
 
             return await program
@@ -35,11 +35,19 @@ namespace GRA.Data.Repository
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<ICollection<PsProgram>> GetByPerformerIdAsync(int performerId)
+        public async Task<ICollection<PsProgram>> GetByPerformerIdAsync(int performerId, 
+            bool onlyApproved = false)
         {
-            return await DbSet
+            var programs = DbSet
                 .AsNoTracking()
-                .Where(_ => _.PerformerId == performerId)
+                .Where(_ => _.PerformerId == performerId);
+
+            if (onlyApproved)
+            {
+                programs = programs.Where(_ => _.IsApproved);
+            }
+
+            return await programs
                 .ProjectToType<PsProgram>()
                 .ToListAsync();
         }
@@ -59,7 +67,8 @@ namespace GRA.Data.Repository
             }
             if (filter.IsApproved.HasValue)
             {
-                programs = programs.Where(_ => _.Performer.IsApproved == filter.IsApproved);
+                programs = programs.Where(_ => _.IsApproved == filter.IsApproved
+                    && _.Performer.IsApproved == filter.IsApproved);
             }
 
             var count = await programs.CountAsync();
@@ -93,7 +102,7 @@ namespace GRA.Data.Repository
             }
             if (onlyApproved)
             {
-                programs = programs.Where(_ => _.Performer.IsApproved);
+                programs = programs.Where(_ => _.IsApproved && _.Performer.IsApproved);
             }
 
             return await programs
@@ -103,12 +112,18 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task<int> GetCountByPerformerAsync(int performerId)
+        public async Task<int> GetCountByPerformerAsync(int performerId, bool onlyApproved = false)
         {
-            return await DbSet
+            var programs = DbSet
                 .AsNoTracking()
-                .Where(_ => _.PerformerId == performerId)
-                .CountAsync();
+                .Where(_ => _.PerformerId == performerId);
+
+            if (onlyApproved)
+            {
+                programs = programs.Where(_ => _.IsApproved);
+            }
+
+            return await programs.CountAsync();
         }
 
         public async Task<bool> IsValidAgeGroupAsync(int programId, int ageGroupId)
