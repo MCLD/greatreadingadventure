@@ -918,6 +918,8 @@ namespace GRA.Controllers.MissionControl
                 description.AppendLine();
             }
 
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+
             var viewModel = new PerformerCoversheetViewModel
             {
                 Description = description.ToString(),
@@ -926,7 +928,9 @@ namespace GRA.Controllers.MissionControl
                 VendorId = performer.VendorId,
                 PayToName = performer.Name,
                 PayToAddress = performer.BillingAddress,
-                InvoiceNumber = invoiceNumber
+                InvoiceNumber = invoiceNumber,
+                LibraryBranch = settings.CoverSheetBranch,
+                StaffContact = settings.CoverSheetContact
             };
 
             PageTitle = "Coversheet - "
