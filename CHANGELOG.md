@@ -4,7 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
-## [4.6.0] 2024-10-09
+## [Unreleased]
+
+## Added
+
+- Alt texts to avatar color, item and layer selector images
+- Mission Control interface to set avatar color and item alt texts
 
 ## Fixed
 
@@ -31,8 +36,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Hints about how many daily images are needed on daily image upload page
 - Handling of re-shipped vendor items when an imported order date is after a recorded ship date
 - Mission Control interface for managing daily images
-- Alt texts to avatar color, item and layer selector images
-- Mission Control interface to set avatar color and item alt texts
 
 ## Changed
 

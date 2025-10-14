@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -25,6 +24,7 @@ namespace GRA.Data.Repository
         {
             var addTexts = _mapper
                 .Map<IEnumerable<AvatarItemText>, IEnumerable<Data.Model.AvatarItemText>>(texts);
+
             await _context.AvatarItemTexts.AddRangeAsync(addTexts);
         }
 
@@ -68,7 +68,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.AvatarBundleId == bundleId)
                 .Select(_ => _.AvatarItem)
-                .ProjectTo<AvatarItem>(_mapper.ConfigurationProvider)
+                .ProjectToType<AvatarItem>()
                 .ToListAsync();
         }
 
@@ -76,7 +76,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => ids.Contains(_.Id))
-                .ProjectTo<AvatarItem>(_mapper.ConfigurationProvider)
+                .ProjectToType<AvatarItem>()
                 .ToListAsync();
         }
 
@@ -85,7 +85,7 @@ namespace GRA.Data.Repository
             return await DbSet.AsNoTracking()
                 .Where(_ => _.AvatarLayerId == layerId)
                 .OrderBy(_ => _.SortOrder)
-                .ProjectTo<AvatarItem>(_mapper.ConfigurationProvider)
+                .ProjectToType<AvatarItem>()
                 .ToListAsync();
         }
 
@@ -94,7 +94,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => _.AvatarLayer.Position == layerPosition && _.SortOrder == sortOrder)
-                .ProjectTo<AvatarItem>(_mapper.ConfigurationProvider)
+                .ProjectToType<AvatarItem>()
                 .SingleAsync();
         }
 
@@ -140,7 +140,7 @@ namespace GRA.Data.Repository
             return await _context.AvatarItemTexts
                 .AsNoTracking()
                 .Where(_ => itemIds.Contains(_.AvatarItemId))
-                .ProjectTo<AvatarItemText>(_mapper.ConfigurationProvider)
+                .ProjectToType<AvatarItemText>()
                 .ToListAsync();
         }
 
@@ -260,7 +260,7 @@ namespace GRA.Data.Repository
                 .ThenBy(_ => _.SortOrder)
                 .ApplyPagination(filter)
                 .Include(_ => _.Texts)
-                .ProjectTo<AvatarItem>(_mapper.ConfigurationProvider)
+                .ProjectToType<AvatarItem>()
                 .ToListAsync();
 
             return new DataWithCount<ICollection<AvatarItem>>
@@ -341,6 +341,7 @@ namespace GRA.Data.Repository
         {
             var updateTexts = _mapper
                 .Map<IEnumerable<AvatarItemText>, IEnumerable<Data.Model.AvatarItemText>>(texts);
+
             _context.AvatarItemTexts.UpdateRange(updateTexts);
         }
 

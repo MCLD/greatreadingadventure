@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -22,7 +22,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => _.AvatarItemId == item && _.AvatarColorId == color)
-                .ProjectTo<AvatarElement>(_mapper.ConfigurationProvider)
+                .ProjectToType<AvatarElement>()
                 .SingleOrDefaultAsync();
         }
 
@@ -34,9 +34,9 @@ namespace GRA.Data.Repository
                 .Select(_ => new AvatarElement
                 {
                     AltText = _.AvatarElement.AvatarItem.Texts
-                    .Where(_ => _.LanguageId == languageId)
-                    .FirstOrDefault()
-                    .AltText,
+                        .Where(_ => _.LanguageId == languageId)
+                        .FirstOrDefault()
+                        .AltText,
                     AvatarColorId = _.AvatarElement.AvatarColorId,
                     AvatarItemId = _.AvatarElement.AvatarItemId,
                     Filename = _.AvatarElement.Filename,

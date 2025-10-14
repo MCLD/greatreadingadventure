@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -51,7 +51,7 @@ namespace GRA.Data.Repository
             return await _context.AvatarColorTexts
                 .AsNoTracking()
                 .Where(_ => colorIds.Contains(_.AvatarColorId))
-                .ProjectTo<AvatarColorText>(_mapper.ConfigurationProvider)
+                .ProjectToType<AvatarColorText>()
                 .ToListAsync();
         }
 
@@ -67,7 +67,7 @@ namespace GRA.Data.Repository
                 .OrderBy(_ => _.SortOrder)
                 .ApplyPagination(filter)
                 .Include(_ => _.Texts)
-                .ProjectTo<AvatarColor>(_mapper.ConfigurationProvider)
+                .ProjectToType<AvatarColor>()
                 .ToListAsync();
 
             return new DataWithCount<ICollection<AvatarColor>>
@@ -89,6 +89,7 @@ namespace GRA.Data.Repository
         {
             var updateTexts = _mapper
                 .Map<IEnumerable<AvatarColorText>, IEnumerable<Data.Model.AvatarColorText>>(texts);
+
             _context.AvatarColorTexts.UpdateRange(updateTexts);
         }
 
