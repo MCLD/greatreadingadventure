@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -25,7 +25,7 @@ namespace GRA.Data.Repository
         {
             return await ApplyFilters(filter)
                 .Where(_ => _.IsForDashboard)
-                .ProjectTo<Carousel>(_mapper.ConfigurationProvider)
+                .ProjectToType<Carousel>()
                 .FirstOrDefaultAsync();
         }
 
@@ -39,7 +39,7 @@ namespace GRA.Data.Repository
         {
             return await ApplyFilters(filter)
                 .ApplyPagination(filter)
-                .ProjectTo<Carousel>(_mapper.ConfigurationProvider)
+                .ProjectToType<Carousel>()
                 .ToListAsync();
         }
         #endregion

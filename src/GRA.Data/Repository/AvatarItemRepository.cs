@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -67,7 +67,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.AvatarBundleId == bundleId)
                 .Select(_ => _.AvatarItem)
-                .ProjectTo<AvatarItem>(_mapper.ConfigurationProvider)
+                .ProjectToType<AvatarItem>()
                 .ToListAsync();
         }
 
@@ -75,7 +75,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => ids.Contains(_.Id))
-                .ProjectTo<AvatarItem>(_mapper.ConfigurationProvider)
+                .ProjectToType<AvatarItem>()
                 .ToListAsync();
         }
 
@@ -84,7 +84,7 @@ namespace GRA.Data.Repository
             return await DbSet.AsNoTracking()
                 .Where(_ => _.AvatarLayerId == layerId)
                 .OrderBy(_ => _.SortOrder)
-                .ProjectTo<AvatarItem>(_mapper.ConfigurationProvider)
+                .ProjectToType<AvatarItem>()
                 .ToListAsync();
         }
 
@@ -93,7 +93,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => _.AvatarLayer.Position == layerPosition && _.SortOrder == sortOrder)
-                .ProjectTo<AvatarItem>(_mapper.ConfigurationProvider)
+                .ProjectToType<AvatarItem>()
                 .SingleAsync();
         }
 
@@ -145,7 +145,7 @@ namespace GRA.Data.Repository
                 .Where(_ => _.AvatarLayerId == layerId
                     && (!_.Unlockable || userUnlockedItems.Select(u => u.Id).Contains(_.Id)))
                 .OrderBy(_ => _.SortOrder)
-                .ProjectTo<AvatarItem>(_mapper.ConfigurationProvider)
+                .ProjectToType<AvatarItem>()
                 .ToListAsync();
         }
 
@@ -234,7 +234,7 @@ namespace GRA.Data.Repository
             return await ApplyFilters(filter)
                 .OrderBy(_ => _.SortOrder)
                 .ApplyPagination(filter)
-                .ProjectTo<AvatarItem>(_mapper.ConfigurationProvider)
+                .ProjectToType<AvatarItem>()
                 .ToListAsync();
         }
 

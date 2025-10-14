@@ -40,6 +40,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Add tracking of packing list viewing
 - Move exit and landing page messages to database
 - Remove references to ValueTuple
+- Replace AutoMapper with Mapster
 
 ### Fixed
 

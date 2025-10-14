@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -50,7 +50,7 @@ namespace GRA.Data.Repository
             return await ApplyFilters(filter)
                 .OrderByDescending(_ => _.Id)
                 .ApplyPagination(filter)
-                .ProjectTo<Drawing>(_mapper.ConfigurationProvider)
+                .ProjectToType<Drawing>()
                 .ToListAsync();
         }
 
@@ -131,7 +131,7 @@ namespace GRA.Data.Repository
             var drawing = await DbSet
                 .AsNoTracking()
                 .Where(_ => _.Id == id)
-                .ProjectTo<Drawing>(_mapper.ConfigurationProvider)
+                .ProjectToType<Drawing>()
                 .SingleOrDefaultAsync()
                 ?? throw new GraException($"Drawing id {id} could not be found.");
 
@@ -147,13 +147,13 @@ namespace GRA.Data.Repository
                 drawing.Winners = await winners
                     .Skip(skip.Value)
                     .Take(take.Value)
-                    .ProjectTo<PrizeWinner>(_mapper.ConfigurationProvider)
+                    .ProjectToType<PrizeWinner>()
                     .ToListAsync();
             }
             else
             {
                 drawing.Winners = await winners
-                    .ProjectTo<PrizeWinner>(_mapper.ConfigurationProvider)
+                    .ProjectToType<PrizeWinner>()
                     .ToListAsync();
             }
 

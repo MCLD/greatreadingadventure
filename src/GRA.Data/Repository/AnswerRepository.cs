@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -22,7 +22,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.QuestionId == questionId)
                 .OrderBy(_ => _.SortOrder)
-                .ProjectTo<Answer>(_mapper.ConfigurationProvider)
+                .ProjectToType<Answer>()
                 .ToListAsync();
 
             return answers;

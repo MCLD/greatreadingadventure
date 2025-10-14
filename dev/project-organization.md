@@ -11,8 +11,8 @@ This document describes the layout of the project as viewed in the solution file
   - `GRA.Domain.Service` - services for performing logic and calling data repositories
 - Infrastructure
   - `GRA.Data` - main Entity Framework data project
+    - `Config` - [Mapster configuration](https://github.com/MapsterMapper/Mapster/wiki/Configuration)
     - `Model` - model files that match the database schema, used by EF for [database CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete)
-    - `Profiles` - [AutoMapper profiles](https://github.com/AutoMapper/AutoMapper/wiki/Configuration#profile-instances)
     - `Repository` - repositories for communicating with the database and returning domain model objects
   - `GRA.Data.SQLite` - database provider for using SQLite
   - `GRA.Data.SqlServer` - database provider for using Microsoft SQL Server

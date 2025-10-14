@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -21,7 +21,7 @@ namespace GRA.Data.Repository
                 .OrderByDescending(_ => _.CreatedAt)
                 .Skip(skip)
                 .Take(take)
-                .ProjectTo<Mail>(_mapper.ConfigurationProvider)
+                .ProjectToType<Mail>()
                 .ToListAsync();
         }
 
@@ -55,7 +55,7 @@ namespace GRA.Data.Repository
                 .OrderByDescending(_ => _.CreatedAt)
                 .Skip(skip)
                 .Take(take)
-                .ProjectTo<Mail>(_mapper.ConfigurationProvider)
+                .ProjectToType<Mail>()
                 .ToListAsync();
         }
 
@@ -90,7 +90,7 @@ namespace GRA.Data.Repository
                 .OrderByDescending(_ => _.CreatedAt)
                 .Skip(skip)
                 .Take(take)
-                .ProjectTo<Mail>(_mapper.ConfigurationProvider)
+                .ProjectToType<Mail>()
                 .ToListAsync();
         }
 
@@ -102,7 +102,7 @@ namespace GRA.Data.Repository
                 .OrderByDescending(_ => _.CreatedAt)
                 .Skip(skip)
                 .Take(take)
-                .ProjectTo<Mail>(_mapper.ConfigurationProvider)
+                .ProjectToType<Mail>()
                 .ToListAsync();
         }
 
@@ -133,7 +133,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => !_.IsDeleted && _.Id == id)
-                .ProjectTo<Mail>(_mapper.ConfigurationProvider)
+                .ProjectToType<Mail>()
                 .SingleOrDefaultAsync();
         }
 
@@ -159,7 +159,7 @@ namespace GRA.Data.Repository
             return await DbSet.AsNoTracking()
                 .Where(_ => _.Id == threadId || _.ThreadId == threadId)
                 .OrderBy(_ => _.CreatedAt)
-                .ProjectTo<Mail>(_mapper.ConfigurationProvider)
+                .ProjectToType<Mail>()
                 .ToListAsync();
         }
     }

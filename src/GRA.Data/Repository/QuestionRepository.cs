@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -25,14 +25,18 @@ namespace GRA.Data.Repository
 
             if (includeAnswer)
             {
+                var forkedConfig = _mapper.Config
+                    .Fork(_ => _.NewConfig<Model.Question, Question>()
+                        .Map(dest => dest.Answers, src => src.Answers.OrderBy(_ => _.SortOrder)));
+
                 return await questions
-                .ProjectTo<Question>(_mapper.ConfigurationProvider, _ => _.Answers)
+                .ProjectToType<Question>(forkedConfig)
                 .ToListAsync();
             }
             else
             {
                 return await questions
-                .ProjectTo<Question>(_mapper.ConfigurationProvider)
+                .ProjectToType<Question>()
                 .ToListAsync();
             }
         }

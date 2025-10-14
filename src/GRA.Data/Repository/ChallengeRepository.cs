@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Data.Extensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -61,7 +61,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.ChallengeId == id)
                 .OrderBy(_ => _.Position)
-                .ProjectTo<ChallengeTask>(_mapper.ConfigurationProvider)
+                .ProjectToType<ChallengeTask>()
                 .ToListAsync();
 
                 await GetChallengeTasksTypeAsync(challenge.Tasks);
@@ -120,7 +120,7 @@ namespace GRA.Data.Repository
             var challenge = await DbSet
                 .AsNoTracking()
                 .Where(_ => !_.IsDeleted && _.Id == id)
-                .ProjectTo<Challenge>(_mapper.ConfigurationProvider)
+                .ProjectToType<Challenge>()
                 .SingleOrDefaultAsync();
 
             if (challenge != null)
@@ -129,7 +129,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.ChallengeId == id)
                 .OrderBy(_ => _.Position)
-                .ProjectTo<ChallengeTask>(_mapper.ConfigurationProvider)
+                .ProjectToType<ChallengeTask>()
                 .ToListAsync();
 
                 await GetChallengeTasksTypeAsync(challenge.Tasks);
@@ -149,7 +149,7 @@ namespace GRA.Data.Repository
                     .AsNoTracking()
                     .Where(_ => _.ChallengeId == id)
                     .Select(_ => _.Category)
-                    .ProjectTo<Category>(_mapper.ConfigurationProvider)
+                    .ProjectToType<Category>()
                     .ToListAsync();
             }
             return challenge;
@@ -170,7 +170,7 @@ namespace GRA.Data.Repository
             return await challenges
                 .OrderBy(_ => _.Name)
                 .Distinct()
-                .ProjectTo<Challenge>(_mapper.ConfigurationProvider)
+                .ProjectToType<Challenge>()
                 .ToListAsync();
         }
 
@@ -186,7 +186,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.ChallengeId == challengeId)
                 .OrderBy(_ => _.Position)
-                .ProjectTo<ChallengeTask>(_mapper.ConfigurationProvider)
+                .ProjectToType<ChallengeTask>()
                 .ToListAsync();
 
             return await GetChallengeTasksTypeAsync(tasks);
@@ -268,7 +268,7 @@ namespace GRA.Data.Repository
             var challengeList = await ApplyFilters(filter)
                 .ApplyOrdering(filter)
                 .ApplyPagination(filter)
-                .ProjectTo<Challenge>(_mapper.ConfigurationProvider)
+                .ProjectToType<Challenge>()
                 .ToListAsync();
 
             foreach (var challenge in challengeList)

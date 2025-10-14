@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Report;
 using GRA.Domain.Model.Utility;
 using GRA.Domain.Repository;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -189,7 +189,7 @@ namespace GRA.Data.Repository
             var codes = await DbSet
                 .Where(_ => _.PackingSlip == packingSlipNumber)
                 .AsNoTracking()
-                .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
+                .ProjectToType<VendorCode>()
                 .ToListAsync();
 
             var users = _context
@@ -298,7 +298,7 @@ namespace GRA.Data.Repository
                           join users in validUsers
                           on vendorCodes.UserId equals users.Id
                           select vendorCodes)
-                          .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
+                          .ProjectToType<VendorCode>()
                           .ToListAsync();
         }
 
@@ -309,7 +309,7 @@ namespace GRA.Data.Repository
                     && _.IsMissing != true
                     && _.IsDamaged != true)
                 .AsNoTracking()
-                .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
+                .ProjectToType<VendorCode>()
                 .ToListAsync();
 
             var userIds = codes.Select(_ => _.UserId).Union(codes.Select(_ => _.AssociatedUserId));
@@ -435,7 +435,7 @@ namespace GRA.Data.Repository
                     vendorCode => vendorCode.UserId,
                     user => user.Id,
                     (vendorCode, _) => vendorCode)
-                .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
+                .ProjectToType<VendorCode>()
                 .ToListAsync();
         }
 
@@ -498,7 +498,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .OrderBy(_ => _.ArrivalDate)
                 .ThenBy(_ => _.Details)
-                .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
+                .ProjectToType<VendorCode>()
                 .ToListAsync();
         }
 
@@ -607,7 +607,7 @@ namespace GRA.Data.Repository
             };
         }
 
-        public async Task<ICollection<VendorTitlesOnOrder>> 
+        public async Task<ICollection<VendorTitlesOnOrder>>
             GetTitlesOnOrderAsync(int vendorCodeTypeId)
         {
             return await DbSet.AsNoTracking()
@@ -662,7 +662,7 @@ namespace GRA.Data.Repository
             return await DbSet.AsNoTracking()
                 .Where(_ => _.UserId == userId)
                 .OrderByDescending(_ => _.CreatedAt)
-                .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
+                .ProjectToType<VendorCode>()
                 .FirstOrDefaultAsync();
         }
 
@@ -671,7 +671,7 @@ namespace GRA.Data.Repository
             return await DbSet.AsNoTracking()
                 .Where(_ => _.UserId == userId)
                 .OrderByDescending(_ => _.CreatedAt)
-                .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
+                .ProjectToType<VendorCode>()
                 .ToListAsync();
         }
     }

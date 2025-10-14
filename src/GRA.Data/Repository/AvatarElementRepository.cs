@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -22,7 +22,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => _.AvatarItemId == item && _.AvatarColorId == color)
-                .ProjectTo<AvatarElement>(_mapper.ConfigurationProvider)
+                .ProjectToType<AvatarElement>()
                 .SingleOrDefaultAsync();
         }
 
@@ -31,7 +31,7 @@ namespace GRA.Data.Repository
             return await _context.UserAvatars.AsNoTracking()
                 .Where(_ => _.UserId == userId)
                 .Select(_ => _.AvatarElement)
-                .ProjectTo<AvatarElement>(_mapper.ConfigurationProvider)
+                .ProjectToType<AvatarElement>()
                 .ToListAsync();
         }
 

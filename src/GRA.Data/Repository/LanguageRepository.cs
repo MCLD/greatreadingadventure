@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -24,7 +24,7 @@ namespace GRA.Data.Repository
                 .Where(_ => _.IsActive)
                 .OrderByDescending(_ => _.IsDefault)
                 .ThenBy(_ => _.Name)
-                .ProjectTo<Language>(_mapper.ConfigurationProvider)
+                .ProjectToType<Language>()
                 .ToListAsync();
         }
 
@@ -34,7 +34,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .OrderBy(_ => _.IsDefault)
                 .ThenBy(_ => _.Name)
-                .ProjectTo<Language>(_mapper.ConfigurationProvider)
+                .ProjectToType<Language>()
                 .ToListAsync();
         }
 
@@ -43,7 +43,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.IsActive && _.Id == id)
-                .ProjectTo<Language>(_mapper.ConfigurationProvider)
+                .ProjectToType<Language>()
                 .SingleOrDefaultAsync();
         }
 

@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -38,7 +38,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .ProjectTo<Domain.Model.MessageTemplate>(_mapper.ConfigurationProvider)
+                .ProjectToType<Domain.Model.MessageTemplate>()
                 .SingleOrDefaultAsync(_ => _.Name == templateName);
         }
 
@@ -55,7 +55,7 @@ namespace GRA.Data.Repository
         {
             return await _context.MessageTemplateTexts
                 .AsNoTracking()
-                .ProjectTo<MessageTemplateText>(_mapper.ConfigurationProvider)
+                .ProjectToType<MessageTemplateText>()
                 .SingleOrDefaultAsync(_ => _.MessageTemplateId == messageTemplateId
                     && _.LanguageId == languageId);
         }

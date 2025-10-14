@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -26,7 +26,7 @@ namespace GRA.Data.Repository
             var data = await authorizationCodes
                 .OrderBy(_ => _.Code)
                 .ApplyPagination(filter)
-                .ProjectTo<AuthorizationCode>(_mapper.ConfigurationProvider)
+                .ProjectToType<AuthorizationCode>()
                 .ToListAsync();
 
             return new DataWithCount<IEnumerable<AuthorizationCode>>
@@ -42,7 +42,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.SiteId == siteId
                     && _.Code == authorizationCode)
-                .ProjectTo<AuthorizationCode>(_mapper.ConfigurationProvider)
+                .ProjectToType<AuthorizationCode>()
                 .SingleOrDefaultAsync();
         }
     }

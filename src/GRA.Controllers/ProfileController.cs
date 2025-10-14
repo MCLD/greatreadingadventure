@@ -35,7 +35,7 @@ namespace GRA.Controllers
         private readonly EventService _eventService;
         private readonly ILogger<ProfileController> _logger;
         private readonly MailService _mailService;
-        private readonly AutoMapper.IMapper _mapper;
+        private readonly MapsterMapper.IMapper _mapper;
         private readonly PointTranslationService _pointTranslationService;
         private readonly PrizeWinnerService _prizeWinnerService;
         private readonly QuestionnaireService _questionnaireService;
@@ -1576,7 +1576,7 @@ namespace GRA.Controllers
                     .GetByProgramIdAsync(model.User.ProgramId);
                 model.TranslationDescriptionPastTense = pointTranslation
                     .TranslationDescriptionPastTense
-                    .Replace("{0}", "",StringComparison.OrdinalIgnoreCase)
+                    .Replace("{0}", "", StringComparison.OrdinalIgnoreCase)
                     .Trim();
                 model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }

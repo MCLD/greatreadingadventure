@@ -37,7 +37,7 @@ namespace GRA.Controllers.MissionControl
         private readonly JobService _jobService;
         private readonly ILogger<ParticipantsController> _logger;
         private readonly MailService _mailService;
-        private readonly AutoMapper.IMapper _mapper;
+        private readonly MapsterMapper.IMapper _mapper;
         private readonly PointTranslationService _pointTranslationService;
         private readonly PrizeWinnerService _prizeWinnerService;
         private readonly QuestionnaireService _questionnaireService;

@@ -24,7 +24,7 @@
 
         <div class="col-12 col-lg-6 mb-3">
             <label asp-for="Settings.RegistrationOpen" class="col-form-label required-field"></label>
-            <div current-value="@Model.Settings.RegistrationOpen"
+            <div current-value="@Model.Settings?.RegistrationOpen"
                  class="gra-picker-datetime"
                  datetimepicker-container
                  id="registrationOpenPicker">
@@ -36,7 +36,7 @@
         </div>
         <div class="col-12 col-lg-6 mb-3">
             <label asp-for="Settings.RegistrationClosed" class="col-form-label required-field"></label>
-            <div current-value="@Model.Settings.RegistrationClosed"
+            <div current-value="@Model.Settings?.RegistrationClosed"
                  class="gra-picker-datetime"
                  datetimepicker-container
                  id="registrationClosedPicker">
@@ -46,7 +46,7 @@
         </div>
         <div class="col-12 col-lg-6 mb-3">
             <label asp-for="Settings.SchedulingPreview" class="col-form-label required-field"></label>
-            <div current-value="@Model.Settings.SchedulingPreview"
+            <div current-value="@Model.Settings?.SchedulingPreview"
                  class="gra-picker-datetime"
                  datetimepicker-container
                  id="schedulingPreviewPicker">
@@ -56,7 +56,7 @@
         </div>
         <div class="col-12 col-lg-6 mb-3">
             <label asp-for="Settings.SchedulingOpen" class="col-form-label required-field"></label>
-            <div current-value="@Model.Settings.SchedulingOpen"
+            <div current-value="@Model.Settings?.SchedulingOpen"
                  class="gra-picker-datetime"
                  datetimepicker-container
                  id="schedulingOpenPicker">
@@ -66,7 +66,7 @@
         </div>
         <div class="col-12 col-lg-6 mb-3">
             <label asp-for="Settings.SchedulingClosed" class="col-form-label required-field"></label>
-            <div current-value="@Model.Settings.SchedulingClosed"
+            <div current-value="@Model.Settings?.SchedulingClosed"
                  class="gra-picker-datetime"
                  datetimepicker-container
                  id="schedulingClosedPicker">
@@ -76,7 +76,7 @@
         </div>
         <div class="col-12 col-lg-6 mb-3">
             <label asp-for="Settings.SchedulePosted" class="col-form-label required-field"></label>
-            <div current-value="@Model.Settings.SchedulePosted"
+            <div current-value="@Model.Settings?.SchedulePosted"
                  class="gra-picker-datetime"
                  datetimepicker-container
                  id="schedulePostedPicker">
@@ -87,7 +87,7 @@
 
         <div class="col-12 col-lg-6 mb-3">
             <label asp-for="Settings.ScheduleStartDate" class="col-form-label required-field"></label>
-            <div current-value="@Model.Settings.ScheduleStartDate"
+            <div current-value="@Model.Settings?.ScheduleStartDate"
                  class="gra-picker-date"
                  datetimepicker-container
                  id="scheduleStartDatePicker">
@@ -100,7 +100,7 @@
         </div>
         <div class="col-12 col-lg-6 mb-3">
             <label asp-for="Settings.ScheduleEndDate" class="col-form-label required-field"></label>
-            <div current-value="@Model.Settings.ScheduleEndDate"
+            <div current-value="@Model.Settings?.ScheduleEndDate"
                  class="gra-picker-date"
                  datetimepicker-container
                  id="scheduleEndDatePicker">

@@ -20,7 +20,7 @@ namespace GRA.Controllers.MissionControl
     {
         private readonly EmailService _emailSerivce;
         private readonly ILogger<SitesController> _logger;
-        private readonly AutoMapper.IMapper _mapper;
+        private readonly MapsterMapper.IMapper _mapper;
         private readonly SiteService _siteService;
         private readonly UserService _userService;
 

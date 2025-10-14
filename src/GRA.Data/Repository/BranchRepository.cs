@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -35,7 +35,7 @@ namespace GRA.Data.Repository
                     && (!requireGeolocation || !string.IsNullOrWhiteSpace(_.Geolocation)))
                 .OrderBy(_ => _.Name)
                 .ThenBy(_ => _.System.Name)
-                .ProjectTo<Branch>(_mapper.ConfigurationProvider)
+                .ProjectToType<Branch>()
                 .ToListAsync();
         }
 
@@ -45,7 +45,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.SystemId == systemId)
                 .OrderBy(_ => _.Name)
-                .ProjectTo<Branch>(_mapper.ConfigurationProvider)
+                .ProjectToType<Branch>()
                 .ToListAsync();
         }
 
@@ -62,7 +62,7 @@ namespace GRA.Data.Repository
             return await ApplyFilters(filter)
                 .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
-                .ProjectTo<Branch>(_mapper.ConfigurationProvider)
+                .ProjectToType<Branch>()
                 .ToListAsync();
         }
 

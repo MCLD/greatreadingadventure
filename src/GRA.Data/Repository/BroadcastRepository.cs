@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -32,7 +32,7 @@ namespace GRA.Data.Repository
             }
             return await broadcasts
                 .ApplyPagination(filter)
-                .ProjectTo<Broadcast>(_mapper.ConfigurationProvider)
+                .ProjectToType<Broadcast>()
                 .ToListAsync();
         }
 
@@ -71,7 +71,7 @@ namespace GRA.Data.Repository
 
             return await broadcasts
                 .OrderBy(_ => _.SendAt)
-                .ProjectTo<Broadcast>(_mapper.ConfigurationProvider)
+                .ProjectToType<Broadcast>()
                 .ToListAsync();
         }
     }

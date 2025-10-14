@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -30,7 +30,7 @@ namespace GRA.Data.Repository
             return await ApplyFilters(filter)
                 .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
-                .ProjectTo<Questionnaire>(_mapper.ConfigurationProvider)
+                .ProjectToType<Questionnaire>()
                 .ToListAsync();
         }
 
@@ -49,17 +49,18 @@ namespace GRA.Data.Repository
 
             if (includeAnswers)
             {
+                var forkedConfig = _mapper.Config
+                    .Fork(_ => _.NewConfig<Model.Question, Question>()
+                        .Map(dest => dest.Answers, src => src.Answers.OrderBy(_ => _.SortOrder)));
+
                 return await questionnaire
-                    .ProjectTo<Questionnaire>(
-                        _mapper.ConfigurationProvider,
-                        _ => _.Questions.Select(a => a.Answers)
-                    )
+                    .ProjectToType<Questionnaire>(forkedConfig)
                     .SingleOrDefaultAsync();
             }
             else
             {
                 return await questionnaire
-                    .ProjectTo<Questionnaire>(_mapper.ConfigurationProvider)
+                    .ProjectToType<Questionnaire>()
                     .SingleOrDefaultAsync();
             }
         }

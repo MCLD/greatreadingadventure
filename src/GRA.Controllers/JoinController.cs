@@ -31,7 +31,7 @@ namespace GRA.Controllers
         private readonly LanguageService _languageService;
         private readonly ILogger<JoinController> _logger;
         private readonly MailService _mailService;
-        private readonly AutoMapper.IMapper _mapper;
+        private readonly MapsterMapper.IMapper _mapper;
         private readonly PointTranslationService _pointTranslationService;
         private readonly QuestionnaireService _questionnaireService;
         private readonly SchoolService _schoolService;
