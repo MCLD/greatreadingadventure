@@ -10,7 +10,6 @@ namespace GRA.Controllers.ViewModel.PerformerRegistration.Home
         public PsSettings Settings { get; set; }
         public IEnumerable<Domain.Model.System> Systems { get; set; }
         public string ImagePath { get; set; }
-        public string ReferencesPath { get; set; }
         public Uri Uri { get; set; }
         public bool IsEditable { get; set; }
         public bool EnablePerformerInsuranceQuestion { get; set; }

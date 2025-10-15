@@ -55,5 +55,13 @@ namespace GRA.Domain.Model
         [DisplayName("Vendor ID Prompt")]
         [MaxLength(255)]
         public string VendorIdPrompt { get; set; }
+
+        [DisplayName("Cover Sheet Staff Contact")]
+        [MaxLength(255)]
+        public string CoverSheetContact { get; set; }
+
+        [DisplayName("Cover Sheet Library Branch")]
+        [MaxLength(255)]
+        public string CoverSheetBranch { get; set; }
     }
 }

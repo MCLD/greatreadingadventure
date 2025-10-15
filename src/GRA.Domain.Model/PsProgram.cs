@@ -54,6 +54,8 @@ namespace GRA.Domain.Model
         [DisplayName("Allow archiving")]
         public bool AllowArchiving { get; set; }
 
+        public bool IsApproved { get; set; }
+
         public ICollection<PsAgeGroup> AgeGroups { get; set; }
         public List<PsProgramImage> Images { get; set; }
 

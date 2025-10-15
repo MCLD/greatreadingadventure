@@ -1,107 +1,121 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.ProgramViewModel
 
 @section styles {
-    <link rel="stylesheet" href="/css/performerregistration.min.css" />
+	<link rel="stylesheet" href="/css/performerregistration.min.css" />
 }
 @section inHeading {
-    <a asp-action="Performer"
-       asp-route-id="@Model.Program.PerformerId"
-       class="btn btn-outline-secondary ms-auto d-print-none">Return to Performer</a>
+	<a asp-action="Performer"
+	   asp-route-id="@Model.Program.PerformerId"
+	   class="btn btn-outline-secondary ms-auto d-print-none">Return to Performer</a>
 }
 
-<div class="row">
-    <div class="col-12">
-        <h1>
-            @Model.Program.Title
-            <a asp-action="ProgramDetails" 
-            asp-route-id="@Model.Program.Id" 
-            class="btn btn-outline-primary">Edit Program</a>
-        </h1>
-    </div>
+<div class="row mt-4">
+	<div class="col-12 d-flex">
+		<div class="flex-grow-1">
+			<span class="h1 fw-bold">@Model.Program.Title</span>
+			<a asp-action="ProgramDetails"
+			   asp-route-id="@Model.Program.Id"
+			   class="btn btn-outline-primary mb-2 ms-2 d-prrint-none">Edit Program</a>
+		</div>
+		@if (Model.SchedulingStage <= GRA.Domain.Model.PsSchedulingStage.RegistrationClosed)
+		{
+			<div>
+				<form method="post" role="form" style="display:inline;">
+					<input asp-for="Program.Id" type="hidden" />
+					<input asp-for="Program.PerformerId" type="hidden" />
+					<input asp-for="Approve" type="hidden" />
+					<button asp-action="@nameof(PerformerManagementController.ProgramApprove)"
+							class="btn d-print-none @(Model.Approve ? "btn-outline-success" : "btn-outline-danger")">
+						@(Model.Approve ? "Approve" : "Unapprove")
+					</button>
+				</form>
+			</div>
+		}
+	</div>
 
-    <div class="col-12 col-sm-5 col-md-4">
-        @if (!string.IsNullOrWhiteSpace(Model.Image))
-        {
-            <div class="row mb-3 text-center">
-                <div class="col-12">
-                    <img src="~/@Model.Image" class="img-fluid" style="margin: 0 auto;" />
-                </div>
-            </div>
-        }
-        <div class="row mb-3">
-            <div class="col-12 text-center">
-                <a asp-action="ProgramImages" 
-                asp-route-id="@Model.Program.Id" 
-                class="btn btn-outline-primary">View/Manage Images</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-12 col-sm-7 col-md-8">
-        <div class="mb-3">
-            <label>Name</label>
-            <div>@Model.Program.Title</div>
-        </div>
-        <div class="mb-3">
-            <label>Description</label>
-            <div>@Model.Program.Description</div>
-        </div>
-        <div class="mb-3">
-            <label>Capacity</label>
-            <div>@Model.Program.MinimumCapacity &ndash; @Model.Program.MaximumCapacity</div>
-        </div>
-        <div class="mb-3">
-            <label>Ages</label>
-            <div>
-                <ul>
-                    @foreach (var age in Model.Program.AgeGroups)
-                    {
-                        <li>@age.Name</li>
-                    }
-                </ul>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-6">
-                <label>Program Length</label>
-                <div>@Model.Program.ProgramLengthMinutes minutes</div>
-            </div>
-            <div class="col-6">
-                <label>Set-up Time</label>
-                <div>@Model.Program.SetupTimeMinutes minutes</div>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-6">
-                <label>Breakdown Time</label>
-                <div>@Model.Program.BreakdownTimeMinutes minutes</div>
-            </div>
-            <div class="col-6">
-                <label>Time Between Back-to-Back Programs</label>
-                <div>@Model.Program.BackToBackMinutes minutes</div>
-            </div>
-        </div>
-        <div class="mb-3">
-            <label>Inclusive Cost</label>
-            <div>$@Model.Program.Cost</div>
-        </div>
-        <div class="mb-3">
-            <label>Library Set-up</label>
-            <div>@Model.Program.Setup</div>
-        </div>
-        @if (Model.EnablePerformerLivestreamQuestions)
-        {
-            <div class="mb-3">
-                <label>Willing to allow the library to livestream the program online?</label>
-                <div>@(Model.Program.AllowStreaming ? "Yes" : "No")</div>
-            </div>
-            <div class="mb-3">
-                <label>Willing to allow the library to save and share the archive of event, if livestreamed or recorded?</label>
-                <div>@(Model.Program.AllowArchiving ? "Yes" : "No")</div>
-            </div>
-        }
-    </div>
+	<div class="col-12 col-sm-5 col-md-4">
+		@if (!string.IsNullOrWhiteSpace(Model.Image))
+		{
+			<div class="row mb-3 text-center">
+				<div class="col-12">
+					<img src="~/@Model.Image" class="img-fluid" style="margin: 0 auto;" />
+				</div>
+			</div>
+		}
+		<div class="row mb-3">
+			<div class="col-12 text-center">
+				<a asp-action="ProgramImages"
+				   asp-route-id="@Model.Program.Id"
+				   class="btn btn-outline-primary">View/Manage Images</a>
+			</div>
+		</div>
+	</div>
+	<div class="col-12 col-sm-7 col-md-8">
+		<div class="mb-3">
+			<label>Name</label>
+			<div>@Model.Program.Title</div>
+		</div>
+		<div class="mb-3">
+			<label>Description</label>
+			<div>@Model.Program.Description</div>
+		</div>
+		<div class="mb-3">
+			<label>Capacity</label>
+			<div>@Model.Program.MinimumCapacity &ndash; @Model.Program.MaximumCapacity</div>
+		</div>
+		<div class="mb-3">
+			<label>Ages</label>
+			<div>
+				<ul>
+					@foreach (var age in Model.Program.AgeGroups)
+					{
+						<li>@age.Name</li>
+					}
+				</ul>
+			</div>
+		</div>
+		<div class="row mb-3">
+			<div class="col-6">
+				<label>Program Length</label>
+				<div>@Model.Program.ProgramLengthMinutes minutes</div>
+			</div>
+			<div class="col-6">
+				<label>Set-up Time</label>
+				<div>@Model.Program.SetupTimeMinutes minutes</div>
+			</div>
+		</div>
+		<div class="row mb-3">
+			<div class="col-6">
+				<label>Breakdown Time</label>
+				<div>@Model.Program.BreakdownTimeMinutes minutes</div>
+			</div>
+			<div class="col-6">
+				<label>Time Between Back-to-Back Programs</label>
+				<div>@Model.Program.BackToBackMinutes minutes</div>
+			</div>
+		</div>
+		<div class="mb-3">
+			<label>Inclusive Cost</label>
+			<div>@Model.Program.Cost.ToString("C")</div>
+		</div>
+		<div class="mb-3">
+			<label>Library Set-up</label>
+			<div>@Model.Program.Setup</div>
+		</div>
+		@if (Model.EnablePerformerLivestreamQuestions)
+		{
+			<div class="mb-3">
+				<label>Willing to allow the library to livestream the program online?</label>
+				<div>@(Model.Program.AllowStreaming ? "Yes" : "No")</div>
+			</div>
+			<div class="mb-3">
+				<label>Willing to allow the library to save and share the archive of event, if livestreamed or recorded?</label>
+				<div>@(Model.Program.AllowArchiving ? "Yes" : "No")</div>
+			</div>
+		}
+	</div>
 </div>
 
 @section scripts {
-    <script src="/js/performerregistration.min.js"></script>
+	<script src="/js/performerregistration.min.js"></script>
 }

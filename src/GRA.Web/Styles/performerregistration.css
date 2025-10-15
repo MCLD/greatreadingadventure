@@ -189,3 +189,7 @@ input:valid + .validation::before {
 .selection-hover {
     background-color: #ddd !important;
 }
+
+.pre-wrap {
+    white-space: pre-wrap;
+}

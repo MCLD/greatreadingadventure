@@ -34,5 +34,11 @@ namespace GRA.Data.Model
 
         [MaxLength(50)]
         public string SetupSupplementalText { get; set; }
+
+        [MaxLength(255)]
+        public string CoverSheetContact { get; set; }
+
+        [MaxLength(255)]
+        public string CoverSheetBranch { get; set; }
     }
 }

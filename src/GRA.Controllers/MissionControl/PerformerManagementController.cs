@@ -333,7 +333,6 @@ namespace GRA.Controllers.MissionControl
                 BlackoutDates = await _performerSchedulingService.GetBlackoutDatesAsync(),
                 BranchAvailability = performer.Branches.Select(_ => _.Id).ToList(),
                 Performer = performer,
-                ReferencesPath = _pathResolver.ResolveContentPath(performer.ReferencesFilename),
                 SchedulingStage = schedulingStage,
                 Settings = settings,
                 Systems = await _performerSchedulingService
@@ -502,31 +501,12 @@ namespace GRA.Controllers.MissionControl
                     "Please select the libraries where they are willing to perform.");
             }
 
-            if (model.References != null
-                && !string.Equals(Path.GetExtension(model.References.FileName),
-                ".pdf",
-                StringComparison.OrdinalIgnoreCase))
-            {
-                ModelState.AddModelError("References", "Please attach a .pdf file.");
-            }
-
             if (ModelState.IsValid)
             {
                 model.Performer.AllBranches = branchAvailability.Count == branchIds.Count();
 
                 var performer = await _performerSchedulingService.EditPerformerAsync(
                     model.Performer, branchAvailability);
-
-                if (model.References != null)
-                {
-                    await using var fileStream = model.References.OpenReadStream();
-                    await using var ms = new MemoryStream();
-                    fileStream.CopyTo(ms);
-                    await _performerSchedulingService.SetPerformerReferencesAsync(
-                        model.Performer.Id,
-                        ms.ToArray(),
-                        Path.GetExtension(model.References.FileName));
-                }
 
                 ShowAlertSuccess($"Performer {performer.Name} updated!");
                 return RedirectToAction(nameof(Performer), new { id = performer.Id });
@@ -938,6 +918,8 @@ namespace GRA.Controllers.MissionControl
                 description.AppendLine();
             }
 
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+
             var viewModel = new PerformerCoversheetViewModel
             {
                 Description = description.ToString(),
@@ -946,7 +928,9 @@ namespace GRA.Controllers.MissionControl
                 VendorId = performer.VendorId,
                 PayToName = performer.Name,
                 PayToAddress = performer.BillingAddress,
-                InvoiceNumber = invoiceNumber
+                InvoiceNumber = invoiceNumber,
+                LibraryBranch = settings.CoverSheetBranch,
+                StaffContact = settings.CoverSheetContact
             };
 
             PageTitle = "Coversheet - "
@@ -983,7 +967,9 @@ namespace GRA.Controllers.MissionControl
 
             var viewModel = new ProgramViewModel
             {
+                Approve = !program.IsApproved,
                 Program = program,
+                SchedulingStage = schedulingStage,
                 EnablePerformerLivestreamQuestions = await
                     GetSiteSettingBoolAsync(SiteSettingKey.Performer.EnableLivestreamQuestions)
             };
@@ -1046,6 +1032,34 @@ namespace GRA.Controllers.MissionControl
             }
 
             return View(nameof(ProgramDetails), viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ProgramApprove(ProgramViewModel model)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage == PsSchedulingStage.Unavailable)
+            {
+                return RedirectToAction(nameof(Settings));
+            }
+            else if (schedulingStage <= PsSchedulingStage.RegistrationClosed)
+            {
+                try
+                {
+                    await _performerSchedulingService.SetProgramApprovedAsync(model.Program.Id,
+                        model.Approve);
+                    ShowAlertSuccess($"Program {(model.Approve ? "Approved" : "Unapproved")}!");
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger($"Unable to {(model.Approve ? "Approve" : "Unapprove")} program: ", 
+                        gex);
+                    return RedirectToAction(nameof(Performers));
+                }
+            }
+
+            return RedirectToAction(nameof(Performer), new { id = model.Program.PerformerId });
         }
 
         [HttpPost]

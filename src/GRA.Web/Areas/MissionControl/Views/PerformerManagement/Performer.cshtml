@@ -1,439 +1,478 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.PerformerViewModel
 
 @section styles {
-    <link rel="stylesheet" href="/css/performerregistration.min.css" />
+	<link rel="stylesheet" href="/css/performerregistration.min.css" />
 }
 
 @section inHeading {
-    <a asp-action="@nameof(PerformerManagementController.Performers)"
-       asp-route-page="@Model.ReturnPage"
-       class="btn btn-outline-secondary ms-auto d-print-none">Return to List</a>
+	<a asp-action="@nameof(PerformerManagementController.Performers)"
+	   asp-route-page="@Model.ReturnPage"
+	   class="btn btn-outline-secondary ms-auto d-print-none">Return to List</a>
 }
 
 <div class="row mt-3 d-print-none">
-    <div class="col-12 border-bottom border-top py-2 mb-3">
-        <div class="d-flex justify-content-between">
-            <div class="h2 d-print-none" style="width: 2rem;">
-                <a asp-action="Performer"
-                   asp-route-id="@Model.PrevPerformer">
-                    <span class="fas fa-chevron-left"></span>
-                </a>
-            </div>
-            <div class="flex-grow-1 text-center h2">
-                Performer
-            </div>
-            <div class="h2 d-print-none text-end" style="width: 2rem;">
-                <a asp-action="Performer"
-                   asp-route-id="@Model.NextPerformer">
-                    <span class="fas fa-chevron-right"></span>
-                </a>
-            </div>
-        </div>
-    </div>
+	<div class="col-12 border-bottom border-top py-2 mb-3">
+		<div class="d-flex justify-content-between">
+			<div class="h2 d-print-none" style="width: 2rem;">
+				@if (Model.PrevPerformer.HasValue)
+				{
+					<a asp-action="Performer"
+					   asp-route-id="@Model.PrevPerformer">
+						<span class="fas fa-chevron-left"></span>
+					</a>
+				}
+			</div>
+			<div class="flex-grow-1 text-center h2">
+				Performer
+			</div>
+			<div class="h2 d-print-none text-end" style="width: 2rem;">
+				@if (Model.NextPerformer.HasValue)
+				{
+					<a asp-action="Performer"
+					   asp-route-id="@Model.NextPerformer">
+						<span class="fas fa-chevron-right"></span>
+					</a>
+				}
+			</div>
+		</div>
+	</div>
 </div>
 <div class="row">
-    <div class="col-12 d-flex">
-        <div class="flex-grow-1">
-            <span class="h2">Information</span>
-            <a asp-action="PerformerDetails"
-               asp-route-id="@Model.Performer.Id"
-               class="btn btn-outline-primary mb-2 ms-2 d-print-none">Edit Information</a>
-        </div>
-        <div>
-            @if (Model.SchedulingStage == GRA.Domain.Model.PsSchedulingStage.RegistrationClosed)
-            {
-                <form method="post" role="form" style="display:inline;">
-                    <input asp-for="Performer.Id" type="hidden" />
-                    <input asp-for="Approve" type="hidden" />
-                    <button asp-action="PerformerApprove"
-                            class="btn d-print-none @(Model.Approve ? "btn-outline-success" : "btn-outline-danger")">
-                        @(Model.Approve ? "Approve" : "Unapprove")
-                    </button>
-                </form>
-            }
-            else if (Model.SchedulingStage >= GRA.Domain.Model.PsSchedulingStage.SchedulingOpen && Model.Performer.IsApproved)
-            {
-                <a asp-action="PerformerSelections"
-                   asp-route-id="@Model.Performer.Id"
-                   class="btn btn-outline-primary d-print-none">
-                    View Selections
-                </a>
-                <a asp-action="PrepCoverSheet"
-                   asp-route-id="@Model.Performer.Id"
-                   class="btn btn-outline-primary d-print-none">
-                    Cover Sheet
-                </a>
-            }
-        </div>
-    </div>
+	<div class="col-12 d-flex">
+		<div class="flex-grow-1">
+			<span class="h2">Information</span>
+			<a asp-action="PerformerDetails"
+			   asp-route-id="@Model.Performer.Id"
+			   class="btn btn-outline-primary mb-2 ms-2 d-print-none">Edit Information</a>
+		</div>
+		<div>
+			@if (Model.SchedulingStage == GRA.Domain.Model.PsSchedulingStage.RegistrationClosed)
+			{
+				<form method="post" role="form" style="display:inline;">
+					<input asp-for="Performer.Id" type="hidden" />
+					<input asp-for="Approve" type="hidden" />
+					<button asp-action="@nameof(PerformerManagementController.PerformerApprove)"
+							class="btn d-print-none @(Model.Approve ? "btn-outline-success" : "btn-outline-danger")">
+						@(Model.Approve ? "Approve" : "Unapprove")
+					</button>
+				</form>
+			}
+			else if (Model.SchedulingStage >= GRA.Domain.Model.PsSchedulingStage.SchedulingOpen && Model.Performer.IsApproved)
+			{
+				<a asp-action="PerformerSelections"
+				   asp-route-id="@Model.Performer.Id"
+				   class="btn btn-outline-primary d-print-none">
+					View Selections
+				</a>
+				<a asp-action="PrepCoverSheet"
+				   asp-route-id="@Model.Performer.Id"
+				   class="btn btn-outline-primary d-print-none">
+					Cover Sheet
+				</a>
+			}
+		</div>
+	</div>
 </div>
 <div class="row mt-3">
-    <div class="col-12 col-sm-5 col-md-4">
-        @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
-        {
-            <div class="row mb-3 text-center">
-                <div class="col-12">
-                    <img src="~/@Model.ImagePath" class="img-fluid" style="margin: 0 auto;" />
-                </div>
-            </div>
-        }
-        <div class="row mb-3">
-            <div class="col-12 text-center">
-                <a asp-action="PerformerImages"
-                   asp-route-id="@Model.Performer.Id"
-                   class="btn btn-outline-primary d-print-none">View/Manage Images</a>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-12 text-center">
-                <a aria-label="View References (Opens new window)"
-                   href="~/@Model.ReferencesPath"
-                   target="_blank"
-                   class="btn btn-outline-primary d-print-none">View References</a>
-            </div>
-        </div>
-        @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewParticipantDetails.ToString()))
-        {
-            <div class="row mb-3">
-                <div class="col-12 text-center">
-                    <a asp-controller="Participants"
-                       asp-action="Detail"
-                       asp-route-id="@Model.Performer.UserId"
-                       class="btn btn-outline-primary d-print-none">View Participant Profile</a>
-                </div>
-            </div>
-        }
-    </div>
-    <div class="col-12 col-sm-7 col-md-8">
-        <div class="mb-3">
-            <label>Name</label>
-            <div>@Model.Performer.Name</div>
-        </div>
-        <div class="mb-3">
-            <label>Billing Address</label>
-            <div>@Model.Performer.BillingAddress</div>
-        </div>
-        <div class="mb-3">
-            <label>Email @(Model.Performer.PhonePreferred ? "" : "(preferred)") </label>
-            <div>@Model.Performer.Email</div>
-        </div>
-        <div class="mb-3">
-            <label>Phone @(Model.Performer.PhonePreferred ? "(preferred)" : "")</label>
-            <div>@Model.Performer.Phone</div>
-        </div>
-        <div class="mb-3">
-            <label>Website</label>
-            @if (string.IsNullOrWhiteSpace(Model.Performer.Website))
-            {
-                <div>n/a</div>
-            }
-            else
-            {
-                <div>
-                    @if (Model.Uri != null)
-                    {
-                        <a aria-label="@Model.Performer.Website (Opens new window)"
-                           href="@Model.Uri"
-                           target="_blank">@Model.Performer.Website</a>
-                    }
-                    else
-                    {
-                        <div>@Model.Performer.Website</div>
-                    }
-                </div>
-            }
-        </div>
-        <div class="mb-3">
-            <label>@Model.Settings.VendorIdPrompt</label>
-            <div>@Model.Performer.VendorId</div>
-        </div>
-        <div class="mb-3">
-            <label>Has Fingerprint Clearance Card</label>
-            <div>@(Model.Performer.HasFingerprintCard ? "Yes" : "No")</div>
-        </div>
-        @if (Model.EnablePerformerInsuranceQuestion)
-        {
-            <div class="mb-3">
-                <label>Has Liability Insurance</label>
-                <div>@(Model.Performer.HasInsurance ? "Yes" : "No")</div>
-            </div>
-        }
-        <div class="my-3">
-            <label>Branches</label>
-            <div>@(Model.Performer.AllBranches ? Model.Systems.SelectMany(_ => _.Branches).Count() : Model.Performer.Branches.Count) of @Model.Systems.SelectMany(_ => _.Branches).Count() Selected</div>
-            <button type="button" class="btn btn-outline-primary d-print-none" data-bs-toggle="modal" data-bs-target="#branchModal">View Selected Libraries</button>
-        </div>
-    </div>
+	<div class="col-12 col-sm-5 col-md-4">
+		@if (!string.IsNullOrWhiteSpace(Model.ImagePath))
+		{
+			<div class="row mb-3 text-center">
+				<div class="col-12">
+					<img src="~/@Model.ImagePath" class="img-fluid" style="margin: 0 auto;" />
+				</div>
+			</div>
+		}
+		<div class="row mb-3">
+			<div class="col-12 text-center">
+				<a asp-action="PerformerImages"
+				   asp-route-id="@Model.Performer.Id"
+				   class="btn btn-outline-primary d-print-none">View/Manage Images</a>
+			</div>
+		</div>
+		<div class="row mb-3">
+			<div class="col-12 text-center">
+				<button type="button"
+						class="btn btn-outline-primary d-print-none"
+						data-bs-toggle="modal"
+						data-bs-target="#referencesModal">
+					View References
+				</button>
+			</div>
+		</div>
+		@if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewParticipantDetails.ToString()))
+		{
+			<div class="row mb-3">
+				<div class="col-12 text-center">
+					<a asp-controller="Participants"
+					   asp-action="Detail"
+					   asp-route-id="@Model.Performer.UserId"
+					   class="btn btn-outline-primary d-print-none">View Participant Profile</a>
+				</div>
+			</div>
+		}
+	</div>
+	<div class="col-12 col-sm-7 col-md-8">
+		<div class="mb-3">
+			<label asp-for="Performer.Name"></label>
+			<div>@Model.Performer.Name</div>
+		</div>
+		<div class="mb-3">
+			<label>Billing Address</label>
+			<div>@Model.Performer.BillingAddress</div>
+		</div>
+		<div class="mb-3">
+			<label asp-for="Performer.ContactName"></label>
+			<div>@Model.Performer.ContactName</div>
+		</div>
+		<div class="mb-3">
+			<label>Email @(Model.Performer.PhonePreferred ? "" : "(preferred)") </label>
+			<div>@Model.Performer.Email</div>
+		</div>
+		<div class="mb-3">
+			<label>Phone @(Model.Performer.PhonePreferred ? "(preferred)" : "")</label>
+			<div>@Model.Performer.Phone</div>
+		</div>
+		<div class="mb-3">
+			<label>Website</label>
+			@if (string.IsNullOrWhiteSpace(Model.Performer.Website))
+			{
+				<div>n/a</div>
+			}
+			else
+			{
+				<div>
+					@if (Model.Uri != null)
+					{
+						<a aria-label="@Model.Performer.Website (Opens new window)"
+						   href="@Model.Uri"
+						   target="_blank">@Model.Performer.Website</a>
+					}
+					else
+					{
+						<div>@Model.Performer.Website</div>
+					}
+				</div>
+			}
+		</div>
+		<div class="mb-3">
+			<label>@Model.Settings.VendorIdPrompt</label>
+			<div>@Model.Performer.VendorId</div>
+		</div>
+		<div class="mb-3">
+			<label>Has Fingerprint Clearance Card</label>
+			<div>@(Model.Performer.HasFingerprintCard ? "Yes" : "No")</div>
+		</div>
+		@if (Model.EnablePerformerInsuranceQuestion)
+		{
+			<div class="mb-3">
+				<label>Has Liability Insurance</label>
+				<div>@(Model.Performer.HasInsurance ? "Yes" : "No")</div>
+			</div>
+		}
+		<div class="my-3">
+			<label>Branches</label>
+			<div>@(Model.Performer.AllBranches? Model.Systems.SelectMany(_ => _.Branches).Count() : Model.Performer.Branches.Count) of @Model.Systems.SelectMany(_ => _.Branches).Count() Selected</div>
+			<button type="button" class="btn btn-outline-primary d-print-none" data-bs-toggle="modal" data-bs-target="#branchModal">View Selected Libraries</button>
+		</div>
+	</div>
 
-    <div class="col-12">
-        <hr />
-        <h2>
-            Programs
-            <a asp-action="ProgramAdd" asp-route-id="@Model.Performer.Id" class="btn btn-outline-primary d-print-none" style="display:inline-block">Add Program</a>
-        </h2>
-        <hr />
-    </div>
-    <div class="col-12">
-        @if (Model.Performer.Programs.Count == 0)
-        {
-            <div class="alert alert-warning">No Programs.</div>
-        }
-        else
-        {
-            <table class="table table-sm table-bordered link-table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Capacity</th>
-                        <th>Length (minutes)</th>
-                        <th>Cost</th>
-                        @if (Model.SchedulingStage < GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
-                        {
-                            <th>&nbsp;</th>
-                        }
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var program in Model.Performer.Programs)
-                    {
-                        <tr>
-                            <td class="td-class">
-                                <a asp-action="Program" asp-route-id="@program.Id" class="rowlink">
-                                    @program.Title
-                                </a>
-                            </td>
-                            <td>@program.MinimumCapacity &ndash; @program.MaximumCapacity</td>
-                            <td>@program.ProgramLengthMinutes</td>
-                            <td>$@program.Cost</td>
-                            @if (Model.SchedulingStage < GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
-                            {
-                                <td class="on-top">
-                                    <button type="button"
-                                            class="btn btn-outline-danger btn-sm"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal"
-                                            data-id="@program.Id"
-                                            data-name="@program.Title">
-                                        <span class="fas fa-times fa-fw" aria-hidden="true"></span>
-                                    </button>
-                                </td>
-                            }
-                        </tr>
+	<div class="col-12">
+		<hr />
+		<h2>
+			Programs
+			<a asp-action="ProgramAdd" asp-route-id="@Model.Performer.Id" class="btn btn-outline-primary d-print-none" style="display:inline-block">Add Program</a>
+		</h2>
+		<hr />
+	</div>
+	<div class="col-12">
+		@if (Model.Performer.Programs.Count == 0)
+		{
+			<div class="alert alert-warning">No Programs.</div>
+		}
+		else
+		{
+			<table class="table table-sm table-bordered link-table">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Capacity</th>
+						<th>Length (minutes)</th>
+						<th>Cost</th>
+						<th>Approved?</th>
+						@if (Model.SchedulingStage < GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
+						{
+							<th>&nbsp;</th>
+						}
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var program in Model.Performer.Programs)
+					{
+						<tr>
+							<td class="td-class">
+								<a asp-action="Program" asp-route-id="@program.Id" class="rowlink">
+									@program.Title
+								</a>
+							</td>
+							<td>@program.MinimumCapacity &ndash; @program.MaximumCapacity</td>
+							<td>@program.ProgramLengthMinutes</td>
+							<td>@program.Cost.ToString("C")</td>
+							<td>
+								<span class="far fa-lg @(program.IsApproved ? "fa-check-circle text-success" : "fa-times-circle text-danger")"></span>
+							</td>
+							@if (Model.SchedulingStage < GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
+							{
+								<td class="on-top">
+									<button type="button"
+											class="btn btn-outline-danger btn-sm"
+											data-bs-toggle="modal"
+											data-bs-target="#deleteModal"
+											data-id="@program.Id"
+											data-name="@program.Title">
+										<span class="fas fa-times fa-fw" aria-hidden="true"></span>
+									</button>
+								</td>
+							}
+						</tr>
 
-                    }
-                </tbody>
-            </table>
-        }
-    </div>
+					}
+				</tbody>
+			</table>
+		}
+	</div>
 
-    <div class="col-12">
-        <hr />
-        <h2>
-            Schedule
-            <a asp-action="PerformerSchedule" asp-route-id="@Model.Performer.Id" class="btn btn-outline-primary d-print-none" style="display:inline-block">Edit Schedule</a>
-        </h2>
-    </div>
-    <div class="col-12">
-        @{
-            int count = 0;
-        }
-        @for (var calendarMonth = new DateTime(Model.Settings.ScheduleStartDate.Value.Year, Model.Settings.ScheduleStartDate.Value.Month, 1); calendarMonth <= Model.Settings.ScheduleEndDate.Value; calendarMonth = calendarMonth.AddMonths(1))
-        {
-            @if (count % 3 == 0)
-            {
-                @Html.Raw("<div class=\"row\">")
-                ;
-            }
-            <div class="col-12 col-md-4">
-                <table class="table table-sm">
-                    <thead>
-                        <tr>
-                            <td colspan="2"><strong style="font-size:large">@calendarMonth.ToString("MMMM")</strong></td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (var day = (calendarMonth.Year == Model.Settings.ScheduleStartDate.Value.Year && calendarMonth.Month == Model.Settings.ScheduleStartDate.Value.Month ? Model.Settings.ScheduleStartDate.Value : calendarMonth); day.Day <= DateTime.DaysInMonth(calendarMonth.Year, calendarMonth.Month) && day.Month == calendarMonth.Month && day <= Model.Settings.ScheduleEndDate.Value; day = day.AddDays(1))
-                        {
-                            <tr>
-                                <td style="width: 180px;">
-                                    @day.ToShortDateString() @day.Date.DayOfWeek
-                                </td>
-                                <td>
-                                    @{
-                                        var blackoutDate = Model.BlackoutDates.FirstOrDefault(_ => _.Date == day.Date);
-                                    }
-                                    @if (blackoutDate != null)
-                                    {
-                                        <strong class="text-dark">
-                                            <em>
-                                                @blackoutDate.Reason
-                                            </em>
-                                        </strong>
-                                    }
-                                    else
-                                    {
-                                        var daySchedule = Model.Performer.Schedule.Where(_ => _.Date == day.Date).FirstOrDefault();
-                                        if (daySchedule == null)
-                                        {
-                                            <strong class="text-success">Available</strong>
+	<div class="col-12">
+		<hr />
+		<h2>
+			Schedule
+			<a asp-action="PerformerSchedule" asp-route-id="@Model.Performer.Id" class="btn btn-outline-primary d-print-none" style="display:inline-block">Edit Schedule</a>
+		</h2>
+	</div>
+	<div class="col-12">
+		@{
+			int count = 0;
+		}
+		@for (var calendarMonth = new DateTime(Model.Settings.ScheduleStartDate.Value.Year, Model.Settings.ScheduleStartDate.Value.Month, 1); calendarMonth <= Model.Settings.ScheduleEndDate.Value; calendarMonth = calendarMonth.AddMonths(1))
+		{
+			@if (count % 3 == 0)
+			{
+				@Html.Raw("<div class=\"row\">")
+				;
+			}
+			<div class="col-12 col-md-4">
+				<table class="table table-sm">
+					<thead>
+						<tr>
+							<td colspan="2"><strong style="font-size:large">@calendarMonth.ToString("MMMM")</strong></td>
+						</tr>
+					</thead>
+					<tbody>
+						@for (var day = (calendarMonth.Year == Model.Settings.ScheduleStartDate.Value.Year && calendarMonth.Month == Model.Settings.ScheduleStartDate.Value.Month ? Model.Settings.ScheduleStartDate.Value : calendarMonth); day.Day <= DateTime.DaysInMonth(calendarMonth.Year, calendarMonth.Month) && day.Month == calendarMonth.Month && day <= Model.Settings.ScheduleEndDate.Value; day = day.AddDays(1))
+						{
+							<tr>
+								<td style="width: 180px;">
+									@day.ToShortDateString() @day.Date.DayOfWeek
+								</td>
+								<td>
+									@{
+										var blackoutDate = Model.BlackoutDates.FirstOrDefault(_ => _.Date == day.Date);
+									}
+									@if (blackoutDate != null)
+									{
+										<strong class="text-dark">
+											<em>
+												@blackoutDate.Reason
+											</em>
+										</strong>
+									}
+									else
+									{
+										var daySchedule = Model.Performer.Schedule.Where(_ => _.Date == day.Date).FirstOrDefault();
+										if (daySchedule == null)
+										{
+											<strong class="text-success">Available</strong>
 
-                                        }
-                                        else if (daySchedule.StartTime.HasValue)
-                                        {
-                                            <strong class="text-primary">
-                                                @daySchedule.StartTime.Value.ToShortTimeString()
-                                                &ndash;
-                                                @daySchedule.EndTime.Value.ToShortTimeString()
-                                            </strong>
-                                        }
-                                        else
-                                        {
-                                            <strong class="text-dark">Unavailable</strong>
-                                        }
-                                    }
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-            if (count % 3 == 2)
-            {
-                @Html.Raw("</div>")
-                ;
-            }
-            { count++; }
-        }
-        @if (count % 3 != 2)
-        {
-            @Html.Raw("</div>")
-            ;
-        }
-    </div>
+										}
+										else if (daySchedule.StartTime.HasValue)
+										{
+											<strong class="text-primary">
+												@daySchedule.StartTime.Value.ToShortTimeString()
+												&ndash;
+												@daySchedule.EndTime.Value.ToShortTimeString()
+											</strong>
+										}
+										else
+										{
+											<strong class="text-dark">Unavailable</strong>
+										}
+									}
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+			if (count % 3 == 2)
+			{
+				@Html.Raw("</div>")
+				;
+			}
+			{ count++; }
+		}
+		@if (count % 3 != 2)
+		{
+			@Html.Raw("</div>")
+			;
+		}
+	</div>
 </div>
 
 <div class="row">
-    <div class="modal fade"
-         id="branchModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="branchModalLabel">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title h4" id="branchModalLabel">Branch Selection</h1>
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close dialog"></button>
-                </div>
-                <div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y:auto;">
-                    @foreach (var system in Model.Systems)
-                    {
-                        <div style="font-size:x-large;margin-bottom: 0.5rem;">
-                            <strong>@system.Name</strong>
-                        </div>
-                        @foreach (var branch in system.Branches)
-                        {
-                            <div>
-                                <span class="far fa-lg @(Model.BranchAvailability.Contains(branch.Id) || Model.Performer.AllBranches ? "fa-check-circle text-success" : "fa-times-circle text-danger")"></span>
-                                <label data-bs-toggle="tooltip"
-                                       data-bs-placement="top"
-                                       title="@branch.Address">
-                                    @branch.Name
-                                </label>
-                                <a aria-label="Map (Opens new window)"
-                                   href="https://www.google.com/maps/search/@branch.Address"
-                                   target="_blank">
-                                    <span class="far fa-map"></span>
-                                </a>
-                            </div>
-                        }
-                        <br />
-                    }
-                </div>
-                <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-outline-secondary"
-                            data-bs-dismiss="modal">
-                        Close
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="modal fade"
+		 id="branchModal"
+		 tabindex="-1"
+		 role="dialog"
+		 aria-labelledby="branchModalLabel">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title h4" id="branchModalLabel">Branch Selection</h1>
+					<button type="button"
+							class="btn-close"
+							data-bs-dismiss="modal"
+							aria-label="Close dialog"></button>
+				</div>
+				<div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y:auto;">
+					@foreach (var system in Model.Systems)
+					{
+						<div style="font-size:x-large;margin-bottom: 0.5rem;">
+							<strong>@system.Name</strong>
+						</div>
+						@foreach (var branch in system.Branches)
+						{
+							<div>
+								<span class="far fa-lg @(Model.BranchAvailability.Contains(branch.Id) || Model.Performer.AllBranches ? "fa-check-circle text-success" : "fa-times-circle text-danger")"></span>
+								<label data-bs-toggle="tooltip"
+									   data-bs-placement="top"
+									   title="@branch.Address">
+									@branch.Name
+								</label>
+								<a aria-label="Map (Opens new window)"
+								   href="https://www.google.com/maps/search/@branch.Address"
+								   target="_blank">
+									<span class="far fa-map"></span>
+								</a>
+							</div>
+						}
+						<br />
+					}
+				</div>
+				<div class="modal-footer">
+					<button type="button"
+							class="btn btn-outline-secondary"
+							data-bs-dismiss="modal">
+						Close
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 <div class="row">
-    <div class="modal fade"
-         id="deleteModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="deleteModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title h4" id="deleteModalLabel">Delete program</h1>
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close dialog">
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
-                    <span id="modal-text"></span>
-                </div>
-                <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-outline-secondary"
-                            data-bs-dismiss="modal"
-                            style="margin-right: 1em;">
-                        Cancel
-                    </button>
-                    <form asp-action="ProgramDelete"
-                          method="post"
-                          role="form"
-                          style="display:inline">
-                        <input asp-for="Performer.Id" type="hidden" />
-                        <input asp-for="ProgramToDelete.Id" type="hidden" />
-                        <input asp-for="ProgramToDelete.Title" type="hidden" />
-                        <button type="submit"
-                                class="btn btn-outline-danger btn-spinner float-end"
-                                aria-label="Confirm"
-                                button-spinner>
-                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
-                            Delete
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="modal fade"
+		 id="deleteModal"
+		 tabindex="-1"
+		 role="dialog"
+		 aria-labelledby="deleteModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title h4" id="deleteModalLabel">Delete program</h1>
+					<button type="button"
+							class="btn-close"
+							data-bs-dismiss="modal"
+							aria-label="Close dialog">
+					</button>
+				</div>
+				<div class="modal-body">
+					<span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
+					<span id="modal-text"></span>
+				</div>
+				<div class="modal-footer">
+					<button type="button"
+							class="btn btn-outline-secondary"
+							data-bs-dismiss="modal"
+							style="margin-right: 1em;">
+						Cancel
+					</button>
+					<form asp-action="ProgramDelete"
+						  method="post"
+						  role="form"
+						  style="display:inline">
+						<input asp-for="Performer.Id" type="hidden" />
+						<input asp-for="ProgramToDelete.Id" type="hidden" />
+						<input asp-for="ProgramToDelete.Title" type="hidden" />
+						<button type="submit"
+								class="btn btn-outline-danger btn-spinner float-end"
+								aria-label="Confirm"
+								button-spinner>
+							<span class="fas fa-times fa-fw" aria-hidden="true"></span>
+							Delete
+						</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="modal fade"
+		 id="referencesModal"
+		 tabindex="-1"
+		 role="dialog"
+		 aria-labelledby="referencesModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title h4" id="referencesModalLabel">References</h1>
+					<button type="button"
+							class="btn-close"
+							data-bs-dismiss="modal"
+							aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<span id="modal-text" class="pre-wrap">@Model.Performer.References</span>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 @section scripts {
-    <script src="/js/performerregistration.min.js"></script>
+	<script src="/js/performerregistration.min.js"></script>
 
-    <script>
-        $(window).on("load", function () {
-            $(".td-class").each(function () {
-                $(this).children("a.rowlink").height($(this).outerHeight());
-            });
-        });
-        $(window).resize(function () {
-            $(".td-class").each(function () {
-                $(this).children("a.rowlink").height($(this).outerHeight());
-            });
-        });
+	<script>
+		$(window).on("load", function () {
+			$(".td-class").each(function () {
+				$(this).children("a.rowlink").height($(this).outerHeight());
+			});
+		});
+		$(window).resize(function () {
+			$(".td-class").each(function () {
+				$(this).children("a.rowlink").height($(this).outerHeight());
+			});
+		});
 
-        $("#deleteModal").on("show.bs.modal", function (event) {
-            var button = $(event.relatedTarget);
-            var id = button.data("id");
-            var name = button.data("name");
-            $(this).find("#modal-text").text("Are you sure you want to delete the program \"" + name + "\"?");
-            $(this).find("#ProgramToDelete_Id").val(id);
-            $(this).find("#ProgramToDelete_Title").val(name);
-        });
-    </script>
+		$("#deleteModal").on("show.bs.modal", function (event) {
+			var button = $(event.relatedTarget);
+			var id = button.data("id");
+			var name = button.data("name");
+			$(this).find("#modal-text").text("Are you sure you want to delete the program \"" + name + "\"?");
+			$(this).find("#ProgramToDelete_Id").val(id);
+			$(this).find("#ProgramToDelete_Title").val(name);
+		});
+	</script>
 }

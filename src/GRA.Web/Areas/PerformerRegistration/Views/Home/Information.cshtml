@@ -95,44 +95,6 @@ else
         </div>
     }
 
-    <div class="row">
-        <div class="col-12">
-            @if (Model.Performer?.RegistrationCompleted != true)
-            {
-                <p>
-                    Please provide a single PDF document with references. Include name, email
-                    address, and/or telephone number for each reference.
-                </p>
-            }
-            else
-            {
-                <p>
-                    A new PDF document can be uploaded to replace the current list of references.
-                    Include name, email address, and/or telephone number for each reference.
-                </p>
-            }
-        </div>
-    </div>
-
-    <div class="row mb-3">
-        <label class="col-sm-3 col-form-label @(Model.Performer?.RegistrationCompleted != true ? "required-field": "")">Upload references PDF</label>
-        <div class="col-sm-9">
-            <div class="input-group">
-                <label class="input-group-text">
-                    <span class="btn btn-secondary btn-file" style="width:132px;text-align:left;">
-                        <span class="far fa-file-image"></span> Select file...
-                        <input type="file"
-                               asp-for="References"
-                               accept=".pdf"
-                               style="display: none;" />
-                    </span>
-                </label>
-                <input type="text" class="form-control @(ViewData.ModelState.GetValidationState("References") == invalid ? "input-validation-error" : "")" readonly />
-            </div>
-            <span asp-validation-for="References" class="text-danger"></span>
-        </div>
-    </div>
-
     <div class="row mb-3">
         <label asp-for="Performer.BillingAddress" class="col-sm-3 col-form-label required-field"></label>
         <div class="col-sm-9">
@@ -141,7 +103,6 @@ else
         </div>
     </div>
 
-
     <div class="row mb-3">
         <label asp-for="Performer.Website" class="col-sm-3 col-form-label"></label>
         <div class="col-sm-9">
@@ -149,6 +110,14 @@ else
             <span asp-validation-for="Performer.Website" class="text-danger"></span>
         </div>
     </div>
+
+	<div class="row mb-3">
+		<label asp-for="Performer.ContactName" class="col-sm-3 col-form-label required-field"></label>
+		<div class="col-sm-9">
+			<input asp-for="Performer.ContactName" class="form-control" placeholder="" />
+			<span asp-validation-for="Performer.ContactName" class="text-danger"></span>
+		</div>
+	</div>
 
     <div class="row mb-3">
         <label asp-for="Performer.PhonePreferred" class="col-sm-3 col-form-label required-field"></label>
@@ -215,6 +184,14 @@ else
             </div>
         </div>
     }
+
+	<div class="row mb-3">
+		<label asp-for="Performer.References" class="col-sm-3 col-form-label required-field"></label>
+		<div class="col-sm-9">
+			<textarea asp-for="Performer.References" class="form-control" rows="5"></textarea>
+			<span asp-validation-for="Performer.References" class="text-danger"></span>
+		</div>
+	</div>
 
     <div class="row mb-3">
         <label class="col-sm-3 col-form-label required-field">Select libraries</label>

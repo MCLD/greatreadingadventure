@@ -22,7 +22,7 @@
         }
         <div class="row pb-3">
             <div class="col-12 text-center">
-                <a asp-action="ProgramImages" asp-route-id="@Model.Program.Id" class="btn btn-primary">@(Model.IsEditable ? "View/Manage Images" : "View Images")</a>
+                <a asp-action="ProgramImages" asp-route-id="@Model.Program.Id" class="btn btn-outline-primary">@(Model.IsEditable ? "View/Manage Images" : "View Images")</a>
             </div>
         </div>
         <div class="row pb-3">
@@ -77,7 +77,7 @@
         </div>
         <div class="mb-3">
             <label>Inclusive Cost</label>
-            <div>$@Model.Program.Cost</div>
+            <div>@Model.Program.Cost.ToString("C")</div>
         </div>
         <div class="mb-3">
             <label>Library Set-up</label>

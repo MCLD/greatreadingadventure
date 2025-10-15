@@ -11,15 +11,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Alt texts to avatar color, item and layer selector images
 - Mission Control interface to set avatar color and item alt texts
 - BranchId token to vendor code URLs
+- Setting performer programs to be unapproved
+- Performer field for contact name
+- Performer scheduling settings for cover sheet fields
 
 ## Changed
 
 - Update packages
 - Update Docker lock checksums
+- Performer references to be a text input instead of file
 
 ## Fixed
 
 - Display of modals after Bootstrap 5.3 upgrade
+- Performer program cost to display in currency format
 
 ## [4.6.0] 2024-10-09
 

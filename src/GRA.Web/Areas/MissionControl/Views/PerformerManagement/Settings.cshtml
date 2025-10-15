@@ -135,9 +135,18 @@
             <input asp-for="Settings.SetupSupplementalText" class="form-control" />
             <span asp-validation-for="Settings.SetupSupplementalText" class="text-danger"></span>
         </div>
+		<div class="col-12 col-lg-6 mb-3">
+			<label asp-for="Settings.CoverSheetContact" class="col-form-label"></label>
+			<input asp-for="Settings.CoverSheetContact" class="form-control" />
+			<span asp-validation-for="Settings.CoverSheetContact" class="text-danger"></span>
+		</div>
 
+		<div class="col-12 col-lg-6 mb-3">
+			<label asp-for="Settings.CoverSheetBranch" class="col-form-label"></label>
+			<input asp-for="Settings.CoverSheetBranch" class="form-control" />
+			<span asp-validation-for="Settings.CoverSheetBranch" class="text-danger"></span>
+		</div>
     </div>
-
 
     <div class="mb-3">
         <label class="col-form-label">Questions</label>

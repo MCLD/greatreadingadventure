@@ -1,157 +1,163 @@
 ﻿@model GRA.Controllers.ViewModel.PerformerRegistration.Home.PerformerImagesViewModel
 
 @{
-    var invalid = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
+	var invalid = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
 }
 
 <div class="row">
-    <div class="col-12">
-        <h1>
-            Performer Images
-            <a asp-action="Dashboard" class="btn btn-lg btn-outline-secondary" style="margin-bottom: 0.5rem;">Return to Dashboard</a>
-        </h1>
-    </div>
-    @if (Model.IsEditable)
-    {
-        <form asp-action="Images" class="form-horizontal col-12" method="post" role="form" enctype="multipart/form-data">
-            <div class="row">
-                <div class="col-sm-9 offset-sm-3">
-                    <p>
-                        Additional images can be added here. For best results please
-                        use images that are at least 1,000px by 1,000px, uploads are limited to @(Model.MaxUploadMB)MB total.
-                        Multiple images can be selected by holding the CTRL key.
-                    </p>
-                </div>
-            </div>
+	<div class="col-12">
+		<h1>
+			Performer Images
+			<a asp-action="Dashboard" class="btn btn-lg btn-outline-secondary" style="margin-bottom: 0.5rem;">Return to Dashboard</a>
+		</h1>
+	</div>
+	@if (Model.IsEditable)
+	{
+		<form asp-action="Images" class="form-horizontal col-12" method="post" role="form" enctype="multipart/form-data">
+			<div class="row">
+				<div class="col-sm-9 offset-sm-3">
+					<p>
+						Additional images can be added here. For best results please
+						use images that are at least 1,000px by 1,000px, uploads are limited to @(Model.MaxUploadMB)MB total.
+						Multiple images can be selected by holding the CTRL key.
+					</p>
+				</div>
+			</div>
 
-            <div class="mb-3">
-                <label class="col-sm-3 col-form-label">Upload photos</label>
-                <div class="col-sm-9">
-                    <div class="input-group">
-                        <label class="input-group-text">
-                            <span class="btn btn-secondary btn-file">
-                                <span class="far fa-file-image"></span> Select file(s)...
-                                <input type="file"
-                                       multiple="multiple"
-                                       asp-for="Images"
-                                       accept=".png,.jpg,.jpeg"
-                                       style="display: none;" />
-                            </span>
-                        </label>
-                        <input type="text" class="form-control @(ViewData.ModelState.GetValidationState("Images") == invalid ? "input-validation-error" : "")" readonly />
-                    </div>
-                    <span asp-validation-for="Images" class="text-danger"></span>
-                </div>
-            </div>
+			<div class="mb-3">
+				<label class="col-sm-3 col-form-label">Upload photos</label>
+				<div class="col-sm-9">
+					<div class="input-group">
+						<label class="input-group-text">
+							<span class="btn btn-secondary btn-file">
+								<span class="far fa-file-image"></span> Select file(s)...
+								<input type="file"
+									   multiple="multiple"
+									   asp-for="Images"
+									   accept=".png,.jpg,.jpeg"
+									   style="display: none;" />
+							</span>
+						</label>
+						<input type="text" class="form-control @(ViewData.ModelState.GetValidationState("Images") == invalid ? "input-validation-error" : "")" readonly />
+					</div>
+					<span asp-validation-for="Images" class="text-danger"></span>
+				</div>
+			</div>
 
-            <div class="row">
-                <div class="col-sm-9 offset-sm-3" style="margin-top: 1em;margin-bottom: 1em;">
-                    <button type="submit"
-                            class="btn btn-lg btn-success btn-spinner"
-                            style="margin-bottom: 0.5rem;"
-                            button-spinner>
-                        Upload Image(s)
-                    </button>
-                    <button id="deleteButton" type="button" class="btn btn-lg btn-outline-danger" style="margin-bottom: 0.5rem;" data-bs-toggle="modal" data-bs-target="#deleteModal" disabled>
-                        Delete Selected Image(s)
-                    </button>
-                </div>
-            </div>
-        </form>
-    }
-    <div class="col-12">
-        @if (Model.PerformerImages.Count == 0)
-        {
-            <div class="alert alert-warning">No Images.</div>
-        }
-        else
-        {
-            for (int i = 0; i < Model.PerformerImages.Count; i++)
-            {
-                if (i % 3 == 0)
-                {
-                    @Html.Raw("<div class=\"row\">");
-                }
-                <div class="col-12 col-md-4" style="margin-bottom: 2rem;">
-                    <div style="padding:10px;border:1px solid black;">
-                        <img src="~/@Model.PerformerImages[i].Filename" class="img-fluid" style="margin: 0 auto;" />
-                        @if (Model.IsEditable)
-                        {
-                            <input class="deleteSelection form-control" type="checkbox" data-id="@Model.PerformerImages[i].Id" />
-                        }
-                    </div>
-                </div>
-                if (i % 3 == 2)
-                {
-                    @Html.Raw("</div>");
-                }
-            }
-            if (Model.PerformerImages.Count % 3 != 0)
-            {
-                @Html.Raw("</div>");
-            }
-        }
-    </div>
+			<div class="row">
+				<div class="col-sm-9 offset-sm-3" style="margin-top: 1em;margin-bottom: 1em;">
+					<button type="submit"
+							class="btn btn-lg btn-success btn-spinner"
+							style="margin-bottom: 0.5rem;"
+							button-spinner>
+						Upload Image(s)
+					</button>
+					<button id="deleteButton" type="button" class="btn btn-lg btn-outline-danger" style="margin-bottom: 0.5rem;" data-bs-toggle="modal" data-bs-target="#deleteModal" disabled>
+						Delete Selected Image(s)
+					</button>
+				</div>
+			</div>
+		</form>
+	}
+	<div class="col-12">
+		@if (Model.PerformerImages.Count == 0)
+		{
+			<div class="alert alert-warning">No Images.</div>
+		}
+		else
+		{
+			for (int i = 0; i < Model.PerformerImages.Count; i++)
+			{
+				if (i % 3 == 0)
+				{
+					@Html.Raw("<div class=\"row\">");
+				}
+				<div class="col-12 col-md-4" style="margin-bottom: 2rem;">
+					<div class="text-center" style="padding:10px;border:1px solid black;">
+						<img src="~/@Model.PerformerImages[i].Filename" class="img-fluid" style="margin: 0 auto;" />
+						@if (Model.IsEditable)
+						{
+							<input class="form-check-input deleteSelection"
+								   type="checkbox"
+								   id="check-@i"
+								   data-id="@Model.PerformerImages[i].Id" />
+							<label class="form-check-label"
+								   for="check-@i">
+								Select Image
+							</label>
+						}
+					</div>
+				</div>
+				if (i % 3 == 2)
+				{
+					@Html.Raw("</div>");
+				}
+			}
+			if (Model.PerformerImages.Count % 3 != 0)
+			{
+				@Html.Raw("</div>");
+			}
+		}
+	</div>
 </div>
 
 <div class="row">
-    <div class="modal fade"
-         id="deleteModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="deleteModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title h4" id="deleteModalLabel">Delete images</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
-                    <span id="modal-text">Are you sure you want to delete the selected image(s)?</span>
-                </div>
-                <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-outline-secondary"
-                            data-bs-dismiss="modal"
-                            style="margin-right: 1em;">
-                        Cancel
-                    </button>
-                    <form asp-action="ImagesDelete"
-                          method="post"
-                          role="form"
-                          style="display:inline">
-                        <input asp-for="ImagesToDelete" type="hidden" />
-                        <button type="submit"
-                                class="btn btn-danger btn-spinner float-end"
-                                aria-label="Confirm"
-                                button-spinner>
-                            <span class="fas fa-times" aria-hidden="true"></span>
-                            Delete
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="modal fade"
+		 id="deleteModal"
+		 tabindex="-1"
+		 role="dialog"
+		 aria-labelledby="deleteModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title h4" id="deleteModalLabel">Delete images</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+					</button>
+				</div>
+				<div class="modal-body">
+					<span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
+					<span id="modal-text">Are you sure you want to delete the selected image(s)?</span>
+				</div>
+				<div class="modal-footer">
+					<button type="button"
+							class="btn btn-outline-secondary"
+							data-bs-dismiss="modal"
+							style="margin-right: 1em;">
+						Cancel
+					</button>
+					<form asp-action="ImagesDelete"
+						  method="post"
+						  role="form"
+						  style="display:inline">
+						<input asp-for="ImagesToDelete" type="hidden" />
+						<button type="submit"
+								class="btn btn-danger btn-spinner float-end"
+								aria-label="Confirm"
+								button-spinner>
+							<span class="fas fa-times" aria-hidden="true"></span>
+							Delete
+						</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 @section scripts {
-    <script>
-        $(".deleteSelection").on("change", function () {
-            if ($(".deleteSelection:checked").length > 0) {
-                $("#deleteButton").removeAttr("disabled");
-            }
-            else {
-                $("#deleteButton").attr("disabled", "disabled");
-            }
-        });
+	<script>
+		$(".deleteSelection").on("change", function () {
+			if ($(".deleteSelection:checked").length > 0) {
+				$("#deleteButton").removeAttr("disabled");
+			}
+			else {
+				$("#deleteButton").attr("disabled", "disabled");
+			}
+		});
 
-        $('#deleteModal').on('show.bs.modal', function (event) {
-            var imageSelection = JSON.stringify($(".deleteSelection:checked").map(function () { return $(this).data("id") }).get());
-            $(this).find('#ImagesToDelete').val(imageSelection);
-        })
-    </script>
+		$('#deleteModal').on('show.bs.modal', function (event) {
+			var imageSelection = JSON.stringify($(".deleteSelection:checked").map(function () { return $(this).data("id") }).get());
+			$(this).find('#ImagesToDelete').val(imageSelection);
+		})
+	</script>
 }

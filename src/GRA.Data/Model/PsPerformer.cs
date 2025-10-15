@@ -8,9 +8,14 @@ namespace GRA.Data.Model
         public int UserId { get; set; }
         public User User { get; set; }
 
+        [DisplayName("Presenter/Organization Name")]
         [MaxLength(255)]
         [Required]
         public string Name { get; set; }
+
+        [MaxLength(255)]
+        [Required]
+        public string ContactName { get; set; }
 
         [MaxLength(500)]
         [Required]
@@ -41,8 +46,9 @@ namespace GRA.Data.Model
 
         public bool AllBranches { get; set; }
 
-        [MaxLength(255)]
-        public string ReferencesFilename { get; set; }
+        [MaxLength(2000)]
+        [Required]
+        public string References { get; set; }
 
         public bool SetSchedule { get; set; }
         public bool RegistrationCompleted { get; set; }

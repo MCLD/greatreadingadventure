@@ -1,268 +1,254 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.PerformerDetailsViewModel
 
 @section styles {
-    <link rel="stylesheet" href="/css/performerregistration.min.css" />
+	<link rel="stylesheet" href="/css/performerregistration.min.css" />
 }
 
 @section inHeading {
-    <a asp-action="@nameof(PerformerManagementController.Performer)"
-       asp-route-id="@Model.Performer.Id"
-       class="btn btn-outline-secondary ms-auto d-print-none">Return to Performer</a>
+	<a asp-action="@nameof(PerformerManagementController.Performer)"
+	   asp-route-id="@Model.Performer.Id"
+	   class="btn btn-outline-secondary ms-auto d-print-none">Return to Performer</a>
 }
 
 <div class="row">
-    <div class="col-12">
-        <h1>
-            Performer Information
-        </h1>
-    </div>
+	<div class="col-12">
+		<h1>
+			Performer Information
+		</h1>
+	</div>
 </div>
 
 <div class="row">
-    <div class="col-12">
-        <p>
-            <strong class="text-danger">
-                Fields marked with an asterisk (*) are required.
-            </strong>
-        </p>
-    </div>
+	<div class="col-12">
+		<p>
+			<strong class="text-danger">
+				Fields marked with an asterisk (*) are required.
+			</strong>
+		</p>
+	</div>
 </div>
 
 <form asp-action="@nameof(PerformerManagementController.PerformerDetails)"
-      method="post"
-      role="form"
-      enctype="multipart/form-data">
-    <input asp-for="Performer.Id" type="hidden" />
-    <input asp-for="BranchAvailabilityString" type="hidden" />
+	  method="post"
+	  role="form"
+	  enctype="multipart/form-data">
+	<input asp-for="Performer.Id" type="hidden" />
+	<input asp-for="BranchAvailabilityString" type="hidden" />
 
-    <div class="mb-3">
-        <label asp-for="Performer.Name" class="form-label required-field"></label>
-        <input asp-for="Performer.Name" class="form-control" placeholder="" />
-        <span asp-validation-for="Performer.Name" class="text-danger"></span>
-    </div>
+	<div class="mb-3">
+		<label asp-for="Performer.Name" class="form-label required-field"></label>
+		<input asp-for="Performer.Name" class="form-control" placeholder="" />
+		<span asp-validation-for="Performer.Name" class="text-danger"></span>
+	</div>
 
-    <div class="row mb-3">
-        <div class="col-12">
-            <strong>
-                A new PDF document can be uploaded to replace the current list of references.
-            </strong>
-            Include name, email address, and/or telephone number for each reference.
-        </div>
-    </div>
+	<div class="mb-3">
+		<label asp-for="Performer.BillingAddress" class="form-label required-field"></label>
+		<textarea asp-for="Performer.BillingAddress" class="form-control"></textarea>
+		<span asp-validation-for="Performer.BillingAddress" class="text-danger"></span>
+	</div>
 
-    <div class="mb-3">
-        <div class="input-group mb-3">
-            <input accept=".pdf"
-                   asp-for="References"
-                   class="form-control"
-                   multiple="multiple"
-                   type="file" />
-            <button class="btn btn-outline-secondary"
-                    id="referencesClearButton"
-                    type="button">
-                Clear selection
-            </button>
-        </div>
-        <span asp-validation-for="References" class="text-danger"></span>
-    </div>
+	<div class="mb-3">
+		<label asp-for="Performer.Website" class="form-label"></label>
+		<input asp-for="Performer.Website" class="form-control" placeholder="" />
+		<span asp-validation-for="Performer.Website" class="text-danger"></span>
+	</div>
 
-    <div class="mb-3">
-        <label asp-for="Performer.BillingAddress" class="form-label required-field"></label>
-        <textarea asp-for="Performer.BillingAddress" class="form-control"></textarea>
-        <span asp-validation-for="Performer.BillingAddress" class="text-danger"></span>
-    </div>
+	<div class="mb-3">
+		<label asp-for="Performer.ContactName" class="form-label required-field"></label>
+		<input asp-for="Performer.ContactName" class="form-control" placeholder="" />
+		<span asp-validation-for="Performer.ContactName" class="text-danger"></span>
+	</div>
 
+	<div class="mb-3">
+		<label asp-for="Performer.PhonePreferred" class="form-label required-field"></label>
+		<select asp-for="Performer.PhonePreferred" class="form-select">
+			<option value="false">Email</option>
+			<option value="true">Phone</option>
+		</select>
+		<span asp-validation-for="Performer.PhonePreferred" class="text-danger"></span>
+	</div>
 
-    <div class="mb-3">
-        <label asp-for="Performer.Website" class="form-label"></label>
-        <input asp-for="Performer.Website" class="form-control" placeholder="" />
-        <span asp-validation-for="Performer.Website" class="text-danger"></span>
-    </div>
+	<div class="mb-3">
+		<label asp-for="Performer.Email" class="form-label">Email</label>
+		<input asp-for="Performer.Email" class="form-control" />
+		<span asp-validation-for="Performer.Email" class="text-danger"></span>
+	</div>
 
-    <div class="mb-3">
-        <label asp-for="Performer.PhonePreferred" class="form-label required-field"></label>
-        <select asp-for="Performer.PhonePreferred" class="form-select">
-            <option value="false">Email</option>
-            <option value="true">Phone</option>
-        </select>
-        <span asp-validation-for="Performer.PhonePreferred" class="text-danger"></span>
-    </div>
+	<div class="mb-3">
+		<label asp-for="Performer.Phone" class="form-label required-field"></label>
+		<input asp-for="Performer.Phone" class="form-control" placeholder="" />
+		<span asp-validation-for="Performer.Phone" class="text-danger"></span>
+	</div>
 
-    <div class="mb-3">
-        <label asp-for="Performer.Email" class="form-label">Email</label>
-        <input asp-for="Performer.Email" class="form-control" />
-        <span asp-validation-for="Performer.Email" class="text-danger"></span>
-    </div>
+	<div class="mb-3">
+		<label asp-for="Performer.VendorId" class="form-label required-field">
+			@Model.VendorIdPrompt
+			<span class="far fa-question-circle"
+				  data-bs-toggle="tooltip"
+				  data-bs-placement="top"
+				  title="Example number: @Model.VendorCodeFormat"></span>
+		</label>
+		<input asp-for="Performer.VendorId" class="form-control" placeholder="" />
+		<span asp-validation-for="Performer.VendorId" class="text-danger"></span>
+	</div>
 
-    <div class="mb-3">
-        <label asp-for="Performer.Phone" class="form-label required-field"></label>
-        <input asp-for="Performer.Phone" class="form-control" placeholder="" />
-        <span asp-validation-for="Performer.Phone" class="text-danger"></span>
-    </div>
+	<div class="mb-3">
+		<label asp-for="Performer.HasFingerprintCard" class="form-label required-field"></label>
+		<select asp-for="Performer.HasFingerprintCard" class="form-select">
+			<option value="false">No</option>
+			<option value="true">Yes</option>
+		</select>
+		<span asp-validation-for="Performer.HasFingerprintCard" class="text-danger"></span>
+	</div>
 
-    <div class="mb-3">
-        <label asp-for="Performer.VendorId" class="form-label required-field">
-            @Model.VendorIdPrompt
-            <span class="far fa-question-circle"
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="top"
-                  title="Example number: @Model.VendorCodeFormat"></span>
-        </label>
-        <input asp-for="Performer.VendorId" class="form-control" placeholder="" />
-        <span asp-validation-for="Performer.VendorId" class="text-danger"></span>
-    </div>
+	@if (Model.EnablePerformerInsuranceQuestion)
+	{
+		<div class="mb-3">
+			<label asp-for="Performer.HasInsurance" class="form-label required-field"></label>
+			<select asp-for="Performer.HasInsurance" class="form-select">
+				<option value="false">No</option>
+				<option value="true">Yes</option>
+			</select>
+			<span asp-validation-for="Performer.HasInsurance" class="text-danger"></span>
+		</div>
+	}
 
-    <div class="mb-3">
-        <label asp-for="Performer.HasFingerprintCard" class="form-label required-field"></label>
-        <select asp-for="Performer.HasFingerprintCard" class="form-select">
-            <option value="false">No</option>
-            <option value="true">Yes</option>
-        </select>
-        <span asp-validation-for="Performer.HasFingerprintCard" class="text-danger"></span>
-    </div>
+	<div class="mb-3">
+		<label asp-for="Performer.References" class="form-label required-field"></label>
+		<textarea asp-for="Performer.References" class="form-control" rows="5"></textarea>
+		<span asp-validation-for="Performer.References" class="text-danger"></span>
+	</div>
 
-    @if (Model.EnablePerformerInsuranceQuestion)
-    {
-        <div class="mb-3">
-            <label asp-for="Performer.HasInsurance" class="form-label required-field"></label>
-            <select asp-for="Performer.HasInsurance" class="form-select">
-                <option value="false">No</option>
-                <option value="true">Yes</option>
-            </select>
-            <span asp-validation-for="Performer.HasInsurance" class="text-danger"></span>
-        </div>
-    }
+	<div class="row mb-3">
+		<div class="col-12 col-md-6 offset-md-3">
+			<div class="card">
+				<div class="card-header">Available locations</div>
+				<div class="card-body">
+					Willing to perform at <strong>
+						<span id="branchCount">@(Model.BranchAvailability?.Count ?? 0)</span>
+						of
+						@Model.BranchCount Selected
+					</strong>
+					<span id="branchValidator"
+						  asp-validation-for="BranchAvailability"
+						  class="field-validation-error text-danger">
+						Please select the libraries where they are willing to perform.
+					</span>
+				</div>
+				<div class="card-footer d-flex justify-content-center">
+					<button type="button"
+							class="btn btn-outline-primary"
+							data-bs-toggle="modal"
+							data-bs-target="#branchModal">
+						Select Libraries
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
-    <div class="row mb-3">
-        <div class="col-12 col-md-6 offset-md-3">
-            <div class="card">
-                <div class="card-header">Available locations</div>
-                <div class="card-body">
-                    Willing to perform at <strong>
-                        <span id="branchCount">@(Model.BranchAvailability?.Count ?? 0)</span>
-                        of
-                        @Model.BranchCount Selected
-                    </strong>
-                    <span id="branchValidator"
-                          asp-validation-for="BranchAvailability"
-                          class="field-validation-error text-danger">
-                        Please select the libraries where they are willing to perform.
-                    </span>
-                </div>
-                <div class="card-footer d-flex justify-content-center">
-                    <button type="button"
-                            class="btn btn-outline-primary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#branchModal">
-                        Select Libraries
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-12 d-flex justify-content-end">
-            <button id="submitButton"
-                    type="submit"
-                    class="btn btn-lg btn-outline-success my-4"
-                    button-spinner>
-                Save Information
-            </button>
-        </div>
-    </div>
+	<div class="row">
+		<div class="col-12 d-flex justify-content-end">
+			<button id="submitButton"
+					type="submit"
+					class="btn btn-lg btn-outline-success my-4"
+					button-spinner>
+				Save Information
+			</button>
+		</div>
+	</div>
 </form>
 
 <div class="row">
-    <div class="modal fade"
-         id="branchModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="branchModalLabel">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="branchModalLabel">Branch Selection</h5>
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close dialog">
-                    </button>
-                </div>
-                <div class="modal-body">
-                    @foreach (var system in Model.Systems)
-                    {
-                        <div class="mb-3">
-                            <strong>@system.Name</strong>
-                            @foreach (var branch in system.Branches)
-                            {
-                                <div class="ms-3">
-                                    <input id="@($"branch{branch.Id}")"
-                                           class="branchSelector"
-                                           data-id="@branch.Id"
-                                           type="checkbox"
-                                           asp-checked="@(Model.BranchAvailability?.Contains(branch.Id) == true)" />
-                                    <label for="@($"branch{branch.Id}")"
-                                           data-bs-toggle="tooltip"
-                                           data-bs-placement="top"
-                                           title="@branch.Address">
-                                        @branch.Name
-                                    </label>
-                                    <a aria-label="Map (Opens new window)"
-                                       href="https://www.google.com/maps/search/@branch.Address"
-                                       target="_blank">
-                                        <span class="far fa-map"></span>
-                                    </a>
-                                </div>
-                            }
-                        </div>
-                    }
-                </div>
-                <div class="modal-footer">
-                    <button id="selectAllButton"
-                            class="btn btn-outline-primary">
-                        Select All @Model.BranchCount Libraries
-                    </button>
-                    <button type="button"
-                            class="btn btn-outline-primary"
-                            data-bs-dismiss="modal">
-                        Confirm
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="modal fade"
+		 id="branchModal"
+		 tabindex="-1"
+		 role="dialog"
+		 aria-labelledby="branchModalLabel">
+		<div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="branchModalLabel">Branch Selection</h5>
+					<button type="button"
+							class="btn-close"
+							data-bs-dismiss="modal"
+							aria-label="Close dialog">
+					</button>
+				</div>
+				<div class="modal-body">
+					@foreach (var system in Model.Systems)
+					{
+						<div class="mb-3">
+							<strong>@system.Name</strong>
+							@foreach (var branch in system.Branches)
+							{
+								<div class="ms-3">
+									<input id="@($"branch{branch.Id}")"
+										   class="branchSelector"
+										   data-id="@branch.Id"
+										   type="checkbox"
+										   asp-checked="@(Model.BranchAvailability?.Contains(branch.Id) == true)" />
+									<label for="@($"branch{branch.Id}")"
+										   data-bs-toggle="tooltip"
+										   data-bs-placement="top"
+										   title="@branch.Address">
+										@branch.Name
+									</label>
+									<a aria-label="Map (Opens new window)"
+									   href="https://www.google.com/maps/search/@branch.Address"
+									   target="_blank">
+										<span class="far fa-map"></span>
+									</a>
+								</div>
+							}
+						</div>
+					}
+				</div>
+				<div class="modal-footer">
+					<button id="selectAllButton"
+							class="btn btn-outline-primary">
+						Select All @Model.BranchCount Libraries
+					</button>
+					<button type="button"
+							class="btn btn-outline-primary"
+							data-bs-dismiss="modal">
+						Confirm
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 @section scripts {
-    <script src="/js/performerregistration.min.js"></script>
+	<script src="/js/performerregistration.min.js"></script>
 
-    <script>
-        $("#selectAllButton").on("click", function () {
-            $(".branchSelector").prop("checked", true);
-        });
+	<script>
+		$("#selectAllButton").on("click", function () {
+			$(".branchSelector").prop("checked", true);
+		});
 
-        $("#branchModal").on("hide.bs.modal", function () {
-            var selectedCount = $(".branchSelector:checked").length;
-            $("#branchCount").text(selectedCount);
-            if (selectedCount == 0) {
-                $("#branchValidator").show();
-            }
-            else {
-                $("#branchValidator").hide();
-            }
-        });
+		$("#branchModal").on("hide.bs.modal", function () {
+			var selectedCount = $(".branchSelector:checked").length;
+			$("#branchCount").text(selectedCount);
+			if (selectedCount == 0) {
+				$("#branchValidator").show();
+			}
+			else {
+				$("#branchValidator").hide();
+			}
+		});
 
-        $("form").on("submit", function (e) {
-            var BranchAvailability = $(".branchSelector:checked").map(function () { return $(this).data("id"); }).get();
-            if (BranchAvailability.length == 0) {
-                $("#branchValidator").show();
-                e.preventDefault();
-                ResetSpinners(e.relatedTarget);
-            }
-            else {
-                $("#BranchAvailabilityString").val(JSON.stringify(BranchAvailability));
-            }
-        });
-    </script>
+		$("form").on("submit", function (e) {
+			var BranchAvailability = $(".branchSelector:checked").map(function () { return $(this).data("id"); }).get();
+			if (BranchAvailability.length == 0) {
+				$("#branchValidator").show();
+				e.preventDefault();
+				ResetSpinners(e.relatedTarget);
+			}
+			else {
+				$("#BranchAvailabilityString").val(JSON.stringify(BranchAvailability));
+			}
+		});
+	</script>
 }
