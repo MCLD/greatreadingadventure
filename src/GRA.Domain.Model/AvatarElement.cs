@@ -14,5 +14,9 @@ namespace GRA.Domain.Model
         [MaxLength(255)]
         [Required]
         public string Filename { get; set; }
+
+        public string AltText { get; set; }
+        public int LayerId { get; set; }
+        public int LayerPosition { get; set; }
     }
 }

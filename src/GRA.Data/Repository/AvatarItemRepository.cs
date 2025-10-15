@@ -20,6 +20,14 @@ namespace GRA.Data.Repository
         {
         }
 
+        public async Task AddTextsAsync(IEnumerable<AvatarItemText> texts)
+        {
+            var addTexts = _mapper
+                .Map<IEnumerable<AvatarItemText>, IEnumerable<Data.Model.AvatarItemText>>(texts);
+
+            await _context.AvatarItemTexts.AddRangeAsync(addTexts);
+        }
+
         public async Task AddUserItemsAsync(int userId, List<int> itemIds)
         {
             if (itemIds?.Any() == true)
@@ -34,13 +42,6 @@ namespace GRA.Data.Repository
                 }
                 await _context.SaveChangesAsync();
             }
-        }
-
-        public async Task<int> CountAsync(AvatarFilter filter)
-        {
-            ArgumentNullException.ThrowIfNull(filter);
-            return await ApplyFilters(filter)
-                .CountAsync();
         }
 
         public async Task DecreaseSortPosition(int siteId, int itemId)
@@ -133,8 +134,19 @@ namespace GRA.Data.Repository
                 .CountAsync();
         }
 
+        public async Task<IEnumerable<AvatarItemText>> GetTextsByItemIdsAsync(
+            IEnumerable<int> itemIds)
+        {
+            return await _context.AvatarItemTexts
+                .AsNoTracking()
+                .Where(_ => itemIds.Contains(_.AvatarItemId))
+                .ProjectToType<AvatarItemText>()
+                .ToListAsync();
+        }
+
         public async Task<ICollection<AvatarItem>> GetUserItemsByLayerAsync(int userId,
-                                            int layerId)
+                                            int layerId,
+                                            int languageId)
         {
             var userUnlockedItems = _context.UserAvatarItems.AsNoTracking()
                 .Where(_ => _.UserId == userId
@@ -145,7 +157,15 @@ namespace GRA.Data.Repository
                 .Where(_ => _.AvatarLayerId == layerId
                     && (!_.Unlockable || userUnlockedItems.Select(u => u.Id).Contains(_.Id)))
                 .OrderBy(_ => _.SortOrder)
-                .ProjectToType<AvatarItem>()
+                .Select(_ => new AvatarItem
+                {
+                    AltText = _.Texts
+                        .Where(_ => _.LanguageId == languageId)
+                        .FirstOrDefault()
+                        .AltText,
+                    Id = _.Id,
+                    Thumbnail = _.Thumbnail
+                })
                 .ToListAsync();
         }
 
@@ -228,14 +248,26 @@ namespace GRA.Data.Repository
             return false;
         }
 
-        public async Task<ICollection<AvatarItem>> PageAsync(AvatarFilter filter)
+        public async Task<DataWithCount<ICollection<AvatarItem>>> PageAsync(AvatarFilter filter)
         {
             ArgumentNullException.ThrowIfNull(filter);
-            return await ApplyFilters(filter)
-                .OrderBy(_ => _.SortOrder)
+
+            var items = ApplyFilters(filter);
+
+            var count = await items.CountAsync();
+
+            var data = await items.OrderBy(_ => _.AvatarLayerId)
+                .ThenBy(_ => _.SortOrder)
                 .ApplyPagination(filter)
+                .Include(_ => _.Texts)
                 .ProjectToType<AvatarItem>()
                 .ToListAsync();
+
+            return new DataWithCount<ICollection<AvatarItem>>
+            {
+                Data = data,
+                Count = count
+            };
         }
 
         public override async Task RemoveAsync(int userId, int id)
@@ -245,7 +277,17 @@ namespace GRA.Data.Repository
                 && _.SortOrder > item.SortOrder);
             await itemsToUpdate.ForEachAsync(_ => _.SortOrder--);
             DbSet.UpdateRange(itemsToUpdate);
+            var itemTexts = _context.AvatarItemTexts.Where(_ => _.AvatarItemId == id);
+            _context.AvatarItemTexts.RemoveRange(itemTexts);
             await base.RemoveAsync(userId, id);
+        }
+
+        public void RemoveTexts(IEnumerable<AvatarItemText> texts)
+        {
+            var removeTexts = _mapper
+                .Map<IEnumerable<AvatarItemText>, IEnumerable<Model.AvatarItemText>>(texts);
+
+            _context.AvatarItemTexts.RemoveRange(removeTexts);
         }
 
         public async Task RemoveUserItemAsync(int id)
@@ -295,6 +337,14 @@ namespace GRA.Data.Repository
             _context.UserAvatarItems.RemoveRange(unlockedItems);
         }
 
+        public void UpdateTexts(IEnumerable<AvatarItemText> texts)
+        {
+            var updateTexts = _mapper
+                .Map<IEnumerable<AvatarItemText>, IEnumerable<Data.Model.AvatarItemText>>(texts);
+
+            _context.AvatarItemTexts.UpdateRange(updateTexts);
+        }
+
         private IQueryable<Model.AvatarItem> ApplyFilters(AvatarFilter filter)
         {
             var items = DbSet.AsNoTracking()
@@ -339,6 +389,17 @@ namespace GRA.Data.Repository
             if (!string.IsNullOrEmpty(filter.Search))
             {
                 items = items.Where(_ => _.Name.Contains(filter.Search));
+            }
+
+            if (filter.TextMissing == true)
+            {
+                var completeTexts = _context.AvatarItemTexts
+                    .GroupBy(_ => _.AvatarItemId)
+                    .Where(_ => _.Count() == _context.Languages.Count())
+                    .Select(_ => new { _.Key })
+                    .Select(_ => _.Key);
+
+                items = items.Where(_ => !completeTexts.Contains(_.Id));
             }
 
             return items;

@@ -26,12 +26,23 @@ namespace GRA.Data.Repository
                 .SingleOrDefaultAsync();
         }
 
-        public async Task<ICollection<AvatarElement>> GetUserAvatarAsync(int userId)
+        public async Task<ICollection<AvatarElement>> GetUserAvatarAsync(int userId, int languageId)
         {
+
             return await _context.UserAvatars.AsNoTracking()
                 .Where(_ => _.UserId == userId)
-                .Select(_ => _.AvatarElement)
-                .ProjectToType<AvatarElement>()
+                .Select(_ => new AvatarElement
+                {
+                    AltText = _.AvatarElement.AvatarItem.Texts
+                        .Where(_ => _.LanguageId == languageId)
+                        .FirstOrDefault()
+                        .AltText,
+                    AvatarColorId = _.AvatarElement.AvatarColorId,
+                    AvatarItemId = _.AvatarElement.AvatarItemId,
+                    Filename = _.AvatarElement.Filename,
+                    LayerId = _.AvatarElement.AvatarItem.AvatarLayerId,
+                    LayerPosition = _.AvatarElement.AvatarItem.AvatarLayer.Position
+                })
                 .ToListAsync();
         }
 

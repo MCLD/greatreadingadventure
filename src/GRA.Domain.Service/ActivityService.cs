@@ -12,6 +12,7 @@ using GRA.Domain.Service.Abstract;
 using GRA.Domain.Service.Models;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Stubble.Core.Builders;
 
 namespace GRA.Domain.Service
 {
@@ -1654,13 +1655,8 @@ namespace GRA.Domain.Service
                             .GetMessageTextAsync(codeType.OptionMessageTemplateId.Value,
                                 languageId);
 
-                        var markedUpToken = "{{" + TemplateToken.VendorCodeToken + "}}";
-                        var markedUpUrl = codeType.Url.Contains(markedUpToken,
-                            StringComparison.OrdinalIgnoreCase)
-                            ? codeType.Url.Replace(markedUpToken,
-                                "",
-                                StringComparison.OrdinalIgnoreCase)
-                            : codeType.Url;
+                        var markedUpUrl = await new StubbleBuilder().Build()
+                            .RenderAsync(codeType.Url, null);
 
                         await _mailService.SendSystemMailAsync(new Model.Mail
                         {
@@ -1669,7 +1665,6 @@ namespace GRA.Domain.Service
                             Subject = message.Subject,
                             TemplateDictionary = new Dictionary<string, string>
                             {
-                                { TemplateToken.VendorCodeToken, "" },
                                 { TemplateToken.VendorLinkToken, markedUpUrl }
                             },
                             ToUserId = userId

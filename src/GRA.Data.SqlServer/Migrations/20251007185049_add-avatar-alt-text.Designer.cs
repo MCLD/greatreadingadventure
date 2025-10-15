@@ -4,6 +4,7 @@ using GRA.Data.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GRA.Data.SqlServer.Migrations
 {
     [DbContext(typeof(SqlServerContext))]
-    partial class SqlServerContextModelSnapshot : ModelSnapshot
+    [Migration("20251007185049_add-avatar-alt-text")]
+    partial class addavataralttext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2631,11 +2634,6 @@ namespace GRA.Data.SqlServer.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("ContactName")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -2669,10 +2667,9 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<bool>("PhonePreferred")
                         .HasColumnType("bit");
 
-                    b.Property<string>("References")
-                        .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                    b.Property<string>("ReferencesFilename")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<bool>("RegistrationCompleted")
                         .HasColumnType("bit");
@@ -2809,9 +2806,6 @@ namespace GRA.Data.SqlServer.Migrations
                         .HasMaxLength(375)
                         .HasColumnType("nvarchar(375)");
 
-                    b.Property<bool>("IsApproved")
-                        .HasColumnType("bit");
-
                     b.Property<int>("MaximumCapacity")
                         .HasColumnType("int");
 
@@ -2900,14 +2894,6 @@ namespace GRA.Data.SqlServer.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("ContactEmail")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("CoverSheetBranch")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("CoverSheetContact")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 

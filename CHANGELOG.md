@@ -6,12 +6,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## Added
+
+- Alt texts to avatar color, item and layer selector images
+- Mission Control interface to set avatar color and item alt texts
+- BranchId token to vendor code URLs
 - Setting performer programs to be unapproved
 - Performer field for contact name
 - Performer scheduling settings for cover sheet fields
 
 ## Changed
 
+- Update packages
+- Update Docker lock checksums
 - Performer references to be a text input instead of file
 
 ## Fixed

@@ -68,5 +68,15 @@ namespace GRA.Data.Repository
                 { "RemoveLabel", layerText.RemoveLabel }
             };
         }
+
+        public async Task<string> GetNameByLanguageIdAsync(int layerId, int languageId)
+        {
+
+            return await _context.AvatarLayerTexts
+                   .AsNoTracking()
+                   .Where(_ => _.AvatarLayerId == layerId && _.LanguageId == languageId)
+                   .Select(_ => _.Name)
+                   .FirstOrDefaultAsync();
+        }
     }
 }

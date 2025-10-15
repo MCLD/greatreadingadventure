@@ -1,0 +1,69 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Avatar.ColorTextListViewModel
+
+@await Html.PartialAsync("_TextsPartial")
+
+<div class="row my-4">
+	<div class="col-12">
+		@if (Model.Colors.Count() == 0)
+		{
+			<div class="alert alert-warning">No Colors</div>
+		}
+		else
+		{
+			<form asp-controller="@AvatarsController.Name"
+				  asp-action="@nameof(AvatarsController.ColorTexts)"
+				  method="post"
+				  role="form">
+				<input asp-for="TextMissing" type="hidden" />
+				<input asp-for="CurrentPage" type="hidden" />
+				<table class="table table-sm table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Color</th>
+							<th>Code</th>
+							<th class="w-100">Text</th>
+						</tr>
+					</thead>
+					<tbody>
+						@{
+							var count = 0;
+							foreach (var color in Model.Colors)
+							{
+								<tr>
+									<td>
+										<img src="//:0"
+											 class="img-thumbnail"
+											 style="background-color:#@color.Color; height:150px; width:150px; max-width:unset" />
+									</td>
+									<td>
+										#@color.Color
+									</td>
+									<td>
+										@foreach (var language in Model.Languages)
+										{
+											<div class="input-group mb-2">
+												<label class="input-group-text">@language.Description</label>
+												<input type="hidden" name="Texts[@count].LanguageId" value="@language.Id" />
+												<input type="hidden" name="Texts[@count].AvatarColorId" value="@color.Id" />
+												<input type="text"
+													   name="Texts[@count].AltText"
+													   value="@color.Texts.Where(_ => _.LanguageId == language.Id).Select(_ => _.AltText).FirstOrDefault()"
+													   maxlength="@Model.AltTextMaxLength"
+													   class="form-control" />
+											</div>
+											count++;
+										}
+									</td>
+								</tr>
+							}
+						}
+					</tbody>
+				</table>
+				<button class="btn btn-outline-primary mb-4" type="submit" button-spinner>
+					Update Colors
+				</button>
+			</form>
+			<paginate paginateModel="@Model"></paginate>
+		}
+	</div>
+</div>

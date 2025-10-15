@@ -59,7 +59,7 @@ namespace GRA.Domain.Model
         public int SiteId { get; set; }
 
         [MaxLength(255)]
-        [Display(Description = "URL to redeem a vendor-code based prize, {{Code}} will be replaced with the vendor code")]
+        [Display(Description = "URL to redeem a vendor-code based prize, {{BranchId}} will be replaced with the participant's branch id, {{Code}} will be replaced with the vendor code")]
         public string Url { get; set; }
     }
 }

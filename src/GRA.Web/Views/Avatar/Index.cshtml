@@ -1,5 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.Avatar.AvatarViewModel
 
+@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
+
 @section styles {
     <link rel="stylesheet" href="/css/slick.min.css" />
 }
@@ -25,6 +27,7 @@
                             <img src="~/@layer.FilePath"
                                  class="@($"image{layer.Id}") xsLayer avatar-layer@(string.IsNullOrWhiteSpace(layer.FilePath) ? " d-none" : "")"
                                  style="z-index: @(layer.Position + 1);"
+								 alt="@layer.AltText"
                                  data-layer="@layer.Id"
                                  data-item="@layer.SelectedItem" />
                         }
@@ -37,6 +40,7 @@
                             <img src="~/@layer.FilePath"
                                  class="@($"image{layer.Id}") avatar-layer@(string.IsNullOrWhiteSpace(layer.FilePath) ? " d-none" : "")"
                                  style="z-index: @(layer.Position + 1);"
+								 alt="@layer.AltText"
                                  data-layer="@layer.Id"
                                  data-item="@layer.SelectedItem" />
                         }
@@ -56,6 +60,7 @@
                                         <img src="~/@layer.Icon"
                                              id="@($"selector{layer.Id}")"
                                              class="avatar-layer-selector@(Model.DefaultLayer == layer.Id ? " selected" : "")"
+											 alt="@SharedLocalizer[GRA.Annotations.Interface.AvatarLayerAltText, layer.Name]"
                                              data-layer="@layer.Id"
                                              data-name="@layer.Name"
                                              data-removelabel="@layer.RemoveLabel"
@@ -64,6 +69,7 @@
                                              data-showcolorselector="@layer.ShowColorSelector"
                                              data-item="@layer.SelectedItem"
                                              data-color="@layer.SelectedColor"
+											 data-alt="@layer.AltText"
                                              data-zoomscale="@layer.ZoomScale"
                                              data-zoomyoffset="@layer.ZoomYOffset"
                                              data-colorrows="@(layer.ShowColorSelector ? (!layer.ShowItemSelector ? 5 : 2) : 0)" />
@@ -77,6 +83,7 @@
                             : "/content/site1/avatarbundles/icon.png")"
                                  id="selector999"
                                  class="avatar-layer-selector"
+								 alt="@SharedLocalizer[GRA.Annotations.Interface.AvatarLayerBundleAltText]"
                                  data-layer="999"
                                  data-name="@SharedLocalizer[GRA.Annotations.Interface.Bundle]"
                                  data-showitemselector="True"
@@ -320,10 +327,11 @@
         }
 
         //Updates the the layer's image
-        function UpdateAvatarContainer(type, id, srcStr, layerId, hide) {
+		function UpdateAvatarContainer(type, id, srcStr, altText, layerId, hide) {
             for (let idx = 0; idx < $(".avatar-container").length; idx++) {
                 let image = $($(".avatar-container")[idx]).find(".image" + layerId);
                 image.data(type, id);
+				image.attr("alt", altText);
                 image.attr("src", srcStr);
                 if (hide) {
                     image.addClass("d-none");
@@ -550,7 +558,8 @@
                     $(".avatar-color-selector.selected").removeClass("selected");
                     layer.data("item", "");
                     layer.data("color", "");
-                    UpdateAvatarContainer("item", "", "/", layer.data("layer"), true);
+					layer.data("alt", "");
+                    UpdateAvatarContainer("item", "", "/", "", layer.data("layer"), true);
                 }
             }
             else {
@@ -558,10 +567,11 @@
                 if (itemsLayer.data("removable") == "True") {
                     let itemId = GetLayersSelectedItemId(button.data("layer"));
                     itemsLayer.data("item", "");
+					itemsLayer.data("alt", "");
                     let item = $("#avatarItemSelectors").find("img.avatar-item-selector[data-item='" + itemId + "']");
                     item.removeClass("selected");
                     let nextSelected = undefined;
-                    UpdateAvatarContainer("item", "", "/", button.data("layer"), true);
+                    UpdateAvatarContainer("item", "", "/", "", button.data("layer"), true);
                     prevLayerSelected.splice(0, 1);
                     if (prevLayerSelected[0] != undefined) {
                         nextSelected = $("#avatarItemSelectors").find("img.avatar-item-selector.selected[data-layer='" + prevLayerSelected[0] + "']");
@@ -657,8 +667,10 @@
                 }
             }
             let itemId = newDataItem.data("item");
+			let altText = newDataItem.attr("alt");
             newDataItem.addClass("selected");
             itemsLayer.data("item", itemId);
+			itemsLayer.data("alt", altText);
             let colorId = itemsLayer.data("color");
             let srcStr = baseImagePath + "layer" + itemsLayer.data("layer") + "/item" + itemId;
             // Handles the image path with the correct color
@@ -671,7 +683,7 @@
             else {
                 srcStr = srcStr + "/item.png";
             }
-            UpdateAvatarContainer("item", itemId, srcStr, itemsLayer.data("layer"), false);
+			UpdateAvatarContainer("item", itemId, srcStr, altText, itemsLayer.data("layer"), false);
         };
 
         // Updates the color selected and removes the old
@@ -685,13 +697,14 @@
             let layer = GetLayerById(dataColor.data("layer"));
             let colorId = dataColor.data("color");
             let itemId = layer.data("item");
+			let altText = layer.data("alt");
             layer.data("color", colorId);
             if (itemId == "" || itemId == undefined) {
                 itemId = SelectGetFirstActiveObjectId("Item", layer);
             }
             let srcStr = baseImagePath + "layer" + layer.data("layer") + "/item" + itemId + "/item_" + colorId + ".png";
             //updates both containers with the appropriate images
-            UpdateAvatarContainer("color", colorId, srcStr, layer.data("layer"), false);
+			UpdateAvatarContainer("color", colorId, srcStr, altText, layer.data("layer"), false);
         };
 
         // Saves the Avatars items

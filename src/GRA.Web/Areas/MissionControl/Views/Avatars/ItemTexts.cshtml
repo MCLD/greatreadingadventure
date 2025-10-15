@@ -1,0 +1,80 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Avatar.ItemTextListViewModel
+
+@await Html.PartialAsync("_TextsPartial")
+
+<div class="row my-4">
+	<div class="col-12">
+		@if (Model.Items.Count() == 0)
+		{
+			<div class="alert alert-warning">No Items</div>
+		}
+		else
+		{
+			<form asp-controller="@AvatarsController.Name"
+				  asp-action="@nameof(AvatarsController.ItemTexts)"
+				  method="post"
+				  role="form">
+				<input asp-for="TextMissing" type="hidden" />
+				<input asp-for="CurrentPage" type="hidden" />
+				<table class="table table-sm table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Item</th>
+							<th>Name</th>
+							<th>Layer</th>
+							<th class="w-100">Text</th>
+							<th class="text-center">Delete Item</th>
+						</tr>
+					</thead>
+					<tbody>
+						@{
+							var count = 0;
+							foreach (var item in Model.Items)
+							{
+								<tr>
+									<td>
+										<img src="~/@item.Thumbnail"
+											 class="img-thumbnail"
+											 style="max-width:unset" />
+									</td>
+									<td>
+										@item.Name
+									</td>
+									<td>
+										@item.AvatarLayerName
+									</td>
+									<td>
+										@foreach (var language in Model.Languages)
+										{
+											<div class="input-group mb-2">
+												<label class="input-group-text">@language.Description</label>
+												<input type="hidden" name="Texts[@count].LanguageId" value="@language.Id" />
+												<input type="hidden" name="Texts[@count].AvatarItemId" value="@item.Id" />
+												<input type="text"
+													   name="Texts[@count].AltText"
+													   value="@item.Texts.Where(_ => _.LanguageId == language.Id).Select(_ => _.AltText).FirstOrDefault()"
+													   maxlength="@Model.AltTextMaxLength"
+													   class="form-control" />
+											</div>
+											count++;
+										}
+									</td>
+									<td class="text-center">
+										<input name="DeleteIds"
+											   type="checkbox"
+											   tabindex="-1"
+											   value="@item.Id" />
+									</td>
+								</tr>
+							}
+						}
+					</tbody>
+				</table>
+				<button class="btn btn-outline-primary mb-4" type="submit" button-spinner>
+					Update Items
+				</button>
+			</form>
+			<paginate paginateModel="@Model"></paginate>
+		}
+	</div>
+</div>

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Data.Model
 {
@@ -17,5 +18,7 @@ namespace GRA.Data.Model
         public string Thumbnail { get; set; }
 
         public bool Unlockable { get; set; }
+
+        public ICollection<AvatarItemText> Texts { get; set; }
     }
 }

@@ -20,8 +20,10 @@ namespace GRA.Data
         public DbSet<Model.AvatarBundleItem> AvatarBundleItems { get; set; }
         public DbSet<Model.AvatarBundle> AvatarBundles { get; set; }
         public DbSet<Model.AvatarColor> AvatarColors { get; set; }
+        public DbSet<Model.AvatarColorText> AvatarColorTexts { get; set; }
         public DbSet<Model.AvatarElement> AvatarElements { get; set; }
         public DbSet<Model.AvatarItem> AvatarItems { get; set; }
+        public DbSet<Model.AvatarItemText> AvatarItemTexts { get; set; }
         public DbSet<Model.AvatarLayer> AvatarLayers { get; set; }
         public DbSet<Model.AvatarLayerText> AvatarLayerTexts { get; set; }
         public DbSet<Model.Badge> Badges { get; set; }
@@ -172,6 +174,10 @@ namespace GRA.Data
             // https://docs.microsoft.com/en-us/ef/core/modeling/keys
             modelBuilder.Entity<Model.AvatarBundleItem>()
                 .HasKey(_ => new { _.AvatarBundleId, _.AvatarItemId });
+            modelBuilder.Entity<Model.AvatarColorText>()
+                .HasKey(_ => new { _.AvatarColorId, _.LanguageId });
+            modelBuilder.Entity<Model.AvatarItemText>()
+                .HasKey(_ => new { _.AvatarItemId, _.LanguageId });
             modelBuilder.Entity<Model.AvatarLayerText>()
                 .HasKey(_ => new { _.AvatarLayerId, _.LanguageId });
             modelBuilder.Entity<Model.ChallengeCategory>()
