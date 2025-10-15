@@ -4,7 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
-## [4.6.0] 2024-10-09
+## [Unreleased]
+
+## Added
+
+- Alt texts to avatar color, item and layer selector images
+- Mission Control interface to set avatar color and item alt texts
+
+## Changed
+
+- Update packages
+- Update Docker lock checksums
 
 ## Fixed
 

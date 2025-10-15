@@ -14,6 +14,7 @@
                      data-layer="@Model.LayerId"
                      src="/@(Model.ItemPath + "layer" + @Model.LayerId.ToString() + "/item" + item.Id + "/thumbnail.jpg")"
                      class="avatar-item-selector item@(item.Id) @(Model.SelectedItemId == item.Id ? "selected" : null)"
+					 alt="@item.AltText"
                      onclick="SelectItem(this)" />
             </div>
         }
@@ -36,6 +37,7 @@
                      src="/@(Model.ItemPath + "layer" + @Model.LayerId.ToString() + "/item" + item.Id + "/thumbnail.jpg")"
                      class="avatar-color-selector color@(item.Id) @(Model.SelectedItemId == item.Id ? "selected" : "")"
                      style="background-color:#@item.Color"
+					 alt="@item.AltText"
                      onclick="SelectColor(this)"></div>
             </div>
         }

@@ -216,7 +216,7 @@ namespace GRA.Controllers
                     Directory.CreateDirectory(directory);
                 }
                 var viewModel = new ShareViewModel();
-                userAvatar = userAvatar.OrderBy(_ => _.AvatarItem.AvatarLayerPosition).ToList();
+                userAvatar = userAvatar.OrderBy(_ => _.LayerPosition).ToList();
                 using (var md5er = MD5.Create())
                 {
                     var avatarBytes = userAvatar.Select(_ => _.Id)

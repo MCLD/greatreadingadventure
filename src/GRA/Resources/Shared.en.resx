@@ -1666,8 +1666,8 @@
     <comment>Show a message indicating how many search results were found.</comment>
   </data>
   <data name="There is 1 result matching your search." xml:space="preserve">
-    <comment>Show a message incidating a single search result was found.</comment>
     <value>There is 1 result matching your search.</value>
+    <comment>Show a message incidating a single search result was found.</comment>
   </data>
   <data name="Would you like to &lt;a href=&quot;{0}&quot;&gt;add a family member&lt;/a&gt;?" xml:space="preserve">
     <value>Would you like to &lt;a href="{0}"&gt;add a family member&lt;/a&gt;?</value>
@@ -1684,5 +1684,13 @@
   <data name="All Challenges" xml:space="preserve">
     <value>All Challenges</value>
     <comment>Link to clear filters and display all Challenges</comment>
+  </data>
+  <data name="View {0} options" xml:space="preserve">
+    <value>View {0} options</value>
+    <comment>Text for screen readers to indicate the image can be selected to view wardrobe options</comment>
+  </data>
+  <data name="View bundle options" xml:space="preserve">
+    <value>View bundle options</value>
+    <comment>Text for screen readers to indicate the image can be selected to view wardrobe bundle options</comment>
   </data>
 </root>
