@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Setting performer programs to be unapproved
 - Performer field for contact name
 - Performer scheduling settings for cover sheet fields
+- View of and access to historical report output
 
 ## Changed
 

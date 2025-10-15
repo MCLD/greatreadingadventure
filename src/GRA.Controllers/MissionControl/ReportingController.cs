@@ -7,7 +7,6 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.Reporting;
-using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
@@ -27,8 +26,8 @@ namespace GRA.Controllers.MissionControl
         private readonly ChallengeService _challengeService;
         private readonly JobService _jobService;
         private readonly ILogger<ReportingController> _logger;
-        private readonly ReportService _reportService;
         private readonly ReportRequestService _reportRequestService;
+        private readonly ReportService _reportService;
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
         private readonly TriggerService _triggerService;
@@ -267,48 +266,84 @@ namespace GRA.Controllers.MissionControl
 
         [HttpGet]
         public async Task<IActionResult> History(
-                    int page = 1,
-                    int? reportId = null,
-                    int? requestedBy = null,
-                    DateTime? startDate = null,
-                    DateTime? endDate = null)
+            int page,
+            int? reportId,
+            int? requestedBy,
+            DateTime? startDate,
+            DateTime? endDate)
         {
             if (page < 1) page = 1;
 
+            PageTitle = "Report History";
+
+            var activeUser = GetActiveUserId();
+
+            if (!UserHasPermission(Permission.ManageSites))
+            {
+                if (requestedBy.HasValue && requestedBy.Value != activeUser)
+                {
+                    ShowAlertDanger("Permission denied.");
+                    return RedirectToAction(nameof(History), new
+                    {
+                        endDate,
+                        page,
+                        reportId,
+                        startDate
+                    });
+                }
+                requestedBy = activeUser;
+            }
+
             var filter = new ReportRequestFilter(page)
             {
+                EndDate = endDate,
                 ReportId = reportId,
                 RequestedByUserId = requestedBy,
-                StartDate = startDate,
-                EndDate = endDate
+                StartDate = startDate
             };
 
             var result = await _reportRequestService.GetPaginatedListAsync(filter);
 
             var viewModel = new ReportHistoryViewModel
             {
-                Requests = result.Data,
+                CurrentPage = page,
+                CurrentUser = activeUser,
                 Filter = filter,
                 ItemCount = result.Count,
                 ItemsPerPage = filter.Take!.Value,
-                CurrentPage = page
+                ViewAll = UserHasPermission(Permission.ManageSites) && !requestedBy.HasValue,
+                ViewAllPermissions = UserHasPermission(Permission.ManageSites),
+                ViewSelf = requestedBy == activeUser
             };
+
+            ((List<ReportRequestSummary>)viewModel.Requests).AddRange(result.Data);
+
+            foreach (var reportRequest in viewModel.Requests)
+            {
+                if (reportRequest.RequestedByUserId.HasValue
+                    && !viewModel.UserNames.ContainsKey(reportRequest.RequestedByUserId.Value))
+                {
+                    viewModel.UserNames.Add(reportRequest.RequestedByUserId.Value,
+                        await _userService
+                            .GetUsersNameByIdAsync(reportRequest.RequestedByUserId.Value));
+                }
+            }
 
             if (viewModel.PastMaxPage)
             {
                 return RedirectToAction(nameof(History), new
                 {
+                    endDate,
                     page = viewModel.LastPage ?? 1,
                     reportId,
                     requestedBy,
-                    startDate,
-                    endDate
+                    startDate
                 });
             }
 
             return View(viewModel);
         }
-    
+
         [HttpGet]
         public IActionResult Index()
         {
@@ -416,12 +451,19 @@ namespace GRA.Controllers.MissionControl
             {
                 var (request, criterion) = await _reportService.GetReportResultsAsync(id);
 
+                if (!UserHasPermission(Permission.ViewAllReporting)
+                    && criterion.CreatedBy != GetActiveUserId())
+                {
+                    throw new GraException("Permission denied.");
+                }
+
                 PageTitle = request.Name ?? "Report Results";
 
                 var viewModel = new ReportResultsViewModel
                 {
                     ReportResultId = id,
-                    Title = PageTitle,
+                    Request = criterion,
+                    Title = PageTitle
                 };
 
                 if (criterion.StartDate.HasValue)

@@ -52,16 +52,24 @@ namespace GRA.Data.Repository
                 select rr;
 
             if (filter.ReportId.HasValue)
+            {
                 query = query.Where(_ => _.ReportId == filter.ReportId.Value);
+            }
 
             if (filter.RequestedByUserId.HasValue)
+            {
                 query = query.Where(_ => _.CreatedBy == filter.RequestedByUserId.Value);
+            }
 
             if (filter.StartDate.HasValue)
+            {
                 query = query.Where(_ => _.CreatedAt >= filter.StartDate.Value);
+            }
 
             if (filter.EndDate.HasValue)
+            {
                 query = query.Where(_ => _.CreatedAt <= filter.EndDate.Value);
+            }
 
             return query;
         }
