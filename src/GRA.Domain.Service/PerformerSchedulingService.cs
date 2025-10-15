@@ -990,7 +990,7 @@ namespace GRA.Domain.Service
                 if (includePrograms)
                 {
                     performer.Programs = await _psProgramRepository.GetByPerformerIdAsync(
-                        performer.Id);
+                        performer.Id, false);
                 }
                 if (includeSchedule)
                 {
@@ -1318,7 +1318,8 @@ namespace GRA.Domain.Service
                 await RemovePerformerImageAsync(image);
             }
 
-            var performerPrograms = await _psProgramRepository.GetByPerformerIdAsync(performer.Id);
+            var performerPrograms = await _psProgramRepository
+                .GetByPerformerIdAsync(performer.Id, false);
             foreach (var program in performerPrograms)
             {
                 await RemoveProgramAsync(program.Id);
