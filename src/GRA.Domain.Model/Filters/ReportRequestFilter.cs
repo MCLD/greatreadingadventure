@@ -1,12 +1,12 @@
-﻿using System;
-
-namespace GRA.Domain.Model.Filters
+﻿namespace GRA.Domain.Model.Filters
 {
     public class ReportRequestFilter : BaseFilter
     {
+        public ReportRequestFilter(int? page) : base(page)
+        {
+        }
+
         public int? ReportId { get; set; }
         public int? RequestedByUserId { get; set; }
-
-        public ReportRequestFilter(int? page = null) : base (page) { }
     }
 }

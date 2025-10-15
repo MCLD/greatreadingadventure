@@ -272,7 +272,10 @@ namespace GRA.Controllers.MissionControl
             DateTime? startDate,
             DateTime? endDate)
         {
-            if (page < 1) page = 1;
+            if (page < 1)
+            {
+                page = 1;
+            }
 
             PageTitle = "Report History";
 
