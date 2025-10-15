@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Alt texts to avatar color, item and layer selector images
 - Mission Control interface to set avatar color and item alt texts
+- BranchId token to vendor code URLs
 
 ## Changed
 

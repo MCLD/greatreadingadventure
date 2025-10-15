@@ -1851,13 +1851,15 @@ namespace GRA.Domain.Service
                     vendorCode.ExpirationDate = codeType.ExpirationDate;
                     if (!string.IsNullOrEmpty(codeType.Url))
                     {
-                        var markedUpToken = "{{" + TemplateToken.VendorCodeToken + "}}";
-                        vendorCode.Url = codeType.Url.Contains(markedUpToken,
-                            StringComparison.OrdinalIgnoreCase)
-                            ? codeType.Url.Replace(markedUpToken,
-                                vendorCode.Code,
-                                StringComparison.OrdinalIgnoreCase)
-                            : codeType.Url;
+                        var user = await _userRepository.GetByIdAsync(userId);
+
+                        vendorCode.Url = await new StubbleBuilder().Build()
+                            .RenderAsync(codeType.Url, new Dictionary<string, string>
+                            {
+                                { TemplateToken.VendorBranchToken, user.BranchId
+                                    .ToString(CultureInfo.InvariantCulture) },
+                                { TemplateToken.VendorCodeToken, vendorCode.Code }
+                            });
                     }
                     if (!multiple)
                     {
@@ -2092,14 +2094,15 @@ namespace GRA.Domain.Service
             var message = await _messageTemplateService
                 .GetMessageTextAsync(codeType.MessageTemplateId, languageId);
 
-            var markedUpUrl = codeType.Url.Contains("{{" + TemplateToken.VendorCodeToken + "}}",
-                    StringComparison.OrdinalIgnoreCase)
-                ? await new StubbleBuilder().Build()
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            var markedUpUrl = await new StubbleBuilder().Build()
                 .RenderAsync(codeType.Url, new Dictionary<string, string>
                 {
+                    {TemplateToken.VendorBranchToken, user.BranchId
+                        .ToString(CultureInfo.InvariantCulture)},
                     {TemplateToken.VendorCodeToken, assignedCode }
-                })
-                : codeType.Url;
+                });
 
             await _mailService.SendSystemMailAsync(new Mail
             {
