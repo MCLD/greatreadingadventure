@@ -136,7 +136,7 @@
                             <tr>
                                 @foreach (var data in report.FooterRow)
                                 {
-                                    <th><strong>@data</strong></th>
+                                    <th>@data</th>
                                 }
                             </tr>
                         </tfoot>
@@ -165,7 +165,7 @@ else
     <div class="row mt-3">
         <div class="col-12 col-lg-6 offset-lg-3">
             <div class="alert alert-warning">
-                @Model.Message
+                @Html.Raw(Model.Message)
             </div>
         </div>
     </div>
