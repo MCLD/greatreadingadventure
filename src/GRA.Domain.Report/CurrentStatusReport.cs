@@ -164,9 +164,9 @@ namespace GRA.Domain.Report
 
                     int users = await _userRepository.GetCountAsync(criterion);
                     int achievers = await _userRepository.GetAchieverCountAsync(criterion);
-                    long challenge = await _userLogRepository
+                    var (challenge, _) = await _userLogRepository
                         .CompletedChallengeCountAsync(criterion);
-                    long badge = await _userLogRepository.EarnedBadgeCountAsync(criterion);
+                    var (badge, _) = await _userLogRepository.EarnedBadgeCountAsync(criterion);
                     long points = await _userLogRepository.PointsEarnedTotalAsync(criterion);
 
                     totalRegistered += users;

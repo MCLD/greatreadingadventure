@@ -91,7 +91,7 @@ namespace GRA.Domain.Report
                 }
             }
 
-            int totalCount = challengeIds?.Count() ?? 0;
+            var totalCount = challengeIds?.Count() ?? 0;
             totalCount += badgeIds?.Count() ?? 0;
 
             #endregion Adjust report criteria as needed
@@ -103,11 +103,13 @@ namespace GRA.Domain.Report
             // header row
             report.HeaderRow = [
                 "Earned Item",
-                "Participants"
+                "Participants",
+                "Achievers"
             ];
 
             // running totals
             long totalEarnedItems = 0;
+            long totalEarnedAchievers = 0;
 
             if (badgeIds != null)
             {
@@ -119,7 +121,8 @@ namespace GRA.Domain.Report
                     }
 
                     var badgeName = await _badgeRepository.GetBadgeNamesAsync([badgeId]);
-                    var earned = await _userLogRepository.EarnedBadgeCountAsync(criterion, badgeId);
+                    var (earned, earnedAchiever) = await _userLogRepository
+                        .EarnedBadgeCountAsync(criterion, badgeId);
 
                     UpdateProgress(progress,
                         ++count * 100 / totalCount,
@@ -129,10 +132,12 @@ namespace GRA.Domain.Report
                     reportData.Add(
                     [
                         string.Join(", ", badgeName),
-                        earned
+                        earned,
+                        earnedAchiever
                     ]);
 
                     totalEarnedItems += earned;
+                    totalEarnedAchievers += earnedAchiever;
                 }
             }
 
@@ -146,8 +151,8 @@ namespace GRA.Domain.Report
                     }
 
                     var challenge = await _challengeRepository.GetByIdAsync(challengeId);
-                    var earned = await _userLogRepository.CompletedChallengeCountAsync(criterion,
-                        challengeId);
+                    var (earned, earnedAchiever) = await _userLogRepository
+                        .CompletedChallengeCountAsync(criterion, challengeId);
 
                     UpdateProgress(progress,
                         ++count * 100 / totalCount,
@@ -157,10 +162,12 @@ namespace GRA.Domain.Report
                     reportData.Add(
                     [
                         challenge.Name,
-                        earned
+                        earned,
+                        earnedAchiever
                     ]);
 
                     totalEarnedItems += earned;
+                    totalEarnedAchievers += earnedAchiever;
                 }
             }
 
@@ -169,7 +176,8 @@ namespace GRA.Domain.Report
             report.FooterRow =
             [
                 "Total",
-                totalEarnedItems
+                totalEarnedItems,
+                totalEarnedAchievers
             ];
 
             #endregion Collect data

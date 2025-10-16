@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Update Docker lock checksums
 - Performer references to be a text input instead of file
 - Update front-end packages
+- Add achiever column to badge report
 
 ## Fixed
 

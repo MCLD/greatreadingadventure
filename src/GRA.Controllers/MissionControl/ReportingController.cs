@@ -380,18 +380,19 @@ namespace GRA.Controllers.MissionControl
 
             var criterion = new ReportCriterion
             {
-                SiteId = siteId,
-                EndDate = viewModel.EndDate,
-                StartDate = viewModel.StartDate,
-                SystemId = viewModel.SystemId,
+                BadgeRequiredList = viewModel.BadgeRequiredList,
                 BranchId = viewModel.BranchId,
+                ChallengeRequiredList = viewModel.ChallengeRequiredList,
+                EndDate = viewModel.EndDate,
+                GroupInfoId = viewModel.GroupInfoId,
+                IncludeAchieverStatus = viewModel.IncludeAchieverStatus,
                 ProgramId = viewModel.ProgramId,
                 SchoolDistrictId = viewModel.SchoolDistrictId,
                 SchoolId = viewModel.SchoolId,
-                GroupInfoId = viewModel.GroupInfoId,
-                VendorCodeTypeId = viewModel.VendorCodeTypeId,
-                BadgeRequiredList = viewModel.BadgeRequiredList,
-                ChallengeRequiredList = viewModel.ChallengeRequiredList
+                SiteId = siteId,
+                StartDate = viewModel.StartDate,
+                SystemId = viewModel.SystemId,
+                VendorCodeTypeId = viewModel.VendorCodeTypeId
             };
 
             if (viewModel.TriggerList?.Count > 0)

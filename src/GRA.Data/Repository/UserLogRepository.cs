@@ -19,8 +19,10 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<Dictionary<string, long>> ActivityEarningsTotalAsync(ReportCriterion request)
+        public async Task<Dictionary<string, long>>
+            ActivityEarningsTotalAsync(ReportCriterion request)
         {
+            ArgumentNullException.ThrowIfNull(request);
             var eligibleUsers = GetEligibleUsers(request);
 
             // build lookup of point translations
@@ -96,9 +98,11 @@ namespace GRA.Data.Repository
             return namedResult;
         }
 
-        public async Task<long> CompletedChallengeCountAsync(ReportCriterion request,
-            int? challengeId = null)
+        public async Task<(long earned, long earnedAchiever)>
+            CompletedChallengeCountAsync(ReportCriterion request, int? challengeId)
         {
+            ArgumentNullException.ThrowIfNull(request);
+
             var eligibleUsers = GetEligibleUsers(request);
 
             var challengeCount = DbSet
@@ -125,12 +129,26 @@ namespace GRA.Data.Repository
                     .Where(_ => _.ChallengeId == challengeId);
             }
 
-            return await challengeCount.CountAsync();
+            var earned = await challengeCount.CountAsync();
+
+            var earnedAchiever = request.IncludeAchieverStatus
+                ? await challengeCount.CountAsync(_ => _.User.AchievedAt != null)
+                : 0;
+
+            return (earned, earnedAchiever);
         }
 
-        public async Task<long> EarnedBadgeCountAsync(ReportCriterion request,
-            int? badgeId = null)
+        public async Task<(long earned, long earnedAchiever)>
+            CompletedChallengeCountAsync(ReportCriterion request)
         {
+            return await CompletedChallengeCountAsync(request, null);
+        }
+
+        public async Task<(long earned, long earnedAchiever)>
+            EarnedBadgeCountAsync(ReportCriterion request, int? badgeId)
+        {
+            ArgumentNullException.ThrowIfNull(request);
+
             var eligibleUsers = GetEligibleUsers(request);
 
             var badgeCount = DbSet
@@ -157,7 +175,19 @@ namespace GRA.Data.Repository
                     .Where(_ => _.BadgeId == badgeId);
             }
 
-            return await badgeCount.CountAsync();
+            var earned = await badgeCount.CountAsync();
+
+            var earnedAchiever = request.IncludeAchieverStatus
+                ? await badgeCount.CountAsync(_ => _.User.AchievedAt != null)
+                : 0;
+
+            return (earned, earnedAchiever);
+        }
+
+        public async Task<(long earned, long earnedAchiever)>
+            EarnedBadgeCountAsync(ReportCriterion request)
+        {
+            return await EarnedBadgeCountAsync(request, null);
         }
 
         public async Task<int> GetActivityEarnedForUserAsync(int userId)
@@ -191,9 +221,11 @@ namespace GRA.Data.Repository
                 .SumAsync(_ => Convert.ToInt64(_.PointsEarned));
         }
 
-        public async Task<DataWithCount<ICollection<UserLog>>> GetPaginatedHistoryAsync(
-                                                            UserLogFilter filter)
+        public async Task<DataWithCount<ICollection<UserLog>>>
+            GetPaginatedHistoryAsync(UserLogFilter filter)
         {
+            ArgumentNullException.ThrowIfNull(filter);
+
             var userLogs = DbSet
                 .AsNoTracking()
                 .Where(_ => !_.IsDeleted);
@@ -258,22 +290,24 @@ namespace GRA.Data.Repository
                             userLog.Description = $"{translation.TranslationDescriptionPastTense} {translation.ActivityDescription}";
                         }
 
-                        if (userLog.BookId != null) 
+                        if (userLog.BookId != null)
                         {
                             var book = _context.Books
                                 .AsNoTracking()
-                                .Where(_ => _.Id == userLog.BookId) 
+                                .Where(_ => _.Id == userLog.BookId)
                                 .SingleOrDefault();
 
                             if (book != null)
                             {
-                                userLog.Description += " - " + book.Title + (book.Author != null ? " (" + book.Author + ")" : "");
+                                userLog.Description += " - "
+                                    + book.Title
+                                    + (book.Author != null ? " (" + book.Author + ")" : "");
                             }
                         }
 
                         userLog.Description =
                             userLog.Description.Substring(0, 1).ToUpper()
-                            + userLog.Description.Substring(1);
+                                + userLog.Description.Substring(1);
                     }
                 }
                 if (userLog.BadgeId != null)
@@ -313,6 +347,7 @@ namespace GRA.Data.Repository
 
         public async Task<long> PointsEarnedTotalAsync(ReportCriterion request)
         {
+            ArgumentNullException.ThrowIfNull(request);
             var eligibleUsers = GetEligibleUsers(request);
 
             var pointCount = DbSet
@@ -368,6 +403,7 @@ namespace GRA.Data.Repository
         public async Task<long> TranslationEarningsAsync(ReportCriterion request,
             ICollection<int?> translationIds)
         {
+            ArgumentNullException.ThrowIfNull(request);
             var eligibleUsers = GetEligibleUsers(request);
 
             var earnedFilter = DbSet
@@ -406,16 +442,20 @@ namespace GRA.Data.Repository
             return await earnedFilter.SumAsync(_ => Convert.ToInt64(_.ActivityEarned.Value));
         }
 
-        public async Task<ICollection<int>> UserIdsCompletedChallengesAsync(int challengeId, ReportCriterion criterion)
+        public async Task<ICollection<int>>
+            UserIdsCompletedChallengesAsync(int challengeId, ReportCriterion criterion)
         {
+            ArgumentNullException.ThrowIfNull(criterion);
             return await GetEligibleUserLogs(criterion)
                 .Where(_ => _.ChallengeId == challengeId)
                 .Select(_ => _.UserId)
                 .ToListAsync();
         }
 
-        public async Task<ICollection<int>> UserIdsEarnedBadgeAsync(int badgeId, ReportCriterion criterion)
+        public async Task<ICollection<int>>
+            UserIdsEarnedBadgeAsync(int badgeId, ReportCriterion criterion)
         {
+            ArgumentNullException.ThrowIfNull(criterion);
             return await GetEligibleUserLogs(criterion)
                 .Where(_ => _.BadgeId == badgeId)
                 .Select(_ => _.UserId)
@@ -432,7 +472,8 @@ namespace GRA.Data.Repository
 
             if (request.ProgramId != null)
             {
-                eligibleUserLogs = eligibleUserLogs.Where(_ => _.User.ProgramId == request.ProgramId);
+                eligibleUserLogs = eligibleUserLogs
+                    .Where(_ => _.User.ProgramId == request.ProgramId);
             }
             if (request.SystemId != null)
             {

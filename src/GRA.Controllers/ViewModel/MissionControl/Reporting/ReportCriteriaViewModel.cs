@@ -23,6 +23,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Reporting
         public int? GroupInfoId { get; set; }
 
         public SelectList GroupInfosList { get; set; }
+        public bool IncludeAchieverStatus { get; set; }
         public SelectList PrizeList { get; set; }
 
         [DisplayName("Select a program")]
