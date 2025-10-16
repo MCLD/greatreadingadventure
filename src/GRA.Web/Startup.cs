@@ -403,6 +403,8 @@ namespace GRA.Web
                 _.AddJavaScriptBundle("/js/markdown.min.js",
                     "js/commonmark.js",
                     "Scripts/WMD.js").UseContentRoot();
+                _.AddJavaScriptBundle("/js/qr-code-styling.min.js",
+                    "js/qr-code-styling.js").UseContentRoot();
                 _.AddJavaScriptBundle("/js/slick.min.js",
                     "js/slick.js").UseContentRoot();
                 _.AddJavaScriptBundle("/js/slick-avatar.min.js",

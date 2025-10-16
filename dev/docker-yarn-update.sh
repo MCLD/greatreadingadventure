@@ -3,13 +3,10 @@
 # How to run this:
 # 1. Find a Linux system (Windows Docker path sharing is a mess)
 # 2. Clone the repository
-# 4. Run the following: docker run -it --rm -v `pwd`:/app node:alpine /bin/sh /app/dev/docker-yarn-update.sh
+# 4. Run the following: docker run -it --rm -v `pwd`:/app node:latest bash /app/dev/docker-yarn-update.sh
 # 5. See what happened with git status
 
-cd /app/src/GRA.Web
-corepack enable
-echo 'Y' |yarn config set --home enableTelemetry 0
-yarn install
+cd /app/src/GRA.Web && yarn install
 
 mkdir -p /app/src/GRA.Web/js
 rm -rf /app/src/GRA.Web/js/*.js
@@ -23,8 +20,10 @@ cp /app/src/GRA.Web/node_modules/jquery-validation/dist/jquery.validate.js /app/
 cp /app/src/GRA.Web/node_modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js /app/src/GRA.Web/js
 cp /app/src/GRA.Web/node_modules/moment/min/moment.min.js /app/src/GRA.Web/js
 cp /app/src/GRA.Web/node_modules/moment-timezone/builds/moment-timezone.min.js /app/src/GRA.Web/js
+cp /app/src/GRA.Web/node_modules/qr-code-styling/lib/qr-code-styling.js /app/src/GRA.Web/js
 cp /app/src/GRA.Web/node_modules/slick-carousel/slick/slick.js /app/src/GRA.Web/js
 cp /app/src/GRA.Web/node_modules/tom-select/dist/js/tom-select.complete.js /app/src/GRA.Web/js
+
 
 mkdir -p /app/src/GRA.Web/css
 rm -rf /app/src/GRA.Web/css/*.css
@@ -49,5 +48,5 @@ cp /app/src/GRA.Web/node_modules/slick-carousel/slick/fonts/* /app/src/GRA.Web/w
 rm /app/src/GRA.Web/wwwroot/css/ajax-loader.gif
 cp /app/src/GRA.Web/node_modules/slick-carousel/slick/ajax-loader.gif /app/src/GRA.Web/wwwroot/css/
 
-yarn npm audit
+echo --- GRA.Web yarn outdated && yarn outdated
 
