@@ -24,9 +24,9 @@ namespace GRA.Controllers.ViewModel.MissionControl.Reporting
 
         public int ReportResultId { get; set; }
 
-        public Domain.Model.StoredReportSet ReportSet { get; set; }
+        public StoredReportSet ReportSet { get; set; }
 
-        public Domain.Model.ReportCriterion Request { get; set; }
+        public ReportCriterion Request { get; set; }
 
         public IEnumerable<IEnumerable<string>> Results { get; set; }
 

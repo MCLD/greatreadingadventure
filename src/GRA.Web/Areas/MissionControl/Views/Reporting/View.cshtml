@@ -2,12 +2,12 @@
 @if (Model.ReportSet?.Reports?.Count > 0)
 {
     @section inHeading {
-    <a asp-action="@nameof(ReportingController.Download)"
-       asp-route-id="@Model.ReportResultId"
-       class="btn btn-outline-primary ms-auto d-print-none">
-        <span class="far fa-file-excel"></span>
-        Download Excel spreadsheet
-    </a>
+        <a asp-action="@nameof(ReportingController.Download)"
+           asp-route-id="@Model.ReportResultId"
+           class="btn btn-outline-primary ms-auto d-print-none">
+            <span class="far fa-file-excel"></span>
+            Download Excel spreadsheet
+        </a>
     }
 
     <div class="row mt-2">
@@ -16,66 +16,72 @@
                 @if (Model.StartDate.HasValue)
                 {
                     <tr>
-                        <td><strong>Start Date:</strong></td>
+                        <th>Start Date:</th>
                         <td>@Model.StartDate</td>
                     </tr>
                 }
                 @if (Model.EndDate.HasValue)
                 {
                     <tr>
-                        <td><strong>End Date:</strong></td>
+                        <th>End Date:</th>
                         <td>@Model.EndDate</td>
                     </tr>
                 }
                 @if (!string.IsNullOrWhiteSpace(Model.SystemName))
                 {
                     <tr>
-                        <td><strong>System:</strong></td>
+                        <th>System:</th>
                         <td>@Model.SystemName</td>
                     </tr>
                 }
                 @if (!string.IsNullOrWhiteSpace(Model.BranchName))
                 {
                     <tr>
-                        <td><strong>Branch:</strong></td>
+                        <th>Branch:</th>
                         <td>@Model.BranchName</td>
                     </tr>
                 }
                 @if (!string.IsNullOrWhiteSpace(Model.ProgramName))
                 {
                     <tr>
-                        <td><strong>Program:</strong></td>
+                        <th>Program:</th>
                         <td>@Model.ProgramName</td>
                     </tr>
                 }
                 @if (!string.IsNullOrWhiteSpace(Model.GroupName))
                 {
                     <tr>
-                        <td><strong>Group:</strong></td>
+                        <th>Group:</th>
                         <td>@Model.GroupName</td>
                     </tr>
                 }
                 @if (!string.IsNullOrWhiteSpace(Model.SchoolDistrictName))
                 {
                     <tr>
-                        <td><strong>School District:</strong></td>
+                        <th>School District:</th>
                         <td>@Model.SchoolDistrictName</td>
                     </tr>
                 }
                 @if (!string.IsNullOrWhiteSpace(Model.SchoolName))
                 {
                     <tr>
-                        <td><strong>School:</strong></td>
+                        <th>School:</th>
                         <td>@Model.SchoolName</td>
                     </tr>
                 }
                 @if (!string.IsNullOrWhiteSpace(Model.VendorCodeName))
                 {
                     <tr>
-                        <td><strong>Vendor Code:</strong></td>
+                        <th>Vendor Code:</th>
                         <td>@Model.VendorCodeName</td>
                     </tr>
                 }
+                <tr>
+                    <th>Generated at:</th>
+                    <td>
+                        @Model.Request.CreatedAt.ToString("g")
+                    </td>
+                </tr>
             </table>
         </div>
     </div>
@@ -130,7 +136,7 @@
                             <tr>
                                 @foreach (var data in report.FooterRow)
                                 {
-                                    <th><strong>@data</strong></th>
+                                    <th>@data</th>
                                 }
                             </tr>
                         </tfoot>
@@ -159,7 +165,7 @@ else
     <div class="row mt-3">
         <div class="col-12 col-lg-6 offset-lg-3">
             <div class="alert alert-warning">
-                @Model.Message
+                @Html.Raw(Model.Message)
             </div>
         </div>
     </div>

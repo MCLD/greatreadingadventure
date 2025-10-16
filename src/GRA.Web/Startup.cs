@@ -575,6 +575,7 @@ namespace GRA.Web
             services.AddScoped<PrizeWinnerService>();
             services.AddScoped<QuestionnaireService>();
             services.AddScoped<ReportService>();
+            services.AddScoped<ReportRequestService>();
             services.AddScoped<RoleService>();
             services.AddScoped<SampleDataService>();
             services.AddScoped<SchoolImportExportService>();

@@ -1,0 +1,103 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.ReportHistoryViewModel
+
+<div class="alert alert-warning mt-1">
+    <div class="modal-body d-flex align-items-stretch">
+        <span class="fas fa-exclamation-triangle fa-lg pt-1 me-3"
+              aria-hidden="true"></span>
+        <span>
+            These are historical report results, they may not reflect the current state of the
+            program. Please verify the <strong>Generated At</strong> date.
+        </span>
+    </div>
+</div>
+
+@if (Model.ViewAllPermissions)
+{
+    <div class="my-2">
+        <a asp-route-RequestedBy="@Model.CurrentUser"
+           class="btn @Model.ButtonSelfClass">View Mine</a>
+        <a asp-route-requestedBy=""
+           class="btn @Model.ButtonAllClass">View All</a>
+    </div>
+}
+
+<table class="table table-sm table-bordered link-table">
+    <thead>
+        <tr>
+            <th>Generated At</th>
+            <th>Report Type</th>
+            <th>Requested By</th>
+            <th>Status</th>
+            <th>Download</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model?.Requests?.Any() != true)
+        {
+            <tr>
+                <td colspan="5">No report history found.</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var reportRequest in Model.Requests)
+            {
+                <tr>
+                    <td>@reportRequest.CreatedAt</td>
+                    <td>
+                        <a asp-action="@nameof(GRA.Controllers.MissionControl.ReportingController.View)"
+                           asp-route-id="@reportRequest.Id">
+                            @(string.IsNullOrWhiteSpace(reportRequest.Name) ? $"Report #{reportRequest.ReportId}" : reportRequest.Name)
+                        </a>
+                    </td>
+                    <td>
+                        @if (reportRequest.RequestedByUserId.HasValue)
+                        {
+                            <a asp-action="@nameof(ParticipantsController.Detail)"
+                               asp-controller="@ParticipantsController.Name"
+                               asp-route-id="@reportRequest.RequestedByUserId.Value">
+                                @(Model.UserNames.ContainsKey(reportRequest.RequestedByUserId.Value) ? Model.UserNames[reportRequest.RequestedByUserId.Value] : reportRequest.RequestedByUserId.Value)
+                            </a>
+                        }
+                        else
+                        {
+                            <span>Unknown</span>
+                        }
+                    </td>
+                    <td class="d-flex justify-content-center align-content-middle">
+                        <div>
+                            @if (reportRequest.Success == true)
+                            {
+                                <span class="badge bg-success">Success</span>
+                            }
+                            else if (reportRequest.Success == false)
+                            {
+                                <span class="badge bg-danger" title="@reportRequest.Message">Failed</span>
+                            }
+                            else if (reportRequest.Started.HasValue && !reportRequest.Finished.HasValue)
+                            {
+                                <span class="badge bg-info">Running</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Queued</span>
+                            }
+                        </div>
+                    </td>
+                    <td>
+                        <div class="d-flex justify-content-center align-content-middle">
+                            <a class="btn btn-outline-primary btn-sm"
+                               href="@Url.Action(nameof(ReportingController.Download), new { id = reportRequest.Id })">
+                                <span class="far fa-file-excel fa-fw"></span> Excel
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<div class="mt-3">
+    <paginate paginateModel="@Model"></paginate>
+</div>

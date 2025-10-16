@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.Reporting;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using GRA.Utility;
 using Microsoft.AspNetCore.Authorization;
@@ -25,6 +26,7 @@ namespace GRA.Controllers.MissionControl
         private readonly ChallengeService _challengeService;
         private readonly JobService _jobService;
         private readonly ILogger<ReportingController> _logger;
+        private readonly ReportRequestService _reportRequestService;
         private readonly ReportService _reportService;
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
@@ -38,6 +40,7 @@ namespace GRA.Controllers.MissionControl
             ChallengeService challengeService,
             JobService jobService,
             ReportService reportService,
+            ReportRequestService reportRequestService,
             SchoolService schoolService,
             SiteService siteService,
             TriggerService triggerService,
@@ -49,6 +52,7 @@ namespace GRA.Controllers.MissionControl
             ArgumentNullException.ThrowIfNull(jobService);
             ArgumentNullException.ThrowIfNull(logger);
             ArgumentNullException.ThrowIfNull(reportService);
+            ArgumentNullException.ThrowIfNull(reportRequestService);
             ArgumentNullException.ThrowIfNull(schoolService);
             ArgumentNullException.ThrowIfNull(siteService);
             ArgumentNullException.ThrowIfNull(triggerService);
@@ -60,6 +64,7 @@ namespace GRA.Controllers.MissionControl
             _jobService = jobService;
             _logger = logger;
             _reportService = reportService;
+            _reportRequestService = reportRequestService;
             _schoolService = schoolService;
             _siteService = siteService;
             _triggerService = triggerService;
@@ -260,6 +265,89 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpGet]
+        public async Task<IActionResult> History(
+            int page,
+            int? reportId,
+            int? requestedBy,
+            DateTime? startDate,
+            DateTime? endDate)
+        {
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            PageTitle = "Report History";
+
+            var activeUser = GetActiveUserId();
+
+            if (!UserHasPermission(Permission.ManageSites))
+            {
+                if (requestedBy.HasValue && requestedBy.Value != activeUser)
+                {
+                    ShowAlertDanger("Permission denied.");
+                    return RedirectToAction(nameof(History), new
+                    {
+                        endDate,
+                        page,
+                        reportId,
+                        startDate
+                    });
+                }
+                requestedBy = activeUser;
+            }
+
+            var filter = new ReportRequestFilter(page)
+            {
+                EndDate = endDate,
+                ReportId = reportId,
+                RequestedByUserId = requestedBy,
+                StartDate = startDate
+            };
+
+            var result = await _reportRequestService.GetPaginatedListAsync(filter);
+
+            var viewModel = new ReportHistoryViewModel
+            {
+                CurrentPage = page,
+                CurrentUser = activeUser,
+                Filter = filter,
+                ItemCount = result.Count,
+                ItemsPerPage = filter.Take!.Value,
+                ViewAll = UserHasPermission(Permission.ManageSites) && !requestedBy.HasValue,
+                ViewAllPermissions = UserHasPermission(Permission.ManageSites),
+                ViewSelf = requestedBy == activeUser
+            };
+
+            ((List<ReportRequestSummary>)viewModel.Requests).AddRange(result.Data);
+
+            foreach (var reportRequest in viewModel.Requests)
+            {
+                if (reportRequest.RequestedByUserId.HasValue
+                    && !viewModel.UserNames.ContainsKey(reportRequest.RequestedByUserId.Value))
+                {
+                    viewModel.UserNames.Add(reportRequest.RequestedByUserId.Value,
+                        await _userService
+                            .GetUsersNameByIdAsync(reportRequest.RequestedByUserId.Value));
+                }
+            }
+
+            if (viewModel.PastMaxPage)
+            {
+                return RedirectToAction(nameof(History), new
+                {
+                    endDate,
+                    page = viewModel.LastPage ?? 1,
+                    reportId,
+                    requestedBy,
+                    startDate
+                });
+            }
+
+            return View(viewModel);
+        }
+
+        [HttpGet]
         public IActionResult Index()
         {
             PageTitle = "Select a Report";
@@ -366,12 +454,19 @@ namespace GRA.Controllers.MissionControl
             {
                 var (request, criterion) = await _reportService.GetReportResultsAsync(id);
 
+                if (!UserHasPermission(Permission.ViewAllReporting)
+                    && criterion.CreatedBy != GetActiveUserId())
+                {
+                    throw new GraException("Permission denied.");
+                }
+
                 PageTitle = request.Name ?? "Report Results";
 
                 var viewModel = new ReportResultsViewModel
                 {
                     ReportResultId = id,
-                    Title = PageTitle,
+                    Request = criterion,
+                    Title = PageTitle
                 };
 
                 if (criterion.StartDate.HasValue)
