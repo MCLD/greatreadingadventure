@@ -15,12 +15,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Performer field for contact name
 - Performer scheduling settings for cover sheet fields
 - View of and access to historical report output
+- QR code generation ability
 
 ## Changed
 
 - Update packages
 - Update Docker lock checksums
 - Performer references to be a text input instead of file
+- Update front-end packages
 
 ## Fixed
 

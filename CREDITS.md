@@ -165,6 +165,11 @@ The Great Reading Adventure uses open source components. You can find informatio
 - Adapted code from the [ASP.NET Identity PasswordHasher class](https://github.com/aspnet/Identity/blob/dev/src/Microsoft.AspNetCore.Identity/PasswordHasher.cs)
 - Source on GitHub: [aspnet/Identity](https://github.com/aspnet/Identity) - [Apache License, Version 2.0](https://github.com/aspnet/Identity/blob/dev/LICENSE.txt)
 
+### qr-code-styling
+
+- Automaticly generate your styled QR code in your web app.
+- Source on GitHub: [kozakdenys/qr-code-styling](https://github.com/kozakdenys/qr-code-styling) - [MIT License](https://github.com/kozakdenys/qr-code-styling/blob/master/LICENSE)
+
 ### Serilog
 
 - [Serilog](https://serilog.net/): Simple .NET logging with fully-structured events
