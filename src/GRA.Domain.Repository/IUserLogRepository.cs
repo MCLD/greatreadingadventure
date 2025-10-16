@@ -11,10 +11,15 @@ namespace GRA.Domain.Repository
         Task<Dictionary<string, long>> ActivityEarningsTotalAsync(ReportCriterion request);
 
         Task<(long earned, long earnedAchiever)>
-            CompletedChallengeCountAsync(ReportCriterion request, int? challengeId = null);
+            CompletedChallengeCountAsync(ReportCriterion request);
 
         Task<(long earned, long earnedAchiever)>
-            EarnedBadgeCountAsync(ReportCriterion request, int? badgeId = null);
+            CompletedChallengeCountAsync(ReportCriterion request, int? challengeId);
+
+        Task<(long earned, long earnedAchiever)> EarnedBadgeCountAsync(ReportCriterion request);
+
+        Task<(long earned, long earnedAchiever)>
+            EarnedBadgeCountAsync(ReportCriterion request, int? badgeId);
 
         Task<int> GetActivityEarnedForUserAsync(int userId);
 
