@@ -58,6 +58,7 @@ namespace GRA.Data
         public DbSet<Model.GroupInfo> GroupInfos { get; set; }
         public DbSet<Model.GroupType> GroupTypes { get; set; }
         public DbSet<Model.Job> Jobs { get; set; }
+        public DbSet<Model.JoinCode> JoinCodes { get; set; }
         public DbSet<Model.Language> Languages { get; set; }
         public DbSet<Model.Location> Locations { get; set; }
         public DbSet<Model.Mail> Mails { get; set; }
