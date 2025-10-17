@@ -1,359 +1,363 @@
 ﻿@model GRA.Controllers.ViewModel.Join.SinglePageViewModel
 
 <form asp-controller="Join" asp-action="Index" method="post" role="form" novalidate>
-    @if (!string.IsNullOrWhiteSpace(Model.AuthorizationCode))
-    {
-        <input asp-for="AuthorizationCode" type="hidden" />
-    }
+	@if (!string.IsNullOrWhiteSpace(Model.AuthorizationCode))
+	{
+		<input asp-for="AuthorizationCode" type="hidden" />
+	}
+	@if (!string.IsNullOrWhiteSpace(Model.JoinCode))
+	{
+		<input asp-for="JoinCode" type="hidden" />
+	}
 
-    <div class="row">
-        <div class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2">
-            <div class="card">
-                <div class="card-header">
-                    <span class="lead">@ViewData[ViewDataKey.Title]</span>
-                </div>
-                <div class="card-body">
-                    @if (!string.IsNullOrWhiteSpace(Model.WelcomeMessage))
-                    {
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <div class="alert alert-success mb-0 welcome-message">
-                                    @Html.Raw(Model.WelcomeMessage)
-                                </div>
-                            </div>
-                        </div>
-                    }
-                    <div class="row mb-3">
-                        <div class="col-12">
-                            <label asp-for="Username" class="col-form-label"></label>
-                            <span id="Username-Icon" class="fas colored-icon d-none"></span>
-                            <input asp-for="Username"
-                                   class="form-control"
-                                   autofocus
-                                   autocomplete="username" />
-                            <span id="Username-Validation"
-                                  asp-validation-for="Username"
-                                  class="text-success"></span>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-12">
-                            <label asp-for="Password" class="col-form-label"></label>
-                            <p class="password-note">
-                                @SharedLocalizer[GRA.Annotations.Validate.PasswordRequirement]
-                            </p>
-                            <input asp-for="Password"
-                                   type="password"
-                                   class="form-control"
-                                   autocomplete="new-password" />
-                            <span asp-validation-for="Password" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-12">
-                            <label asp-for="ConfirmPassword" class="col-form-label"></label>
-                            <input asp-for="ConfirmPassword"
-                                   type="password"
-                                   class="form-control"
-                                   autocomplete="new-password" />
-                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <hr />
-                    <div class="row mb-3">
-                        <div class="col-12">
-                            <label asp-for="FirstName" class="col-form-label"></label>
-                            <input asp-for="FirstName"
-                                   class="form-control"
-                                   autocomplete="given-name" />
-                            <span asp-validation-for="FirstName" class="text-danger"></span>
-                        </div>
-                    </div>
+	<div class="row">
+		<div class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2">
+			<div class="card">
+				<div class="card-header">
+					<span class="lead">@ViewData[ViewDataKey.Title]</span>
+				</div>
+				<div class="card-body">
+					@if (!string.IsNullOrWhiteSpace(Model.WelcomeMessage))
+					{
+						<div class="row mb-3">
+							<div class="col-12">
+								<div class="alert alert-success mb-0 welcome-message">
+									@Html.Raw(Model.WelcomeMessage)
+								</div>
+							</div>
+						</div>
+					}
+					<div class="row mb-3">
+						<div class="col-12">
+							<label asp-for="Username" class="col-form-label"></label>
+							<span id="Username-Icon" class="fas colored-icon d-none"></span>
+							<input asp-for="Username"
+								   class="form-control"
+								   autofocus
+								   autocomplete="username" />
+							<span id="Username-Validation"
+								  asp-validation-for="Username"
+								  class="text-success"></span>
+						</div>
+					</div>
+					<div class="row mb-3">
+						<div class="col-12">
+							<label asp-for="Password" class="col-form-label"></label>
+							<p class="password-note">
+								@SharedLocalizer[GRA.Annotations.Validate.PasswordRequirement]
+							</p>
+							<input asp-for="Password"
+								   type="password"
+								   class="form-control"
+								   autocomplete="new-password" />
+							<span asp-validation-for="Password" class="text-danger"></span>
+						</div>
+					</div>
+					<div class="row mb-3">
+						<div class="col-12">
+							<label asp-for="ConfirmPassword" class="col-form-label"></label>
+							<input asp-for="ConfirmPassword"
+								   type="password"
+								   class="form-control"
+								   autocomplete="new-password" />
+							<span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+						</div>
+					</div>
+					<hr />
+					<div class="row mb-3">
+						<div class="col-12">
+							<label asp-for="FirstName" class="col-form-label"></label>
+							<input asp-for="FirstName"
+								   class="form-control"
+								   autocomplete="given-name" />
+							<span asp-validation-for="FirstName" class="text-danger"></span>
+						</div>
+					</div>
 
-                    <div class="row mb-3">
-                        <div class="col-12">
-                            <label asp-for="LastName" class="col-form-label"></label>
-                            <input asp-for="LastName"
-                                   class="form-control"
-                                   autotomplete="family-name" />
-                            <span asp-validation-for="LastName" class="text-danger"></span>
-                        </div>
-                    </div>
-                    @if (Model.RequirePostalCode)
-                    {
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <label asp-for="PostalCode" class="col-form-label"></label>
-                                <input asp-for="PostalCode"
-                                       class="form-control"
-                                       autocomplete="postal-code" />
-                                <span asp-validation-for="PostalCode" class="text-danger"></span>
-                            </div>
-                        </div>
-                    }
-                    @if (Model.SystemList.Count() > 1)
-                    {
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <label asp-for="SystemId" class="col-form-label"></label>
-                                <select asp-for="SystemId"
-                                        asp-items="Model.SystemList"
-                                        class="form-select">
-                                    <option></option>
-                                </select>
-                                <span asp-validation-for="SystemId" class="text-danger"></span>
-                            </div>
-                        </div>
-                    }
-                    else
-                    {
-                        <input asp-for="SystemId" type="hidden" />
-                    }
-                    @if (Model.BranchList != null && Model.BranchList.Count() < 1)
-                    {
-                        <input asp-for="BranchId" type="hidden" />
-                    }
-                    else
-                    {
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <label asp-for="BranchId" class="col-form-label"></label>
-                                <select asp-for="BranchId"
-                                        asp-items="Model.BranchList"
-                                        class="form-select"></select>
-                                <span asp-validation-for="BranchId" class="text-danger"></span>
-                            </div>
-                        </div>
-                    }
-                    @if (Model.ProgramList.Count() > 1)
-                    {
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <label asp-for="ProgramId" class="col-form-label"></label>
-                                <select asp-for="ProgramId"
-                                        asp-items="Model.ProgramList"
-                                        class="form-select">
-                                    <option></option>
-                                </select>
-                                <span asp-validation-for="ProgramId" class="text-danger"></span>
-                            </div>
-                        </div>
-                    }
-                    else
-                    {
-                        <input asp-for="ProgramId" type="hidden" />
-                    }
-                    <div id="ageField" class="row mb-3 @(Model.ShowAge ? "": "d-none")">
-                        <div class="col-12">
-                            <label asp-for="Age" class="col-form-label"></label>
-                            <input asp-for="Age" class="form-control" type="text" />
-                            <span id="ageMessage"
-                                  asp-validation-for="Age"
-                                  class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div id="schoolFields" class="@(Model.ShowSchool ? "": "d-none")">
-                        @await Html.PartialAsync("_SchoolSelectionPartial", Model)
-                    </div>
-                    <hr />
-                    <div class="row mb-3">
-                        <div class="col-12">
-                            <p>
-                                @SharedLocalizer[GRA.Annotations.Validate.EmailPhoneNeededForPrizes]
-                            </p>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-12">
-                            <label asp-for="Email" class="col-form-label"></label>
-                            <input asp-for="Email"
-                                   class="form-control"
-                                   type="email"
-                                   autocomplete="email" />
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-12">
-                            <label asp-for="PhoneNumber" class="col-form-label"></label>
-                            <input asp-for="PhoneNumber"
-                                   class="form-control"
-                                   type="tel"
-                                   autocomplete="tel-national" />
-                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                        </div>
-                    </div>
-                    @if (Model.AskFirstTime?.Count() > 1)
-                    {
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <label asp-for="IsFirstTime" class="col-form-label"></label>
-                                <select asp-for="IsFirstTime"
-                                        asp-items="Model.AskFirstTime"
-                                        class="form-select"></select>
-                                <span asp-validation-for="IsFirstTime" class="text-danger"></span>
-                            </div>
-                        </div>
-                    }
-                    @if (Model.AskEmailSubscription?.Count() > 1)
-                    {
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <label asp-for="EmailSubscriptionRequested"
-                                       class="col-form-label">@Model.AskEmailSubscriptionText</label>
-                                <select asp-for="EmailSubscriptionRequested"
-                                        asp-items="Model.AskEmailSubscription"
-                                        class="form-select"></select>
-                                <span asp-validation-for="EmailSubscriptionRequested"
-                                      class="text-danger"></span>
-                            </div>
-                        </div>
-                    }
-                    @if (!string.IsNullOrWhiteSpace(Model.TranslationDescriptionPastTense))
-                    {
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <label asp-for="DailyPersonalGoal" class="col-form-label"></label>
-                                <div>
-                                    @SharedLocalizer["I will {0}", Model.TranslationDescriptionPastTense]
-                                    <input asp-for="DailyPersonalGoal"
-                                           class="form-control"
-                                           style="display:inline-block; width:75px;" />
-                                    @SharedLocalizer["{0} a day", Model.ActivityDescriptionPlural]
-                                </div>
-                                <span asp-validation-for="DailyPersonalGoal" class="text-danger"></span>
-                            </div>
-                        </div>
-                    }
-                </div>
-                <div class="card-footer d-flex justify-content-end">
-                    <button type="submit"
-                            class="btn btn-outline-primary btn-lg"
-                            button-spinner>
-                        <span class="fas fa-book"></span>
-                        @SharedLocalizer[GRA.Domain.Model.DisplayNames.JoinNow]
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+					<div class="row mb-3">
+						<div class="col-12">
+							<label asp-for="LastName" class="col-form-label"></label>
+							<input asp-for="LastName"
+								   class="form-control"
+								   autotomplete="family-name" />
+							<span asp-validation-for="LastName" class="text-danger"></span>
+						</div>
+					</div>
+					@if (Model.RequirePostalCode)
+					{
+						<div class="row mb-3">
+							<div class="col-12">
+								<label asp-for="PostalCode" class="col-form-label"></label>
+								<input asp-for="PostalCode"
+									   class="form-control"
+									   autocomplete="postal-code" />
+								<span asp-validation-for="PostalCode" class="text-danger"></span>
+							</div>
+						</div>
+					}
+					@if (Model.SystemList.Count() > 1)
+					{
+						<div class="row mb-3">
+							<div class="col-12">
+								<label asp-for="SystemId" class="col-form-label"></label>
+								<select asp-for="SystemId"
+										asp-items="Model.SystemList"
+										class="form-select">
+									<option></option>
+								</select>
+								<span asp-validation-for="SystemId" class="text-danger"></span>
+							</div>
+						</div>
+					}
+					else
+					{
+						<input asp-for="SystemId" type="hidden" />
+					}
+					@if (Model.BranchList != null && Model.BranchList.Count() < 1)
+					{
+						<input asp-for="BranchId" type="hidden" />
+					}
+					else
+					{
+						<div class="row mb-3">
+							<div class="col-12">
+								<label asp-for="BranchId" class="col-form-label"></label>
+								<select asp-for="BranchId"
+										asp-items="Model.BranchList"
+										class="form-select"></select>
+								<span asp-validation-for="BranchId" class="text-danger"></span>
+							</div>
+						</div>
+					}
+					@if (Model.ProgramList.Count() > 1)
+					{
+						<div class="row mb-3">
+							<div class="col-12">
+								<label asp-for="ProgramId" class="col-form-label"></label>
+								<select asp-for="ProgramId"
+										asp-items="Model.ProgramList"
+										class="form-select">
+									<option></option>
+								</select>
+								<span asp-validation-for="ProgramId" class="text-danger"></span>
+							</div>
+						</div>
+					}
+					else
+					{
+						<input asp-for="ProgramId" type="hidden" />
+					}
+					<div id="ageField" class="row mb-3 @(Model.ShowAge ? "" : "d-none")">
+						<div class="col-12">
+							<label asp-for="Age" class="col-form-label"></label>
+							<input asp-for="Age" class="form-control" type="text" />
+							<span id="ageMessage"
+								  asp-validation-for="Age"
+								  class="text-danger"></span>
+						</div>
+					</div>
+					<div id="schoolFields" class="@(Model.ShowSchool ? "" : "d-none")">
+						@await Html.PartialAsync("_SchoolSelectionPartial", Model)
+					</div>
+					<hr />
+					<div class="row mb-3">
+						<div class="col-12">
+							<p>
+								@SharedLocalizer[GRA.Annotations.Validate.EmailPhoneNeededForPrizes]
+							</p>
+						</div>
+					</div>
+					<div class="row mb-3">
+						<div class="col-12">
+							<label asp-for="Email" class="col-form-label"></label>
+							<input asp-for="Email"
+								   class="form-control"
+								   type="email"
+								   autocomplete="email" />
+							<span asp-validation-for="Email" class="text-danger"></span>
+						</div>
+					</div>
+					<div class="row mb-3">
+						<div class="col-12">
+							<label asp-for="PhoneNumber" class="col-form-label"></label>
+							<input asp-for="PhoneNumber"
+								   class="form-control"
+								   type="tel"
+								   autocomplete="tel-national" />
+							<span asp-validation-for="PhoneNumber" class="text-danger"></span>
+						</div>
+					</div>
+					@if (Model.AskFirstTime?.Count() > 1)
+					{
+						<div class="row mb-3">
+							<div class="col-12">
+								<label asp-for="IsFirstTime" class="col-form-label"></label>
+								<select asp-for="IsFirstTime"
+										asp-items="Model.AskFirstTime"
+										class="form-select"></select>
+								<span asp-validation-for="IsFirstTime" class="text-danger"></span>
+							</div>
+						</div>
+					}
+					@if (Model.AskEmailSubscription?.Count() > 1)
+					{
+						<div class="row mb-3">
+							<div class="col-12">
+								<label asp-for="EmailSubscriptionRequested"
+									   class="col-form-label">@Model.AskEmailSubscriptionText</label>
+								<select asp-for="EmailSubscriptionRequested"
+										asp-items="Model.AskEmailSubscription"
+										class="form-select"></select>
+								<span asp-validation-for="EmailSubscriptionRequested"
+									  class="text-danger"></span>
+							</div>
+						</div>
+					}
+					@if (!string.IsNullOrWhiteSpace(Model.TranslationDescriptionPastTense))
+					{
+						<div class="row mb-3">
+							<div class="col-12">
+								<label asp-for="DailyPersonalGoal" class="col-form-label"></label>
+								<div>
+									@SharedLocalizer["I will {0}", Model.TranslationDescriptionPastTense]
+									<input asp-for="DailyPersonalGoal"
+										   class="form-control"
+										   style="display:inline-block; width:75px;" />
+									@SharedLocalizer["{0} a day", Model.ActivityDescriptionPlural]
+								</div>
+								<span asp-validation-for="DailyPersonalGoal" class="text-danger"></span>
+							</div>
+						</div>
+					}
+				</div>
+				<div class="card-footer d-flex justify-content-end">
+					<button type="submit"
+							class="btn btn-outline-primary btn-lg"
+							button-spinner>
+						<span class="fas fa-book"></span>
+						@SharedLocalizer[GRA.Domain.Model.DisplayNames.JoinNow]
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </form>
 
 @section scripts {
-    <script>
-        const branchLookupUrl = "@Url.Action(nameof(LookupController.GetBranches), LookupController.Name, new { Area = string.Empty })";
-        var programs = JSON.parse('@Html.Raw(Model.ProgramJson)');
-        var selectedProgram = $.grep(programs, function (obj) {
-            return obj.Id == $("#ProgramId").val();
-        })[0];
+	<script>
+		const branchLookupUrl = "@Url.Action(nameof(LookupController.GetBranches), LookupController.Name, new { Area = string.Empty })";
+		var programs = JSON.parse('@Html.Raw(Model.ProgramJson)');
+		var selectedProgram = $.grep(programs, function (obj) {
+			return obj.Id == $("#ProgramId").val();
+		})[0];
 
-        $("#SystemId").on("change", function () {
-            let systemId = $(this).val();
-            let branchList = $("#BranchId");
-            let branchId = branchList.val();
-            let listAll = systemId == '';
+		$("#SystemId").on("change", function () {
+			let systemId = $(this).val();
+			let branchList = $("#BranchId");
+			let branchId = branchList.val();
+			let listAll = systemId == '';
 
-            $.getJSON(branchLookupUrl,
-                {
-                    branchId: branchId,
-                    includeSystemName: listAll,
-                    listAll: listAll,
-                    systemId: systemId,
-                },
-                function (response) {
-                    branchList.empty();
-                    if (response.length > 1) {
-                        branchList.append(new Option("", ""));
-                    }
-                    $.each(response, function (index, item) {
-                        branchList.append(new Option(item.text, item.value, item.selected, item.selected))
-                    });
-                });
-        });
+			$.getJSON(branchLookupUrl,
+				{
+					branchId: branchId,
+					includeSystemName: listAll,
+					listAll: listAll,
+					systemId: systemId,
+				},
+				function (response) {
+					branchList.empty();
+					if (response.length > 1) {
+						branchList.append(new Option("", ""));
+					}
+					$.each(response, function (index, item) {
+						branchList.append(new Option(item.text, item.value, item.selected, item.selected))
+					});
+				});
+		});
 
-        $("#ProgramId").on("change", function () {
-            let programId = $(this).val();
-            selectedProgram = $.grep(programs, function (obj) {
-                return obj.Id == programId;
-            })[0];
-            if (selectedProgram != null) {
-                if (selectedProgram.AskAge) {
-                    $("#ageField").removeClass("d-none");
-                    validateAge();
-                }
-                else {
-                    $("#ageField").addClass("d-none");
-                }
+		$("#ProgramId").on("change", function () {
+			let programId = $(this).val();
+			selectedProgram = $.grep(programs, function (obj) {
+				return obj.Id == programId;
+			})[0];
+			if (selectedProgram != null) {
+				if (selectedProgram.AskAge) {
+					$("#ageField").removeClass("d-none");
+					validateAge();
+				}
+				else {
+					$("#ageField").addClass("d-none");
+				}
 
-                if (selectedProgram.AskSchool) {
-                    $("#schoolFields").removeClass("d-none");
-                }
-                else {
-                    $("#schoolFields").addClass("d-none");
-                }
-            }
-        });
+				if (selectedProgram.AskSchool) {
+					$("#schoolFields").removeClass("d-none");
+				}
+				else {
+					$("#schoolFields").addClass("d-none");
+				}
+			}
+		});
 
-        $("#Age").on("change", function () {
-            validateAge();
-        });
+		$("#Age").on("change", function () {
+			validateAge();
+		});
 
-        function validateAge() {
-            var age = $("#Age").val();
-            var message = $("#ageMessage");
-            if (age != "" && ((age > selectedProgram.AgeMaximum && selectedProgram.AgeMaximum != null)
-                || (age < selectedProgram.AgeMinimum && selectedProgram.AgeMinimum != null))) {
-                var program = $.grep(programs, function (obj) {
-                    return ((obj.AgeMaximum >= age || obj.AgeMaximum == null)
-                        && (obj.AgeMinimum <= age || obj.AgeMinimum == null));
-                })[0];
-                if (program != null) {
-                    message.removeClass('field-validation-valid field-validation-error text-danger');
-                    message.addClass('text-primary');
-                    $("#Age").removeClass("input-validation-error")
-                    message.html("@SharedLocalizer[GRA.Annotations.Info.BetterSuitedOption] " + program.Name);
-                }
-            }
-            else {
-                message.text("");
-            }
-        }
+		function validateAge() {
+			var age = $("#Age").val();
+			var message = $("#ageMessage");
+			if (age != "" && ((age > selectedProgram.AgeMaximum && selectedProgram.AgeMaximum != null)
+				|| (age < selectedProgram.AgeMinimum && selectedProgram.AgeMinimum != null))) {
+				var program = $.grep(programs, function (obj) {
+					return ((obj.AgeMaximum >= age || obj.AgeMaximum == null)
+						&& (obj.AgeMinimum <= age || obj.AgeMinimum == null));
+				})[0];
+				if (program != null) {
+					message.removeClass('field-validation-valid field-validation-error text-danger');
+					message.addClass('text-primary');
+					$("#Age").removeClass("input-validation-error")
+					message.html("@SharedLocalizer[GRA.Annotations.Info.BetterSuitedOption] " + program.Name);
+				}
+			}
+			else {
+				message.text("");
+			}
+		}
 
-        const usernameCheckUrl = "@Url.Action(nameof(GRA.Controllers.LookupController.UsernameInUse), LookupController.Name, new { Area = string.Empty })";
-        const usernameIcon = $("#Username-Icon");
-        const usernameField = $("#Username");
-        const usernameValidation = $("#Username-Validation");
+		const usernameCheckUrl = "@Url.Action(nameof(GRA.Controllers.LookupController.UsernameInUse), LookupController.Name, new { Area = string.Empty })";
+		const usernameIcon = $("#Username-Icon");
+		const usernameField = $("#Username");
+		const usernameValidation = $("#Username-Validation");
 
-        usernameField.on("blur", function () {
-            if ($(this).val().trim() != "" && !$(this).hasClass("input-validation-error")) {
-                $(this).val($(this).val().trim());
-                usernameIcon.addClass("fa-spinner fa-spin")
-                    .removeClass("d-none fa-times-circle fa-check-circle text-success text-danger");
-                $.post(usernameCheckUrl, { username: $(this).val() }, function (response) {
-                    if (response) {
-                        $(this).removeClass("valid");
-                        $(this).addClass("input-validation-error");
-                        usernameValidation.removeClass("field-validation-valid text-success")
-                            .addClass("field-validation-error")
-                            .text("Someone has already chosen that username.");
-                        usernameIcon.removeClass("fa-spinner fa-spin")
-                            .addClass("fa-times-circle text-danger");
-                    }
-                    else {
-                        usernameValidation.removeClass("field-validation-valid")
-                            .addClass("text-success")
-                            .text("The chosen username is available.");
-                        usernameIcon.removeClass("fa-spinner fa-spin")
-                            .addClass("fa-check-circle text-success");
-                    }
-                });
-            }
-        });
+		usernameField.on("blur", function () {
+			if ($(this).val().trim() != "" && !$(this).hasClass("input-validation-error")) {
+				$(this).val($(this).val().trim());
+				usernameIcon.addClass("fa-spinner fa-spin")
+					.removeClass("d-none fa-times-circle fa-check-circle text-success text-danger");
+				$.post(usernameCheckUrl, { username: $(this).val() }, function (response) {
+					if (response) {
+						$(this).removeClass("valid");
+						$(this).addClass("input-validation-error");
+						usernameValidation.removeClass("field-validation-valid text-success")
+							.addClass("field-validation-error")
+							.text("Someone has already chosen that username.");
+						usernameIcon.removeClass("fa-spinner fa-spin")
+							.addClass("fa-times-circle text-danger");
+					}
+					else {
+						usernameValidation.removeClass("field-validation-valid")
+							.addClass("text-success")
+							.text("The chosen username is available.");
+						usernameIcon.removeClass("fa-spinner fa-spin")
+							.addClass("fa-check-circle text-success");
+					}
+				});
+			}
+		});
 
-        usernameField.on("keypress", function () {
-            usernameIcon.addClass("d-none");
-        });
-    </script>
+		usernameField.on("keypress", function () {
+			usernameIcon.addClass("d-none");
+		});
+	</script>
 
-    @await Html.PartialAsync("_SchoolSelectionScripts", Model)
+	@await Html.PartialAsync("_SchoolSelectionScripts", Model)
 }
