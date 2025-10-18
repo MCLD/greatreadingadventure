@@ -261,7 +261,13 @@ namespace GRA.Controllers
             if (askActivityGoal)
             {
                 viewModel.DailyPersonalGoal = defaultDailyGoal;
-                var pointTranslation = programList.First().PointTranslation;
+                var program = programList.First();
+                if (program.PointTranslation == null)
+                {
+                    program.PointTranslation = await _pointTranslationService
+                        .GetByProgramIdAsync(program.Id);
+                }
+                var pointTranslation = program.PointTranslation;
                 viewModel.TranslationDescriptionPastTense = pointTranslation
                     .TranslationDescriptionPastTense
                     .Replace("{0}", "", StringComparison.OrdinalIgnoreCase)
@@ -281,25 +287,29 @@ namespace GRA.Controllers
                 viewModel.IsFirstTime = "No";
                 TempData.Keep(AuthCodeAssignedBranch);
             }
-            else if (systemList.Count() == 1)
-            {
-                var systemId = systemList.Single().Id;
-                branchList.AddRange(await _siteService.GetBranches(systemId));
-                viewModel.SystemId = systemId;
-            }
             else
             {
-                branchList.AddRange(await _siteService.GetAllBranches(true));
+                if (systemList.Count() == 1)
+                {
+                    var systemId = systemList.Single().Id;
+                    branchList.AddRange(await _siteService.GetBranches(systemId));
+                    viewModel.SystemId = systemId;
+                }
+                else
+                {
+                    branchList.AddRange(await _siteService.GetAllBranches(true));
+                }
+
+                if (branchList.Count > 1)
+                {
+                    branchList.Insert(0, new Branch { Id = -1 });
+                }
+                else
+                {
+                    viewModel.BranchId = branchList.SingleOrDefault()?.Id;
+                }
             }
 
-            if (branchList.Count > 1)
-            {
-                branchList.Insert(0, new Branch { Id = -1 });
-            }
-            else
-            {
-                viewModel.BranchId = branchList.SingleOrDefault()?.Id;
-            }
             viewModel.BranchList = NameIdSelectList(branchList.ToList());
 
             if (programList.Count() == 1)
@@ -564,7 +574,13 @@ namespace GRA.Controllers
 
             if (askActivityGoal)
             {
-                var pointTranslation = programList.First().PointTranslation;
+                var program = programList.First();
+                if (program.PointTranslation == null)
+                {
+                    program.PointTranslation = await _pointTranslationService
+                        .GetByProgramIdAsync(program.Id);
+                }
+                var pointTranslation = program.PointTranslation;
                 model.TranslationDescriptionPastTense = pointTranslation
                     .TranslationDescriptionPastTense
                     .Replace("{0}", "", StringComparison.OrdinalIgnoreCase)
@@ -653,25 +669,29 @@ namespace GRA.Controllers
                 viewModel.SystemId = branch.SystemId;
                 TempData.Keep(AuthCodeAssignedBranch);
             }
-            else if (systemList.Count() == 1)
-            {
-                var systemId = systemList.Single().Id;
-                branchList.AddRange(await _siteService.GetBranches(systemId));
-                viewModel.SystemId = systemId;
-            }
             else
             {
-                branchList.AddRange(await _siteService.GetAllBranches(true));
+                if (systemList.Count() == 1)
+                {
+                    var systemId = systemList.Single().Id;
+                    branchList.AddRange(await _siteService.GetBranches(systemId));
+                    viewModel.SystemId = systemId;
+                }
+                else
+                {
+                    branchList.AddRange(await _siteService.GetAllBranches(true));
+                }
+
+                if (branchList.Count > 1)
+                {
+                    branchList.Insert(0, new Branch { Id = -1 });
+                }
+                else
+                {
+                    viewModel.BranchId = branchList.SingleOrDefault()?.Id;
+                }
             }
 
-            if (branchList.Count > 1)
-            {
-                branchList.Insert(0, new Branch { Id = -1 });
-            }
-            else
-            {
-                viewModel.BranchId = branchList.SingleOrDefault()?.Id;
-            }
             viewModel.BranchList = NameIdSelectList(branchList.ToList());
 
             if (useAuthCode)
