@@ -384,6 +384,7 @@ namespace GRA.Web
                 _.AddJavaScriptBundle("/js/main.min.js",
                     "js/jquery.js",
                     "js/jquery.validate.js",
+                    "js/messages_es.js",
                     "js/jquery.validate.unobtrusive.js",
                     "js/popper.js",
                     "js/bootstrap.js",
