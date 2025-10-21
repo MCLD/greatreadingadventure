@@ -1,7 +1,11 @@
 ﻿@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
 
+@{
+	var ISOLanguageName = Context.Items[GRA.Controllers.ItemKey.ISOLanguageName]?.ToString();
+}
+
 <!DOCTYPE html>
-<html lang="@Context.Items[GRA.Controllers.ItemKey.ISOLanguageName]">
+<html lang="@ISOLanguageName">
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -412,6 +416,12 @@
         </div>
     </div>
     <script src="/js/main.min.js"></script>
+
+	@if (!string.IsNullOrWhiteSpace(ISOLanguageName) && ISOLanguageName != "en")
+	{
+		<script src="js/messages_@(ISOLanguageName).min.js"></script>
+	}
+
     <script src="/js/tempus-dominus.min.js"></script>
     @RenderSection("scripts", required: false)
     @if (Context.Items[GRA.Controllers.ItemKey.NotificationsModal] != null)
