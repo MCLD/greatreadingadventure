@@ -158,6 +158,7 @@
             public const string FreeBookCongratulations = "Congratulations, you've earned a free book!";
             public const string Group = "Group";
             public const string History = "History";
+            public const string IWillEarn = "I will earn";
             public const string Joined = "Joined {0}!";
             public const string MailReplyPrefix = "Re: {0}";
             public const string MailSent = "Mail sent: {0}";
@@ -173,6 +174,7 @@
             public const string NotStreamingYet = "Not streaming yet";
             public const string Optional = "Optional";
             public const string PasswordChanged = "Your password has been changed.";
+            public const string PersonalPointGoalDescription = "A personal goal beyond the programs default goal of {0} points.";
             public const string PointsYoullEarn = "Points you'll earn";
             public const string Prizes = "Prizes";
             public const string ProfileUpdated = "Profile updated.";
