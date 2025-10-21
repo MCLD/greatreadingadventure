@@ -17,6 +17,7 @@ cp /app/src/GRA.Web/node_modules/bootstrap/dist/js/bootstrap.js /app/src/GRA.Web
 cp /app/src/GRA.Web/node_modules/commonmark/dist/commonmark.js /app/src/GRA.Web/js
 cp /app/src/GRA.Web/node_modules/jquery/dist/jquery.js /app/src/GRA.Web/js
 cp /app/src/GRA.Web/node_modules/jquery-validation/dist/jquery.validate.js /app/src/GRA.Web/js
+cp /app/src/GRA.Web/node_modules/jquery-validation/dist/localization/messages_es.js /app/src/GRA.Web/js
 cp /app/src/GRA.Web/node_modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js /app/src/GRA.Web/js
 cp /app/src/GRA.Web/node_modules/moment/min/moment.min.js /app/src/GRA.Web/js
 cp /app/src/GRA.Web/node_modules/moment-timezone/builds/moment-timezone.min.js /app/src/GRA.Web/js

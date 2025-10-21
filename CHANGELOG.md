@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Performer scheduling settings for cover sheet fields
 - View of and access to historical report output
 - QR code generation ability
+- Spanish localization for jQuery validation messages
 - Join codes for tracking signups
 
 ## Changed
