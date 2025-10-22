@@ -34,7 +34,7 @@
     @if (!string.IsNullOrWhiteSpace(Model.Event.ExternalLink))
     {
         <div class="mb-2">
-            <strong>More information:</strong>
+			<strong>@SharedLocalizer[GRA.Annotations.Interface.MoreInformation]:</strong>
             <a target="_blank" href="@Model.Event.ExternalLink">@Model.Event.Name</a>
             <a target="_blank" href="@Model.Event.ExternalLink">
                 <span class="fas fa-external-link-alt fa-fw"></span>

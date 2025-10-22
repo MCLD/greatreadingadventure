@@ -1693,4 +1693,20 @@
     <value>View bundle options</value>
     <comment>Text for screen readers to indicate the image can be selected to view wardrobe bundle options</comment>
   </data>
+  <data name="&lt;strong&gt;{0}&lt;/strong&gt; is not a valid code." xml:space="preserve">
+    <value>&lt;strong&gt;{0}&lt;/strong&gt; is not a valid code.</value>
+    <comment>Validation prompt if the user submits an invalid secret code; {0} is replaced with the secret code.</comment>
+  </data>
+  <data name="You already entered the code &lt;strong&gt;{0}&lt;/strong&gt; on &lt;strong&gt;{1}&lt;/strong&gt;!" xml:space="preserve">
+    <value>You already entered the code &lt;strong&gt;{0}&lt;/strong&gt; on &lt;strong&gt;{1}&lt;/strong&gt;!</value>
+    <comment>Validation prompt if the user submits a secret code they've already submitted; {0} is replaced with the secret code, {1} is the date the code was submitted</comment>
+  </data>
+  <data name="The book &lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{1}&lt;/strong&gt; was added to your book list." xml:space="preserve">
+    <value>The book &lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{1}&lt;/strong&gt; was added to your book list.</value>
+    <comment>Message shown when a participant adds a new book; {0} is replaced with the title, {1} with the author</comment>
+  </data>
+  <data name="The book &lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{1}&lt;/strong&gt; is already on the booklist." xml:space="preserve">
+    <value>The book &lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{1}&lt;/strong&gt; is already on the booklist.</value>
+    <comment>Validation prompt if the user attempts to add a book already on their booklist; {0} is replaced with the title, {1} with the author</comment>
+  </data>
 </root>
