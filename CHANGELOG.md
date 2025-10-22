@@ -31,6 +31,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Display of modals after Bootstrap 5.3 upgrade
 - Performer program cost to display in currency format
+- Join issues caused by setting a program or branch with an authorization code
 
 ## [4.6.0] 2024-10-09
 
