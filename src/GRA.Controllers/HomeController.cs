@@ -348,34 +348,50 @@ namespace GRA.Controllers
                         = _sharedLocalizer[(string)secretCodeMessage];
                 }
 
-                if (user.PersonalPointGoal.HasValue)
+                if (user.PersonalPointGoal.HasValue
+                    && user.PointsEarned >= program.AchieverPointAmount)
                 {
-                    viewModel.ProgressMessage = _sharedLocalizer[Annotations.Info.PersonalGoal,
-                        user.PersonalPointGoal.Value];
-                    viewModel.TotalProgramGoal = user.PersonalPointGoal.Value;
+                    viewModel.ProgramPercentComplete = Math.Min(
+                        (int)(program.AchieverPointAmount * 100 / user.PersonalPointGoal.Value),
+                        100);
+                    viewModel.TotalPercentComplete = Math.Min(
+                        (int)(user.PointsEarned * 100 / user.PersonalPointGoal.Value), 100);
+                    viewModel.PersonalPercentComplete = viewModel.TotalPercentComplete
+                        - viewModel.ProgramPercentComplete;
+
+                    if (user.PointsEarned >= user.PersonalPointGoal.Value)
+                    {
+                        viewModel.ProgressMessage = _sharedLocalizer[
+                            Annotations.Info.PersonalGoalComplete,
+                            user.PersonalPointGoal.Value];
+                    }
+                    else
+                    {
+                        viewModel.ProgressMessage = _sharedLocalizer[Annotations.Info.PersonalGoal,
+                            user.PointsEarned,
+                            user.PersonalPointGoal.Value];
+                    }
                 }
                 else
                 {
-                    viewModel.ProgressMessage
-                        = _sharedLocalizer[Annotations.Info.Goal, program.AchieverPointAmount];
-                    viewModel.TotalProgramGoal = program.AchieverPointAmount;
+                    viewModel.ProgramPercentComplete = Math.Min(
+                        (int)(user.PointsEarned * 100 / program.AchieverPointAmount), 100);
+                    viewModel.ProgressMessage = _sharedLocalizer[Annotations.Info.Goal,
+                        program.AchieverPointAmount];
                 }
-
-                viewModel.PercentComplete = Math.Min(
-                        (int)(user.PointsEarned * 100 / viewModel.TotalProgramGoal), 100);
 
                 if (user.DailyPersonalGoal.HasValue)
                 {
-                    viewModel.ActivityEarned = await _activityService.GetActivityEarnedAsync();
+                    var activityEarned = await _activityService.GetActivityEarnedAsync();
                     var programDays = (int)Math.Ceiling((
                         site.ProgramEnds.Value - site.ProgramStarts.Value).TotalDays);
-                    viewModel.TotalActivityGoal = programDays * user.DailyPersonalGoal.Value;
+                    var totalActivityGoal = programDays * user.DailyPersonalGoal.Value;
 
                     viewModel.ActivityPercentComplete = Math.Min(
-                        (int)(viewModel.ActivityEarned * 100 / viewModel.TotalActivityGoal), 100);
-                    viewModel.ActivityProgressMessage = 
+                        (int)(activityEarned * 100 / totalActivityGoal), 100);
+                    viewModel.ActivityProgressMessage =
                         _sharedLocalizer[Annotations.Info.PersonalActivityGoal,
-                            viewModel.TotalActivityGoal];
+                            totalActivityGoal];
                 }
 
                 var (siteReadingGoalSet, siteReadingGoal)
