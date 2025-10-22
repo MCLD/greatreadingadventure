@@ -33,6 +33,7 @@
         public const string MissionControl = "Mission Control";
         public const string MostPopular = "Most popular";
         public const string MostRecent = "Most recent";
+        public const string MyReadingProgress = "My reading progress";
         public const string MyProfile = "My Profile";
         public const string MyProgress = "My progress";
         public const string Name = "Name";

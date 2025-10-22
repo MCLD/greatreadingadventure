@@ -607,7 +607,7 @@ namespace GRA.Controllers
 
             if (askActivityGoal)
             {
-                var program = programList.First();
+                program ??= programList.First();
                 if (program.PointTranslation == null)
                 {
                     program.PointTranslation = await _pointTranslationService

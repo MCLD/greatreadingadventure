@@ -348,22 +348,35 @@ namespace GRA.Controllers
                         = _sharedLocalizer[(string)secretCodeMessage];
                 }
 
-                if (user.DailyPersonalGoal.HasValue)
+                if (user.PersonalPointGoal.HasValue)
                 {
-                    var programDays = (int)Math.Ceiling((
-                        site.ProgramEnds.Value - site.ProgramStarts.Value).TotalDays);
-                    viewModel.TotalProgramGoal = programDays * user.DailyPersonalGoal.Value;
-                    viewModel.ActivityEarned = await _activityService.GetActivityEarnedAsync();
+                    viewModel.ProgressMessage = _sharedLocalizer[Annotations.Info.PersonalGoal,
+                        user.PersonalPointGoal.Value];
+                    viewModel.TotalProgramGoal = user.PersonalPointGoal.Value;
                 }
                 else
                 {
-                    viewModel.TotalProgramGoal = program.AchieverPointAmount;
-                    viewModel.ActivityEarned = user.PointsEarned;
                     viewModel.ProgressMessage
                         = _sharedLocalizer[Annotations.Info.Goal, program.AchieverPointAmount];
+                    viewModel.TotalProgramGoal = program.AchieverPointAmount;
                 }
+
                 viewModel.PercentComplete = Math.Min(
-                        (int)(viewModel.ActivityEarned * 100 / viewModel.TotalProgramGoal), 100);
+                        (int)(user.PointsEarned * 100 / viewModel.TotalProgramGoal), 100);
+
+                if (user.DailyPersonalGoal.HasValue)
+                {
+                    viewModel.ActivityEarned = await _activityService.GetActivityEarnedAsync();
+                    var programDays = (int)Math.Ceiling((
+                        site.ProgramEnds.Value - site.ProgramStarts.Value).TotalDays);
+                    viewModel.TotalActivityGoal = programDays * user.DailyPersonalGoal.Value;
+
+                    viewModel.ActivityPercentComplete = Math.Min(
+                        (int)(viewModel.ActivityEarned * 100 / viewModel.TotalActivityGoal), 100);
+                    viewModel.ActivityProgressMessage = 
+                        _sharedLocalizer[Annotations.Info.PersonalActivityGoal,
+                            viewModel.TotalActivityGoal];
+                }
 
                 var (siteReadingGoalSet, siteReadingGoal)
                     = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(),
