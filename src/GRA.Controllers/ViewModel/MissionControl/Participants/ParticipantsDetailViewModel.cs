@@ -16,6 +16,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public string ActivityDescriptionPlural { get; set; }
         public bool AskEmailSubscription { get; set; }
         public string AskEmailSubscriptionText { get; set; }
+        public bool AskPersonalPointGoal { get; set; }
         public SelectList BranchList { get; set; }
         public bool CanEditDetails { get; set; }
         public bool CanEditUsername { get; set; }
@@ -34,6 +35,8 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
             }
         }
 
+        public int? MaximumPersonalPointGoal { get; set; }
+        public int? MinimumPersonalPointGoal { get; set; }
         public string ProgramJson { get; set; }
         public SelectList ProgramList { get; set; }
         public bool RequirePostalCode { get; set; }

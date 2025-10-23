@@ -33,6 +33,7 @@
         public const string MissionControl = "Mission Control";
         public const string MostPopular = "Most popular";
         public const string MostRecent = "Most recent";
+        public const string MyReadingProgress = "My reading progress";
         public const string MyProfile = "My Profile";
         public const string MyProgress = "My progress";
         public const string Name = "Name";
@@ -42,6 +43,7 @@
         public const string OldPassword = "Old Password";
         public const string Ordering = "Ordering";
         public const string Password = "Password";
+        public const string PersonalPointGoal = "Set a personal point goal";
         public const string PhoneNumber = "Phone Number";
         public const string Program = "Age Group";
         public const string ReturnToSignIn = "Return to Sign In";

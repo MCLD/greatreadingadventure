@@ -181,6 +181,27 @@
                 </div>
             }
 
+			@if (Model.AskPersonalPointGoal)
+			{
+				<div class="row mb-3">
+					<div class="col-12">
+						<label asp-for="PersonalPointGoal" class="col-form-label"></label>
+						<span class="fas fa-info-circle"
+							  data-bs-toggle="tooltip"
+							  title="@String.Format(GRA.Annotations.Interface.PersonalPointGoalDescription, Model.MinimumPersonalPointGoal)"></span>
+						<div>
+							@GRA.Annotations.Interface.PersonalPointGoalLabel
+							<input asp-for="PersonalPointGoal"
+								   max="@Model.MaximumPersonalPointGoal"
+								   min="@Model.MinimumPersonalPointGoal"
+								   class="form-control"
+								   style="display:inline-block; width:100px;" />
+						</div>
+						<span asp-validation-for="PersonalPointGoal" class="text-danger"></span>
+					</div>
+				</div>
+			}
+
             <hr />
 
             <div class="row mb-3">

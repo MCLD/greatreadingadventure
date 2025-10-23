@@ -68,6 +68,8 @@ namespace GRA.Data.Model
 
         public string PasswordHash { get; set; }
 
+        public int? PersonalPointGoal { get; set; }
+
         [MaxLength(15)]
         public string PhoneNumber { get; set; }
 

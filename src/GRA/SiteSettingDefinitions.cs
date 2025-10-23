@@ -225,6 +225,13 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Users).Name,
                     Format = SiteSettingFormat.Boolean
                 },
+                [SiteSettingKey.Users.AskPersonalPointGoal] = new SiteSettingDefinition
+                {
+                    Name = "Ask personal point goal",
+                    Info = "Put any text here to ask participants to optionally set a personal point goal.",
+                    Category = typeof(SiteSettingKey.Users).Name,
+                    Format = SiteSettingFormat.Boolean
+                },
                 [SiteSettingKey.Users.CollectAccessClosedEmails] = new SiteSettingDefinition
                 {
                     Name = "Collect emails after access has closed",

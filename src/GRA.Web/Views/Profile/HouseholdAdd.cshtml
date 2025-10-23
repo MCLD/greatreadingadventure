@@ -177,6 +177,26 @@
                                     </div>
                                 </div>
                             }
+							@if (Model.AskPersonalPointGoal)
+							{
+								<div class="row mb-3">
+									<div class="col-12">
+										<label asp-for="User.PersonalPointGoal" class="col-form-label"></label>
+										<span class="fas fa-info-circle"
+											  data-bs-toggle="tooltip"
+											  title="@SharedLocalizer[GRA.Annotations.Interface.PersonalPointGoalDescription, Model.MinimumPersonalPointGoal]"></span>
+										<div>
+											@SharedLocalizer[GRA.Annotations.Interface.PersonalPointGoalLabel]
+											<input asp-for="User.PersonalPointGoal"
+												   max="@Model.MaximumPersonalPointGoal"
+												   min="@Model.MinimumPersonalPointGoal"
+												   class="form-control"
+												   style="display:inline-block; width:100px;" />
+										</div>
+										<span asp-validation-for="User.PersonalPointGoal" class="text-danger"></span>
+									</div>
+								</div>
+							}
                         </div>
                     </div>
                 </div>

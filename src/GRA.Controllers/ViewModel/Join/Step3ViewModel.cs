@@ -46,6 +46,14 @@ namespace GRA.Controllers.ViewModel.Join
         [DisplayName(DisplayNames.DailyPersonalGoal)]
         public int? DailyPersonalGoal { get; set; }
 
+        public bool AskPersonalPointGoal { get; set; }
+
+        public int? MaximumPersonalPointGoal { get; set; }
+        public int? MinimumPersonalPointGoal { get; set; }
+
+        [DisplayName(DisplayNames.PersonalPointGoal)]
+        public int? PersonalPointGoal { get; set; }
+
         public string TranslationDescriptionPastTense { get; set; }
         public string ActivityDescriptionPlural { get; set; }
     }
