@@ -411,6 +411,8 @@ namespace GRA.Web
                     "Scripts/slick-avatar.js").UseContentRoot();
                 _.AddJavaScriptBundle("/js/jquery-ui.min.js",
                     "Scripts/jquery-ui-1.12.1.custom/jquery-ui.js").UseContentRoot();
+                _.AddJavaScriptBundle("/js/messages_es.min.js",
+                    "js/messages_es.js").UseContentRoot();
 
                 _.AddCssBundle("/css/main.min.css",
                     "css/bootstrap.css",
