@@ -1,502 +1,503 @@
 ﻿@model GRA.Controllers.ViewModel.Challenges.ChallengesListViewModel
 
 @section Styles {
-    @if (Model.FeaturedChallengeGroups?.Any() == true)
-    {
-        <link rel="stylesheet" type="text/css" href="@Url.Content("~/css/slick.min.css")" />
-    }
+	@if (Model.FeaturedChallengeGroups?.Any() == true)
+	{
+		<link rel="stylesheet" type="text/css" href="@Url.Content("~/css/slick.min.css")" />
+	}
 }
 
 <noscript>
-    <style>
-        #CategoryPlaceholder {
-            display: none;
-        }
+	<style>
+		#CategoryPlaceholder {
+			display: none;
+		}
 
-        .favorite-button {
-            display: none;
-        }
-    </style>
+		.favorite-button {
+			display: none;
+		}
+	</style>
 </noscript>
 
 @if (Model.FeaturedChallengeGroups?.Any() == true)
 {
-    <div class="sr-only">
-        <h2>@SharedLocalizer[GRA.Annotations.Interface.FeaturedChallengeGroups]</h2>
-        <ul>
-            @foreach (var featuredChallenge in Model.FeaturedChallengeGroups)
-            {
-                <li>
-                    <a asp-controller="@ChallengesController.Name"
-                       asp-action="@nameof(ChallengesController.List)"
-                       asp-route-id="@featuredChallenge.Stub">
-                        @featuredChallenge.Name
-                    </a>
-                </li>
-            }
-        </ul>
-    </div>
-    <div class="row gra-js-required gra-carousel-container" aria-hidden="true">
-        <div class="col-12 mb-2">
-            <div class="accordion" id="accordionFeatured">
-                <div class="card">
-                    <div class="card-header" id="headingOne">
-                        <button class="accordion-button p-0 fs-6 fw-bold bg-light border-none"
-                                type="button"
-                                style="box-shadow: none;"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#collapseFeatured"
-                                aria-expanded="true"
-                                aria-controls="collapseFeatured">
-                            @SharedLocalizer[GRA.Annotations.Interface.FeaturedChallengeGroups]
-                        </button>
-                    </div>
-                    <div id="collapseFeatured"
-                         class="card-collapse collapse"
-                         aria-labelledby="headingOne"
-                         role="tabpanel"
-                         data-bs-parent="#accordion"
-                         aria-expanded="false">
-                        <div class="card-body">
-                            <div class="gra-carousel text-center">
-                                @foreach (var featuredChallenge in Model.FeaturedChallengeGroups)
-                                {
-                                    <div>
-                                        <a asp-controller="@ChallengesController.Name"
-                                           asp-action="@nameof(ChallengesController.List)"
-                                           asp-route-id="@featuredChallenge.Stub"
-                                           class="gra-carousel-link">
-                                            <img src="@featuredChallenge.ImagePath"
-                                                 alt="@featuredChallenge.AltText"
-                                                 class="badge-sm" />
-                                            <p>@featuredChallenge.Name</p>
-                                        </a>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                    @if (Model.ChallengeGroup != null)
-                    {
-                        <div class="card-footer d-flex justify-content-center">
-                            <a asp-action="@nameof(ChallengesController.Index)"
-                               asp-route-ClearSearch="true"
-                               class="btn btn-outline-primary">
-                                @SharedLocalizer[GRA.Annotations.Interface.AllChallenges]
-                            </a>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="sr-only">
+		<h2>@SharedLocalizer[GRA.Annotations.Interface.FeaturedChallengeGroups]</h2>
+		<ul>
+			@foreach (var featuredChallenge in Model.FeaturedChallengeGroups)
+			{
+				<li>
+					<a asp-controller="@ChallengesController.Name"
+					   asp-action="@nameof(ChallengesController.List)"
+					   asp-route-id="@featuredChallenge.Stub">
+						@featuredChallenge.Name
+					</a>
+				</li>
+			}
+		</ul>
+	</div>
+	<div class="row gra-js-required gra-carousel-container" aria-hidden="true">
+		<div class="col-12 mb-2">
+			<div class="accordion" id="accordionFeatured">
+				<div class="card">
+					<div class="card-header" id="headingOne">
+						<button class="accordion-button p-0 fs-6 fw-bold bg-light border-none"
+								type="button"
+								style="box-shadow: none;"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapseFeatured"
+								aria-expanded="true"
+								aria-controls="collapseFeatured">
+							@SharedLocalizer[GRA.Annotations.Interface.FeaturedChallengeGroups]
+						</button>
+					</div>
+					<div id="collapseFeatured"
+						 class="card-collapse collapse"
+						 aria-labelledby="headingOne"
+						 role="tabpanel"
+						 data-bs-parent="#accordion"
+						 aria-expanded="false">
+						<div class="card-body">
+							<div class="gra-carousel text-center">
+								@foreach (var featuredChallenge in Model.FeaturedChallengeGroups)
+								{
+									<div>
+										<a asp-controller="@ChallengesController.Name"
+										   asp-action="@nameof(ChallengesController.List)"
+										   asp-route-id="@featuredChallenge.Stub"
+										   class="gra-carousel-link">
+											<img src="@featuredChallenge.ImagePath"
+												 alt="@featuredChallenge.AltText"
+												 class="badge-sm" />
+											<p>@featuredChallenge.Name</p>
+										</a>
+									</div>
+								}
+							</div>
+						</div>
+					</div>
+					@if (Model.ChallengeGroup != null)
+					{
+						<div class="card-footer d-flex justify-content-center">
+							<a asp-action="@nameof(ChallengesController.Index)"
+							   asp-route-ClearSearch="true"
+							   class="btn btn-outline-primary">
+								@SharedLocalizer[GRA.Annotations.Interface.AllChallenges]
+							</a>
+						</div>
+					}
+				</div>
+			</div>
+		</div>
+	</div>
 }
 
 <div class="row">
-    <div class="col-12 mb-2">
-        <div class="card">
-            <div class="card-header">
-                <span class="fw-bold">
-                    @if (Model.ChallengeGroup != null)
-                    {
-                        @SharedLocalizer[GRA.Annotations.Title.ChallengeGroup,
-                                 Model.ChallengeGroup.Name]
-                    }
-                    else
-                    {
-                        @SharedLocalizer[GRA.Annotations.Title.Challenges]
-                    }
-                </span>
-            </div>
-            <div class="card-body pb-0">
-                @if (Model.ChallengeGroup != null)
-                {
-                    <div class="d-flex mb-3">
-                        <div class="flex-grow-1 lead">
-                            @Model.ChallengeGroup.Description
-                        </div>
-                        @if (Model.FeaturedChallengeGroups?.Any() != true)
-                        {
-                            <div>
-                                <a asp-action="@nameof(ChallengesController.Index)"
-                                   asp-route-ClearSearch="true"
-                                   class="btn btn-outline-primary">
-                                    @SharedLocalizer[GRA.Annotations.Interface.AllChallenges]
-                                </a>
-                            </div>
-                        }
-                    </div>
-                }
-                else
-                {
-                    <form id="searchForm"
-                          asp-controller="Challenges"
-                          asp-action="@nameof(ChallengesController.Index)"
-                          method="get"
-                          role="form">
-                        <input asp-for="Find" type="hidden" value="true" />
-                        @if (Model.Favorites == true)
-                        {
-                            <input asp-for="Favorites" type="hidden" />
-                        }
+	<div class="col-12 mb-2">
+		<div class="card">
+			<div class="card-header">
+				<span class="fw-bold">
+					@if (Model.ChallengeGroup != null)
+					{
+						@SharedLocalizer[GRA.Annotations.Title.ChallengeGroup,
+						Model.ChallengeGroup.Name]
+										}
+					else
+					{
+						@SharedLocalizer[GRA.Annotations.Title.Challenges]
+					}
+				</span>
+			</div>
+			<div class="card-body pb-0">
+				@if (Model.ChallengeGroup != null)
+				{
+					<div class="d-flex mb-3">
+						<div class="flex-grow-1 lead">
+							@Model.ChallengeGroup.Description
+						</div>
+						@if (Model.FeaturedChallengeGroups?.Any() != true)
+						{
+							<div>
+								<a asp-action="@nameof(ChallengesController.Index)"
+								   asp-route-ClearSearch="true"
+								   class="btn btn-outline-primary">
+									@SharedLocalizer[GRA.Annotations.Interface.AllChallenges]
+								</a>
+							</div>
+						}
+					</div>
+				}
+				else
+				{
+					<form id="searchForm"
+						  asp-controller="Challenges"
+						  asp-action="@nameof(ChallengesController.Index)"
+						  method="get"
+						  role="form">
+						<input asp-for="Find" type="hidden" value="true" />
+						@if (Model.Favorites == true)
+						{
+							<input asp-for="Favorites" type="hidden" />
+						}
 
-                        <div class="row mb-2">
-                            <label asp-for="Search" class="col-12 col-md-2 col-form-label">
-                                @SharedLocalizer[GRA.Annotations.Interface.Search]:
-                            </label>
-                            <div class="col-12 col-md-10 gra-search-container">
-                                <input asp-for="Search"
-                                       class="form-control"
-                                       placeholder="@SharedLocalizer[GRA.Annotations.Interface.EnterChallengeSearch]" />
-                            </div>
-                        </div>
+						<div class="row mb-2">
+							<label asp-for="Search" class="col-12 col-md-2 col-form-label">
+								@SharedLocalizer[GRA.Annotations.Interface.Search]:
+							</label>
+							<div class="col-12 col-md-10 gra-search-container">
+								<input asp-for="Search"
+									   class="form-control"
+									   placeholder="@SharedLocalizer[GRA.Annotations.Interface.EnterChallengeSearch]" />
+							</div>
+						</div>
 
-                        <div class="row mb-2">
-                            <label asp-for="Program" class="col-12 col-md-2 col-form-label">
-                                @SharedLocalizer[GRA.Domain.Model.DisplayNames.Program]:
-                            </label>
-                            <div class="col-12 col-md-10">
-                                <select asp-for="Program"
-                                        asp-items="Model.ProgramList"
-                                        class="form-select">
-                                    <option value="">
-                                        @SharedLocalizer[GRA.Annotations.Interface.AllPrograms]
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                        @if (Model.CategoryList?.Count() > 0)
-                        {
-                            <div id="Category" class="row mb-2">
-                                <label asp-for="CategoryIds" class="col-12 col-md-2 col-form-label">
-                                    @SharedLocalizer[GRA.Domain.Model.DisplayNames.Category]:
-                                </label>
-                                <div class="col-12 col-md-10">
-                                    <select asp-for="CategoryIds"
-                                            asp-items="Model.CategoryList"
-                                            autocomplete="off"
-                                            class="form-select"
-                                            multiple="multiple"
-                                            size="1"></select>
-                                </div>
-                            </div>
-                        }
-                        <div id="Ordering" class="row mb-2">
-                            <label asp-for="Ordering" class="col-12 col-md-2 col-form-label">
-                                @SharedLocalizer[GRA.Domain.Model.DisplayNames.Ordering]:
-                            </label>
-                            <div class="col-12 col-md-10">
-                                <label class="radio-inline pe-2">
-                                    <input type="radio"
-                                           name="Ordering"
-                                           value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.MostPopular"
-                                    @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.MostPopular)>
-                                    @SharedLocalizer[GRA.Domain.Model.DisplayNames.MostPopular]
-                                </label>
-                                <label class="radio-inline pe-2">
-                                    <input type="radio"
-                                           name="Ordering"
-                                           value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Name"
-                                    @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Name)>
-                                    @SharedLocalizer[GRA.Domain.Model.DisplayNames.Name]
-                                </label>
-                                <label class="radio-inline">
-                                    <input type="radio"
-                                           name="Ordering"
-                                           value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Recent"
-                                    @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Recent)>
-                                    @SharedLocalizer[GRA.Domain.Model.DisplayNames.MostRecent]
-                                </label>
-                            </div>
-                        </div>
-                        @if (Model.IsLoggedIn)
-                        {
-                            <div class="row mb-2">
-                                <label class="col-12 col-md-2 col-form-label">
-                                    @SharedLocalizer[GRA.Annotations.Interface.Status]:
-                                </label>
-                                <div class="col-12 col-md-10">
-                                    <select asp-for="Status" class="form-select">
-                                        <option value="@ChallengesController.StatusUncompleted">@SharedLocalizer[GRA.Annotations.Interface.ViewUncompleted]</option>
-                                        <option value="@ChallengesController.StatusCompleted">@SharedLocalizer[GRA.Annotations.Interface.ViewCompleted]</option>
-                                        <option value="@ChallengesController.StatusAll">@SharedLocalizer[GRA.Annotations.Interface.ViewAll]</option>
-                                    </select>
-                                </div>
-                            </div>
-                        }
-                        @if (Model.IsFiltered)
-                        {
-                            <div class="row mb-2">
-                                <div class="col-12 d-flex justify-content-center">
-                                    <div class="alert alert-success py-2 px-3">
-                                        @(Model.PaginateModel.ItemCount == 1 ?
-                                            SharedLocalizer[GRA.Annotations.Info.SearchResultsMatchesSingular]
-                                            :
-                                            SharedLocalizer[GRA.Annotations.Info.SearchResultsMatchesPlural, Model.PaginateModel.ItemCount]
-                                            )
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                        <div class="row d-print-none">
-                            <div class="col-12 d-flex justify-content-end mt-3 mb-4">
-                                @if (Model.IsLoggedIn)
-                                {
-                                    <div class="flex-grow-1">
-                                        <a asp-action="@nameof(ChallengesController.Index)"
-                                           asp-route-Search="@Model.Search"
-                                           asp-route-Program="@Model.Program"
-                                           asp-route-Categories="@Model.Categories"
-                                           asp-route-Status="@Model.Status"
-                                           asp-route-Favorites="@(Model.Favorites == true ? "False" : "True")"
-                                           asp-route-Find="True"
-                                           class="btn @(Model.Favorites == true ? "btn-outline-success" : "btn-outline-secondary")">
-                                            <span class="@(Model.Favorites == true ? "fas" : "far") fa-star fa-fw"></span>
-                                            @SharedLocalizer[GRA.Annotations.Interface.MyFavorites]
-                                        </a>
-                                    </div>
-                                }
-                                <div>
-                                    <a asp-action="@nameof(ChallengesController.Index)"
-                                       asp-route-ClearSearch="true"
-                                       class="btn btn-outline-secondary">
-                                        <span class="fas fa-times fa-fw"></span>
-                                        @SharedLocalizer[GRA.Annotations.Interface.Clear]
-                                    </a>
-                                </div>
-                                <div>
-                                    <button type="submit"
-                                            class="btn btn-outline-primary ms-2">
-                                        <span class="fas fa-search fa-fw"></span>
-                                        @SharedLocalizer[GRA.Annotations.Interface.Find]
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                }
-                <div class="row">
-                    <div class="col-12">
-                        @if (Model.Challenges.Count() == 0)
-                        {
-                            <div class="alert alert-warning">
-                                @SharedLocalizer[GRA.Annotations.Interface.NoChallenges]
-                            </div>
-                        }
-                        else
-                        {
-                            <form asp-action="UpdateFavorites" method="post" role="form">
-                                <noscript>
-                                    <input asp-for="Categories" type="hidden" />
-                                    <input asp-for="ChallengeGroup.Stub" type="hidden" />
-                                    <input asp-for="Favorites" type="hidden" />
-                                    <input asp-for="Program" type="hidden" />
-                                    <input asp-for="Search" type="hidden" />
-                                    <input asp-for="Status" type="hidden" />
-                                    <input asp-for="PaginateModel.CurrentPage" type="hidden" />
-                                </noscript>
-                                <div>
-                                    <table class="table table-sm table-bordered table-striped">
-                                        <thead>
-                                            <tr>
-                                                @if (Model.IsLoggedIn)
-                                                {
-                                                    <th style="width: 3rem;">&nbsp;</th>
-                                                }
-                                                <th>
-                                                    @SharedLocalizer[GRA.Annotations.Interface.Name]
-                                                </th>
-                                                @if (Model.IsActive && Model.IsLoggedIn)
-                                                {
-                                                    <th class="d-none d-md-block">
-                                                        @SharedLocalizer[GRA.Annotations.Interface.Progress]
-                                                    </th>
-                                                }
-                                                <th>@SharedLocalizer[GRA.Annotations.Interface.PointsYoullEarn]</th>
-                                                <th>@SharedLocalizer[GRA.Annotations.Interface.Badge]</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @for (int i = 0; i < Model.Challenges.Count(); i++)
-                                            {
-                                                <tr>
-                                                    @if (Model.IsLoggedIn)
-                                                    {
-                                                        <td class="text-center align-middle">
-                                                            <div class="favorite-button @(Model.Challenges[i].IsFavorited ? "fas" : "far") fa-star"
-                                                                 data-challengeid="@Model.Challenges[i].Id"
-                                                                 data-favorite="@Model.Challenges[i].IsFavorited"></div>
-                                                            <noscript>
-                                                                <input asp-for="@Model.Challenges[i].Id"
-                                                                       type="hidden" />
-                                                                <input asp-for="@Model.Challenges[i].IsFavorited"
-                                                                       class="favorite-checkbox" />
-                                                                <label for="@($"Challenges_{i}__IsFavorited")"></label>
-                                                            </noscript>
-                                                        </td>
-                                                    }
-                                                    <td class="align-middle">
-                                                        <a asp-action="Detail"
-                                                           asp-route-id="@Model.Challenges[i].Id">@Model.Challenges[i].Name</a>
-                                                        @if (Model.Challenges[i].Categories?.Count > 0)
-                                                        {
-                                                            <div class="mt-1">
-                                                                @foreach (var category in Model.Challenges[i].Categories)
-                                                                {
-                                                                    <span class="badge"
-                                                                          style="background-color: @category.Color">@category.Name</span>
-                                                                }
-                                                            </div>
-                                                        }
-                                                    </td>
-                                                    @if (Model.IsActive && Model.IsLoggedIn)
-                                                    {
-                                                        <td class="text-center align-middle d-none d-md-table-cell">
-                                                            @Model.Challenges[i].Status
-                                                            <div class="progress ms-0 me-0 mb-0 mt-1">
-                                                                <div class="progress-bar progress-bar-success progress-bar-striped"
-                                                                     role="progressbar"
-                                                                     aria-valuenow="@Model.Challenges[i].PercentComplete"
-                                                                     aria-valuemin="0"
-                                                                     aria-valuemax="100"
-                                                                     style="width: @Model.Challenges[i].PercentComplete%;">
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                    }
-                                                    <td class="text-center align-middle fs-5">
-                                                        @Model.Challenges[i].PointsAwarded
-                                                    </td>
-                                                    <td class="text-center align-middle">
-                                                        @if (!string.IsNullOrEmpty(Model.Challenges[i].BadgeFilename))
-                                                        {
-                                                            <img class="img-thumbnail badge-sm"
-                                                                 src="~/@Model.Challenges[i].BadgeFilename"
-                                                                 alt="@Model.Challenges[i].BadgeAltText" />
-                                                        }
-                                                        else
-                                                        {
-                                                            <text>&nbsp;</text>
-                                                        }
-                                                    </td>
-                                                </tr>
-                                            }
-                                        </tbody>
-                                    </table>
-                                </div>
-                                @if (Model.IsLoggedIn)
-                                {
-                                    <noscript>
-                                        <button type="submit"
-                                                class="btn btn-outline-primary">
-                                            @SharedLocalizer[GRA.Annotations.Interface.SaveMyFavorites]
-                                        </button>
-                                    </noscript>
-                                }
-                            </form>
-                        }
-                    </div>
-                </div>
-            </div>
-            @if (Model.PaginateModel.MaxPage > 1)
-            {
-                <div class="card-footer d-print-none d-flex">
-                    <div class="flex-grow-1">
-                        <paginate paginateModel="@Model.PaginateModel"></paginate>
-                    </div>
-                </div>
-            }
-        </div>
-    </div>
+						<div class="row mb-2">
+							<label asp-for="Program" class="col-12 col-md-2 col-form-label">
+								@SharedLocalizer[GRA.Domain.Model.DisplayNames.Program]:
+							</label>
+							<div class="col-12 col-md-10">
+								<select asp-for="Program"
+										asp-items="Model.ProgramList"
+										class="form-select">
+									<option value="">
+										@SharedLocalizer[GRA.Annotations.Interface.AllPrograms]
+									</option>
+								</select>
+							</div>
+						</div>
+						@if (Model.CategoryList?.Count() > 0)
+						{
+							<div id="Category" class="row mb-2">
+								<label asp-for="CategoryIds" class="col-12 col-md-2 col-form-label">
+									@SharedLocalizer[GRA.Domain.Model.DisplayNames.Category]:
+								</label>
+								<div class="col-12 col-md-10">
+									<select asp-for="CategoryIds"
+											asp-items="Model.CategoryList"
+											autocomplete="off"
+											class="form-select"
+											multiple="multiple"
+											size="1"></select>
+								</div>
+							</div>
+						}
+						<div id="Ordering" class="row mb-2">
+							<label asp-for="Ordering" class="col-12 col-md-2 col-form-label">
+								@SharedLocalizer[GRA.Domain.Model.DisplayNames.Ordering]:
+							</label>
+							<div class="col-12 col-md-10">
+								<label class="radio-inline pe-2">
+									<input type="radio"
+										   name="Ordering"
+										   value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.MostPopular"
+										   @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.MostPopular)>
+									@SharedLocalizer[GRA.Domain.Model.DisplayNames.MostPopular]
+								</label>
+								<label class="radio-inline pe-2">
+									<input type="radio"
+										   name="Ordering"
+										   value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Name"
+										   @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Name)>
+									@SharedLocalizer[GRA.Domain.Model.DisplayNames.Name]
+								</label>
+								<label class="radio-inline">
+									<input type="radio"
+										   name="Ordering"
+										   value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Recent"
+										   @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Recent)>
+									@SharedLocalizer[GRA.Domain.Model.DisplayNames.MostRecent]
+								</label>
+							</div>
+						</div>
+						@if (Model.IsLoggedIn)
+						{
+							<div class="row mb-2">
+								<label class="col-12 col-md-2 col-form-label">
+									@SharedLocalizer[GRA.Annotations.Interface.Status]:
+								</label>
+								<div class="col-12 col-md-10">
+									<select asp-for="Status" class="form-select">
+										<option value="@ChallengesController.StatusUncompleted">@SharedLocalizer[GRA.Annotations.Interface.ViewUncompleted]</option>
+										<option value="@ChallengesController.StatusCompleted">@SharedLocalizer[GRA.Annotations.Interface.ViewCompleted]</option>
+										<option value="@ChallengesController.StatusAll">@SharedLocalizer[GRA.Annotations.Interface.ViewAll]</option>
+									</select>
+								</div>
+							</div>
+						}
+						@if (Model.IsFiltered)
+						{
+							<div class="row mb-2">
+								<div class="col-12 d-flex justify-content-center">
+									<div class="alert alert-success py-2 px-3">
+										@(Model.PaginateModel.ItemCount == 1 ?
+																		SharedLocalizer[GRA.Annotations.Info.SearchResultsMatchesSingular]
+																		:
+																		SharedLocalizer[GRA.Annotations.Info.SearchResultsMatchesPlural, Model.PaginateModel.ItemCount]
+																		)
+								</div>
+							</div>
+						</div>
+										}
+						<div class="row d-print-none">
+							<div class="col-12 d-flex justify-content-end mt-3 mb-4">
+								@if (Model.IsLoggedIn)
+								{
+									<div class="flex-grow-1">
+										<a asp-action="@nameof(ChallengesController.Index)"
+										   asp-route-Search="@Model.Search"
+										   asp-route-Program="@Model.Program"
+										   asp-route-Categories="@Model.Categories"
+										   asp-route-Status="@Model.Status"
+										   asp-route-Favorites="@(Model.Favorites == true ? "False" : "True")"
+										   asp-route-Find="True"
+										   class="btn @(Model.Favorites == true ? "btn-outline-success" : "btn-outline-secondary")">
+											<span class="@(Model.Favorites == true ? "fas" : "far") fa-star fa-fw"></span>
+											@SharedLocalizer[GRA.Annotations.Interface.MyFavorites]
+										</a>
+									</div>
+								}
+								<div>
+									<a asp-action="@nameof(ChallengesController.Index)"
+									   asp-route-ClearSearch="true"
+									   class="btn btn-outline-secondary">
+										<span class="fas fa-times fa-fw"></span>
+										@SharedLocalizer[GRA.Annotations.Interface.Clear]
+									</a>
+								</div>
+								<div>
+									<button type="submit"
+											class="btn btn-outline-primary ms-2">
+										<span class="fas fa-search fa-fw"></span>
+										@SharedLocalizer[GRA.Annotations.Interface.Find]
+									</button>
+								</div>
+							</div>
+						</div>
+					</form>
+				}
+				<div class="row">
+					<div class="col-12">
+						@if (Model.Challenges.Count() == 0)
+						{
+							<div class="alert alert-warning">
+								@SharedLocalizer[GRA.Annotations.Interface.NoChallenges]
+							</div>
+						}
+						else
+						{
+							<form asp-action="UpdateFavorites" method="post" role="form">
+								<noscript>
+									<input asp-for="Categories" type="hidden" />
+									<input asp-for="ChallengeGroup.Stub" type="hidden" />
+									<input asp-for="Favorites" type="hidden" />
+									<input asp-for="Program" type="hidden" />
+									<input asp-for="Search" type="hidden" />
+									<input asp-for="Status" type="hidden" />
+									<input asp-for="PaginateModel.CurrentPage" type="hidden" />
+								</noscript>
+								<div>
+									<table class="table table-sm table-bordered table-striped">
+										<thead>
+											<tr>
+												@if (Model.IsLoggedIn)
+												{
+													<th style="width: 3rem;">&nbsp;</th>
+												}
+												<th>
+													@SharedLocalizer[GRA.Annotations.Interface.Name]
+												</th>
+												@if (Model.IsActive && Model.IsLoggedIn)
+												{
+													<th class="d-none d-md-block">
+														@SharedLocalizer[GRA.Annotations.Interface.Progress]
+													</th>
+												}
+												<th>@SharedLocalizer[GRA.Annotations.Interface.PointsYoullEarn]</th>
+												<th>@SharedLocalizer[GRA.Annotations.Interface.Badge]</th>
+											</tr>
+										</thead>
+										<tbody>
+											@for (int i = 0; i < Model.Challenges.Count(); i++)
+											{
+												<tr>
+													@if (Model.IsLoggedIn)
+													{
+														<td class="text-center align-middle">
+															<div class="favorite-button @(Model.Challenges[i].IsFavorited ? "fas" : "far") fa-star"
+																 data-challengeid="@Model.Challenges[i].Id"
+																 data-favorite="@Model.Challenges[i].IsFavorited"></div>
+															<noscript>
+																<input asp-for="@Model.Challenges[i].Id"
+																	   type="hidden" />
+																<input asp-for="@Model.Challenges[i].IsFavorited"
+																	   class="favorite-checkbox" />
+																<label for="@($"Challenges_{i}__IsFavorited")"></label>
+															</noscript>
+														</td>
+													}
+													<td class="align-middle">
+														<a asp-action="Detail"
+														   asp-route-id="@Model.Challenges[i].Id">@Model.Challenges[i].Name</a>
+														@if (Model.Challenges[i].Categories?.Count > 0)
+														{
+															<div class="mt-1">
+																@foreach (var category in Model.Challenges[i].Categories)
+																{
+																	<span class="badge"
+																		  style="background-color: @category.Color">@category.Name</span>
+																}
+															</div>
+														}
+													</td>
+													@if (Model.IsActive && Model.IsLoggedIn)
+													{
+														<td class="text-center align-middle d-none d-md-table-cell">
+															@Model.Challenges[i].Status
+															<div class="progress ms-0 me-0 mb-0 mt-1">
+																<div class="progress-bar progress-bar-success progress-bar-striped"
+																	 role="progressbar"
+																	 aria-valuenow="@Model.Challenges[i].PercentComplete"
+																	 aria-valuemin="0"
+																	 aria-valuemax="100"
+																	 style="width: @Model.Challenges[i].PercentComplete%;">
+																</div>
+															</div>
+														</td>
+													}
+													<td class="text-center align-middle fs-5">
+														@Model.Challenges[i].PointsAwarded
+													</td>
+													<td class="text-center align-middle">
+														@if (!string.IsNullOrEmpty(Model.Challenges[i].BadgeFilename))
+														{
+															<img class="img-thumbnail badge-sm"
+																 src="~/@Model.Challenges[i].BadgeFilename"
+																 alt="@Model.Challenges[i].BadgeAltText" />
+														}
+														else
+														{
+															<text>&nbsp;</text>
+														}
+													</td>
+												</tr>
+											}
+										</tbody>
+									</table>
+								</div>
+								@if (Model.IsLoggedIn)
+								{
+									<noscript>
+										<button type="submit"
+												class="btn btn-outline-primary">
+											@SharedLocalizer[GRA.Annotations.Interface.SaveMyFavorites]
+										</button>
+									</noscript>
+								}
+							</form>
+						}
+					</div>
+				</div>
+			</div>
+			@if (Model.PaginateModel.MaxPage > 1)
+			{
+				<div class="card-footer d-print-none d-flex">
+					<div class="flex-grow-1">
+						<paginate paginateModel="@Model.PaginateModel"></paginate>
+					</div>
+				</div>
+			}
+		</div>
+	</div>
 </div>
 
 @section scripts {
-    <script>
-        const favoriteUrl = "@Url.Action(nameof(ChallengesController.UpdateSingleFavorite))";
-        const showFavorites = "@Model.Favorites" === "True";
+	<script>
+		const favoriteUrl = "@Url.Action(nameof(ChallengesController.UpdateSingleFavorite))";
+		const showFavorites = "@Model.Favorites" === "True";
 
-        $("#CategoryIds").prop("disabled", false);
-        $("#CategoryPlaceholder").remove();
+		$("#CategoryIds").prop("disabled", false);
+		$("#CategoryPlaceholder").remove();
 
-        $("#searchForm").on("submit", function () {
-            let categoryIds = $("#CategoryIds option:selected")
-                .map(function (a, item) { return item.value; })
-                .get();
+		$("#searchForm").on("submit", function () {
+			let categoryIds = $("#CategoryIds option:selected")
+				.map(function (a, item) { return item.value; })
+				.get();
 
-            if (categoryIds.length > 0) {
-                $("#CategoryIds").attr("disabled", "disabled");
-                $("<input />")
-                    .attr("type", "hidden")
-                    .attr("name", "Categories")
-                    .attr("value", categoryIds.join(","))
-                    .appendTo($(this));
-            }
-        });
+			if (categoryIds.length > 0) {
+				$("#CategoryIds").attr("disabled", "disabled");
+				$("<input />")
+					.attr("type", "hidden")
+					.attr("name", "Categories")
+					.attr("value", categoryIds.join(","))
+					.appendTo($(this));
+			}
+		});
 
-        $(".favorite-button").on("click", function () {
-            let button = $(this);
-            if (button.hasClass("fa-spinner") == false) {
-                button.removeClass("far fa-star").addClass("fas fa-spinner fa-pulse");
-                let favorite = button.data("favorite") == "False";
-                $.post(favoriteUrl, { challengeId: button.data("challengeid"), favorite: favorite },
-                    function (response) {
-                        if (response.success) {
-                            if (response.favorite) {
-                                button.addClass("fa-star");
-                                button.data("favorite", "True");
-                            }
-                            else {
-                                if (showFavorites) {
-                                    location.reload();
-                                }
-                                else {
-                                    button.removeClass("fas");
-                                    button.addClass("far fa-star");
-                                    button.data("favorite", "False");
-                                }
-                            }
-                            button.removeClass("fa-spinner fa-pulse").css("transform", "none");
-                        }
-                        else {
-                            button.addClass("fa-exclamation-triangle")
-                                .removeClass("fa-spinner fa-pulse")
-                                .css("transform", "none");
-                            alert(response.message);
-                        }
-                });
-            }
-        });
-    </script>
+		$(".favorite-button").on("click", function () {
+			let button = $(this);
+			if (button.hasClass("fa-spinner") == false) {
+				button.removeClass("far fa-star").addClass("fas fa-spinner fa-pulse");
+				let favorite = button.data("favorite") == "False";
+				$.post(favoriteUrl, { challengeId: button.data("challengeid"), favorite: favorite },
+					function (response) {
+						if (response.success) {
+							if (response.favorite) {
+								button.addClass("fa-star");
+								button.data("favorite", "True");
+							}
+							else {
+								if (showFavorites) {
+									location.reload();
+								}
+								else {
+									button.removeClass("fas");
+									button.addClass("far fa-star");
+									button.data("favorite", "False");
+								}
+							}
+							button.removeClass("fa-spinner fa-pulse").css("transform", "none");
+						}
+						else {
+							button.addClass("fa-exclamation-triangle")
+								.removeClass("fa-spinner fa-pulse")
+								.css("transform", "none");
+							alert(response.message);
+						}
+				});
+			}
+		});
+	</script>
 
-    @if (Model.FeaturedChallengeGroups?.Any() == true)
-    {
-        <script type="text/javascript" src="/js/slick.min.js"></script>
-        @if (Model.CategoryList?.Count() > 0)
-        {
-            <script>
-                new TomSelect("#CategoryIds");
-            </script>
-        }
-        <script>
-            const sessionFeatured = 'featuredChallengeStatus';
-            $('#collapseFeatured').on('show.bs.collapse', function () {
-                if (sessionStorage) {
-                    sessionStorage.removeItem(sessionFeatured);
-                }
-                if ($('.slick-slider')) {
-                    $('.slick-slider').slick('refresh');
-                }
-            });
-            $('#collapseFeatured').on('hide.bs.collapse', function () {
-                if (sessionStorage) {
-                    sessionStorage.setItem(sessionFeatured, 'hide');
-                }
-            });
-            $('#collapseFeatured').ready(function () {
-                if (sessionStorage && sessionStorage.getItem(sessionFeatured) !== 'hide') {
-                    $('#collapseFeatured').collapse('show');
-                }
-            });
-        </script>
-    }
+	@if (Model.CategoryList?.Count() > 0)
+	{
+		<script>
+			new TomSelect("#CategoryIds");
+		</script>
+	}
+
+	@if (Model.FeaturedChallengeGroups?.Any() == true)
+	{
+		<script type="text/javascript" src="/js/slick.min.js"></script>
+		<script>
+			const sessionFeatured = 'featuredChallengeStatus';
+			$('#collapseFeatured').on('show.bs.collapse', function () {
+				if (sessionStorage) {
+					sessionStorage.removeItem(sessionFeatured);
+				}
+				if ($('.slick-slider')) {
+					$('.slick-slider').slick('refresh');
+				}
+			});
+			$('#collapseFeatured').on('hide.bs.collapse', function () {
+				if (sessionStorage) {
+					sessionStorage.setItem(sessionFeatured, 'hide');
+				}
+			});
+			$('#collapseFeatured').ready(function () {
+				if (sessionStorage && sessionStorage.getItem(sessionFeatured) !== 'hide') {
+					$('#collapseFeatured').collapse('show');
+				}
+			});
+		</script>
+	}
 }

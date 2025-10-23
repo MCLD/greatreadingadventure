@@ -124,8 +124,9 @@ namespace GRA.Controllers
                     }
                     else if (result.Status == ServiceResultStatus.Success)
                     {
-                        ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.UpdatedItem,
-                            Annotations.Interface.BookList]);
+                        ShowAlertSuccess(_sharedLocalizer[Annotations.Info.BookAdded,
+                            model.Book.Title,
+                            model.Book.Author]);
                     }
                 }
                 catch (GraException gex)
@@ -757,7 +758,7 @@ namespace GRA.Controllers
                 else
                 {
                     model.ErrorMessage
-                        = _sharedLocalizer[Annotations.Validate.UsernamePasswordMismatch];
+                        = _sharedLocalizer[Annotations.Validate.Password];
                 }
             }
             return View(model);
