@@ -17,6 +17,7 @@ namespace GRA.Domain.Service
     {
         private readonly IBranchRepository _branchRepository;
         private readonly IProgramRepository _programRepository;
+        private readonly SegmentService _segmentService;
         private readonly SiteLookupService _siteLookupService;
         private readonly ISiteRepository _siteRepository;
         private readonly ISiteSettingRepository _siteSettingRepository;
@@ -29,6 +30,7 @@ namespace GRA.Domain.Service
             IUserContextProvider userContextProvider,
             IBranchRepository branchRepository,
             IProgramRepository programRepository,
+            SegmentService segmentService,
             ISiteRepository siteRepository,
             ISiteSettingRepository siteSettingRepository,
             ISpatialDistanceRepository spatialDistanceRepository,
@@ -42,6 +44,8 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(branchRepository));
             _programRepository = programRepository
                 ?? throw new ArgumentNullException(nameof(programRepository));
+            _segmentService = segmentService
+                ?? throw new ArgumentNullException(nameof(segmentService));
             _siteRepository = siteRepository
                 ?? throw new ArgumentNullException(nameof(siteRepository));
             _siteSettingRepository = siteSettingRepository
@@ -328,6 +332,11 @@ namespace GRA.Domain.Service
                 await _userRepository
                     .ChangeDeletedUsersProgramAsync(programId, programsEx.First().Id);
             }
+
+            if (program.ButtonSegmentId.HasValue) {
+                await _segmentService.RemoveSegmentAsync(program.ButtonSegmentId.Value);
+            }
+
             await _programRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), program);
         }
 
@@ -405,6 +414,7 @@ namespace GRA.Domain.Service
             currentProgram.AgeRequired = program.AgeRequired;
             currentProgram.AskAge = program.AskAge;
             currentProgram.AskSchool = program.AskSchool;
+            currentProgram.ButtonSegmentId = program.ButtonSegmentId;
             currentProgram.DailyLiteracyTipId = program.DailyLiteracyTipId;
             currentProgram.DashboardAlert = program.DashboardAlert?.Trim();
             currentProgram.DashboardAlertType = program.DashboardAlertType;
