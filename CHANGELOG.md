@@ -30,6 +30,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Display of modals after Bootstrap 5.3 upgrade
 - Performer program cost to display in currency format
+- Missing translations for secret codes, books and events
+- Password change confirmation not functioning
+- Challenge category multiselect formatting for participants
 
 ## [4.6.0] 2024-10-09
 
