@@ -42,7 +42,7 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogWarning("Unable to find join code '{code}'",
+                _logger.LogWarning("Unable to find join code {code}",
                     code);
             }
 
@@ -73,7 +73,7 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError("Unable to find join code '{code}' joined with.",
+                _logger.LogError("Unable to find join code {code} user completed registration with.",
                     code);
             }
         }

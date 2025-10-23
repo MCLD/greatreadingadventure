@@ -64,12 +64,6 @@ namespace GRA.Data.Repository
             var joinCodes = DbSet.AsNoTracking().Where(_ => _.SiteId == filter.SiteId);
 
             var count = await joinCodes.CountAsync();
-            var test = await joinCodes
-                .OrderBy(_ => _.Branch.Name)
-                .ThenByDescending(_ => _.IsQRCode)
-                .ApplyPagination(filter)
-                .ToListAsync();
-
             var data = await joinCodes
                 .OrderBy(_ => _.Branch.Name)
                 .ThenByDescending(_ => _.IsQRCode)

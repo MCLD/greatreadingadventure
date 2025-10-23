@@ -10,11 +10,11 @@ using Microsoft.Extensions.Logging;
 
 namespace GRA.Controllers.MissionControl
 {
-    [Area("MissionControl")]
+    [Area(nameof(MissionControl))]
     [Authorize(Policy = Policy.ViewJoinCodes)]
     public class JoinCodesController : Base.MCController
     {
-        public const string CodeReplacementKey = "CodeReplacementKey";
+        public static readonly string CodeReplacementKey = "CodeReplacementKey";
 
         private readonly JoinCodeService _joinCodeService;
         private readonly ILogger _logger;
@@ -51,12 +51,9 @@ namespace GRA.Controllers.MissionControl
                 await _joinCodeService.RemoveAsync(model.DeleteId);
                 ShowAlertSuccess("Join code deleted.");
             }
-            catch (Exception ex)
+            catch (GraException gex)
             {
-                _logger.LogError(ex,
-                    "Error deleting join code id {id}",
-                    model.DeleteId);
-                ShowAlertDanger($"Unable to delete join code: {ex.Message}");
+                ShowAlertDanger($"Unable to delete join code: {gex.Message}");
             }
 
             return RedirectToAction(nameof(Index), new
