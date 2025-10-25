@@ -383,6 +383,14 @@
                                        class="dropdown-item">Group Type management</a>
                                 </li>
                             }
+							@if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.ViewJoinCodes)))
+							{
+								<li>
+									<a asp-controller="@JoinCodesController.Name"
+									   asp-action="@nameof(JoinCodesController.Index)"
+									   class="dropdown-item">Join codes</a>
+								</li>
+							}
                             @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.ManageNews)))
                             {
                                 <li>

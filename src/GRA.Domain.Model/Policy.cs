@@ -28,6 +28,7 @@
         public const string ManageEvents = "ManageEvents";
         public const string ManageFeaturedChallengeGroups = "ManageFeaturedChallengeGroups";
         public const string ManageGroupTypes = "ManageGroupTypes";
+        public const string ManageJoinCodes = "ManageJoinCodes";
         public const string ManageLocations = "ManageLocations";
         public const string ManageNews = "ManageNews";
         public const string ManagePages = "ManagePages";
@@ -57,6 +58,7 @@
         public const string ViewAllReporting = "ViewAllReporting";
         public const string ViewChangeHistory = "ViewChangeHistory";
         public const string ViewGroupList = "ViewGroupList";
+        public const string ViewJoinCodes = "ViewJoinCodes";
         public const string ViewParticipantDetails = "ViewParticipantDetails";
         public const string ViewParticipantList = "ViewParticipantList";
         public const string ViewPerformerDetails = "ViewPerformerDetails";

@@ -1,142 +1,146 @@
 ﻿@model GRA.Controllers.ViewModel.Join.Step1ViewModel
 
 <form asp-controller="Join" asp-action="Step1" method="post" role="form" novalidate>
-    @if (!string.IsNullOrWhiteSpace(Model.AuthorizationCode))
-    {
-        <input asp-for="AuthorizationCode" type="hidden" />
-    }
+	@if (!string.IsNullOrWhiteSpace(Model.AuthorizationCode))
+	{
+		<input asp-for="AuthorizationCode" type="hidden" />
+	}
+	@if (!string.IsNullOrWhiteSpace(Model.JoinCode))
+	{
+		<input asp-for="JoinCode" type="hidden" />
+	}
 
-    <div class="row">
-        <div class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2">
-            <div class="card">
-                <div class="card-header">
-                    <span class="lead">@ViewData[ViewDataKey.Title]</span>
-                </div>
-                <div class="card-body">
-                    @if (TempData.ContainsKey("TwoStepSignUp"))
-                    {
-                        <partial name="_TwoStepPartial" />
-                        TempData.Keep("TwoStepSignUp");
-                    }
-                    else
-                    {
-                        <partial name="_MultiStepPartial" />
-                    }
-                    @if (!string.IsNullOrWhiteSpace(Model.WelcomeMessage))
-                    {
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <div class="alert alert-success mb-0 welcome-message">
-                                    @Html.Raw(Model.WelcomeMessage)
-                                </div>
-                            </div>
-                        </div>
-                    }
-                    <div class="row mb-3">
-                        <div class="col-12">
-                            <label asp-for="FirstName" class="col-form-label"></label>
-                            <input asp-for="FirstName"
-                                   autofocus
-                                   autocomplete="given-name"
-                                   class="form-control first-name-field" />
-                            <span asp-validation-for="FirstName" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-12">
-                            <label asp-for="LastName" class="col-form-label"></label>
-                            <input asp-for="LastName"
-                                   autocomplete="family-name"
-                                   class="form-control" />
-                            <span asp-validation-for="LastName" class="text-danger"></span>
-                        </div>
-                    </div>
-                    @if (Model.RequirePostalCode)
-                    {
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <label asp-for="PostalCode" class="col-form-label"></label>
-                                <input asp-for="PostalCode"
-                                       autocomplete="postal-code"
-                                       class="form-control" />
-                                <span asp-validation-for="PostalCode" class="text-danger"></span>
-                            </div>
-                        </div>
-                    }
-                    @if (Model.SystemList.Count() > 1)
-                    {
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <label asp-for="SystemId" class="col-form-label"></label>
-                                <select asp-for="SystemId"
-                                        asp-items="Model.SystemList"
-                                        class="form-select">
-                                    <option></option>
-                                </select>
-                                <span asp-validation-for="SystemId" class="text-danger"></span>
-                            </div>
-                        </div>
-                    }
-                    else
-                    {
-                        <input asp-for="SystemId" type="hidden" />
-                    }
-                    @if (Model.BranchList != null && Model.BranchList.Count() < 1)
-                    {
-                        <input asp-for="BranchId" type="hidden" />
-                    }
-                    else
-                    {
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <label asp-for="BranchId" class="col-form-label"></label>
-                                <select asp-for="BranchId"
-                                        asp-items="Model.BranchList"
-                                        class="form-select"></select>
-                                <span asp-validation-for="BranchId" class="text-danger"></span>
-                            </div>
-                        </div>
-                    }
-                </div>
-                <div class="card-footer d-flex justify-content-end">
-                    <button type="submit"
-                            class="btn btn-outline-primary btn-lg"
-                            button-spinner>
-                        @SharedLocalizer[GRA.Domain.Model.DisplayNames.NextStep]
-                        <span class="fas fa-arrow-right"></span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="row">
+		<div class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2">
+			<div class="card">
+				<div class="card-header">
+					<span class="lead">@ViewData[ViewDataKey.Title]</span>
+				</div>
+				<div class="card-body">
+					@if (TempData.ContainsKey("TwoStepSignUp"))
+					{
+						<partial name="_TwoStepPartial" />
+						TempData.Keep("TwoStepSignUp");
+					}
+					else
+					{
+						<partial name="_MultiStepPartial" />
+					}
+					@if (!string.IsNullOrWhiteSpace(Model.WelcomeMessage))
+					{
+						<div class="row mb-3">
+							<div class="col-12">
+								<div class="alert alert-success mb-0 welcome-message">
+									@Html.Raw(Model.WelcomeMessage)
+								</div>
+							</div>
+						</div>
+					}
+					<div class="row mb-3">
+						<div class="col-12">
+							<label asp-for="FirstName" class="col-form-label"></label>
+							<input asp-for="FirstName"
+								   autofocus
+								   autocomplete="given-name"
+								   class="form-control first-name-field" />
+							<span asp-validation-for="FirstName" class="text-danger"></span>
+						</div>
+					</div>
+					<div class="row mb-3">
+						<div class="col-12">
+							<label asp-for="LastName" class="col-form-label"></label>
+							<input asp-for="LastName"
+								   autocomplete="family-name"
+								   class="form-control" />
+							<span asp-validation-for="LastName" class="text-danger"></span>
+						</div>
+					</div>
+					@if (Model.RequirePostalCode)
+					{
+						<div class="row mb-3">
+							<div class="col-12">
+								<label asp-for="PostalCode" class="col-form-label"></label>
+								<input asp-for="PostalCode"
+									   autocomplete="postal-code"
+									   class="form-control" />
+								<span asp-validation-for="PostalCode" class="text-danger"></span>
+							</div>
+						</div>
+					}
+					@if (Model.SystemList.Count() > 1)
+					{
+						<div class="row mb-3">
+							<div class="col-12">
+								<label asp-for="SystemId" class="col-form-label"></label>
+								<select asp-for="SystemId"
+										asp-items="Model.SystemList"
+										class="form-select">
+									<option></option>
+								</select>
+								<span asp-validation-for="SystemId" class="text-danger"></span>
+							</div>
+						</div>
+					}
+					else
+					{
+						<input asp-for="SystemId" type="hidden" />
+					}
+					@if (Model.BranchList != null && Model.BranchList.Count() < 1)
+					{
+						<input asp-for="BranchId" type="hidden" />
+					}
+					else
+					{
+						<div class="row mb-3">
+							<div class="col-12">
+								<label asp-for="BranchId" class="col-form-label"></label>
+								<select asp-for="BranchId"
+										asp-items="Model.BranchList"
+										class="form-select"></select>
+								<span asp-validation-for="BranchId" class="text-danger"></span>
+							</div>
+						</div>
+					}
+				</div>
+				<div class="card-footer d-flex justify-content-end">
+					<button type="submit"
+							class="btn btn-outline-primary btn-lg"
+							button-spinner>
+						@SharedLocalizer[GRA.Domain.Model.DisplayNames.NextStep]
+						<span class="fas fa-arrow-right"></span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </form>
 
 @section scripts {
-    <script>
-        const branchLookupUrl = "@Url.Action(nameof(LookupController.GetBranches), LookupController.Name, new { Area = string.Empty })";
+	<script>
+		const branchLookupUrl = "@Url.Action(nameof(LookupController.GetBranches), LookupController.Name, new { Area = string.Empty })";
 
-        $("#SystemId").on("change", function () {
-            let systemId = $(this).val();
-            let branchList = $("#BranchId");
-            let branchId = branchList.val();
-            let listAll = systemId == '';
+		$("#SystemId").on("change", function () {
+			let systemId = $(this).val();
+			let branchList = $("#BranchId");
+			let branchId = branchList.val();
+			let listAll = systemId == '';
 
-            $.getJSON(branchLookupUrl, 
-                { 
-                    branchId: branchId,
-                    includeSystemName: listAll,
-                    listAll: listAll,
-                    systemId: systemId,
-                },
-                function (response) {
-                    branchList.empty();
-                    if (response.length > 1) {
-                        branchList.append(new Option("", ""));
-                    }
-                    $.each(response, function (index, item) {
-                        branchList.append(new Option(item.text, item.value, item.selected, item.selected))
-                    });
-                });
-        });
-    </script>
+			$.getJSON(branchLookupUrl,
+				{
+					branchId: branchId,
+					includeSystemName: listAll,
+					listAll: listAll,
+					systemId: systemId,
+				},
+				function (response) {
+					branchList.empty();
+					if (response.length > 1) {
+						branchList.append(new Option("", ""));
+					}
+					$.each(response, function (index, item) {
+						branchList.append(new Option(item.text, item.value, item.selected, item.selected))
+					});
+				});
+		});
+	</script>
 }
