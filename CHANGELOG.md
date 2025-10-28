@@ -30,6 +30,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Display of modals after Bootstrap 5.3 upgrade
 - Performer program cost to display in currency format
+- Email reminder signup source being editable in html
 
 ## [4.6.0] 2024-10-09
 

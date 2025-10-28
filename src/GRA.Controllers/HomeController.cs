@@ -104,14 +104,15 @@ namespace GRA.Controllers
         {
             if (!string.IsNullOrEmpty(viewModel?.Email))
             {
-                var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
-                var currentLanguageId = await _languageService
-                    .GetLanguageIdAsync(currentCultureName);
-                await _emailReminderService
-                    .AddEmailReminderAsync(viewModel.Email,
-                    viewModel.SignUpSource,
-                    currentLanguageId);
-                ShowAlertInfo(_sharedLocalizer[Annotations.Info.LetYouKnowWhen], "envelope");
+                    var siteStage = GetSiteStage();
+                    var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
+                    var currentLanguageId = await _languageService
+                        .GetLanguageIdAsync(currentCultureName);
+                    await _emailReminderService
+                        .AddEmailReminderAsync(viewModel.Email,
+                        siteStage.ToString(),
+                        currentLanguageId);
+                    ShowAlertInfo(_sharedLocalizer[Annotations.Info.LetYouKnowWhen], "envelope");
             }
             return RedirectToAction(nameof(Index));
         }
@@ -647,7 +648,6 @@ namespace GRA.Controllers
             switch (siteStage)
             {
                 case SiteStage.BeforeRegistration:
-                    viewmodel.SignUpSource = nameof(SiteStage.BeforeRegistration);
                     if (site != null)
                     {
                         viewmodel.CollectEmail = await _siteLookupService
@@ -674,7 +674,6 @@ namespace GRA.Controllers
                     return View(ViewTemplates.ProgramEnded, viewmodel);
 
                 case SiteStage.AccessClosed:
-                    viewmodel.SignUpSource = nameof(SiteStage.AccessClosed);
                     if (site != null)
                     {
                         viewmodel.CollectEmail = await _siteLookupService
