@@ -17,6 +17,7 @@ namespace GRA.Controllers.ViewModel.Home
         public string Author { get; set; }
 
         public ICollection<AvatarElement> AvatarElements { get; set; }
+        public string ButtonText { get; set; }
         public Carousel Carousel { get; set; }
         public bool DailyImageLarge { get; set; }
         public string DailyImageMessage { get; set; }

@@ -21,6 +21,8 @@ namespace GRA.Data.Model
         [Required]
         public bool AskSchool { get; set; }
 
+        public int? ButtonSegmentId { get; set; }
+
         public DailyLiteracyTip DailyLiteracy { get; set; }
 
         public int? DailyLiteracyTipId { get; set; }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.Programs;
 using GRA.Controllers.ViewModel.Shared;
@@ -20,28 +21,36 @@ namespace GRA.Controllers.MissionControl
     {
         private readonly BadgeService _badgeService;
         private readonly DailyLiteracyTipService _dailyLiteracyTipService;
+        private readonly LanguageService _languageService;
         private readonly ILogger<ProgramsController> _logger;
         private readonly PointTranslationService _pointTranslationService;
+        private readonly SegmentService _segmentService;
         private readonly SiteService _siteService;
 
         public ProgramsController(ILogger<ProgramsController> logger,
             ServiceFacade.Controller context,
             BadgeService badgeService,
             DailyLiteracyTipService dailyLiteracyTipService,
+            LanguageService languageService,
             PointTranslationService pointTranslationService,
+            SegmentService segmentService,
             SiteService siteService)
             : base(context)
         {
             ArgumentNullException.ThrowIfNull(logger);
             ArgumentNullException.ThrowIfNull(badgeService);
             ArgumentNullException.ThrowIfNull(dailyLiteracyTipService);
+            ArgumentNullException.ThrowIfNull(languageService);
             ArgumentNullException.ThrowIfNull(pointTranslationService);
+            ArgumentNullException.ThrowIfNull(segmentService);
             ArgumentNullException.ThrowIfNull(siteService);
 
             _logger = logger;
             _badgeService = badgeService;
             _dailyLiteracyTipService = dailyLiteracyTipService;
+            _languageService = languageService;
             _pointTranslationService = pointTranslationService;
+            _segmentService = segmentService;
             _siteService = siteService;
 
             PageTitle = "Program management";
@@ -270,6 +279,17 @@ namespace GRA.Controllers.MissionControl
                         "TranslationName")
                 };
 
+                viewModel.Languages = (await _languageService.GetActiveAsync())
+                    .OrderByDescending(_ => _.IsDefault)
+                    .ThenBy(_ => _.Description)
+                    .ToDictionary(k => k.Description, v => v.Id);
+
+                viewModel.SegmentLanguageIds = await _segmentService
+                    .GetLanguageStatusAsync(new int?[]
+                    {
+                        viewModel.Program.ButtonSegmentId
+                    });
+
                 if (program.JoinBadgeId.HasValue)
                 {
                     var badge = await _badgeService.GetByIdAsync(program.JoinBadgeId.Value);
@@ -457,6 +477,23 @@ namespace GRA.Controllers.MissionControl
             return View("Detail", model);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetSegment(int programId,
+            int languageId)
+        {
+            var program = await _siteService.GetProgramByIdAsync(programId);
+
+            var segmentText = program.ButtonSegmentId.HasValue
+                 ? await _segmentService.GetDbTextAsync(program.ButtonSegmentId.Value, languageId)
+                 : default;
+
+            return Json(new
+            {
+                Success = true,
+                Text = segmentText
+            });
+        }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
             "CA1031:Do not catch general exception types",
             Justification = "Return proper JSON regardless of errors")]
@@ -571,6 +608,91 @@ namespace GRA.Controllers.MissionControl
 
             PageTitle = "Point Translation management";
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SetSegment(int programId,
+            int languageId,
+            string text)
+        {
+            try
+            {
+                _logger.LogInformation("Button text for program {Program} language {LanguageId}: {Text}",
+                    programId,
+                    languageId,
+                    text);
+
+                var program = await _siteService.GetProgramByIdAsync(programId)
+                    ?? throw new GraException("Could not find the requested program.");
+
+                if (program.ButtonSegmentId.HasValue)
+                {
+                    await _segmentService.UpdateTextAsync(program.ButtonSegmentId.Value,
+                        languageId,
+                        text?.Trim());
+
+                    if (string.IsNullOrEmpty(text))
+                    {
+                        var languageCheck = await _segmentService
+                                .GetLanguageStatusAsync(new[] {
+                                    program.ButtonSegmentId
+                            });
+
+                        if (languageCheck.First().Value.Length == 0)
+                        {
+                            program.ButtonSegmentId = null;
+                            await _siteService.UpdateProgramAsync(program);
+                        }
+                    }
+                }
+                else
+                {
+                    if (string.IsNullOrWhiteSpace(text))
+                    {
+                        throw new GraException("Unable to add empty message.");
+                    }
+
+                    var addedText = await _segmentService.AddTextAsync(GetActiveUserId(),
+                        languageId,
+                        SegmentType.Program,
+                        text,
+                        SegmentNames.ProgramButtonText);
+
+                    program.ButtonSegmentId = addedText.SegmentId;
+
+                    await _siteService.UpdateProgramAsync(program);
+                }
+
+                return Json(new
+                {
+                    Success = true
+                });
+            }
+            catch (GraFieldValidationException gfvex)
+            {
+                var builder = new StringBuilder("Could not save program changes:")
+                    .AppendLine();
+                foreach (var validationError in gfvex.FieldValidationErrors)
+                {
+                    foreach (var errorMessage in validationError)
+                    {
+                        builder.Append("- ").AppendLine(errorMessage);
+                    }
+                }
+                return Json(new
+                {
+                    Success = false,
+                    Message = builder.ToString()
+                });
+            }
+            catch (GraException gex)
+            {
+                return Json(new
+                {
+                    Success = false,
+                    gex.Message
+                });
+            }
         }
 
         #endregion Point Translations

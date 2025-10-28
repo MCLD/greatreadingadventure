@@ -1,244 +1,400 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Programs.ProgramDetailViewModel
 
 @section inHeading {
-    <div class="ms-auto d-print-none">
-        <a asp-action="@nameof(ProgramsController.Index)"
-           class="btn btn-outline-secondary">Return to List</a>
-    </div>
+	<div class="ms-auto d-print-none">
+		<a asp-action="@nameof(ProgramsController.Index)"
+		   class="btn btn-outline-secondary">Return to List</a>
+	</div>
 }
 
 <form asp-action="@Model.Action" method="post" role="form" enctype="multipart/form-data">
-    <input asp-for="Action" type="hidden" />
-    <input asp-for="BadgeMakerImage" type="hidden" />
-    <input asp-for="BadgeMakerUrl" type="hidden" />
-    <input asp-for="UseBadgeMaker" type="hidden" />
-    @if (Model.Action == nameof(ProgramsController.Edit))
-    {
-        <input asp-for="Program.Id" type="hidden" />
-        <input asp-for="Program.JoinBadgeId" type="hidden" />
-    }
+	<input asp-for="Action" type="hidden" />
+	<input asp-for="BadgeMakerImage" type="hidden" />
+	<input asp-for="BadgeMakerUrl" type="hidden" />
+	<input asp-for="UseBadgeMaker" type="hidden" />
+	@if (Model.Action == nameof(ProgramsController.Edit))
+	{
+		<input asp-for="Program.ButtonSegmentId" type="hidden" />
+		<input asp-for="Program.Id" type="hidden" />
+		<input asp-for="Program.JoinBadgeId" type="hidden" />
+	}
 
-    <div class="row">
-        <div class="col-12 mb-3">
-            <label asp-for="Program.Name" class="col-form-label"></label>
-            <input asp-for="Program.Name" class="form-control" />
-            <span asp-validation-for="Program.Name" class="text-danger"></span>
-        </div>
-        <div class="col-12 mb-3">
-            <label asp-for="Program.AchieverPointAmount" class="col-form-label"></label>
-            <input asp-for="Program.AchieverPointAmount" class="form-control" />
-            <span asp-validation-for="Program.AchieverPointAmount" class="text-danger"></span>
-        </div>
-        <div class="col-12 mb-3">
-            <label class="col-form-label" asp-for="Program.DashboardAlert"></label>
-            <span class="fas fa-info-circle wide-tooltip"
-                  title="Display this text in a banner at the top of the participant dashboard. Only text, no HTML/links."
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="top"></span>
-            <button type="button"
-                    class="btn btn-sm btn-outline-primary"
-                    id="previewAlertButton"
-                    data-bs-toggle="modal"
-                    data-bs-target="#previewAlertModal">
-                Preview alert
-            </button>
-            <select asp-for="Program.DashboardAlertType"
-                    asp-items="Html.GetEnumSelectList<GRA.Domain.Model.AlertType>()"
-                    class="form-select my-2"></select>
-            <textarea asp-for="Program.DashboardAlert" class="form-control"></textarea>
-        </div>
-        <div class="col-12 mb-3">
-            <label class="col-form-label">Ask Age</label>
-            <select asp-for="AgeValues" class="form-select">
-                <option value="0">Don't Ask</option>
-                <option value="1">Ask</option>
-                <option value="2">Ask (Required)</option>
-            </select>
-            <span asp-validation-for="AgeValues" class="text-danger"></span>
-        </div>
-        <div class="col-12 mb-3">
-            <label class="col-form-label">Ask School</label>
-            <select asp-for="SchoolValues" class="form-select">
-                <option value="0">Don't Ask</option>
-                <option value="1">Ask</option>
-                <option value="2">Ask (Required)</option>
-            </select>
-            <span asp-validation-for="SchoolValues" class="text-danger"></span>
-        </div>
-        <div class="col-6">
-            <div class="mb-3">
-                <label asp-for="Program.AgeMinimum" class="col-form-label">Minimum Age?</label>
-                <input asp-for="Program.AgeMinimum" class="form-control" />
-                <span asp-validation-for="Program.AgeMinimum" class="text-danger"></span>
-            </div>
-        </div>
+	<div class="row">
+		<div class="col-12 mb-3">
+			<label asp-for="Program.Name" class="col-form-label"></label>
+			<input asp-for="Program.Name" class="form-control" />
+			<span asp-validation-for="Program.Name" class="text-danger"></span>
+		</div>
+		<div class="col-12 mb-3">
+			<label asp-for="Program.AchieverPointAmount" class="col-form-label"></label>
+			<input asp-for="Program.AchieverPointAmount" class="form-control" />
+			<span asp-validation-for="Program.AchieverPointAmount" class="text-danger"></span>
+		</div>
+		<div class="col-12 mb-3">
+			<label class="col-form-label" asp-for="Program.DashboardAlert"></label>
+			<span class="fas fa-info-circle wide-tooltip"
+				  title="Display this text in a banner at the top of the participant dashboard. Only text, no HTML/links."
+				  data-bs-toggle="tooltip"
+				  data-bs-placement="top"></span>
+			<button type="button"
+					class="btn btn-sm btn-outline-primary"
+					id="previewAlertButton"
+					data-bs-toggle="modal"
+					data-bs-target="#previewAlertModal">
+				Preview alert
+			</button>
+			<select asp-for="Program.DashboardAlertType"
+					asp-items="Html.GetEnumSelectList<GRA.Domain.Model.AlertType>()"
+					class="form-select my-2"></select>
+			<textarea asp-for="Program.DashboardAlert" class="form-control"></textarea>
+		</div>
+		<div class="col-12 mb-3">
+			<label class="col-form-label">Ask Age</label>
+			<select asp-for="AgeValues" class="form-select">
+				<option value="0">Don't Ask</option>
+				<option value="1">Ask</option>
+				<option value="2">Ask (Required)</option>
+			</select>
+			<span asp-validation-for="AgeValues" class="text-danger"></span>
+		</div>
+		<div class="col-12 mb-3">
+			<label class="col-form-label">Ask School</label>
+			<select asp-for="SchoolValues" class="form-select">
+				<option value="0">Don't Ask</option>
+				<option value="1">Ask</option>
+				<option value="2">Ask (Required)</option>
+			</select>
+			<span asp-validation-for="SchoolValues" class="text-danger"></span>
+		</div>
+		<div class="col-6">
+			<div class="mb-3">
+				<label asp-for="Program.AgeMinimum" class="col-form-label">Minimum Age?</label>
+				<input asp-for="Program.AgeMinimum" class="form-control" />
+				<span asp-validation-for="Program.AgeMinimum" class="text-danger"></span>
+			</div>
+		</div>
 
-        <div class="col-6">
-            <div class="mb-3">
-                <label asp-for="Program.AgeMaximum" class="col-form-label">Maximum Age?</label>
-                <input asp-for="Program.AgeMaximum" class="form-control" />
-                <span asp-validation-for="Program.AgeMaximum" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-12 mb-3">
-            <label asp-for="Program.PointTranslationId" class="col-form-label"></label>
-            <select asp-for="Program.PointTranslationId"
-                    asp-items="Model.PointTranslationList"
-                    class="form-select"
-                    disabled="@(Model.PointTranslationList.Count() == 0 ? "disabled" : null)">
-            </select>
-            <span asp-validation-for="Program.PointTranslationId" class="text-danger"></span>
-        </div>
-        <div class="col-12 mb-3">
-            <label asp-for="Program.DailyLiteracyTipId" class="col-form-label"></label>
-            <select asp-for="Program.DailyLiteracyTipId"
-                    asp-items="Model.DailyLiteracyTipList"
-                    class="form-select"
-                    disabled="@(Model.DailyLiteracyTipList.Count() == 0 ? "disabled" : null)">
-                <option></option>
-            </select>
-            <span asp-validation-for="Program.DailyLiteracyTipId" class="text-danger"></span>
-        </div>
-        <div class="col-12 mb-3">
-            <div class="card">
-                <h5 class="card-header">
-                    @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
-                    {
-                        <label class="col-form-label">Edit sign-up badge</label>
-                    }
-                    else
-                    {
-                        <label class="col-form-label">Add a sign-up badge</label>
-                    }
-                </h5>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-12 col-sm-4 col-md-3">
-                            @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
-                            {
-                                <input asp-for="BadgePath" type="hidden" />
-                                <img id="badgeImage"
-                                     class="img-thumbnail badge-lg"
-                                     src="~/@Model.BadgePath?@DateTime.Now.Ticks" />
-                            }
-                            else if (!string.IsNullOrEmpty(Model.BadgeMakerImage))
-                            {
-                                <img id="badgeImage"
-                                     class="img-thumbnail badge-lg"
-                                     src="@Model.BadgeMakerImage?@DateTime.Now.Ticks" />
-                            }
-                            else
-                            {
-                                <div class="img-thumbnail badge-lg-none d-flex align-items-center justify-content-center">
-                                    <span class="far fa-image fa-fw fs-1 text-secondary"></span>
-                                </div>
-                            }
-                            <span asp-validation-for="BadgePath"
-                                  class="text-danger d-block"></span>
-                        </div>
-                        <div class="col-12 col-sm-8 col-md-9">
-                            <label asp-for="Program.JoinBadgeName" class="col-form-label"></label>
-                            <input asp-for="Program.JoinBadgeName" class="form-control" />
-                            <span asp-validation-for="Program.JoinBadgeName" class="text-danger"></span>
+		<div class="col-6">
+			<div class="mb-3">
+				<label asp-for="Program.AgeMaximum" class="col-form-label">Maximum Age?</label>
+				<input asp-for="Program.AgeMaximum" class="form-control" />
+				<span asp-validation-for="Program.AgeMaximum" class="text-danger"></span>
+			</div>
+		</div>
+		<div class="col-12 mb-3">
+			<label asp-for="Program.PointTranslationId" class="col-form-label"></label>
+			<select asp-for="Program.PointTranslationId"
+					asp-items="Model.PointTranslationList"
+					class="form-select"
+					disabled="@(Model.PointTranslationList.Count() == 0 ? "disabled" : null)">
+			</select>
+			<span asp-validation-for="Program.PointTranslationId" class="text-danger"></span>
+		</div>
+		<div class="col-12 mb-3">
+			<label asp-for="Program.DailyLiteracyTipId" class="col-form-label"></label>
+			<select asp-for="Program.DailyLiteracyTipId"
+					asp-items="Model.DailyLiteracyTipList"
+					class="form-select"
+					disabled="@(Model.DailyLiteracyTipList.Count() == 0 ? "disabled" : null)">
+				<option></option>
+			</select>
+			<span asp-validation-for="Program.DailyLiteracyTipId" class="text-danger"></span>
+		</div>
+		<div class="col-12 mb-3">
+			<div class="card">
+				<h5 class="card-header">
+					@if (!string.IsNullOrWhiteSpace(Model.BadgePath))
+					{
+						<label class="col-form-label">Edit sign-up badge</label>
+					}
+					else
+					{
+						<label class="col-form-label">Add a sign-up badge</label>
+					}
+				</h5>
+				<div class="card-body">
+					<div class="row">
+						<div class="col-12 col-sm-4 col-md-3">
+							@if (!string.IsNullOrWhiteSpace(Model.BadgePath))
+							{
+								<input asp-for="BadgePath" type="hidden" />
+								<img id="badgeImage"
+									 class="img-thumbnail badge-lg"
+									 src="~/@Model.BadgePath?@DateTime.Now.Ticks" />
+							}
+							else if (!string.IsNullOrEmpty(Model.BadgeMakerImage))
+							{
+								<img id="badgeImage"
+									 class="img-thumbnail badge-lg"
+									 src="@Model.BadgeMakerImage?@DateTime.Now.Ticks" />
+							}
+							else
+							{
+								<div class="img-thumbnail badge-lg-none d-flex align-items-center justify-content-center">
+									<span class="far fa-image fa-fw fs-1 text-secondary"></span>
+								</div>
+							}
+							<span asp-validation-for="BadgePath"
+								  class="text-danger d-block"></span>
+						</div>
+						<div class="col-12 col-sm-8 col-md-9">
+							<label asp-for="Program.JoinBadgeName" class="col-form-label"></label>
+							<input asp-for="Program.JoinBadgeName" class="form-control" />
+							<span asp-validation-for="Program.JoinBadgeName" class="text-danger"></span>
 
-                            <label asp-for="BadgeUploadImage" class="col-form-label"></label>
-                            <div class="input-group mb-3">
-                                <input type="file"
-                                       class="form-control"
-                                       asp-for="BadgeUploadImage"
-                                       accept=".jpg,.png" />
-                                <button class="btn btn-outline-secondary"
-                                        type="button"
-                                        onclick="$('#BadgeUploadImage').val('')">
-                                    Clear selection
-                                </button>
-                            </div>
-                            <span asp-validation-for="BadgeUploadImage"
-                                  class="text-danger mb-3"></span>
-                            <div>
-                                <label asp-for="BadgeAltText" class="control-label"></label>
-                                <span class="fas fa-info-circle wide-tooltip"
-                                      title="How should this badge be described to someone who can't see it?"
-                                      data-toggle="tooltip"
-                                      data-placement="top"></span>
-                                <textarea asp-for="BadgeAltText"
-                                          class="form-control">@Model.BadgeAltText</textarea>
-                                <span asp-validation-for="BadgeAltText" class="text-danger"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+							<label asp-for="BadgeUploadImage" class="col-form-label"></label>
+							<div class="input-group mb-3">
+								<input type="file"
+									   class="form-control"
+									   asp-for="BadgeUploadImage"
+									   accept=".jpg,.png" />
+								<button class="btn btn-outline-secondary"
+										type="button"
+										onclick="$('#BadgeUploadImage').val('')">
+									Clear selection
+								</button>
+							</div>
+							<span asp-validation-for="BadgeUploadImage"
+								  class="text-danger mb-3"></span>
+							<div>
+								<label asp-for="BadgeAltText" class="control-label"></label>
+								<span class="fas fa-info-circle wide-tooltip"
+									  title="How should this badge be described to someone who can't see it?"
+									  data-toggle="tooltip"
+									  data-placement="top"></span>
+								<textarea asp-for="BadgeAltText"
+										  class="form-control">@Model.BadgeAltText</textarea>
+								<span asp-validation-for="BadgeAltText" class="text-danger"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
-        <div class="row">
-            <div class="col-12 mb-3">
-                <button type="submit"
-                        id="Submit"
-                        name="Submit"
-                        value="Submit"
-                        class="btn btn-outline-primary btn-spinner"
-                        button-spinner>
-                    <span class="buttonText">Save Program</span>
-                </button>
-            </div>
-        </div>
-    </div>
+		@if (Model.Action == nameof(ProgramsController.Edit))
+		{
+			<div class="row">
+				<div class="col-12">
+					<div class="mb-3">
+						<label asp-for="Program.ButtonSegmentId"
+							   class="col-form-label"></label><br />
+						@foreach (var item in Model.Languages)
+						{
+							<a class="btn @Model.LanguageSegmentClass(Model.Program.ButtonSegmentId, item.Value)"
+							   data-bs-toggle="modal"
+							   data-bs-target="#segmentModal"
+							   data-languageid="@item.Value">@item.Key</a>
+						}
+					</div>
+				</div>
+			</div>
+		}
+		<div class="row">
+			<div class="col-12 mb-3">
+				<button type="submit"
+						id="Submit"
+						name="Submit"
+						value="Submit"
+						class="btn btn-outline-primary btn-spinner"
+						button-spinner>
+					<span class="buttonText">Save Program</span>
+				</button>
+			</div>
+		</div>
+	</div>
 </form>
 
 <div class="modal fade" id="previewAlertModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Preview alert</h4>
-                <button aria-label="Close"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        type="button"></button>
-            </div>
-            <div class="modal-body">
-                <div class="alert" id="alertPreview"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button"
-                        class="btn btn-outline-secondary"
-                        data-bs-dismiss="modal">
-                    Close
-                </button>
-            </div>
-        </div>
-    </div>
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Preview alert</h4>
+				<button aria-label="Close"
+						class="btn-close"
+						data-bs-dismiss="modal"
+						type="button"></button>
+			</div>
+			<div class="modal-body">
+				<div class="alert" id="alertPreview"></div>
+			</div>
+			<div class="modal-footer">
+				<button type="button"
+						class="btn btn-outline-secondary"
+						data-bs-dismiss="modal">
+					Close
+				</button>
+			</div>
+		</div>
+	</div>
 </div>
 
+@if (Model.Action == nameof(ProgramsController.Edit))
+{
+	<form id="updateSegmentText">
+		<input type="hidden" name="programId" value="@Model.Program.Id" />
+		<input type="hidden" id="updateSegmentLanguageId" name="languageId" />
+		<div class="modal fade"
+			 data-bs-backdrop="static"
+			 id="segmentModal"
+			 tabindex="-1"
+			 role="dialog"
+			 aria-labelledby="segmentModalLabel">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title" id="segmentModalLabel">Button Text Override</h4>
+						<button aria-label="Close"
+								class="btn-close"
+								data-bs-dismiss="modal"
+								type="button"></button>
+					</div>
+					<div class="modal-body">
+						<div id="segmentModalCover"
+							 class="text-center">
+							<span class="fa fa-spinner fa-spin" style="font-size: 3rem;"></span>
+						</div>
+						<div id="segmentModalContent" style="display: none;">
+							<div class="mb-3">
+								<label>Activity button text</label>
+								<input type="text"
+									   class="form-control"
+									   id="segmentText"
+									   name="text" />
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button"
+								class="btn btn-warning btn-spinner"
+								id="clearSegment">
+							Remove button text override
+						</button>
+						<button type="button"
+								class="btn btn-outline-secondary"
+								data-bs-dismiss="modal">
+							Close
+						</button>
+						<button type="submit"
+								button-spinner
+								class="btn btn-outline-primary btn-spinner"
+								id="saveSegment">
+							Save changes
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+}
+
 @section scripts {
-    <script>
-        var alertPreviewButtonEnabled = true;
+	<script>
+		var alertPreviewButtonEnabled = true;
 
-        $('#previewAlertModal').on('show.bs.modal', function (e) {
-            $('#alertPreview').removeClass('alert-info');
-            $('#alertPreview').removeClass('alert-success');
-            $('#alertPreview').removeClass('alert-warning');
-            $('#alertPreview').removeClass('alert-danger');
-            let selectedType = $('#Program_DashboardAlertType option:selected').text().toLowerCase();
-            $('#alertPreview').addClass('alert-' + selectedType);
-            $('#alertPreview').text($('#Program_DashboardAlert').val());
-        });
+		$('#previewAlertModal').on('show.bs.modal', function (e) {
+			$('#alertPreview').removeClass('alert-info');
+			$('#alertPreview').removeClass('alert-success');
+			$('#alertPreview').removeClass('alert-warning');
+			$('#alertPreview').removeClass('alert-danger');
+			let selectedType = $('#Program_DashboardAlertType option:selected').text().toLowerCase();
+			$('#alertPreview').addClass('alert-' + selectedType);
+			$('#alertPreview').text($('#Program_DashboardAlert').val());
+		});
 
-        function fixDashboardPreviewButton() {
-            let length = $('#Program_DashboardAlert').val().length;
-            if (length == 0) {
-                alertPreviewButtonEnabled = false;
-                $('#previewAlertButton').prop('disabled', true);
-            } else if (!alertPreviewButtonEnabled) {
-                alertPreviewButtonEnabled = true;
-                $('#previewAlertButton').prop('disabled', false);
-            }
-        }
+		function fixDashboardPreviewButton() {
+			let length = $('#Program_DashboardAlert').val().length;
+			if (length == 0) {
+				alertPreviewButtonEnabled = false;
+				$('#previewAlertButton').prop('disabled', true);
+			} else if (!alertPreviewButtonEnabled) {
+				alertPreviewButtonEnabled = true;
+				$('#previewAlertButton').prop('disabled', false);
+			}
+		}
 
-        $('#Program_DashboardAlert').on('input', fixDashboardPreviewButton);
+		$('#Program_DashboardAlert').on('input', fixDashboardPreviewButton);
 
-        $().ready(function () {
-            fixDashboardPreviewButton();
-        });
-    </script>
+		$().ready(function () {
+			fixDashboardPreviewButton();
+		});
+	</script>
+
+	@if (Model.Action == nameof(ProgramsController.Edit))
+	{
+		<script>
+				$('#updateSegmentText').submit(function (e) {
+				e.preventDefault();
+				let form = $(this);
+				console.info("Submitting update message text form: %o", form);
+				$.ajax({
+					url: '@Url.Action(nameof(ProgramsController.SetSegment))',
+					type: "POST",
+					data: form.serialize(),
+					success: function (data, textStatus, jqXHR) {
+						console.info("Update success: %o - %o", data.success, data.message);
+						if (data.success === true) {
+							location.reload();
+						} else {
+							ResetSpinners();
+							window.alert("An error occurred while saving: " + data.message);
+						}
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						console.info("Update failure: %o - %o", textStatus, errorThrown);
+						ResetSpinners();
+						window.alert("There was an " + textStatus + ": " + errorThrown);
+					}
+				});
+			});
+
+			$('#clearSegment').on('click', function (e) {
+				$('#segmentText').val('');
+				$('#updateSegmentText').submit();
+			});
+
+
+			$('#segmentModal').on('show.bs.modal', function (e) {
+				$('#segmentModalCover').html('<span class="fa fa-spinner fa-spin" style="font-size: 3rem;"></span>');
+				$('#segmentModalCover').show();
+				$('#segmentModalContent').hide();
+				$('#saveSegment').prop('disabled', true);
+				let languageid = $(e.relatedTarget).data('languageid');
+				$('#updateSegmentLanguageId').val(languageid);
+				$.ajax({
+					url: '@Url.Action(nameof(ProgramsController.GetSegment))',
+					type: "GET",
+					dataType: 'json',
+					data: {
+						'programId': @Model.Program.Id,
+						'languageId': languageid
+					},
+					success: function (data, textStatus, jqXHR) {
+						if (data.success === true) {
+							if (data.text) {
+								$('#segmentText').val(data.text);
+								$('#clearSegment').show();
+							} else {
+								$('#segmentText').val('');
+								$('#clearSegment').hide();
+							}
+							$('#saveSegment').prop('disabled', null);
+							$('#segmentModalCover').hide();
+							$('#segmentModalContent').show();
+						}
+						else {
+							console.error("Failure loading the segment text: " + data.message);
+							$('#segmentModalCover').html('<div class="text-danger">' + data.message + '</span>');
+							$('#saveSegment').prop('disabled', true);
+						}
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						console.error("Failure updating the segment text: " + textStatus + " - " + errorThrown);
+						$('#segmentModalCover').html('<div class="text-danger">' + textStatus + ' - ' + errorThrown + '</span>');
+						$('#saveSegment').prop('disabled', true);
+					}
+				});
+			});
+		</script>
+	}
 }

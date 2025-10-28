@@ -210,7 +210,16 @@ else if (Model.HasOrderStatus)
                             <button type="submit"
                                     class="btn mx-auto btn-outline-success btn-lg"
                                     button-spinner>
-                                <span class="buttonText">@SharedLocalizer["I read a book!"]</span>
+                                <span class="buttonText">
+									@if (!string.IsNullOrWhiteSpace(Model.ButtonText))
+									{
+										@Model.ButtonText
+									}
+									else
+									{
+										@SharedLocalizer["I read a book!"]
+									}
+								</span>
                             </button>
                         </form>
                     </div>
@@ -266,7 +275,16 @@ else if (Model.HasOrderStatus)
                             <button type="submit"
                                     class="btn btn-outline-primary"
                                     button-spinner>
-                                <span class="buttonText">@SharedLocalizer["Log {0}", SharedLocalizer[Model.ActivityDescriptionPlural]]</span>
+                                <span class="buttonText">
+									@if (!string.IsNullOrWhiteSpace(Model.ButtonText))
+									{
+										@Model.ButtonText
+									}
+									else 
+									{
+										@SharedLocalizer["Log {0}", SharedLocalizer[Model.ActivityDescriptionPlural]]
+									}
+								</span>
                             </button>
                         </div>
                     </div>
