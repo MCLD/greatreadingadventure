@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EmailValidation;
 using GRA.Controllers.Attributes;
 using GRA.Controllers.ViewModel.Home;
 using GRA.Domain.Model;
@@ -104,15 +105,24 @@ namespace GRA.Controllers
         {
             if (!string.IsNullOrEmpty(viewModel?.Email))
             {
+                var email = viewModel.Email.Trim();
+                if (EmailValidator.Validate(email))
+                {
                     var siteStage = GetSiteStage();
                     var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
                     var currentLanguageId = await _languageService
                         .GetLanguageIdAsync(currentCultureName);
                     await _emailReminderService
-                        .AddEmailReminderAsync(viewModel.Email,
+                        .AddEmailReminderAsync(email,
                         siteStage.ToString(),
                         currentLanguageId);
                     ShowAlertInfo(_sharedLocalizer[Annotations.Info.LetYouKnowWhen], "envelope");
+                }
+                else
+                {
+                    ShowAlertWarning(_sharedLocalizer[Annotations.Validate.EmailAddressInvalid, 
+                        email]);
+                }
             }
             return RedirectToAction(nameof(Index));
         }

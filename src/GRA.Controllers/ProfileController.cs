@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EmailValidation;
 using GRA.Controllers.ViewModel.Profile;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
@@ -375,6 +376,15 @@ namespace GRA.Controllers
             }
 
             var site = await GetCurrentSiteAsync();
+
+            if (!string.IsNullOrWhiteSpace(model.User.Email)
+                && !EmailValidator.Validate(model.User.Email.Trim()))
+            {
+                ModelState.AddModelError("User.Email",
+                    _sharedLocalizer[Annotations.Validate.Email,
+                        _sharedLocalizer[DisplayNames.EmailAddress]]);
+            }
+
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.User.PostalCode))
             {
                 ModelState.AddModelError("User.PostalCode",
@@ -875,6 +885,14 @@ namespace GRA.Controllers
         public async Task<IActionResult> EmailAward(EmailAwardViewModel emailAwardModel)
         {
             ArgumentNullException.ThrowIfNull(emailAwardModel);
+
+            if (!string.IsNullOrWhiteSpace(emailAwardModel.Email)
+                && !EmailValidator.Validate(emailAwardModel.Email.Trim()))
+            {
+                ModelState.AddModelError(nameof(emailAwardModel.Email),
+                    _sharedLocalizer[Annotations.Validate.Email,
+                        _sharedLocalizer[DisplayNames.EmailAddress]]);
+            }
 
             if (!ModelState.IsValid)
             {
@@ -1436,6 +1454,13 @@ namespace GRA.Controllers
             var site = await GetCurrentSiteAsync();
             var program = await _siteService.GetProgramByIdAsync(model.User.ProgramId);
 
+            if (!string.IsNullOrWhiteSpace(model.User.Email)
+                && !EmailValidator.Validate(model.User.Email.Trim()))
+            {
+                ModelState.AddModelError("User.Email",
+                    _sharedLocalizer[Annotations.Validate.Email, 
+                        _sharedLocalizer[DisplayNames.EmailAddress]]);
+            }
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.User.PostalCode))
             {
                 ModelState.AddModelError("User.PostalCode",
@@ -1546,6 +1571,8 @@ namespace GRA.Controllers
                     .RestrictChangingSystemBranch);
             model.ShowAge = program.AskAge;
             model.ShowSchool = program.AskSchool;
+
+            await _vendorCodeService.PopulateVendorCodeStatusAsync(model.User);
 
             if (model.RestrictChangingProgram)
             {
