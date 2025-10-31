@@ -21,6 +21,9 @@ namespace GRA.Domain.Model
         [Required]
         public string EmailSummary { get; set; }
 
+        [DisplayName("Pin post to the top?")]
+        public bool IsPinned { get; set; }
+
         public int? NextPostId { get; set; }
         public int? PreviousPostId { get; set; }
         public DateTime? PublishedAt { get; set; }
