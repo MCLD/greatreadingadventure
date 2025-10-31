@@ -108,6 +108,17 @@ namespace GRA.Domain.Service
                 };
             }
 
+            var user = await _userRepository.GetByIdAsync(usernames.Id);
+            if (user.CannotBeEmailed)
+            {
+                return new Models.ServiceResult
+                {
+                    Status = Models.ServiceResultStatus.Error,
+                    Message = Annotations.Validate.EmailAddressInvalid,
+                    Arguments = new[] { user.Email }
+                };
+            }
+
             var sb = new StringBuilder();
             foreach (string username in usernames.Data)
             {
@@ -168,8 +179,7 @@ namespace GRA.Domain.Service
                     Arguments = new[] { trimmedUsername }
                 };
             }
-
-            if (string.IsNullOrEmpty(user.Email))
+            else if (string.IsNullOrEmpty(user.Email))
             {
                 _logger.LogInformation("User {Username} ({UserId}) doesn't have an email address configured so cannot send a recovery token.",
                     user?.Username,
@@ -178,6 +188,18 @@ namespace GRA.Domain.Service
                 {
                     Status = Models.ServiceResultStatus.Error,
                     Message = Annotations.Validate.EmailConfigured,
+                    Arguments = new[] { trimmedUsername }
+                };
+            }
+            else if (user.CannotBeEmailed)
+            {
+                _logger.LogInformation("Username {Username} has an invalid email address {Email} and cannot be emailed.",
+                    trimmedUsername,
+                    user.Email.Trim());
+                return new Models.ServiceResult
+                {
+                    Status = Models.ServiceResultStatus.Error,
+                    Message = Annotations.Validate.AssociatedEmailAddressInvalid,
                     Arguments = new[] { trimmedUsername }
                 };
             }

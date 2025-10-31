@@ -17,6 +17,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - View of and access to historical report output
 - QR code generation ability
 - Spanish localization for jQuery validation messages
+- Email address validation
+- Cannot be emailed property to users
 
 ## Changed
 
@@ -30,6 +32,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Display of modals after Bootstrap 5.3 upgrade
 - Performer program cost to display in currency format
+- Email reminder signup source being editable in html
 
 ## [4.6.0] 2024-10-09
 

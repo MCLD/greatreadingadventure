@@ -8,6 +8,7 @@
         }
 
         public bool CanAddToHousehold { get; set; }
+        public bool? CannotBeEmailed { get; set; }
         public bool? HasMultiplePrimaryVendorCodes { get; set; }
         public bool? IsSubscribed { get; set; }
         public bool OrderDescending { get; set; }

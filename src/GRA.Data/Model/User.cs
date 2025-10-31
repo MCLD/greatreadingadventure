@@ -16,6 +16,8 @@ namespace GRA.Data.Model
 
         public bool CanBeDeleted { get; set; }
 
+        public bool CannotBeEmailed { get; set; }
+
         [MaxLength(64)]
         public string CardNumber { get; set; }
 

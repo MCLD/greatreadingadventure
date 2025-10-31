@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using EmailValidation;
 using GRA.Controllers.ViewModel.PerformerRegistration.Home;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
@@ -385,6 +387,8 @@ namespace GRA.Controllers.PerformerRegistration
         [HttpPost]
         public async Task<IActionResult> Information(InformationViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             var settings = await _performerSchedulingService.GetSettingsAsync();
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage != PsSchedulingStage.RegistrationOpen)
@@ -411,6 +415,15 @@ namespace GRA.Controllers.PerformerRegistration
             if (BranchAvailability.Count == 0)
             {
                 ModelState.AddModelError("BranchAvailability", "Please select the libraries where you are willing to perform.");
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.Performer.Email)
+                && !EmailValidator.Validate(model.Performer.Email.Trim()))
+            {
+                ModelState.AddModelError("Performer.Email",
+                    string.Format(CultureInfo.InvariantCulture,
+                        Annotations.Validate.Email,
+                        "Email"));
             }
 
             if (currentPerformer == null)

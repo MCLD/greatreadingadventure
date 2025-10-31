@@ -104,6 +104,11 @@ The Great Reading Adventure uses open source components. You can find informatio
 - This is a GitHub Action for running dotnet-outdated against .NET projects.
 - Source on GitHub: [MCLD/dotnet-outdated-action](https://github.com/MCLD/dotnet-outdated-action) - [MIT License](https://github.com/MCLD/dotnet-outdated-action/blob/main/LICENSE)
 
+### EmailValidation
+
+- A simple (but correct) .NET class for validating email addresses.
+- Source on GitHub: [jstedfast/EmailValidation/](https://github.com/jstedfast/EmailValidation/) - [MIT License](https://github.com/jstedfast/EmailValidation/blob/master/LICENSE)
+
 ### Entity Framework Core
 
 - [Entity Framework Core](https://github.com/aspnet/EntityFramework) is an object-relational mapper (O/RM) that enables .NET developers to work with a database using .NET objects. It eliminates the need for most of the data-access code that developers usually need to write.
