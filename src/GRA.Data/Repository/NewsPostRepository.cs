@@ -95,6 +95,7 @@ namespace GRA.Data.Repository
 
             var data = await posts
                 .OrderByDescending(_ => !_.PublishedAt.HasValue)
+                .ThenByDescending(_ => _.IsPinned)
                 .ThenByDescending(_ => _.UpdatedAt ?? _.PublishedAt)
                 .ApplyPagination(filter)
                 .ProjectToType<NewsPost>()

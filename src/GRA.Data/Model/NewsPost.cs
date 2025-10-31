@@ -14,6 +14,8 @@ namespace GRA.Data.Model
         [MaxLength(255)]
         public string EmailSummary { get; set; }
 
+        public bool IsPinned { get; set; }
+
         public DateTime? PublishedAt { get; set; }
 
         [Required]
