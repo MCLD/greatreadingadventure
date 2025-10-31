@@ -865,6 +865,11 @@ namespace GRA.Data.Repository
                 userList = userList.Where(_ => _.IsEmailSubscribed == filter.IsSubscribed);
             }
 
+            if (filter.CannotBeEmailed == true)
+            {
+                userList = userList.Where(_ => _.CannotBeEmailed == filter.CannotBeEmailed.Value);
+            }
+
             if (filter.HasMultiplePrimaryVendorCodes == true)
             {
                 var userIdsMultiplePrimaryVendorCodes = _context.VendorCodes

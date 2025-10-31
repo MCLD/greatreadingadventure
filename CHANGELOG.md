@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - QR code generation ability
 - Spanish localization for jQuery validation messages
 - Email address validation
+- Cannot be emailed property to users
 
 ## Changed
 

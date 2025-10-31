@@ -1443,6 +1443,12 @@ namespace GRA.Controllers
                 viewModel.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 
+            if (viewModel.User.CannotBeEmailed)
+            {
+                ShowAlertWarning(_sharedLocalizer[Annotations.Validate.EmailCannotBeEmailed,
+                    viewModel.User.BranchName]);
+            }
+
             return View(viewModel);
         }
 

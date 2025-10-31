@@ -1693,4 +1693,8 @@
     <value>View bundle options</value>
     <comment>Text for screen readers to indicate the image can be selected to view wardrobe bundle options</comment>
   </data>
+  <data name="&quot;We are unable to send you emails at this address. Please enter a valid email address or contact {0} for assistance&quot;" xml:space="preserve">
+    <value>"We are unable to send you emails at this address. Please enter a valid email address or contact {0} for assistance"</value>
+    <comment>Message letting the user know the email address they entered is unable to receive emails and instructing them to either change their email to a valid one or contact their library branch for help. {0} is replaced with the name of the user's branch.</comment>
+  </data>
 </root>

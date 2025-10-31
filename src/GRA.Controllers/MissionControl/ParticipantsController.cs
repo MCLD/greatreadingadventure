@@ -409,6 +409,7 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Index(string search,
             string sort,
             string order,
+            bool cannotBeEmailed,
             bool hasMultiplePrimaryVendorCodes,
             int? systemId,
             int? branchId,
@@ -417,7 +418,11 @@ namespace GRA.Controllers.MissionControl
         {
             page = page == 0 ? 1 : page;
 
-            var filter = new UserFilter(page);
+            var filter = new UserFilter(page) 
+            {
+                CannotBeEmailed = cannotBeEmailed,
+                HasMultiplePrimaryVendorCodes = hasMultiplePrimaryVendorCodes
+            };
 
             if (!string.IsNullOrWhiteSpace(search))
             {
@@ -435,7 +440,6 @@ namespace GRA.Controllers.MissionControl
             {
                 filter.ProgramIds = new List<int?> { programId.Value };
             }
-            filter.HasMultiplePrimaryVendorCodes = hasMultiplePrimaryVendorCodes;
 
             bool isDescending = string.Equals(order,
                 "Descending",
@@ -470,6 +474,7 @@ namespace GRA.Controllers.MissionControl
             var viewModel = new ParticipantsListViewModel
             {
                 BranchId = branchId,
+                CannotBeEmailed = filter.CannotBeEmailed ?? false,
                 CanRemoveParticipant = UserHasPermission(Permission.DeleteParticipants),
                 CanViewDetails = UserHasPermission(Permission.ViewParticipantDetails),
                 HasMultiplePrimaryVendorCodes = filter.HasMultiplePrimaryVendorCodes ?? false,
@@ -609,6 +614,11 @@ namespace GRA.Controllers.MissionControl
                             .TranslationDescriptionPastTense
                             .Replace("{0}", "", StringComparison.OrdinalIgnoreCase).Trim();
                     viewModel.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
+                }
+
+                if (viewModel.User.CannotBeEmailed)
+                {
+                    ShowAlertWarning("This participant has an invalid email address and won't be able to receive emails until it is changed.");
                 }
 
                 return View(viewModel);
@@ -2663,7 +2673,7 @@ namespace GRA.Controllers.MissionControl
                     Annotations.Validate.EmailAddressInvalid,
                     emailAwardModel.Email.Trim()));
             }
-            else 
+            else
             {
                 await _vendorCodeService.ResolveCodeStatusAsync(emailAwardModel.UserId,
                     false,
