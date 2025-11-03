@@ -10,6 +10,7 @@
         public const string ActivateSystemChallenges = "ActivateSystemChallenges";
         public const string AddChallengeGroups = "AddChallengeGroups";
         public const string AddChallenges = "AddChallenges";
+        public const string CreateJoinCodes = "CreateJoinCodes";
         public const string DeleteAnyMail = "DeleteAnyMail";
         public const string DeleteParticipants = "DeleteParticipants";
         public const string EditChallengeGroups = "EditChallengeGroups";
@@ -28,7 +29,6 @@
         public const string ManageEvents = "ManageEvents";
         public const string ManageFeaturedChallengeGroups = "ManageFeaturedChallengeGroups";
         public const string ManageGroupTypes = "ManageGroupTypes";
-        public const string ManageJoinCodes = "ManageJoinCodes";
         public const string ManageLocations = "ManageLocations";
         public const string ManageNews = "ManageNews";
         public const string ManagePages = "ManagePages";

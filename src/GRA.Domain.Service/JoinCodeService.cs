@@ -29,8 +29,6 @@ namespace GRA.Domain.Service
 
             _codeGenerator = codeGenerator;
             _joinCodeRepository = joinCodeRepository;
-
-            SetManagementPermission(Permission.ManageJoinCodes);
         }
 
         public async Task<JoinCode> GetByCodeAndIncrementAccessCountAsync(string code)
@@ -57,8 +55,10 @@ namespace GRA.Domain.Service
 
             if (joinCode == null)
             {
+                VerifyPermission(Permission.CreateJoinCodes);
                 await GenerateJoinCodeAsync(isQRCode, branchId);
                 joinCode = await _joinCodeRepository.GetByTypeAndBranchAsync(isQRCode, branchId);
+                joinCode.NewCode = true;
             }
 
             return joinCode;
@@ -86,12 +86,6 @@ namespace GRA.Domain.Service
 
             filter.SiteId = GetCurrentSiteId();
             return await _joinCodeRepository.PageAsync(filter);
-        }
-
-        public async Task RemoveAsync(int joinCodeId)
-        {
-            VerifyManagementPermission();
-            await _joinCodeRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), joinCodeId);
         }
 
         private async Task GenerateJoinCodeAsync(bool isQRCode, int? branchId)

@@ -19,5 +19,6 @@ namespace GRA.Domain.Model
         public int JoinCount { get; set; }
 
         public string JoinUrl { get; set; }
+        public bool NewCode { get; set; }
     }
 }

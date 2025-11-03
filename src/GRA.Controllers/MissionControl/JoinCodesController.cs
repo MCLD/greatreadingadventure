@@ -40,28 +40,6 @@ namespace GRA.Controllers.MissionControl
         public static string Name
         { get { return "JoinCodes"; } }
 
-
-        [HttpPost]
-        public async Task<IActionResult> Delete(JoinCodeListViewModel model)
-        {
-            ArgumentNullException.ThrowIfNull(model);
-
-            try
-            {
-                await _joinCodeService.RemoveAsync(model.DeleteId);
-                ShowAlertSuccess("Join code deleted.");
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger($"Unable to delete join code: {gex.Message}");
-            }
-
-            return RedirectToAction(nameof(Index), new
-            {
-                page = model.CurrentPage
-            });
-        }
-
         public async Task<JsonResult> GetCode(bool isQRCode, int? branchId)
         {
             var joinCode = await _joinCodeService.GetByTypeAndBranch(isQRCode, branchId);
@@ -84,12 +62,10 @@ namespace GRA.Controllers.MissionControl
 
             var viewModel = new JoinCodeListViewModel
             {
-                BranchList = NameIdSelectList(await _siteService.GetAllBranches(true)),
-                CanManageJoinCodes = UserHasPermission(Permission.ManageJoinCodes),
+                CanCreateJoinCodes = UserHasPermission(Permission.CreateJoinCodes),
                 CurrentPage = page,
                 ItemCount = joinCodes.Count,
                 ItemsPerPage = filter.Take.Value,
-                IsQRCode = true,
                 JoinCodes = joinCodes.Data,
                 JoinUrl = Url.Action(nameof(Controllers.JoinController.Index),
                     Controllers.JoinController.Name,
@@ -103,6 +79,11 @@ namespace GRA.Controllers.MissionControl
                     {
                         page = viewModel.LastPage ?? 1
                     });
+            }
+
+            if (viewModel.CanCreateJoinCodes)
+            {
+                viewModel.BranchList = NameIdSelectList(await _siteService.GetAllBranches(true));
             }
 
             return View(viewModel);
