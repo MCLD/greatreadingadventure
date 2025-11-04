@@ -261,13 +261,6 @@ namespace GRA.Domain.Service
             int authUserId = GetClaimId(ClaimType.UserId);
             if (HasPermission(Permission.PerformDrawing))
             {
-                // insert drawing
-                drawing.DrawingCriterion = default;
-                drawing.Id = default;
-                drawing.RelatedBranchId = GetClaimId(ClaimType.BranchId);
-                drawing.RelatedSystemId = GetClaimId(ClaimType.SystemId);
-                drawing = await _drawingRepository.AddSaveAsync(authUserId, drawing);
-
                 // pull list of eligible users
                 var eligibleUserIds
                     = await _drawingCriterionRepository.GetEligibleUserIdsAsync(drawing.DrawingCriterionId);
@@ -277,6 +270,13 @@ namespace GRA.Domain.Service
                 {
                     throw new GraException($"Cannot draw {drawing.WinnerCount} from an eligible pool of {eligibleUserIds.Count} participants.");
                 }
+
+                // insert drawing
+                drawing.DrawingCriterion = default;
+                drawing.Id = default;
+                drawing.RelatedBranchId = GetClaimId(ClaimType.BranchId);
+                drawing.RelatedSystemId = GetClaimId(ClaimType.SystemId);
+                drawing = await _drawingRepository.AddSaveAsync(authUserId, drawing);
 
                 // prepare and perform the drawing
                 var remainingUsers = new List<int>(eligibleUserIds);
@@ -296,24 +296,6 @@ namespace GRA.Domain.Service
                         UserId = randomUserId
                     };
 
-                    // if there's an associated notification, send it now
-                    if (HasPermission(Permission.MailParticipants)
-                        && !string.IsNullOrEmpty(drawing.NotificationSubject)
-                        && !string.IsNullOrEmpty(drawing.NotificationMessage))
-                    {
-                        var mail = new Mail
-                        {
-                            SiteId = siteId,
-                            Subject = drawing.NotificationSubject,
-                            Body = drawing.NotificationMessage,
-                            ToUserId = winner.UserId,
-                            DrawingId = drawing.Id,
-                            IsNew = true
-                        };
-                        mail = await _mailRepository.AddSaveAsync(authUserId, mail);
-                        winner.MailId = mail.Id;
-                    }
-
                     // add the winner - does not perform a save
                     await _prizeWinnerRepository.AddAsync(authUserId, winner);
 
@@ -331,6 +313,76 @@ namespace GRA.Domain.Service
                     GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
+        }
+
+        public async Task SendWinnerMailAsync(Drawing drawing)
+        {
+            ArgumentNullException.ThrowIfNull(drawing);
+
+            var authUserId = GetClaimId(ClaimType.UserId);
+
+            if (!HasPermission(Permission.PerformDrawing)
+                || !HasPermission(Permission.MailParticipants))
+            {
+                _logger.LogError("User id {AuthId} does not have permission to send drawing winner mail.",
+                   authUserId);
+                throw new GraException(Annotations.Validate.Permission);
+            }
+
+            var currentDrawing = await _drawingRepository.GetDetailsWinners(drawing.Id);
+
+            if (currentDrawing == null)
+            {
+                _logger.LogError("User id {AuthId} cannot send winner mail for drawing {drawing}, drawing does not exist.",
+                   authUserId,
+                   currentDrawing.Id);
+                throw new GraException("Drawing does not exist.");
+            }
+            else if (currentDrawing.NotificationSent)
+            {
+                _logger.LogError("User id {AuthId} cannot send winner mail for drawing {drawing}, mail already sent.",
+                   authUserId,
+                   currentDrawing.Id);
+                throw new GraException("Drawing mail already sent.");
+            }
+            else if (string.IsNullOrWhiteSpace(drawing.NotificationSubject)
+                || string.IsNullOrWhiteSpace(drawing.NotificationMessage))
+            {
+                _logger.LogError("User id {AuthId} cannot send winner mail for drawing {drawing}, drawing has no mail.",
+                   authUserId,
+                   currentDrawing.Id);
+                throw new GraException("Drawing has no mail.");
+            }
+            else if (!currentDrawing.Winners.Any())
+            {
+                _logger.LogError("User id {AuthId} cannot send winner mail for drawing {drawing}, drawing has no winners.",
+                  authUserId,
+                  currentDrawing.Id);
+                throw new GraException("Drawing has no winners to mail.");
+            }
+
+            var siteId = GetCurrentSiteId();
+            currentDrawing.NotificationSubject = drawing.NotificationSubject.Trim();
+            currentDrawing.NotificationMessage = drawing.NotificationMessage.Trim();
+
+            foreach (var winner in currentDrawing.Winners)
+            {
+                var mail = new Mail
+                {
+                    SiteId = siteId,
+                    Subject = currentDrawing.NotificationSubject,
+                    Body = currentDrawing.NotificationMessage,
+                    ToUserId = winner.UserId,
+                    DrawingId = currentDrawing.Id,
+                    IsNew = true
+                };
+
+                mail = await _mailRepository.AddSaveAsync(authUserId, mail);
+                winner.MailId = mail.Id;
+            }
+
+            currentDrawing.NotificationSent = true;
+            await _drawingRepository.UpdateSaveAsync(authUserId, currentDrawing);
         }
 
         private async Task ValidateCriterionAsync(DrawingCriterion criterion)
