@@ -1,0 +1,316 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.JoinCodes.JoinCodeListViewModel
+
+@if (Model.CanCreateJoinCodes)
+{
+    @section inHeading {
+        <div class="ms-auto d-print-none">
+            <a class="btn btn-outline-success"
+               data-bs-toggle="modal"
+               data-bs-target="#getModal">
+                <span class="fas fa-link fa-fw"></span>
+                Get Join Code
+            </a>
+        </div>
+    }
+}
+
+<div class="row my-2">
+    <div class="col-sm-8 offset-sm-2">
+        <div class="alert alert-info mb-2">
+            <div class="d-flex align-items-stretch">
+                <span class="fas fa-info-circle fa-lg pt-2 me-3"
+                      aria-hidden="true"></span>
+                <span>
+                    A Join Code allows tracking of signups based on the use of a link or QR code.
+                    A default branch may also be associated with a join code, however as the
+                    participant joins they may choose a different branch.
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-12">
+        @if (Model.JoinCodes.Count() == 0)
+        {
+            <div class="alert alert-warning">No join codes created</div>
+        }
+        else
+        {
+            <div>
+                <table class="table table-sm table-bordered link-table">
+                    <thead>
+                        <tr>
+                            <th>Branch</th>
+                            <th>Type</th>
+                            <th>Access Count</th>
+                            <th>Join Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var joinCode in Model.JoinCodes)
+                        {
+                            <tr>
+                                <td class="td-class">
+                                    <a class="rowlink"
+                                       data-branchname="@joinCode.BranchName"
+                                       data-joincode="@joinCode.Code"
+                                       data-isqr="@joinCode.IsQRCode">
+                                        @if (joinCode.BranchId.HasValue)
+                                        {
+                                            @:@joinCode.BranchName (@joinCode.BranchSystemName)
+                                        }
+                                        else
+                                        {
+                                            @:No branch
+                                        }
+                                    </a>
+                                </td>
+                                <td>
+                                    @(joinCode.IsQRCode ? "QR Code" : "Url Link")
+                                </td>
+                                <td>
+                                    @joinCode.AccessCount
+                                </td>
+                                <td>
+                                    @joinCode.JoinCount
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <paginate paginateModel="@Model"></paginate>
+        }
+    </div>
+</div>
+
+<div class="modal fade"
+     id="viewModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="getModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title h4" id="viewModalLabel">View Join Code</h1>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close dialog">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="qrCodeContainer" class="text-center">
+                    <div id="qrImage" class="mb-4"></div>
+                    <div class="row">
+                        <div class="col-sm-6 offset-sm-3">
+                            <div class="input-group">
+                                <select id="qrDownloadOption"
+                                        class="form-select">
+                                    <option value="png">PNG</option>
+                                    <option value="svg">SVG</option>
+                                </select>
+                                <button id="qrDownloadButton"
+                                        class="btn btn-outline-primary"
+                                        type="button">
+                                    Download
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="urlLinkContainer" class="mb-4">
+                    <div class="input-group">
+                        <input id="urlInput" class="form-control" readonly="readonly" />
+                        <button id="copyUrlButton"
+                                class="btn btn-outline-primary"
+                                type="button">
+                            <span class="fas fa-clipboard fa-fw"></span>
+                        </button>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <strong id="copyResultMessage"
+                                class="text-primary position-absolute mt-1">Link copied!</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.CanCreateJoinCodes)
+{
+    <div class="modal fade"
+         id="getModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="getModalLabel">
+        <div class="modal-dialog" role="document">
+            <form asp-controller="@JoinCodesController.Name"
+                  asp-action="@nameof(JoinCodesController.GetCode)"
+                  id="getCodeForm"
+                  method="post"
+                  role="form"
+                  style="display:inline">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title h4" id="addModalLabel">Get Join Code</h1>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close dialog">
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label asp-for="IsQRCode" class="col-form-label"></label>
+                            <select asp-for="IsQRCode" class="form-select" value="true">
+                                <option value="true">QR Code</option>
+                                <option value="false">Url Link</option>
+                            </select>
+                            <span asp-validation-for="IsQRCode" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="BranchId" class="col-form-label"></label>
+                            <select asp-for="BranchId"
+                                    asp-items="Model.BranchList"
+                                    class="form-select">
+                                <option></option>
+                            </select>
+                            <span asp-validation-for="BranchId" class="text-danger"></span>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-outline-primary"
+                                aria-label="Confirm"
+                                button-spinner>
+                            Get Code
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script src="/js/qr-code-styling.min.js"></script>
+
+    <script>
+        $(window).on('load', function () {
+            $('.td-class').each(function () {
+                $(this).children('a.rowlink').height($(this).outerHeight());
+            });
+        });
+        $(window).resize(function () {
+            $('.td-class').each(function () {
+                $(this).children('a.rowlink').height($(this).outerHeight());
+            });
+        });
+
+        const copyResultMessage = $('#copyResultMessage');
+        copyResultMessage.hide();
+
+        const qrCode = new QRCodeStyling({
+                width: 300,
+                height: 300,
+                type: "svg"
+            });
+
+        $('.rowlink').on('click', function () {
+            const branchName = $(this).data('branchname');
+            const branchText = $(this).text().trim();
+            const joinUrl = "@Model.JoinUrl"
+                .replace('@JoinCodesController.CodeReplacementKey', $(this).data('joincode'));
+            const isQRCode = $(this).data('isqr');
+
+            ShowViewModal(joinUrl, isQRCode, branchName, branchText);
+        });
+
+        $('#copyUrlButton').on('click', function() {
+            const urlText = $('#urlInput').val();
+            navigator.clipboard.writeText(urlText);
+            copyResultMessage.show().delay(1000).fadeOut(2000);
+        });
+
+        $('#qrDownloadButton').on('click', function() {
+            const downloadOption = $('#qrDownloadOption').val();
+            const filename = $(this).data('branchname') + " QR Code";
+            qrCode.download({name: filename.trim(), extension: downloadOption});
+        });
+
+        function ShowViewModal(joinUrl, isQRCode, branchName, branchText) {
+            const viewModal = new bootstrap.Modal($('#viewModal'));
+            const qrContainer = $('#qrCodeContainer');
+            const urlContainer = $('#urlLinkContainer');
+            $('#viewModalLabel').text(branchText);
+            if (isQRCode == true || isQRCode == "True") {
+                urlContainer.hide();
+                qrCode.update({data: joinUrl});
+                qrCode.append($('#qrImage')[0]);
+                let branchNameText = '';
+                if (branchName != null) {
+                    branchNameText = branchName;
+                }
+                $('#qrDownloadButton').data('branchname', branchNameText);
+                qrContainer.show();
+            }
+            else {
+                qrContainer.hide();
+                $('#urlInput').val(joinUrl);
+                urlContainer.show();
+            }
+            viewModal.show();
+        }
+    </script>
+
+    @if (Model.CanCreateJoinCodes)
+    {
+        <script>
+                $('#getCodeForm').on('submit', function(e) {
+                e.preventDefault();
+                const formData = $(this).serialize();
+                const url = $(this).attr('action');
+
+                $.get(url, formData, function(response) {
+                    let branchText = 'No Branch';
+                    if (response.branchName != null) {
+                        branchText = response.branchName + ' (' + response.branchSystemName + ')';
+                    }
+                    if (response.newCode) {
+                        reloadOnClose = true;
+                    }
+                    bootstrap.Modal.getInstance($('#getModal')).hide();
+                    ResetSpinners();
+                    ShowViewModal(response.joinUrl, response.isQRCode, response.branchName, branchText);
+
+                });
+            });
+
+            let reloadOnClose = false;
+
+            $('#viewModal').on('hidden.bs.modal', function (event) {
+                if (reloadOnClose == true) {
+                    location.reload();
+                }
+            });
+        </script>
+    }
+}

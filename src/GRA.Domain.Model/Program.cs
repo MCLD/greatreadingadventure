@@ -27,6 +27,9 @@ namespace GRA.Domain.Model
         [Required]
         public bool AskSchool { get; set; }
 
+        [DisplayName("Activity button text")]
+        public int? ButtonSegmentId { get; set; }
+
         public DailyLiteracyTip DailyLiteracyTip { get; set; }
 
         [DisplayName("Daily Literacy Tip")]

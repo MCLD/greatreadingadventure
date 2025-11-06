@@ -8,7 +8,7 @@
     <Company>Maricopa County Library District</Company>
     <Copyright>Copyright 2017 Maricopa County Library District</Copyright>
     <Description>The Great Reading Adventure is an open-source tool for managing dynamic library reading programs.</Description>
-    <FileVersion>4.6.1.6</FileVersion>
+    <FileVersion>4.6.1.8</FileVersion>
     <OutputType>Exe</OutputType>
     <PackageId>GRA.Web</PackageId>
     <PackageLicenseUrl>https://github.com/mcld/greatreadingadventure/blob/master/LICENSE</PackageLicenseUrl>
@@ -24,7 +24,7 @@
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <UserSecretsId>gra-e773e45a-3078-4b1b-842d-c7a8f7d310a6</UserSecretsId>
-    <Version>4.6.1.2</Version>
+    <Version>4.6.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -170,8 +170,17 @@
     <None Update="js\bootstrap-multiselect.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="js\messages_es.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="js\popper.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="js\qr-code-styling.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="js\README.md">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Update="js\tempus-dominus.min.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

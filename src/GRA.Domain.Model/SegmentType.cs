@@ -4,6 +4,7 @@
     {
         VendorCode = 1,
         LandingPage,
-        SiteSetting
+        SiteSetting,
+        Program
     }
 }
