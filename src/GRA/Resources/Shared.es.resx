@@ -1691,4 +1691,16 @@
   <data name="View bundle options" xml:space="preserve">
     <value>Ver opciones de paquete</value>
   </data>
+  <data name="&lt;strong&gt;{0}&lt;/strong&gt; is not a valid code." xml:space="preserve">
+    <value>&lt;strong&gt;{0}&lt;/strong&gt; no es un código valido.</value>
+  </data>
+  <data name="&lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{1}&lt;/strong&gt; was added to your book list." xml:space="preserve">
+    <value>&lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{1}&lt;/strong&gt; se ha ingresado a la lista de libros.</value>
+  </data>
+  <data name="&lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{1}&lt;/strong&gt; is already on the book list." xml:space="preserve">
+    <value>&lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt; por &lt;strong&gt;{1}&lt;/strong&gt; ya está en la lista de libros.</value>
+  </data>
+  <data name="You already entered the code &lt;strong&gt;{0}&lt;/strong&gt; on &lt;strong&gt;{1}&lt;/strong&gt;!" xml:space="preserve">
+    <value>¡Ya ingresaste el código &lt;strong&gt;{0}&lt;/strong&gt; el &lt;strong&gt;{1}&lt;/strong&gt;!</value>
+  </data>
 </root>

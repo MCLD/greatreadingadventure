@@ -31,7 +31,7 @@
             public const string AvailableForPickup = "Available for pickup";
             public const string BadgeInfoError = "Error retrieving badge information.";
             public const string BetterSuitedOption = "This program may be better-suited to your age:";
-            public const string BookAdded = "The book <strong><em>{0}</em></strong> by <strong>{1}</strong> was added to your book list.";
+            public const string BookAdded = "<strong><em>{0}</em></strong> by <strong>{1}</strong> was added to your book list.";
             public const string ChallengeBadgeEarned = "You earned this badge for completing the challenge: <a href=\"{0}\" target=\"_blank\">{1}</a>";
             public const string ChallengeBookLinkTitle = "Read <strong><em><a href=\"{0}\" target=\"_blank\">{1}</a></em></strong>";
             public const string ChallengeBookLinkTitleAuthor = "Read <strong><em><a href=\"{0}\" target=\"_blank\">{1}</a></em></strong> by <strong>{2}</strong>";
@@ -277,7 +277,7 @@
         {
             public const string AssociatedEmailAddressInvalid = "The email address associated with username {0} is invalid, please call or stop by to resolve this.";
             public const string AuthorizationCodeWarning = "To activate an authorization code, please sign in or <a href=\"{0}\">join</a>.";
-            public const string BookAlreadyAdded = "The book <strong><em>{0}</em></strong> by <strong>{1}</strong> is already on the booklist.";
+            public const string BookAlreadyAdded = "<strong><em>{0}</em></strong> by <strong>{1}</strong> is already on the book list.";
             public const string BookTitle = "When providing an author of a book, please also provide a title.";
             public const string Branch = "The branch you've selected is not valid, please select another branch.";
             public const string CodeAlready = "All selected participants already have that Secret Code.";
