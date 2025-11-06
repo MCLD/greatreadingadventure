@@ -51,6 +51,8 @@ namespace GRA.Controllers.ViewModel.Join
         [Required(ErrorMessage = Annotations.Validate.FirstTime)]
         public string IsFirstTime { get; set; }
 
+        public string JoinCode { get; set; }
+
         [Required(ErrorMessage = ErrorMessages.Field)]
         [DisplayName(DisplayNames.LastName)]
         [MaxLength(255, ErrorMessage = ErrorMessages.MaxLength)]

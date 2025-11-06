@@ -37,6 +37,7 @@ namespace GRA.Controllers
         private readonly LanguageService _languageService;
         private readonly ILogger<HomeController> _logger;
         private readonly PerformerSchedulingService _performerSchedulingService;
+        private readonly SegmentService _segmentService;
         private readonly SiteService _siteService;
         private readonly SocialService _socialService;
         private readonly UserService _userService;
@@ -55,6 +56,7 @@ namespace GRA.Controllers
             ExitLandingService exitLandingService,
             LanguageService languageService,
             PerformerSchedulingService performerSchedulingService,
+            SegmentService segmentService,
             SiteService siteService,
             SocialService socialService,
             UserService userService,
@@ -73,6 +75,7 @@ namespace GRA.Controllers
             ArgumentNullException.ThrowIfNull(languageService);
             ArgumentNullException.ThrowIfNull(logger);
             ArgumentNullException.ThrowIfNull(performerSchedulingService);
+            ArgumentNullException.ThrowIfNull(segmentService);
             ArgumentNullException.ThrowIfNull(siteService);
             ArgumentNullException.ThrowIfNull(socialService);
             ArgumentNullException.ThrowIfNull(userService);
@@ -90,6 +93,7 @@ namespace GRA.Controllers
             _languageService = languageService;
             _logger = logger;
             _performerSchedulingService = performerSchedulingService;
+            _segmentService = segmentService;
             _siteService = siteService;
             _socialService = socialService;
             _userService = userService;
@@ -282,6 +286,15 @@ namespace GRA.Controllers
                             }
                         }
                     }
+                }
+
+                if (program.ButtonSegmentId.HasValue)
+                {
+                    var culture = _userContextProvider.GetCurrentCulture();
+                    var currentLanguageId = await _languageService.GetLanguageIdAsync(culture.Name);
+                    viewModel.ButtonText = await _segmentService.GetDbTextAsync(
+                        program.ButtonSegmentId.Value,
+                        currentLanguageId);
                 }
 
                 if (!string.IsNullOrEmpty(program.DashboardAlert?.Trim()))

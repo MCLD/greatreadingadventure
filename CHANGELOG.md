@@ -18,6 +18,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - QR code generation ability
 - Spanish localization for jQuery validation messages
 - Participant personal point goal
+- Join codes for tracking signups
+- Ability to override activity button text
 
 ## Changed
 

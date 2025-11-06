@@ -21,6 +21,8 @@ namespace GRA.Controllers.ViewModel.Join
         [MaxLength(255, ErrorMessage = ErrorMessages.MaxLength)]
         public string FirstName { get; set; }
 
+        public string JoinCode { get; set; }
+
         [Required(ErrorMessage = ErrorMessages.Field)]
         [DisplayName(DisplayNames.LastName)]
         [MaxLength(255, ErrorMessage = ErrorMessages.MaxLength)]
