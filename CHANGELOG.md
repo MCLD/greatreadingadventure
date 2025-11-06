@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Spanish localization for jQuery validation messages
 - Join codes for tracking signups
 - Ability to override activity button text
+- Info message when editing Point Translations with unchangeable properties
 
 ## Changed
 
