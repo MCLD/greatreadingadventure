@@ -1697,12 +1697,6 @@
   <data name="Your personal reading goal is {0} minutes." xml:space="preserve">
     <value>Su meta personal es {0} minutos.</value>
   </data>
-  <data name="You have {0}/{1} points towards your personal goal" xml:space="preserve">
-    <value>Tienes {0}/{1} puntos a su meta personal</value>
-  </data>
-  <data name="You have completed your personal goal of {0} points" xml:space="preserve">
-    <value>¡Has completado su meta personal de {0} puntos!</value>
-  </data>
   <data name="Set a personal point goal" xml:space="preserve">
     <value>Establece una meta personal de puntos</value>
   </data>
@@ -1714,5 +1708,11 @@
   </data>
   <data name="A personal goal beyond the programs default goal of {0} points." xml:space="preserve">
     <value>Una meta personal más de la meta del programa de {0} puntos. </value>
+  </data>
+  <data name="You have {0}/{1} points towards your personal goal." xml:space="preserve">
+    <value>Tienes {0}/{1} puntos a su meta personal</value>
+  </data>
+  <data name="You have completed your personal goal of {0} points!" xml:space="preserve">
+    <value>¡Has completado su meta personal de {0} puntos!</value>
   </data>
 </root>

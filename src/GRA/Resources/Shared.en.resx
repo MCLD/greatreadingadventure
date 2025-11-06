@@ -1701,14 +1701,6 @@
     <value>Your personal reading goal is {0} minutes.</value>
     <comment>Inform the user of their personal reading goal in minutes; {0} is replaced with the number of minutes</comment>
   </data>
-  <data name="You have {0}/{1} points towards your personal goal" xml:space="preserve">
-    <value>You have {0}/{1} points towards your personal goal</value>
-    <comment>Inform the user of their progress towards their personal point goal; {0} is replaced with the number of points the user has, {1} is their point goal</comment>
-  </data>
-  <data name="You have completed your personal goal of {0} points" xml:space="preserve">
-    <value>You have completed your personal goal of {0} points</value>
-    <comment>Inform the user they have completed their personal point goal; {0} is replaced with their point goal</comment>
-  </data>
   <data name="Set a personal point goal" xml:space="preserve">
     <value>Set a personal point goal</value>
     <comment>Prompt participant for a personal point goal when participating in the program</comment>
@@ -1724,5 +1716,13 @@
   <data name="A personal goal beyond the programs default goal of {0} points." xml:space="preserve">
     <value>A personal goal beyond the programs default goal of {0} points.</value>
     <comment>Tooltip informing users the purpose of the personal point goal field</comment>
+  </data>
+  <data name="You have {0}/{1} points towards your personal goal." xml:space="preserve">
+    <value>You have {0}/{1} points towards your personal goal.</value>
+    <comment>Inform the user of their progress towards their personal point goal; {0} is replaced with the number of points the user has, {1} is their point goal</comment>
+  </data>
+  <data name="You have completed your personal goal of {0} points!" xml:space="preserve">
+    <value>You have completed your personal goal of {0} points!</value>
+    <comment>Inform the user they have completed their personal point goal; {0} is replaced with their point goal</comment>
   </data>
 </root>

@@ -70,8 +70,8 @@
             public const string PasswordResetFor = "Password reset for: {0}";
             public const string PickedUp = "Picked up";
             public const string PersonalActivityGoal = "Your personal reading goal is {0} minutes.";
-            public const string PersonalGoal = "You have {0}/{1} points towards your personal goal";
-            public const string PersonalGoalComplete = "You have completed your personal goal of {0} points";
+            public const string PersonalGoal = "You have {0}/{1} points towards your personal goal.";
+            public const string PersonalGoalComplete = "You have completed your personal goal of {0} points!";
             public const string PointSingular = "{0} point";
             public const string PointsPlural = "{0} points";
             public const string ProgramEnded = "{0} has ended, please join us next time!";
