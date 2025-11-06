@@ -17,6 +17,7 @@ namespace GRA.Domain.Service
     {
         private readonly IBranchRepository _branchRepository;
         private readonly IProgramRepository _programRepository;
+        private readonly SegmentService _segmentService;
         private readonly SiteLookupService _siteLookupService;
         private readonly ISiteRepository _siteRepository;
         private readonly ISiteSettingRepository _siteSettingRepository;
@@ -29,6 +30,7 @@ namespace GRA.Domain.Service
             IUserContextProvider userContextProvider,
             IBranchRepository branchRepository,
             IProgramRepository programRepository,
+            SegmentService segmentService,
             ISiteRepository siteRepository,
             ISiteSettingRepository siteSettingRepository,
             ISpatialDistanceRepository spatialDistanceRepository,
@@ -38,22 +40,25 @@ namespace GRA.Domain.Service
             : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageSites);
-            _branchRepository = branchRepository
-                ?? throw new ArgumentNullException(nameof(branchRepository));
-            _programRepository = programRepository
-                ?? throw new ArgumentNullException(nameof(programRepository));
-            _siteRepository = siteRepository
-                ?? throw new ArgumentNullException(nameof(siteRepository));
-            _siteSettingRepository = siteSettingRepository
-                ?? throw new ArgumentNullException(nameof(siteSettingRepository));
-            _spatialDistanceRepository = spatialDistanceRepository
-                ?? throw new ArgumentNullException(nameof(spatialDistanceRepository));
-            _systemRepository = systemRepository
-                ?? throw new ArgumentNullException(nameof(systemRepository));
-            _siteLookupService = siteLookupService
-                ?? throw new ArgumentNullException(nameof(siteLookupService));
-            _userRepository = userRepository
-                ?? throw new ArgumentNullException(nameof(userRepository));
+            ArgumentNullException.ThrowIfNull(branchRepository);
+            ArgumentNullException.ThrowIfNull(programRepository);
+            ArgumentNullException.ThrowIfNull(segmentService);
+            ArgumentNullException.ThrowIfNull(siteLookupService);
+            ArgumentNullException.ThrowIfNull(siteRepository);
+            ArgumentNullException.ThrowIfNull(siteSettingRepository);
+            ArgumentNullException.ThrowIfNull(spatialDistanceRepository);
+            ArgumentNullException.ThrowIfNull(systemRepository);
+            ArgumentNullException.ThrowIfNull(userRepository);
+
+            _branchRepository = branchRepository;
+            _programRepository = programRepository;
+            _segmentService = segmentService;
+            _siteLookupService = siteLookupService;
+            _siteRepository = siteRepository;
+            _siteSettingRepository = siteSettingRepository;
+            _spatialDistanceRepository = spatialDistanceRepository;
+            _systemRepository = systemRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<Branch> AddBranchAsync(Branch branch)
@@ -328,6 +333,12 @@ namespace GRA.Domain.Service
                 await _userRepository
                     .ChangeDeletedUsersProgramAsync(programId, programsEx.First().Id);
             }
+
+            if (program.ButtonSegmentId.HasValue)
+            {
+                await _segmentService.RemoveSegmentAsync(program.ButtonSegmentId.Value);
+            }
+
             await _programRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), program);
         }
 
@@ -405,6 +416,7 @@ namespace GRA.Domain.Service
             currentProgram.AgeRequired = program.AgeRequired;
             currentProgram.AskAge = program.AskAge;
             currentProgram.AskSchool = program.AskSchool;
+            currentProgram.ButtonSegmentId = program.ButtonSegmentId;
             currentProgram.DailyLiteracyTipId = program.DailyLiteracyTipId;
             currentProgram.DashboardAlert = program.DashboardAlert?.Trim();
             currentProgram.DashboardAlertType = program.DashboardAlertType;

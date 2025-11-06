@@ -17,6 +17,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - View of and access to historical report output
 - QR code generation ability
 - Spanish localization for jQuery validation messages
+- Join codes for tracking signups
+- Ability to override activity button text
 
 ## Changed
 

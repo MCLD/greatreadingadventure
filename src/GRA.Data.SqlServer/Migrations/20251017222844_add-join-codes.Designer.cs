@@ -4,6 +4,7 @@ using GRA.Data.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GRA.Data.SqlServer.Migrations
 {
     [DbContext(typeof(SqlServerContext))]
-    partial class SqlServerContextModelSnapshot : ModelSnapshot
+    [Migration("20251017222844_add-join-codes")]
+    partial class addjoincodes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2369,9 +2372,6 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<bool>("AskSchool")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("ButtonSegmentId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -3160,9 +3160,6 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<int?>("GroupInfoId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("IncludeAchieverStatus")
-                        .HasColumnType("bit");
 
                     b.Property<int?>("MaximumAllowableActivity")
                         .HasColumnType("int");
