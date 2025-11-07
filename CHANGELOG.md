@@ -19,6 +19,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Spanish localization for jQuery validation messages
 - Email address validation
 - Cannot be emailed property to users
+- Join codes for tracking signups
+- Ability to override activity button text
 
 ## Changed
 

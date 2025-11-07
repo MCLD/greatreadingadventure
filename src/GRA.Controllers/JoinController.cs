@@ -29,6 +29,7 @@ namespace GRA.Controllers
         private const string TwoStepSignUp = "TwoStepSignUp";
         private readonly AuthenticationService _authenticationService;
         private readonly AuthorizationCodeService _authorizationCodeService;
+        private readonly JoinCodeService _joinCodeService;
         private readonly LanguageService _languageService;
         private readonly ILogger<JoinController> _logger;
         private readonly MailService _mailService;
@@ -44,6 +45,7 @@ namespace GRA.Controllers
             ServiceFacade.Controller context,
             AuthenticationService authenticationService,
             AuthorizationCodeService authorizationCodeService,
+            JoinCodeService joinCodeService,
             LanguageService languageService,
             MailService mailService,
             PointTranslationService pointTranslationService,
@@ -55,6 +57,7 @@ namespace GRA.Controllers
         {
             ArgumentNullException.ThrowIfNull(authenticationService);
             ArgumentNullException.ThrowIfNull(authorizationCodeService);
+            ArgumentNullException.ThrowIfNull(joinCodeService);
             ArgumentNullException.ThrowIfNull(languageService);
             ArgumentNullException.ThrowIfNull(logger);
             ArgumentNullException.ThrowIfNull(mailService);
@@ -67,6 +70,7 @@ namespace GRA.Controllers
 
             _authenticationService = authenticationService;
             _authorizationCodeService = authorizationCodeService;
+            _joinCodeService = joinCodeService;
             _languageService = languageService;
             _logger = logger;
             _mailService = mailService;
@@ -165,7 +169,7 @@ namespace GRA.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string src)
         {
             string authCode = null;
             var useAuthCode = TempData.ContainsKey(EnteredAuthCode);
@@ -182,7 +186,7 @@ namespace GRA.Controllers
 
             if (!singlePageSignUp)
             {
-                return RedirectToAction(nameof(Step1));
+                return RedirectToAction(nameof(Step1), new { src });
             }
             var siteStage = GetSiteStage();
 
@@ -282,15 +286,41 @@ namespace GRA.Controllers
                 viewModel.IsFirstTime = "No";
                 TempData.Keep(AuthCodeAssignedBranch);
             }
-            else if (systemList.Count() == 1)
-            {
-                var systemId = systemList.Single().Id;
-                branchList.AddRange(await _siteService.GetBranches(systemId));
-                viewModel.SystemId = systemId;
-            }
             else
             {
-                branchList.AddRange(await _siteService.GetAllBranches(true));
+                JoinCode joinCode = null;
+                if (!string.IsNullOrWhiteSpace(src))
+                {
+                    joinCode = await _joinCodeService
+                        .GetByCodeAndIncrementAccessCountAsync(src.Trim());
+                }
+
+                if (joinCode != null)
+                {
+                    if (joinCode.BranchSystemId.HasValue)
+                    {
+                        branchList.AddRange(await _siteService
+                            .GetBranches(joinCode.BranchSystemId.Value));
+                    }
+                    else
+                    {
+                        branchList.AddRange(await _siteService.GetAllBranches(true));
+                    }
+
+                    viewModel.BranchId = joinCode.BranchId;
+                    viewModel.JoinCode = joinCode.Code;
+                    viewModel.SystemId = joinCode.BranchSystemId;
+                }
+                else if (systemList.Count() == 1)
+                {
+                    var systemId = systemList.Single().Id;
+                    branchList.AddRange(await _siteService.GetBranches(systemId));
+                    viewModel.SystemId = systemId;
+                }
+                else
+                {
+                    branchList.AddRange(await _siteService.GetAllBranches(true));
+                }
             }
 
             if (branchList.Count > 1)
@@ -506,6 +536,12 @@ namespace GRA.Controllers
                             questionnaireId.Value);
                     }
 
+                    if (!string.IsNullOrWhiteSpace(model.JoinCode))
+                    {
+                        await _joinCodeService.IncrementJoinCountForCodeAsync(
+                            model.JoinCode.Trim());
+                    }
+
                     if (!TempData.ContainsKey(TempDataKey.UserJoined))
                     {
                         TempData.Add(TempDataKey.UserJoined, true);
@@ -587,7 +623,7 @@ namespace GRA.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Step1()
+        public async Task<IActionResult> Step1(string src)
         {
             string authCode = null;
             var useAuthCode = TempData.ContainsKey(EnteredAuthCode);
@@ -603,7 +639,7 @@ namespace GRA.Controllers
 
             if (singlePageSignUp)
             {
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { src });
             }
 
             if (!useAuthCode)
@@ -665,15 +701,41 @@ namespace GRA.Controllers
                 viewModel.SystemId = branch.SystemId;
                 TempData.Keep(AuthCodeAssignedBranch);
             }
-            else if (systemList.Count() == 1)
-            {
-                var systemId = systemList.Single().Id;
-                branchList.AddRange(await _siteService.GetBranches(systemId));
-                viewModel.SystemId = systemId;
-            }
             else
             {
-                branchList.AddRange(await _siteService.GetAllBranches(true));
+                JoinCode joinCode = null;
+                if (!string.IsNullOrWhiteSpace(src))
+                {
+                    joinCode = await _joinCodeService
+                        .GetByCodeAndIncrementAccessCountAsync(src.Trim());
+                }
+
+                if (joinCode != null)
+                {
+                    if (joinCode.BranchSystemId.HasValue)
+                    {
+                        branchList.AddRange(await _siteService
+                        .GetBranches(joinCode.BranchSystemId.Value));
+                    }
+                    else
+                    {
+                        branchList.AddRange(await _siteService.GetAllBranches(true));
+                    }
+
+                    viewModel.BranchId = joinCode.BranchId;
+                    viewModel.JoinCode = joinCode.Code;
+                    viewModel.SystemId = joinCode.BranchSystemId;
+                }
+                else if (systemList.Count() == 1)
+                {
+                    var systemId = systemList.Single().Id;
+                    branchList.AddRange(await _siteService.GetBranches(systemId));
+                    viewModel.SystemId = systemId;
+                }
+                else
+                {
+                    branchList.AddRange(await _siteService.GetAllBranches(true));
+                }
             }
 
             if (branchList.Count > 1)
@@ -1086,6 +1148,12 @@ namespace GRA.Controllers
                     {
                         HttpContext.Session.SetInt32(SessionKey.PendingQuestionnaire,
                             questionnaireId.Value);
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(step1.JoinCode))
+                    {
+                        await _joinCodeService.IncrementJoinCountForCodeAsync(
+                            step1.JoinCode.Trim());
                     }
 
                     if (!TempData.ContainsKey(TempDataKey.UserJoined))

@@ -569,6 +569,7 @@ namespace GRA.Web
             services.AddScoped<ExitLandingService>();
             services.AddScoped<GroupTypeService>();
             services.AddScoped<JobService>();
+            services.AddScoped<JoinCodeService>();
             services.AddScoped<LanguageService>();
             services.AddScoped<MailService>();
             services.AddScoped<MessageTemplateService>();
@@ -666,6 +667,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IGroupInfoRepository, Data.Repository.GroupInfoRepository>();
             services.AddScoped<Domain.Repository.IGroupTypeRepository, Data.Repository.GroupTypeRepository>();
             services.AddScoped<Domain.Repository.IJobRepository, Data.Repository.JobRepository>();
+            services.AddScoped<Domain.Repository.IJoinCodeRepository, Data.Repository.JoinCodeRepository>();
             services.AddScoped<Domain.Repository.ILanguageRepository, Data.Repository.LanguageRepository>();
             services.AddScoped<Domain.Repository.ILocationRepository, Data.Repository.LocationRepository>();
             services.AddScoped<Domain.Repository.IMailRepository, Data.Repository.MailRepository>();
