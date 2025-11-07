@@ -1693,8 +1693,8 @@
     <value>View bundle options</value>
     <comment>Text for screen readers to indicate the image can be selected to view wardrobe bundle options</comment>
   </data>
-  <data name="&lt;em&gt;{0}&lt;/em&gt; arrived on &lt;strong&gt;{1}&lt;/strong&gt; and is ready for pick-up at &lt;a href=\&quot;{2}\&quot; target=\&quot;_blank\&quot;&gt;{3}&lt;/a&gt;." xml:space="preserve">
-    <value>&lt;em&gt;{0}&lt;/em&gt; arrived on &lt;strong&gt;{1}&lt;/strong&gt; and is ready for pick-up at &lt;a href=\"{2}\" target=\"_blank\"&gt;{3}&lt;/a&gt;.</value>
+  <data name="&lt;em&gt;{0}&lt;/em&gt; arrived on &lt;strong&gt;{1}&lt;/strong&gt; and is ready for pick-up at &lt;a href=&quot;{2}&quot; target=&quot;_blank&quot;&gt;{3}&lt;/a&gt;." xml:space="preserve">
+    <value>&lt;em&gt;{0}&lt;/em&gt; arrived on &lt;strong&gt;{1}&lt;/strong&gt; and is ready for pick-up at &lt;a href="{2}" target="_blank"&gt;{3}&lt;/a&gt;.</value>
     <comment>Message informing the user their requested item has arrived and where to pick it up at, {0} is the name of the item , {1} is the date it arrived, {2} is a link to the branch's webpage and {3} is the branch's name.</comment>
   </data>
 </root>
