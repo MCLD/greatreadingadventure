@@ -17,6 +17,10 @@ namespace GRA.Domain.Model
         public int? GroupInfoId { get; set; }
         public bool IncludeAchieverStatus { get; set; }
         public bool IsFirstTimeParticipant { get; set; }
+
+        [DisplayName("Last Login Before")]
+        public DateTime? LastLoginBefore {get;set; }
+
         public int? MaximumAllowableActivity { get; set; }
 
         [MaxLength(255)]
