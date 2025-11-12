@@ -1706,7 +1706,7 @@
   <data name="Points I will earn" xml:space="preserve">
     <value>Puntos que ganare</value>
   </data>
-  <data name="A personal goal beyond the programs default goal of {0} points." xml:space="preserve">
+  <data name="A personal goal beyond the program default goal of {0} points." xml:space="preserve">
     <value>Una meta personal más de la meta del programa de {0} puntos. </value>
   </data>
   <data name="You have {0}/{1} points towards your personal goal." xml:space="preserve">

@@ -1713,8 +1713,8 @@
     <value>Points I will earn</value>
     <comment>Text next to an input where participants will enter their point goal</comment>
   </data>
-  <data name="A personal goal beyond the programs default goal of {0} points." xml:space="preserve">
-    <value>A personal goal beyond the programs default goal of {0} points.</value>
+  <data name="A personal goal beyond the program default goal of {0} points." xml:space="preserve">
+    <value>A personal goal beyond the program default goal of {0} points.</value>
     <comment>Tooltip informing users the purpose of the personal point goal field</comment>
   </data>
   <data name="You have {0}/{1} points towards your personal goal." xml:space="preserve">
