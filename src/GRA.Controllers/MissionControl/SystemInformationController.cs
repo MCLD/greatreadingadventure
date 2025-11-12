@@ -103,8 +103,8 @@ namespace GRA.Controllers.MissionControl
 
             if (!string.IsNullOrEmpty(_config[ConfigurationKey.JobSleepSeconds]))
             {
-                viewModel.Settings.Add("Job schedule (minutes)",
-                    _config[ConfigurationKey.ApplicationDiscriminator]);
+                viewModel.Settings.Add("Job schedule (seconds)",
+                    _config[ConfigurationKey.JobSleepSeconds]);
             }
 
             if (_l10nOptions.Value?.SupportedCultures.Count > 0)
