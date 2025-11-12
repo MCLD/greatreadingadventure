@@ -177,7 +177,7 @@
             public const string NotStreamingYet = "Not streaming yet";
             public const string Optional = "Optional";
             public const string PasswordChanged = "Your password has been changed.";
-            public const string PersonalPointGoalDescription = "A personal goal beyond the programs default goal of {0} points.";
+            public const string PersonalPointGoalDescription = "A personal goal beyond the program default goal of {0} points.";
             public const string PersonalPointGoalLabel = "Points I will earn";
             public const string PointsYoullEarn = "Points you'll earn";
             public const string Prizes = "Prizes";
