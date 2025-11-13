@@ -1691,6 +1691,9 @@
   <data name="View bundle options" xml:space="preserve">
     <value>Ver opciones de paquete</value>
   </data>
+  <data name="&lt;em&gt;{0}&lt;/em&gt; arrived on &lt;strong&gt;{1}&lt;/strong&gt; and is ready for pick-up at &lt;a href=&quot;{2}&quot; target=&quot;_blank&quot;&gt;{3}&lt;/a&gt;." xml:space="preserve">
+    <value>&lt;em&gt;{0}&lt;/em&gt; llego el &lt;strong&gt;{1}&lt;/strong&gt; y esta listo para recoger en &lt;a href="{2}" target="_blank"&gt;{3}&lt;/a&gt;.</value>
+  </data>
   <data name="&lt;strong&gt;{0}&lt;/strong&gt; is not a valid code." xml:space="preserve">
     <value>&lt;strong&gt;{0}&lt;/strong&gt; no es un código valido.</value>
   </data>

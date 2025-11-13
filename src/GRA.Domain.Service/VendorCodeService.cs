@@ -1997,11 +1997,26 @@ namespace GRA.Domain.Service
                             && vendorCode.IsDamaged != true
                             && vendorCode.IsMissing != true)
                         {
-                            vendorCodeInfo.VendorCodeMessage
+                            if (vendorCode.BranchId.HasValue)
+                            {
+                                var branch = await _siteService.GetBranchByIdAsync(
+                                    vendorCode.BranchId.Value);
+                                vendorCodeInfo.VendorCodeMessage
+                                = _sharedLocalizer[Annotations.Info.VendorItemArrivedAtBranch,
+                                    itemName,
+                                    vendorCode.ArrivalDate.Value
+                                        .ToString("d", CultureInfo.InvariantCulture),
+                                    branch.Url,
+                                    branch.Name];
+                            }
+                            else
+                            {
+                                vendorCodeInfo.VendorCodeMessage
                                 = _sharedLocalizer[Annotations.Info.VendorItemArrived,
                                     itemName,
                                     vendorCode.ArrivalDate.Value
                                         .ToString("d", CultureInfo.InvariantCulture)];
+                            }
 
                             vendorCodeInfo.OrderStatus = VendorOrderStatus.Arrived;
                         }
