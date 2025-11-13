@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - View of and access to historical report output
 - QR code generation ability
 - Spanish localization for jQuery validation messages
+- Participant personal point goal
 - Join codes for tracking signups
 - Ability to override activity button text
 
@@ -35,6 +36,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Missing translations for secret codes, books and events
 - Password change confirmation not functioning
 - Challenge category multiselect formatting for participants
+- Join issues caused by setting a program or branch with an authorization code
 
 ## [4.6.0] 2024-10-09
 

@@ -93,6 +93,9 @@ namespace GRA.Domain.Model
 
         public bool NeedsToAnswerVendorCodeQuestion { get; set; }
 
+        [DisplayName(DisplayNames.PersonalPointGoal)]
+        public int? PersonalPointGoal { get; set; }
+
         [DisplayName(DisplayNames.PhoneNumber)]
         [Phone]
         [MaxLength(15)]
