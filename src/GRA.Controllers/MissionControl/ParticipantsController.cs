@@ -927,7 +927,6 @@ namespace GRA.Controllers.MissionControl
             ArgumentNullException.ThrowIfNull(model);
 
             var user = await _userService.GetDetailsByPermission(model.Id);
-            SetPageTitle(user);
             model.PointTranslation = await _pointTranslationService
                 .GetByProgramIdAsync(user.ProgramId, true);
 
@@ -975,13 +974,8 @@ namespace GRA.Controllers.MissionControl
                     }
                 }
             }
-            if (UserHasPermission(Permission.ManageVendorCodes))
-            {
-                model.VendorCodeTypeList = new SelectList(
-                    await _vendorCodeService.GetTypeAllAsync(), "Id", "Description");
-            }
-            model.OpenToLog = _activityService.IsOpenToLog();
-            return View(model);
+
+            return RedirectToAction(nameof(LogActivity), new { id = model.Id });
         }
 
         #endregion Log Activity
