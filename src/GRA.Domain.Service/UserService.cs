@@ -1357,6 +1357,7 @@ namespace GRA.Domain.Service
                 currentEntity.DailyPersonalGoal = userToUpdate.DailyPersonalGoal;
                 currentEntity.IsHomeschooled = userToUpdate.IsHomeschooled;
                 currentEntity.LastName = userToUpdate.LastName?.Trim();
+                currentEntity.PersonalPointGoal = userToUpdate.PersonalPointGoal;
                 currentEntity.PhoneNumber = userToUpdate.PhoneNumber?.Trim();
                 currentEntity.PostalCode = userToUpdate.PostalCode?.Trim();
                 currentEntity.ProgramId = userToUpdate.ProgramId;
@@ -1739,6 +1740,7 @@ namespace GRA.Domain.Service
                 currentEntity.FirstName = userToUpdate.FirstName?.Trim();
                 currentEntity.IsHomeschooled = userToUpdate.IsHomeschooled;
                 currentEntity.LastName = userToUpdate.LastName?.Trim();
+                currentEntity.PersonalPointGoal = userToUpdate.PersonalPointGoal;
                 currentEntity.PhoneNumber = userToUpdate.PhoneNumber?.Trim();
                 currentEntity.PostalCode = userToUpdate.PostalCode?.Trim();
                 currentEntity.ProgramId = userToUpdate.ProgramId;

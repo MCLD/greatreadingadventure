@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - View of and access to historical report output
 - QR code generation ability
 - Spanish localization for jQuery validation messages
+- Participant personal point goal
 - Join codes for tracking signups
 - Ability to override activity button text
 
@@ -33,6 +34,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Display of modals after Bootstrap 5.3 upgrade
 - Performer program cost to display in currency format
+- Missing translations for secret codes, books and events
+- Password change confirmation not functioning
+- Challenge category multiselect formatting for participants
+- Join issues caused by setting a program or branch with an authorization code
+- Secret code field showing when it shouldn't in Mission Control activity logging
 
 ## [4.6.0] 2024-10-09
 

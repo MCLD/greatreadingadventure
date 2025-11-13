@@ -14,7 +14,7 @@ RUN dotnet restore
 
 # Add SQLite migration
 RUN export PATH="$PATH:/root/.dotnet/tools" && \
-    dotnet tool install --version 8.0.20 --global dotnet-ef && \
+    dotnet tool install --version 8.0.22 --global dotnet-ef && \
     dotnet ef migrations add ${IMAGE_VERSION} --project src/GRA.Data.SQLite/GRA.Data.SQLite.csproj
 
 # Build project and run tests
