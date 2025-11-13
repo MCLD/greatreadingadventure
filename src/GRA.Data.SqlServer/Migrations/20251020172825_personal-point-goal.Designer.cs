@@ -4,6 +4,7 @@ using GRA.Data.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GRA.Data.SqlServer.Migrations
 {
     [DbContext(typeof(SqlServerContext))]
-    partial class SqlServerContextModelSnapshot : ModelSnapshot
+    [Migration("20251020172825_personal-point-goal")]
+    partial class personalpointgoal
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1757,47 +1760,6 @@ namespace GRA.Data.SqlServer.Migrations
                     b.ToTable("Jobs");
                 });
 
-            modelBuilder.Entity("GRA.Data.Model.JoinCode", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AccessCount")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("BranchId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsQRCode")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("JoinCount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SiteId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BranchId");
-
-                    b.ToTable("JoinCodes");
-                });
-
             modelBuilder.Entity("GRA.Data.Model.Language", b =>
                 {
                     b.Property<int>("Id")
@@ -2368,9 +2330,6 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<bool>("AskSchool")
                         .HasColumnType("bit");
-
-                    b.Property<int?>("ButtonSegmentId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -4995,16 +4954,6 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Navigation("GroupType");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("GRA.Data.Model.JoinCode", b =>
-                {
-                    b.HasOne("GRA.Data.Model.Branch", "Branch")
-                        .WithMany()
-                        .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Branch");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.NewsPost", b =>

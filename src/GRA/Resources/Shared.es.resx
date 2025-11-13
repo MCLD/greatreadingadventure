@@ -1691,4 +1691,28 @@
   <data name="View bundle options" xml:space="preserve">
     <value>Ver opciones de paquete</value>
   </data>
+  <data name="You have reached the program's goal!" xml:space="preserve">
+    <value>¡Has alcanzado la meta del programa!</value>
+  </data>
+  <data name="Your personal reading goal is {0} minutes." xml:space="preserve">
+    <value>Su meta personal es {0} minutos.</value>
+  </data>
+  <data name="Set a personal point goal" xml:space="preserve">
+    <value>Establece una meta personal de puntos</value>
+  </data>
+  <data name="My reading progress" xml:space="preserve">
+    <value>Mi progreso de lectura</value>
+  </data>
+  <data name="Points I will earn" xml:space="preserve">
+    <value>Puntos que ganare</value>
+  </data>
+  <data name="A personal goal beyond the program default goal of {0} points." xml:space="preserve">
+    <value>Una meta personal más de la meta del programa de {0} puntos. </value>
+  </data>
+  <data name="You have {0}/{1} points towards your personal goal." xml:space="preserve">
+    <value>Tienes {0}/{1} puntos a su meta personal</value>
+  </data>
+  <data name="You have completed your personal goal of {0} points!" xml:space="preserve">
+    <value>¡Has completado su meta personal de {0} puntos!</value>
+  </data>
 </root>

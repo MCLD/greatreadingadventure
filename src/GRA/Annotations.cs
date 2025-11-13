@@ -48,6 +48,7 @@
             public const string FreeBookRedeemDashboard = "You've earned a free book! Head over to <a href=\"{0}\"><strong>My Profile</strong></a> page to choose what to do with it.";
             public const string FreeBookRedeemExpirationDashboard = "You've earned a free book! Head over to <a href=\"{0}\"><strong>My Profile</strong></a> page by {1} to choose what to do with it.";
             public const string Goal = "The goal of this program is {0} points.";
+            public const string GoalComplete = "You have reached the program's goal!";
             public const string GroupAdd = "Add existing participant to your {0}";
             public const string GroupCannot = "A {0} cannot be created at this time.";
             public const string GroupCreate = "Click below to create a {0}";
@@ -68,6 +69,9 @@
             public const string PasswordRecoverySent = "A password recovery email has been sent to the email for username '{0}'.";
             public const string PasswordResetFor = "Password reset for: {0}";
             public const string PickedUp = "Picked up";
+            public const string PersonalActivityGoal = "Your personal reading goal is {0} minutes.";
+            public const string PersonalGoal = "You have {0}/{1} points towards your personal goal.";
+            public const string PersonalGoalComplete = "You have completed your personal goal of {0} points!";
             public const string PointSingular = "{0} point";
             public const string PointsPlural = "{0} points";
             public const string ProgramEnded = "{0} has ended, please join us next time!";
@@ -173,6 +177,8 @@
             public const string NotStreamingYet = "Not streaming yet";
             public const string Optional = "Optional";
             public const string PasswordChanged = "Your password has been changed.";
+            public const string PersonalPointGoalDescription = "A personal goal beyond the program default goal of {0} points.";
+            public const string PersonalPointGoalLabel = "Points I will earn";
             public const string PointsYoullEarn = "Points you'll earn";
             public const string Prizes = "Prizes";
             public const string ProfileUpdated = "Profile updated.";
