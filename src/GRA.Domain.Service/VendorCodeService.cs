@@ -1538,14 +1538,22 @@ namespace GRA.Domain.Service
                                                                 .HasValue
                                                             && code.UserId.HasValue)
                                                         {
-                                                            var result = await SendPickupEmailAsync(
+                                                            bool? result;
+                                                            try
+                                                            {
+                                                                result = await SendPickupEmailAsync(
                                                                 vendorCodeType
                                                                     .ReadyForPickupEmailTemplateId
                                                                     .Value,
                                                                 code.UserId.Value,
                                                                 emailDetails,
                                                                 code);
-
+                                                            }
+                                                            catch (GraException)
+                                                            {
+                                                                result = false;
+                                                            }
+                                                            
                                                             if (result == true)
                                                             {
                                                                 emailsSent++;
@@ -2069,7 +2077,7 @@ namespace GRA.Domain.Service
         {
             var user = await _userRepository.GetByIdAsync(userId);
 
-            if (user != null && !string.IsNullOrEmpty(user.Email))
+            if (user != null && !string.IsNullOrEmpty(user.Email) && !user.CannotBeEmailed)
             {
                 emailDetails.ClearTags();
                 emailDetails.DirectEmailTemplateId = templateId;

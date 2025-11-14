@@ -1745,4 +1745,8 @@
     <value>You have completed your personal goal of {0} points!</value>
     <comment>Inform the user they have completed their personal point goal; {0} is replaced with their point goal</comment>
   </data>
+  <data name="We are unable to send you emails at this address. Please enter a valid email address or contact {0} for assistance." xml:space="preserve">
+    <value>We are unable to send you emails at this address. Please enter a valid email address or contact {0} for assistance.</value>
+    <comment>Message letting the user know the email address they entered is unable to receive emails and instructing them to either change their email to a valid one or contact their library branch for help. {0} is replaced with the name of the user's branch.</comment>
+  </data>
 </root>

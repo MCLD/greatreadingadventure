@@ -329,7 +329,7 @@ namespace GRA.Domain.Service
             }
 
             var subscribedUserIds = (await _userRepository
-                .GetNewsSubscribedUserIdsAsync(job.SiteId)).ToList();
+                .GetNewsSubscribedUserIdsAsync(job.SiteId, true)).ToList();
 
             if (subscribedUserIds.Count == 0)
             {

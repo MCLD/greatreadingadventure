@@ -297,6 +297,7 @@
             public const string CustomizeAvatarFirst = "Please customize your avatar and save it, then you can share it!";
             public const string Email = "The {0} field is not a valid e-mail address.";
             public const string EmailAddressInvalid = "The email address {0} is invalid.";
+            public const string EmailCannotBeEmailed = "We are unable to send you emails at this address. Please enter a valid email address or contact {0} for assistance.";
             public const string EmailConfigured = "Username '{0}' does not have an email address configured.";
             public const string EmailPhoneNeededForPrizes = "Email and Phone Number are not required however at least one is needed in order to be eligible for prizes.";
             public const string EmailSubscription = "Please let us know if you would like to receive emails throughout the program.";

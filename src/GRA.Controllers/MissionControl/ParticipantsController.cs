@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using EmailValidation;
 using GRA.Controllers.ViewModel.MissionControl.Participants;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
@@ -218,6 +219,16 @@ namespace GRA.Controllers.MissionControl
             ArgumentNullException.ThrowIfNull(model);
 
             var site = await GetCurrentSiteAsync();
+
+            if (!string.IsNullOrWhiteSpace(model.Email)
+                && !EmailValidator.Validate(model.Email.Trim()))
+            {
+                ModelState.AddModelError(nameof(model.Email),
+                    string.Format(CultureInfo.InvariantCulture,
+                        Annotations.Validate.Email,
+                        DisplayNames.EmailAddress));
+            }
+
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.PostalCode))
             {
                 ModelState.AddModelError("PostalCode", "The ZIP Code field is required.");
@@ -445,6 +456,7 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Index(string search,
             string sort,
             string order,
+            bool cannotBeEmailed,
             bool hasMultiplePrimaryVendorCodes,
             int? systemId,
             int? branchId,
@@ -453,7 +465,11 @@ namespace GRA.Controllers.MissionControl
         {
             page = page == 0 ? 1 : page;
 
-            var filter = new UserFilter(page);
+            var filter = new UserFilter(page) 
+            {
+                CannotBeEmailed = cannotBeEmailed,
+                HasMultiplePrimaryVendorCodes = hasMultiplePrimaryVendorCodes
+            };
 
             if (!string.IsNullOrWhiteSpace(search))
             {
@@ -471,7 +487,6 @@ namespace GRA.Controllers.MissionControl
             {
                 filter.ProgramIds = new List<int?> { programId.Value };
             }
-            filter.HasMultiplePrimaryVendorCodes = hasMultiplePrimaryVendorCodes;
 
             bool isDescending = string.Equals(order,
                 "Descending",
@@ -506,6 +521,7 @@ namespace GRA.Controllers.MissionControl
             var viewModel = new ParticipantsListViewModel
             {
                 BranchId = branchId,
+                CannotBeEmailed = filter.CannotBeEmailed ?? false,
                 CanRemoveParticipant = UserHasPermission(Permission.DeleteParticipants),
                 CanViewDetails = UserHasPermission(Permission.ViewParticipantDetails),
                 HasMultiplePrimaryVendorCodes = filter.HasMultiplePrimaryVendorCodes ?? false,
@@ -662,6 +678,11 @@ namespace GRA.Controllers.MissionControl
                     }
                 }
 
+                if (viewModel.User.CannotBeEmailed)
+                {
+                    ShowAlertWarning("This participant has an invalid email address and won't be able to receive emails until it is changed.");
+                }
+
                 return View(viewModel);
             }
             catch (GraException gex)
@@ -679,6 +700,15 @@ namespace GRA.Controllers.MissionControl
 
             var site = await GetCurrentSiteAsync();
             var program = await _siteService.GetProgramByIdAsync(model.User.ProgramId);
+
+            if (!string.IsNullOrWhiteSpace(model.User.Email)
+                && !EmailValidator.Validate(model.User.Email.Trim()))
+            {
+                ModelState.AddModelError("User.Email",
+                    string.Format(CultureInfo.InvariantCulture,
+                        Annotations.Validate.Email,
+                        DisplayNames.EmailAddress));
+            }
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.User.PostalCode))
             {
                 ModelState.AddModelError("User.PostalCode", "The ZIP Code field is required.");
@@ -801,6 +831,8 @@ namespace GRA.Controllers.MissionControl
             model.RequirePostalCode = site.RequirePostalCode;
             model.ShowAge = program.AskAge;
             model.ShowSchool = program.AskSchool;
+
+            await _vendorCodeService.PopulateVendorCodeStatusAsync(model.User);
 
             if (askEmailSubscription)
             {
@@ -1092,6 +1124,15 @@ namespace GRA.Controllers.MissionControl
             {
                 headOfHousehold = await _userService
                     .GetDetailsByPermission((int)headOfHousehold.HouseholdHeadUserId);
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.User.Email)
+                && !EmailValidator.Validate(model.User.Email.Trim()))
+            {
+                ModelState.AddModelError("User.Email",
+                    string.Format(CultureInfo.InvariantCulture,
+                        Annotations.Validate.Email,
+                        DisplayNames.EmailAddress));
             }
 
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.User.PostalCode))
@@ -2762,15 +2803,20 @@ namespace GRA.Controllers.MissionControl
         {
             ArgumentNullException.ThrowIfNull(emailAwardModel);
 
-            if (!ModelState.IsValid)
+            if (!string.IsNullOrWhiteSpace(emailAwardModel.Email)
+                && !EmailValidator.Validate(emailAwardModel.Email.Trim()))
             {
-                return View(emailAwardModel);
+                ShowAlertWarning(string.Format(CultureInfo.InvariantCulture,
+                    Annotations.Validate.EmailAddressInvalid,
+                    emailAwardModel.Email.Trim()));
             }
-
-            await _vendorCodeService.ResolveCodeStatusAsync(emailAwardModel.UserId,
-                false,
-                true,
-                emailAwardModel.Email);
+            else
+            {
+                await _vendorCodeService.ResolveCodeStatusAsync(emailAwardModel.UserId,
+                    false,
+                    true,
+                    emailAwardModel.Email.Trim());
+            }
 
             return RedirectToAction(emailAwardModel.Action, new { id = emailAwardModel.UserId });
         }

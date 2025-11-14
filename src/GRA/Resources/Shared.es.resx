@@ -1730,4 +1730,7 @@
   <data name="You have completed your personal goal of {0} points!" xml:space="preserve">
     <value>¡Has completado su meta personal de {0} puntos!</value>
   </data>
+  <data name="We are unable to send you emails at this address. Please enter a valid email address or contact {0} for assistance." xml:space="preserve">
+    <value>No podemos enviar correos electrónicos a esta dirección. Por favor ingrese un correo electrónico valido o contacta {0} para asistencia.  </value>
+  </data>
 </root>

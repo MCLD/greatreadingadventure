@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using EmailValidation;
 using GRA.Controllers.Filter;
 using GRA.Controllers.ViewModel.Join;
 using GRA.Controllers.ViewModel.Shared;
@@ -377,6 +378,8 @@ namespace GRA.Controllers
             Justification = "Normalize authorization codes to lowercase")]
         public async Task<IActionResult> Index(SinglePageViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             bool askIfFirstTime;
             bool askAge = false;
             bool askSchool = false;
@@ -394,6 +397,15 @@ namespace GRA.Controllers
             {
                 return RedirectToAction(nameof(Step1));
             }
+
+            if (!string.IsNullOrWhiteSpace(model.Email)
+                && !EmailValidator.Validate(model.Email.Trim()))
+            {
+                ModelState.AddModelError(nameof(model.Email),
+                    _sharedLocalizer[Annotations.Validate.Email,
+                        _sharedLocalizer[DisplayNames.EmailAddress]]);
+            }
+
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.PostalCode))
             {
                 ModelState.AddModelError(nameof(model.PostalCode),
@@ -1082,12 +1094,22 @@ namespace GRA.Controllers
             Justification = "Normalize authorization code to lowercase")]
         public async Task<IActionResult> Step3(Step3ViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             var site = await GetCurrentSiteAsync();
             var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
 
             if (!askIfFirstTime)
             {
                 ModelState.Remove(nameof(model.IsFirstTime));
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.Email)
+                && !EmailValidator.Validate(model.Email.Trim()))
+            {
+                ModelState.AddModelError(nameof(model.Email),
+                    _sharedLocalizer[Annotations.Validate.Email,
+                        _sharedLocalizer[DisplayNames.EmailAddress]]);
             }
 
             var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(

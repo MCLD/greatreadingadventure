@@ -23,6 +23,8 @@ namespace GRA.Domain.Model
 
         public bool CanEmailAwardVendorCode { get; set; }
 
+        public bool CannotBeEmailed { get; set; }
+
         [MaxLength(64)]
         public string CardNumber { get; set; }
 
