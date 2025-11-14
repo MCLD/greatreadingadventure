@@ -1757,6 +1757,47 @@ namespace GRA.Data.SqlServer.Migrations
                     b.ToTable("Jobs");
                 });
 
+            modelBuilder.Entity("GRA.Data.Model.JoinCode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccessCount")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("BranchId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsQRCode")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("JoinCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BranchId");
+
+                    b.ToTable("JoinCodes");
+                });
+
             modelBuilder.Entity("GRA.Data.Model.Language", b =>
                 {
                     b.Property<int>("Id")
@@ -2330,6 +2371,9 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<bool>("AskSchool")
                         .HasColumnType("bit");
+
+                    b.Property<int?>("ButtonSegmentId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -3898,6 +3942,9 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<bool>("CanBeDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("CannotBeEmailed")
+                        .HasColumnType("bit");
+
                     b.Property<string>("CardNumber")
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
@@ -3978,6 +4025,9 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PersonalPointGoal")
+                        .HasColumnType("int");
 
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(15)
@@ -4951,6 +5001,16 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Navigation("GroupType");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.JoinCode", b =>
+                {
+                    b.HasOne("GRA.Data.Model.Branch", "Branch")
+                        .WithMany()
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Branch");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.NewsPost", b =>

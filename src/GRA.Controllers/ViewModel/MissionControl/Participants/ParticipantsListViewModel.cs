@@ -9,6 +9,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public int? BranchId { get; set; }
         public IEnumerable<GRA.Domain.Model.Branch> BranchList { get; set; }
         public string BranchName { get; set; }
+        public bool CannotBeEmailed { get; set; }
         public bool CanRemoveParticipant { get; set; }
         public bool CanSignUpParticipants { get; set; }
         public bool CanViewDetails { get; set; }

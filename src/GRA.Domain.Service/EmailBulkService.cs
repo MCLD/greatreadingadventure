@@ -603,7 +603,7 @@ namespace GRA.Domain.Service
                 {
                     foreach (var user in subscribedUsers.Data)
                     {
-                        if (alreadyReceived.Contains(user.Email))
+                        if (user.CannotBeEmailed || alreadyReceived.Contains(user.Email))
                         {
                             // send email
                             _logger.LogTrace("Email job {JobId}: skipping email {Count}/{Total} to user {User} at {Email} with template {EmailTemplate}",

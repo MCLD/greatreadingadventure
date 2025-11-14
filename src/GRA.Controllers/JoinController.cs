@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using EmailValidation;
 using GRA.Controllers.Filter;
 using GRA.Controllers.ViewModel.Join;
 using GRA.Controllers.ViewModel.Shared;
@@ -28,6 +29,7 @@ namespace GRA.Controllers
         private const string TwoStepSignUp = "TwoStepSignUp";
         private readonly AuthenticationService _authenticationService;
         private readonly AuthorizationCodeService _authorizationCodeService;
+        private readonly JoinCodeService _joinCodeService;
         private readonly LanguageService _languageService;
         private readonly ILogger<JoinController> _logger;
         private readonly MailService _mailService;
@@ -43,6 +45,7 @@ namespace GRA.Controllers
             ServiceFacade.Controller context,
             AuthenticationService authenticationService,
             AuthorizationCodeService authorizationCodeService,
+            JoinCodeService joinCodeService,
             LanguageService languageService,
             MailService mailService,
             PointTranslationService pointTranslationService,
@@ -54,6 +57,7 @@ namespace GRA.Controllers
         {
             ArgumentNullException.ThrowIfNull(authenticationService);
             ArgumentNullException.ThrowIfNull(authorizationCodeService);
+            ArgumentNullException.ThrowIfNull(joinCodeService);
             ArgumentNullException.ThrowIfNull(languageService);
             ArgumentNullException.ThrowIfNull(logger);
             ArgumentNullException.ThrowIfNull(mailService);
@@ -66,6 +70,7 @@ namespace GRA.Controllers
 
             _authenticationService = authenticationService;
             _authorizationCodeService = authorizationCodeService;
+            _joinCodeService = joinCodeService;
             _languageService = languageService;
             _logger = logger;
             _mailService = mailService;
@@ -164,7 +169,7 @@ namespace GRA.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string src)
         {
             string authCode = null;
             var useAuthCode = TempData.ContainsKey(EnteredAuthCode);
@@ -181,7 +186,7 @@ namespace GRA.Controllers
 
             if (!singlePageSignUp)
             {
-                return RedirectToAction(nameof(Step1));
+                return RedirectToAction(nameof(Step1), new { src });
             }
             var siteStage = GetSiteStage();
 
@@ -261,12 +266,33 @@ namespace GRA.Controllers
             if (askActivityGoal)
             {
                 viewModel.DailyPersonalGoal = defaultDailyGoal;
-                var pointTranslation = programList.First().PointTranslation;
+                var program = programList.First();
+                if (program.PointTranslation == null)
+                {
+                    program.PointTranslation = await _pointTranslationService
+                        .GetByProgramIdAsync(program.Id);
+                }
+                var pointTranslation = program.PointTranslation;
                 viewModel.TranslationDescriptionPastTense = pointTranslation
                     .TranslationDescriptionPastTense
                     .Replace("{0}", "", StringComparison.OrdinalIgnoreCase)
                     .Trim();
                 viewModel.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
+            }
+
+            var askPersonalPointGoal = !TempData.ContainsKey(SinglePageSignUp)
+                && await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskPersonalPointGoal);
+            if (askPersonalPointGoal)
+            {
+                viewModel.AskPersonalPointGoal = true;
+                viewModel.MinimumPersonalPointGoal = programList.First().AchieverPointAmount;
+
+                var (maximumPointsSet, maximumPointsValue) = await GetSiteSettingIntAsync(
+                            SiteSettingKey.Users.MaximumActivityPermitted);
+                if (maximumPointsSet)
+                {
+                    viewModel.MaximumPersonalPointGoal = maximumPointsValue;
+                }
             }
 
             List<Branch> branchList = [];
@@ -281,25 +307,52 @@ namespace GRA.Controllers
                 viewModel.IsFirstTime = "No";
                 TempData.Keep(AuthCodeAssignedBranch);
             }
-            else if (systemList.Count() == 1)
-            {
-                var systemId = systemList.Single().Id;
-                branchList.AddRange(await _siteService.GetBranches(systemId));
-                viewModel.SystemId = systemId;
-            }
             else
             {
-                branchList.AddRange(await _siteService.GetAllBranches(true));
+                JoinCode joinCode = null;
+                if (!string.IsNullOrWhiteSpace(src))
+                {
+                    joinCode = await _joinCodeService
+                        .GetByCodeAndIncrementAccessCountAsync(src.Trim());
+                }
+
+                if (joinCode != null)
+                {
+                    if (joinCode.BranchSystemId.HasValue)
+                    {
+                        branchList.AddRange(await _siteService
+                            .GetBranches(joinCode.BranchSystemId.Value));
+                    }
+                    else
+                    {
+                        branchList.AddRange(await _siteService.GetAllBranches(true));
+                    }
+
+                    viewModel.BranchId = joinCode.BranchId;
+                    viewModel.JoinCode = joinCode.Code;
+                    viewModel.SystemId = joinCode.BranchSystemId;
+                }
+                else if (systemList.Count() == 1)
+                {
+                    var systemId = systemList.Single().Id;
+                    branchList.AddRange(await _siteService.GetBranches(systemId));
+                    viewModel.SystemId = systemId;
+                }
+                else
+                {
+                    branchList.AddRange(await _siteService.GetAllBranches(true));
+                }
+
+                if (branchList.Count > 1)
+                {
+                    branchList.Insert(0, new Branch { Id = -1 });
+                }
+                else
+                {
+                    viewModel.BranchId = branchList.SingleOrDefault()?.Id;
+                }
             }
 
-            if (branchList.Count > 1)
-            {
-                branchList.Insert(0, new Branch { Id = -1 });
-            }
-            else
-            {
-                viewModel.BranchId = branchList.SingleOrDefault()?.Id;
-            }
             viewModel.BranchList = NameIdSelectList(branchList.ToList());
 
             if (programList.Count() == 1)
@@ -325,6 +378,8 @@ namespace GRA.Controllers
             Justification = "Normalize authorization codes to lowercase")]
         public async Task<IActionResult> Index(SinglePageViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             bool askIfFirstTime;
             bool askAge = false;
             bool askSchool = false;
@@ -333,6 +388,7 @@ namespace GRA.Controllers
             string askEmailSubscriptionText;
             bool askActivityGoal;
             int defaultDailyGoal;
+            Program program = null;
 
             var singlePageSignUp = site.SinglePageSignUp || TempData.ContainsKey(SinglePageSignUp);
             TempData.Keep(SinglePageSignUp);
@@ -341,6 +397,15 @@ namespace GRA.Controllers
             {
                 return RedirectToAction(nameof(Step1));
             }
+
+            if (!string.IsNullOrWhiteSpace(model.Email)
+                && !EmailValidator.Validate(model.Email.Trim()))
+            {
+                ModelState.AddModelError(nameof(model.Email),
+                    _sharedLocalizer[Annotations.Validate.Email,
+                        _sharedLocalizer[DisplayNames.EmailAddress]]);
+            }
+
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.PostalCode))
             {
                 ModelState.AddModelError(nameof(model.PostalCode),
@@ -381,9 +446,12 @@ namespace GRA.Controllers
             (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
                 SiteSettingKey.Users.DefaultDailyPersonalGoal);
 
+            var askPersonalPointGoal = !TempData.ContainsKey(SinglePageSignUp)
+                && await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskPersonalPointGoal);
+
             if (model.ProgramId.HasValue)
             {
-                var program = await _siteService.GetProgramByIdAsync(model.ProgramId.Value);
+                program = await _siteService.GetProgramByIdAsync(model.ProgramId.Value);
 
                 askAge = program.AskAge;
                 askSchool = program.AskSchool;
@@ -450,6 +518,20 @@ namespace GRA.Controllers
                     user.DailyPersonalGoal = null;
                 }
 
+                if (!askPersonalPointGoal || user?.PersonalPointGoal <= program.AchieverPointAmount)
+                {
+                    user.PersonalPointGoal = null;
+                }
+                else
+                {
+                    var (maximumPointsSet, maximumPointsValue) = await GetSiteSettingIntAsync(
+                            SiteSettingKey.Users.MaximumActivityPermitted);
+                    if (maximumPointsSet && user.PersonalPointGoal > maximumPointsValue)
+                    {
+                        user.PersonalPointGoal = maximumPointsValue;
+                    }
+                }
+
                 try
                 {
                     bool useAuthCode = false;
@@ -492,6 +574,12 @@ namespace GRA.Controllers
                     {
                         HttpContext.Session.SetInt32(SessionKey.PendingQuestionnaire,
                             questionnaireId.Value);
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(model.JoinCode))
+                    {
+                        await _joinCodeService.IncrementJoinCountForCodeAsync(
+                            model.JoinCode.Trim());
                     }
 
                     if (!TempData.ContainsKey(TempDataKey.UserJoined))
@@ -564,7 +652,13 @@ namespace GRA.Controllers
 
             if (askActivityGoal)
             {
-                var pointTranslation = programList.First().PointTranslation;
+                program ??= programList.First();
+                if (program.PointTranslation == null)
+                {
+                    program.PointTranslation = await _pointTranslationService
+                        .GetByProgramIdAsync(program.Id);
+                }
+                var pointTranslation = program.PointTranslation;
                 model.TranslationDescriptionPastTense = pointTranslation
                     .TranslationDescriptionPastTense
                     .Replace("{0}", "", StringComparison.OrdinalIgnoreCase)
@@ -572,10 +666,24 @@ namespace GRA.Controllers
                 model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 
+            if (askPersonalPointGoal)
+            {
+                model.AskPersonalPointGoal = askPersonalPointGoal;
+
+                var (maximumPointsSet, maximumPointsValue) = await GetSiteSettingIntAsync(
+                    SiteSettingKey.Users.MaximumActivityPermitted);
+                if (maximumPointsSet)
+                {
+                    model.MaximumPersonalPointGoal = maximumPointsValue;
+                }
+
+                program ??= programList.First();
+                model.MinimumPersonalPointGoal = program.AchieverPointAmount;
+            }
             return View(model);
         }
 
-        public async Task<IActionResult> Step1()
+        public async Task<IActionResult> Step1(string src)
         {
             string authCode = null;
             var useAuthCode = TempData.ContainsKey(EnteredAuthCode);
@@ -591,7 +699,7 @@ namespace GRA.Controllers
 
             if (singlePageSignUp)
             {
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { src });
             }
 
             if (!useAuthCode)
@@ -653,25 +761,52 @@ namespace GRA.Controllers
                 viewModel.SystemId = branch.SystemId;
                 TempData.Keep(AuthCodeAssignedBranch);
             }
-            else if (systemList.Count() == 1)
-            {
-                var systemId = systemList.Single().Id;
-                branchList.AddRange(await _siteService.GetBranches(systemId));
-                viewModel.SystemId = systemId;
-            }
             else
             {
-                branchList.AddRange(await _siteService.GetAllBranches(true));
+                JoinCode joinCode = null;
+                if (!string.IsNullOrWhiteSpace(src))
+                {
+                    joinCode = await _joinCodeService
+                        .GetByCodeAndIncrementAccessCountAsync(src.Trim());
+                }
+
+                if (joinCode != null)
+                {
+                    if (joinCode.BranchSystemId.HasValue)
+                    {
+                        branchList.AddRange(await _siteService
+                        .GetBranches(joinCode.BranchSystemId.Value));
+                    }
+                    else
+                    {
+                        branchList.AddRange(await _siteService.GetAllBranches(true));
+                    }
+
+                    viewModel.BranchId = joinCode.BranchId;
+                    viewModel.JoinCode = joinCode.Code;
+                    viewModel.SystemId = joinCode.BranchSystemId;
+                }
+                else if (systemList.Count() == 1)
+                {
+                    var systemId = systemList.Single().Id;
+                    branchList.AddRange(await _siteService.GetBranches(systemId));
+                    viewModel.SystemId = systemId;
+                }
+                else
+                {
+                    branchList.AddRange(await _siteService.GetAllBranches(true));
+                }
+
+                if (branchList.Count > 1)
+                {
+                    branchList.Insert(0, new Branch { Id = -1 });
+                }
+                else
+                {
+                    viewModel.BranchId = branchList.SingleOrDefault()?.Id;
+                }
             }
 
-            if (branchList.Count > 1)
-            {
-                branchList.Insert(0, new Branch { Id = -1 });
-            }
-            else
-            {
-                viewModel.BranchId = branchList.SingleOrDefault()?.Id;
-            }
             viewModel.BranchList = NameIdSelectList(branchList.ToList());
 
             if (useAuthCode)
@@ -931,6 +1066,25 @@ namespace GRA.Controllers
                 viewModel.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 
+            var askPersonalPointGoal = !TempData.ContainsKey(SinglePageSignUp)
+                && await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskPersonalPointGoal);
+            if (askPersonalPointGoal)
+            {
+                viewModel.AskPersonalPointGoal = true;
+
+                var (maximumPointsSet, maximumPointsValue) = await GetSiteSettingIntAsync(
+                   SiteSettingKey.Users.MaximumActivityPermitted);
+                if (maximumPointsSet)
+                {
+                    viewModel.MaximumPersonalPointGoal = maximumPointsValue;
+                }
+
+                string step2Json = (string)TempData.Peek(TempStep2);
+                var step2 = JsonConvert.DeserializeObject<Step2ViewModel>(step2Json);
+                var program = await _siteService.GetProgramByIdAsync(step2.ProgramId.Value);
+                viewModel.MinimumPersonalPointGoal = program.AchieverPointAmount;
+            }
+
             return View(viewModel);
         }
 
@@ -940,12 +1094,22 @@ namespace GRA.Controllers
             Justification = "Normalize authorization code to lowercase")]
         public async Task<IActionResult> Step3(Step3ViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             var site = await GetCurrentSiteAsync();
             var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
 
             if (!askIfFirstTime)
             {
                 ModelState.Remove(nameof(model.IsFirstTime));
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.Email)
+                && !EmailValidator.Validate(model.Email.Trim()))
+            {
+                ModelState.AddModelError(nameof(model.Email),
+                    _sharedLocalizer[Annotations.Validate.Email,
+                        _sharedLocalizer[DisplayNames.EmailAddress]]);
             }
 
             var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
@@ -968,6 +1132,9 @@ namespace GRA.Controllers
 
             var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
                 SiteSettingKey.Users.DefaultDailyPersonalGoal);
+
+            var askPersonalPointGoal = await GetSiteSettingBoolAsync(
+                SiteSettingKey.Users.AskPersonalPointGoal);
 
             if (site.SinglePageSignUp)
             {
@@ -1020,6 +1187,24 @@ namespace GRA.Controllers
                     user.DailyPersonalGoal = null;
                 }
 
+                if (askPersonalPointGoal)
+                {
+                    var program = await _siteService.GetProgramByIdAsync(step2.ProgramId.Value);
+                    if (user.PersonalPointGoal <= program.AchieverPointAmount)
+                    {
+                        user.PersonalPointGoal = null;
+                    }
+                    else
+                    {
+                        var (maximumPointsSet, maximumPointsValue) = await GetSiteSettingIntAsync(
+                            SiteSettingKey.Users.MaximumActivityPermitted);
+                        if (maximumPointsSet && user.PersonalPointGoal > maximumPointsValue)
+                        {
+                            user.PersonalPointGoal = maximumPointsValue;
+                        }
+                    }
+                }
+
                 try
                 {
                     bool useAuthCode = false;
@@ -1064,6 +1249,12 @@ namespace GRA.Controllers
                     {
                         HttpContext.Session.SetInt32(SessionKey.PendingQuestionnaire,
                             questionnaireId.Value);
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(step1.JoinCode))
+                    {
+                        await _joinCodeService.IncrementJoinCountForCodeAsync(
+                            step1.JoinCode.Trim());
                     }
 
                     if (!TempData.ContainsKey(TempDataKey.UserJoined))
@@ -1111,6 +1302,23 @@ namespace GRA.Controllers
                     .Replace("{0}", "", StringComparison.OrdinalIgnoreCase)
                     .Trim();
                 model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
+            }
+
+            if (askPersonalPointGoal)
+            {
+                model.AskPersonalPointGoal = true;
+
+                var (maximumPointsSet, maximumPointsValue) = await GetSiteSettingIntAsync(
+                    SiteSettingKey.Users.MaximumActivityPermitted);
+                if (maximumPointsSet)
+                {
+                    model.MaximumPersonalPointGoal = maximumPointsValue;
+                }
+
+                string step2Json = (string)TempData.Peek(TempStep2);
+                var step2 = JsonConvert.DeserializeObject<Step2ViewModel>(step2Json);
+                var program = await _siteService.GetProgramByIdAsync(step2.ProgramId.Value);
+                model.MinimumPersonalPointGoal = program.AchieverPointAmount;
             }
 
             PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, site.Name];

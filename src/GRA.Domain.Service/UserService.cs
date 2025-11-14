@@ -1357,6 +1357,7 @@ namespace GRA.Domain.Service
                 currentEntity.DailyPersonalGoal = userToUpdate.DailyPersonalGoal;
                 currentEntity.IsHomeschooled = userToUpdate.IsHomeschooled;
                 currentEntity.LastName = userToUpdate.LastName?.Trim();
+                currentEntity.PersonalPointGoal = userToUpdate.PersonalPointGoal;
                 currentEntity.PhoneNumber = userToUpdate.PhoneNumber?.Trim();
                 currentEntity.PostalCode = userToUpdate.PostalCode?.Trim();
                 currentEntity.ProgramId = userToUpdate.ProgramId;
@@ -1365,7 +1366,6 @@ namespace GRA.Domain.Service
                 currentEntity.SchoolNotListed = userToUpdate.SchoolNotListed;
                 currentEntity.SystemId = userToUpdate.SystemId;
                 currentEntity.SystemName = null;
-                currentEntity.Email = null;
 
                 if (currentEntity.IsSystemUser)
                 {
@@ -1384,8 +1384,17 @@ namespace GRA.Domain.Service
                 else
                 {
                     currentEntity.FirstName = userToUpdate.FirstName?.Trim();
-                    currentEntity.Email = userToUpdate.Email?.Trim();
                     currentEntity.IsAdmin = await UserHasRoles(userToUpdate.Id);
+
+
+                    var newEmail = userToUpdate.Email?.Trim();
+                    if (currentEntity.CannotBeEmailed && !string.Equals(currentEntity.Email, 
+                        newEmail,
+                        StringComparison.OrdinalIgnoreCase))
+                    {
+                        currentEntity.CannotBeEmailed = false;
+                    }
+                    currentEntity.Email = newEmail;
 
                     if (HasPermission(Permission.EditParticipantUsernames)
                         && !string.IsNullOrWhiteSpace(currentEntity.Username)
@@ -1735,10 +1744,10 @@ namespace GRA.Domain.Service
                 currentEntity.BranchName = null;
                 currentEntity.CardNumber = userToUpdate.CardNumber?.Trim();
                 currentEntity.DailyPersonalGoal = userToUpdate.DailyPersonalGoal;
-                currentEntity.Email = userToUpdate.Email?.Trim();
                 currentEntity.FirstName = userToUpdate.FirstName?.Trim();
                 currentEntity.IsHomeschooled = userToUpdate.IsHomeschooled;
                 currentEntity.LastName = userToUpdate.LastName?.Trim();
+                currentEntity.PersonalPointGoal = userToUpdate.PersonalPointGoal;
                 currentEntity.PhoneNumber = userToUpdate.PhoneNumber?.Trim();
                 currentEntity.PostalCode = userToUpdate.PostalCode?.Trim();
                 currentEntity.ProgramId = userToUpdate.ProgramId;
@@ -1746,6 +1755,14 @@ namespace GRA.Domain.Service
                 currentEntity.SchoolId = userToUpdate.SchoolId;
                 currentEntity.SchoolNotListed = userToUpdate.SchoolNotListed;
                 currentEntity.SystemName = null;
+
+                var newEmail = userToUpdate.Email?.Trim();
+                if (currentEntity.CannotBeEmailed && !string.Equals(currentEntity.Email, newEmail, 
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    currentEntity.CannotBeEmailed = false;
+                }
+                currentEntity.Email = newEmail;
 
                 bool restrictChangingSystemBranch = await _siteLookupService
                     .GetSiteSettingBoolAsync(currentEntity.SiteId,

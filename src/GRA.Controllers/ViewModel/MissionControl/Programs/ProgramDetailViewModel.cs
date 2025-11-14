@@ -1,5 +1,8 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using GRA.Domain.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -32,5 +35,18 @@ namespace GRA.Controllers.ViewModel.MissionControl.Programs
         public int SchoolValues { get; set; }
 
         public bool UseBadgeMaker { get; set; }
+
+        public IDictionary<string, int> Languages { get; set; }
+        public IDictionary<int, int[]> SegmentLanguageIds { get; set; }
+
+        public string LanguageSegmentClass(int? segmentId, int languageId)
+        {
+            return !segmentId.HasValue
+                ? "btn-secondary"
+                : SegmentLanguageIds.TryGetValue(segmentId.Value, out int[] value)
+                    && value.Contains(languageId)
+                    ? "btn-success"
+                    : "btn-warning";
+        }
     }
 }

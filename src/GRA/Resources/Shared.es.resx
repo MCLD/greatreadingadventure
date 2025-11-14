@@ -1691,4 +1691,46 @@
   <data name="View bundle options" xml:space="preserve">
     <value>Ver opciones de paquete</value>
   </data>
+  <data name="&lt;em&gt;{0}&lt;/em&gt; arrived on &lt;strong&gt;{1}&lt;/strong&gt; and is ready for pick-up at &lt;a href=&quot;{2}&quot; target=&quot;_blank&quot;&gt;{3}&lt;/a&gt;." xml:space="preserve">
+    <value>&lt;em&gt;{0}&lt;/em&gt; llego el &lt;strong&gt;{1}&lt;/strong&gt; y esta listo para recoger en &lt;a href="{2}" target="_blank"&gt;{3}&lt;/a&gt;.</value>
+  </data>
+  <data name="&lt;strong&gt;{0}&lt;/strong&gt; is not a valid code." xml:space="preserve">
+    <value>&lt;strong&gt;{0}&lt;/strong&gt; no es un código valido.</value>
+  </data>
+  <data name="&lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{1}&lt;/strong&gt; was added to your book list." xml:space="preserve">
+    <value>&lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt; por &lt;strong&gt;{1}&lt;/strong&gt; se ha ingresado a la lista de libros.</value>
+  </data>
+  <data name="&lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{1}&lt;/strong&gt; is already on the book list." xml:space="preserve">
+    <value>&lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt; por &lt;strong&gt;{1}&lt;/strong&gt; ya está en la lista de libros.</value>
+  </data>
+  <data name="You already entered the code &lt;strong&gt;{0}&lt;/strong&gt; on &lt;strong&gt;{1}&lt;/strong&gt;!" xml:space="preserve">
+    <value>¡Ya ingresaste el código &lt;strong&gt;{0}&lt;/strong&gt; el &lt;strong&gt;{1}&lt;/strong&gt;!</value>
+  </data>
+  <data name="You have reached the program's goal!" xml:space="preserve">
+    <value>¡Has alcanzado la meta del programa!</value>
+  </data>
+  <data name="Your personal reading goal is {0} minutes." xml:space="preserve">
+    <value>Su meta personal es {0} minutos.</value>
+  </data>
+  <data name="Set a personal point goal" xml:space="preserve">
+    <value>Establece una meta personal de puntos</value>
+  </data>
+  <data name="My reading progress" xml:space="preserve">
+    <value>Mi progreso de lectura</value>
+  </data>
+  <data name="Points I will earn" xml:space="preserve">
+    <value>Puntos que ganare</value>
+  </data>
+  <data name="A personal goal beyond the program default goal of {0} points." xml:space="preserve">
+    <value>Una meta personal más de la meta del programa de {0} puntos. </value>
+  </data>
+  <data name="You have {0}/{1} points towards your personal goal." xml:space="preserve">
+    <value>Tienes {0}/{1} puntos a su meta personal</value>
+  </data>
+  <data name="You have completed your personal goal of {0} points!" xml:space="preserve">
+    <value>¡Has completado su meta personal de {0} puntos!</value>
+  </data>
+  <data name="We are unable to send you emails at this address. Please enter a valid email address or contact {0} for assistance." xml:space="preserve">
+    <value>No podemos enviar correos electrónicos a esta dirección. Por favor ingrese un correo electrónico valido o contacta {0} para asistencia.  </value>
+  </data>
 </root>

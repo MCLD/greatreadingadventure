@@ -18,6 +18,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - QR code generation ability
 - Spanish localization for jQuery validation messages
 - News Post pinning
+- Email address validation
+- Cannot be emailed property to users
+- Participant personal point goal
+- Join codes for tracking signups
+- Ability to override activity button text
 
 ## Changed
 
@@ -26,11 +31,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Performer references to be a text input instead of file
 - Update front-end packages
 - Add achiever column to badge report
+- Vendor status message to include branch name when ready for pick-up
 
 ## Fixed
 
 - Display of modals after Bootstrap 5.3 upgrade
 - Performer program cost to display in currency format
+- Email reminder signup source being editable in html
+- Missing translations for secret codes, books and events
+- Password change confirmation not functioning
+- Challenge category multiselect formatting for participants
+- Join issues caused by setting a program or branch with an authorization code
+- Secret code field showing when it shouldn't in Mission Control activity logging
 
 ## [4.6.0] 2024-10-09
 

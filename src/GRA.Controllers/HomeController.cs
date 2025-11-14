@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EmailValidation;
 using GRA.Controllers.Attributes;
 using GRA.Controllers.ViewModel.Home;
 using GRA.Domain.Model;
@@ -37,6 +38,7 @@ namespace GRA.Controllers
         private readonly LanguageService _languageService;
         private readonly ILogger<HomeController> _logger;
         private readonly PerformerSchedulingService _performerSchedulingService;
+        private readonly SegmentService _segmentService;
         private readonly SiteService _siteService;
         private readonly SocialService _socialService;
         private readonly UserService _userService;
@@ -55,6 +57,7 @@ namespace GRA.Controllers
             ExitLandingService exitLandingService,
             LanguageService languageService,
             PerformerSchedulingService performerSchedulingService,
+            SegmentService segmentService,
             SiteService siteService,
             SocialService socialService,
             UserService userService,
@@ -73,6 +76,7 @@ namespace GRA.Controllers
             ArgumentNullException.ThrowIfNull(languageService);
             ArgumentNullException.ThrowIfNull(logger);
             ArgumentNullException.ThrowIfNull(performerSchedulingService);
+            ArgumentNullException.ThrowIfNull(segmentService);
             ArgumentNullException.ThrowIfNull(siteService);
             ArgumentNullException.ThrowIfNull(socialService);
             ArgumentNullException.ThrowIfNull(userService);
@@ -90,6 +94,7 @@ namespace GRA.Controllers
             _languageService = languageService;
             _logger = logger;
             _performerSchedulingService = performerSchedulingService;
+            _segmentService = segmentService;
             _siteService = siteService;
             _socialService = socialService;
             _userService = userService;
@@ -104,14 +109,24 @@ namespace GRA.Controllers
         {
             if (!string.IsNullOrEmpty(viewModel?.Email))
             {
-                var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
-                var currentLanguageId = await _languageService
-                    .GetLanguageIdAsync(currentCultureName);
-                await _emailReminderService
-                    .AddEmailReminderAsync(viewModel.Email,
-                    viewModel.SignUpSource,
-                    currentLanguageId);
-                ShowAlertInfo(_sharedLocalizer[Annotations.Info.LetYouKnowWhen], "envelope");
+                var email = viewModel.Email.Trim();
+                if (EmailValidator.Validate(email))
+                {
+                    var siteStage = GetSiteStage();
+                    var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
+                    var currentLanguageId = await _languageService
+                        .GetLanguageIdAsync(currentCultureName);
+                    await _emailReminderService
+                        .AddEmailReminderAsync(email,
+                        siteStage.ToString(),
+                        currentLanguageId);
+                    ShowAlertInfo(_sharedLocalizer[Annotations.Info.LetYouKnowWhen], "envelope");
+                }
+                else
+                {
+                    ShowAlertWarning(_sharedLocalizer[Annotations.Validate.EmailAddressInvalid, 
+                        email]);
+                }
             }
             return RedirectToAction(nameof(Index));
         }
@@ -284,6 +299,15 @@ namespace GRA.Controllers
                     }
                 }
 
+                if (program.ButtonSegmentId.HasValue)
+                {
+                    var culture = _userContextProvider.GetCurrentCulture();
+                    var currentLanguageId = await _languageService.GetLanguageIdAsync(culture.Name);
+                    viewModel.ButtonText = await _segmentService.GetDbTextAsync(
+                        program.ButtonSegmentId.Value,
+                        currentLanguageId);
+                }
+
                 if (!string.IsNullOrEmpty(program.DashboardAlert?.Trim()))
                 {
                     viewModel.DashboardAlert = program.DashboardAlert;
@@ -348,22 +372,51 @@ namespace GRA.Controllers
                         = _sharedLocalizer[(string)secretCodeMessage];
                 }
 
-                if (user.DailyPersonalGoal.HasValue)
+                if (user.PersonalPointGoal.HasValue
+                    && user.PointsEarned >= program.AchieverPointAmount)
                 {
-                    var programDays = (int)Math.Ceiling((
-                        site.ProgramEnds.Value - site.ProgramStarts.Value).TotalDays);
-                    viewModel.TotalProgramGoal = programDays * user.DailyPersonalGoal.Value;
-                    viewModel.ActivityEarned = await _activityService.GetActivityEarnedAsync();
+                    viewModel.ProgramPercentComplete = Math.Min(
+                        (int)(program.AchieverPointAmount * 100 / user.PersonalPointGoal.Value),
+                        100);
+                    viewModel.TotalPercentComplete = Math.Min(
+                        (int)(user.PointsEarned * 100 / user.PersonalPointGoal.Value), 100);
+                    viewModel.PersonalPercentComplete = viewModel.TotalPercentComplete
+                        - viewModel.ProgramPercentComplete;
+
+                    if (user.PointsEarned >= user.PersonalPointGoal.Value)
+                    {
+                        viewModel.ProgressMessage = _sharedLocalizer[
+                            Annotations.Info.PersonalGoalComplete,
+                            user.PersonalPointGoal.Value];
+                    }
+                    else
+                    {
+                        viewModel.ProgressMessage = _sharedLocalizer[Annotations.Info.PersonalGoal,
+                            user.PointsEarned,
+                            user.PersonalPointGoal.Value];
+                    }
                 }
                 else
                 {
-                    viewModel.TotalProgramGoal = program.AchieverPointAmount;
-                    viewModel.ActivityEarned = user.PointsEarned;
-                    viewModel.ProgressMessage
-                        = _sharedLocalizer[Annotations.Info.Goal, program.AchieverPointAmount];
+                    viewModel.ProgramPercentComplete = Math.Min(
+                        (int)(user.PointsEarned * 100 / program.AchieverPointAmount), 100);
+                    viewModel.ProgressMessage = _sharedLocalizer[Annotations.Info.Goal,
+                        program.AchieverPointAmount];
                 }
-                viewModel.PercentComplete = Math.Min(
-                        (int)(viewModel.ActivityEarned * 100 / viewModel.TotalProgramGoal), 100);
+
+                if (user.DailyPersonalGoal.HasValue)
+                {
+                    var activityEarned = await _activityService.GetActivityEarnedAsync();
+                    var programDays = (int)Math.Ceiling((
+                        site.ProgramEnds.Value - site.ProgramStarts.Value).TotalDays);
+                    var totalActivityGoal = programDays * user.DailyPersonalGoal.Value;
+
+                    viewModel.ActivityPercentComplete = Math.Min(
+                        (int)(activityEarned * 100 / totalActivityGoal), 100);
+                    viewModel.ActivityProgressMessage =
+                        _sharedLocalizer[Annotations.Info.PersonalActivityGoal,
+                            totalActivityGoal];
+                }
 
                 var (siteReadingGoalSet, siteReadingGoal)
                     = await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(),
@@ -647,7 +700,6 @@ namespace GRA.Controllers
             switch (siteStage)
             {
                 case SiteStage.BeforeRegistration:
-                    viewmodel.SignUpSource = nameof(SiteStage.BeforeRegistration);
                     if (site != null)
                     {
                         viewmodel.CollectEmail = await _siteLookupService
@@ -674,7 +726,6 @@ namespace GRA.Controllers
                     return View(ViewTemplates.ProgramEnded, viewmodel);
 
                 case SiteStage.AccessClosed:
-                    viewmodel.SignUpSource = nameof(SiteStage.AccessClosed);
                     if (site != null)
                     {
                         viewmodel.CollectEmail = await _siteLookupService

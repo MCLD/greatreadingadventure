@@ -7,7 +7,6 @@
         public string Email { get; set; }
         public string RegistrationOpens { get; set; }
         public string RightMessage { get; set; }
-        public string SignUpSource { get; set; }
         public string SiteName { get; set; }
     }
 }
