@@ -16,6 +16,7 @@ namespace GRA.Controllers.ViewModel.Join
         public SelectList AskEmailSubscription { get; set; }
         public string AskEmailSubscriptionText { get; set; }
         public SelectList AskFirstTime { get; set; }
+        public bool AskPersonalPointGoal { get; set; }
         public string AuthorizationCode { get; set; }
 
         [Required(ErrorMessage = ErrorMessages.Selection)]
@@ -57,9 +58,15 @@ namespace GRA.Controllers.ViewModel.Join
         [MaxLength(255, ErrorMessage = ErrorMessages.MaxLength)]
         public string LastName { get; set; }
 
+        public int? MaximumPersonalPointGoal { get; set; }
+        public int? MinimumPersonalPointGoal { get; set; }
+
         [Required(ErrorMessage = ErrorMessages.Field)]
         [DisplayName(DisplayNames.Password)]
         public string Password { get; set; }
+
+        [DisplayName(DisplayNames.PersonalPointGoal)]
+        public int? PersonalPointGoal { get; set; }
 
         [DisplayName(DisplayNames.PhoneNumber)]
         [Phone(ErrorMessage = Annotations.Validate.Phone)]
