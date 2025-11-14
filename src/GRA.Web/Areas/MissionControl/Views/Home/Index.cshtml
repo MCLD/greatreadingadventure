@@ -176,20 +176,23 @@ else
             </div>
             @if (!Model.NewsPosts.Any())
             {
-				<div class="alert alert-info">No posts in this category.</div>
-			}
-			else
-			{
-				foreach (var post in Model.NewsPosts)
-				{
-					<div class="card mb-3">
-						<div class="card-header d-flex">
-							<span class="flex-grow-1 lead"><strong><a asp-action="@nameof(HomeController.Post)" asp-route-id="@post.Id">@post.Title</a></strong></span>
-                            <div><a asp-action="@nameof(HomeController.Post)" asp-route-id="@post.Id"><span class="fas fa-print"></span></a></div>
-							@if (post.IsPinned)
-							{
-								<div class="ms-2"><span class="fas fa-thumbtack fa-lg text-body-secondary"></span></div>
-							}
+                <div class="alert alert-info">No posts in this category.</div>
+            }
+            else
+            {
+                foreach (var post in Model.NewsPosts)
+                {
+                    <div class="card mb-3">
+                        <div class="card-header d-flex">
+                            <span class="flex-grow-1 lead"><strong><a asp-action="@nameof(HomeController.Post)" asp-route-id="@post.Id">@post.Title</a></strong></span>
+                            @if (post.IsPinned)
+                            {
+                                <div title="This post is pinned."><span class="fas fa-map-pin fa-fw text-info"></span></div>
+                            }
+                            <div>
+                                <a asp-action="@nameof(HomeController.Post)"
+                                   asp-route-id="@post.Id"><span class="ms-2 fas fa-print fa-fw"></span></a>
+                            </div>
                         </div>
                         <div class="card-body">@Html.Raw(post.Content)</div>
                         <div class="card-footer">

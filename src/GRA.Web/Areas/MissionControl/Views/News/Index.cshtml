@@ -108,8 +108,8 @@
 									<a asp-action="@nameof(NewsController.EditPost)"
 									   asp-route-id="@post.Id" class="rowlink">
 										@if (post.IsPinned)
-										{
-											<span class="fas fa-thumbtack fa-lg text-body-secondary"></span>
+                                        {
+                                            <span class="fas fa-map-pin fa-fw text-info"></span>
 										}
 										else
 										{
