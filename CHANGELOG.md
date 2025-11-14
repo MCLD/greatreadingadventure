@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - View of and access to historical report output
 - QR code generation ability
 - Spanish localization for jQuery validation messages
+- News Post pinning
 - Email address validation
 - Cannot be emailed property to users
 - Participant personal point goal
