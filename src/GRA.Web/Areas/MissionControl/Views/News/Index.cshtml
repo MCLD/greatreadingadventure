@@ -1,206 +1,218 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.News.PostListViewModel
 
 @section inHeading {
-    <div class="ms-auto">
-        <a asp-action="@nameof(NewsController.CreatePost)"
-           class="btn btn-outline-success">
-            <span class="fas fa-plus-circle"></span>
-            Add post
-        </a>
-    </div>
+	<div class="ms-auto">
+		<a asp-action="@nameof(NewsController.CreatePost)"
+		   class="btn btn-outline-success">
+			<span class="fas fa-plus-circle"></span>
+			Add post
+		</a>
+	</div>
 }
 
 <div class="row mt-2">
-    <div class="col-12 mb-2">
-        <ul class="nav nav-pills flex-column flex-sm-row">
-            <li class="nav-item">
-                <a asp-action="@nameof(NewsController.Index)"
-                   class="nav-link active">
-                    Posts
-                </a>
-            </li>
-            <li class="nav-item">
-                <a asp-action="@nameof(NewsController.Categories)"
-                   class="nav-link">
-                    Categories
-                </a>
-            </li>
-            <li class="nav-item d-none d-sm-block"><a class="nav-link disabled">|</a></li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle"
-                   data-bs-toggle="dropdown"
-                   href="#"
-                   role="button"
-                   aria-haspopup="true"
-                   aria-expanded="false">
-                    Category:  @(Model.Category?.Name ?? "Show All") <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a class="dropdown-item"
-                           asp-route-Search="@Model.Search">Show All</a>
-                    </li>
-                    @foreach (var category in Model.CategoryList)
-                    {
-                        <li>
-                            <a asp-route-Search="@Model.Search"
-                               asp-route-Category="@category.Id"
-                               class="dropdown-item">@category.Name</a>
-                        </li>
-                    }
-                </ul>
-            </li>
-        </ul>
-    </div>
+	<div class="col-12 mb-2">
+		<ul class="nav nav-pills flex-column flex-sm-row">
+			<li class="nav-item">
+				<a asp-action="@nameof(NewsController.Index)"
+				   class="nav-link active">
+					Posts
+				</a>
+			</li>
+			<li class="nav-item">
+				<a asp-action="@nameof(NewsController.Categories)"
+				   class="nav-link">
+					Categories
+				</a>
+			</li>
+			<li class="nav-item d-none d-sm-block"><a class="nav-link disabled">|</a></li>
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle"
+				   data-bs-toggle="dropdown"
+				   href="#"
+				   role="button"
+				   aria-haspopup="true"
+				   aria-expanded="false">
+					Category:  @(Model.Category?.Name ?? "Show All") <span class="caret"></span>
+				</a>
+				<ul class="dropdown-menu">
+					<li>
+						<a class="dropdown-item"
+						   asp-route-Search="@Model.Search">Show All</a>
+					</li>
+					@foreach (var category in Model.CategoryList)
+					{
+						<li>
+							<a asp-route-Search="@Model.Search"
+							   asp-route-Category="@category.Id"
+							   class="dropdown-item">@category.Name</a>
+						</li>
+					}
+				</ul>
+			</li>
+		</ul>
+	</div>
 </div>
 
 <form asp-controller="News" asp-action="Index" method="get" role="form">
-    @if (Model.CategoryId.HasValue)
-    {
-        <input name="Category" value="@Model.CategoryId" type="hidden" />
-    }
-    <div class="row mb-3">
-        <div class="col-12 input-group">
-            <input asp-for="Search"
-                   class="form-control"
-                   placeholder="Search for a news post" />
-            <a asp-action="@nameof(NewsController.Index)"
-               asp-route-Category="@Model.CategoryId"
-               class="btn btn-outline-secondary">Clear</a>
-            <input type="submit" value="Search" class="btn btn-outline-primary" />
-        </div>
-    </div>
+	@if (Model.CategoryId.HasValue)
+	{
+		<input name="Category" value="@Model.CategoryId" type="hidden" />
+	}
+	<div class="row mb-3">
+		<div class="col-12 input-group">
+			<input asp-for="Search"
+				   class="form-control"
+				   placeholder="Search for a news post" />
+			<a asp-action="@nameof(NewsController.Index)"
+			   asp-route-Category="@Model.CategoryId"
+			   class="btn btn-outline-secondary">Clear</a>
+			<input type="submit" value="Search" class="btn btn-outline-primary" />
+		</div>
+	</div>
 </form>
 
 @if (!string.IsNullOrEmpty(Model.Search))
 {
-    <div class="row">
-        <div class="col-12">
-            <p class="alert-sm alert-info">Searching for: <strong>@Model.Search</strong></p>
-        </div>
-    </div>
+	<div class="row">
+		<div class="col-12">
+			<p class="alert-sm alert-info">Searching for: <strong>@Model.Search</strong></p>
+		</div>
+	</div>
 }
 
 <div class="row">
-    <div class="col-12">
-        @if (Model.Posts.Count() == 0)
-        {
-            <div class="alert alert-warning">No Posts found.</div>
-        }
-        else
-        {
-            <div>
-                <table class="table table-sm table-bordered link-table">
-                    <thead>
-                        <tr>
-                            <th>Published</th>
-                            <th>Title</th>
-                            <th>Category</th>
-                            <th style="width: 4rem;">&nbsp;</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var post in Model.Posts)
-                        {
-                            <tr>
-                                <td class="td-class">
-                                    <a asp-action="@nameof(NewsController.EditPost)"
-                                       asp-route-id="@post.Id" class="rowlink">
-                                        @(post.PublishedAt.HasValue ? post.PublishedAt.Value.ToString() : "Draft")
-                                    </a>
-                                </td>
-                                <td>@post.Title</td>
-                                <td>@post.CategoryName</td>
-                                <td class="on-top d-flex justify-content-evenly">
-                                    <button type="button"
-                                            class="btn btn-outline-danger btn-sm"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal"
-                                            data-id="@post.Id"
-                                            data-name="@post.Title">
-                                        <span class="fas fa-times fa-fw" aria-hidden="true"></span>
-                                    </button>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-            <paginate paginateModel="@Model.PaginateModel"></paginate>
-        }
-    </div>
+	<div class="col-12">
+		@if (Model.Posts.Count() == 0)
+		{
+			<div class="alert alert-warning">No Posts found.</div>
+		}
+		else
+		{
+			<div>
+				<table class="table table-sm table-bordered link-table">
+					<thead>
+						<tr>
+							<th style="width:0">Pinned</th>
+							<th>Published</th>
+							<th>Title</th>
+							<th>Category</th>
+							<th style="width: 4rem;">&nbsp;</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var post in Model.Posts)
+						{
+							<tr>
+								<td class="text-center td-class">
+									<a asp-action="@nameof(NewsController.EditPost)"
+									   asp-route-id="@post.Id" class="rowlink">
+										@if (post.IsPinned)
+                                        {
+                                            <span class="fas fa-map-pin fa-fw text-info"></span>
+										}
+										else
+										{
+											@:&nbsp;
+										}
+									</a>
+								</td>
+								<td>
+									@(post.PublishedAt.HasValue? post.PublishedAt.Value.ToString() : "Draft")
+								</td>
+								<td>@post.Title</td>
+								<td>@post.CategoryName</td>
+
+								<td class="on-top d-flex justify-content-evenly">
+									<button type="button"
+											class="btn btn-outline-danger btn-sm"
+											data-bs-toggle="modal"
+											data-bs-target="#deleteModal"
+											data-id="@post.Id"
+											data-name="@post.Title">
+										<span class="fas fa-times fa-fw" aria-hidden="true"></span>
+									</button>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+			<paginate paginateModel="@Model.PaginateModel"></paginate>
+		}
+	</div>
 </div>
 
 <div class="row">
-    <div class="modal fade"
-         id="deleteModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="deleteModalLabel">
-        <div class="modal-dialog" role="document">
-            <form asp-action="@nameof(NewsController.DeletePost)"
-                  method="post"
-                  role="form">
-                <input asp-for="PaginateModel.CurrentPage" type="hidden" />
-                <input asp-for="Post.Id" type="hidden" />
-                <input asp-for="Post.Title" type="hidden" />
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title h4" id="deleteModalLabel">Delete Post</h1>
-                        <button type="button"
-                                class="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close dialog">
-                        </button>
-                    </div>
-                    <div class="modal-body p-0">
-                      <div class="modal-body d-flex align-items-stretch">
-                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
-                        <span id="modal-text"></span>
-                      </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button"
-                                class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal">
-                            Cancel
-                        </button>
-                        <button type="submit"
-                                class="btn btn-outline-danger"
-                                aria-label="Confirm"
-                                button-spinner>
-                            Delete
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
+	<div class="modal fade"
+		 id="deleteModal"
+		 tabindex="-1"
+		 role="dialog"
+		 aria-labelledby="deleteModalLabel">
+		<div class="modal-dialog" role="document">
+			<form asp-action="@nameof(NewsController.DeletePost)"
+				  method="post"
+				  role="form">
+				<input asp-for="PaginateModel.CurrentPage" type="hidden" />
+				<input asp-for="Post.Id" type="hidden" />
+				<input asp-for="Post.Title" type="hidden" />
+				<div class="modal-content">
+					<div class="modal-header">
+						<h1 class="modal-title h4" id="deleteModalLabel">Delete Post</h1>
+						<button type="button"
+								class="btn-close"
+								data-bs-dismiss="modal"
+								aria-label="Close dialog">
+						</button>
+					</div>
+					<div class="modal-body p-0">
+						<div class="modal-body d-flex align-items-stretch">
+							<span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3" aria-hidden="true"></span>
+							<span id="modal-text"></span>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button"
+								class="btn btn-outline-secondary"
+								data-bs-dismiss="modal">
+							Cancel
+						</button>
+						<button type="submit"
+								class="btn btn-outline-danger"
+								aria-label="Confirm"
+								button-spinner>
+							Delete
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
 
 @section scripts
 {
-    <script>
-        $("#deleteModal").on("show.bs.modal", function (e) {
-            var button = $(e.relatedTarget);
-            var id = button.data("id");
-            var name = button.data("name");
-            var modal = $(this);
-            modal.find("#modal-text").html("Are you sure you want to delete the post: <strong>" + name + "</strong>?");
-            modal.find("#Post_Id").val(id);
-            modal.find("#Post_Title").val(name);
-        });
+	<script>
+		$("#deleteModal").on("show.bs.modal", function (e) {
+			var button = $(e.relatedTarget);
+			var id = button.data("id");
+			var name = button.data("name");
+			var modal = $(this);
+			modal.find("#modal-text").html("Are you sure you want to delete the post: <strong>" + name + "</strong>?");
+			modal.find("#Post_Id").val(id);
+			modal.find("#Post_Title").val(name);
+		});
 
-        $(window).on("load", function () {
-            $(".td-class").each(function () {
-                $(this).children("a.rowlink").height($(this).height() + 10);
-            });
-        });
+		$(window).on("load", function () {
+			$(".td-class").each(function () {
+				$(this).children("a.rowlink").height($(this).height() + 10);
+			});
+		});
 
-        $(window).resize(function () {
-            $(".td-class").each(function () {
-                $(this).children("a.rowlink").height($(this).height() + 10);
-            });
-        });
-    </script>
+		$(window).resize(function () {
+			$(".td-class").each(function () {
+				$(this).children("a.rowlink").height($(this).height() + 10);
+			});
+		});
+	</script>
 }
