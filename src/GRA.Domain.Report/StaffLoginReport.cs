@@ -32,7 +32,7 @@ namespace GRA.Domain.Report
 
         public override async Task ExecuteAsync(ReportRequest request,
            CancellationToken token,
-           IProgress<JobStatus> progress = null)
+           IProgress<JobStatus> progress)
         {
             #region Reporting initialization
 
