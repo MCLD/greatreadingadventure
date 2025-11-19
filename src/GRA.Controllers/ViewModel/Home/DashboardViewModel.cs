@@ -11,6 +11,8 @@ namespace GRA.Controllers.ViewModel.Home
         public int? ActivityAmount { get; set; }
         public string ActivityDescriptionPlural { get; set; }
         public int? ActivityEarned { get; set; }
+        public int? ActivityPercentComplete { get; set; }
+        public string ActivityProgressMessage { get; set; }
 
         [MaxLength(255, ErrorMessage = ErrorMessages.MinLength)]
         [DisplayName(DisplayNames.Author)]
@@ -41,8 +43,9 @@ namespace GRA.Controllers.ViewModel.Home
 
         public bool HasPendingVendorCodeQuestion { get; set; }
         public bool IsPerformerScheduling { get; set; }
-        public int? PercentComplete { get; set; }
+        public int? PersonalPercentComplete { get; set; }
         public string ProgramName { get; set; }
+        public int? ProgramPercentComplete { get; set; }
         public string ProgressMessage { get; set; }
 
         [DisplayName(DisplayNames.SecretCode)]
@@ -58,7 +61,7 @@ namespace GRA.Controllers.ViewModel.Home
         [DisplayName(DisplayNames.Title)]
         public string Title { get; set; }
 
-        public int? TotalProgramGoal { get; set; }
+        public int? TotalPercentComplete { get; set; }
         public int? TotalSiteActivity { get; set; }
         public ICollection<Event> UpcomingStreams { get; set; }
         public User User { get; set; }

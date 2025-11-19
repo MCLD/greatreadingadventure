@@ -1538,14 +1538,22 @@ namespace GRA.Domain.Service
                                                                 .HasValue
                                                             && code.UserId.HasValue)
                                                         {
-                                                            var result = await SendPickupEmailAsync(
+                                                            bool? result;
+                                                            try
+                                                            {
+                                                                result = await SendPickupEmailAsync(
                                                                 vendorCodeType
                                                                     .ReadyForPickupEmailTemplateId
                                                                     .Value,
                                                                 code.UserId.Value,
                                                                 emailDetails,
                                                                 code);
-
+                                                            }
+                                                            catch (GraException)
+                                                            {
+                                                                result = false;
+                                                            }
+                                                            
                                                             if (result == true)
                                                             {
                                                                 emailsSent++;
@@ -1997,11 +2005,26 @@ namespace GRA.Domain.Service
                             && vendorCode.IsDamaged != true
                             && vendorCode.IsMissing != true)
                         {
-                            vendorCodeInfo.VendorCodeMessage
+                            if (vendorCode.BranchId.HasValue)
+                            {
+                                var branch = await _siteService.GetBranchByIdAsync(
+                                    vendorCode.BranchId.Value);
+                                vendorCodeInfo.VendorCodeMessage
+                                = _sharedLocalizer[Annotations.Info.VendorItemArrivedAtBranch,
+                                    itemName,
+                                    vendorCode.ArrivalDate.Value
+                                        .ToString("d", CultureInfo.InvariantCulture),
+                                    branch.Url,
+                                    branch.Name];
+                            }
+                            else
+                            {
+                                vendorCodeInfo.VendorCodeMessage
                                 = _sharedLocalizer[Annotations.Info.VendorItemArrived,
                                     itemName,
                                     vendorCode.ArrivalDate.Value
                                         .ToString("d", CultureInfo.InvariantCulture)];
+                            }
 
                             vendorCodeInfo.OrderStatus = VendorOrderStatus.Arrived;
                         }
@@ -2054,7 +2077,7 @@ namespace GRA.Domain.Service
         {
             var user = await _userRepository.GetByIdAsync(userId);
 
-            if (user != null && !string.IsNullOrEmpty(user.Email))
+            if (user != null && !string.IsNullOrEmpty(user.Email) && !user.CannotBeEmailed)
             {
                 emailDetails.ClearTags();
                 emailDetails.DirectEmailTemplateId = templateId;

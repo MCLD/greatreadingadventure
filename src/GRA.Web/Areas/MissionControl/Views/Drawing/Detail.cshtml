@@ -55,6 +55,39 @@
                readonly />
     </div>
 </div>
+@if (Model.Drawing.NotificationSent)
+{
+    <div class="row mb-2">
+        <div class="col-12">
+            <div class="card border-info">
+                <div class="card-header text-info-emphasis">Message sent to winners</div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label asp-for="Drawing.NotificationSubject"
+                                   class="col-form-label"></label>
+                            <input asp-for="Drawing.NotificationSubject"
+                                   class="form-control" readonly />
+                            <span asp-validation-for="Drawing.NotificationSubject"
+                                  class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label asp-for="Drawing.NotificationMessage"
+                                   class="col-form-label"></label>
+                            <textarea asp-for="Drawing.NotificationMessage"
+                                      class="form-control"
+                                      readonly></textarea>
+                            <span asp-validation-for="Drawing.NotificationMessage"
+                                  class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 <div class="row mb-4">
     <div class="col-12">
         <label asp-for="Drawing.RedemptionInstructions" class="col-form-label"></label>
@@ -66,6 +99,15 @@
     <div class="col-12">
         <div class="d-flex align-items-center">
             <div class="flex-grow-1 h2">Winners</div>
+            @if (Model.CanMailWinners)
+            {
+                <button type="button"
+                        class="btn btn-outline-success btn-sm me-2"
+                        data-bs-toggle="modal"
+                        data-bs-target="#mailModal">
+                    Message Winners
+                </button>
+            }
             <div>
                 <a asp-action="@nameof(DrawingController.DownloadWinners)"
                    asp-route-id="@Model.Drawing.Id"
@@ -239,6 +281,72 @@
         </div>
     </div>
 </div>
+
+@if (Model.CanMailWinners)
+{
+    <div class="modal fade"
+         id="mailModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="mailModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <form asp-controller="@DrawingController.Name"
+                  asp-action="@nameof(DrawingController.MailWinners)"
+                  method="post"
+                  role="form"
+                  style="display:inline">
+                <input asp-for="Drawing.Id" type="hidden" />
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title h4" id="mailModalLabel">Message Winners</h1>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close dialog">
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <div class="alert alert-warning">
+                                <strong>Please note:</strong> there is no undo, once a message is
+                                sent it will remain in the participant's inbox!
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Drawing.NotificationSubject"
+                                   class="col-form-label"></label>
+                            <input asp-for="Drawing.NotificationSubject"
+                                   class="form-control" />
+                            <span asp-validation-for="Drawing.NotificationSubject"
+                                  class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Drawing.NotificationMessage"
+                                   class="col-form-label"></label>
+                            <textarea asp-for="Drawing.NotificationMessage"
+                                      class="form-control"></textarea>
+                            <span asp-validation-for="Drawing.NotificationMessage"
+                                  class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-outline-primary"
+                                aria-label="Confirm"
+                                button-spinner>
+                            Send Message
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+}
 
 @section scripts
 {

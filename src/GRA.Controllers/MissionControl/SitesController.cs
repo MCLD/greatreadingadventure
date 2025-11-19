@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using EmailValidation;
 using GRA.Controllers.ViewModel.MissionControl.Sites;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
@@ -73,6 +75,16 @@ namespace GRA.Controllers.MissionControl
             ArgumentNullException.ThrowIfNull(model);
 
             var site = await _siteLookupService.GetByIdAsync(model.Id);
+
+            if (!string.IsNullOrWhiteSpace(model.FromEmailAddress)
+                && !EmailValidator.Validate(model.FromEmailAddress.Trim()))
+            {
+                ModelState.AddModelError("FromEmailAddress",
+                    string.Format(CultureInfo.InvariantCulture,
+                        Annotations.Validate.Email,
+                        "From Email Address"));
+            }
+
             if (ModelState.IsValid)
             {
                 try

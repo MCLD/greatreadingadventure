@@ -365,6 +365,13 @@ namespace GRA.Controllers.MissionControl
                     PaginateModel = paginateModel
                 };
 
+                if (UserHasPermission(Permission.MailParticipants)
+                    && !drawing.Data.NotificationSent
+                    && drawing.Data.Winners.Any())
+                {
+                    viewModel.CanMailWinners = true;
+                }
+
                 return View(viewModel);
             }
             catch (GraException gex)
@@ -612,6 +619,32 @@ namespace GRA.Controllers.MissionControl
             return View(viewModel);
         }
 
+        [Authorize(Policy = Policy.MailParticipants)]
+        [HttpPost]
+        public async Task<IActionResult> MailWinners(DrawingDetailViewModel model)
+        {
+            ArgumentNullException.ThrowIfNull(model);
+
+            if (string.IsNullOrWhiteSpace(model.Drawing.NotificationSubject)
+                || string.IsNullOrWhiteSpace(model.Drawing.NotificationMessage))
+            {
+                ShowAlertWarning("A subject and message are required to send mail to winners.");
+            }
+            else
+            {
+                try
+                {
+                    await _drawingService.SendWinnerMailAsync(model.Drawing);
+                    ShowAlertSuccess("Mail sent to winners.");
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger("Unable to mail drawing winners: ", gex);
+                }
+            }
+            return RedirectToAction(nameof(Detail), new { model.Drawing.Id });
+        }
+
         public async Task<IActionResult> New(int id)
         {
             try
@@ -627,8 +660,7 @@ namespace GRA.Controllers.MissionControl
 
                 var viewModel = new DrawingNewViewModel()
                 {
-                    Drawing = drawing,
-                    CanSendMail = UserHasPermission(Permission.MailParticipants)
+                    Drawing = drawing
                 };
 
                 return View(viewModel);
@@ -645,23 +677,9 @@ namespace GRA.Controllers.MissionControl
         {
             ArgumentNullException.ThrowIfNull(model);
 
-            if (string.IsNullOrWhiteSpace(model.Drawing.NotificationSubject)
-                && !string.IsNullOrWhiteSpace(model.Drawing.NotificationMessage))
-            {
-                ModelState.AddModelError("NotificationSubject",
-                    "A subject is required to accompany the message");
-            }
-
-            if (!string.IsNullOrWhiteSpace(model.Drawing.NotificationSubject)
-                && string.IsNullOrWhiteSpace(model.Drawing.NotificationMessage))
-            {
-                ModelState.AddModelError("NotificationMessage",
-                    "A message is required to accompany the subject");
-            }
-
             if (model.Drawing.WinnerCount > model.Drawing.DrawingCriterion.EligibleCount)
             {
-                ModelState.AddModelError("WinnerCount",
+                ModelState.AddModelError("Drawing.WinnerCount",
                     "Cannot have more Winners than Eligible Participants");
             }
 

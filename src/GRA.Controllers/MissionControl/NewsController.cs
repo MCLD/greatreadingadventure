@@ -95,7 +95,8 @@ namespace GRA.Controllers.MissionControl
             {
                 Action = nameof(CreatePost),
                 Categories
-                    = new SelectList(await _newsService.GetAllCategoriesAsync(), "Id", "Name")
+                    = new SelectList(await _newsService.GetAllCategoriesAsync(), "Id", "Name"),
+                NoYes = NoYesSelectList()
             };
 
             return View("PostDetail", viewModel);
@@ -128,6 +129,7 @@ namespace GRA.Controllers.MissionControl
             model.Action = nameof(CreatePost);
             model.Categories
                 = new SelectList(await _newsService.GetAllCategoriesAsync(), "Id", "Name");
+            model.NoYes = NoYesSelectList();
 
             return View("PostDetail", model);
         }
@@ -255,6 +257,7 @@ namespace GRA.Controllers.MissionControl
             model.Action = nameof(CreatePost);
             model.Categories
                 = new SelectList(await _newsService.GetAllCategoriesAsync(), "Id", "Name");
+            model.NoYes = NoYesSelectList();
 
             return View("PostDetail", model);
         }

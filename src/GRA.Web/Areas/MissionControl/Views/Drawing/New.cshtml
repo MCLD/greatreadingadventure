@@ -44,25 +44,6 @@
             <span asp-validation-for="Drawing.RedemptionInstructions" class="text-danger"></span>
         </div>
     </div>
-    @if (Model.CanSendMail)
-    {
-        <input asp-for="CanSendMail" type="hidden" />
-        <div class="row mb-2">
-            <div class="col-12">
-                <label asp-for="Drawing.NotificationSubject" class="col-form-label"></label>
-                <input asp-for="Drawing.NotificationSubject" class="form-control" />
-                <span asp-validation-for="Drawing.NotificationSubject" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="row mb-2">
-            <div class="col-12">
-                <label asp-for="Drawing.NotificationMessage" class="col-form-label"></label>
-                <textarea asp-for="Drawing.NotificationMessage" class="form-control"></textarea>
-                <span asp-validation-for="Drawing.NotificationMessage" class="text-danger"></span>
-            </div>
-        </div>
-    }
     <div class="mb-3">
         <button type="submit"
                 id="Submit"

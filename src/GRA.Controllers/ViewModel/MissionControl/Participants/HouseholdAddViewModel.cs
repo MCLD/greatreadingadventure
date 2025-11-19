@@ -31,5 +31,9 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
 
         public string TranslationDescriptionPastTense { get; set; }
         public string ActivityDescriptionPlural { get; set; }
+
+        public bool AskPersonalPointGoal { get; set; }
+        public int? MaximumPersonalPointGoal { get; set; }
+        public int? MinimumPersonalPointGoal { get; set; }
     }
 }

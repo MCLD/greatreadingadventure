@@ -1693,4 +1693,60 @@
     <value>View bundle options</value>
     <comment>Text for screen readers to indicate the image can be selected to view wardrobe bundle options</comment>
   </data>
+  <data name="&lt;em&gt;{0}&lt;/em&gt; arrived on &lt;strong&gt;{1}&lt;/strong&gt; and is ready for pick-up at &lt;a href=&quot;{2}&quot; target=&quot;_blank&quot;&gt;{3}&lt;/a&gt;." xml:space="preserve">
+    <value>&lt;em&gt;{0}&lt;/em&gt; arrived on &lt;strong&gt;{1}&lt;/strong&gt; and is ready for pick-up at &lt;a href="{2}" target="_blank"&gt;{3}&lt;/a&gt;.</value>
+    <comment>Message informing the user their requested item has arrived and where to pick it up at, {0} is the name of the item , {1} is the date it arrived, {2} is a link to the branch's webpage and {3} is the branch's name.</comment>
+  </data>
+  <data name="&lt;strong&gt;{0}&lt;/strong&gt; is not a valid code." xml:space="preserve">
+    <value>&lt;strong&gt;{0}&lt;/strong&gt; is not a valid code.</value>
+    <comment>Validation prompt if the user submits an invalid secret code; {0} is replaced with the secret code.</comment>
+  </data>
+  <data name="You already entered the code &lt;strong&gt;{0}&lt;/strong&gt; on &lt;strong&gt;{1}&lt;/strong&gt;!" xml:space="preserve">
+    <value>You already entered the code &lt;strong&gt;{0}&lt;/strong&gt; on &lt;strong&gt;{1}&lt;/strong&gt;!</value>
+    <comment>Validation prompt if the user submits a secret code they've already submitted; {0} is replaced with the secret code, {1} is the date the code was submitted</comment>
+  </data>
+  <data name="&lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{1}&lt;/strong&gt; was added to your book list." xml:space="preserve">
+    <value>&lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{1}&lt;/strong&gt; was added to your book list.</value>
+    <comment>Message shown when a participant adds a new book; {0} is replaced with the title, {1} with the author</comment>
+  </data>
+  <data name="&lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{1}&lt;/strong&gt; is already on the book list." xml:space="preserve">
+    <value>&lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{1}&lt;/strong&gt; is already on the book list.</value>
+    <comment>Validation prompt if the user attempts to add a book already on their booklist; {0} is replaced with the title, {1} with the author</comment>
+  </data>
+  <data name="You have reached the program's goal!" xml:space="preserve">
+    <value>You have reached the program's goal!</value>
+    <comment>Inform the user they have reached the point goal of the program</comment>
+  </data>
+  <data name="Your personal reading goal is {0} minutes." xml:space="preserve">
+    <value>Your personal reading goal is {0} minutes.</value>
+    <comment>Inform the user of their personal reading goal in minutes; {0} is replaced with the number of minutes</comment>
+  </data>
+  <data name="Set a personal point goal" xml:space="preserve">
+    <value>Set a personal point goal</value>
+    <comment>Prompt participant for a personal point goal when participating in the program</comment>
+  </data>
+  <data name="My reading progress" xml:space="preserve">
+    <value>My reading progress</value>
+    <comment>Display prior to progress bar showing the participant's progress towards their daily reading goal</comment>
+  </data>
+  <data name="Points I will earn" xml:space="preserve">
+    <value>Points I will earn</value>
+    <comment>Text next to an input where participants will enter their point goal</comment>
+  </data>
+  <data name="A personal goal beyond the program default goal of {0} points." xml:space="preserve">
+    <value>A personal goal beyond the program default goal of {0} points.</value>
+    <comment>Tooltip informing users the purpose of the personal point goal field</comment>
+  </data>
+  <data name="You have {0}/{1} points towards your personal goal." xml:space="preserve">
+    <value>You have {0}/{1} points towards your personal goal.</value>
+    <comment>Inform the user of their progress towards their personal point goal; {0} is replaced with the number of points the user has, {1} is their point goal</comment>
+  </data>
+  <data name="You have completed your personal goal of {0} points!" xml:space="preserve">
+    <value>You have completed your personal goal of {0} points!</value>
+    <comment>Inform the user they have completed their personal point goal; {0} is replaced with their point goal</comment>
+  </data>
+  <data name="We are unable to send you emails at this address. Please enter a valid email address or contact {0} for assistance." xml:space="preserve">
+    <value>We are unable to send you emails at this address. Please enter a valid email address or contact {0} for assistance.</value>
+    <comment>Message letting the user know the email address they entered is unable to receive emails and instructing them to either change their email to a valid one or contact their library branch for help. {0} is replaced with the name of the user's branch.</comment>
+  </data>
 </root>

@@ -16,6 +16,8 @@ namespace GRA.Data.Model
 
         public bool CanBeDeleted { get; set; }
 
+        public bool CannotBeEmailed { get; set; }
+
         [MaxLength(64)]
         public string CardNumber { get; set; }
 
@@ -67,6 +69,8 @@ namespace GRA.Data.Model
         public string LockedOutFor { get; set; }
 
         public string PasswordHash { get; set; }
+
+        public int? PersonalPointGoal { get; set; }
 
         [MaxLength(15)]
         public string PhoneNumber { get; set; }
