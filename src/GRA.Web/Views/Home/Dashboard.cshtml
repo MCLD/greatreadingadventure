@@ -7,72 +7,72 @@
 
 @if (Model.HasPendingVendorCodeQuestion)
 {
-    <div class="row">
-        <div class="col-12 text-center">
-            <div class="alert alert-success mb-2 fs-4">
-                @if (Model.VendorCodeExpiration.HasValue)
-                {
-                    @SharedHtmlLocalizer[GRA.Annotations.Info.FreeBookRedeemExpirationDashboard,
-                             Url.Action(nameof(ProfileController.Index), ProfileController.Name),
-                             Model.VendorCodeExpiration.Value.AddMilliseconds(-1).ToString("MMMM dd")]
-                }
-                else
-                {
-                    @SharedHtmlLocalizer[GRA.Annotations.Info.FreeBookRedeemDashboard,
-                             Url.Action(nameof(ProfileController.Index), ProfileController.Name)]
-                }
-            </div>
-        </div>
-    </div>
+	<div class="row">
+		<div class="col-12 text-center">
+			<div class="alert alert-success mb-2 fs-4">
+				@if (Model.VendorCodeExpiration.HasValue)
+				{
+					@SharedHtmlLocalizer[GRA.Annotations.Info.FreeBookRedeemExpirationDashboard,
+					Url.Action(nameof(ProfileController.Index), ProfileController.Name),
+						Model.VendorCodeExpiration.Value.AddMilliseconds(-1).ToString("MMMM dd")]
+						}
+				else
+				{
+					@SharedHtmlLocalizer[GRA.Annotations.Info.FreeBookRedeemDashboard,
+					Url.Action(nameof(ProfileController.Index), ProfileController.Name)]
+						}
+			</div>
+		</div>
+	</div>
 }
 else if (Model.HasOrderStatus)
 {
-    <div class="row">
-        <div class="col-12">
-            <div class="card mb-2">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="d-flex justify-content-evenly">
-                            <div>
-                                <span class="fas fa-shopping-cart fa-2x @Model.ActiveStatus(VendorOrderStatus.Ordered)"></span>
-                            </div>
-                            <div>
-                                <span class="fas fa-arrow-alt-circle-right fa-2x text-body-tertiary"></span>
-                            </div>
-                            <div>
-                                <span class="fas fa-shipping-fast fa-2x @Model.ActiveStatus(VendorOrderStatus.Shipped)"></span>
-                            </div>
-                            <div>
-                                <span class="fas fa-arrow-alt-circle-right fa-2x text-body-tertiary"></span>
-                            </div>
+	<div class="row">
+		<div class="col-12">
+			<div class="card mb-2">
+				<div class="card-body">
+					<div class="row">
+						<div class="d-flex justify-content-evenly">
+							<div>
+								<span class="fas fa-shopping-cart fa-2x @Model.ActiveStatus(VendorOrderStatus.Ordered)"></span>
+							</div>
+							<div>
+								<span class="fas fa-arrow-alt-circle-right fa-2x text-body-tertiary"></span>
+							</div>
+							<div>
+								<span class="fas fa-shipping-fast fa-2x @Model.ActiveStatus(VendorOrderStatus.Shipped)"></span>
+							</div>
+							<div>
+								<span class="fas fa-arrow-alt-circle-right fa-2x text-body-tertiary"></span>
+							</div>
 
-                            <div>
-                                <span class="fas fa-box fa-2x @Model.ActiveStatus(VendorOrderStatus.Arrived)"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-footer text-center">
-                    @Html.Raw(Model.User.VendorCodeMessage)
-                </div>
-            </div>
-        </div>
-    </div>
+							<div>
+								<span class="fas fa-box fa-2x @Model.ActiveStatus(VendorOrderStatus.Arrived)"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card-footer text-center">
+					@Html.Raw(Model.User.VendorCodeMessage)
+				</div>
+			</div>
+		</div>
+	</div>
 }
 <div class="row">
-    <div class="col-md-3">
-        @if (Model.SiteStage != GRA.Domain.Model.SiteStage.BeforeRegistration)
-        {
-            <div class="card mb-2">
-                <div class="card-header fw-bold">@SharedLocalizer[GRA.Annotations.Title.Avatar]</div>
-                <div class="card-body text-center py-0">
-                    <a asp-controller="Avatar" asp-action="Index">
-                        @if (Model.AvatarElements?.Count > 0)
-                        {
-                            <div class="avatar-container-dashboard">
-                                @foreach (var layer in Model.AvatarElements)
-                                {
-                                    <img src="~/@layer.Filename"
+	<div class="col-md-3">
+		@if (Model.SiteStage != GRA.Domain.Model.SiteStage.BeforeRegistration)
+		{
+			<div class="card mb-2">
+				<div class="card-header fw-bold">@SharedLocalizer[GRA.Annotations.Title.Avatar]</div>
+				<div class="card-body text-center py-0">
+					<a asp-controller="Avatar" asp-action="Index">
+						@if (Model.AvatarElements?.Count > 0)
+						{
+							<div class="avatar-container-dashboard">
+								@foreach (var layer in Model.AvatarElements)
+								{
+									<img src="~/@layer.Filename"
 										 style="z-index: @(layer.LayerPosition + 1)"
                                          class="avatar-layer-dashboard"
 										 alt="@layer.AltText"/>
@@ -91,23 +91,63 @@ else if (Model.HasOrderStatus)
                         <p class="fs-4 mb-1">
                             @SharedHtmlLocalizer["You have <strong>{0}</strong> points.", Model.User.PointsEarned]
                         </p>
-                        @if (Model.TotalProgramGoal.HasValue)
-                        {
-                            <p class="fs-5 mb-2">@SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProgress]</p>
-                            <div class="progress" style="height: 1.5rem;">
-                                <div class="progress-bar progress-bar-striped @(Model.PercentComplete == 100 ? " progress-bar-success" : "") wide-tooltip"
-                                     role="progressbar"
-                                     aria-valuenow="@Model.PercentComplete"
-                                     aria-valuemin="0"
-                                     aria-valuemax="100"
-                                     style="width: @Model.PercentComplete%; min-width: 2rem;"
-                                     title="@Model.ProgressMessage"
-                                     data-bs-toggle="tooltip"
-                                     data-bs-placement="top">
-                                    @Model.PercentComplete%
-                                </div>
-                            </div>
-                        }
+						<p class="fs-5 mb-2">@SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProgress]</p>
+						<div class="progress-stacked wide-tooltip"
+							 style="height: 1.5rem;"
+							 title="@Model.ProgressMessage"
+							 data-bs-toggle="tooltip"
+							 data-bs-placement="top">
+							<div class="progress h-100"
+								 role="progressbar"
+								 aria-valuenow="@Model.ProgramPercentComplete"
+								 aria-valuemin="0"
+								 aria-valuemax="100"
+								 style="width: @Model.ProgramPercentComplete%; min-width: 2rem;">
+								<div class="progress-bar progress-bar-striped w-100">
+									<span class="@(Model.PersonalPercentComplete.HasValue ? "d-none" : "")">
+										@Model.ProgramPercentComplete%
+									</span>
+								</div>
+							</div>
+							@if (Model.PersonalPercentComplete.HasValue)
+							{
+								<div class="progress h-100"
+									 role="progressbar"
+									 aria-valuenow="@Model.PersonalPercentComplete"
+									 aria-valuemin="0"
+									 aria-valuemax="100"
+									 style="width: @Model.PersonalPercentComplete%; min-width: 2rem;">
+									<div class="progress-bar progress-bar-striped text-bg-warning w-100">
+										@Model.TotalPercentComplete%
+									</div>
+								</div>
+							}
+						</div>
+						@if (Model.PersonalPercentComplete.HasValue)
+						{
+							<div>
+								<p class="mb-2">@SharedLocalizer[GRA.Annotations.Info.GoalComplete]</p>
+								<p class="mb-2">@Model.ProgressMessage</p>
+							</div>
+						}
+						@if (Model.ActivityPercentComplete.HasValue)
+						{
+							<p class="fs-5 mt-2 mb-2">@SharedLocalizer[GRA.Domain.Model.DisplayNames.MyReadingProgress]</p>
+							<div class="progress wide-tooltip"
+								 role="progressbar"
+								 aria-valuenow="@Model.ActivityPercentComplete"
+								 aria-valuemin="0"
+								 aria-valuemax="100"
+								 style="height: 1.5rem;"
+								 title="@Model.ActivityProgressMessage"
+								 data-bs-toggle="tooltip"
+								 data-bs-placement="top">
+								<div class="progress-bar progress-bar-striped @(Model.ActivityPercentComplete == 100 ? " text-bg-success" : "")"
+									 style="width: @Model.ActivityPercentComplete%; min-width: 2rem;">
+									@Model.ActivityPercentComplete%
+								</div>
+							</div>
+						}
                     </div>
                 </div>
                 <div class="card-footer text-center fw-bold">
@@ -327,365 +367,365 @@ else if (Model.HasOrderStatus)
                     </div>
                 </form>
 
-            }
-        }
-        @if (!string.IsNullOrWhiteSpace(Model.DashboardPageContent))
-        {
-            <div class="card d-none d-md-block mb-2">
-                <div class="dashboard-page-container">
-                    @Html.Raw(Model.DashboardPageContent)
-                </div>
-            </div>
-        }
-    </div>
-    <div class="col-md-3">
-        @if (Model.SiteStage != GRA.Domain.Model.SiteStage.BeforeRegistration)
-        {
-            int display = 0;
-            <div class="card mb-2">
-                <div class="card-header fw-bold">@SharedLocalizer["Your badges"]</div>
-                <div class="card-body text-center">
-                    <div class="row">
-                        @if (Model.UserLogs.Count() > 0)
-                        {
-                            foreach (var userLog in Model.UserLogs)
-                            {
-                                if (display < 3)
-                                {
-                                    <div class="col-lg-6 col-md-12 col-4 dashboard-badge">
-                                        <a href="#"
-                                           data-bs-toggle="modal"
-                                           data-bs-target="#badgeDetailsModal"
-                                           data-id="@userLog.Id">
-                                            <img alt="@userLog.BadgeAltText"
-                                                 class="img-thumbnail badge-sm"
-                                                 src="~/@userLog.BadgeFilename"
-                                                 asp-append-version="true" />
-                                        </a>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="col-lg-6 col-md-12 col-4 d-md-block dashboard-badge">
-                                        <a href="#"
-                                           data-bs-toggle="modal"
-                                           data-bs-target="#badgeDetailsModal"
-                                           data-id="@userLog.Id">
-                                            <img alt="@userLog.BadgeAltText"
-                                                 class="img-thumbnail badge-sm"
-                                                 src="~/@userLog.BadgeFilename"
-                                                 asp-append-version="true" />
-                                        </a>
-                                    </div>
-                                }
-                                display++;
-                                if (display >= 6)
-                                {
-                                    break;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            <p>@SharedLocalizer["Participate in program activities to earn badges!"]</p>
-                        }
-                    </div>
-                </div>
-                <div class="card-footer text-center">
-                    @if (display >= 6)
-                    {
-                        <a asp-controller="Profile"
-                           asp-action="Badges"
-                           class="fw-bold">@SharedLocalizer["See more of your badges"]</a>
-                    }
-                </div>
-            </div>
-            if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))
-            {
-                <div class="card mb-2">
-                    <div class="card-body text-center">
-                        <button type="button"
-                                data-bs-toggle="modal"
-                                data-bs-target="#dailyImageModal"
-                                class="btn btn-outline-primary btn-lg"
-                                data-src="@Url.Content($"~/{Model.DailyImagePath}")">
-                            @Model.DailyImageMessage
-                        </button>
-                    </div>
-                </div>
-            }
-        }
-        @if (Model.UpcomingStreams?.Count() > 0)
-        {
-            <div class="card text-center mb-2">
-                <div class="card-header fw-bold">
-                    <a asp-controller="@EventsController.Name"
-                       asp-action="@nameof(EventsController.StreamingEvents)">
-                        @SharedLocalizer[GRA.Annotations.Interface.StreamingEvents]
-                    </a>
-                </div>
-                <ul class="list-group">
-                    @foreach (var stream in Model.UpcomingStreams)
-                    {
-                        <li class="list-group-item">
-                            <a href="@Url.Action(nameof(EventsController.Stream),
-                                    EventsController.Name,
-                                    new { id = stream.Id })">
-                                @stream.Name
-                            </a>
-                            @if (stream.EndDate.HasValue)
-                            {
-                                <small class="d-block">
-                                    <em>
-                                        @SharedLocalizer[GRA.Annotations.Interface.StreamingEnds, stream.EndDate.Value.ToString("d")]
-                                    </em>
-                                </small>
-                            }
-                        </li>
-                    }
-                </ul>
-            </div>
-        }
-    </div>
+			}
+		}
+		@if (!string.IsNullOrWhiteSpace(Model.DashboardPageContent))
+		{
+			<div class="card d-none d-md-block mb-2">
+				<div class="dashboard-page-container">
+					@Html.Raw(Model.DashboardPageContent)
+				</div>
+			</div>
+		}
+	</div>
+	<div class="col-md-3">
+		@if (Model.SiteStage != GRA.Domain.Model.SiteStage.BeforeRegistration)
+		{
+			int display = 0;
+			<div class="card mb-2">
+				<div class="card-header fw-bold">@SharedLocalizer["Your badges"]</div>
+				<div class="card-body text-center">
+					<div class="row">
+						@if (Model.UserLogs.Count() > 0)
+						{
+							foreach (var userLog in Model.UserLogs)
+							{
+								if (display < 3)
+								{
+									<div class="col-lg-6 col-md-12 col-4 dashboard-badge">
+										<a href="#"
+										   data-bs-toggle="modal"
+										   data-bs-target="#badgeDetailsModal"
+										   data-id="@userLog.Id">
+											<img alt="@userLog.BadgeAltText"
+												 class="img-thumbnail badge-sm"
+												 src="~/@userLog.BadgeFilename"
+												 asp-append-version="true" />
+										</a>
+									</div>
+								}
+								else
+								{
+									<div class="col-lg-6 col-md-12 col-4 d-md-block dashboard-badge">
+										<a href="#"
+										   data-bs-toggle="modal"
+										   data-bs-target="#badgeDetailsModal"
+										   data-id="@userLog.Id">
+											<img alt="@userLog.BadgeAltText"
+												 class="img-thumbnail badge-sm"
+												 src="~/@userLog.BadgeFilename"
+												 asp-append-version="true" />
+										</a>
+									</div>
+								}
+								display++;
+								if (display >= 6)
+								{
+									break;
+								}
+							}
+						}
+						else
+						{
+							<p>@SharedLocalizer["Participate in program activities to earn badges!"]</p>
+						}
+					</div>
+				</div>
+				<div class="card-footer text-center">
+					@if (display >= 6)
+					{
+						<a asp-controller="Profile"
+						   asp-action="Badges"
+						   class="fw-bold">@SharedLocalizer["See more of your badges"]</a>
+					}
+				</div>
+			</div>
+			if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))
+			{
+				<div class="card mb-2">
+					<div class="card-body text-center">
+						<button type="button"
+								data-bs-toggle="modal"
+								data-bs-target="#dailyImageModal"
+								class="btn btn-outline-primary btn-lg"
+								data-src="@Url.Content($"~/{Model.DailyImagePath}")">
+							@Model.DailyImageMessage
+						</button>
+					</div>
+				</div>
+			}
+		}
+		@if (Model.UpcomingStreams?.Count() > 0)
+		{
+			<div class="card text-center mb-2">
+				<div class="card-header fw-bold">
+					<a asp-controller="@EventsController.Name"
+					   asp-action="@nameof(EventsController.StreamingEvents)">
+						@SharedLocalizer[GRA.Annotations.Interface.StreamingEvents]
+					</a>
+				</div>
+				<ul class="list-group">
+					@foreach (var stream in Model.UpcomingStreams)
+					{
+						<li class="list-group-item">
+							<a href="@Url.Action(nameof(EventsController.Stream),
+																																																																	EventsController.Name,
+																																																																	new { id = stream.Id })">
+						@stream.Name
+					</a>
+					@if (stream.EndDate.HasValue)
+							{
+								<small class="d-block">
+									<em>
+										@SharedLocalizer[GRA.Annotations.Interface.StreamingEnds, stream.EndDate.Value.ToString("d")]
+									</em>
+								</small>
+							}
+						</li>
+					}
+				</ul>
+			</div>
+		}
+	</div>
 </div>
 @if (!string.IsNullOrWhiteSpace(Model.DashboardPageContent))
 {
-    <div class="row d-md-none">
-        <div class="col-12 mb-2">
-            <div class="card">
-                <div class="dashboard-page-container">
-                    @Html.Raw(Model.DashboardPageContent)
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="row d-md-none">
+		<div class="col-12 mb-2">
+			<div class="card">
+				<div class="dashboard-page-container">
+					@Html.Raw(Model.DashboardPageContent)
+				</div>
+			</div>
+		</div>
+	</div>
 }
 @if (Model.Carousel != null)
 {
-    <div class="sr-only">
-        @if (!string.IsNullOrEmpty(Model.Carousel.Heading))
-        {
-            <h2>@Model.Carousel.Heading</h2>
-        }
-        <ul>
-            @foreach (var item in Model.Carousel.Items)
-            {
-                <li>@item.Title</li>
-            }
-        </ul>
-    </div>
-    <div class="row gra-js-required gra-carousel-container" aria-hidden="true">
-        <div class="col-12">
-            <div class="card mb-2">
-                @if (!string.IsNullOrEmpty(Model.Carousel.Heading))
-                {
-                    <div class="card-header fw-bold">@Model.Carousel.Heading</div>
-                }
-                <div class="card-body">
-                    <div class="gra-carousel text-center">
-                        @foreach (var item in Model.Carousel.Items)
-                        {
-                            <div>
-                                <a href="#"
-                                   class="gra-carousel-link"
-                                   data-bs-toggle="modal"
-                                   data-bs-target="#graCarouselModal"
-                                   data-itemid="@item.Id"
-                                   data-title="@item.Title"
-                                   data-img="@item.ImageUrl">
-                                    <img src="@item.ImageUrl" />
-                                    <p>@item.Title</p>
-                                </a>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="sr-only">
+		@if (!string.IsNullOrEmpty(Model.Carousel.Heading))
+		{
+			<h2>@Model.Carousel.Heading</h2>
+		}
+		<ul>
+			@foreach (var item in Model.Carousel.Items)
+			{
+				<li>@item.Title</li>
+			}
+		</ul>
+	</div>
+	<div class="row gra-js-required gra-carousel-container" aria-hidden="true">
+		<div class="col-12">
+			<div class="card mb-2">
+				@if (!string.IsNullOrEmpty(Model.Carousel.Heading))
+				{
+					<div class="card-header fw-bold">@Model.Carousel.Heading</div>
+				}
+				<div class="card-body">
+					<div class="gra-carousel text-center">
+						@foreach (var item in Model.Carousel.Items)
+						{
+							<div>
+								<a href="#"
+								   class="gra-carousel-link"
+								   data-bs-toggle="modal"
+								   data-bs-target="#graCarouselModal"
+								   data-itemid="@item.Id"
+								   data-title="@item.Title"
+								   data-img="@item.ImageUrl">
+									<img src="@item.ImageUrl" />
+									<p>@item.Title</p>
+								</a>
+							</div>
+						}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 }
 @if (Model.Carousel != null)
 {
-    <div class="modal fade"
-         id="graCarouselModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="graCarouselModal">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="h4" id="graCarouselModalHeader"></h1>
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col col-md-3 mb-2">
-                            <img id="graCarouselModalImage"
-                                 class="img-fluid mx-auto d-block" />
-                        </div>
-                        <div class="col-12 col-md-9">
-                            <p id="graCarouselModalContent" class="gra-carousel-modal-content"></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-outline-secondary"
-                            data-bs-dismiss="modal">
-                        @SharedLocalizer[GRA.Annotations.Interface.Back]
-                    </button>
-                </div>
+	<div class="modal fade"
+		 id="graCarouselModal"
+		 tabindex="-1"
+		 role="dialog"
+		 aria-labelledby="graCarouselModal">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="h4" id="graCarouselModalHeader"></h1>
+					<button type="button"
+							class="btn-close"
+							data-bs-dismiss="modal"
+							aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col col-md-3 mb-2">
+							<img id="graCarouselModalImage"
+								 class="img-fluid mx-auto d-block" />
+						</div>
+						<div class="col-12 col-md-9">
+							<p id="graCarouselModalContent" class="gra-carousel-modal-content"></p>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button"
+							class="btn btn-outline-secondary"
+							data-bs-dismiss="modal">
+						@SharedLocalizer[GRA.Annotations.Interface.Back]
+					</button>
+				</div>
 
-            </div>
-        </div>
-    </div>
+			</div>
+		</div>
+	</div>
 }
 @if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))
 {
-    <div class="modal fade"
-         id="dailyImageModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="dailyImageModalLabel">
-        <div class="modal-dialog @(Model.DailyImageLarge ? "modal-lg" : null)" role="document">
-            <div class="modal-content">
-                <div class="modal-header fw-bold">
-                    @Model.DailyImageMessage
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <img class="img img-fluid daily-image" />
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="modal fade"
+		 id="dailyImageModal"
+		 tabindex="-1"
+		 role="dialog"
+		 aria-labelledby="dailyImageModalLabel">
+		<div class="modal-dialog @(Model.DailyImageLarge ? "modal-lg" : null)" role="document">
+			<div class="modal-content">
+				<div class="modal-header fw-bold">
+					@Model.DailyImageMessage
+					<button type="button"
+							class="btn-close"
+							data-bs-dismiss="modal"
+							aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<img class="img img-fluid daily-image" />
+				</div>
+			</div>
+		</div>
+	</div>
 }
 @if (Model.UserLogs?.Count() > 0)
 {
-    <div class="modal fade"
-         id="badgeDetailsModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="badgeDetailsModalLabel">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="h4 modal-title">
-                        @SharedLocalizer[GRA.Annotations.Interface.BadgeDetails]
-                    </h1>
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="modal-body">
-                </div>
-                <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-outline-secondary"
-                            data-bs-dismiss="modal">
-                        @SharedLocalizer[GRA.Annotations.Interface.Back]
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="modal fade"
+		 id="badgeDetailsModal"
+		 tabindex="-1"
+		 role="dialog"
+		 aria-labelledby="badgeDetailsModalLabel">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="h4 modal-title">
+						@SharedLocalizer[GRA.Annotations.Interface.BadgeDetails]
+					</h1>
+					<button type="button"
+							class="btn-close"
+							data-bs-dismiss="modal"
+							aria-label="Close"></button>
+				</div>
+				<div class="modal-body" id="modal-body">
+				</div>
+				<div class="modal-footer">
+					<button type="button"
+							class="btn btn-outline-secondary"
+							data-bs-dismiss="modal">
+						@SharedLocalizer[GRA.Annotations.Interface.Back]
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
 }
 @section scripts {
-    @if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))
-    {
-        <script>
-            $("#dailyImageModal").on("show.bs.modal", function(e) {
-                let src = $(e.relatedTarget).data("src");
-                $(".daily-image").attr("src", src);
-                if (typeof gtag !== 'undefined') {
-                    gtag('event', 'view_daily_tip', {
-                        'source_page': 'dashboard',
-                        'event_category': 'image',
-                        'event_label': '@Model.Day'
-                    });
-                }
-            });
-        </script>
-    }
-    @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null && Model.UserJoined)
-    {
-        <script>
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'sign_up', {
-                    'First Time Participant': '@Model.FirstTimeParticipant',
-                    'Program Name': '@Model.ProgramName',
-                });
-            }
-        </script>
-    }
-    @if (Model.Carousel != null)
-    {
-        <script>
-            $("#graCarouselModal").on("show.bs.modal", function  (e) {
-                $("#graCarouselModalContent").html("<div class=\"gra-carousel-spinner\"><span class=\"fas fa-spinner fa-3x fa-spin\"></span></div>");
-                let id = $(e.relatedTarget).data("itemid");
-                let title = $(e.relatedTarget).data("title");
-                let img = $(e.relatedTarget).data("img");
+	@if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))
+	{
+		<script>
+			$("#dailyImageModal").on("show.bs.modal", function(e) {
+				let src = $(e.relatedTarget).data("src");
+				$(".daily-image").attr("src", src);
+				if (typeof gtag !== 'undefined') {
+					gtag('event', 'view_daily_tip', {
+						'source_page': 'dashboard',
+						'event_category': 'image',
+						'event_label': '@Model.Day'
+					});
+				}
+			});
+		</script>
+	}
+	@if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null && Model.UserJoined)
+	{
+		<script>
+			if (typeof gtag !== 'undefined') {
+				gtag('event', 'sign_up', {
+					'First Time Participant': '@Model.FirstTimeParticipant',
+					'Program Name': '@Model.ProgramName',
+				});
+			}
+		</script>
+	}
+	@if (Model.Carousel != null)
+	{
+		<script>
+			$("#graCarouselModal").on("show.bs.modal", function  (e) {
+				$("#graCarouselModalContent").html("<div class=\"gra-carousel-spinner\"><span class=\"fas fa-spinner fa-3x fa-spin\"></span></div>");
+				let id = $(e.relatedTarget).data("itemid");
+				let title = $(e.relatedTarget).data("title");
+				let img = $(e.relatedTarget).data("img");
 
-                console.info("Item id: %o title: %o", id, title);
+				console.info("Item id: %o title: %o", id, title);
 
-                if (typeof gtag !== 'undefined') {
-                    gtag('event', 'select_content', {
-                        'content_type': 'dashboard carousel',
-                        'content_id': title
-                    });
-                }
+				if (typeof gtag !== 'undefined') {
+					gtag('event', 'select_content', {
+						'content_type': 'dashboard carousel',
+						'content_id': title
+					});
+				}
 
-                $.get("@Url.Action("GetCarouselDescription", "Home")/" + id,
-                    function (data) {
-                        $("#graCarouselModalContent").html(data);
-                    }
-                ).fail(function () {
-                    $("#graCarouselModalContent").html("Could not find details for this item, sorry!");
-                });
+				$.get("@Url.Action("GetCarouselDescription", "Home")/" + id,
+					function (data) {
+						$("#graCarouselModalContent").html(data);
+					}
+				).fail(function () {
+					$("#graCarouselModalContent").html("Could not find details for this item, sorry!");
+				});
 
-                $("#graCarouselModalHeader").text(title);
-                $("#graCarouselModalImage").attr("src", img);
-            });
-            if (typeof gtag !== 'undefined') {
-                $(".gra-carousel").on("beforeChange", function (e, s, c, n) {
-                    gtag('event', 'select_content', {
-                        'content_type': 'dashboard carousel',
-                        'content_id': 'next or previous'
-                    });
-                });
-            }
-        </script>
-        <link rel="stylesheet" type="text/css" href="/css/slick.min.css" />
-        <script type="text/javascript" src="/js/slick.min.js"></script>
-    }
-    @if (Model.UserLogs?.Count() > 0)
-    {
-        <script>
-            $("#badgeDetailsModal").on("show.bs.modal", function (event) {
-                let button = $(event.relatedTarget);
-                let id = button.data("id");
-                let modal = $(this);
+				$("#graCarouselModalHeader").text(title);
+				$("#graCarouselModalImage").attr("src", img);
+			});
+			if (typeof gtag !== 'undefined') {
+				$(".gra-carousel").on("beforeChange", function (e, s, c, n) {
+					gtag('event', 'select_content', {
+						'content_type': 'dashboard carousel',
+						'content_id': 'next or previous'
+					});
+				});
+			}
+		</script>
+		<link rel="stylesheet" type="text/css" href="/css/slick.min.css" />
+		<script type="text/javascript" src="/js/slick.min.js"></script>
+	}
+	@if (Model.UserLogs?.Count() > 0)
+	{
+		<script>
+			$("#badgeDetailsModal").on("show.bs.modal", function (event) {
+				let button = $(event.relatedTarget);
+				let id = button.data("id");
+				let modal = $(this);
 
-                let modalBody = modal.find(".modal-body");
-                modalBody.html("<div class=\"text-center\" style=\"width: 100%;\"><span class=\"fas fa-spinner fa-2x fa-pulse\"></span></div>");
+				let modalBody = modal.find(".modal-body");
+				modalBody.html("<div class=\"text-center\" style=\"width: 100%;\"><span class=\"fas fa-spinner fa-2x fa-pulse\"></span></div>");
 
-                $.get("@Url.Action(nameof(ProfileController.GetUserBadgeInfo), ProfileController.Name)",
-                    { id },
-                    function (response) {
-                        modalBody.html(response);
-                    })
-                    .fail(function () {
-                        modalBody.html("@SharedLocalizer[GRA.Annotations.Info.BadgeInfoError]");
-                    });
-            });
-        </script>
-    }
+				$.get("@Url.Action(nameof(ProfileController.GetUserBadgeInfo), ProfileController.Name)",
+					{ id },
+					function (response) {
+						modalBody.html(response);
+					})
+					.fail(function () {
+						modalBody.html("@SharedLocalizer[GRA.Annotations.Info.BadgeInfoError]");
+					});
+			});
+		</script>
+	}
 }

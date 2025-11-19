@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EmailValidation;
 using GRA.Controllers.ViewModel.Profile;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
@@ -124,8 +125,9 @@ namespace GRA.Controllers
                     }
                     else if (result.Status == ServiceResultStatus.Success)
                     {
-                        ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.UpdatedItem,
-                            Annotations.Interface.BookList]);
+                        ShowAlertSuccess(_sharedLocalizer[Annotations.Info.BookAdded,
+                            model.Book.Title,
+                            model.Book.Author]);
                     }
                 }
                 catch (GraException gex)
@@ -360,6 +362,21 @@ namespace GRA.Controllers
                 viewModel.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 
+            var askPersonalPointGoal = await GetSiteSettingBoolAsync(
+                SiteSettingKey.Users.AskPersonalPointGoal);
+            if (askPersonalPointGoal)
+            {
+                viewModel.AskPersonalPointGoal = true;
+                viewModel.MinimumPersonalPointGoal = programList.First().AchieverPointAmount;
+
+                var (maximumPointsSet, maximumPointsValue) = await GetSiteSettingIntAsync(
+                            SiteSettingKey.Users.MaximumActivityPermitted);
+                if (maximumPointsSet)
+                {
+                    viewModel.MaximumPersonalPointGoal = maximumPointsValue;
+                }
+            }
+
             return View("HouseholdAdd", viewModel);
         }
 
@@ -375,6 +392,15 @@ namespace GRA.Controllers
             }
 
             var site = await GetCurrentSiteAsync();
+
+            if (!string.IsNullOrWhiteSpace(model.User.Email)
+                && !EmailValidator.Validate(model.User.Email.Trim()))
+            {
+                ModelState.AddModelError("User.Email",
+                    _sharedLocalizer[Annotations.Validate.Email,
+                        _sharedLocalizer[DisplayNames.EmailAddress]]);
+            }
+
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.User.PostalCode))
             {
                 ModelState.AddModelError("User.PostalCode",
@@ -410,11 +436,15 @@ namespace GRA.Controllers
             var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
                 SiteSettingKey.Users.DefaultDailyPersonalGoal);
 
+            var askPersonalPointGoal = await GetSiteSettingBoolAsync(
+                SiteSettingKey.Users.AskPersonalPointGoal);
+
             bool askAge = false;
             bool askSchool = false;
+            Program program = null;
             if (model.User.ProgramId >= 0)
             {
-                var program = await _siteService.GetProgramByIdAsync(model.User.ProgramId);
+                program = await _siteService.GetProgramByIdAsync(model.User.ProgramId);
                 askAge = program.AskAge;
                 askSchool = program.AskSchool;
                 if (program.AgeRequired && !model.User.Age.HasValue)
@@ -492,6 +522,21 @@ namespace GRA.Controllers
                         model.User.DailyPersonalGoal = null;
                     }
 
+                    if (!askPersonalPointGoal
+                        || model.User.PersonalPointGoal <= program.AchieverPointAmount)
+                    {
+                        model.User.PersonalPointGoal = null;
+                    }
+                    else
+                    {
+                        var (maximumPointsSet, maximumPointsValue) = await GetSiteSettingIntAsync(
+                            SiteSettingKey.Users.MaximumActivityPermitted);
+                        if (maximumPointsSet && model.User.PersonalPointGoal > maximumPointsValue)
+                        {
+                            model.User.PersonalPointGoal = maximumPointsValue;
+                        }
+                    }
+
                     var newMember = await _userService.AddHouseholdMemberAsync(authUser.Id,
                         model.User,
                         false,
@@ -551,6 +596,21 @@ namespace GRA.Controllers
                     .Replace("{0}", "", StringComparison.OrdinalIgnoreCase)
                     .Trim();
                 model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
+            }
+
+            if (askPersonalPointGoal)
+            {
+                model.AskPersonalPointGoal = true;
+
+                var (maximumPointsSet, maximumPointsValue) = await GetSiteSettingIntAsync(
+                    SiteSettingKey.Users.MaximumActivityPermitted);
+                if (maximumPointsSet)
+                {
+                    model.MaximumPersonalPointGoal = maximumPointsValue;
+                }
+
+                program ??= programList.First();
+                model.MinimumPersonalPointGoal = program.AchieverPointAmount;
             }
 
             return View("HouseholdAdd", model);
@@ -757,7 +817,7 @@ namespace GRA.Controllers
                 else
                 {
                     model.ErrorMessage
-                        = _sharedLocalizer[Annotations.Validate.UsernamePasswordMismatch];
+                        = _sharedLocalizer[Annotations.Validate.Password];
                 }
             }
             return View(model);
@@ -875,6 +935,14 @@ namespace GRA.Controllers
         public async Task<IActionResult> EmailAward(EmailAwardViewModel emailAwardModel)
         {
             ArgumentNullException.ThrowIfNull(emailAwardModel);
+
+            if (!string.IsNullOrWhiteSpace(emailAwardModel.Email)
+                && !EmailValidator.Validate(emailAwardModel.Email.Trim()))
+            {
+                ModelState.AddModelError(nameof(emailAwardModel.Email),
+                    _sharedLocalizer[Annotations.Validate.Email,
+                        _sharedLocalizer[DisplayNames.EmailAddress]]);
+            }
 
             if (!ModelState.IsValid)
             {
@@ -1425,6 +1493,27 @@ namespace GRA.Controllers
                 viewModel.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 
+            var askPersonalPointGoal = await GetSiteSettingBoolAsync(
+                SiteSettingKey.Users.AskPersonalPointGoal);
+            if (askPersonalPointGoal)
+            {
+                viewModel.AskPersonalPointGoal = true;
+                viewModel.MinimumPersonalPointGoal = userProgram.AchieverPointAmount;
+
+                var (maximumPointsSet, maximumPointsValue) = await GetSiteSettingIntAsync(
+                    SiteSettingKey.Users.MaximumActivityPermitted);
+                if (maximumPointsSet)
+                {
+                    viewModel.MaximumPersonalPointGoal = maximumPointsValue;
+                }
+            }
+
+            if (viewModel.User.CannotBeEmailed)
+            {
+                ShowAlertWarning(_sharedLocalizer[Annotations.Validate.EmailCannotBeEmailed,
+                    viewModel.User.BranchName]);
+            }
+
             return View(viewModel);
         }
 
@@ -1436,6 +1525,13 @@ namespace GRA.Controllers
             var site = await GetCurrentSiteAsync();
             var program = await _siteService.GetProgramByIdAsync(model.User.ProgramId);
 
+            if (!string.IsNullOrWhiteSpace(model.User.Email)
+                && !EmailValidator.Validate(model.User.Email.Trim()))
+            {
+                ModelState.AddModelError("User.Email",
+                    _sharedLocalizer[Annotations.Validate.Email, 
+                        _sharedLocalizer[DisplayNames.EmailAddress]]);
+            }
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.User.PostalCode))
             {
                 ModelState.AddModelError("User.PostalCode",
@@ -1468,6 +1564,9 @@ namespace GRA.Controllers
 
             var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
                 SiteSettingKey.Users.DefaultDailyPersonalGoal);
+
+            var askPersonalPointGoal = await GetSiteSettingBoolAsync(
+                SiteSettingKey.Users.AskPersonalPointGoal);
 
             if (ModelState.IsValid)
             {
@@ -1513,6 +1612,21 @@ namespace GRA.Controllers
                         model.User.DailyPersonalGoal = null;
                     }
 
+                    if (!askPersonalPointGoal
+                        || model.User.PersonalPointGoal <= program.AchieverPointAmount)
+                    {
+                        model.User.PersonalPointGoal = null;
+                    }
+                    else
+                    {
+                        var (maximumPointsSet, maximumPointsValue) = await GetSiteSettingIntAsync(
+                            SiteSettingKey.Users.MaximumActivityPermitted);
+                        if (maximumPointsSet && model.User.PersonalPointGoal > maximumPointsValue)
+                        {
+                            model.User.PersonalPointGoal = maximumPointsValue;
+                        }
+                    }
+
                     await _userService.Update(model.User);
                     AlertSuccess = _sharedLocalizer[GRA.Annotations.Interface.ProfileUpdated];
                     return RedirectToAction(nameof(Index));
@@ -1547,6 +1661,8 @@ namespace GRA.Controllers
             model.ShowAge = program.AskAge;
             model.ShowSchool = program.AskSchool;
 
+            await _vendorCodeService.PopulateVendorCodeStatusAsync(model.User);
+
             if (model.RestrictChangingProgram)
             {
                 model.ProgramName = programList
@@ -1579,6 +1695,19 @@ namespace GRA.Controllers
                     .Replace("{0}", "", StringComparison.OrdinalIgnoreCase)
                     .Trim();
                 model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
+            }
+
+            if (askPersonalPointGoal)
+            {
+                model.AskPersonalPointGoal = true;
+                model.MinimumPersonalPointGoal = program.AchieverPointAmount;
+
+                var (maximumPointsSet, maximumPointsValue) = await GetSiteSettingIntAsync(
+                    SiteSettingKey.Users.MaximumActivityPermitted);
+                if (maximumPointsSet)
+                {
+                    model.MaximumPersonalPointGoal = maximumPointsValue;
+                }
             }
 
             return View(model);

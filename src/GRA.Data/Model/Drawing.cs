@@ -26,6 +26,7 @@ namespace GRA.Data.Model
         public string NotificationSubject { get; set; }
         [MaxLength(2000)]
         public string NotificationMessage { get; set; }
+        public bool NotificationSent { get; set; }
         public bool IsArchived { get; set; }
 
         public virtual ICollection<PrizeWinner> Winners { get; set; }

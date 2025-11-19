@@ -87,11 +87,18 @@ namespace GRA.Domain.Service
             {
                 var user = await _userRepository.GetByIdAsync(directEmailDetails.ToUserId
                     ?? directEmailDetails.SendingUserId);
-                if(string.IsNullOrEmpty(user.Email))
+                if (string.IsNullOrEmpty(user.Email))
                 {
                     _logger.LogError("Unable to send email to user id {UserId}: no email address configured.",
                         directEmailDetails.ToUserId);
                     throw new GraException($"User id {directEmailDetails.ToUserId} does not have an email address configured.");
+                }
+                else if (user.CannotBeEmailed)
+                {
+                    _logger.LogError("Unable to send email to user id {UserId}: configured email address {Email} is invalid.",
+                        directEmailDetails.ToUserId,
+                        user.Email);
+                    throw new GraException($"User id {directEmailDetails.ToUserId} has an invalid email address {user.Email} configured.");
                 }
                 site = await _siteLookupService.GetByIdAsync(user.SiteId);
                 toAddress = user.Email;
@@ -325,6 +332,12 @@ namespace GRA.Domain.Service
             {
                 _logger.LogError("Unable to parse email address: {EmailAddress}",
                     history.ToEmailAddress);
+                if (history.UserId.HasValue)
+                {
+                    await _userRepository.SetCannotBeEmailedAsync(history.CreatedBy,
+                        history.UserId.Value,
+                        true);
+                }
                 throw new GraException($"Unable to parse email address: {history.ToEmailAddress}", ex);
             }
 
@@ -376,6 +389,7 @@ namespace GRA.Domain.Service
                 try
                 {
                     await client.SendAsync(message);
+                    System.Threading.Thread.Sleep(5000);
                     using (LogContext.PushProperty("EmailServerResponse", history.SentResponse))
                     {
                         _logger.LogInformation("Email sent to {EmailToAddress} with subject {EmailSubject} in {Elapsed} ms",

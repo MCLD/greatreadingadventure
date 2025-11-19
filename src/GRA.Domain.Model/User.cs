@@ -23,6 +23,8 @@ namespace GRA.Domain.Model
 
         public bool CanEmailAwardVendorCode { get; set; }
 
+        public bool CannotBeEmailed { get; set; }
+
         [MaxLength(64)]
         public string CardNumber { get; set; }
 
@@ -92,6 +94,9 @@ namespace GRA.Domain.Model
         public string LockedOutFor { get; set; }
 
         public bool NeedsToAnswerVendorCodeQuestion { get; set; }
+
+        [DisplayName(DisplayNames.PersonalPointGoal)]
+        public int? PersonalPointGoal { get; set; }
 
         [DisplayName(DisplayNames.PhoneNumber)]
         [Phone]

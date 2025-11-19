@@ -3,7 +3,7 @@
 <div class="row">
     <div class="col-sm-10 offset-sm-1 col-md-8 offset-md-2 ">
         <div class="card">
-            <form asp-controller="Participants" asp-action="@nameof(ProfileController.EmailAward)" method="post" role="form" style="display:inline">
+            <form asp-controller="@ProfileController.Name" asp-action="@nameof(ProfileController.EmailAward)" method="post" role="form" style="display:inline">
                 <input asp-for="UserId" type="hidden" />
                 <div class="card-body">
                     <h4>@Model.Name</h4>
@@ -19,7 +19,6 @@
                 <div class="card-footer">
                     <a asp-action="@(Model.UserId.HasValue ? nameof(ProfileController.Household) : nameof(ProfileController.Index))"
                        class="btn btn-outline-secondary" 
-                       data-bs-dismiss="modal" 
                        style="margin-right: 1em;">
                         @SharedLocalizer[GRA.Annotations.Interface.Cancel]
                     </a>
