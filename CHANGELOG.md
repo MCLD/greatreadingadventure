@@ -31,6 +31,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Performer references to be a text input instead of file
 - Update front-end packages
 - Add achiever column to badge report
+- Drawing mail to be sent manually after a drawing is performed
 - Vendor status message to include branch name when ready for pick-up
 
 ## Fixed
