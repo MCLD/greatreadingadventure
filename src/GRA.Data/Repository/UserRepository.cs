@@ -99,6 +99,16 @@ namespace GRA.Data.Repository
                 .CountAsync();
         }
 
+        public async Task<IEnumerable<User>> GetAdminUsersAsync(ReportCriterion request)
+        {
+            ArgumentNullException.ThrowIfNull(request);
+
+            return await ApplyUserFilter(request)
+                .Where(_ => _.IsAdmin)
+                .ProjectToType<User>()
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<int>> GetAllUserIds(int siteId)
         {
             return await DbSet
@@ -262,11 +272,19 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<int>> GetNewsSubscribedUserIdsAsync(int siteId)
+        public async Task<IEnumerable<int>> GetNewsSubscribedUserIdsAsync(int siteId,
+            bool excludeCannotBeEmailed)
         {
-            return await DbSet
+            var subscribedUsers = DbSet
                 .AsNoTracking()
-                .Where(_ => _.SiteId == siteId && !_.IsDeleted && _.IsNewsSubscribed)
+                .Where(_ => _.SiteId == siteId && !_.IsDeleted && _.IsNewsSubscribed);
+
+            if (excludeCannotBeEmailed == true)
+            {
+                subscribedUsers = subscribedUsers.Where(_ => !_.CannotBeEmailed);
+            }
+
+            return await subscribedUsers
                 .Select(_ => _.Id)
                 .ToListAsync();
         }
@@ -578,13 +596,14 @@ namespace GRA.Data.Repository
         }
 
         public async Task<IEnumerable<User>> GetWelcomeRecipientsAsync(int skip,
-                    int take,
+            int take,
             int memberLongerThanHours)
         {
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => !_.IsDeleted
                     && _.IsEmailSubscribed
+                    && !_.CannotBeEmailed
                     && !string.IsNullOrEmpty(_.Email)
                     && _.CreatedAt.AddHours(memberLongerThanHours) <= _dateTimeProvider.Now)
                 .OrderBy(_ => _.CreatedAt)
@@ -741,6 +760,20 @@ namespace GRA.Data.Repository
             return reassignedCount;
         }
 
+        public async Task SetCannotBeEmailedAsync(int currentUserId,
+            int userId,
+            bool cannotBeEmailed)
+        {
+            var user = DbSet.Find(userId);
+            if (user.IsSystemUser)
+            {
+                throw new GraException("Cannot set cannot be emailed for the System User.");
+            }
+            string original = _entitySerializer.Serialize(user);
+            user.CannotBeEmailed = cannotBeEmailed;
+            await UpdateSaveAsync(currentUserId, user, original);
+        }
+
         public async Task SetUserPasswordAsync(int currentUserId, int userId, string password)
         {
             var user = DbSet.Find(userId);
@@ -873,6 +906,11 @@ namespace GRA.Data.Repository
                 userList = userList.Where(_ => _.IsEmailSubscribed == filter.IsSubscribed);
             }
 
+            if (filter.CannotBeEmailed == true)
+            {
+                userList = userList.Where(_ => _.CannotBeEmailed == filter.CannotBeEmailed.Value);
+            }
+
             if (filter.HasMultiplePrimaryVendorCodes == true)
             {
                 var userIdsMultiplePrimaryVendorCodes = _context.VendorCodes
@@ -916,6 +954,11 @@ namespace GRA.Data.Repository
             if (criterion.EndDate != null)
             {
                 userList = userList.Where(_ => _.CreatedAt <= criterion.EndDate);
+            }
+
+            if (criterion.LastLoginBefore != null)
+            {
+                userList = userList.Where(_ => _.LastAccess <= criterion.LastLoginBefore);
             }
 
             if (criterion.SchoolId != null)

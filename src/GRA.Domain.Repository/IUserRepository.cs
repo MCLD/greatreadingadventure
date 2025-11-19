@@ -19,6 +19,8 @@ namespace GRA.Domain.Repository
 
         Task<int> GetAchieverCountAsync(ReportCriterion request);
 
+        Task<IEnumerable<User>> GetAdminUsersAsync(ReportCriterion request);
+
         Task<IEnumerable<int>> GetAllUserIds(int siteId);
 
         Task<ICollection<User>> GetAllUsersWithoutUnsubscribeToken();
@@ -48,7 +50,7 @@ namespace GRA.Domain.Repository
         Task<ICollection<User>> GetHouseholdUsersWithAvailablePrizeAsync(
             int headId, int? drawingId, int? triggerId);
 
-        Task<IEnumerable<int>> GetNewsSubscribedUserIdsAsync(int siteId);
+        Task<IEnumerable<int>> GetNewsSubscribedUserIdsAsync(int siteId, bool excludeCannotBeEmailed);
 
         Task<IDictionary<User, int>> GetStaffRegisteredParticipantsAsync(ReportCriterion criterion);
 
@@ -93,6 +95,8 @@ namespace GRA.Domain.Repository
             int take);
 
         Task<int> ReassignBranchAsync(int oldBranchId, int newBranchId);
+
+        Task SetCannotBeEmailedAsync(int currentUserId, int userId, bool cannotBeEmailed);
 
         Task SetUserPasswordAsync(int currentUserId, int userId, string password);
 

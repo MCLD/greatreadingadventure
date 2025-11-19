@@ -181,6 +181,7 @@
                             <th>Criteria</th>
                             <th>Date</th>
                             <th>Winners</th>
+							<th class="text-nowrap" style="width:0;">Mail Sent</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -197,6 +198,16 @@
                                 <td>@drawing.DrawingCriterion.Name</td>
                                 <td>@drawing.CreatedAt.ToString("d")</td>
                                 <td>@drawing.WinnerCount</td>
+								<td class="align-middle text-center">
+									@if (drawing.NotificationSent)
+									{
+										<span class="far fa-check-circle fa-lg text-success"></span>
+									}
+									else
+									{
+										<span class="far fa-times-circle fa-lg text-danger"></span>
+									}
+								</td>
                             </tr>
                         }
                     </tbody>

@@ -17,6 +17,7 @@ namespace GRA.Controllers.ViewModel.Profile
         [DisplayName(DisplayNames.NewPassword)]
         public string NewPassword { get; set; }
 
+        [Compare(nameof(NewPassword), ErrorMessage = Annotations.Validate.PasswordsMatch)]
         [Required(ErrorMessage = ErrorMessages.Field)]
         [DisplayName(DisplayNames.ConfirmNewPassword)]
         public string ConfirmPassword { get; set; }

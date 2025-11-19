@@ -95,6 +95,8 @@
 
         public static readonly string AskIfFirstTime = "Users.AskIfFirstTime";
 
+        public static readonly string AskPersonalPointGoal = "Users.AskPersonalPointGoal";
+
         public static readonly string CollectAccessClosedEmails
             = "Users.CollectAccessClosedEmails";
 

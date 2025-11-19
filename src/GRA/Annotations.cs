@@ -31,6 +31,7 @@
             public const string AvailableForPickup = "Available for pickup";
             public const string BadgeInfoError = "Error retrieving badge information.";
             public const string BetterSuitedOption = "This program may be better-suited to your age:";
+            public const string BookAdded = "<strong><em>{0}</em></strong> by <strong>{1}</strong> was added to your book list.";
             public const string ChallengeBadgeEarned = "You earned this badge for completing the challenge: <a href=\"{0}\" target=\"_blank\">{1}</a>";
             public const string ChallengeBookLinkTitle = "Read <strong><em><a href=\"{0}\" target=\"_blank\">{1}</a></em></strong>";
             public const string ChallengeBookLinkTitleAuthor = "Read <strong><em><a href=\"{0}\" target=\"_blank\">{1}</a></em></strong> by <strong>{2}</strong>";
@@ -48,6 +49,7 @@
             public const string FreeBookRedeemDashboard = "You've earned a free book! Head over to <a href=\"{0}\"><strong>My Profile</strong></a> page to choose what to do with it.";
             public const string FreeBookRedeemExpirationDashboard = "You've earned a free book! Head over to <a href=\"{0}\"><strong>My Profile</strong></a> page by {1} to choose what to do with it.";
             public const string Goal = "The goal of this program is {0} points.";
+            public const string GoalComplete = "You have reached the program's goal!";
             public const string GroupAdd = "Add existing participant to your {0}";
             public const string GroupCannot = "A {0} cannot be created at this time.";
             public const string GroupCreate = "Click below to create a {0}";
@@ -68,6 +70,9 @@
             public const string PasswordRecoverySent = "A password recovery email has been sent to the email for username '{0}'.";
             public const string PasswordResetFor = "Password reset for: {0}";
             public const string PickedUp = "Picked up";
+            public const string PersonalActivityGoal = "Your personal reading goal is {0} minutes.";
+            public const string PersonalGoal = "You have {0}/{1} points towards your personal goal.";
+            public const string PersonalGoalComplete = "You have completed your personal goal of {0} points!";
             public const string PointSingular = "{0} point";
             public const string PointsPlural = "{0} points";
             public const string ProgramEnded = "{0} has ended, please join us next time!";
@@ -85,6 +90,7 @@
             public const string UsernameIsAvailable = "That username is available!";
             public const string UsernameListSent = "A list of usernames associated with the email address '{0}' has been sent.";
             public const string VendorItemArrived = "<em>{0}</em> arrived on <strong>{1}</strong> and is ready for pick-up.";
+            public const string VendorItemArrivedAtBranch = "<em>{0}</em> arrived on <strong>{1}</strong> and is ready for pick-up at <a href=\"{2}\" target=\"_blank\">{3}</a>.";
             public const string VendorItemOrdered = "<em>{0}</em> ordered on <strong>{1}</strong>.";
             public const string VendorItemPickedup = "<em>{0}</em> was picked up on <strong>{1}</strong>.";
             public const string VendorItemShipped = "<em>{0}</em> shipped on <strong>{1}</strong>.";
@@ -173,6 +179,8 @@
             public const string NotStreamingYet = "Not streaming yet";
             public const string Optional = "Optional";
             public const string PasswordChanged = "Your password has been changed.";
+            public const string PersonalPointGoalDescription = "A personal goal beyond the program default goal of {0} points.";
+            public const string PersonalPointGoalLabel = "Points I will earn";
             public const string PointsYoullEarn = "Points you'll earn";
             public const string Prizes = "Prizes";
             public const string ProfileUpdated = "Profile updated.";
@@ -276,6 +284,7 @@
         {
             public const string AssociatedEmailAddressInvalid = "The email address associated with username {0} is invalid, please call or stop by to resolve this.";
             public const string AuthorizationCodeWarning = "To activate an authorization code, please sign in or <a href=\"{0}\">join</a>.";
+            public const string BookAlreadyAdded = "<strong><em>{0}</em></strong> by <strong>{1}</strong> is already on the book list.";
             public const string BookTitle = "When providing an author of a book, please also provide a title.";
             public const string Branch = "The branch you've selected is not valid, please select another branch.";
             public const string CodeAlready = "All selected participants already have that Secret Code.";
@@ -288,6 +297,7 @@
             public const string CustomizeAvatarFirst = "Please customize your avatar and save it, then you can share it!";
             public const string Email = "The {0} field is not a valid e-mail address.";
             public const string EmailAddressInvalid = "The email address {0} is invalid.";
+            public const string EmailCannotBeEmailed = "We are unable to send you emails at this address. Please enter a valid email address or contact {0} for assistance.";
             public const string EmailConfigured = "Username '{0}' does not have an email address configured.";
             public const string EmailPhoneNeededForPrizes = "Email and Phone Number are not required however at least one is needed in order to be eligible for prizes.";
             public const string EmailSubscription = "Please let us know if you would like to receive emails throughout the program.";
@@ -309,6 +319,8 @@
             public const string Phone = "The {0} field is not a valid phone number.";
             public const string Program = "The age group you've selected is not valid, please select another age group.";
             public const string School = "The school you've selected is not valid, please select another school.";
+            public const string SecretCodeAlreadyLogged = "You already entered the code <strong>{0}</strong> on <strong>{1}</strong>!";
+            public const string SecretCodeInvalid = "<strong>{0}</strong> is not a valid code.";
             public const string SessionExpired = "Your session has expired. Please sign in again.";
             public const string SomethingWentWrong = "Something went wrong, please send us a mail with details of what you were attempting to do.";
             public const string System = "The system you've selected is not valid, please select another system.";

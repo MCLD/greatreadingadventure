@@ -137,6 +137,7 @@ namespace GRA.Domain.Service
             currentPost.Content = post.Content.Trim();
             currentPost.EmailSummary = post.EmailSummary?.Trim();
             currentPost.CategoryId = post.CategoryId;
+            currentPost.IsPinned = post.IsPinned;
 
             bool sendSubscriptionEmails = false;
             if (publish && !currentPost.PublishedAt.HasValue)
@@ -329,7 +330,7 @@ namespace GRA.Domain.Service
             }
 
             var subscribedUserIds = (await _userRepository
-                .GetNewsSubscribedUserIdsAsync(job.SiteId)).ToList();
+                .GetNewsSubscribedUserIdsAsync(job.SiteId, true)).ToList();
 
             if (subscribedUserIds.Count == 0)
             {

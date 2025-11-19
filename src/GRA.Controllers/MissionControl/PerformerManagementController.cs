@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using EmailValidation;
 using GRA.Controllers.ViewModel.MissionControl.PerformerManagement;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
@@ -499,6 +500,15 @@ namespace GRA.Controllers.MissionControl
             {
                 ModelState.AddModelError("BranchAvailability",
                     "Please select the libraries where they are willing to perform.");
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.Performer.Email)
+                && !EmailValidator.Validate(model.Performer.Email.Trim()))
+            {
+                ModelState.AddModelError("Performer.Email",
+                    string.Format(CultureInfo.InvariantCulture,
+                        Annotations.Validate.Email,
+                        "Email"));
             }
 
             if (ModelState.IsValid)
@@ -2571,6 +2581,16 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Settings(SettingsViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
+            if (!string.IsNullOrWhiteSpace(model.Settings.ContactEmail)
+                && !EmailValidator.Validate(model.Settings.ContactEmail.Trim()))
+            {
+                ModelState.AddModelError("Settings.ContactEmail",
+                    string.Format(CultureInfo.InvariantCulture,
+                        Annotations.Validate.Email,
+                        "Contact Email"));
+            }
             if (model.Settings.RegistrationClosed < model.Settings.RegistrationOpen)
             {
                 ModelState.AddModelError("Settings.RegistrationClosed",

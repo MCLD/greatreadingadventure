@@ -20,12 +20,14 @@ namespace GRA.Domain.Model
         [Required]
         public string Name { get; set; }
 
-        [DisplayName("Mail Message")]
+        [DisplayName("Message Content")]
         [MaxLength(2000)]
         public string NotificationMessage { get; set; }
 
-        [DisplayName("Mail Subject")]
-        [MaxLength(500)]
+        public bool NotificationSent { get; set; }
+
+        [DisplayName("Message Subject")]
+        [MaxLength(255)]
         public string NotificationSubject { get; set; }
 
         [MaxLength(1000)]

@@ -1224,6 +1224,9 @@ namespace GRA.Data.SqlServer.Migrations
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
+                    b.Property<bool>("NotificationSent")
+                        .HasColumnType("bit");
+
                     b.Property<string>("NotificationSubject")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
@@ -2042,6 +2045,9 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<string>("EmailSummary")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
+
+                    b.Property<bool>("IsPinned")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("PublishedAt")
                         .HasColumnType("datetime2");
@@ -3164,6 +3170,9 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<bool>("IncludeAchieverStatus")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime?>("LastLoginBefore")
+                        .HasColumnType("datetime2");
+
                     b.Property<int?>("MaximumAllowableActivity")
                         .HasColumnType("int");
 
@@ -3939,6 +3948,9 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<bool>("CanBeDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("CannotBeEmailed")
+                        .HasColumnType("bit");
+
                     b.Property<string>("CardNumber")
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
@@ -4019,6 +4031,9 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PersonalPointGoal")
+                        .HasColumnType("int");
 
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(15)

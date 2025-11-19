@@ -27,6 +27,13 @@
                         <td>@Model.EndDate</td>
                     </tr>
                 }
+				@if (Model.LastLoginBefore.HasValue)
+				{
+					<tr>
+						<th>Last Login Before:</th>
+						<td>@Model.LastLoginBefore</td>
+					</tr>
+				}
                 @if (!string.IsNullOrWhiteSpace(Model.SystemName))
                 {
                     <tr>

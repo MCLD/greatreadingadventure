@@ -56,6 +56,15 @@
                 <span asp-validation-for="Post.EmailSummary" class="text-danger"></span>
             </div>
 
+			<div class="row row-spacing">
+				<div class="col-12">
+					<label asp-for="Post.IsPinned" class="col-form-label"></label>
+					<select asp-for="Post.IsPinned"
+							asp-items="Model.NoYes"
+							class="form-select"></select>
+				</div>
+			</div>
+
             @if (Model.Post?.PublishedAt != null)
             {
                 <div class="row row-spacing">
