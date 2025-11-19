@@ -4,6 +4,7 @@ using GRA.Data.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GRA.Data.SqlServer.Migrations
 {
     [DbContext(typeof(SqlServerContext))]
-    partial class SqlServerContextModelSnapshot : ModelSnapshot
+    [Migration("20251110181935_reporting-last-login")]
+    partial class reportinglastlogin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1224,9 +1227,6 @@ namespace GRA.Data.SqlServer.Migrations
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
-                    b.Property<bool>("NotificationSent")
-                        .HasColumnType("bit");
-
                     b.Property<string>("NotificationSubject")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
@@ -2045,9 +2045,6 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<string>("EmailSummary")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
-
-                    b.Property<bool>("IsPinned")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("PublishedAt")
                         .HasColumnType("datetime2");
@@ -3948,9 +3945,6 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<bool>("CanBeDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("CannotBeEmailed")
-                        .HasColumnType("bit");
-
                     b.Property<string>("CardNumber")
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
@@ -4031,9 +4025,6 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PersonalPointGoal")
-                        .HasColumnType("int");
 
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(15)

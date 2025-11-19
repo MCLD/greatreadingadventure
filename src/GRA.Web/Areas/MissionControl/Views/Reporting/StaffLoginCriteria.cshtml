@@ -1,0 +1,27 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.ReportCriteriaViewModel
+
+<form asp-action="@nameof(ReportingController.Run)"
+      class="form-horizontal"
+      method="post"
+      role="form">
+    <input asp-for="ReportId" type="hidden" />
+
+	<div class="row">
+		<div class="col-12">
+			<label asp-for="LastLoginBefore" class="col-form-label"></label>
+			<div class="gra-picker-datetime" datetimepicker-container id="lastLoginPicker">
+				<input asp-for="LastLoginBefore" datetimepicker-input type="text" />
+			</div>
+			<span asp-validation-for="LastLoginBefore" class="text-danger"></span>
+		</div>
+	</div>
+
+	<div class="row mt-4">
+		<div class="col-12">
+			<button type="submit" class="btn btn-outline-primary">
+				<span class="fas fa-file-alt fa-fw"></span>
+				Run Report!
+			</button>
+		</div>
+	</div>
+</form>

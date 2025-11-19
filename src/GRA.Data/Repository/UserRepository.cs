@@ -99,6 +99,16 @@ namespace GRA.Data.Repository
                 .CountAsync();
         }
 
+        public async Task<IEnumerable<User>> GetAdminUsersAsync(ReportCriterion request)
+        {
+            ArgumentNullException.ThrowIfNull(request);
+
+            return await ApplyUserFilter(request)
+                .Where(_ => _.IsAdmin)
+                .ProjectToType<User>()
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<int>> GetAllUserIds(int siteId)
         {
             return await DbSet
@@ -913,6 +923,11 @@ namespace GRA.Data.Repository
             if (criterion.EndDate != null)
             {
                 userList = userList.Where(_ => _.CreatedAt <= criterion.EndDate);
+            }
+
+            if (criterion.LastLoginBefore != null)
+            {
+                userList = userList.Where(_ => _.LastAccess <= criterion.LastLoginBefore);
             }
 
             if (criterion.SchoolId != null)

@@ -12,7 +12,7 @@ namespace GRA.Data.Model
         public bool Favorite { get; set; }
         public int? GroupInfoId { get; set; }
         public bool IncludeAchieverStatus { get; set; }
-
+        public DateTime? LastLoginBefore { get; set; }
         public int? MaximumAllowableActivity { get; set; }
 
         [MaxLength(255)]

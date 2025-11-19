@@ -156,6 +156,11 @@ namespace GRA.Controllers.MissionControl
                 criteriaDictionary.Add("End Date",
                     criterion.EndDate.Value.ToString(CultureInfo.CurrentCulture));
             }
+            if (criterion.LastLoginBefore.HasValue)
+            {
+                criteriaDictionary.Add("Last Login Before",
+                    criterion.LastLoginBefore.Value.ToString(CultureInfo.CurrentCulture));
+            }
             if (criterion.SystemId.HasValue)
             {
                 criteriaDictionary.Add("System", (await _siteService
@@ -386,6 +391,7 @@ namespace GRA.Controllers.MissionControl
                 EndDate = viewModel.EndDate,
                 GroupInfoId = viewModel.GroupInfoId,
                 IncludeAchieverStatus = viewModel.IncludeAchieverStatus,
+                LastLoginBefore = viewModel.LastLoginBefore,
                 ProgramId = viewModel.ProgramId,
                 SchoolDistrictId = viewModel.SchoolDistrictId,
                 SchoolId = viewModel.SchoolId,
@@ -477,6 +483,10 @@ namespace GRA.Controllers.MissionControl
                 if (criterion.EndDate.HasValue)
                 {
                     viewModel.EndDate = criterion.EndDate;
+                }
+                if (criterion.LastLoginBefore.HasValue)
+                {
+                    viewModel.LastLoginBefore = criterion.LastLoginBefore;
                 }
                 if (criterion.SystemId.HasValue)
                 {

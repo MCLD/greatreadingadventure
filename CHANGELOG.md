@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Participant personal point goal
 - Join codes for tracking signups
 - Ability to override activity button text
+- Staff login report
 - Info message when editing Point Translations with unchangeable properties
 
 ## Changed

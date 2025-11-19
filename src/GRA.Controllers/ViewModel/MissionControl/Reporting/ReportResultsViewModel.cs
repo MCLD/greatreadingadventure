@@ -16,6 +16,8 @@ namespace GRA.Controllers.ViewModel.MissionControl.Reporting
 
         public string GroupName { get; set; }
 
+        public DateTime? LastLoginBefore { get; set; }
+
         public IEnumerable<string> LastRow { get; set; }
 
         public string Message { get; set; }

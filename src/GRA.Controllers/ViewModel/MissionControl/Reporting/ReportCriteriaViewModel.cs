@@ -24,6 +24,10 @@ namespace GRA.Controllers.ViewModel.MissionControl.Reporting
 
         public SelectList GroupInfosList { get; set; }
         public bool IncludeAchieverStatus { get; set; }
+
+        [DisplayName("Last Login Before")]
+        public DateTime? LastLoginBefore { get; set; }
+
         public SelectList PrizeList { get; set; }
 
         [DisplayName("Select a program")]

@@ -19,6 +19,8 @@ namespace GRA.Domain.Repository
 
         Task<int> GetAchieverCountAsync(ReportCriterion request);
 
+        Task<IEnumerable<User>> GetAdminUsersAsync(ReportCriterion request);
+
         Task<IEnumerable<int>> GetAllUserIds(int siteId);
 
         Task<ICollection<User>> GetAllUsersWithoutUnsubscribeToken();
