@@ -1,84 +1,103 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Programs.PointTranslationDetailViewModel
 
 @section inHeading {
-    <div class="ms-auto d-print-none">
-        <a asp-action="@nameof(ProgramsController.PointTranslations)"
-           class="btn btn-outline-secondary">Return to List</a>
-    </div>
+	<div class="ms-auto d-print-none">
+		<a asp-action="@nameof(ProgramsController.PointTranslations)"
+		   class="btn btn-outline-secondary">Return to List</a>
+	</div>
+}
+
+@if (Model.HasBeenUsed)
+{
+	<div class="row my-2">
+		<div class="col-sm-8 offset-sm-2">
+			<div class="alert alert-info mb-2">
+				<div class="d-flex align-items-stretch">
+					<span class="fas fa-info-circle fa-lg pt-2 me-3"
+						  aria-hidden="true"></span>
+					<span>
+						Now that activity has been logged with this Point Translation, the 
+						following properties cannot be changed: "Single Event", "Points Earned" and 
+						"Activity Amount"
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
 }
 
 <form asp-action="@Model.Action" method="post" role="form" class="py-2">
-    <input asp-for="PointTranslation.Id" type="hidden" />
-    <input asp-for="Action" type="hidden" />
-    <input asp-for="HasBeenUsed" type="hidden" />
-    <div class="row">
-        <div class="col-12 mb-3">
-            <label asp-for="PointTranslation.TranslationName" class="col-form-label"></label>
-            <input asp-for="PointTranslation.TranslationName" class="form-control" />
-            <span asp-validation-for="PointTranslation.TranslationName" class="text-danger"></span>
-        </div>
-        <div class="col-12 mb-3">
-            <label asp-for="PointTranslation.IsSingleEvent" class="col-form-label"></label>
-            <select asp-for="PointTranslation.IsSingleEvent"
-                    class="form-select"
-                    disabled="@(Model.HasBeenUsed ? "readonly" : null)">
-                <option value="false">No</option>
-                <option value="true">Yes</option>
-            </select>
-            <span asp-validation-for="PointTranslation.IsSingleEvent" class="text-danger"></span>
-        </div>
-        <div class="col-12 col-sm-6 mb-3">
-            <label asp-for="PointTranslation.PointsEarned" class="col-form-label"></label>
-            <input asp-for="PointTranslation.PointsEarned"
-                   class="form-control"
-                   disabled="@(Model.HasBeenUsed ? "readonly" : null)" />
-            <span asp-validation-for="PointTranslation.PointsEarned" class="text-danger"></span>
-        </div>
-        <div class="col-12 col-sm-6 mb-3">
-            <label asp-for="PointTranslation.ActivityAmount" class="col-form-label"></label>
-            <input asp-for="PointTranslation.ActivityAmount"
-                   class="form-control"
-                   disabled="@(Model.HasBeenUsed ? "readonly" : null)" />
-            <span asp-validation-for="PointTranslation.ActivityAmount" class="text-danger"></span>
-        </div>
-        <div class="col-12 col-sm-6 mb-3">
-            <label asp-for="PointTranslation.ActivityDescription" class="col-form-label"></label>
-            <input asp-for="PointTranslation.ActivityDescription" class="form-control" />
-            <span asp-validation-for="PointTranslation.ActivityDescription"
-                  class="text-danger"></span>
-        </div>
-        <div class="col-12 col-sm-6 mb-3">
-            <label asp-for="PointTranslation.ActivityDescriptionPlural"
-                   class="col-form-label"></label>
-            <input asp-for="PointTranslation.ActivityDescriptionPlural" class="form-control" />
-            <span asp-validation-for="PointTranslation.ActivityDescriptionPlural"
-                  class="text-danger"></span>
-        </div>
-        <div class="col-12 col-sm-6 mb-3">
-            <label asp-for="PointTranslation.TranslationDescriptionPastTense"
-                   class="col-form-label"></label>
-            <input asp-for="PointTranslation.TranslationDescriptionPastTense"
-                   class="form-control" />
-            <span asp-validation-for="PointTranslation.TranslationDescriptionPastTense"
-                  class="text-danger"></span>
-        </div>
-        <div class="col-12 col-sm-6 mb-3">
-            <label asp-for="PointTranslation.TranslationDescriptionPresentTense"
-                   class="col-form-label"></label>
-            <input asp-for="PointTranslation.TranslationDescriptionPresentTense"
-                   class="form-control" />
-            <span asp-validation-for="PointTranslation.TranslationDescriptionPresentTense"
-                  class="text-danger"></span>
-        </div>
-        <div class="col-12 mb-3">
-            <button type="submit"
-                    id="Submit"
-                    name="Submit"
-                    value="Submit"
-                    class="btn btn-outline-primary"
-                    button-spinner>
-                <span class="buttonText">Save Point Translation</span>
-            </button>
-        </div>
-    </div>
+	<input asp-for="PointTranslation.Id" type="hidden" />
+	<input asp-for="Action" type="hidden" />
+	<input asp-for="HasBeenUsed" type="hidden" />
+	<div class="row">
+		<div class="col-12 mb-3">
+			<label asp-for="PointTranslation.TranslationName" class="col-form-label"></label>
+			<input asp-for="PointTranslation.TranslationName" class="form-control" />
+			<span asp-validation-for="PointTranslation.TranslationName" class="text-danger"></span>
+		</div>
+		<div class="col-12 mb-3">
+			<label asp-for="PointTranslation.IsSingleEvent" class="col-form-label"></label>
+			<select asp-for="PointTranslation.IsSingleEvent"
+					class="form-select"
+					disabled="@(Model.HasBeenUsed ? "readonly" : null)">
+				<option value="false">No</option>
+				<option value="true">Yes</option>
+			</select>
+			<span asp-validation-for="PointTranslation.IsSingleEvent" class="text-danger"></span>
+		</div>
+		<div class="col-12 col-sm-6 mb-3">
+			<label asp-for="PointTranslation.PointsEarned" class="col-form-label"></label>
+			<input asp-for="PointTranslation.PointsEarned"
+				   class="form-control"
+				   disabled="@(Model.HasBeenUsed ? "readonly" : null)" />
+			<span asp-validation-for="PointTranslation.PointsEarned" class="text-danger"></span>
+		</div>
+		<div class="col-12 col-sm-6 mb-3">
+			<label asp-for="PointTranslation.ActivityAmount" class="col-form-label"></label>
+			<input asp-for="PointTranslation.ActivityAmount"
+				   class="form-control"
+				   disabled="@(Model.HasBeenUsed ? "readonly" : null)" />
+			<span asp-validation-for="PointTranslation.ActivityAmount" class="text-danger"></span>
+		</div>
+		<div class="col-12 col-sm-6 mb-3">
+			<label asp-for="PointTranslation.ActivityDescription" class="col-form-label"></label>
+			<input asp-for="PointTranslation.ActivityDescription" class="form-control" />
+			<span asp-validation-for="PointTranslation.ActivityDescription"
+				  class="text-danger"></span>
+		</div>
+		<div class="col-12 col-sm-6 mb-3">
+			<label asp-for="PointTranslation.ActivityDescriptionPlural"
+				   class="col-form-label"></label>
+			<input asp-for="PointTranslation.ActivityDescriptionPlural" class="form-control" />
+			<span asp-validation-for="PointTranslation.ActivityDescriptionPlural"
+				  class="text-danger"></span>
+		</div>
+		<div class="col-12 col-sm-6 mb-3">
+			<label asp-for="PointTranslation.TranslationDescriptionPastTense"
+				   class="col-form-label"></label>
+			<input asp-for="PointTranslation.TranslationDescriptionPastTense"
+				   class="form-control" />
+			<span asp-validation-for="PointTranslation.TranslationDescriptionPastTense"
+				  class="text-danger"></span>
+		</div>
+		<div class="col-12 col-sm-6 mb-3">
+			<label asp-for="PointTranslation.TranslationDescriptionPresentTense"
+				   class="col-form-label"></label>
+			<input asp-for="PointTranslation.TranslationDescriptionPresentTense"
+				   class="form-control" />
+			<span asp-validation-for="PointTranslation.TranslationDescriptionPresentTense"
+				  class="text-danger"></span>
+		</div>
+		<div class="col-12 mb-3">
+			<button type="submit"
+					id="Submit"
+					name="Submit"
+					value="Submit"
+					class="btn btn-outline-primary"
+					button-spinner>
+				<span class="buttonText">Save Point Translation</span>
+			</button>
+		</div>
+	</div>
 </form>
