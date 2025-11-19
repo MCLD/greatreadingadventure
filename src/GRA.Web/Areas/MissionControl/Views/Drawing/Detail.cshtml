@@ -1,335 +1,363 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Drawing.DrawingDetailViewModel
 
 @section inHeading {
-	<div class="ms-auto">
-		<a asp-action="@nameof(DrawingController.Index)"
-		   class="btn btn-outline-secondary">Back to list</a>
-	</div>
+    <div class="ms-auto">
+        <a asp-action="@nameof(DrawingController.Index)"
+           class="btn btn-outline-secondary">Back to list</a>
+    </div>
 }
 
 @if (!string.IsNullOrEmpty(Model.CreatedByName))
 {
-	<div class="fs-5 mt-2 mb-3">
-		Created By:
-		@if (Model.CanViewParticipants)
-		{
-			<a aria-label="@Model.CreatedByName (Opens new window)"
-			   asp-action="@nameof(ParticipantsController.Detail)"
-			   asp-controller="@ParticipantsController.Name"
-			   asp-route-id="@Model.Drawing.CreatedBy"
-			   target="_blank">@Model.CreatedByName</a>
-		}
-		else
-		{
-			@Model.CreatedByName
-		}
-		on @Model.Drawing.CreatedAt
-	</div>
+    <div class="fs-5 mt-2 mb-3">
+        Created By:
+        @if (Model.CanViewParticipants)
+        {
+            <a aria-label="@Model.CreatedByName (Opens new window)"
+               asp-action="@nameof(ParticipantsController.Detail)"
+               asp-controller="@ParticipantsController.Name"
+               asp-route-id="@Model.Drawing.CreatedBy"
+               target="_blank">@Model.CreatedByName</a>
+        }
+        else
+        {
+            @Model.CreatedByName
+        }
+        on @Model.Drawing.CreatedAt
+    </div>
 }
 
 <div class="row my-2">
-	<div class="col-12">
-		<label class="col-form-label">Criteria</label>
-		<input asp-for="Drawing.DrawingCriterion.Name" class="form-control" readonly />
-	</div>
+    <div class="col-12">
+        <label class="col-form-label">Criteria</label>
+        <input asp-for="Drawing.DrawingCriterion.Name" class="form-control" readonly />
+    </div>
 </div>
 <div class="row mb-2">
-	<div class="col-12">
-		<label asp-for="Drawing.Name" class="col-form-label"></label>
-		<input asp-for="Drawing.Name" class="form-control" readonly />
-		<span asp-validation-for="Drawing.Name" class="text-danger"></span>
-	</div>
+    <div class="col-12">
+        <label asp-for="Drawing.Name" class="col-form-label"></label>
+        <input asp-for="Drawing.Name" class="form-control" readonly />
+        <span asp-validation-for="Drawing.Name" class="text-danger"></span>
+    </div>
 </div>
 <div class="row mb-2">
-	<div class="col-6">
-		<label asp-for="Drawing.WinnerCount" class="col-form-label"></label>
-		<input asp-for="Drawing.WinnerCount" class="form-control" readonly />
-		<span asp-validation-for="Drawing.WinnerCount" class="text-danger"></span>
-	</div>
+    <div class="col-6">
+        <label asp-for="Drawing.WinnerCount" class="col-form-label"></label>
+        <input asp-for="Drawing.WinnerCount" class="form-control" readonly />
+        <span asp-validation-for="Drawing.WinnerCount" class="text-danger"></span>
+    </div>
 
-	<div class="col-6">
-		<label class="col-form-label">Eligible Participants</label>
-		<input asp-for="Drawing.DrawingCriterion.EligibleCount"
-			   type="text"
-			   class="form-control"
-			   readonly />
-	</div>
+    <div class="col-6">
+        <label class="col-form-label">Eligible Participants</label>
+        <input asp-for="Drawing.DrawingCriterion.EligibleCount"
+               type="text"
+               class="form-control"
+               readonly />
+    </div>
 </div>
 @if (Model.Drawing.NotificationSent)
 {
-	<div class="row mb-2">
-		<div class="col-12">
-			<label asp-for="Drawing.NotificationSubject" class="col-form-label"></label>
-			<input asp-for="Drawing.NotificationSubject" class="form-control" readonly />
-			<span asp-validation-for="Drawing.NotificationSubject" class="text-danger"></span>
-		</div>
-	</div>
-	<div class="row mb-2">
-		<div class="col-12">
-			<label asp-for="Drawing.NotificationMessage" class="col-form-label"></label>
-			<textarea asp-for="Drawing.NotificationMessage" class="form-control" readonly></textarea>
-			<span asp-validation-for="Drawing.NotificationMessage" class="text-danger"></span>
-		</div>
-	</div>
+    <div class="row mb-2">
+        <div class="col-12">
+            <div class="card border-info">
+                <div class="card-header text-info-emphasis">Message sent to winners</div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label asp-for="Drawing.NotificationSubject"
+                                   class="col-form-label"></label>
+                            <input asp-for="Drawing.NotificationSubject"
+                                   class="form-control" readonly />
+                            <span asp-validation-for="Drawing.NotificationSubject"
+                                  class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label asp-for="Drawing.NotificationMessage"
+                                   class="col-form-label"></label>
+                            <textarea asp-for="Drawing.NotificationMessage"
+                                      class="form-control"
+                                      readonly></textarea>
+                            <span asp-validation-for="Drawing.NotificationMessage"
+                                  class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 }
 <div class="row mb-4">
-	<div class="col-12">
-		<label asp-for="Drawing.RedemptionInstructions" class="col-form-label"></label>
-		<textarea asp-for="Drawing.RedemptionInstructions" class="form-control" readonly></textarea>
-		<span asp-validation-for="Drawing.RedemptionInstructions" class="text-danger"></span>
-	</div>
+    <div class="col-12">
+        <label asp-for="Drawing.RedemptionInstructions" class="col-form-label"></label>
+        <textarea asp-for="Drawing.RedemptionInstructions" class="form-control" readonly></textarea>
+        <span asp-validation-for="Drawing.RedemptionInstructions" class="text-danger"></span>
+    </div>
 </div>
 <div class="row mb-2">
-	<div class="col-12">
-		<div class="d-flex align-items-center">
-			<div class="flex-grow-1 h2">Winners</div>
-			@if (Model.CanMailWinners)
-			{
-				<button type="button"
-						class="btn btn-outline-success btn-sm me-2"
-						data-bs-toggle="modal"
-						data-bs-target="#mailModal">
-					Mail Winners
-				</button>
-			}
-			<div>
-				<a asp-action="@nameof(DrawingController.DownloadWinners)"
-				   asp-route-id="@Model.Drawing.Id"
-				   class="btn btn-outline-dark btn-sm">Download</a>
-			</div>
-		</div>
-	</div>
+    <div class="col-12">
+        <div class="d-flex align-items-center">
+            <div class="flex-grow-1 h2">Winners</div>
+            @if (Model.CanMailWinners)
+            {
+                <button type="button"
+                        class="btn btn-outline-success btn-sm me-2"
+                        data-bs-toggle="modal"
+                        data-bs-target="#mailModal">
+                    Message Winners
+                </button>
+            }
+            <div>
+                <a asp-action="@nameof(DrawingController.DownloadWinners)"
+                   asp-route-id="@Model.Drawing.Id"
+                   class="btn btn-outline-dark btn-sm">Download</a>
+            </div>
+        </div>
+    </div>
 </div>
 <table class="table table-sm table-bordered table-striped">
-	<thead>
-		<tr>
-			<th>Redeemed?</th>
-			<th>Username</th>
-			<th>Name</th>
-			<th style="width: 4rem;">&nbsp;</th>
-		</tr>
-	</thead>
-	<tbody>
-		@foreach (var winner in Model.Drawing.Winners)
-		{
-			<tr>
-				<td>
-					@if (winner.RedeemedAt.HasValue)
-					{
-						<form asp-controller="Drawing"
-							  asp-action="UndoRedemption"
-							  method="post"
-							  role="form">
-							<strong>Reedemed</strong> at @winner.RedeemedAt.Value.ToString()
+    <thead>
+        <tr>
+            <th>Redeemed?</th>
+            <th>Username</th>
+            <th>Name</th>
+            <th style="width: 4rem;">&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var winner in Model.Drawing.Winners)
+        {
+            <tr>
+                <td>
+                    @if (winner.RedeemedAt.HasValue)
+                    {
+                        <form asp-controller="Drawing"
+                              asp-action="UndoRedemption"
+                              method="post"
+                              role="form">
+                            <strong>Reedemed</strong> at @winner.RedeemedAt.Value.ToString()
 
-							<input id="drawingId"
-								   name="drawingId"
-								   value="@Model.Drawing.Id"
-								   type="hidden" />
-							<input id="prizeWinnerId"
-								   name="prizeWinnerId"
-								   value="@winner.Id"
-								   type="hidden" />
-							<input id="page"
-								   name="page"
-								   value="@Model.PaginateModel.CurrentPage"
-								   type="hidden" />
-							<button type="submit"
-									style="margin-left:5px;"
-									class="btn btn-outline-secondary btn-sm btn-spinner"
-									button-spinner>
-								Undo
-							</button>
-						</form>
-					}
-					else
-					{
-						<form asp-controller="Drawing"
-							  asp-action="RedeemWinner"
-							  method="post"
-							  role="form">
-							<input id="drawingId"
-								   name="drawingId"
-								   value="@Model.Drawing.Id"
-								   type="hidden" />
-							<input id="prizeWinnerId"
-								   name="prizeWinnerId"
-								   value="@winner.Id"
-								   type="hidden" />
-							<input id="page"
-								   name="page"
-								   value="@Model.PaginateModel.CurrentPage"
-								   type="hidden" />
-							<button type="submit"
-									class="btn btn-outline-success btn-sm btn-spinner"
-									button-spinner>
-								<span class="fas fa-gift fa-fw"></span>
-								Available, click to redeem!
-							</button>
-						</form>
-					}
-				</td>
-				<td>
-					<a asp-controller="Participants"
-					   asp-action="Detail"
-					   asp-route-id="@winner.UserId">
-						@winner.UserUsername
-					</a>
-				</td>
-				<td>
-					<a asp-controller="Participants"
-					   asp-action="Detail"
-					   asp-route-id="@winner.UserId">
-						@winner.UserFirstName @winner.UserLastName
-					</a>
-				</td>
-				<td>
-					<div class="d-flex justify-content-evenly">
-						@if (!winner.RedeemedAt.HasValue)
-						{
-							<button type="button"
-									class="btn btn-outline-danger btn-sm"
-									data-bs-toggle="modal"
-									data-bs-target="#deleteModal"
-									data-id="@winner.Id"
-									data-name="@winner.UserFirstName @winner.UserLastName">
-								<span class="fas fa-times fa-fw" aria-hidden="true"></span>
-							</button>
-						}
-						else
-						{
-							@:&nbsp;
-						}
-					</div>
-				</td>
-			</tr>
-		}
-	</tbody>
+                            <input id="drawingId"
+                                   name="drawingId"
+                                   value="@Model.Drawing.Id"
+                                   type="hidden" />
+                            <input id="prizeWinnerId"
+                                   name="prizeWinnerId"
+                                   value="@winner.Id"
+                                   type="hidden" />
+                            <input id="page"
+                                   name="page"
+                                   value="@Model.PaginateModel.CurrentPage"
+                                   type="hidden" />
+                            <button type="submit"
+                                    style="margin-left:5px;"
+                                    class="btn btn-outline-secondary btn-sm btn-spinner"
+                                    button-spinner>
+                                Undo
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-controller="Drawing"
+                              asp-action="RedeemWinner"
+                              method="post"
+                              role="form">
+                            <input id="drawingId"
+                                   name="drawingId"
+                                   value="@Model.Drawing.Id"
+                                   type="hidden" />
+                            <input id="prizeWinnerId"
+                                   name="prizeWinnerId"
+                                   value="@winner.Id"
+                                   type="hidden" />
+                            <input id="page"
+                                   name="page"
+                                   value="@Model.PaginateModel.CurrentPage"
+                                   type="hidden" />
+                            <button type="submit"
+                                    class="btn btn-outline-success btn-sm btn-spinner"
+                                    button-spinner>
+                                <span class="fas fa-gift fa-fw"></span>
+                                Available, click to redeem!
+                            </button>
+                        </form>
+                    }
+                </td>
+                <td>
+                    <a asp-controller="Participants"
+                       asp-action="Detail"
+                       asp-route-id="@winner.UserId">
+                        @winner.UserUsername
+                    </a>
+                </td>
+                <td>
+                    <a asp-controller="Participants"
+                       asp-action="Detail"
+                       asp-route-id="@winner.UserId">
+                        @winner.UserFirstName @winner.UserLastName
+                    </a>
+                </td>
+                <td>
+                    <div class="d-flex justify-content-evenly">
+                        @if (!winner.RedeemedAt.HasValue)
+                        {
+                            <button type="button"
+                                    class="btn btn-outline-danger btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal"
+                                    data-id="@winner.Id"
+                                    data-name="@winner.UserFirstName @winner.UserLastName">
+                                <span class="fas fa-times fa-fw" aria-hidden="true"></span>
+                            </button>
+                        }
+                        else
+                        {
+                            @:&nbsp;
+                        }
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>
 
 <paginate paginateModel="@Model.PaginateModel"></paginate>
 
 <div class="row">
-	<div class="modal fade"
-		 id="deleteModal"
-		 tabindex="-1"
-		 role="dialog"
-		 aria-labelledby="deleteModalLabel">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h1 class="modal-title h4" id="deleteModalLabel">Delete winner</h1>
-					<button type="button"
-							class="btn-close"
-							data-bs-dismiss="modal"
-							aria-label="Close dialog">
-					</button>
-				</div>
-				<div class="modal-body p-0">
-					<div class="modal-body d-flex align-items-stretch">
-						<span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
-							  aria-hidden="true"></span>
-						<span id="modal-text"></span>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button"
-							class="btn btn-outline-secondary"
-							data-bs-dismiss="modal"
-							style="margin-right: 1em;">
-						Cancel
-					</button>
-					<form asp-controller="Drawing"
-						  asp-action="RemoveWinner"
-						  method="post"
-						  role="form"
-						  style="display:inline">
-						<input id="drawingId"
-							   name="drawingId"
-							   value="@Model.Drawing.Id"
-							   type="hidden" />
-						<input id="prizeWinnerId" name="prizeWinnerId" type="hidden" />
-						<input id="page"
-							   name="page"
-							   value="@Model.PaginateModel.CurrentPage"
-							   type="hidden" />
-						<button type="submit"
-								class="btn btn-outline-danger float-end"
-								aria-label="Confirm">
-							<span class="fas fa-times fa-fw" aria-hidden="true"></span>
-							Delete
-						</button>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="modal fade"
+         id="deleteModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="deleteModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title h4" id="deleteModalLabel">Delete winner</h1>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close dialog">
+                    </button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="modal-body d-flex align-items-stretch">
+                        <span class="fas fa-exclamation-triangle fa-lg text-danger pt-2 me-3"
+                              aria-hidden="true"></span>
+                        <span id="modal-text"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Cancel
+                    </button>
+                    <form asp-controller="Drawing"
+                          asp-action="RemoveWinner"
+                          method="post"
+                          role="form"
+                          style="display:inline">
+                        <input id="drawingId"
+                               name="drawingId"
+                               value="@Model.Drawing.Id"
+                               type="hidden" />
+                        <input id="prizeWinnerId" name="prizeWinnerId" type="hidden" />
+                        <input id="page"
+                               name="page"
+                               value="@Model.PaginateModel.CurrentPage"
+                               type="hidden" />
+                        <button type="submit"
+                                class="btn btn-outline-danger float-end"
+                                aria-label="Confirm">
+                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @if (Model.CanMailWinners)
 {
-	<div class="modal fade"
-		 id="mailModal"
-		 tabindex="-1"
-		 role="dialog"
-		 aria-labelledby="mailModalLabel">
-		<div class="modal-dialog modal-lg" role="document">
-			<form asp-controller="@DrawingController.Name"
-				  asp-action="@nameof(DrawingController.MailWinners)"
-				  method="post"
-				  role="form"
-				  style="display:inline">
-				<input asp-for="Drawing.Id" type="hidden" />
-				<div class="modal-content">
-					<div class="modal-header">
-						<h1 class="modal-title h4" id="mailModalLabel">Mail Winners</h1>
-						<button type="button"
-								class="btn-close"
-								data-bs-dismiss="modal"
-								aria-label="Close dialog">
-						</button>
-					</div>
-					<div class="modal-body">
-						<div class="mb-3">
-							<label asp-for="Drawing.NotificationSubject" class="col-form-label"></label>
-							<input asp-for="Drawing.NotificationSubject" class="form-control" />
-							<span asp-validation-for="Drawing.NotificationSubject" class="text-danger"></span>
-						</div>
-						<div class="mb-3">
-							<label asp-for="Drawing.NotificationMessage" class="col-form-label"></label>
-							<textarea asp-for="Drawing.NotificationMessage" class="form-control"></textarea>
-							<span asp-validation-for="Drawing.NotificationMessage" class="text-danger"></span>
-						</div>
-					</div>
-					<div class="modal-footer">
-						<button type="button"
-								class="btn btn-outline-secondary"
-								data-bs-dismiss="modal">
-							Cancel
-						</button>
-						<button type="submit"
-								class="btn btn-outline-primary"
-								aria-label="Confirm"
-								button-spinner>
-							Send Mail
-						</button>
-					</div>
-				</div>
-			</form>
-		</div>
-	</div>
+    <div class="modal fade"
+         id="mailModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="mailModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <form asp-controller="@DrawingController.Name"
+                  asp-action="@nameof(DrawingController.MailWinners)"
+                  method="post"
+                  role="form"
+                  style="display:inline">
+                <input asp-for="Drawing.Id" type="hidden" />
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title h4" id="mailModalLabel">Message Winners</h1>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close dialog">
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <div class="alert alert-warning">
+                                <strong>Please note:</strong> there is no undo, once a message is
+                                sent it will remain in the participant's inbox!
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Drawing.NotificationSubject"
+                                   class="col-form-label"></label>
+                            <input asp-for="Drawing.NotificationSubject"
+                                   class="form-control" />
+                            <span asp-validation-for="Drawing.NotificationSubject"
+                                  class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Drawing.NotificationMessage"
+                                   class="col-form-label"></label>
+                            <textarea asp-for="Drawing.NotificationMessage"
+                                      class="form-control"></textarea>
+                            <span asp-validation-for="Drawing.NotificationMessage"
+                                  class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-outline-primary"
+                                aria-label="Confirm"
+                                button-spinner>
+                            Send Message
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 }
 
 @section scripts
 {
-	<script>
-		$('#deleteModal').on('show.bs.modal', function (event) {
-			let button = $(event.relatedTarget);
-			let id = button.data('id');
-			let name = button.data('name');
-			let modal = $(this);
-			modal.find('#modal-text').html('Are you sure you wish to remove the winner: <strong>' + name + '</strong>?');
-			modal.find('#prizeWinnerId').val(id);
-		});
-	</script>
+    <script>
+        $('#deleteModal').on('show.bs.modal', function (event) {
+            let button = $(event.relatedTarget);
+            let id = button.data('id');
+            let name = button.data('name');
+            let modal = $(this);
+            modal.find('#modal-text').html('Are you sure you wish to remove the winner: <strong>' + name + '</strong>?');
+            modal.find('#prizeWinnerId').val(id);
+        });
+    </script>
 }
