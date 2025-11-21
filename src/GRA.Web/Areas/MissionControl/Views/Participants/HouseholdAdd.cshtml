@@ -1,132 +1,139 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.HouseholdAddViewModel
 
 <form asp-controller="Participants" asp-action="AddHouseholdMember" method="post" role="form">
-    <div class="row my-2">
-        <div class="col-12">
+	<div class="row my-2">
+		<div class="col-12">
 
-            <input asp-for="Id" type="hidden" />
+			<input asp-for="Id" type="hidden" />
 
-            <div class="row row-spacing">
-                <div class="col-12">
-                    <label asp-for="User.FirstName" class="col-form-label"></label>
-                    <input asp-for="User.FirstName" class="form-control" />
-                    <span asp-validation-for="User.FirstName" class="text-danger"></span>
-                </div>
-            </div>
+			<div class="row row-spacing">
+				<div class="col-12">
+					<label asp-for="User.FirstName" class="col-form-label"></label>
+					<input asp-for="User.FirstName" class="form-control" />
+					<span asp-validation-for="User.FirstName" class="text-danger"></span>
+				</div>
+			</div>
 
-            <div class="row row-spacing">
-                <div class="col-12">
-                    <label asp-for="User.LastName" class="col-form-label"></label>
-                    <input asp-for="User.LastName" class="form-control" />
-                    <span asp-validation-for="User.LastName" class="text-danger"></span>
-                </div>
-            </div>
+			<div class="row row-spacing">
+				<div class="col-12">
+					<label asp-for="User.LastName" class="col-form-label"></label>
+					<input asp-for="User.LastName" class="form-control" />
+					<span asp-validation-for="User.LastName" class="text-danger"></span>
+				</div>
+			</div>
 
-            @if (Model.RequirePostalCode)
-            {
-                <div class="row row-spacing">
-                    <div class="col-12">
-                        <label asp-for="User.PostalCode" class="col-form-label"></label>
-                        <input asp-for="User.PostalCode" class="form-control" />
-                        <span asp-validation-for="User.PostalCode" class="text-danger"></span>
-                    </div>
-                </div>
-            }
+			@if (Model.RequirePostalCode)
+			{
+				<div class="row row-spacing">
+					<div class="col-12">
+						<label asp-for="User.PostalCode" class="col-form-label"></label>
+						<input asp-for="User.PostalCode" class="form-control" />
+						<span asp-validation-for="User.PostalCode" class="text-danger"></span>
+					</div>
+				</div>
+			}
 
-            <div class="row row-spacing">
-                <div class="col-12">
-                    <label asp-for="User.Email" class="col-form-label"></label>
-                    <input asp-for="User.Email" class="form-control" type="email" />
-                    <span asp-validation-for="User.Email" class="text-danger"></span>
-                </div>
-            </div>
+			<div class="row row-spacing">
+				<div class="col-12">
+					<label asp-for="User.Email" class="col-form-label"></label>
+					<input asp-for="User.Email" class="form-control" type="email" />
+					<span asp-validation-for="User.Email" class="text-danger"></span>
+				</div>
+			</div>
 
-            <div class="row row-spacing">
-                <div class="col-12">
-                    <label asp-for="User.PhoneNumber" class="col-form-label"></label>
-                    <input asp-for="User.PhoneNumber" class="form-control" type="tel" />
-                    <span asp-validation-for="User.PhoneNumber" class="text-danger"></span>
-                </div>
-            </div>
+			<div class="row row-spacing">
+				<div class="col-12">
+					<label asp-for="User.PhoneNumber" class="col-form-label"></label>
+					<input asp-for="User.PhoneNumber" class="form-control" type="tel" />
+					<span asp-validation-for="User.PhoneNumber" class="text-danger"></span>
+				</div>
+			</div>
 
-            <div class="row row-spacing">
-                <div class="col-12">
-                    <label asp-for="User.SystemId" class="col-form-label"></label>
-                    <select asp-for="User.SystemId" asp-items="Model.SystemList" class="form-select"></select>
-                    <span asp-validation-for="User.SystemId" class="text-danger"></span>
-                </div>
-            </div>
+			<div class="row row-spacing">
+				<div class="col-12">
+					<label asp-for="User.SystemId" class="col-form-label"></label>
+					<select asp-for="User.SystemId" asp-items="Model.SystemList" class="form-select"></select>
+					<span asp-validation-for="User.SystemId" class="text-danger"></span>
+				</div>
+			</div>
 
-            <div class="row row-spacing">
-                <div class="col-12">
-                    <label asp-for="User.BranchId" class="col-form-label"></label>
-                    <select asp-for="User.BranchId" asp-items="Model.BranchList" class="form-select"></select>
-                    <span asp-validation-for="User.BranchId" class="text-danger"></span>
-                </div>
-            </div>
+			<div class="row row-spacing">
+				<div class="col-12">
+					<label asp-for="User.BranchId" class="col-form-label"></label>
+					<select asp-for="User.BranchId" asp-items="Model.BranchList" class="form-select"></select>
+					<span asp-validation-for="User.BranchId" class="text-danger"></span>
+				</div>
+			</div>
 
-            <div class="row row-spacing">
-                <div class="col-12">
-                    <label asp-for="User.ProgramId" class="col-form-label"></label>
-                    <select asp-for="User.ProgramId" asp-items="Model.ProgramList" class="form-select">
-                        <option value="-1"></option>
-                    </select>
-                    <span asp-validation-for="User.ProgramId" class="text-danger"></span>
-                </div>
-            </div>
+			@if (Model.ProgramList.Count() > 1)
+			{
+				<div class="row row-spacing">
+					<div class="col-12">
+						<label asp-for="User.ProgramId" class="col-form-label"></label>
+						<select asp-for="User.ProgramId" asp-items="Model.ProgramList" class="form-select">
+							<option value="-1"></option>
+						</select>
+						<span asp-validation-for="User.ProgramId" class="text-danger"></span>
+					</div>
+				</div>
+			}
+			else
+			{
+				<input asp-for="User.ProgramId" type="hidden" />
+			}
 
-            <div id="ageField" class="row row-spacing @(Model.ShowAge ? "": "d-none")">
-                <div class="col-12">
-                    <label asp-for="User.Age" class="col-form-label"></label>
-                    <input asp-for="User.Age" class="form-control" type="text" />
-                    <span id="ageMessage" asp-validation-for="User.Age" class="text-danger"></span>
-                </div>
-            </div>
+			<div id="ageField" class="row row-spacing @(Model.ShowAge ? "" : "d-none")">
+				<div class="col-12">
+					<label asp-for="User.Age" class="col-form-label"></label>
+					<input asp-for="User.Age" class="form-control" type="text" />
+					<span id="ageMessage" asp-validation-for="User.Age" class="text-danger"></span>
+				</div>
+			</div>
 
-            <div id="schoolFields" class="@(Model.ShowSchool ? "": "d-none")">
-                @await Html.PartialAsync("_SchoolSelectionPartial", Model)
-            </div>
+			<div id="schoolFields" class="@(Model.ShowSchool ? "" : "d-none")">
+				@await Html.PartialAsync("_SchoolSelectionPartial", Model)
+			</div>
 
-            @if (Model?.AskFirstTime?.Count() > 1)
-            {
-                <div class="row row-spacing">
-                    <div class="col-12">
-                        <label asp-for="IsFirstTime" class="col-form-label"></label>
-                        <select asp-for="IsFirstTime"
-                                asp-items="Model.AskFirstTime"
-                                class="form-select"></select>
-                        <span asp-validation-for="IsFirstTime" class="text-danger"></span>
-                    </div>
-                </div>
-            }
+			@if (Model?.AskFirstTime?.Count() > 1)
+			{
+				<div class="row row-spacing">
+					<div class="col-12">
+						<label asp-for="IsFirstTime" class="col-form-label"></label>
+						<select asp-for="IsFirstTime"
+								asp-items="Model.AskFirstTime"
+								class="form-select"></select>
+						<span asp-validation-for="IsFirstTime" class="text-danger"></span>
+					</div>
+				</div>
+			}
 
-            @if (Model.AskEmailSubscription?.Count() > 1)
-            {
-                <div class="row row-spacing">
-                    <div class="col-12">
-                        <label asp-for="EmailSubscriptionRequested" class="col-form-label">@Model.AskEmailSubscriptionText</label>
-                        <select asp-for="EmailSubscriptionRequested"
-                                asp-items="Model.AskEmailSubscription"
-                                class="form-select"></select>
-                        <span asp-validation-for="EmailSubscriptionRequested" class="text-danger"></span>
-                    </div>
-                </div>
-            }
+			@if (Model.AskEmailSubscription?.Count() > 1)
+			{
+				<div class="row row-spacing">
+					<div class="col-12">
+						<label asp-for="EmailSubscriptionRequested" class="col-form-label">@Model.AskEmailSubscriptionText</label>
+						<select asp-for="EmailSubscriptionRequested"
+								asp-items="Model.AskEmailSubscription"
+								class="form-select"></select>
+						<span asp-validation-for="EmailSubscriptionRequested" class="text-danger"></span>
+					</div>
+				</div>
+			}
 
-            @if (!string.IsNullOrWhiteSpace(Model.TranslationDescriptionPastTense))
-            {
-                <div class="row row-spacing">
-                    <div class="col-12">
-                        <label asp-for="User.DailyPersonalGoal" class="col-form-label"></label>
-                        <div>
-                            I will @Model.TranslationDescriptionPastTense
-                            <input asp-for="User.DailyPersonalGoal" class="form-control" style="display:inline-block; width:75px;" />
-                            @Model.ActivityDescriptionPlural a day
-                        </div>
-                        <span asp-validation-for="User.DailyPersonalGoal" class="text-danger"></span>
-                    </div>
-                </div>
-            }
+			@if (!string.IsNullOrWhiteSpace(Model.TranslationDescriptionPastTense))
+			{
+				<div class="row row-spacing">
+					<div class="col-12">
+						<label asp-for="User.DailyPersonalGoal" class="col-form-label"></label>
+						<div>
+							I will @Model.TranslationDescriptionPastTense
+							<input asp-for="User.DailyPersonalGoal" class="form-control" style="display:inline-block; width:75px;" />
+							@Model.ActivityDescriptionPlural a day
+						</div>
+						<span asp-validation-for="User.DailyPersonalGoal" class="text-danger"></span>
+					</div>
+				</div>
+			}
 
 			@if (Model.AskPersonalPointGoal)
 			{
@@ -149,96 +156,96 @@
 				</div>
 			}
 
-        </div>
-    </div>
+		</div>
+	</div>
 
-    <div class="mb-3 d-flex justify-content-end">
-        <a asp-action="Household"
-           asp-route-id="@Model.Id"
-           class="btn btn-outline-secondary me-2">Return to Household</a>
-        <button type="submit"
-                id="Submit"
-                name="Submit"
-                value="Submit"
-                class="btn btn-outline-primary"
-                button-spinner>
-            <span class="buttonText">Add Member</span>
-        </button>
-    </div>
+	<div class="mb-3 d-flex justify-content-end">
+		<a asp-action="Household"
+		   asp-route-id="@Model.Id"
+		   class="btn btn-outline-secondary me-2">Return to Household</a>
+		<button type="submit"
+				id="Submit"
+				name="Submit"
+				value="Submit"
+				class="btn btn-outline-primary"
+				button-spinner>
+			<span class="buttonText">Add Member</span>
+		</button>
+	</div>
 </form>
 
 @section scripts {
-    <script>
-        var programs = JSON.parse('@Html.Raw(Model.ProgramJson)');
-        var selectedProgram = $.grep(programs, function (obj) {
-            return obj.Id == $("#User_ProgramId").val();
-        })[0];
+	<script>
+		var programs = JSON.parse('@Html.Raw(Model.ProgramJson)');
+		var selectedProgram = $.grep(programs, function (obj) {
+			return obj.Id == $("#User_ProgramId").val();
+		})[0];
 
-        $("#User_SystemId").on("change", function () {
-            var systemId = $(this).val();
-            var branchList = $("#User_BranchId");
-            var branchId = branchList.val();
-            var url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
+		$("#User_SystemId").on("change", function () {
+			var systemId = $(this).val();
+			var branchList = $("#User_BranchId");
+			var branchId = branchList.val();
+			var url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
 
-            $.getJSON(url, { systemId: systemId, branchId: branchId }, function (response) {
-                branchList.empty();
-                if (response.length > 1) {
-                    branchList.append(new Option("", "-1"));
-                }
-                $.each(response, function (index, item) {
-                    branchList.append(new Option(item.text, item.value, item.selected, item.selected))
-                });
-            });
-        });
+			$.getJSON(url, { systemId: systemId, branchId: branchId }, function (response) {
+				branchList.empty();
+				if (response.length > 1) {
+					branchList.append(new Option("", "-1"));
+				}
+				$.each(response, function (index, item) {
+					branchList.append(new Option(item.text, item.value, item.selected, item.selected))
+				});
+			});
+		});
 
-        $("#User_ProgramId").on("change", function () {
-            var programId = $(this).val();
-            selectedProgram = $.grep(programs, function (obj) {
-                return obj.Id == programId;
-            })[0];
-            if (selectedProgram != null) {
-                if (selectedProgram.AskAge) {
-                    $("#ageField").removeClass("d-none");
-                    validateAge();
-                }
-                else {
-                    $("#ageField").addClass("d-none");
-                }
+		$("#User_ProgramId").on("change", function () {
+			var programId = $(this).val();
+			selectedProgram = $.grep(programs, function (obj) {
+				return obj.Id == programId;
+			})[0];
+			if (selectedProgram != null) {
+				if (selectedProgram.AskAge) {
+					$("#ageField").removeClass("d-none");
+					validateAge();
+				}
+				else {
+					$("#ageField").addClass("d-none");
+				}
 
-                if (selectedProgram.AskSchool) {
-                    $("#schoolFields").removeClass("d-none");
-                }
-                else {
-                    $("#schoolFields").addClass("d-none");
-                }
-            }
-        });
+				if (selectedProgram.AskSchool) {
+					$("#schoolFields").removeClass("d-none");
+				}
+				else {
+					$("#schoolFields").addClass("d-none");
+				}
+			}
+		});
 
-        $("#User_Age").on("change", function () {
-            validateAge();
-        });
+		$("#User_Age").on("change", function () {
+			validateAge();
+		});
 
-        function validateAge() {
-            var age = $("#User_Age").val();
-            var message = $("#ageMessage");
-            if (age != "" && ((age > selectedProgram.AgeMaximum && selectedProgram.AgeMaximum != null)
-                || (age < selectedProgram.AgeMinimum && selectedProgram.AgeMinimum != null))) {
-                var program = $.grep(programs, function (obj) {
-                    return ((obj.AgeMaximum >= age || obj.AgeMaximum == null)
-                        && (obj.AgeMinimum <= age || obj.AgeMinimum == null));
-                })[0];
-                if (program != null) {
-                    message.removeClass('field-validation-valid field-validation-error text-danger');
-                    message.addClass('text-primary');
-                    $("#User_Age").removeClass("input-validation-error")
-                    message.text("The program " + program.Name + " may be better suited for your age.")
-                }
-            }
-            else {
-                message.text("");
-            }
-        }
-    </script>
+		function validateAge() {
+			var age = $("#User_Age").val();
+			var message = $("#ageMessage");
+			if (age != "" && ((age > selectedProgram.AgeMaximum && selectedProgram.AgeMaximum != null)
+				|| (age < selectedProgram.AgeMinimum && selectedProgram.AgeMinimum != null))) {
+				var program = $.grep(programs, function (obj) {
+					return ((obj.AgeMaximum >= age || obj.AgeMaximum == null)
+						&& (obj.AgeMinimum <= age || obj.AgeMinimum == null));
+				})[0];
+				if (program != null) {
+					message.removeClass('field-validation-valid field-validation-error text-danger');
+					message.addClass('text-primary');
+					$("#User_Age").removeClass("input-validation-error")
+					message.text("The program " + program.Name + " may be better suited for your age.")
+				}
+			}
+			else {
+				message.text("");
+			}
+		}
+	</script>
 
-    @await Html.PartialAsync("_SchoolSelectionScripts", Model)
+	@await Html.PartialAsync("_SchoolSelectionScripts", Model)
 }

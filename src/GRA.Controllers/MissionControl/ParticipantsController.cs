@@ -1060,6 +1060,15 @@ namespace GRA.Controllers.MissionControl
                     SystemList = new SelectList(systemList.ToList(), "Id", "Name")
                 };
 
+                if (programList.Count() == 1)
+                {
+                    var programId = programList.Single().Id;
+                    var program = await _siteService.GetProgramByIdAsync(programId);
+                    viewModel.User.ProgramId = programId;
+                    viewModel.ShowAge = program.AskAge;
+                    viewModel.ShowSchool = program.AskSchool;
+                }
+
                 var askIfFirstTime
                     = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
                 if (askIfFirstTime)
