@@ -509,6 +509,37 @@ namespace GRA.Data.Repository
             };
         }
 
+        public async Task<DataWithCount<IEnumerable<User>>> GetUsersToPruneAsync(int siteId,
+            DateTime lastActiveCutoff,
+            int maximumPrune)
+        {
+            var householdHeadIds = DbSet
+                .Where(_ => !_.IsDeleted
+                    && _.HouseholdHeadUserId.HasValue)
+                .Select(_ => _.HouseholdHeadUserId)
+                .Distinct();
+
+            var userList = DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId
+                    && !_.IsDeleted
+                    && _.CanBeDeleted
+                    && !_.IsAdmin
+                    && _.CreatedAt < lastActiveCutoff
+                    && (!_.LastAccess.HasValue || _.LastAccess < lastActiveCutoff)
+                    && (!_.LastActivityDate.HasValue || _.LastActivityDate < lastActiveCutoff)
+                    && !householdHeadIds.Contains(_.Id));
+
+            return new DataWithCount<IEnumerable<User>>
+            {
+                Count = await userList.CountAsync(),
+                Data = await userList
+                    .Take(maximumPrune)
+                    .ProjectToType<User>()
+                    .ToListAsync()
+            };
+        }
+
         public async Task<IDictionary<string, DateTime>> GetViewedPackingSlipsAsync(int userId)
         {
             // UserPackingSlipViews for the current user

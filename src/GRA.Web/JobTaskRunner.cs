@@ -12,15 +12,19 @@ namespace GRA.Web
     {
         private readonly EmailBulkService _emailBulkService;
         private readonly ILogger _logger;
+        private readonly UserService _userService;
 
         public JobTaskRunner(ILogger<JobTaskRunner> logger,
-            EmailBulkService emailBulkService)
+            EmailBulkService emailBulkService,
+            UserService userService)
         {
             ArgumentNullException.ThrowIfNull(logger);
             ArgumentNullException.ThrowIfNull(emailBulkService);
+            ArgumentNullException.ThrowIfNull(userService);
 
             _logger = logger;
             _emailBulkService = emailBulkService;
+            _userService = userService;
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
@@ -32,6 +36,7 @@ namespace GRA.Web
 
             var scheduledTasks = new Dictionary<string, Func<Task<bool>>>
             {
+                ["PruneInactiveUsers"] = _userService.PruneInactiveScheduledTask,
                 ["WelcomeEmail"] = _emailBulkService.SendWelcomeScheduledTask
             };
 

@@ -274,6 +274,20 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Users).Name,
                     Format = SiteSettingFormat.Integer
                 },
+                [SiteSettingKey.Users.PruneInactiveDays] = new SiteSettingDefinition
+                {
+                    Name = "Prune inactive days",
+                    Info = "The number of days without activity before a user is deleted. Users with admin roles and heads of households will not be deleted.",
+                    Category = typeof(SiteSettingKey.Users).Name,
+                    Format = SiteSettingFormat.Integer
+                },
+                [SiteSettingKey.Users.PruneUsersMaximumBlock] = new SiteSettingDefinition
+                {
+                    Name = "Prune users maximum block",
+                    Info = "The number of users to prune in one block, pruning occurs every time the job runner executes - defaults to 20",
+                    Category = typeof(SiteSettingKey.Users).Name,
+                    Format = SiteSettingFormat.Integer
+                },
                 [SiteSettingKey.Users.RestrictChangingProgram] = new SiteSettingDefinition
                 {
                     Name = "Restrict changing program",

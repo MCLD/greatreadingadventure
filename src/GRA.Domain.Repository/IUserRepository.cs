@@ -72,6 +72,9 @@ namespace GRA.Domain.Repository
 
         Task<DataWithCount<ICollection<User>>> GetUsersInRoleAsync(int roleId, BaseFilter filter);
 
+        Task<DataWithCount<IEnumerable<User>>> GetUsersToPruneAsync(int siteId,
+            DateTime lastActiveCutoff, int maximumPrune);
+
         Task<IDictionary<string, DateTime>> GetViewedPackingSlipsAsync(int userId);
 
         Task<int> GetWelcomePendingCountAsync(int welcomeEmailId, int memberLongerThanHours);

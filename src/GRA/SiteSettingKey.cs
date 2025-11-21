@@ -114,6 +114,10 @@
         public static readonly string MaximumHouseholdSizeBeforeGroup
             = "Users.MaximumHouseholdSizeBeforeGroup";
 
+        public static readonly string PruneInactiveDays = "Users.PruneInactiveDays";
+
+        public static readonly string PruneUsersMaximumBlock = "Users.PruneUsersMaximumBlock";
+
         public static readonly string RestrictChangingProgram
             = "Users.RestrictChangingProgram";
 

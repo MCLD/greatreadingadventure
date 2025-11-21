@@ -1510,6 +1510,85 @@ namespace GRA.Domain.Service
             await _userRepository.SaveAsync();
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
+            "CA1031:Do not catch general exception types",
+            Justification = "Unattended job should never completely fail.")]
+        public async Task<bool> PruneInactiveScheduledTask()
+        {
+            const int defaultMaximumPrune = 20;
+            int usersPruned = 0;
+
+            foreach (var site in await _siteLookupService.GetAllAsync())
+            {
+                var (pruneInactiveSet, pruneLastActivityDays) = await _siteLookupService
+                    .GetSiteSettingIntAsync(site.Id, SiteSettingKey.Users.PruneInactiveDays);
+
+                if (!pruneInactiveSet)
+                {
+                    return false;
+                }
+
+                var lastActiveCutoff = _dateTimeProvider.Now.AddDays(-pruneLastActivityDays);
+
+                var (maximumPruneSet, maximumPruneSetting) = await _siteLookupService
+                        .GetSiteSettingIntAsync(site.Id,
+                            SiteSettingKey.Users.PruneUsersMaximumBlock);
+
+                var maximumPrune = maximumPruneSet
+                        ? maximumPruneSetting
+                        : defaultMaximumPrune;
+
+                var usersToPrune = await _userRepository
+                    .GetUsersToPruneAsync(site.Id, lastActiveCutoff, maximumPrune);
+
+                _logger.LogTrace("Pruning {MaximumPrune} inactive users, last active cutoff {ActivityCutoffDate}: {Count} users found",
+                    Math.Min(maximumPrune, usersToPrune.Count),
+                    lastActiveCutoff,
+                    usersToPrune.Count);
+
+                if (usersToPrune.Count == 0)
+                {
+                    return false;
+                }
+
+                var systemUserId = await _siteLookupService.GetSystemUserId();
+
+                foreach (var user in usersToPrune.Data)
+                {
+                    if (usersPruned >= maximumPrune)
+                    {
+                        return usersPruned > 0;
+                    }
+
+                    try
+                    {
+                        await DeleteUserAsync(systemUserId, user);
+
+                        var lastActiveDate = new[]
+                        {
+                            user.CreatedAt,
+                            user.LastAccess,
+                            user.LastActivityDate
+                        }.Max();
+
+                        _logger.LogTrace("User {UserId} pruned: Last active {lastActiveDate}, Cutoff Date {LoginCutoffDate}",
+                            user.Id,
+                            lastActiveDate,
+                            lastActiveCutoff);
+
+                        usersPruned++;
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Error pruning inactive user {UserId}",
+                            user.Id);
+                    }
+                }
+            }
+
+            return usersPruned > 0;
+        }
+
         public async Task<int> ReassignBranchAsync(int oldBranch, int newBranch)
         {
             return await _userRepository.ReassignBranchAsync(oldBranch, newBranch);
@@ -1687,9 +1766,7 @@ namespace GRA.Domain.Service
                     }
                     throw new GraException($"{user.FullName} is the head of a {callIt}. Please remove all {callIt} members first.");
                 }
-                user.IsDeleted = true;
-                user.Username = null;
-                await _userRepository.UpdateSaveAsync(requestedByUserId, user);
+                await DeleteUserAsync(requestedByUserId, user);
             }
             else
             {
@@ -2056,6 +2133,13 @@ namespace GRA.Domain.Service
                     }
                 }
             }
+        }
+
+        private async Task DeleteUserAsync(int currentUserId, User user)
+        {
+            user.IsDeleted = true;
+            user.Username = null;
+            await _userRepository.UpdateSaveAsync(currentUserId, user);
         }
 
         private async Task JoinedProgramNotificationBadge(User registeredUser)
