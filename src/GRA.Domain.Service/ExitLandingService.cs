@@ -16,6 +16,7 @@ namespace GRA.Domain.Service
 {
     public class ExitLandingService : BaseUserService<ExitLandingService>
     {
+        private const string DefaultBannerFilename = "gra-forest.jpg";
         private readonly IGraCache _cache;
         private readonly IExitLandingMessagesRepository _exitLandingRepository;
         private readonly LanguageService _languageService;
@@ -78,15 +79,21 @@ namespace GRA.Domain.Service
                 catch (GraException) { }
             }
 
-            exitLandingDetails ??= await InsertDefaultsAsync(siteStage);
+            var systemUserId = await _userRepository.GetSystemUserId();
+
+            exitLandingDetails ??= await InsertDefaultsAsync(systemUserId, siteStage);
 
             if (exitLandingDetails == null)
             {
                 throw new GraException($"Unable to find exit/landing details for site stage {siteStage}");
             }
 
-            return new ExitLandingDetails
+            var exitLandingText = new ExitLandingDetails
             {
+                BannerAlt = await _segmentService
+                    .GetTextAsync(exitLandingDetails.BannerAlt, languageId),
+                BannerFile = await _segmentService
+                    .GetTextAsync(exitLandingDetails.BannerFile, languageId),
                 ExitLeftMessage = await _segmentService
                     .GetTextAsync(exitLandingDetails.ExitLeftMessage, languageId),
                 LandingCenterMessage = await _segmentService
@@ -96,6 +103,20 @@ namespace GRA.Domain.Service
                 LandingRightMessage = await _segmentService
                     .GetTextAsync(exitLandingDetails.LandingRightMessage, languageId)
             };
+
+            if (string.IsNullOrEmpty(exitLandingText.BannerAlt))
+            {
+                exitLandingText.BannerAlt = await InsertBannerAlt(systemUserId,
+                    siteStage,
+                    languageId);
+            }
+
+            if (string.IsNullOrEmpty(exitLandingText.BannerFile))
+            {
+                exitLandingText.BannerFile = await InsertBannerFile(systemUserId);
+            }
+
+            return exitLandingText;
         }
 
         private async Task<IList<DefaultMessage>> GetDefaultsAsync()
@@ -103,6 +124,21 @@ namespace GRA.Domain.Service
             var result = new List<DefaultMessage>();
             foreach (var language in await _languageService.GetActiveAsync())
             {
+                result.Add(new DefaultMessage
+                {
+                    LanguageId = language.Id,
+                    Message = _sharedLocalizer.GetString(language.Name,
+                        Annotations.Home.BannerAltTag),
+                    MessageName = nameof(ExitLandingMessageSet.BannerAlt)
+                });
+
+                result.Add(new DefaultMessage
+                {
+                    LanguageId = language.Id,
+                    Message = DefaultBannerFilename,
+                    MessageName = nameof(ExitLandingMessageSet.BannerFile)
+                });
+
                 result.Add(new DefaultMessage
                 {
                     LanguageId = language.Id,
@@ -222,10 +258,90 @@ namespace GRA.Domain.Service
             return result;
         }
 
-        private async Task<ExitLandingMessageSet> InsertDefaultsAsync(SiteStage siteStage)
+        private async Task<string> InsertBannerInternal(int systemUserId,
+            SiteStage? currentStage,
+            int? currentLanguageId)
+        {
+            var isAlt = currentStage.HasValue;
+            string returnValue = isAlt ? null : DefaultBannerFilename;
+
+            foreach (var siteStage in Enum.GetValues<SiteStage>())
+            {
+                if(siteStage == SiteStage.Unknown)
+                {
+                    continue;
+                }
+
+                int? segmentId = null;
+
+                string segmentName = siteStage.ToString().AddTitleCaseSpaces()
+                    + " stage "
+                    + (isAlt
+                        ? nameof(ExitLandingDetails.BannerAlt)
+                        : nameof(ExitLandingDetails.BannerFile));
+
+                foreach (var language in await _languageService.GetActiveAsync())
+                {
+                    var text = isAlt
+                        ? _sharedLocalizer.GetString(language.Name, Annotations.Home.BannerAltTag)
+                        : DefaultBannerFilename;
+
+                    if (segmentId.HasValue)
+                    {
+                        await _segmentService.UpdateTextAsync(segmentId.Value,
+                            language.Id,
+                            text);
+                    }
+                    else
+                    {
+                        var segment = await _segmentService.AddTextAsync(systemUserId,
+                            language.Id,
+                            SegmentType.LandingPage,
+                            text,
+                            segmentName);
+
+                        segmentId = segment.SegmentId;
+
+                        var exitLanding = await _exitLandingRepository.GetByIdAsync((int)siteStage);
+
+                        if (isAlt)
+                        {
+                            exitLanding.BannerAlt = segmentId.Value;
+                        }
+                        else
+                        {
+                            exitLanding.BannerFile = segmentId.Value;
+                        }
+
+                        await _exitLandingRepository.UpdateSaveAsync(systemUserId, exitLanding);
+                    }
+
+                    if (isAlt && siteStage == currentStage && language.Id == currentLanguageId)
+                    {
+                        returnValue = text;
+                    }
+                }
+            }
+
+            return returnValue;
+        }
+
+        private async Task<string> InsertBannerAlt(int systemUserId,
+            SiteStage currentStage,
+            int currentLanguageId)
+        {
+            return await InsertBannerInternal(systemUserId, currentStage, currentLanguageId);
+        }
+
+        private async Task<string> InsertBannerFile(int systemUserId)
+        {
+            return await InsertBannerInternal(systemUserId, null, null);
+        }
+
+        private async Task<ExitLandingMessageSet> InsertDefaultsAsync(int systemUserId,
+            SiteStage siteStage)
         {
             ExitLandingMessageSet value = null;
-            var systemUserId = await _userRepository.GetSystemUserId();
             var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
             var defaultMessages = await GetDefaultsAsync();
 
@@ -266,6 +382,14 @@ namespace GRA.Domain.Service
 
                         switch (message.MessageName)
                         {
+                            case nameof(ExitLandingMessageSet.BannerAlt):
+                                exitLandingDetail.BannerAlt = segment.SegmentId;
+                                break;
+
+                            case nameof(ExitLandingMessageSet.BannerFile):
+                                exitLandingDetail.BannerFile = segment.SegmentId;
+                                break;
+
                             case nameof(ExitLandingMessageSet.ExitLeftMessage):
                                 exitLandingDetail.ExitLeftMessage = segment.SegmentId;
                                 break;

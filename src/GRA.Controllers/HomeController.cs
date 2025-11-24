@@ -21,7 +21,6 @@ namespace GRA.Controllers
         private const string ActivityErrorMessage = "ActivityErrorMessage";
         private const string AuthorErrorMessage = "AuthorErrorMessage";
         private const int BadgesToDisplay = 6;
-        private const string DefaultBannerFilename = "gra-forest.jpg";
         private const string LatestBook = "LatestBook";
         private const string ModelData = "ModelData";
         private const string SecretCodeMessage = "SecretCodeMessage";
@@ -124,7 +123,7 @@ namespace GRA.Controllers
                 }
                 else
                 {
-                    ShowAlertWarning(_sharedLocalizer[Annotations.Validate.EmailAddressInvalid, 
+                    ShowAlertWarning(_sharedLocalizer[Annotations.Validate.EmailAddressInvalid,
                         email]);
                 }
             }
@@ -613,10 +612,12 @@ namespace GRA.Controllers
             var exitLandingDetails = await _exitLandingService.GetExitLandingDetailsAsync(siteStage,
                 currentLanguageId);
 
+            var bannerPath = $"/{_pathResolver.ResolveContentPath(exitLandingDetails.BannerFile)}";
+
             var exitPageViewModel = new ExitPageViewModel
             {
-                BannerAltText = _sharedLocalizer[Annotations.Home.BannerAltTag],
-                BannerImagePath = $"/{_pathResolver.ResolveContentPath(DefaultBannerFilename)}",
+                BannerAltText = exitLandingDetails.BannerAlt,
+                BannerImagePath = bannerPath,
                 LeftMessage = CommonMark.CommonMarkConverter
                     .Convert(exitLandingDetails.ExitLeftMessage)
             };
@@ -683,10 +684,12 @@ namespace GRA.Controllers
                     ((DateTime)site.RegistrationOpens).ToString("D", culture) }
             };
 
+            var bannerPath = $"/{_pathResolver.ResolveContentPath(exitLandingDetails.BannerFile)}";
+
             var viewmodel = new LandingPageViewModel
             {
-                BannerAltText = _sharedLocalizer[Annotations.Home.BannerAltTag],
-                BannerImagePath = $"/{_pathResolver.ResolveContentPath(DefaultBannerFilename)}",
+                BannerAltText = exitLandingDetails.BannerAlt,
+                BannerImagePath = bannerPath,
                 CenterMessage = CommonMark.CommonMarkConverter.Convert(
                     await stubble.RenderAsync(exitLandingDetails.LandingCenterMessage, dataHash)),
                 LeftMessage = CommonMark.CommonMarkConverter.Convert(
