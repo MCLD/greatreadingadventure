@@ -64,13 +64,26 @@ namespace GRA.Domain.Service
             var exitLandingDetails = await _cache
                 .GetObjectFromCacheAsync<ExitLandingMessageSet>(cacheKey);
 
+            var systemUserId = await _userRepository.GetSystemUserId();
+
             if (exitLandingDetails == null)
             {
                 try
                 {
                     exitLandingDetails = await _exitLandingRepository.GetByIdAsync((int)siteStage);
+
                     if (exitLandingDetails != null)
                     {
+                        if (exitLandingDetails.BannerAlt == default)
+                        {
+                            await InsertBannerAlt(systemUserId, siteStage, languageId);
+                        }
+
+                        if (exitLandingDetails.BannerFile == default)
+                        {
+                            await InsertBannerFile(systemUserId);
+                        }
+
                         await _cache.SaveToCacheAsync(cacheKey,
                             exitLandingDetails,
                             CacheExitLandingHours);
@@ -78,8 +91,6 @@ namespace GRA.Domain.Service
                 }
                 catch (GraException) { }
             }
-
-            var systemUserId = await _userRepository.GetSystemUserId();
 
             exitLandingDetails ??= await InsertDefaultsAsync(systemUserId, siteStage);
 
@@ -103,18 +114,6 @@ namespace GRA.Domain.Service
                 LandingRightMessage = await _segmentService
                     .GetTextAsync(exitLandingDetails.LandingRightMessage, languageId)
             };
-
-            if (string.IsNullOrEmpty(exitLandingText.BannerAlt))
-            {
-                exitLandingText.BannerAlt = await InsertBannerAlt(systemUserId,
-                    siteStage,
-                    languageId);
-            }
-
-            if (string.IsNullOrEmpty(exitLandingText.BannerFile))
-            {
-                exitLandingText.BannerFile = await InsertBannerFile(systemUserId);
-            }
 
             return exitLandingText;
         }
@@ -267,7 +266,7 @@ namespace GRA.Domain.Service
 
             foreach (var siteStage in Enum.GetValues<SiteStage>())
             {
-                if(siteStage == SiteStage.Unknown)
+                if (siteStage == SiteStage.Unknown)
                 {
                     continue;
                 }
