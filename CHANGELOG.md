@@ -26,6 +26,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Pruning inactive users
 - Staff login report
 - Info message when editing Point Translations with unchangeable properties
+- Database storage of banner image file name and alt text
 
 ## Changed
 
