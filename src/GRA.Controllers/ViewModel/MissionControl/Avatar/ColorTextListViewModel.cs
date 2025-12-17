@@ -10,6 +10,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Avatar
         public IEnumerable<Language> Languages { get; set; }
         public IEnumerable<AvatarColorText> Texts { get; set; }
         public int? AltTextMaxLength { get; set; }
+        public Language SelectedLanguage { get; set; }
         public bool TextMissing { get; set; }
     }
 }

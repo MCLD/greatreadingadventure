@@ -16,6 +16,10 @@
 				  role="form">
 				<input asp-for="TextMissing" type="hidden" />
 				<input asp-for="CurrentPage" type="hidden" />
+				@if (Model.SelectedLanguage != null)
+				{
+					<input asp-for="SelectedLanguage.Id" type="hidden" />
+				}
 				<table class="table table-sm table-bordered table-striped">
 					<thead>
 						<tr>
@@ -41,17 +45,20 @@
 									<td>
 										@foreach (var language in Model.Languages)
 										{
-											<div class="input-group mb-2">
-												<label class="input-group-text">@language.Description</label>
-												<input type="hidden" name="Texts[@count].LanguageId" value="@language.Id" />
-												<input type="hidden" name="Texts[@count].AvatarColorId" value="@color.Id" />
-												<input type="text"
-													   name="Texts[@count].AltText"
-													   value="@color.Texts.Where(_ => _.LanguageId == language.Id).Select(_ => _.AltText).FirstOrDefault()"
-													   maxlength="@Model.AltTextMaxLength"
-													   class="form-control" />
-											</div>
-											count++;
+											if (Model.SelectedLanguage == null || Model.SelectedLanguage?.Id == language.Id)
+											{
+												<div class="input-group mb-2">
+													<label class="input-group-text">@language.Description</label>
+													<input type="hidden" name="Texts[@count].LanguageId" value="@language.Id" />
+													<input type="hidden" name="Texts[@count].AvatarColorId" value="@color.Id" />
+													<input type="text"
+														   name="Texts[@count].AltText"
+														   value="@color.Texts.Where(_ => _.LanguageId == language.Id).Select(_ => _.AltText).FirstOrDefault()"
+														   maxlength="@Model.AltTextMaxLength"
+														   class="form-control" />
+												</div>
+												count++;
+											}
 										}
 									</td>
 								</tr>

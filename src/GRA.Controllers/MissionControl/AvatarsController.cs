@@ -239,15 +239,17 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Avatar Bundles";
             return View(viewModel);
         }
-        
+
         public async Task<IActionResult> ColorTexts(int? page,
-            bool? textMissing)
+            bool? textMissing,
+            int? language)
         {
             page = page ?? 1;
             textMissing = textMissing ?? true;
 
             var filter = new AvatarFilter(page)
             {
+                LanguageId = language,
                 TextMissing = textMissing
             };
 
@@ -275,6 +277,11 @@ namespace GRA.Controllers.MissionControl
             }
 
             viewModel.Languages = await _languageService.GetActiveAsync();
+            if (language.HasValue)
+            {
+                viewModel.SelectedLanguage = viewModel.Languages
+                    .FirstOrDefault(_ => _.Id == language.Value);
+            }
 
             return View(viewModel);
         }
@@ -296,8 +303,9 @@ namespace GRA.Controllers.MissionControl
 
             return RedirectToAction(nameof(ColorTexts), new
             {
-                page = model.CurrentPage,
-                textMissing = model.TextMissing
+                textMissing = model.TextMissing,
+                language = model.SelectedLanguage?.Id,
+                page = model.CurrentPage
             });
         }
 
@@ -434,12 +442,15 @@ namespace GRA.Controllers.MissionControl
         }
 
         public async Task<IActionResult> ItemTexts(int? page,
-            bool? textMissing)
+            bool? textMissing,
+            int? language)
         {
             page = page ?? 1;
             textMissing = textMissing ?? true;
+
             var filter = new AvatarFilter(page)
             {
+                LanguageId = language,
                 TextMissing = textMissing
             };
 
@@ -474,6 +485,11 @@ namespace GRA.Controllers.MissionControl
             }
 
             viewModel.Languages = await _languageService.GetActiveAsync();
+            if (language.HasValue)
+            {
+                viewModel.SelectedLanguage = viewModel.Languages
+                    .FirstOrDefault(_ => _.Id == language.Value);
+            }
 
             return View(viewModel);
         }
@@ -529,8 +545,10 @@ namespace GRA.Controllers.MissionControl
 
             return RedirectToAction(nameof(ItemTexts), new
             {
-                page = model.CurrentPage,
-                textMissing = model.TextMissing
+                textMissing = model.TextMissing,
+                language = model.SelectedLanguage?.Id,
+                page = model.CurrentPage
+                
             });
         }
 

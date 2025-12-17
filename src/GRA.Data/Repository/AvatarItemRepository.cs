@@ -393,13 +393,21 @@ namespace GRA.Data.Repository
 
             if (filter.TextMissing == true)
             {
-                var completeTexts = _context.AvatarItemTexts
-                    .GroupBy(_ => _.AvatarItemId)
-                    .Where(_ => _.Count() == _context.Languages.Count())
-                    .Select(_ => new { _.Key })
-                    .Select(_ => _.Key);
+                if (filter.LanguageId.HasValue)
+                {
+                    items = items.Where(_ => 
+                        !_.Texts.Any(_ => _.LanguageId == filter.LanguageId.Value));
+                }
+                else
+                {
+                    var completeTexts = _context.AvatarItemTexts
+                        .GroupBy(_ => _.AvatarItemId)
+                        .Where(_ => _.Count() == _context.Languages.Count())
+                        .Select(_ => new { _.Key })
+                        .Select(_ => _.Key);
 
-                items = items.Where(_ => !completeTexts.Contains(_.Id));
+                    items = items.Where(_ => !completeTexts.Contains(_.Id));
+                }
             }
 
             return items;
