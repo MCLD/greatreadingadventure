@@ -3,7 +3,8 @@
 		<ul class="nav nav-pills flex-column flex-sm-row">
 			<li class="nav-item">
 				<a asp-action="@nameof(AvatarsController.ItemTexts)"
-				   asp-route-TextMissing="@Model.TextMissing"
+				   asp-route-textMissing="@Model.TextMissing"
+				   asp-route-language="@Model.SelectedLanguage?.Id"
 				   class="nav-link"
 				   ActiveBy routeKey="Action" value="@nameof(AvatarsController.ItemTexts)">
 					Items
@@ -11,7 +12,8 @@
 			</li>
 			<li class="nav-item">
 				<a asp-action="@nameof(AvatarsController.ColorTexts)"
-				   asp-route-TextMissing="@Model.TextMissing"
+				   asp-route-textMissing="@Model.TextMissing"
+				   asp-route-language="@Model.SelectedLanguage?.Id"
 				   class="nav-link"
 				   ActiveBy routeKey="Action" value="@nameof(AvatarsController.ColorTexts)">
 					Colors
@@ -30,9 +32,34 @@
 				<ul class="dropdown-menu">
 					<li>
 						<a class="dropdown-item"
-						   asp-route-TextMissing="false">All</a>
+						   asp-route-textMissing="false"
+						   asp-route-language="@Model.SelectedLanguage?.Id">All</a>
 						<a class="dropdown-item"
-						   asp-route-TextMissing="true">Missing Text</a>
+						   asp-route-textMissing="true"
+						   asp-route-language="@Model.SelectedLanguage?.Id">Missing Text</a>
+					</li>
+				</ul>
+			</li>
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle"
+				   data-bs-toggle="dropdown"
+				   href="#"
+				   role="button"
+				   aria-haspopup="true"
+				   aria-expanded="false">
+					Language: @(Model.SelectedLanguage != null ? Model.SelectedLanguage.Description : "All") <span class="caret"></span>
+				</a>
+				<ul class="dropdown-menu">
+					<li>
+						<a class="dropdown-item"
+						   asp-route-textMissing="@Model.TextMissing"
+						   asp-route-language="">All</a>
+						@foreach (var language in Model.Languages)
+						{
+							<a class="dropdown-item"
+							   asp-route-textMissing="@Model.TextMissing"
+							   asp-route-language="@language.Id">@language.Description</a>
+						}
 					</li>
 				</ul>
 			</li>

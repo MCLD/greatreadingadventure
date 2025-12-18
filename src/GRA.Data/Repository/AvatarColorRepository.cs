@@ -100,13 +100,21 @@ namespace GRA.Data.Repository
 
             if (filter.TextMissing == true)
             {
-                var completeTexts = _context.AvatarColorTexts
+                if (filter.LanguageId.HasValue)
+                {
+                    colors = colors.Where(_ => 
+                        !_.Texts.Any(_ => _.LanguageId == filter.LanguageId.Value));
+                }
+                else
+                {
+                    var completeTexts = _context.AvatarColorTexts
                     .GroupBy(_ => _.AvatarColorId)
                     .Where(_ => _.Count() == _context.Languages.Count())
                     .Select(_ => new { _.Key })
                     .Select(_ => _.Key);
 
-                colors = colors.Where(_ => !completeTexts.Contains(_.Id));
+                    colors = colors.Where(_ => !completeTexts.Contains(_.Id));
+                }
             }
 
             return colors;
