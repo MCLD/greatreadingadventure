@@ -52,6 +52,7 @@ namespace GRA.Domain.Model
         public bool AllBranches { get; set; }
 
         [MaxLength(2000, ErrorMessage = "Please enter no more than {1} characters for {0}.")]
+        [Required]
         public string References { get; set; }
 
         public bool SetSchedule { get; set; }
