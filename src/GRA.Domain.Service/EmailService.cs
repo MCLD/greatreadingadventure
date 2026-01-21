@@ -39,20 +39,23 @@ namespace GRA.Domain.Service
             LanguageService languageService,
             SiteLookupService siteLookupService) : base(logger, dateTimeProvider)
         {
-            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
-            _config = config ?? throw new ArgumentNullException(nameof(config));
-            _directEmailHistoryRepository = directEmailHistoryRepository
-                ?? throw new ArgumentNullException(nameof(directEmailHistoryRepository));
-            _directEmailTemplateRepository = directEmailTemplateRepository
-                ?? throw new ArgumentNullException(nameof(directEmailTemplateRepository));
-            _emailBaseRepository = emailBaseRepository
-                ?? throw new ArgumentNullException(nameof(emailBaseRepository));
-            _languageService = languageService
-                ?? throw new ArgumentNullException(nameof(languageService));
-            _siteLookupService = siteLookupService
-                ?? throw new ArgumentNullException(nameof(siteLookupService));
-            _userRepository = userRepository
-                ?? throw new ArgumentNullException(nameof(userRepository));
+            ArgumentNullException.ThrowIfNull(cache);
+            ArgumentNullException.ThrowIfNull(config);
+            ArgumentNullException.ThrowIfNull(directEmailHistoryRepository);
+            ArgumentNullException.ThrowIfNull(directEmailTemplateRepository);
+            ArgumentNullException.ThrowIfNull(emailBaseRepository);
+            ArgumentNullException.ThrowIfNull(languageService);
+            ArgumentNullException.ThrowIfNull(siteLookupService);
+            ArgumentNullException.ThrowIfNull(userRepository);
+
+            _cache = cache;
+            _config = config;
+            _directEmailHistoryRepository = directEmailHistoryRepository;
+            _directEmailTemplateRepository = directEmailTemplateRepository;
+            _emailBaseRepository = emailBaseRepository;
+            _languageService = languageService;
+            _siteLookupService = siteLookupService;
+            _userRepository = userRepository;
         }
 
         public Task IncrementSentCountAsync(int directEmailTemplateId)
@@ -73,10 +76,7 @@ namespace GRA.Domain.Service
 
         public async Task<DirectEmailHistory> SendDirectAsync(DirectEmailDetails directEmailDetails)
         {
-            if (directEmailDetails == null)
-            {
-                throw new ArgumentNullException(nameof(directEmailDetails));
-            }
+            ArgumentNullException.ThrowIfNull(directEmailDetails);
 
             string toAddress;
             string toName;
@@ -286,10 +286,7 @@ namespace GRA.Domain.Service
             DirectEmailHistory history,
             IDictionary<string, string> tags)
         {
-            if (history == null)
-            {
-                throw new ArgumentNullException(nameof(history));
-            }
+            ArgumentNullException.ThrowIfNull(history);
 
             var emailBase = await GetEmailBase(history.EmailBaseId, history.LanguageId);
 
@@ -338,7 +335,8 @@ namespace GRA.Domain.Service
                         history.UserId.Value,
                         true);
                 }
-                throw new GraException($"Unable to parse email address: {history.ToEmailAddress}", ex);
+                throw new GraException($"Unable to parse email address: {history.ToEmailAddress}",
+                    ex);
             }
 
             using var client = new SmtpClient
@@ -389,7 +387,6 @@ namespace GRA.Domain.Service
                 try
                 {
                     await client.SendAsync(message);
-                    System.Threading.Thread.Sleep(5000);
                     using (LogContext.PushProperty("EmailServerResponse", history.SentResponse))
                     {
                         _logger.LogInformation("Email sent to {EmailToAddress} with subject {EmailSubject} in {Elapsed} ms",
