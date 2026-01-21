@@ -26,6 +26,7 @@ namespace GRA.Domain.Service
         private readonly IJobRepository _jobRepository;
         private readonly LanguageService _languageService;
         private readonly IPathResolver _pathResolver;
+        private readonly SiteLookupService _siteLookupService;
         private readonly ITriggerRepository _triggerRepository;
 
         public AvatarService(ILogger<AvatarService> logger,
@@ -38,8 +39,9 @@ namespace GRA.Domain.Service
             IAvatarLayerRepository avatarLayerRepository,
             IJobRepository jobRepository,
             LanguageService languageService,
-            ITriggerRepository triggerRepository,
-            IPathResolver pathResolver)
+            IPathResolver pathResolver,
+            SiteLookupService siteLookupService,
+            ITriggerRepository triggerRepository)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             ArgumentNullException.ThrowIfNull(avatarBundleRepository);
@@ -50,6 +52,7 @@ namespace GRA.Domain.Service
             ArgumentNullException.ThrowIfNull(jobRepository);
             ArgumentNullException.ThrowIfNull(languageService);
             ArgumentNullException.ThrowIfNull(pathResolver);
+            ArgumentNullException.ThrowIfNull(siteLookupService);
             ArgumentNullException.ThrowIfNull(triggerRepository);
 
             _avatarBundleRepository = avatarBundleRepository;
@@ -60,6 +63,7 @@ namespace GRA.Domain.Service
             _jobRepository = jobRepository;
             _languageService = languageService;
             _pathResolver = pathResolver;
+            _siteLookupService = siteLookupService;
             _triggerRepository = triggerRepository;
 
             SetManagementPermission(Permission.ManageAvatars);
@@ -486,6 +490,8 @@ namespace GRA.Domain.Service
                     Directory.Delete(destinationBasePath, true);
                 }
 
+                var siteUrl = await _siteLookupService.GetSiteLinkAsync(siteId);
+
                 foreach (var layer in avatarList)
                 {
                     progress?.Report(new JobStatus
@@ -510,7 +516,10 @@ namespace GRA.Domain.Service
                         Directory.CreateDirectory(destinationPath);
                     }
 
-                    addedLayer.Icon = Path.Combine(destinationRoot, "icon.png");
+                    addedLayer.Icon = String.Join("",
+                        new Uri(siteUrl, Path.Combine(destinationRoot, "icon.png"))
+                            .Segments
+                            .Skip(1));
                     File.Copy(Path.Combine(layerAssetPath, "icon.png"),
                         Path.Combine(destinationPath, "icon.png"));
 
@@ -634,7 +643,10 @@ namespace GRA.Domain.Service
                         {
                             Directory.CreateDirectory(itemPath);
                         }
-                        item.Thumbnail = Path.Combine(itemRoot, "thumbnail.jpg");
+                        item.Thumbnail = String.Join("",
+                            new Uri(siteUrl, Path.Combine(itemRoot, "thumbnail.jpg"))
+                            .Segments
+                            .Skip(1));
                         File.Copy(Path.Combine(itemAssetPath, "thumbnail.jpg"),
                             Path.Combine(itemPath, "thumbnail.jpg"));
                         await _avatarItemRepository.UpdateAsync(requestingUser, item);
@@ -646,7 +658,11 @@ namespace GRA.Domain.Service
                                 {
                                     AvatarItemId = item.Id,
                                     AvatarColorId = color.Id,
-                                    Filename = Path.Combine(itemRoot, $"item_{color.Id}.png")
+                                    Filename = String.Join("",
+                                        new Uri(siteUrl,
+                                            Path.Combine(itemRoot, $"item_{color.Id}.png"))
+                                        .Segments
+                                        .Skip(1))
                                 };
                                 await _avatarElementRepository.AddAsync(requestingUser, element);
                                 File.Copy(
@@ -660,7 +676,10 @@ namespace GRA.Domain.Service
                             var element = new AvatarElement
                             {
                                 AvatarItemId = item.Id,
-                                Filename = Path.Combine(itemRoot, "item.png")
+                                Filename = String.Join("",
+                                        new Uri(siteUrl, Path.Combine(itemRoot, "item.png"))
+                                        .Segments
+                                        .Skip(1))
                             };
                             await _avatarElementRepository.AddAsync(requestingUser, element);
                             File.Copy(Path.Combine(itemAssetPath, "item.png"),
