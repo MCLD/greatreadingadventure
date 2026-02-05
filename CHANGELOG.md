@@ -50,6 +50,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Secret code field showing when it shouldn't in Mission Control activity logging
 - Single program not being selected when adding household members in Mission Control
 - Issue with delay upon each email send
+- Program editing ViewModel properties not being set after ModelState error
 
 ## [4.6.0] 2024-10-09
 

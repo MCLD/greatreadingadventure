@@ -473,6 +473,18 @@ namespace GRA.Controllers.MissionControl
             model.DailyLiteracyTipList = new SelectList(dailyLiteracyTipList, "Id", "Name");
             model.PointTranslationList = new SelectList(pointTranslationList, "Id",
                 "TranslationName");
+
+            model.Languages = (await _languageService.GetActiveAsync())
+                    .OrderByDescending(_ => _.IsDefault)
+                    .ThenBy(_ => _.Description)
+                    .ToDictionary(k => k.Description, v => v.Id);
+
+            model.SegmentLanguageIds = await _segmentService
+                    .GetLanguageStatusAsync(new int?[]
+                    {
+                        model.Program.ButtonSegmentId
+                    });
+
             PageTitle = "Edit Program";
             return View("Detail", model);
         }
