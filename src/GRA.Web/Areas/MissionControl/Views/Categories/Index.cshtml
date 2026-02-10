@@ -318,7 +318,6 @@
          * 5. This is then expressed as a ratio
          */
 
-        // Converts #RRGGBB or RRGGBB to r,g,b
         function hexToRgb(hex) 
         {
             if (!hex) return null;
@@ -330,6 +329,38 @@
                 g: parseInt(h.slice(2, 4), 16),
                 b: parseInt(h.slice(4, 6), 16),
             };
+        }
+
+        function srgb8ToLinear(c8) {
+            const c = c8 / 255;
+            return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+        }
+
+        function relativeLuminance(hex) {
+            const rgb = typeof hex === "string" ? hexToRgb(hex) : hex;
+            if (!rgb) return null;
+
+            const R = srgb8ToLinear(rgb.r);
+            const G = srgb8ToLinear(rgb.g);
+            const B = srgb8ToLinear(rgb.b);
+
+            return 0.2126 * R + 0.7152 * G + 0.0722 * B;
+        }
+
+        function contrastRatio(colorA, colorB) {
+            const LA = relativeLuminance(colorA);
+            const LB = relativeLuminance(colorB);
+            if (LA == null || LB == null) return null;
+
+            const lighter = Math.max(LA, LB);
+            const darker = Math.min(LA, LB);
+
+            return (lighter + 0.05) / (darker + 0.05);
+        }
+
+        function meetsMinRatio(colorA, colorB, minRatio = 4.5) {
+            const ratio = contrastRatio(colorA, colorB);
+            return ratio != null && ratio >= minRatio;
         }
     </script>
 }

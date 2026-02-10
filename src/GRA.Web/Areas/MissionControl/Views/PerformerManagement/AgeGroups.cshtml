@@ -274,5 +274,75 @@
             modal.find("#AgeGroup_Id").val(id);
             modal.find("#AgeGroup_Name").val(name);
         });
+
+        /**
+        *
+        * The following convert contrast using relative luminence instead of hue as per WCAG 2.1
+        *
+        * Necessary steps:
+        *
+        * 1. Parse each selected color into 8-bit sRGV chabbeks, then normalize to [0,1]:
+        *      c_srgb = c8/255
+        *
+        * 2. Convert each normalized sRGB channel to linear-light (undo gamma):
+        *      if c_srgb <= 0.04045:
+        *          c_lin = c_srgb / 12.92
+        *      else:
+        *          c_lin = ((c_srgb + 0.055) / 1.055) ^2.4
+        *
+        * 3. Compute L (relative luminance) for each color:
+        *      L = 0.2126*R_lin + 0.7152*G_lin + 0.0722*B_lin
+        *
+        * 4. Compute contrast ratio:
+        *      ratio = (L1 + 0.05) / (L2 + 0.05)
+        *    where L1 is lighter and L2 is darker
+        *
+        *
+        * 5. This is then expressed as a ratio
+        */
+
+        function hexToRgb(hex) {
+            if (!hex) return null;
+            const h = String(hex).trim().replace(/^#/, "");
+            if (!/^[0-9a-fA-F]{6}$/.test(h)) return null;
+
+            return {
+                r: parseInt(h.slice(0, 2), 16),
+                g: parseInt(h.slice(2, 4), 16),
+                b: parseInt(h.slice(4, 6), 16),
+            };
+        }
+
+        function srgb8ToLinear(c8) {
+            const c = c8 / 255;
+            return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+        }
+
+        function relativeLuminance(hex) {
+            const rgb = typeof hex === "string" ? hexToRgb(hex) : hex;
+            if (!rgb) return null;
+
+            const R = srgb8ToLinear(rgb.r);
+            const G = srgb8ToLinear(rgb.g);
+            const B = srgb8ToLinear(rgb.b);
+
+            return 0.2126 * R + 0.7152 * G + 0.0722 * B;
+        }
+
+        function contrastRatio(colorA, colorB) {
+            const LA = relativeLuminance(colorA);
+            const LB = relativeLuminance(colorB);
+            if (LA == null || LB == null) return null;
+
+            const lighter = Math.max(LA, LB);
+            const darker = Math.min(LA, LB);
+
+            return (lighter + 0.05) / (darker + 0.05);
+        }
+
+        function meetsMinRatio(colorA, colorB, minRatio = 4.5) {
+            const ratio = contrastRatio(colorA, colorB);
+            return ratio != null && ratio >= minRatio;
+        }
     </script>
 }
