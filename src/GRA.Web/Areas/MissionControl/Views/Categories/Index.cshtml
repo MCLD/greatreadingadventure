@@ -291,5 +291,45 @@
             modal.find("#Category_Id").val(id);
             modal.find("#Category_Name").val(name);
         });
+
+        /**
+         * 
+         * The following convert contrast using relative luminence instead of hue as per WCAG 2.1
+         * 
+         * Necessary steps:
+         * 
+         * 1. Parse each selected color into 8-bit sRGV chabbeks, then normalize to [0,1]:
+         *      c_srgb = c8/255
+         * 
+         * 2. Convert each normalized sRGB channel to linear-light (undo gamma):
+         *      if c_srgb <= 0.04045:
+         *          c_lin = c_srgb / 12.92
+         *      else:
+         *          c_lin = ((c_srgb + 0.055) / 1.055) ^2.4
+         * 
+         * 3. Compute L (relative luminance) for each color:
+         *      L = 0.2126*R_lin + 0.7152*G_lin + 0.0722*B_lin
+         * 
+         * 4. Compute contrast ratio:
+         *      ratio = (L1 + 0.05) / (L2 + 0.05)
+         *    where L1 is lighter and L2 is darker
+         *
+         * 
+         * 5. This is then expressed as a ratio
+         */
+
+        // Converts #RRGGBB or RRGGBB to r,g,b
+        function hexToRgb(hex) 
+        {
+            if (!hex) return null;
+            const h = String(hex).trim().replace(/^#/, "");
+            if (!/^[0-9a-fA-F]{6}$/.test(h)) return null;
+
+            return {
+                r: parseInt(h.slice(0, 2), 16),
+                g: parseInt(h.slice(2, 4), 16),
+                b: parseInt(h.slice(4, 6), 16),
+            };
+        }
     </script>
 }
