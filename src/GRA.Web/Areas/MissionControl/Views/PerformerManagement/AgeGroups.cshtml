@@ -104,6 +104,12 @@
                             <description gra-description-for="AgeGroup.IconColor"></description>
                             <br />
                             <input asp-for="AgeGroup.IconColor" type="color" />
+                            <div class="mt-2 contrast-status">
+                                <small>
+                                    Contrast ratio: <span class="contrast-ratio"></span>
+                                    <span class="contrast-pass ms-2"></span>
+                                </small>
+                            </div>
                             <span asp-validation-for="AgeGroup.IconColor"
                                   class="text-danger"></span>
                         </div>
@@ -344,5 +350,46 @@
             const ratio = contrastRatio(colorA, colorB);
             return ratio != null && ratio >= minRatio;
         }
+
+        const WCAG_MIN_RATIO = 4.5;
+        // bs-badge-color is white by default
+        const BACKGROUND_COLOR = "#ffffff";
+
+        function updateContrastStatus($modal, fgHex, bgHex) {
+            const ratio = contrastRatio(fgHex, bgHex);
+
+            const $ratio = $modal.find(".contrast-ratio");
+            const $pass = $modal.find(".contrast-pass");
+
+            if (ratio == null) {
+                $ratio.text("–");
+                $pass.text("").removeClass("text-success text-danger");
+                return { ratio: null, passes: false };
+            }
+
+            const passes = ratio >= WCAG_MIN_RATIO;
+            $ratio.text(ratio.toFixed(2) + ":1");
+            $pass
+                .text(passes ? "Pass (>= 4.5:1)" : "Fail (< 4.5:1)")
+                .toggleClass("text-success", passes)
+                .toggleClass("text-danger", !passes);
+
+            return { ratio, passes };
+        }
+
+        function bindAgeGroupContrast() {
+            const $modal = $("#addModal");
+            const $input = $modal.find("#AgeGroup_IconColor");
+
+            function recompute() {
+                updateContrastStatus($modal, $input.val(), BACKGROUND_COLOR);
+            }
+
+            $input.on("change", recompute);
+            $input.on("input", recompute);
+            $modal.on("shown.bs.modal", recompute);
+        }
+
+        bindAgeGroupContrast();
     </script>
 }

@@ -132,6 +132,12 @@
                                class="d-block"
                                type="color"
                                value="#777777" />
+                               <div class="mt-2 contrast-status">
+                                   <small>
+                                       Contrast ratio: <span class="contrast-ratio"></span>
+                                       <span class="contrast-pass ms-2"></span>
+                                   </small>
+                               </div>
                         <span asp-validation-for="Category.Color" class="text-danger"></span>
                     </div>
                 </div>
@@ -192,6 +198,12 @@
                         <div>
                             <label asp-for="Category.Color" class="col-form-label"></label>
                             <input asp-for="Category.Color" class="d-block" type="color" />
+                            <div class="mt-2 contrast-status">
+                                <small>
+                                    Contrast ratio: <span class="contrast-ratio"></span>
+                                    <span class="contrast-pass ms-2"></span>
+                                </small>
+                            </div>
                             <span asp-validation-for="Category.Color"
                                   class="text-danger"></span>
                         </div>
@@ -362,5 +374,58 @@
             const ratio = contrastRatio(colorA, colorB);
             return ratio != null && ratio >= minRatio;
         }
+
+        const WCAG_MIN_RATIO = 4.5;
+        // bs-badge-color is white by default
+        const CATEGORY_TEXT_COLOR = "#ffffff";
+
+        function updateContrastStatus($modal, fgHex, bgHex) {
+            const ratio = contrastRatio(fgHex, bgHex);
+
+            const $ratio = $modal.find(".contrast-ratio");
+            const $pass = $modal.find(".contrast-pass");
+
+            if (ratio == null) {
+                $ratio.text("–");
+                $pass.text("").removeClass("text-success text-danger");
+                return { ratio: null, passes: false };
+            }
+
+            const passes = ratio >= WCAG_MIN_RATIO;
+
+            $ratio.text(ratio.toFixed(2) + ":1");
+            $pass
+                .text(passes ? "Pass (>= 4.5:1)" : "Fail (< 4.5:1)")
+                .toggleClass("text-success", passes)
+                .toggleClass("text-danger", !passes);
+
+            return { ratio, passes };
+        }
+
+        function bindModalColorContrast(modalSelector, inputSelector, fgHex) {
+            const $modal = $(modalSelector);
+            const $input = $modal.find(inputSelector);
+
+            function recompute() {
+                updateContrastStatus($modal, fgHex, $input.val());
+            }
+
+            $input.on("change", recompute);
+
+            $input.on("input", recompute);
+
+            $modal.on("shown.bs.modal", recompute);
+        }
+
+        bindModalColorContrast("#addModal", "#Category_Color", CATEGORY_TEXT_COLOR);
+        bindModalColorContrast("#editModal", "#Category_Color", CATEGORY_TEXT_COLOR);
+
+        $("#editModal").on("show.bs.modal", function () {
+            const $modal = $(this);
+            setTimeout(function () {
+                updateContrastStatus($modal, CATEGORY_TEXT_COLOR, $modal.find("#Category_Color").val());
+            }, 0);
+        });
+
     </script>
 }
