@@ -24,6 +24,7 @@
                         <tr>
                             <th>Name</th>
                             <th>Color</th>
+                            <th>Contrast</th>
                             <th>Back to Back Branches</th>
                             <th style="width: 6rem;">&nbsp;</th>
                         </tr>
@@ -38,6 +39,11 @@
 
                                 <td>
                                     <span class="fas fa-square" style="color: @AgeGroup.IconColor"></span>
+                                </td>
+                                <td class="agegroup-contrast"
+                                    data-fg="@AgeGroup.IconColor">
+                                    <span class="contrast-value"></span>
+                                    <span class="contrast-compliance ms-2"></span>
                                 </td>
                                 <td>
                                     @AgeGroup.BackToBackBranchIds.Count
@@ -283,11 +289,12 @@
 
         /**
         *
-        * The following convert contrast using relative luminence instead of hue as per WCAG 2.1
+        * The following converts contrast to the required ratio using relative luminence 
+        * instead of hue as per WCAG 2.1
         *
         * Necessary steps:
         *
-        * 1. Parse each selected color into 8-bit sRGV chabbeks, then normalize to [0,1]:
+        * 1. Parse each selected color into 8-bit sRGV channels, then normalize to [0,1]:
         *      c_srgb = c8/255
         *
         * 2. Convert each normalized sRGB channel to linear-light (undo gamma):
@@ -370,7 +377,7 @@
             const passes = ratio >= WCAG_MIN_RATIO;
             $ratio.text(ratio.toFixed(2) + ":1");
             $pass
-                .text(passes ? "Pass (meets 4.5:1)" : "Fail (below 4.5:1)")
+                .text(passes ? "Passes WCAG requirements" : "Fails WCAG requirements")
                 .toggleClass("text-success", passes)
                 .toggleClass("text-danger", !passes);
 
@@ -381,15 +388,53 @@
             const $modal = $("#addModal");
             const $input = $modal.find("#AgeGroup_IconColor");
 
+            if ($modal.length === 0 || $input.length === 0) {
+                return;
+            }
+
             function recompute() {
                 updateContrastStatus($modal, $input.val(), BACKGROUND_COLOR);
             }
 
-            $input.on("change", recompute);
-            $input.on("input", recompute);
-            $modal.on("shown.bs.modal", recompute);
+            $input.off("change.contrast input.contrast");
+            $modal.off("shown.bs.modal.contrast");
+
+            $input.on("change.contrast", recompute);
+            $input.on("input.contrast", recompute);
+            $modal.on("shown.bs.modal.contrast", recompute);
         }
 
+
         bindAgeGroupContrast();
+
+        function updateAgeGroupRowContrast($cell) {
+            const fg = $cell.data("fg");
+            const ratio = contrastRatio(fg, BACKGROUND_COLOR);
+
+            const $value = $cell.find(".contrast-value");
+            const $status = $cell.find(".contrast-compliance");
+
+            if (ratio == null) {
+                $value.text("–");
+                $status.text("").removeClass("text-success text-danger");
+                return;
+            }
+
+            const passes = ratio >= WCAG_MIN_RATIO;
+            $value.text(ratio.toFixed(2) + ":1");
+            $status
+                .text(passes ? "Passes WCAG requirements" : "Fails WCAG requirements")
+                .removeClass("text-success text-danger")
+                .addClass(passes ? "text-success" : "text-danger");
+        }
+
+        function updateAgeGroupTableContrast() {
+            $(".agegroup-contrast").each(function () {
+                updateAgeGroupRowContrast($(this));
+            });
+        }
+
+        $(updateAgeGroupTableContrast);
+
     </script>
 }

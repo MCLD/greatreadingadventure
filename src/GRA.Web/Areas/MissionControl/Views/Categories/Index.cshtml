@@ -39,6 +39,7 @@
                             <th>Name</th>
                             <th>Description</th>
                             <th>Preview</th>
+                            <th>Contrast</th>
                             <th style="width: 7rem;">&nbsp;</th>
                         </tr>
                     </thead>
@@ -57,6 +58,10 @@
                                           style="background-color: @category.Color">
                                         @category.Name
                                     </span>
+                                </td>
+                                <td class="category-contrast" data-bg="@category.Color">
+                                    <span class="contrast-value"></span>
+                                    <span class="contrast-compliance ms-2"></span>
                                 </td>
                                 <td>
                                     <div class="d-flex justify-content-evenly">
@@ -305,30 +310,31 @@
         });
 
         /**
-         * 
-         * The following convert contrast using relative luminence instead of hue as per WCAG 2.1
-         * 
-         * Necessary steps:
-         * 
-         * 1. Parse each selected color into 8-bit sRGV channels, then normalize to [0,1]:
-         *      c_srgb = c8/255
-         * 
-         * 2. Convert each normalized sRGB channel to linear-light (undo gamma):
-         *      if c_srgb <= 0.04045:
-         *          c_lin = c_srgb / 12.92
-         *      else:
-         *          c_lin = ((c_srgb + 0.055) / 1.055) ^2.4
-         * 
-         * 3. Compute L (relative luminance) for each color:
-         *      L = 0.2126*R_lin + 0.7152*G_lin + 0.0722*B_lin
-         * 
-         * 4. Compute contrast ratio:
-         *      ratio = (L1 + 0.05) / (L2 + 0.05)
-         *    where L1 is lighter and L2 is darker
-         *
-         * 
-         * 5. This is then expressed as a ratio
-         */
+        *
+        * The following converts contrast to the required ratio using relative luminence
+        * instead of hue as per WCAG 2.1
+        *
+        * Necessary steps:
+        *
+        * 1. Parse each selected color into 8-bit sRGV channels, then normalize to [0,1]:
+        *      c_srgb = c8/255
+        *
+        * 2. Convert each normalized sRGB channel to linear-light (undo gamma):
+        *      if c_srgb <= 0.04045:
+        *          c_lin = c_srgb / 12.92
+        *      else:
+        *          c_lin = ((c_srgb + 0.055) / 1.055) ^2.4
+        *
+        * 3. Compute L (relative luminance) for each color:
+        *      L = 0.2126*R_lin + 0.7152*G_lin + 0.0722*B_lin
+        *
+        * 4. Compute contrast ratio:
+        *      ratio = (L1 + 0.05) / (L2 + 0.05)
+        *    where L1 is lighter and L2 is darker
+        *
+        *
+        * 5. This is then expressed as a ratio
+        */
 
         function hexToRgb(hex) 
         {
@@ -426,6 +432,35 @@
                 updateContrastStatus($modal, CATEGORY_TEXT_COLOR, $modal.find("#Category_Color").val());
             }, 0);
         });
+
+        function updateCategoryRowContrast($cell) {
+            const bg = $cell.data("bg");
+            const ratio = contrastRatio(CATEGORY_TEXT_COLOR, bg);
+
+            const $value = $cell.find(".contrast-value");
+            const $status = $cell.find(".contrast-compliance");
+
+            if (ratio == null) {
+                $value.text("–");
+                $status.text("").removeClass("text-success text-danger");
+                return;
+            }
+
+            const passes = ratio >= WCAG_MIN_RATIO;
+            $value.text(ratio.toFixed(2) + ":1");
+            $status
+                .text(passes ? "Passes WCAG requirements" : "Fails WCAG requirements")
+                .removeClass("text-success text-danger")
+                .addClass(passes ? "text-success" : "text-danger");
+        }
+
+        function updateCategoryTableContrast() {
+            $(".category-contrast").each(function () {
+                updateCategoryRowContrast($(this));
+            });
+        }
+
+        $(updateCategoryTableContrast);
 
     </script>
 }
