@@ -310,7 +310,7 @@
          * 
          * Necessary steps:
          * 
-         * 1. Parse each selected color into 8-bit sRGV chabbeks, then normalize to [0,1]:
+         * 1. Parse each selected color into 8-bit sRGV channels, then normalize to [0,1]:
          *      c_srgb = c8/255
          * 
          * 2. Convert each normalized sRGB channel to linear-light (undo gamma):
@@ -395,7 +395,7 @@
 
             $ratio.text(ratio.toFixed(2) + ":1");
             $pass
-                .text(passes ? "Pass (>= 4.5:1)" : "Fail (< 4.5:1)")
+                .text(passes ? "Passes WCAG requirements" : "Fails WCAG requirements")
                 .toggleClass("text-success", passes)
                 .toggleClass("text-danger", !passes);
 
