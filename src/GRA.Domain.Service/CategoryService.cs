@@ -5,6 +5,7 @@ using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
+using GRA.Utility;
 using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service
@@ -34,7 +35,12 @@ namespace GRA.Domain.Service
             {
                 category.Color = "#777777";
             }
-            return await _categoryRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), category);
+
+            var saved = await _categoryRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), category);
+
+            LogCategoryContrastWarning(saved);
+
+            return saved;
         }
 
         public async Task<Category> EditAsync(Category category)
@@ -45,7 +51,11 @@ namespace GRA.Domain.Service
             current.Description = category.Description?.Trim();
             current.Color = category.Color?.Trim();
 
-            return await _categoryRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), current);
+            var saved = await _categoryRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), current);
+
+            LogCategoryContrastWarning(saved);
+
+            return saved;
         }
 
         public async Task<IEnumerable<Category>> GetListAsync(bool hideEmpty = false)
@@ -63,6 +73,20 @@ namespace GRA.Domain.Service
                 Data = await _categoryRepository.PageAsync(filter),
                 Count = await _categoryRepository.CountAsync(filter)
             };
+        }
+
+        private void LogCategoryContrastWarning(Category category)
+        {
+            const double MinRatio = 4.5;
+            const string Foreground = "#ffffff";
+
+            var ratio = ColorUtility.GetContrastRatio(Foreground, category.Color);
+            if (ratio.HasValue && ratio.Value < MinRatio)
+            {
+                _logger.LogWarning(
+                    "Contrast does not meet minimum WCAG standard for Category {CategoryId} \"{CategoryName}\": fg {Foreground}, bg {Background}, ratio {Ratio:0.00}:1 (min {MinRatio:0.0}:1).",
+                    category.Id, category.Name, Foreground, category.Color, ratio.Value, MinRatio);
+            }
         }
 
         public async Task RemoveAsync(int categoryId)

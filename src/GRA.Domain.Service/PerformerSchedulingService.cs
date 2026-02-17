@@ -9,6 +9,7 @@ using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
+using GRA.Utility;
 using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service
@@ -89,8 +90,11 @@ namespace GRA.Domain.Service
             VerifyManagementPermission();
             ageGroup.Name = ageGroup.Name?.Trim();
 
-            return await _psAgeGroupRepository.AddSaveAsync(GetClaimId(ClaimType.UserId),
-                ageGroup);
+            var saved = await _psAgeGroupRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), ageGroup);
+
+            LogAgeGroupContrastWarning(saved);
+
+            return saved;
         }
 
         public async Task<PsBlackoutDate> AddBlackoutDateAsync(PsBlackoutDate blackoutDate)
@@ -1246,7 +1250,19 @@ namespace GRA.Domain.Service
 
             return system;
         }
+        private void LogAgeGroupContrastWarning(PsAgeGroup ageGroup)
+        {
+            const double MinRatio = 4.5;
+            const string Background = "#ffffff";
+            var ratio = ColorUtility.GetContrastRatio(ageGroup.IconColor, Background);
 
+            if (ratio.HasValue && ratio.Value < MinRatio)
+            {
+                _logger.LogWarning(
+                    "Contrast does not meet minimum WCAG standard for Age Group {AgeGroupId} \"{AgeGroupName}\": fg {Foreground}, bg {Background}, ratio {Ratio:0.00}:1 (min {MinRatio:0.0}:1).",
+                    ageGroup.Id, ageGroup.Name, ageGroup.IconColor, Background, ratio.Value, MinRatio);
+            }
+        }
         public async Task<bool> ProgramAvailableAtBranchAsync(int programId, int branchId)
         {
             if (!HasPermission(Permission.ManagePerformers)
