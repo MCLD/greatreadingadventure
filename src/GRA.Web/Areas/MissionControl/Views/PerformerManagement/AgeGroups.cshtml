@@ -289,12 +289,12 @@
 
         /**
         *
-        * The following converts contrast to the required ratio using relative luminence 
+        * The following converts contrast to the required ratio using relative luminance 
         * instead of hue as per WCAG 2.1
         *
         * Necessary steps:
         *
-        * 1. Parse each selected color into 8-bit sRGV channels, then normalize to [0,1]:
+        * 1. Parse each selected color into 8-bit sRGB channels, then normalize to [0,1]:
         *      c_srgb = c8/255
         *
         * 2. Convert each normalized sRGB channel to linear-light (undo gamma):
