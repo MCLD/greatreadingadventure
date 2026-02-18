@@ -377,7 +377,7 @@
             const passes = ratio >= WCAG_MIN_RATIO;
             $ratio.text(ratio.toFixed(2) + ":1");
             $pass
-                .text(passes ? "Passes WCAG requirements" : "Fails WCAG requirements")
+                .text(passes ? "Passes WCAG contrast requirements (4.5:1)" : "Fails WCAG contrast requirements (4.5:1)")
                 .toggleClass("text-success", passes)
                 .toggleClass("text-danger", !passes);
 
@@ -423,7 +423,7 @@
             const passes = ratio >= WCAG_MIN_RATIO;
             $value.text(ratio.toFixed(2) + ":1");
             $status
-                .text(passes ? "Passes WCAG requirements" : "Fails WCAG requirements")
+                .text(passes ? "Passes WCAG contrast requirements (4.5:1)" : "Fails WCAG contrast requirements (4.5:1)")
                 .removeClass("text-success text-danger")
                 .addClass(passes ? "text-success" : "text-danger");
         }
