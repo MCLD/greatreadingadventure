@@ -4,6 +4,9 @@ namespace GRA.Utility
 {
     public static class ColorUtility
     {
+        /* See https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html#dfn-relative-luminance
+         and https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html#dfn-contrast-ratio
+        for information on specific numbers used and reasoning*/
         public static double? GetContrastRatio(string hexA, string hexB)
         {
             var a = TryParseRgb(hexA);

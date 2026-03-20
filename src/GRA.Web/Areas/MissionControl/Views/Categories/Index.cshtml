@@ -310,11 +310,16 @@
         });
 
         /**
-        *
-        * This converts contrast to the required ratio using relative luminance
+        * The following converts contrast to the required ratio using relative luminance
         * instead of hue as per WCAG 2.1
         *
         * Necessary steps:
+        * For steps 1-3 see:
+        * https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html#dfn-relative-luminance
+        *
+        * For step 4 see:
+        * https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html#dfn-contrast-ratio
+        *
         *
         * 1. Parse each selected color into 8-bit sRGB channels, then normalize to [0,1]:
         *      c_srgb = c8/255
