@@ -4,69 +4,97 @@ namespace GRA.Utility
 {
     public static class ColorUtility
     {
-        /* See https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html#dfn-relative-luminance
-         and https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html#dfn-contrast-ratio
-        for information on specific numbers used and reasoning*/
-        public static double? GetContrastRatio(string hexA, string hexB)
+        /// <summary>
+        /// Provided two sRGB color space RGB hexadecimal strings, return the contrast ratio as
+        /// computed by the WCAG 2.1 specification:
+        /// https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html#dfn-contrast-ratio
+        /// </summary>
+        /// <param name="rgbHexadecimal1">First sRGB color space RGB hexadecimal string</param>
+        /// <param name="rgbHexadecimal2">Second sRGB color space RGB hexadecimal string</param>
+        /// <returns>The copntrast ratio per the WCAG 2.1 specification</returns>
+        public static double? GetContrastRatio(string rgbHexadecimal1, string rgbHexadecimal2)
         {
-            var a = TryParseRgb(hexA);
-            var b = TryParseRgb(hexB);
-            if (a is null || b is null)
+            ArgumentNullException.ThrowIfNull(rgbHexadecimal1);
+            ArgumentNullException.ThrowIfNull(rgbHexadecimal2);
+
+            double la;
+            double lb;
+
+            try
             {
-                return null;
+                la = GetRelativeLuminance(TryParseRgb(rgbHexadecimal1));
+                lb = GetRelativeLuminance(TryParseRgb(rgbHexadecimal2));
+            }
+            catch (ArgumentException aex)
+            {
+                throw new GraException($"Unable to compute contrast ratio: {aex.Message}", aex);
             }
 
-            var la = GetRelativeLuminance(a.Value);
-            var lb = GetRelativeLuminance(b.Value);
-
-            var lighter = Math.Max(la, lb);
-            var darker = Math.Min(la, lb);
-
-            return (lighter + 0.05) / (darker + 0.05);
+            return (Math.Max(la, lb) + ColorConstants.ContrastRatioAddTerm)
+                / (Math.Min(la, lb) + ColorConstants.ContrastRatioAddTerm);
         }
 
-        private static (int r, int g, int b)? TryParseRgb(string hex)
+        /// <summary>
+        /// Convert R, G, or B element from sRGB color space to linear rgb color space based on:
+        /// https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html#dfn-relative-luminance
+        /// </summary>
+        /// <param name="rgbElement">Single R, G, or B element, 0 to 255</param>
+        /// <returns>sRGB value translated to linear RGB color space</returns>
+        private static double ConvertToLinearColorspace(int rgbElement)
         {
-            if (string.IsNullOrWhiteSpace(hex))
-            {
-                return null;
-            }
+            var c = rgbElement / ColorConstants.MaxRgbValue;
+            return c <= ColorConstants.LuminanceCalculationCutoff
+                ? c / ColorConstants.LuminanceLowDivisor
+                : Math.Pow((c + ColorConstants.LuminanceHighAddTerm)
+                           / ColorConstants.LuminanceHighDivisor,
+                           ColorConstants.LuminanceHighPower);
+        }
 
-            hex = hex.Trim().TrimStart('#');
-            if (hex.Length != 6)
+        /// <summary>
+        /// Calculate relative luminance value from RGB values expressed in a linear RGB color, see:
+        /// https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html#dfn-relative-luminance
+        /// space.
+        /// </summary>
+        /// <param name="rgb">Struct containing R, G, and B values (linear RGB color space)</param>
+        /// <returns>A relative luminance value</returns>
+        private static double GetRelativeLuminance((int r, int g, int b) rgb)
+        {
+            return (ColorConstants.sRGBRedLuminanceMultiplier * ConvertToLinearColorspace(rgb.r))
+                + (ColorConstants.sRGBGreenLuminanceMultiplier * ConvertToLinearColorspace(rgb.g))
+                + (ColorConstants.sRGBBlueLuminanceMultiplier * ConvertToLinearColorspace(rgb.b));
+        }
+
+        /// <summary>
+        /// Extract integer values for R, G, and B out of an RGB hexadecimal string.
+        /// </summary>
+        /// <param name="rgbHexadecimal">RGB hexadecimal color representation, optional leading #
+        /// </param>
+        /// <returns>Integer R, G, and B values.</returns>
+        /// <exception cref="ArgumentException">This is thrown if the color could not be decoded
+        /// from the string provided.</exception>
+        private static (int r, int g, int b) TryParseRgb(string rgbHexadecimal)
+        {
+            ArgumentNullException.ThrowIfNull(rgbHexadecimal);
+
+            var rgb = rgbHexadecimal.Trim().TrimStart('#');
+            if (rgb.Length != 6)
             {
-                return null;
+                throw new ArgumentException($"Invalid hex color value provided, must be six digits: {rgbHexadecimal}");
             }
 
             try
             {
-                return (
-                    Convert.ToInt32(hex.Substring(0, 2), 16),
-                    Convert.ToInt32(hex.Substring(2, 2), 16),
-                    Convert.ToInt32(hex.Substring(4, 2), 16)
-                );
+                int intRgb = Convert.ToInt32(rgb, 16);
+                return ((intRgb >> 16) & 0xFF, (intRgb >> 8) & 0xFF, intRgb & 0xFF);
             }
-            catch
+            catch (Exception ex) when (ex is ArgumentException
+                                       || ex is FormatException
+                                       || ex is OverflowException)
             {
-                return null;
+                // for "TryParseRgb" any invalid response is going to mean the arguments were bad
+                throw new ArgumentException($"Invalid hex color value provided: {rgbHexadecimal}",
+                    ex);
             }
-        }
-
-        private static double GetRelativeLuminance((int r, int g, int b) rgb)
-        {
-            var r = Srgb8ToLinear(rgb.r);
-            var g = Srgb8ToLinear(rgb.g);
-            var b = Srgb8ToLinear(rgb.b);
-
-            return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-        }
-
-        private static double Srgb8ToLinear(int c8)
-        {
-            var c = c8 / 255.0;
-            return c <= 0.04045
-                ? c / 12.92
-                : Math.Pow((c + 0.055) / 1.055, 2.4);
         }
     }
 }

@@ -79,6 +79,7 @@
         public static readonly string AskToAddFamilyMembers = "Site.AskToAddFamilyMembers";
         public static readonly string BackgroundColor = "Site.BackgroundColor";
         public static readonly string ReadingGoalInMinutes = "Site.ReadingGoalInMinutes";
+        public static readonly string Wcag21AaCompliance = "Site.Wcag21AaCompliance";
         public static readonly string WelcomeMessage = "Site.WelcomeMessage";
     }
 

@@ -5,6 +5,8 @@ namespace GRA
 {
     public static class SiteSettingDefinitions
     {
+        public const string SiteSettingTrueValue = "True";
+
         public static readonly Dictionary<string, SiteSettingDefinition> DefinitionDictionary
             = new()
             {
@@ -182,6 +184,14 @@ namespace GRA
                     Info = "Sets a reading goal (minutes) for the entire site and duration",
                     Category = typeof(SiteSettingKey.Site).Name,
                     Format = SiteSettingFormat.Integer
+                },
+                [SiteSettingKey.Site.Wcag21AaCompliance] = new SiteSettingDefinition
+                {
+                    DefaultValue = SiteSettingTrueValue,
+                    Name = "Require WCAG 2.1 AA Compliance",
+                    Info = "Enforce compliance with the WCAG 2.1 AA accessibility standard",
+                    Category = typeof(SiteSettingKey.Site).Name,
+                    Format = SiteSettingFormat.Boolean
                 },
                 [SiteSettingKey.Site.WelcomeMessage] = new SiteSettingDefinition
                 {

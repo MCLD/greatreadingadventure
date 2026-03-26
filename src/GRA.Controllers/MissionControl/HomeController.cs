@@ -6,6 +6,7 @@ using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
+using GRA.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -130,6 +131,18 @@ namespace GRA.Controllers.MissionControl
                 }
             }
             return View();
+        }
+
+        [HttpGet]
+        [Authorize(Policy = Policy.AccessMissionControl)]
+        public JsonResult ContrastRatio(string rgbHexadecimal1, string rgbHexadecimal2)
+        {
+            var ratio = ColorUtility.GetContrastRatio(rgbHexadecimal1, rgbHexadecimal2);
+            return Json(new
+            {
+                ratio,
+                meetsWCAG21AA = ratio >= ColorConstants.Wcag21AaContrastRatioMinimum
+            });
         }
 
         [Authorize(Policy = Policy.ReadAllMail)]

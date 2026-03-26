@@ -10,19 +10,15 @@ using Microsoft.Extensions.Logging;
 
 namespace GRA.Web
 {
-    public class WebStartup
+    public class WebStartup(IServiceScope scope)
     {
-        private readonly ILogger<WebStartup> _log;
-        private readonly IServiceScope _scope;
-
-        public WebStartup(IServiceScope scope)
-        {
-            _scope = scope ?? throw new ArgumentNullException(nameof(scope));
-            _log = scope.ServiceProvider.GetRequiredService<ILogger<WebStartup>>();
-        }
+        private readonly IServiceScope _scope = scope
+            ?? throw new ArgumentNullException(nameof(scope));
 
         public async Task InitalizeAsync()
         {
+            var log = _scope.ServiceProvider.GetRequiredService<ILogger<WebStartup>>();
+
             try
             {
                 var cache = _scope.ServiceProvider.GetRequiredService<IGraCache>();
@@ -34,7 +30,7 @@ namespace GRA.Web
             }
             catch (Exception ex)
             {
-                _log.LogCritical("Startup error utilizing distributed cache: {ErrorMessage}",
+                log.LogCritical("Startup error utilizing distributed cache: {ErrorMessage}",
                     ex.Message);
                 throw;
             }
@@ -47,7 +43,7 @@ namespace GRA.Web
             }
             catch (Exception ex)
             {
-                _log.LogCritical("Startup error accessing data context: {ErrorMessage}",
+                log.LogCritical("Startup error accessing data context: {ErrorMessage}",
                     ex.Message);
                 throw;
             }
@@ -59,14 +55,14 @@ namespace GRA.Web
                 pendingCount = pending?.Count() ?? 0;
                 if (pendingCount > 0)
                 {
-                    _log.LogWarning("Applying {MigrationCount} database migrations, last is: {MigrationName}",
+                    log.LogWarning("Applying {MigrationCount} database migrations, last is: {MigrationName}",
                         pendingCount,
                         pending?.Last() ?? "Unknown");
                 }
             }
             catch (Exception ex)
             {
-                _log.LogCritical("Startup error getting list of pending database migrations: {ErrorMessage}",
+                log.LogCritical("Startup error getting list of pending database migrations: {ErrorMessage}",
                     ex.Message);
                 throw;
             }
@@ -77,12 +73,12 @@ namespace GRA.Web
                 try
                 {
                     dbContext.Migrate();
-                    _log.LogWarning("Applied migrations in {Elapsed} ms",
+                    log.LogWarning("Applied migrations in {Elapsed} ms",
                         migrationTimer.ElapsedMilliseconds);
                 }
                 catch (Exception ex)
                 {
-                    _log.LogError("Startup error applying database migrations: {ErrorMessage}",
+                    log.LogError("Startup error applying database migrations: {ErrorMessage}",
                         ex.Message);
                     throw;
                 }
@@ -96,12 +92,13 @@ namespace GRA.Web
             {
                 var siteLookupService = _scope.ServiceProvider
                     .GetRequiredService<SiteLookupService>();
+                int defaultSiteId = await siteLookupService.GetDefaultSiteIdAsync();
+                await siteLookupService.EnsureSiteSettingDefaultsAsync(defaultSiteId);
                 await siteLookupService.ReloadSiteCacheAsync();
-                await siteLookupService.GetDefaultSiteIdAsync();
             }
             catch (Exception ex)
             {
-                _log.LogError("Startup error loading sites: {ErrorMessage}",
+                log.LogError("Startup error loading sites: {ErrorMessage}",
                     ex.Message);
                 throw;
             }
@@ -113,7 +110,7 @@ namespace GRA.Web
             }
             catch (Exception ex)
             {
-                _log.LogError("Startup error loading languages: {ErrorMessage}",
+                log.LogError("Startup error loading languages: {ErrorMessage}",
                     ex.Message);
                 throw;
             }
@@ -126,7 +123,7 @@ namespace GRA.Web
             }
             catch (Exception ex)
             {
-                _log.LogError("Startup error synchronizing permissions: {ErrorMessage}",
+                log.LogError("Startup error synchronizing permissions: {ErrorMessage}",
                     ex.Message);
                 throw;
             }
@@ -139,7 +136,7 @@ namespace GRA.Web
             }
             catch (GraException gex)
             {
-                _log.LogError(gex, "Error ensuring default items: {ErrorMessage}", gex.Message);
+                log.LogError(gex, "Error ensuring default items: {ErrorMessage}", gex.Message);
             }
 
             try
@@ -150,7 +147,7 @@ namespace GRA.Web
             }
             catch (Exception ex)
             {
-                _log.LogError("Startup error ensuring default news category: {ErrorMessage}",
+                log.LogError("Startup error ensuring default news category: {ErrorMessage}",
                     ex.Message);
                 throw;
             }
@@ -163,7 +160,7 @@ namespace GRA.Web
             }
             catch (Exception ex)
             {
-                _log.LogError("Startup error ensuring users have unsubscribe tokens: {ErrorMessage}",
+                log.LogError("Startup error ensuring users have unsubscribe tokens: {ErrorMessage}",
                     ex.Message);
                 throw;
             }

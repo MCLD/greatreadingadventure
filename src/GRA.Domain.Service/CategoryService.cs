@@ -13,49 +13,58 @@ namespace GRA.Domain.Service
     public class CategoryService : BaseUserService<CategoryService>
     {
         private readonly ICategoryRepository _categoryRepository;
+        private readonly SiteLookupService _siteLookupService;
 
         public CategoryService(ILogger<CategoryService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
-            ICategoryRepository categoryRepository)
+            ICategoryRepository categoryRepository,
+            SiteLookupService siteLookupService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
+            ArgumentNullException.ThrowIfNull(categoryRepository);
+            ArgumentNullException.ThrowIfNull(siteLookupService);
+
+            _categoryRepository = categoryRepository;
+            _siteLookupService = siteLookupService;
+
             SetManagementPermission(Permission.ManageCategories);
-            _categoryRepository = categoryRepository
-                ?? throw new ArgumentNullException(nameof(categoryRepository));
         }
 
         public async Task<Category> AddAsync(Category category)
         {
+            ArgumentNullException.ThrowIfNull(category);
+
             VerifyManagementPermission();
             category.Name = category.Name?.Trim();
             category.Description = category.Description?.Trim();
             category.SiteId = GetCurrentSiteId();
             if (string.IsNullOrWhiteSpace(category.Color))
             {
-                category.Color = "#777777";
+                category.Color = ColorConstants.DefaultColor;
             }
+            await VerifyContrastAsync(_siteLookupService,
+                category.Color,
+                ColorConstants.WhiteBackground);
 
-            var saved = await _categoryRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), category);
-
-            LogCategoryContrastWarning(saved);
-
-            return saved;
+            return await _categoryRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), category);
         }
 
         public async Task<Category> EditAsync(Category category)
         {
+            ArgumentNullException.ThrowIfNull(category);
+
             VerifyManagementPermission();
             var current = await _categoryRepository.GetByIdAsync(category.Id);
             current.Name = category.Name?.Trim();
             current.Description = category.Description?.Trim();
             current.Color = category.Color?.Trim();
 
-            var saved = await _categoryRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), current);
+            await VerifyContrastAsync(_siteLookupService,
+                category.Color,
+                ColorConstants.WhiteBackground);
 
-            LogCategoryContrastWarning(saved);
-
-            return saved;
+            return await _categoryRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), current);
         }
 
         public async Task<IEnumerable<Category>> GetListAsync(bool hideEmpty = false)
@@ -66,6 +75,8 @@ namespace GRA.Domain.Service
         public async Task<DataWithCount<IEnumerable<Category>>> GetPaginatedListAsync(
             BaseFilter filter)
         {
+            ArgumentNullException.ThrowIfNull(filter);
+
             VerifyManagementPermission();
             filter.SiteId = GetCurrentSiteId();
             return new DataWithCount<IEnumerable<Category>>
@@ -73,20 +84,6 @@ namespace GRA.Domain.Service
                 Data = await _categoryRepository.PageAsync(filter),
                 Count = await _categoryRepository.CountAsync(filter)
             };
-        }
-
-        private void LogCategoryContrastWarning(Category category)
-        {
-            const double MinRatio = 4.5;
-            const string Foreground = "#ffffff";
-
-            var ratio = ColorUtility.GetContrastRatio(Foreground, category.Color);
-            if (ratio.HasValue && ratio.Value < MinRatio)
-            {
-                _logger.LogWarning(
-                    "Contrast does not meet minimum WCAG standard for Category {CategoryId} \"{CategoryName}\": fg {Foreground}, bg {Background}, ratio {Ratio:0.00}:1 (min {MinRatio:0.0}:1).",
-                    category.Id, category.Name, Foreground, category.Color, ratio.Value, MinRatio);
-            }
         }
 
         public async Task RemoveAsync(int categoryId)

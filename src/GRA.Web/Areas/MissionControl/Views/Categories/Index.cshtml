@@ -39,8 +39,11 @@
                             <th>Name</th>
                             <th>Description</th>
                             <th>Preview</th>
-                            <th>Contrast</th>
-                            <th style="width: 7rem;">&nbsp;</th>
+                            <th>
+                                Contrast
+                                (min. @GRA.Utility.ColorConstants.Wcag21AaContrastRatioMinimum:1)
+                            </th>
+                            <th>&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -59,9 +62,9 @@
                                         @category.Name
                                     </span>
                                 </td>
-                                <td class="category-contrast" data-bg="@category.Color">
-                                    <span class="contrast-value"></span>
-                                    <span class="contrast-compliance ms-2"></span>
+                                <td class="text-center">
+                                    <span class="badge @(category.MeetsWCAG21AAContrastRequirement ? "text-bg-success" : "text-bg-danger") me-2">AA</span>
+                                    <span>@($"{category.ContrastRatio:n1}:1")</span>
                                 </td>
                                 <td>
                                     <div class="d-flex justify-content-evenly">
@@ -134,15 +137,20 @@
                     <div>
                         <label asp-for="Category.Color" class="col-form-label"></label>
                         <input asp-for="Category.Color"
+                               id="addCategoryColor"
                                class="d-block"
                                type="color"
-                               value="#777777" />
-                               <div class="mt-2 contrast-status">
-                                   <small>
-                                       Contrast ratio: <span class="contrast-ratio"></span>
-                                       <span class="contrast-pass ms-2"></span>
-                                   </small>
-                               </div>
+                               value="@GRA.Utility.ColorConstants.DefaultColor" />
+                        <div class="contrast-status">
+                            <label class="contrast-label">
+                                Contrast ratio <em>
+                                    (min.
+                                    @GRA.Utility.ColorConstants.Wcag21AaContrastRatioMinimum:1)
+                                </em>:
+                                <span class="contrast-ratio fw-bold"></span>
+                            </label>
+                            <span class="contrast-pass badge ms-2">AA</span>
+                        </div>
                         <span asp-validation-for="Category.Color" class="text-danger"></span>
                     </div>
                 </div>
@@ -153,7 +161,7 @@
                         Cancel
                     </button>
                     <button type="submit"
-                            class="btn btn-outline-primary"
+                            class="btn btn-outline-primary save-button"
                             aria-label="Confirm"
                             button-spinner>
                         Add
@@ -202,12 +210,19 @@
                         </div>
                         <div>
                             <label asp-for="Category.Color" class="col-form-label"></label>
-                            <input asp-for="Category.Color" class="d-block" type="color" />
-                            <div class="mt-2 contrast-status">
-                                <small>
-                                    Contrast ratio: <span class="contrast-ratio"></span>
-                                    <span class="contrast-pass ms-2"></span>
-                                </small>
+                            <input asp-for="Category.Color"
+                                   class="d-block"
+                                   id="updateCategoryColor"
+                                   type="color" />
+                            <div class="contrast-status">
+                                <label class="contrast-label">
+                                    Contrast ratio <em>
+                                        (min.
+                                        @GRA.Utility.ColorConstants.Wcag21AaContrastRatioMinimum:1)
+                                    </em>:
+                                    <span class="contrast-ratio fw-bold"></span>
+                                </label>
+                                <span class="contrast-pass badge ms-2">AA</span>
                             </div>
                             <span asp-validation-for="Category.Color"
                                   class="text-danger"></span>
@@ -220,7 +235,7 @@
                             Cancel
                         </button>
                         <button type="submit"
-                                class="btn btn-outline-primary"
+                                class="btn btn-outline-primary save-button"
                                 aria-label="Confirm"
                                 button-spinner>
                             Save
@@ -296,7 +311,7 @@
             modal.find("#Category_Id").val(id);
             modal.find("#Category_Name").val(name);
             modal.find("#Category_Description").val(description);
-            modal.find("#Category_Color").val(color);
+            modal.find("#updateCategoryColor").val(color);
         });
 
         $("#deleteModal").on("show.bs.modal", function (e) {
@@ -308,164 +323,99 @@
             modal.find("#Category_Id").val(id);
             modal.find("#Category_Name").val(name);
         });
+        const enforceA11y = "@Model.EnforceA11y";
+        const graContrastUrl = new URL(`${location.origin}@Url.Action(nameof(HomeController.ContrastRatio), HomeController.Name, new { area = HomeController.Area })`);
 
-        /**
-        * The following converts contrast to the required ratio using relative luminance
-        * instead of hue as per WCAG 2.1
-        *
-        * Necessary steps:
-        * For steps 1-3 see:
-        * https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html#dfn-relative-luminance
-        *
-        * For step 4 see:
-        * https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html#dfn-contrast-ratio
-        *
-        *
-        * 1. Parse each selected color into 8-bit sRGB channels, then normalize to [0,1]:
-        *      c_srgb = c8/255
-        *
-        * 2. Convert each normalized sRGB channel to linear-light (undo gamma):
-        *      if c_srgb <= 0.04045:
-        *          c_lin = c_srgb / 12.92
-        *      else:
-        *          c_lin = ((c_srgb + 0.055) / 1.055) ^2.4
-        *
-        * 3. Compute L (relative luminance) for each color:
-        *      L = 0.2126*R_lin + 0.7152*G_lin + 0.0722*B_lin
-        *
-        * 4. Compute contrast ratio:
-        *      ratio = (L1 + 0.05) / (L2 + 0.05)
-        *    where L1 is lighter and L2 is darker
-        *
-        *
-        * 5. This is then expressed as a ratio
-        */
+        if(typeof graContrastUrl !== 'undefined' && graContrastUrl) {
+            // returns an object with these properties:
+            // ratio = what the contrast ratio is
+            // meetsWCAG21AA = meets the WCAG 2.1 AA contrast requirement
+            function contrastRatio(rgbHexadecimal1, rgbHexadecimal2) {
+                graContrastUrl.search = new URLSearchParams({
+                    rgbHexadecimal1: rgbHexadecimal1,
+                    rgbHexadecimal2: rgbHexadecimal2
+                });
 
-        function hexToRgb(hex) 
-        {
-            if (!hex) return null;
-            const h = String(hex).trim().replace(/^#/, "");
-            if (!/^[0-9a-fA-F]{6}$/.test(h)) return null;
-
-            return {
-                r: parseInt(h.slice(0, 2), 16),
-                g: parseInt(h.slice(2, 4), 16),
-                b: parseInt(h.slice(4, 6), 16),
-            };
-        }
-
-        function srgb8ToLinear(c8) {
-            const c = c8 / 255;
-            return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
-        }
-
-        function relativeLuminance(hex) {
-            const rgb = typeof hex === "string" ? hexToRgb(hex) : hex;
-            if (!rgb) return null;
-
-            const R = srgb8ToLinear(rgb.r);
-            const G = srgb8ToLinear(rgb.g);
-            const B = srgb8ToLinear(rgb.b);
-
-            return 0.2126 * R + 0.7152 * G + 0.0722 * B;
-        }
-
-        function contrastRatio(colorA, colorB) {
-            const LA = relativeLuminance(colorA);
-            const LB = relativeLuminance(colorB);
-            if (LA == null || LB == null) return null;
-
-            const lighter = Math.max(LA, LB);
-            const darker = Math.min(LA, LB);
-
-            return (lighter + 0.05) / (darker + 0.05);
-        }
-
-        function meetsMinRatio(colorA, colorB, minRatio = 4.5) {
-            const ratio = contrastRatio(colorA, colorB);
-            return ratio != null && ratio >= minRatio;
-        }
-
-        const WCAG_MIN_RATIO = 4.5;
-        // bs-badge-color is white by default
-        const CATEGORY_TEXT_COLOR = "#ffffff";
-
-        function updateContrastStatus($modal, fgHex, bgHex) {
-            const ratio = contrastRatio(fgHex, bgHex);
-
-            const $ratio = $modal.find(".contrast-ratio");
-            const $pass = $modal.find(".contrast-pass");
-
-            if (ratio == null) {
-                $ratio.text("–");
-                $pass.text("").removeClass("text-success text-danger");
-                return { ratio: null, passes: false };
+                try {
+                    return fetch(graContrastUrl).then((response) => response.json());
+                }
+                catch (e) {
+                    console.error(`An issue occured checking contrast: ${e}`);
+                    alert(`An issue occured checking contrast: ${e}`);
+                }
             }
 
-            const passes = ratio >= WCAG_MIN_RATIO;
+            function updateContrastStatus($modal, rgbHexadecimal1, rgbHexadecimal2) {
+                contrastRatio(rgbHexadecimal1, rgbHexadecimal2)
+                    .then((contrastResult) => {
+                        const $ratio = $modal.find(".contrast-ratio");
+                        const $pass = $modal.find(".contrast-pass");
+                        const $save = $modal.find(".save-button");
+                        const $contrastLabel = $modal.find(".contrast-label");
 
-            $ratio.text(ratio.toFixed(2) + ":1");
-            $pass
-                .text(passes ? "Passes WCAG contrast requirements (4.5:1 ratio)" : "Fails WCAG contrast requirements (4.5:1 ratio)")
-                .toggleClass("text-success", passes)
-                .toggleClass("text-danger", !passes);
+                        if (contrastResult.ratio == null) {
+                            $ratio.text("–");
+                            $pass.text("").removeClass("text-success text-danger");
+                        }
 
-            return { ratio, passes };
-        }
+                        $ratio.text(`${contrastResult.ratio.toFixed(1)}:1`);
+                        $pass.toggleClass("text-bg-success", contrastResult.meetsWCAG21AA)
+                            .toggleClass("text-bg-danger", !contrastResult.meetsWCAG21AA);
 
-        function bindModalColorContrast(modalSelector, inputSelector, fgHex) {
-            const $modal = $(modalSelector);
-            const $input = $modal.find(inputSelector);
-
-            function recompute() {
-                updateContrastStatus($modal, fgHex, $input.val());
+                        if(enforceA11y && enforceA11y === "True") {
+                            $save.toggleClass("btn-outline-success", contrastResult.meetsWCAG21AA)
+                                .toggleClass("btn-outline-danger", !contrastResult.meetsWCAG21AA);
+                            $contrastLabel.toggleClass("text-danger", !contrastResult.meetsWCAG21AA);
+                            if(contrastResult.meetsWCAG21AA) {
+                                $save.attr("disabled", null);
+                            }
+                            else {
+                                $save.attr("disabled", "disabled");
+                            }
+                        }
+                    });
             }
 
-            $input.on("change", recompute);
+            const whiteBackgroundColor = "@GRA.Utility.ColorConstants.WhiteBackground";
 
-            $input.on("input", recompute);
+            function bindContrastCheck() {
+                const $addModal = $("#addModal");
+                const $addInput = $addModal.find("#addCategoryColor");
 
-            $modal.on("shown.bs.modal", recompute);
-        }
+                if ($addModal.length !== 0 && $addInput.length !== 0) {
+                    function recompute() {
+                        updateContrastStatus($addModal, $addInput.val(), whiteBackgroundColor);
+                    }
+                    
+                    $addInput.off("change.contrast input.contrast");
+                    $addModal.off("shown.bs.modal.contrast");
 
-        bindModalColorContrast("#addModal", "#Category_Color", CATEGORY_TEXT_COLOR);
-        bindModalColorContrast("#editModal", "#Category_Color", CATEGORY_TEXT_COLOR);
+                    $addInput.on("change.contrast", recompute);
+                    $addInput.on("input.contrast", recompute);
+                    $addModal.on("shown.bs.modal.contrast", recompute);
+                    
+                    recompute();
+                }
 
-        $("#editModal").on("show.bs.modal", function () {
-            const $modal = $(this);
-            setTimeout(function () {
-                updateContrastStatus($modal, CATEGORY_TEXT_COLOR, $modal.find("#Category_Color").val());
-            }, 0);
-        });
+                const $editModal = $("#editModal");
+                const $editInput = $editModal.find("#updateCategoryColor");
 
-        function updateCategoryRowContrast($cell) {
-            const bg = $cell.data("bg");
-            const ratio = contrastRatio(CATEGORY_TEXT_COLOR, bg);
+                if ($editModal.length !== 0 && $editInput.length !== 0) {
+                    function recompute() {
+                        updateContrastStatus($editModal, $editInput.val(), whiteBackgroundColor);
+                    }
 
-            const $value = $cell.find(".contrast-value");
-            const $status = $cell.find(".contrast-compliance");
+                    $editInput.off("change.contrast input.contrast");
+                    $editModal.off("shown.bs.modal.contrast");
 
-            if (ratio == null) {
-                $value.text("–");
-                $status.text("").removeClass("text-success text-danger");
-                return;
+                    $editInput.on("change.contrast", recompute);
+                    $editInput.on("input.contrast", recompute);
+                    $editModal.on("shown.bs.modal.contrast", recompute);
+
+                    recompute();
+                }
             }
-
-            const passes = ratio >= WCAG_MIN_RATIO;
-            $value.text(ratio.toFixed(2) + ":1");
-            $status
-                .text(passes ? "Passes WCAG contrast requirements (4.5:1)" : "Fails WCAG contrast requirements (4.5:1)")
-                .removeClass("text-success text-danger")
-                .addClass(passes ? "text-success" : "text-danger");
+            bindContrastCheck();
         }
-
-        function updateCategoryTableContrast() {
-            $(".category-contrast").each(function () {
-                updateCategoryRowContrast($(this));
-            });
-        }
-
-        $(updateCategoryTableContrast);
-
     </script>
 }

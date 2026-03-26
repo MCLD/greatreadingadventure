@@ -5,6 +5,7 @@ using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
+using GRA.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -15,8 +16,9 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ManageCategories)]
     public class CategoriesController : Base.MCController
     {
-        private readonly ILogger<CategoriesController> _logger;
         private readonly CategoryService _categoryService;
+        private readonly ILogger<CategoriesController> _logger;
+
         public CategoriesController(ILogger<CategoriesController> logger,
             ServiceFacade.Controller context,
             CategoryService categoryService)
@@ -26,39 +28,6 @@ namespace GRA.Controllers.MissionControl
             _categoryService = categoryService ?? throw new
                 ArgumentNullException(nameof(categoryService));
             PageTitle = "Category management";
-        }
-
-        public async Task<IActionResult> Index(string search, int page = 1)
-        {
-            var filter = new BaseFilter(page)
-            {
-                Search = search
-            };
-
-            var categoryList = await _categoryService.GetPaginatedListAsync(filter);
-
-            PaginateViewModel paginateModel = new PaginateViewModel()
-            {
-                ItemCount = categoryList.Count,
-                CurrentPage = page,
-                ItemsPerPage = filter.Take.Value
-            };
-            if (paginateModel.PastMaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
-            }
-
-            var viewModel = new CategoryListViewModel()
-            {
-                Categories = categoryList.Data,
-                PaginateModel = paginateModel
-            };
-
-            return View(viewModel);
         }
 
         [HttpPost]
@@ -72,6 +41,26 @@ namespace GRA.Controllers.MissionControl
             catch (GraException gex)
             {
                 ShowAlertDanger("Unable to add Category: ", gex);
+            }
+
+            return RedirectToAction("Index", new
+            {
+                search = model.Search,
+                page = model.PaginateModel.CurrentPage
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(CategoryListViewModel model)
+        {
+            try
+            {
+                await _categoryService.RemoveAsync(model.Category.Id);
+                ShowAlertSuccess($"Category \"{model.Category.Name}\" removed!");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to remove Category: ", gex);
             }
 
             return RedirectToAction("Index", new
@@ -101,24 +90,47 @@ namespace GRA.Controllers.MissionControl
             });
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Delete(CategoryListViewModel model)
+        public async Task<IActionResult> Index(string search, int page = 1)
         {
-            try
+            var filter = new BaseFilter(page)
             {
-                await _categoryService.RemoveAsync(model.Category.Id);
-                ShowAlertSuccess($"Category \"{model.Category.Name}\" removed!");
-            }
-            catch (GraException gex)
+                Search = search
+            };
+
+            var categoryList = await _categoryService.GetPaginatedListAsync(filter);
+
+            PaginateViewModel paginateModel = new PaginateViewModel()
             {
-                ShowAlertDanger("Unable to remove Category: ", gex);
+                ItemCount = categoryList.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+
+            if (paginateModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
             }
 
-            return RedirectToAction("Index", new
+            var viewModel = new CategoryListViewModel()
             {
-                search = model.Search,
-                page = model.PaginateModel.CurrentPage
-            });
+                Categories = categoryList.Data,
+                EnforceA11y = await GetSiteSettingBoolAsync(SiteSettingKey.Site.Wcag21AaCompliance),
+                PaginateModel = paginateModel
+            };
+
+            foreach (var category in viewModel.Categories)
+            {
+                category.ContrastRatio = ColorUtility
+                    .GetContrastRatio(category.Color, ColorConstants.WhiteBackground);
+                category.MeetsWCAG21AAContrastRequirement
+                    = category.ContrastRatio >= ColorConstants.Wcag21AaContrastRatioMinimum;
+            }
+
+            return View(viewModel);
         }
     }
 }
