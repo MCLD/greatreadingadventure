@@ -6,7 +6,8 @@ namespace GRA.Controllers.ViewModel.Profile
 {
     public class PrizeListViewModel : ParticipantPartialViewModel
     {
-        public PrizeListViewModel() { }
+        public PrizeListViewModel()
+        { }
 
         public PrizeListViewModel(ParticipantPartialViewModel viewModel) : base(viewModel)
         {
@@ -15,5 +16,6 @@ namespace GRA.Controllers.ViewModel.Profile
         public int? HeadOfHouseholdId { get; set; }
         public PaginateViewModel PaginateModel { get; set; }
         public IEnumerable<Domain.Model.PrizeWinner> PrizeWinners { get; set; }
+        public bool ShowOnlyAt { get; set; }
     }
 }

@@ -1529,7 +1529,7 @@ namespace GRA.Controllers
                 && !EmailValidator.Validate(model.User.Email.Trim()))
             {
                 ModelState.AddModelError("User.Email",
-                    _sharedLocalizer[Annotations.Validate.Email, 
+                    _sharedLocalizer[Annotations.Validate.Email,
                         _sharedLocalizer[DisplayNames.EmailAddress]]);
             }
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.User.PostalCode))
@@ -1803,10 +1803,11 @@ namespace GRA.Controllers
             {
                 HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                 HeadOfHouseholdId = user.HouseholdHeadUserId,
-                HouseholdCount
-                    = await _userService.FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
+                HouseholdCount = await _userService
+                    .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
                 PaginateModel = paginateModel,
-                PrizeWinners = prizeList.Data
+                PrizeWinners = prizeList.Data,
+                ShowOnlyAt = await GetSiteSettingBoolAsync(SiteSettingKey.Prizes.ShowOnlyAt)
             });
         }
 
