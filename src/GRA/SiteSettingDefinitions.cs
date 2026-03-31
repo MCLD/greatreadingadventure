@@ -157,6 +157,14 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Points).Name,
                     Format = SiteSettingFormat.Integer
                 },
+                [SiteSettingKey.Prizes.ShowOnlyAt] = new SiteSettingDefinition
+                {
+                    Name = "Show 'only at' for limited prizes",
+                    Info = "Show 'only at' near prizes in the participant's profile if they were limited by system or branch",
+                    Category = typeof(SiteSettingKey.Prizes).Name,
+                    Format = SiteSettingFormat.Boolean,
+                    DefaultValue = SiteSettingTrueValue
+                },
                 [SiteSettingKey.SecretCode.Disable] = new SiteSettingDefinition
                 {
                     Name = "Disable",

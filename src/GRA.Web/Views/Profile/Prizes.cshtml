@@ -47,7 +47,7 @@
                                                     {
                                                         @if (Model.ShowOnlyAt)
                                                         {
-                                                            <strong>@SharedLocalizer["Only available at"]</strong>
+                                                            <strong>@SharedLocalizer[GRA.Annotations.Interface.OnlyAvailableAt]</strong>
                                                         }
                                                         @if (!string.IsNullOrWhiteSpace(prizeWinner.AvailableAtBranch) && !string.IsNullOrWhiteSpace(prizeWinner.AvailableAtBranchUrl))
                                                         {
@@ -60,14 +60,14 @@
                                                         else
                                                         {
                                                             @Html.ActionLink(prizeWinner.AvailableAtSystem,
-                                                                "Index",
-                                                                "ParticipatingLibraries",
-                                                                null,
-                                                                null,
-                                                                fragment: Html.GenerateIdFromName(prizeWinner.AvailableAtSystem),
-                                                                null,
-                                                                null)
-                                                                }
+                                                            "Index",
+                                                                                        "ParticipatingLibraries",
+                                                                                        null,
+                                                                                        null,
+                                                                                        fragment: Html.GenerateIdFromName(prizeWinner.AvailableAtSystem),
+                                                                                        null,
+                                                                                        null)
+                                                                                        }
                                                     }
                                                     else
                                                     {

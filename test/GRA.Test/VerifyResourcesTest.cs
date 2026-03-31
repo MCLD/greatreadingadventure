@@ -51,6 +51,7 @@ namespace GRA.Test
                 .Select(_ => _.Key.Replace(NonBreakingSpaceCharacter, SpaceCharacter));
 
             var items = new List<string>();
+            
             var annotations = Assembly.GetAssembly(typeof(Annotations.Home))
                 .GetTypes()
                 .Where(_ => _.Namespace == $"{nameof(GRA)}.{nameof(Annotations)}");
