@@ -1,15 +1,22 @@
 ﻿using System;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using GRA.Domain.Model;
+using GRA.Utility;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service.Abstract
 {
-    public abstract class BaseUserService<Service> : BaseService<Service>
+    public abstract class BaseUserService<TService>(ILogger<TService> logger,
+        GRA.Abstract.IDateTimeProvider dateTimeProvider,
+        IUserContextProvider userContextProvider) : BaseService<TService>(logger, dateTimeProvider)
     {
         protected const int DefaultCacheExpiration = 5;
-        protected readonly IUserContextProvider _userContextProvider;
+
+        protected readonly IUserContextProvider _userContextProvider = userContextProvider
+            ?? throw new ArgumentNullException(nameof(userContextProvider));
+
         private ClaimsPrincipal _currentUser = null;
 
         private int? _currentUserSiteId = null;
@@ -17,15 +24,6 @@ namespace GRA.Domain.Service.Abstract
         private Permission? _managementPermission = null;
 
         private UserContext _userContext = null;
-
-        protected BaseUserService(ILogger<Service> logger,
-                                            GRA.Abstract.IDateTimeProvider dateTimeProvider,
-            IUserContextProvider userContextProvider)
-            : base(logger, dateTimeProvider)
-        {
-            _userContextProvider = userContextProvider
-                ?? throw new ArgumentNullException(nameof(userContextProvider));
-        }
 
         public void ClearCachedUserContext()
         {
@@ -132,6 +130,24 @@ namespace GRA.Domain.Service.Abstract
                 && userContext.SiteStage != SiteStage.ProgramOpen)
             {
                 throw new GraException(Annotations.Validate.NotOpen);
+            }
+        }
+
+        protected async Task VerifyContrastAsync(SiteLookupService siteLookupService,
+            string rgbHexadecimal1,
+            string rgbHexadecimal2)
+        {
+            ArgumentNullException.ThrowIfNull(siteLookupService);
+
+            if (await siteLookupService.GetSiteSettingBoolAsync(GetCurrentSiteId(),
+                    SiteSettingKey.Site.Wcag21AaCompliance))
+            {
+                var ratio = ColorUtility.GetContrastRatio(rgbHexadecimal1, rgbHexadecimal2);
+
+                if (ratio < ColorConstants.Wcag21AaContrastRatioMinimum)
+                {
+                    throw new GraException($"Selected color (contrast ratio {ratio:n1}:1) does not meet the minimum ({ColorConstants.Wcag21AaContrastRatioMinimum:n1}:1).");
+                }
             }
         }
 

@@ -1063,7 +1063,7 @@ namespace GRA.Controllers.MissionControl
                 }
                 catch (GraException gex)
                 {
-                    ShowAlertDanger($"Unable to {(model.Approve ? "Approve" : "Unapprove")} program: ", 
+                    ShowAlertDanger($"Unable to {(model.Approve ? "Approve" : "Unapprove")} program: ",
                         gex);
                     return RedirectToAction(nameof(Performers));
                 }
@@ -2208,6 +2208,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> AddAgeGroup(AgeGroupsListViewModel model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             var settings = await _performerSchedulingService.GetSettingsAsync();
             var performerSchedulingEnabled = _performerSchedulingService
                 .GetSchedulingStage(settings) != PsSchedulingStage.Unavailable;
@@ -2279,11 +2281,20 @@ namespace GRA.Controllers.MissionControl
             var viewModel = new AgeGroupsListViewModel
             {
                 AgeGroups = ageGroupList.Data,
+                EnforceA11y = await GetSiteSettingBoolAsync(SiteSettingKey.Site.Wcag21AaCompliance),
                 PaginateModel = paginateModel,
                 PerformerSchedulingEnabled = performerSchedulingEnabled,
                 Systems = await _performerSchedulingService
-                    .GetSystemListWithoutExcludedBranchesAsync()
+                    .GetSystemListWithoutExcludedBranchesAsync(),
             };
+
+            foreach (var ageGroup in viewModel.AgeGroups)
+            {
+                ageGroup.ContrastRatio = ColorUtility
+                    .GetContrastRatio(ageGroup.IconColor, ColorConstants.WhiteBackground);
+                ageGroup.MeetsWCAG21AAContrastRequirement
+                    = ageGroup.ContrastRatio >= ColorConstants.Wcag21AaContrastRatioMinimum;
+            }
 
             return View(viewModel);
         }

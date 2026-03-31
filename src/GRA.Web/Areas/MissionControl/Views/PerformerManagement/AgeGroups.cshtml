@@ -24,8 +24,12 @@
                         <tr>
                             <th>Name</th>
                             <th>Color</th>
+                            <th>
+                                Contrast
+                                (min. @GRA.Utility.ColorConstants.Wcag21AaContrastRatioMinimum:1)
+                            </th>
                             <th>Back to Back Branches</th>
-                            <th style="width: 6rem;">&nbsp;</th>
+                            <th>&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,23 +39,30 @@
                                 <td>
                                     @AgeGroup.Name
                                 </td>
-
-                                <td>
-                                    <span class="fas fa-square" style="color: @AgeGroup.IconColor"></span>
-                                </td>
-                                <td>
-                                    @AgeGroup.BackToBackBranchIds.Count
+                                <td class="text-center">
+                                    <span class="fas fa-square fa-2x"
+                                          style="color: @AgeGroup.IconColor"></span>
                                 </td>
                                 <td class="text-center">
-                                    <button type="button"
-                                            class="btn btn-outline-primary btn-sm"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#updateBackToBackModal"
-                                            data-id="@AgeGroup.Id"
-                                            data-name="@AgeGroup.Name"
-                                            data-branchids="@string.Join(",", AgeGroup.BackToBackBranchIds)">
-                                        <span class="fas fa-pencil-alt fa-fw" aria-hidden="true"></span>
-                                    </button>
+                                    <span class="badge @(AgeGroup.MeetsWCAG21AAContrastRequirement ? "text-bg-success" : "text-bg-danger") me-2">AA</span>
+                                    <span>@($"{AgeGroup.ContrastRatio:n1}:1")</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-between">
+                                        <span class="ms-1">@AgeGroup.BackToBackBranchIds.Count</span>
+                                        <button type="button"
+                                                class="btn btn-outline-primary btn-sm me-1"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#updateBackToBackModal"
+                                                data-id="@AgeGroup.Id"
+                                                data-name="@AgeGroup.Name"
+                                                data-branchids="@string.Join(",", AgeGroup.BackToBackBranchIds)">
+                                            <span aria-hidden="true"
+                                                  class="fas fa-list fa-fw"></span>
+                                        </button>
+                                    </div>
+                                </td>
+                                <td class="text-center">
                                     <button type="button"
                                             class="btn btn-outline-danger btn-sm"
                                             data-bs-toggle="modal"
@@ -104,6 +115,16 @@
                             <description gra-description-for="AgeGroup.IconColor"></description>
                             <br />
                             <input asp-for="AgeGroup.IconColor" type="color" />
+                            <div class="contrast-status">
+                                <label class="contrast-label">
+                                    Contrast ratio <em>
+                                        (min.
+                                        @GRA.Utility.ColorConstants.Wcag21AaContrastRatioMinimum:1)
+                                    </em>:
+                                    <span class="contrast-ratio fw-bold"></span>
+                                </label>
+                                <span class="contrast-pass badge ms-2">AA</span>
+                            </div>
                             <span asp-validation-for="AgeGroup.IconColor"
                                   class="text-danger"></span>
                         </div>
@@ -111,12 +132,11 @@
                     <div class="modal-footer">
                         <button type="button"
                                 class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal"
-                                style="margin-right: 1em;">
+                                data-bs-dismiss="modal">
                             Cancel
                         </button>
                         <button type="submit"
-                                class="btn btn-outline-primary btn-spinner float-end"
+                                class="btn btn-outline-primary add-button"
                                 aria-label="Confirm"
                                 button-spinner>
                             Add
@@ -270,9 +290,89 @@
             let id = button.data("id");
             let name = button.data("name");
             let modal = $(this);
-            modal.find("#modal-text").html("Are you sure you wish to delete the Age Group: <strong>" + name + "</strong>?");
+            modal.find("#modal-text")
+                .html(`Are you sure you wish to delete the Age Group: <strong>${name}</strong>?`);
             modal.find("#AgeGroup_Id").val(id);
             modal.find("#AgeGroup_Name").val(name);
         });
+
+        const enforceA11y = "@Model.EnforceA11y";
+        const graContrastUrl = new URL(`${location.origin}@Url.Action(nameof(HomeController.ContrastRatio), HomeController.Name, new { area = HomeController.Area })`);
+
+        if(typeof graContrastUrl !== 'undefined' && graContrastUrl) {
+            // returns an object with these properties:
+            // ratio = what the contrast ratio is
+            // meetsWCAG21AA = meets the WCAG 2.1 AA contrast requirement
+            function contrastRatio(rgbHexadecimal1, rgbHexadecimal2) {
+                graContrastUrl.search = new URLSearchParams({
+                    rgbHexadecimal1: rgbHexadecimal1,
+                    rgbHexadecimal2: rgbHexadecimal2
+                });
+
+                try {
+                    return fetch(graContrastUrl).then((response) => response.json());
+                }
+                catch (e) {
+                    console.error(`An issue occured checking contrast: ${e}`);
+                    alert(`An issue occured checking contrast: ${e}`);
+                }
+            }
+
+            function updateContrastStatus($modal, rgbHexadecimal1, rgbHexadecimal2) {
+                contrastRatio(rgbHexadecimal1, rgbHexadecimal2)
+                    .then((contrastResult) => {
+                        const $ratio = $modal.find(".contrast-ratio");
+                        const $pass = $modal.find(".contrast-pass");
+                        const $add = $modal.find(".add-button");
+                        const $contrastLabel = $modal.find(".contrast-label");
+
+                        if (contrastResult.ratio == null) {
+                            $ratio.text("–");
+                            $pass.text("").removeClass("text-success text-danger");
+                        }
+
+                        $ratio.text(`${contrastResult.ratio.toFixed(1)}:1`);
+                        $pass.toggleClass("text-bg-success", contrastResult.meetsWCAG21AA)
+                            .toggleClass("text-bg-danger", !contrastResult.meetsWCAG21AA);
+
+                        if(enforceA11y && enforceA11y === "True") {
+                            $add.toggleClass("btn-outline-success", contrastResult.meetsWCAG21AA)
+                                .toggleClass("btn-outline-danger", !contrastResult.meetsWCAG21AA);
+                            $contrastLabel.toggleClass("text-danger", !contrastResult.meetsWCAG21AA);
+                            if(contrastResult.meetsWCAG21AA) {
+                                $add.attr("disabled", null);
+                            }
+                            else {
+                                $add.attr("disabled", "disabled");
+                            }
+                        }
+                    });
+            }
+
+            const whiteBackgroundColor = "@GRA.Utility.ColorConstants.WhiteBackground";
+
+            function bindAgeGroupContrast() {
+                const $modal = $("#addModal");
+                const $input = $modal.find("#AgeGroup_IconColor");
+
+                if ($modal.length === 0 || $input.length === 0) {
+                    return;
+                }
+
+                function recompute() {
+                    updateContrastStatus($modal, $input.val(), whiteBackgroundColor);
+                }
+
+                $input.off("change.contrast input.contrast");
+                $modal.off("shown.bs.modal.contrast");
+
+                $input.on("change.contrast", recompute);
+                $input.on("input.contrast", recompute);
+                $modal.on("shown.bs.modal.contrast", recompute);
+
+                recompute();
+            }
+            bindAgeGroupContrast();
+        }
     </script>
 }

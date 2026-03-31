@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Abstract;
@@ -13,38 +14,76 @@ using Newtonsoft.Json;
 
 namespace GRA.Domain.Service
 {
-    public class SiteLookupService : BaseService<SiteLookupService>
+    public class SiteLookupService(ILogger<SiteLookupService> logger,
+        IDateTimeProvider dateTimeProvider,
+        IConfiguration config,
+        IGraCache cache,
+        ISiteRepository siteRepository,
+        ISiteSettingRepository siteSettingRepository,
+        IUserRepository userRepository,
+        IHttpContextAccessor httpContextAccessor,
+        IInitialSetupService initialSetupService)
+            : BaseService<SiteLookupService>(logger, dateTimeProvider)
     {
-        private readonly IGraCache _cache;
-        private readonly IConfiguration _config;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IInitialSetupService _initialSetupService;
-        private readonly ISiteRepository _siteRepository;
-        private readonly ISiteSettingRepository _siteSettingRepository;
-        private readonly IUserRepository _userRepository;
+        private readonly IGraCache _cache = cache ?? throw new ArgumentNullException(nameof(cache));
 
-        public SiteLookupService(ILogger<SiteLookupService> logger,
-            IDateTimeProvider dateTimeProvider,
-            IConfiguration config,
-            IGraCache cache,
-            ISiteRepository siteRepository,
-            ISiteSettingRepository siteSettingRepository,
-            IUserRepository userRepository,
-            IHttpContextAccessor httpContextAccessor,
-            IInitialSetupService initialSetupService) : base(logger, dateTimeProvider)
-        {
-            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
-            _config = config ?? throw new ArgumentNullException(nameof(config));
-            _siteRepository = siteRepository
-                ?? throw new ArgumentNullException(nameof(siteRepository));
-            _siteSettingRepository = siteSettingRepository
-                ?? throw new ArgumentNullException(nameof(siteSettingRepository));
-            _userRepository = userRepository
-                ?? throw new ArgumentNullException(nameof(userRepository));
-            _httpContextAccessor = httpContextAccessor
+        private readonly IConfiguration _config = config
+            ?? throw new ArgumentNullException(nameof(config));
+
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor
                 ?? throw new ArgumentNullException(nameof(httpContextAccessor));
-            _initialSetupService = initialSetupService
+
+        private readonly IInitialSetupService _initialSetupService = initialSetupService
                 ?? throw new ArgumentNullException(nameof(initialSetupService));
+
+        private readonly ISiteRepository _siteRepository = siteRepository
+                ?? throw new ArgumentNullException(nameof(siteRepository));
+
+        private readonly ISiteSettingRepository _siteSettingRepository = siteSettingRepository
+                ?? throw new ArgumentNullException(nameof(siteSettingRepository));
+
+        private readonly IUserRepository _userRepository = userRepository
+                ?? throw new ArgumentNullException(nameof(userRepository));
+
+        public async Task EnsureSiteSettingDefaultsAsync(int siteId)
+        {
+            var settingDictionary = SiteSettingDefinitions.DefinitionDictionary;
+
+            var settingsKeysWithDefaults = settingDictionary
+                .Where(_ => !string.IsNullOrEmpty(_.Value.DefaultValue))
+                .Select(_ => _.Key);
+
+            if (settingsKeysWithDefaults?.Count() > 0)
+            {
+                var currentSettings = await _siteSettingRepository.GetBySiteIdAsync(siteId);
+                var systemUserId = await GetSystemUserId();
+                var addSettings = new List<SiteSetting>();
+
+                foreach (var key in settingsKeysWithDefaults)
+                {
+                    var value = currentSettings.SingleOrDefault(_ => _.Key == key);
+                    if (value == null)
+                    {
+                        addSettings.Add(new SiteSetting
+                        {
+                            CreatedAt = _dateTimeProvider.Now,
+                            CreatedBy = systemUserId,
+                            Key = key,
+                            SiteId = siteId,
+                            Value = settingDictionary[key].DefaultValue
+                        });
+                    }
+                    _logger.LogInformation("Adding site setting default for {Key}: {Value}",
+                        key,
+                        settingDictionary[key].DefaultValue);
+                }
+
+                if (addSettings?.Count > 0)
+                {
+                    await _siteSettingRepository.AddListAsync(systemUserId, addSettings);
+                    await _siteSettingRepository.SaveAsync();
+                }
+            }
         }
 
         public async Task<IEnumerable<Site>> GetAllAsync()
@@ -336,7 +375,8 @@ namespace GRA.Domain.Service
                 }
                 else
                 {
-                    site.Settings = JsonConvert.DeserializeObject<ICollection<SiteSetting>>(cachedSiteSettings);
+                    site.Settings = JsonConvert
+                        .DeserializeObject<ICollection<SiteSetting>>(cachedSiteSettings);
                 }
             }
 
@@ -348,7 +388,8 @@ namespace GRA.Domain.Service
             int? outgoingMailPort = null;
             if (!string.IsNullOrEmpty(_config[ConfigurationKey.DefaultOutgoingMailPort]))
             {
-                outgoingMailPort = int.Parse(_config[ConfigurationKey.DefaultOutgoingMailPort]);
+                outgoingMailPort = int.Parse(_config[ConfigurationKey.DefaultOutgoingMailPort],
+                    CultureInfo.InvariantCulture);
             }
 
             var site = new Site

@@ -9,16 +9,16 @@ using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
+using GRA.Utility;
 using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service
 {
-    public class PerformerSchedulingService : BaseUserService<PerformerSchedulingService>
+    public partial class PerformerSchedulingService : BaseUserService<PerformerSchedulingService>
     {
         public static readonly string KitImagePath = "kitimages";
         public static readonly string PerformerImagePath = "performerimages";
         public static readonly string ProgramImagePath = "programimages";
-        private static readonly Regex AlphanumericRegex = new("[^a-zA-Z0-9 -]");
         private readonly IPathResolver _pathResolver;
         private readonly IPsAgeGroupRepository _psAgeGroupRepository;
         private readonly IPsBlackoutDateRepository _psBlackoutDateRepository;
@@ -31,6 +31,7 @@ namespace GRA.Domain.Service
         private readonly IPsProgramImageRepository _psProgramImageRepository;
         private readonly IPsProgramRepository _psProgramRepository;
         private readonly IPsSettingsRepository _psSettingsRepository;
+        private readonly SiteLookupService _siteLookupService;
         private readonly ISystemRepository _systemRepository;
         private readonly ITriggerRepository _triggerRepository;
 
@@ -41,19 +42,21 @@ namespace GRA.Domain.Service
             IPsAgeGroupRepository psAgeGroupRepository,
             IPsBlackoutDateRepository psBlackoutDateRepository,
             IPsBranchSelectionRepository psBranchSelectionRepository,
-            IPsKitRepository psKitRepository,
             IPsKitImageRepository psKitImageRepository,
+            IPsKitRepository psKitRepository,
             IPsPerformerImageRepository psPerformerImageRepository,
             IPsPerformerRepository psPerformerRepository,
             IPsPerformerScheduleRepository psPerformerScheduleRepository,
-            IPsProgramRepository psProgramRepository,
             IPsProgramImageRepository psProgramImageRepository,
+            IPsProgramRepository psProgramRepository,
             IPsSettingsRepository psSettingsRepository,
             ISystemRepository systemRepository,
-            ITriggerRepository triggerRepository)
+            ITriggerRepository triggerRepository,
+            SiteLookupService siteLookupService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManagePerformers);
+
             _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
             _psAgeGroupRepository = psAgeGroupRepository
                 ?? throw new ArgumentNullException(nameof(psAgeGroupRepository));
@@ -77,6 +80,8 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(psProgramImageRepository));
             _psSettingsRepository = psSettingsRepository
                 ?? throw new ArgumentNullException(nameof(psSettingsRepository));
+            _siteLookupService = siteLookupService
+                ?? throw new ArgumentNullException(nameof(siteLookupService));
             _systemRepository = systemRepository
                 ?? throw new ArgumentNullException(nameof(systemRepository));
             _triggerRepository = triggerRepository
@@ -89,8 +94,14 @@ namespace GRA.Domain.Service
             VerifyManagementPermission();
             ageGroup.Name = ageGroup.Name?.Trim();
 
-            return await _psAgeGroupRepository.AddSaveAsync(GetClaimId(ClaimType.UserId),
-                ageGroup);
+            await VerifyContrastAsync(_siteLookupService,
+                ageGroup.IconColor,
+                ColorConstants.WhiteBackground);
+
+            var saved = await _psAgeGroupRepository
+                .AddSaveAsync(GetClaimId(ClaimType.UserId), ageGroup);
+
+            return saved;
         }
 
         public async Task<PsBlackoutDate> AddBlackoutDateAsync(PsBlackoutDate blackoutDate)
@@ -267,7 +278,7 @@ namespace GRA.Domain.Service
 
             var kit = await _psKitRepository.GetByIdAsync(kitId);
 
-            var kitFilename = AlphanumericRegex.Replace(kit.Name, "");
+            var kitFilename = GeneratedAlphaNumericRegex().Replace(kit.Name, "");
             var imageFilename = $"{kitFilename}{fileExtension}";
 
             while (System.IO.File.Exists(Path.Combine(kitImageDirectory, imageFilename)))
@@ -351,7 +362,7 @@ namespace GRA.Domain.Service
                         Path.Combine($"site{siteId}", PerformerImagePath));
             Directory.CreateDirectory(performerImageDirectory);
 
-            var performerFilename = AlphanumericRegex.Replace(performer.Name, "");
+            var performerFilename = GeneratedAlphaNumericRegex().Replace(performer.Name, "");
             var imageFilename = $"{performerFilename}{fileExtension}";
 
             while (System.IO.File.Exists(Path.Combine(performerImageDirectory, imageFilename)))
@@ -425,7 +436,7 @@ namespace GRA.Domain.Service
                         Path.Combine($"site{siteId}", ProgramImagePath));
             Directory.CreateDirectory(programImageDirectory);
 
-            var programFilename = AlphanumericRegex.Replace(program.Title, "");
+            var programFilename = GeneratedAlphaNumericRegex().Replace(program.Title, "");
             var imageFilename = $"{programFilename}{fileExtension}";
 
             while (System.IO.File.Exists(Path.Combine(programImageDirectory, imageFilename)))
@@ -1033,7 +1044,7 @@ namespace GRA.Domain.Service
             return await _psPerformerRepository.GetIndexListAsync(onlyApproved);
         }
 
-        public async Task<int> GetPerformerProgramCountAsync(int performerId, 
+        public async Task<int> GetPerformerProgramCountAsync(int performerId,
             bool onlyApproved = false)
         {
             if (!HasPermission(Permission.ManagePerformers)
@@ -1328,7 +1339,8 @@ namespace GRA.Domain.Service
             await _psPerformerScheduleRepository.RemovePerformerScheduleAsync(performer.Id);
             await _psPerformerRepository.RemovePerformerBranchesAsync(performer.Id);
 
-            await _psPerformerRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), performer.Id);
+            await _psPerformerRepository
+                .RemoveSaveAsync(GetClaimId(ClaimType.UserId), performer.Id);
         }
 
         public async Task RemovePerformerImageByIdAsync(int imageId)
@@ -1447,7 +1459,7 @@ namespace GRA.Domain.Service
             await _psPerformerRepository.UpdateSaveAsync(authId, performer);
         }
 
-        public async Task SetProgramApprovedAsync (int programId, bool isApproved)
+        public async Task SetProgramApprovedAsync(int programId, bool isApproved)
         {
             VerifyManagementPermission();
 
@@ -1500,8 +1512,7 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task UpdateAgeGroupBackToBackBranchesAsync(int ageGroupId,
-            List<int> branchIds)
+        public async Task UpdateAgeGroupBackToBackBranchesAsync(int ageGroupId, List<int> branchIds)
         {
             VerifyManagementPermission();
             var currentBackToBackBranches = await _psAgeGroupRepository
@@ -1813,15 +1824,18 @@ namespace GRA.Domain.Service
             return null;
         }
 
+        [GeneratedRegex("[^a-zA-Z0-9 -]")]
+        private static partial Regex GeneratedAlphaNumericRegex();
+
         private async Task RemoveKitImageAsync(PsKitImage image)
         {
             var authId = GetClaimId(ClaimType.UserId);
 
             await _psKitImageRepository.RemoveSaveAsync(authId, image.Id);
             var file = _pathResolver.ResolveContentFilePath(image.Filename);
-            if (System.IO.File.Exists(file))
+            if (File.Exists(file))
             {
-                System.IO.File.Delete(file);
+                File.Delete(file);
             }
         }
 
@@ -1831,9 +1845,9 @@ namespace GRA.Domain.Service
 
             await _psPerformerImageRepository.RemoveSaveAsync(authId, image.Id);
             var file = _pathResolver.ResolveContentFilePath(image.Filename);
-            if (System.IO.File.Exists(file))
+            if (File.Exists(file))
             {
-                System.IO.File.Delete(file);
+                File.Delete(file);
             }
         }
 
@@ -1843,9 +1857,9 @@ namespace GRA.Domain.Service
 
             await _psProgramImageRepository.RemoveSaveAsync(authId, image.Id);
             var file = _pathResolver.ResolveContentFilePath(image.Filename);
-            if (System.IO.File.Exists(file))
+            if (File.Exists(file))
             {
-                System.IO.File.Delete(file);
+                File.Delete(file);
             }
         }
     }

@@ -304,16 +304,19 @@ namespace GRA.Controllers.MissionControl
                     var definition = SiteSettingDefinitions.DefinitionDictionary[siteSetting.Key];
                     if (definition.Format == SiteSettingFormat.Boolean)
                     {
-                        siteSetting.Value = "True";
+                        siteSetting.Value = SiteSettingDefinitions.SiteSettingTrueValue;
                     }
                     else if (definition.Format == SiteSettingFormat.Integer
                         && !int.TryParse(siteSetting.Value, out int value))
                     {
-                        ModelState.AddModelError("", $"Please enter a whole number for {definition.Name}.");
+                        ModelState.AddModelError("",
+                            $"Please enter a whole number for {definition.Name}.");
                     }
-                    else if (definition.Format == SiteSettingFormat.IntegerCsv && !CsvRegex().IsMatch(siteSetting.Value))
+                    else if (definition.Format == SiteSettingFormat.IntegerCsv
+                        && !CsvRegex().IsMatch(siteSetting.Value))
                     {
-                        ModelState.AddModelError("", $"Please enter only numbers, commas, and spaces for {definition.Name}.");
+                        ModelState.AddModelError("",
+                            $"Please enter only numbers, commas, and spaces for {definition.Name}.");
                     }
                 }
             }

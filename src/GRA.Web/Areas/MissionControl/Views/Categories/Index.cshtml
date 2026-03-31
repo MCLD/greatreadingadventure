@@ -39,7 +39,11 @@
                             <th>Name</th>
                             <th>Description</th>
                             <th>Preview</th>
-                            <th style="width: 7rem;">&nbsp;</th>
+                            <th>
+                                Contrast
+                                (min. @GRA.Utility.ColorConstants.Wcag21AaContrastRatioMinimum:1)
+                            </th>
+                            <th>&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -57,6 +61,10 @@
                                           style="background-color: @category.Color">
                                         @category.Name
                                     </span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge @(category.MeetsWCAG21AAContrastRequirement ? "text-bg-success" : "text-bg-danger") me-2">AA</span>
+                                    <span>@($"{category.ContrastRatio:n1}:1")</span>
                                 </td>
                                 <td>
                                     <div class="d-flex justify-content-evenly">
@@ -129,9 +137,20 @@
                     <div>
                         <label asp-for="Category.Color" class="col-form-label"></label>
                         <input asp-for="Category.Color"
+                               id="addCategoryColor"
                                class="d-block"
                                type="color"
-                               value="#777777" />
+                               value="@GRA.Utility.ColorConstants.DefaultColor" />
+                        <div class="contrast-status">
+                            <label class="contrast-label">
+                                Contrast ratio <em>
+                                    (min.
+                                    @GRA.Utility.ColorConstants.Wcag21AaContrastRatioMinimum:1)
+                                </em>:
+                                <span class="contrast-ratio fw-bold"></span>
+                            </label>
+                            <span class="contrast-pass badge ms-2">AA</span>
+                        </div>
                         <span asp-validation-for="Category.Color" class="text-danger"></span>
                     </div>
                 </div>
@@ -142,7 +161,7 @@
                         Cancel
                     </button>
                     <button type="submit"
-                            class="btn btn-outline-primary"
+                            class="btn btn-outline-primary save-button"
                             aria-label="Confirm"
                             button-spinner>
                         Add
@@ -191,7 +210,20 @@
                         </div>
                         <div>
                             <label asp-for="Category.Color" class="col-form-label"></label>
-                            <input asp-for="Category.Color" class="d-block" type="color" />
+                            <input asp-for="Category.Color"
+                                   class="d-block"
+                                   id="updateCategoryColor"
+                                   type="color" />
+                            <div class="contrast-status">
+                                <label class="contrast-label">
+                                    Contrast ratio <em>
+                                        (min.
+                                        @GRA.Utility.ColorConstants.Wcag21AaContrastRatioMinimum:1)
+                                    </em>:
+                                    <span class="contrast-ratio fw-bold"></span>
+                                </label>
+                                <span class="contrast-pass badge ms-2">AA</span>
+                            </div>
                             <span asp-validation-for="Category.Color"
                                   class="text-danger"></span>
                         </div>
@@ -203,7 +235,7 @@
                             Cancel
                         </button>
                         <button type="submit"
-                                class="btn btn-outline-primary"
+                                class="btn btn-outline-primary save-button"
                                 aria-label="Confirm"
                                 button-spinner>
                             Save
@@ -279,7 +311,7 @@
             modal.find("#Category_Id").val(id);
             modal.find("#Category_Name").val(name);
             modal.find("#Category_Description").val(description);
-            modal.find("#Category_Color").val(color);
+            modal.find("#updateCategoryColor").val(color);
         });
 
         $("#deleteModal").on("show.bs.modal", function (e) {
@@ -291,5 +323,99 @@
             modal.find("#Category_Id").val(id);
             modal.find("#Category_Name").val(name);
         });
+        const enforceA11y = "@Model.EnforceA11y";
+        const graContrastUrl = new URL(`${location.origin}@Url.Action(nameof(HomeController.ContrastRatio), HomeController.Name, new { area = HomeController.Area })`);
+
+        if(typeof graContrastUrl !== 'undefined' && graContrastUrl) {
+            // returns an object with these properties:
+            // ratio = what the contrast ratio is
+            // meetsWCAG21AA = meets the WCAG 2.1 AA contrast requirement
+            function contrastRatio(rgbHexadecimal1, rgbHexadecimal2) {
+                graContrastUrl.search = new URLSearchParams({
+                    rgbHexadecimal1: rgbHexadecimal1,
+                    rgbHexadecimal2: rgbHexadecimal2
+                });
+
+                try {
+                    return fetch(graContrastUrl).then((response) => response.json());
+                }
+                catch (e) {
+                    console.error(`An issue occured checking contrast: ${e}`);
+                    alert(`An issue occured checking contrast: ${e}`);
+                }
+            }
+
+            function updateContrastStatus($modal, rgbHexadecimal1, rgbHexadecimal2) {
+                contrastRatio(rgbHexadecimal1, rgbHexadecimal2)
+                    .then((contrastResult) => {
+                        const $ratio = $modal.find(".contrast-ratio");
+                        const $pass = $modal.find(".contrast-pass");
+                        const $save = $modal.find(".save-button");
+                        const $contrastLabel = $modal.find(".contrast-label");
+
+                        if (contrastResult.ratio == null) {
+                            $ratio.text("–");
+                            $pass.text("").removeClass("text-success text-danger");
+                        }
+
+                        $ratio.text(`${contrastResult.ratio.toFixed(1)}:1`);
+                        $pass.toggleClass("text-bg-success", contrastResult.meetsWCAG21AA)
+                            .toggleClass("text-bg-danger", !contrastResult.meetsWCAG21AA);
+
+                        if(enforceA11y && enforceA11y === "True") {
+                            $save.toggleClass("btn-outline-success", contrastResult.meetsWCAG21AA)
+                                .toggleClass("btn-outline-danger", !contrastResult.meetsWCAG21AA);
+                            $contrastLabel.toggleClass("text-danger", !contrastResult.meetsWCAG21AA);
+                            if(contrastResult.meetsWCAG21AA) {
+                                $save.attr("disabled", null);
+                            }
+                            else {
+                                $save.attr("disabled", "disabled");
+                            }
+                        }
+                    });
+            }
+
+            const whiteBackgroundColor = "@GRA.Utility.ColorConstants.WhiteBackground";
+
+            function bindContrastCheck() {
+                const $addModal = $("#addModal");
+                const $addInput = $addModal.find("#addCategoryColor");
+
+                if ($addModal.length !== 0 && $addInput.length !== 0) {
+                    function recompute() {
+                        updateContrastStatus($addModal, $addInput.val(), whiteBackgroundColor);
+                    }
+                    
+                    $addInput.off("change.contrast input.contrast");
+                    $addModal.off("shown.bs.modal.contrast");
+
+                    $addInput.on("change.contrast", recompute);
+                    $addInput.on("input.contrast", recompute);
+                    $addModal.on("shown.bs.modal.contrast", recompute);
+                    
+                    recompute();
+                }
+
+                const $editModal = $("#editModal");
+                const $editInput = $editModal.find("#updateCategoryColor");
+
+                if ($editModal.length !== 0 && $editInput.length !== 0) {
+                    function recompute() {
+                        updateContrastStatus($editModal, $editInput.val(), whiteBackgroundColor);
+                    }
+
+                    $editInput.off("change.contrast input.contrast");
+                    $editModal.off("shown.bs.modal.contrast");
+
+                    $editInput.on("change.contrast", recompute);
+                    $editInput.on("input.contrast", recompute);
+                    $editModal.on("shown.bs.modal.contrast", recompute);
+
+                    recompute();
+                }
+            }
+            bindContrastCheck();
+        }
     </script>
 }
