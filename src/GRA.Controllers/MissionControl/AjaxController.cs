@@ -59,8 +59,7 @@ namespace GRA.Controllers.MissionControl
                         var siteUrl = await _siteLookupService.GetSiteLinkAsync(GetCurrentSiteId());
                         var contentPath = _pathResolver.ResolveContentPath(Path.Combine(folderPath,
                             filename));
-                        var fileUrl = Path.Combine(siteUrl.ToString(), contentPath)
-                            .Replace("\\", "/", StringComparison.OrdinalIgnoreCase);
+                        var fileUrl = new Uri(siteUrl, contentPath);
 
                         return Json(fileUrl);
                     }
