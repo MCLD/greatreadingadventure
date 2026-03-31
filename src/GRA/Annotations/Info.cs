@@ -1,0 +1,75 @@
+﻿namespace GRA.Annotations
+{
+    public static class Info
+    {
+        public const string AnyLibrary = "Any participating library";
+        public const string AvailableForPickup = "Available for pickup";
+        public const string BadgeInfoError = "Error retrieving badge information.";
+        public const string BetterSuitedOption = "This program may be better-suited to your age:";
+        public const string BookAdded = "<strong><em>{0}</em></strong> by <strong>{1}</strong> was added to your book list.";
+        public const string ChallengeBadgeEarned = "You earned this badge for completing the challenge: <a href=\"{0}\" target=\"_blank\">{1}</a>";
+        public const string ChallengeBookLinkTitle = "Read <strong><em><a href=\"{0}\" target=\"_blank\">{1}</a></em></strong>";
+        public const string ChallengeBookLinkTitleAuthor = "Read <strong><em><a href=\"{0}\" target=\"_blank\">{1}</a></em></strong> by <strong>{2}</strong>";
+        public const string ChallengeBookTitle = "Read <strong><em>{0}</em></strong>";
+        public const string ChallengeBookTitleAuthor = "Read <strong><em>{0}</em></strong> by <strong>{1}</strong>";
+        public const string CompletedOnDate = "Completed on: {0}";
+        public const string CompleteTasksEarnPoints = "When you complete <strong>{0}</strong>, you will earn <strong>{1}</strong>.";
+        public const string CompleteTasksEarnPointsBadge = "When you complete <strong>{0}</strong>, you will earn <strong>{1}</strong> and a badge.";
+        public const string ConfirmBookDelete = "Are you sure you want to delete this book from your book list:";
+        public const string CouldNotFind = "We couldn't find what you were looking for. Sorry about that!";
+        public const string DashboardOptionalFields = "If you choose to enter a title and author, you can view a list of all the books you've read in your profile.";
+        public const string EarnedOn = "Earned on {0}";
+        public const string EventBadgeEarned = "You earned this badge for attending the event: <a href=\"{0}\" target=\"_blank\">{1}</a>";
+        public const string EventLimitedToProgram = "This event is limited to the age group: {0}";
+        public const string FreeBookRedeemDashboard = "You've earned a free book! Head over to <a href=\"{0}\"><strong>My Profile</strong></a> page to choose what to do with it.";
+        public const string FreeBookRedeemExpirationDashboard = "You've earned a free book! Head over to <a href=\"{0}\"><strong>My Profile</strong></a> page by {1} to choose what to do with it.";
+        public const string Goal = "The goal of this program is {0} points.";
+        public const string GoalComplete = "You have reached the program's goal!";
+        public const string GroupAdd = "Add existing participant to your {0}";
+        public const string GroupCannot = "A {0} cannot be created at this time.";
+        public const string GroupCreate = "Click below to create a {0}";
+        public const string GroupLeader = "You are leader of the group: <a href=\"{0}\"><strong>{1}</strong></a>";
+        public const string GroupMember = "You are in the group: <strong>{0}</strong>";
+        public const string GroupRegister = "Register new {0} Member";
+        public const string LetYouKnowWhen = "Thanks! We'll let you know when you can join the program.";
+        public const string MailForHelp = "If you can't find something, please <a href=\"{0}\">send us a mail</a> and let us know what you were looking for, we'll do our best to help.";
+        public const string MinutesRead = "Minutes read: <strong>{0:n0}</strong>";
+        public const string MinutesReadSoFar = "Minutes read so far: <strong>{0:n0}</strong>";
+        public const string NoBadges = "You have not earned any badges yet.";
+        public const string NoBooksLogged = "No books logged.";
+        public const string NoCertificates = "You have not earned any certificates yet.";
+        public const string NoHistory = "No history to display.";
+        public const string NoPrizes = "No prizes yet, keep reading!";
+        public const string NoUnlockedBundles = "No unlocked bundles";
+        public const string OurGoalInMinutes = "Our goal (in minutes): {0:n0}";
+        public const string PasswordRecoverySent = "A password recovery email has been sent to the email for username '{0}'.";
+        public const string PasswordResetFor = "Password reset for: {0}";
+        public const string PersonalActivityGoal = "Your personal reading goal is {0} minutes.";
+        public const string PersonalGoal = "You have {0}/{1} points towards your personal goal.";
+        public const string PersonalGoalComplete = "You have completed your personal goal of {0} points!";
+        public const string PickedUp = "Picked up";
+        public const string PointSingular = "{0} point";
+        public const string PointsPlural = "{0} points";
+        public const string ProgramEnded = "{0} has ended, please join us next time!";
+        public const string ReceivedCertificate = "You've received a certificate!";
+        public const string RegistrationNotOpenYet = "Registration for {0} is not open yet.";
+        public const string SearchResultsMatchesPlural = "There are {0} results matching your search.";
+        public const string SearchResultsMatchesSingular = "There is 1 result matching your search.";
+        public const string SiteGoalHeader = "Community Reading Goal";
+        public const string StatusSaved = "Your status has been saved!";
+        public const string StatusSavedPercentage = "Your status has been saved. You have completed {0}% of the required tasks for the challenge: {1}!";
+        public const string SuccessfullyJoined = "You've successfully joined <strong>{0}</strong>!";
+        public const string TaskSingular = "{0} task";
+        public const string TasksPlural = "{0} tasks";
+        public const string UpgradeToGroupDescription = "It appears that you have more than {0} members in your family. We'd like you to convert your family to a group in order to add more members.";
+        public const string UsernameIsAvailable = "That username is available!";
+        public const string UsernameListSent = "A list of usernames associated with the email address '{0}' has been sent.";
+        public const string VendorItemArrived = "<em>{0}</em> arrived on <strong>{1}</strong> and is ready for pick-up.";
+        public const string VendorItemArrivedAtBranch = "<em>{0}</em> arrived on <strong>{1}</strong> and is ready for pick-up at <a href=\"{2}\" target=\"_blank\">{3}</a>.";
+        public const string VendorItemOrdered = "<em>{0}</em> ordered on <strong>{1}</strong>.";
+        public const string VendorItemPickedup = "<em>{0}</em> was picked up on <strong>{1}</strong>.";
+        public const string VendorItemShipped = "<em>{0}</em> shipped on <strong>{1}</strong>.";
+        public const string WhileSuppliesLast = "Some prizes are available while supplies last, check with your library for more information.";
+        public const string YouCanJoinOn = "You can join {0} on {1}.";
+    }
+}

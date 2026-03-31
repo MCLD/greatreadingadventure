@@ -35,4 +35,8 @@
     <ProjectReference Include="..\GRA.Domain.Model\GRA.Domain.Model.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Annotations\" />
+  </ItemGroup>
+
 </Project>

@@ -51,7 +51,11 @@ namespace GRA.Test
                 .Select(_ => _.Key.Replace(NonBreakingSpaceCharacter, SpaceCharacter));
 
             var items = new List<string>();
-            foreach (var classType in typeof(Annotations).GetNestedTypes(BindingFlags.Public))
+            var annotations = Assembly.GetAssembly(typeof(Annotations.Home))
+                .GetTypes()
+                .Where(_ => _.Namespace == $"{nameof(GRA)}.{nameof(Annotations)}");
+
+            foreach (var classType in annotations)
             {
                 var constStrings = classType.GetFields(BindingFlags.Public
                     | BindingFlags.Static
