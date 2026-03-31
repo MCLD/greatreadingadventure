@@ -401,6 +401,14 @@ namespace GRA.Controllers
                         _sharedLocalizer[DisplayNames.EmailAddress]]);
             }
 
+            if (await GetSiteSettingBoolAsync(SiteSettingKey.Users.RequireEmailAddress)
+                && string.IsNullOrEmpty(model.User.Email))
+            {
+                ModelState.AddModelError("User.Email",
+                    _sharedLocalizer[ErrorMessages.Field,
+                    _sharedLocalizer[DisplayNames.EmailAddress]]);
+            }
+
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.User.PostalCode))
             {
                 ModelState.AddModelError("User.PostalCode",
@@ -1532,6 +1540,15 @@ namespace GRA.Controllers
                     _sharedLocalizer[Annotations.Validate.Email, 
                         _sharedLocalizer[DisplayNames.EmailAddress]]);
             }
+
+            if (await GetSiteSettingBoolAsync(SiteSettingKey.Users.RequireEmailAddress)
+                && string.IsNullOrEmpty(model.User.Email))
+            {
+                ModelState.AddModelError("User.Email",
+                    _sharedLocalizer[ErrorMessages.Field,
+                    _sharedLocalizer[DisplayNames.EmailAddress]]);
+            }
+
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.User.PostalCode))
             {
                 ModelState.AddModelError("User.PostalCode",
