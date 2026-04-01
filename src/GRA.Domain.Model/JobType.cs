@@ -13,6 +13,7 @@
         BranchImport,
         SendNewsEmails,
         ReceivePackingSlip,
-        BulkReassignCodes
+        BulkReassignCodes,
+        AvatarExport
     }
 }

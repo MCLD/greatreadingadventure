@@ -21,6 +21,7 @@ namespace GRA.Domain.Service
         private readonly IAvatarBundleRepository _avatarBundleRepository;
         private readonly IAvatarColorRepository _avatarColorRepository;
         private readonly IAvatarElementRepository _avatarElementRepository;
+        private readonly IAvatarTransferRepository _avatarImportExportRepository;
         private readonly IAvatarItemRepository _avatarItemRepository;
         private readonly IAvatarLayerRepository _avatarLayerRepository;
         private readonly IJobRepository _jobRepository;
@@ -34,17 +35,19 @@ namespace GRA.Domain.Service
             IAvatarBundleRepository avatarBundleRepository,
             IAvatarColorRepository avatarColorRepository,
             IAvatarElementRepository avatarElementRepository,
+            IAvatarTransferRepository avatarImportExportRepository,
             IAvatarItemRepository avatarItemRepository,
             IAvatarLayerRepository avatarLayerRepository,
             IJobRepository jobRepository,
-            LanguageService languageService,
+            IPathResolver pathResolver,
             ITriggerRepository triggerRepository,
-            IPathResolver pathResolver)
+            LanguageService languageService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             ArgumentNullException.ThrowIfNull(avatarBundleRepository);
             ArgumentNullException.ThrowIfNull(avatarColorRepository);
             ArgumentNullException.ThrowIfNull(avatarElementRepository);
+            ArgumentNullException.ThrowIfNull(avatarImportExportRepository);
             ArgumentNullException.ThrowIfNull(avatarItemRepository);
             ArgumentNullException.ThrowIfNull(avatarLayerRepository);
             ArgumentNullException.ThrowIfNull(jobRepository);
@@ -55,6 +58,7 @@ namespace GRA.Domain.Service
             _avatarBundleRepository = avatarBundleRepository;
             _avatarColorRepository = avatarColorRepository;
             _avatarElementRepository = avatarElementRepository;
+            _avatarImportExportRepository = avatarImportExportRepository;
             _avatarItemRepository = avatarItemRepository;
             _avatarLayerRepository = avatarLayerRepository;
             _jobRepository = jobRepository;
@@ -175,8 +179,103 @@ namespace GRA.Domain.Service
             return currentBundle;
         }
 
+        public async Task<JobStatus> ExportAvatarsAsync(JobMetadata metadata)
+        {
+            ArgumentNullException.ThrowIfNull(metadata);
+
+            var export = new AvatarTransfer
+            {
+                CreatedBy = GetClaimId(ClaimType.UserId),
+                JobId = metadata.JobId,
+                TransferType = DataTransferType.Export
+            };
+
+            if (!HasPermission(Permission.ManageAvatars))
+            {
+                _logger.LogError("User {UserId} doesn't have permission to manage avatars.",
+                    export.CreatedBy);
+                return new JobStatus
+                {
+                    PercentComplete = 0,
+                    Status = "Permission denied.",
+                    Error = true,
+                    Complete = true
+                };
+            }
+
+            _logger.LogInformation("Avatar export initiated by {UserId}", export.CreatedBy);
+
+            await ReportJobStatusAsync(_jobRepository, metadata, new JobStatus
+            {
+                Status = "Avatar export started...",
+            });
+
+            var sw = Stopwatch.StartNew();
+
+            metadata.CancellationToken.Register(() =>
+            {
+                _logger.LogWarning("Export avatars for {UserId} was cancelled after {Elapsed} ms.",
+                    export.CreatedBy,
+                    sw?.ElapsedMilliseconds);
+            });
+
+            var job = await _jobRepository.GetByIdAsync(metadata.JobId);
+            var jobDetails = JsonConvert
+                .DeserializeObject<JobDetailsAvatarImport>(job.SerializedParameters);
+
+            string assetPath = jobDetails.AssetPath;
+
+            try
+            {
+                // TODO Avatars do export
+                // export avatars
+            }
+            catch (GraException gex)
+            {
+                sw.Stop();
+
+                _logger.LogInformation(gex,
+                    "Avatar export failed for {UserId} in {TotalSeconds:0} seconds: {Message}",
+                    export.CreatedBy,
+                    sw.Elapsed.TotalSeconds,
+                    gex.Message);
+
+                await ReportJobStatusAsync(_jobRepository, metadata, new JobStatus
+                {
+                    Complete = true,
+                    Error = true,
+                    Status = $"Avatar export failed: {gex.Message}",
+                });
+            }
+
+            await ReportJobStatusAsync(_jobRepository, metadata, new JobStatus
+            {
+                Error = false,
+                PercentComplete = 100,
+                Status = "Finishing avatar export..."
+            });
+
+            sw.Stop();
+
+            _logger.LogInformation("Avatar export completed for {UserId} in {TotalSeconds} seconds.",
+                export.CreatedBy,
+                sw.Elapsed.TotalSeconds);
+
+            var resultMessage = $"Export complete in {sw.Elapsed.TotalSeconds:0} seconds";
+
+            await _avatarImportExportRepository.AddSaveAsync(export.CreatedBy, export);
+
+            return new JobStatus
+            {
+                Complete = true,
+                Error = false,
+                PercentComplete = 100,
+                Status = resultMessage
+            };
+        }
+
         public async Task<ICollection<AvatarBundle>> GetAllBundlesAsync(
-            bool? unlockable = null)
+                    bool? unlockable = null)
         {
             VerifyManagementPermission();
             return await _avatarBundleRepository.GetAllAsync(GetCurrentSiteId(), unlockable);
@@ -204,18 +303,23 @@ namespace GRA.Domain.Service
             return await _avatarLayerRepository.GetNameByLanguageIdAsync(layerId, languageId);
         }
 
-        public async Task<AvatarItem> GetItemByLayerPositionSortOrderAsync(int layerPosition,
-            int sortOrder)
+        public async Task<ICollection<AvatarTransfer>> GetImportsExports()
         {
-            VerifyManagementPermission();
-            return await _avatarItemRepository.GetByLayerPositionSortOrderAsync(layerPosition,
-                sortOrder);
+            return await _avatarImportExportRepository.GetAllAsync();
         }
 
         public async Task<AvatarItem> GetItemByIdAsync(int id)
         {
             VerifyManagementPermission();
             return await _avatarItemRepository.GetByIdAsync(id);
+        }
+
+        public async Task<AvatarItem> GetItemByLayerPositionSortOrderAsync(int layerPosition,
+                    int sortOrder)
+        {
+            VerifyManagementPermission();
+            return await _avatarItemRepository.GetByLayerPositionSortOrderAsync(layerPosition,
+                sortOrder);
         }
 
         public async Task<ICollection<AvatarItem>> GetItemsByIdsAsync(List<int> ids)
@@ -899,7 +1003,6 @@ namespace GRA.Domain.Service
                 {
                     if (currentText == null)
                     {
-
                         textsToAdd.Add(text);
                     }
                     else
@@ -966,7 +1069,6 @@ namespace GRA.Domain.Service
                 {
                     if (currentText == null)
                     {
-
                         textsToAdd.Add(text);
                     }
                     else

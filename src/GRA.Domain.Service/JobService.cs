@@ -36,6 +36,11 @@ namespace GRA.Domain.Service
                 : CreateJobInternalAsync(job);
         }
 
+        public async Task<Job> GetJobAsync(int jobId)
+        {
+            return await _jobRepository.GetByIdAsync(jobId);
+        }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
             "CA1031:Do not catch general exception types",
             Justification = "Job failures should always display a friendly message to the user")]
@@ -155,21 +160,22 @@ namespace GRA.Domain.Service
             CancellationToken token,
             IProgress<JobStatus> progress)
         {
+            var jobMetadata = new JobMetadata
+            {
+                JobId = jobInfo.Id,
+                CancellationToken = token,
+                Progress = progress
+            };
+
             return jobInfo.JobType switch
             {
-                JobType.SendBulkEmails => await SendBulkEmails(userId,
-                    jobInfo.Id,
-                    token,
-                    progress),
-                JobType.AvatarImport => await ImportAvatarsAsync(jobInfo.Id,
-                    token,
-                    progress),
+                JobType.SendBulkEmails => await SendBulkEmails(userId, jobInfo.Id, token, progress),
+                JobType.AvatarImport => await ImportAvatarsAsync(jobInfo.Id, token, progress),
+                JobType.AvatarExport => await ExportAvatarsAsync(jobMetadata),
                 JobType.HouseholdImport => await ImportHouseholdMembersAsync(jobInfo.Id,
                     token,
                     progress),
-                JobType.RunReport => await RunReportJobAsync(jobInfo.Id,
-                    token,
-                    progress),
+                JobType.RunReport => await RunReportJobAsync(jobInfo.Id, token, progress),
                 JobType.UpdateVendorStatus => await UpdateStatusFromExcelAsync(
                     jobInfo.Id,
                     token,
@@ -182,28 +188,25 @@ namespace GRA.Domain.Service
                     jobInfo.Id,
                     token,
                     progress),
-                JobType.BranchImport => await ImportBranches(
-                    jobInfo.Id,
-                    token,
-                    progress),
-                JobType.SendNewsEmails => await SendNewsEmails(
-                    jobInfo.Id,
-                    token,
-                    progress),
-                JobType.ReceivePackingSlip => await ReceivePackingSlip(
-                    jobInfo.Id,
-                    token,
-                    progress),
-                JobType.BulkReassignCodes => await BulkReassignCodes(
-                    jobInfo.Id,
-                    token,
-                    progress),
+                JobType.BranchImport => await ImportBranches(jobInfo.Id, token, progress),
+                JobType.SendNewsEmails => await SendNewsEmails(jobInfo.Id, token, progress),
+                JobType.ReceivePackingSlip => await ReceivePackingSlip(jobInfo.Id, token, progress),
+                JobType.BulkReassignCodes => await BulkReassignCodes(jobInfo.Id, token, progress),
                 _ => throw new GraException($"Undefined job type: {jobInfo.JobType}"),
             };
         }
 
+        private async Task<JobStatus> ExportAvatarsAsync(JobMetadata metadata)
+        {
+            var avatarService = _httpContextAccessor
+                .HttpContext
+                .RequestServices
+                .GetService(typeof(AvatarService)) as AvatarService;
+            return await avatarService.ExportAvatarsAsync(metadata);
+        }
+
         private async Task<JobStatus> GenerateVendorCodesAsync(int jobId,
-            CancellationToken token,
+                    CancellationToken token,
             IProgress<JobStatus> progress = null)
         {
             var vendorCodeService = _httpContextAccessor

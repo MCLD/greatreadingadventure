@@ -1,0 +1,59 @@
+﻿@using GRA.Controllers.ViewModel.MissionControl.Avatar
+@model TransfersViewModel
+
+@section inHeading {
+    <div class="ms-auto">
+        <form asp-action="@nameof(AvatarsController.GenerateExport)" method="post">
+            <input type="submit" class="btn btn-outline-primary" value="Export Avatars" />
+        </form>
+    </div>
+}
+
+@if (Model.Transfers.Count == 0)
+{
+    <div class="row">
+        <div class="col-12 col-sm-6 offset-sm-3 mt-2">
+            <div class="alert alert-warning">
+                No imports/exports found.
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <table class="table table-sm table-bordered table-striped mt-2">
+        <tr>
+            <th>Type</th>
+            <th>File</th>
+            <th>Run at</th>
+            <th>Run by</th>
+            <th>Duration</th>
+            <th>Status</th>
+        </tr>
+        @foreach (var importExport in Model.Transfers)
+        {
+            <tr>
+                <td>@importExport.TransferType</td>
+                <td>
+                    @if (string.IsNullOrEmpty(importExport.Filename))
+                    {
+                        <em>no export file produced</em>
+                    }
+                    else
+                    {
+                        <a href="#">@importExport.Filename</a>
+                    }
+                </td>
+                <td>@importExport.CreatedAt</td>
+                <td>
+                    <a aria-label="Profile of @importExport.CreatedByName"
+                       asp-action="@nameof(ParticipantsController.Detail)"
+                       asp-controller="@ParticipantsController.Name"
+                       asp-route-id="@importExport.CreatedBy">@importExport.CreatedByName</a>
+                </td>
+                <td>@TransfersViewModel.FormatDuration(Model.Jobs[importExport.JobId])</td>
+                <td>@Model.Jobs[importExport.JobId].Status</td>
+            </tr>
+        }
+    </table>
+}

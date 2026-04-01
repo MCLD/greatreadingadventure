@@ -31,14 +31,16 @@ namespace GRA.Controllers.MissionControl
         private readonly JobService _jobService;
         private readonly LanguageService _languageService;
         private readonly ILogger<AvatarsController> _logger;
+        private readonly UserService _userService;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
         public AvatarsController(ILogger<AvatarsController> logger,
-            ServiceFacade.Controller context,
             AvatarService avatarService,
+            IWebHostEnvironment webHostEnvironment,
             JobService jobService,
             LanguageService languageService,
-            IWebHostEnvironment webHostEnvironment)
+            ServiceFacade.Controller context,
+            UserService userService)
             : base(context)
         {
             ArgumentNullException.ThrowIfNull(logger);
@@ -46,11 +48,13 @@ namespace GRA.Controllers.MissionControl
             ArgumentNullException.ThrowIfNull(jobService);
             ArgumentNullException.ThrowIfNull(languageService);
             ArgumentNullException.ThrowIfNull(webHostEnvironment);
+            ArgumentNullException.ThrowIfNull(userService);
 
-            _logger = logger;
             _avatarService = avatarService;
             _jobService = jobService;
             _languageService = languageService;
+            _logger = logger;
+            _userService = userService;
             _webHostEnvironment = webHostEnvironment;
 
             PageTitle = "Avatars";
@@ -349,6 +353,30 @@ namespace GRA.Controllers.MissionControl
             });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> GenerateExport()
+        {
+            var jobToken = await _jobService.CreateJobAsync(new Job
+            {
+                JobType = JobType.AvatarExport,
+                SerializedParameters = JsonConvert
+                    .SerializeObject(new JobDetailsAvatarImport
+                    {
+                        AssetPath = _pathResolver.ResolvePrivateFilePath()
+                    })
+            });
+
+            return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
+            {
+                CancelUrl = Url.Action(nameof(Index)),
+                JobToken = jobToken.ToString(),
+                PingSeconds = 5,
+                SuccessRedirectUrl = Url.Action(nameof(Transfers)),
+                SuccessUrl = Url.Action(nameof(Index)),
+                Title = "Exporting avatars..."
+            });
+        }
+
         public async Task<IActionResult> GetItemsList(string itemIds,
             int? layerId,
             string search,
@@ -393,6 +421,29 @@ namespace GRA.Controllers.MissionControl
             };
 
             return PartialView("_ItemsPartial", viewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Transfers()
+        {
+            var viewModel = new TransfersViewModel();
+
+            ((List<AvatarTransfer>)viewModel.Transfers)
+                .AddRange(await _avatarService.GetImportsExports());
+
+            foreach (var importExport in viewModel.Transfers)
+            {
+                importExport.CreatedByName
+                    = await _userService.GetUsersNameByIdAsync(importExport.CreatedBy);
+
+                if (!viewModel.Jobs.ContainsKey(importExport.JobId))
+                {
+                    viewModel.Jobs.Add(importExport.JobId,
+                        await _jobService.GetJobAsync(importExport.JobId));
+                }
+            }
+
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -548,7 +599,6 @@ namespace GRA.Controllers.MissionControl
                 textMissing = model.TextMissing,
                 language = model.SelectedLanguage?.Id,
                 page = model.CurrentPage
-                
             });
         }
 
