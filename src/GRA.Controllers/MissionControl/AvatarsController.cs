@@ -25,9 +25,13 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ManageAvatars)]
     public class AvatarsController : Base.MCController
     {
-        private const string AvatarIndex = "default avatars.json";
+        private const string AvatarExportDirectory = "avatar-export";
+        private const string AvatarImportDirectory = "avatar-import";
+        private const string AvatarIndexV1 = "default avatars.json";
+        private const string AvatarIndexV2 = "avatars.json";
         private const long MaxFileSize = 100L * 1024L * 1024L;
         private readonly AvatarService _avatarService;
+        private readonly AvatarTransferService _avatarTransferService;
         private readonly JobService _jobService;
         private readonly LanguageService _languageService;
         private readonly ILogger<AvatarsController> _logger;
@@ -36,6 +40,7 @@ namespace GRA.Controllers.MissionControl
 
         public AvatarsController(ILogger<AvatarsController> logger,
             AvatarService avatarService,
+            AvatarTransferService avatarTransferService,
             IWebHostEnvironment webHostEnvironment,
             JobService jobService,
             LanguageService languageService,
@@ -44,6 +49,7 @@ namespace GRA.Controllers.MissionControl
             : base(context)
         {
             ArgumentNullException.ThrowIfNull(logger);
+            ArgumentNullException.ThrowIfNull(avatarTransferService);
             ArgumentNullException.ThrowIfNull(avatarService);
             ArgumentNullException.ThrowIfNull(jobService);
             ArgumentNullException.ThrowIfNull(languageService);
@@ -51,6 +57,7 @@ namespace GRA.Controllers.MissionControl
             ArgumentNullException.ThrowIfNull(userService);
 
             _avatarService = avatarService;
+            _avatarTransferService = avatarTransferService;
             _jobService = jobService;
             _languageService = languageService;
             _logger = logger;
@@ -85,11 +92,10 @@ namespace GRA.Controllers.MissionControl
             var itemList = new List<int>();
             if (!string.IsNullOrWhiteSpace(model.ItemsList))
             {
-                itemList = model.ItemsList
+                itemList = [.. model.ItemsList
                     .Split(',')
                     .Where(_ => !string.IsNullOrWhiteSpace(_))
-                    .Select(int.Parse)
-                    .ToList();
+                    .Select(int.Parse)];
             }
 
             if (ModelState.IsValid)
@@ -175,11 +181,10 @@ namespace GRA.Controllers.MissionControl
             var itemList = new List<int>();
             if (!string.IsNullOrWhiteSpace(model.ItemsList))
             {
-                itemList = model.ItemsList
+                itemList = [.. model.ItemsList
                     .Split(',')
                     .Where(_ => !string.IsNullOrWhiteSpace(_))
-                    .Select(int.Parse)
-                    .ToList();
+                    .Select(int.Parse)];
             }
 
             if (ModelState.IsValid)
@@ -244,12 +249,10 @@ namespace GRA.Controllers.MissionControl
             return View(viewModel);
         }
 
-        public async Task<IActionResult> ColorTexts(int? page,
-            bool? textMissing,
-            int? language)
+        public async Task<IActionResult> ColorTexts(int? page, bool? textMissing, int? language)
         {
-            page = page ?? 1;
-            textMissing = textMissing ?? true;
+            page ??= 1;
+            textMissing ??= true;
 
             var filter = new AvatarFilter(page)
             {
@@ -360,21 +363,33 @@ namespace GRA.Controllers.MissionControl
             {
                 JobType = JobType.AvatarExport,
                 SerializedParameters = JsonConvert
-                    .SerializeObject(new JobDetailsAvatarImport
+                    .SerializeObject(new JobDetailsAvatarTransfer
                     {
-                        AssetPath = _pathResolver.ResolvePrivateFilePath()
+                        AssetPath = _pathResolver.ResolvePrivateFilePath(AvatarExportDirectory),
+                        TransferType = DataTransferType.Export
                     })
             });
 
             return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
             {
-                CancelUrl = Url.Action(nameof(Index)),
+                CancelUrl = Url.Action(nameof(Transfers)),
                 JobToken = jobToken.ToString(),
                 PingSeconds = 5,
-                SuccessRedirectUrl = Url.Action(nameof(Transfers)),
-                SuccessUrl = Url.Action(nameof(Index)),
-                Title = "Exporting avatars..."
+                SuccessUrl = Url.Action(nameof(Transfers)),
+                Title = "Starting avatar export"
             });
+        }
+
+        [HttpGet]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability",
+            "CA2000:Dispose objects before losing scope",
+            Justification = "File() method calls Dispose for us")]
+        public async Task<IActionResult> GetExport(int id)
+        {
+            var export = await _avatarTransferService.GetExportAsync(id);
+            var path = _pathResolver
+                .ResolvePrivateFilePath(Path.Combine(AvatarExportDirectory, export.Filename));
+            return File(new FileStream(path, FileMode.Open), "application/zip", export.Filename);
         }
 
         public async Task<IActionResult> GetItemsList(string itemIds,
@@ -392,10 +407,9 @@ namespace GRA.Controllers.MissionControl
 
             if (!string.IsNullOrWhiteSpace(itemIds))
             {
-                filter.ItemIds = itemIds.Split(',')
+                filter.ItemIds = [.. itemIds.Split(',')
                     .Where(_ => !string.IsNullOrWhiteSpace(_))
-                    .Select(int.Parse)
-                    .ToList();
+                    .Select(int.Parse)];
             }
 
             var items = await _avatarService.PageItemsAsync(filter);
@@ -421,29 +435,6 @@ namespace GRA.Controllers.MissionControl
             };
 
             return PartialView("_ItemsPartial", viewModel);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Transfers()
-        {
-            var viewModel = new TransfersViewModel();
-
-            ((List<AvatarTransfer>)viewModel.Transfers)
-                .AddRange(await _avatarService.GetImportsExports());
-
-            foreach (var importExport in viewModel.Transfers)
-            {
-                importExport.CreatedByName
-                    = await _userService.GetUsersNameByIdAsync(importExport.CreatedBy);
-
-                if (!viewModel.Jobs.ContainsKey(importExport.JobId))
-                {
-                    viewModel.Jobs.Add(importExport.JobId,
-                        await _jobService.GetJobAsync(importExport.JobId));
-                }
-            }
-
-            return View(viewModel);
         }
 
         [HttpPost]
@@ -496,8 +487,8 @@ namespace GRA.Controllers.MissionControl
             bool? textMissing,
             int? language)
         {
-            page = page ?? 1;
-            textMissing = textMissing ?? true;
+            page ??= 1;
+            textMissing ??= true;
 
             var filter = new AvatarFilter(page)
             {
@@ -747,7 +738,7 @@ namespace GRA.Controllers.MissionControl
                 Directory.CreateDirectory(assetPath);
             }
 
-            assetPath = Path.Combine(assetPath, "uploadedavatars");
+            assetPath = Path.Combine(assetPath, AvatarImportDirectory);
             if (Directory.Exists(assetPath))
             {
                 Directory.Delete(assetPath, true);
@@ -759,12 +750,6 @@ namespace GRA.Controllers.MissionControl
             {
                 using var archive = new ZipArchive(viewModel.UploadedFile.OpenReadStream());
                 archive.ExtractToDirectory(assetPath);
-                assetPath = LocateAvatarIndexPath(assetPath);
-            }
-            catch (FileNotFoundException ex)
-            {
-                ShowAlertDanger($"{ex.Message}: {ex.FileName} in ZIP file.");
-                return RedirectToAction(nameof(AvatarsController.Index));
             }
             catch (Exception ex)
             {
@@ -772,7 +757,15 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(AvatarsController.Index));
             }
 
-            return await RunImportJob(assetPath, true);
+            var avatarIndex = FindAvatarIndex(assetPath);
+
+            if (avatarIndex == null)
+            {
+                ShowAlertDanger("Could not find avatar index in ZIP file.");
+                return RedirectToAction(nameof(AvatarsController.Transfers));
+            }
+
+            return await RunImportJob(avatarIndex, true);
         }
 
         [HttpPost]
@@ -813,12 +806,6 @@ namespace GRA.Controllers.MissionControl
             try
             {
                 ZipFile.ExtractToDirectory(avatarZip, assetPath);
-                assetPath = LocateAvatarIndexPath(assetPath);
-            }
-            catch (FileNotFoundException ex)
-            {
-                ShowAlertDanger($"{ex.Message}: {ex.FileName} in ZIP file.");
-                return RedirectToAction(nameof(AvatarsController.Index));
             }
             catch (Exception ex)
             {
@@ -826,7 +813,15 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(AvatarsController.Index));
             }
 
-            return await RunImportJob(assetPath);
+            var avatarIndex = FindAvatarIndex(assetPath);
+
+            if (avatarIndex == null)
+            {
+                ShowAlertDanger("Could not find avatar index in ZIP file.");
+                return RedirectToAction(nameof(AvatarsController.Transfers));
+            }
+
+            return await RunImportJob(avatarIndex, false);
         }
 
         [HttpPost]
@@ -855,58 +850,105 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Index));
             }
 
-            return await RunImportJob(assetPath);
+            var avatarIndex = FindAvatarIndex(assetPath);
+
+            if (avatarIndex == null)
+            {
+                ShowAlertDanger("Could not find avatar index in ZIP file.");
+                return RedirectToAction(nameof(AvatarsController.Transfers));
+            }
+
+            return await RunImportJob(avatarIndex, false);
         }
 
-        private static string LocateAvatarIndexPath(string assetPath)
+        [HttpGet]
+        public async Task<IActionResult> Transfers()
         {
-            if (!System.IO.File.Exists(Path.Combine(assetPath, AvatarIndex)))
+            var viewModel = new TransfersViewModel();
+
+            ((List<AvatarTransfer>)viewModel.Transfers)
+                .AddRange(await _avatarTransferService.GetImportsExports());
+
+            foreach (var transfer in viewModel.Transfers)
             {
-                foreach (var directory in Directory.GetDirectories(assetPath))
+                transfer.CreatedByName
+                    = await _userService.GetUsersNameByIdAsync(transfer.CreatedBy);
+
+                if (!viewModel.Jobs.ContainsKey(transfer.JobId))
                 {
-                    if (System.IO.File.Exists(Path.Combine(directory, AvatarIndex)))
+                    viewModel.Jobs.Add(transfer.JobId,
+                        await _jobService.GetJobAsync(transfer.JobId));
+                }
+
+                var path = _pathResolver.ResolvePrivateFilePath(Path.Combine(AvatarExportDirectory,
+                    transfer.Filename));
+
+                if (transfer.TransferType == DataTransferType.Export && System.IO.File.Exists(path))
+                {
+                    transfer.FileKBytes = new FileInfo(path).Length / 1024;
+                }
+            }
+
+            return View(viewModel);
+        }
+
+        private static AvatarIndex FindAvatarIndex(string path)
+        {
+            var avatarIndex = IndexVersion(path);
+
+            if (avatarIndex == null)
+            {
+                foreach (var directory in Directory.GetDirectories(path))
+                {
+                    avatarIndex = IndexVersion(directory);
+                    if (avatarIndex != null)
                     {
-                        return directory;
+                        break;
                     }
                 }
             }
 
-            if (!System.IO.File.Exists(Path.Combine(assetPath, AvatarIndex)))
-            {
-                throw new FileNotFoundException("Not able to find avatar index file",
-                    AvatarIndex);
-            }
-
-            return assetPath;
+            return avatarIndex;
         }
 
-        private async Task<IActionResult> RunImportJob(string assetPath)
+        private static AvatarIndex IndexVersion(string path)
         {
-            return await RunImportJob(assetPath, false);
+            return System.IO.File.Exists(Path.Join(path, AvatarIndexV2))
+                ? new AvatarIndex { Version = 2, Path = Path.Join(path, AvatarIndexV2) }
+                : System.IO.File.Exists(Path.Combine(path, AvatarIndexV1))
+                    ? new AvatarIndex { Version = 1, Path = Path.Combine(path, AvatarIndexV1) }
+                    : null;
         }
 
-        private async Task<IActionResult> RunImportJob(string assetPath, bool uploadedFile)
+        private async Task<IActionResult> RunImportJob(AvatarIndex avatarIndex, bool uploadedFile)
         {
             var jobToken = await _jobService.CreateJobAsync(new Job
             {
                 JobType = JobType.AvatarImport,
                 SerializedParameters = JsonConvert
-                    .SerializeObject(new JobDetailsAvatarImport
+                    .SerializeObject(new JobDetailsAvatarTransfer
                     {
-                        AssetPath = assetPath,
-                        UploadedFile = uploadedFile
+                        AssetPath = avatarIndex.Path,
+                        UploadedFile = uploadedFile,
+                        Version = avatarIndex.Version
                     })
             });
 
             return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
             {
-                CancelUrl = Url.Action(nameof(Index)),
+                CancelUrl = Url.Action(nameof(Transfers)),
                 JobToken = jobToken.ToString(),
                 PingSeconds = 5,
                 SuccessRedirectUrl = "",
-                SuccessUrl = Url.Action(nameof(Index)),
-                Title = "Importing avatars..."
+                SuccessUrl = Url.Action(nameof(Transfers)),
+                Title = "Starting avatar import"
             });
+        }
+
+        private class AvatarIndex
+        {
+            public string Path { get; set; }
+            public int Version { get; set; }
         }
     }
 }

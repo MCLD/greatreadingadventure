@@ -11,6 +11,8 @@ namespace GRA.Domain.Model
         [MaxLength(255)]
         public string Filename { get; set; }
 
+        public long? FileKBytes { get; set; }
+
         [Required]
         public int JobId { get; set; }
 

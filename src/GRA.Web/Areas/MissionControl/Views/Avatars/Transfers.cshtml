@@ -14,7 +14,7 @@
     <div class="row">
         <div class="col-12 col-sm-6 offset-sm-3 mt-2">
             <div class="alert alert-warning">
-                No imports/exports found.
+                No transfers found.
             </div>
         </div>
     </div>
@@ -30,29 +30,35 @@ else
             <th>Duration</th>
             <th>Status</th>
         </tr>
-        @foreach (var importExport in Model.Transfers)
+        @foreach (var transfer in Model.Transfers)
         {
             <tr>
-                <td>@importExport.TransferType</td>
+                <td>@transfer.TransferType</td>
                 <td>
-                    @if (string.IsNullOrEmpty(importExport.Filename))
+                    @if (string.IsNullOrEmpty(transfer.Filename))
                     {
-                        <em>no export file produced</em>
+                        <em>no filename</em>
+                    }
+                    else if (transfer.FileKBytes.HasValue && transfer.TransferType == GRA.DataTransferType.Export)
+                    {
+                        <a asp-action="@nameof(AvatarsController.GetExport)"
+                           asp-route-id="@transfer.Id">@transfer.Filename</a>
+                        <small>@TransfersViewModel.OutputSize(transfer.FileKBytes.Value)</small>
                     }
                     else
                     {
-                        <a href="#">@importExport.Filename</a>
+                        @transfer.Filename
                     }
                 </td>
-                <td>@importExport.CreatedAt</td>
+                <td>@transfer.CreatedAt</td>
                 <td>
-                    <a aria-label="Profile of @importExport.CreatedByName"
+                    <a aria-label="Profile of @transfer.CreatedByName"
                        asp-action="@nameof(ParticipantsController.Detail)"
                        asp-controller="@ParticipantsController.Name"
-                       asp-route-id="@importExport.CreatedBy">@importExport.CreatedByName</a>
+                       asp-route-id="@transfer.CreatedBy">@transfer.CreatedByName</a>
                 </td>
-                <td>@TransfersViewModel.FormatDuration(Model.Jobs[importExport.JobId])</td>
-                <td>@Model.Jobs[importExport.JobId].Status</td>
+                <td>@TransfersViewModel.FormatDuration(Model.Jobs[transfer.JobId])</td>
+                <td>@Model.Jobs[transfer.JobId].Status</td>
             </tr>
         }
     </table>

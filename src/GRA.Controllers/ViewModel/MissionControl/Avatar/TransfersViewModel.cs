@@ -21,5 +21,10 @@ namespace GRA.Controllers.ViewModel.MissionControl.Avatar
                 ? job.Duration.Value.ToString(@"m\m\ s\s", CultureInfo.InvariantCulture)
                 : null;
         }
+
+        public static string OutputSize(long kBytes)
+        {
+            return $"({kBytes:N0}KB)";
+        }
     }
 }

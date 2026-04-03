@@ -550,6 +550,7 @@ namespace GRA.Web
             services.AddScoped<AuthenticationService>();
             services.AddScoped<AuthorizationCodeService>();
             services.AddScoped<AvatarService>();
+            services.AddScoped<AvatarTransferService>();
             services.AddScoped<BadgeService>();
             services.AddScoped<BranchImportExportService>();
             services.AddScoped<CarouselService>();
