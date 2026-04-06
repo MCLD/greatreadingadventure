@@ -87,25 +87,30 @@ namespace GRA.Domain.Service
             ArgumentNullException.ThrowIfNull(layer);
             VerifyManagementPermission();
             layer.SiteId = GetCurrentSiteId();
+
             var currentLayer = await _avatarLayerRepository.AddSaveAsync(
                 GetClaimId(ClaimType.UserId), layer);
 
-            foreach (var text in layer.Texts)
+            await _avatarLayerRepository.SaveAsync();
+
+            return currentLayer;
+        }
+
+        public async Task AddLayerTexts(int layerId,
+                    ICollection<AvatarLayerText> texts,
+            int version)
+        {
+            ArgumentNullException.ThrowIfNull(texts);
+            foreach (var text in texts)
             {
-                var languageId = await _languageService.GetLanguageIdAsync(text.Language);
+                var languageId = await _languageService
+                    .GetLanguageIdAsync(version == 1 ? text.Language : text.LanguageName);
                 if (languageId != default)
                 {
-                    await _avatarLayerRepository.AddAvatarLayerTextAsync(currentLayer.Id,
-                        languageId,
-                        text);
+                    await _avatarLayerRepository.AddAvatarLayerTextAsync(layerId, languageId, text);
                 }
             }
             await _avatarLayerRepository.SaveAsync();
-
-            var layerData = _avatarLayerRepository.GetNameAndLabelByLanguageId(currentLayer.Id,
-                await _languageService.GetDefaultLanguageIdAsync());
-            currentLayer.Name = layerData["Name"];
-            return currentLayer;
         }
 
         public async Task DeleteItemAsync(int id)

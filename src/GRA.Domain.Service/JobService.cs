@@ -176,8 +176,8 @@ namespace GRA.Domain.Service
             return jobInfo.JobType switch
             {
                 JobType.SendBulkEmails => await SendBulkEmails(userId, jobInfo.Id, token, progress),
-                JobType.AvatarImport => await ImportAvatarsAsync(jobInfo.Id, token, progress),
-                JobType.AvatarExport => await ExportAvatarsAsync(jobMetadata),
+                JobType.AvatarImport => await TransferAvatarsAsync(jobMetadata),
+                JobType.AvatarExport => await TransferAvatarsAsync(jobMetadata),
                 JobType.HouseholdImport => await ImportHouseholdMembersAsync(jobInfo.Id,
                     token,
                     progress),
@@ -202,15 +202,6 @@ namespace GRA.Domain.Service
             };
         }
 
-        private async Task<JobStatus> ExportAvatarsAsync(JobMetadata metadata)
-        {
-            var avatarTransferService = _httpContextAccessor
-                .HttpContext
-                .RequestServices
-                .GetService(typeof(AvatarTransferService)) as AvatarTransferService;
-            return await avatarTransferService.TransferAvatarsAsync(metadata);
-        }
-
         private async Task<JobStatus> GenerateVendorCodesAsync(int jobId,
                     CancellationToken token,
             IProgress<JobStatus> progress = null)
@@ -220,17 +211,6 @@ namespace GRA.Domain.Service
                 .RequestServices
                 .GetService(typeof(VendorCodeService)) as VendorCodeService;
             return await vendorCodeService.GenerateVendorCodesAsync(jobId, token, progress);
-        }
-
-        private async Task<JobStatus> ImportAvatarsAsync(int jobId,
-            CancellationToken token,
-            IProgress<JobStatus> progress = null)
-        {
-            var avatarTransferService = _httpContextAccessor
-                .HttpContext
-                .RequestServices
-                .GetService(typeof(AvatarTransferService)) as AvatarTransferService;
-            return await avatarTransferService.ImportAvatarsAsync(jobId, token, progress);
         }
 
         private async Task<JobStatus> ImportBranches(int jobId,
@@ -298,6 +278,15 @@ namespace GRA.Domain.Service
                 .RequestServices
                 .GetService(typeof(NewsService)) as NewsService;
             return await newsService.RunSendNewsEmailsJob(jobId, token, progress);
+        }
+
+        private async Task<JobStatus> TransferAvatarsAsync(JobMetadata metadata)
+        {
+            var avatarTransferService = _httpContextAccessor
+                .HttpContext
+                .RequestServices
+                .GetService(typeof(AvatarTransferService)) as AvatarTransferService;
+            return await avatarTransferService.TransferAvatarsAsync(metadata);
         }
 
         private async Task<JobStatus> UpdateEmailAwardStatusFromExcelAsync(int jobId,

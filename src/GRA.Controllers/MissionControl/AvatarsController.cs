@@ -751,7 +751,7 @@ namespace GRA.Controllers.MissionControl
                 using var archive = new ZipArchive(viewModel.UploadedFile.OpenReadStream());
                 archive.ExtractToDirectory(assetPath);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is SystemException || ex is FileNotFoundException)
             {
                 ShowAlertDanger($"Error with avatar .zip file: {ex.Message}");
                 return RedirectToAction(nameof(AvatarsController.Index));
@@ -765,7 +765,10 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(AvatarsController.Transfers));
             }
 
-            return await RunImportJob(avatarIndex, true);
+            return await RunImportJob(avatarIndex,
+                true,
+                viewModel.UploadedFile.FileName,
+                viewModel.UploadedFile.Length / 1024);
         }
 
         [HttpPost]
@@ -807,7 +810,7 @@ namespace GRA.Controllers.MissionControl
             {
                 ZipFile.ExtractToDirectory(avatarZip, assetPath);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is SystemException || ex is FileNotFoundException)
             {
                 ShowAlertDanger($"Error with avatar .zip file: {ex.Message}");
                 return RedirectToAction(nameof(AvatarsController.Index));
@@ -821,7 +824,10 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(AvatarsController.Transfers));
             }
 
-            return await RunImportJob(avatarIndex, false);
+            return await RunImportJob(avatarIndex,
+                false,
+                Path.GetFileName(avatarZip),
+                new FileInfo(avatarZip).Length / 1024);
         }
 
         [HttpPost]
@@ -858,7 +864,7 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(AvatarsController.Transfers));
             }
 
-            return await RunImportJob(avatarIndex, false);
+            return await RunImportJob(avatarIndex, false, "defaultavatars", null);
         }
 
         [HttpGet]
@@ -867,7 +873,7 @@ namespace GRA.Controllers.MissionControl
             var viewModel = new TransfersViewModel();
 
             ((List<AvatarTransfer>)viewModel.Transfers)
-                .AddRange(await _avatarTransferService.GetImportsExports());
+                .AddRange(await _avatarTransferService.GetTransfers());
 
             foreach (var transfer in viewModel.Transfers)
             {
@@ -914,13 +920,16 @@ namespace GRA.Controllers.MissionControl
         private static AvatarIndex IndexVersion(string path)
         {
             return System.IO.File.Exists(Path.Join(path, AvatarIndexV2))
-                ? new AvatarIndex { Version = 2, Path = Path.Join(path, AvatarIndexV2) }
+                ? new AvatarIndex { Version = 2, Path = path }
                 : System.IO.File.Exists(Path.Combine(path, AvatarIndexV1))
-                    ? new AvatarIndex { Version = 1, Path = Path.Combine(path, AvatarIndexV1) }
+                    ? new AvatarIndex { Version = 1, Path = path }
                     : null;
         }
 
-        private async Task<IActionResult> RunImportJob(AvatarIndex avatarIndex, bool uploadedFile)
+        private async Task<IActionResult> RunImportJob(AvatarIndex avatarIndex,
+            bool uploadedFile,
+            string fileName,
+            long? fileSize)
         {
             var jobToken = await _jobService.CreateJobAsync(new Job
             {
@@ -929,6 +938,9 @@ namespace GRA.Controllers.MissionControl
                     .SerializeObject(new JobDetailsAvatarTransfer
                     {
                         AssetPath = avatarIndex.Path,
+                        Filename = fileName,
+                        Filesize = fileSize,
+                        TransferType = DataTransferType.Import,
                         UploadedFile = uploadedFile,
                         Version = avatarIndex.Version
                     })
