@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using GRA.Domain.Model;
+using Microsoft.AspNetCore.Http;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Avatar
 {
@@ -12,8 +13,12 @@ namespace GRA.Controllers.ViewModel.MissionControl.Avatar
             Jobs = new Dictionary<int, Job>();
         }
 
-        public ICollection<AvatarTransfer> Transfers { get; }
+        public bool AvatarZipPresent { get; set; }
+        public bool DefaultAvatarsPresent { get; set; }
         public IDictionary<int, Job> Jobs { get; }
+        public bool LayersPresent { get; set; }
+        public ICollection<AvatarTransfer> Transfers { get; }
+        public IFormFile UploadedFile { get; set; }
 
         public static string FormatDuration(Job job)
         {

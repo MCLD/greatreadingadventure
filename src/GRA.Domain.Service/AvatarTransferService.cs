@@ -222,7 +222,8 @@ namespace GRA.Domain.Service
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization",
             "CA1308:Normalize strings to uppercase",
             Justification = "Normalize filenames to lowercase")]
-        private async Task<TransferResult> GenerateAvatarFileAsync(JobMetadata metadata, string assetPath)
+        private async Task<TransferResult> GenerateAvatarFileAsync(JobMetadata metadata,
+            string assetPath)
         {
             int existingItemCount = 0;
             int totalItemsProcessed = 0;
@@ -332,7 +333,8 @@ namespace GRA.Domain.Service
                         {
                             File.Copy(_pathResolver.ResolveContentFilePath(Path.Join(itemPath,
                                     $"item_{color.Id}.png")),
-                                Path.Join(itemTransferPath, $"{color.Color.ToLowerInvariant()}.png"));
+                                Path.Join(itemTransferPath,
+                                    $"{color.Color.ToLowerInvariant()}.png"));
                             totalItemsProcessed++;
                         }
                     }
@@ -563,7 +565,7 @@ namespace GRA.Domain.Service
                     await _avatarService.AddLayerTexts(addedLayer.Id, texts, jobDetails.Version);
                 }
 
-                if (colors != null)
+                if (colors?.Count > 0)
                 {
                     metadata.Progress?.Report(new JobStatus
                     {
@@ -705,11 +707,11 @@ namespace GRA.Domain.Service
                     {
                         Directory.CreateDirectory(itemPath);
                     }
-                    item.Thumbnail = Path.Combine(itemRoot, "thumbnail.jpg");
-                    File.Copy(Path.Combine(itemAssetPath, "thumbnail.jpg"),
-                        Path.Combine(itemPath, "thumbnail.jpg"));
+                    item.Thumbnail = Path.Combine(itemRoot, ThumbJpg);
+                    File.Copy(Path.Combine(itemAssetPath, ThumbJpg),
+                        Path.Combine(itemPath, ThumbJpg));
                     await _avatarItemRepository.UpdateAsync(requestingUser, item);
-                    if (colors != null)
+                    if (colors?.Count > 0)
                     {
                         foreach (var color in colors)
                         {
@@ -731,11 +733,11 @@ namespace GRA.Domain.Service
                         var element = new AvatarElement
                         {
                             AvatarItemId = item.Id,
-                            Filename = Path.Combine(itemRoot, "item.png")
+                            Filename = Path.Combine(itemRoot, ItemPng)
                         };
                         await _avatarElementRepository.AddAsync(requestingUser, element);
-                        File.Copy(Path.Combine(itemAssetPath, "item.png"),
-                            Path.Combine(itemPath, "item.png"));
+                        File.Copy(Path.Combine(itemAssetPath, ItemPng),
+                            Path.Combine(itemPath, ItemPng));
                         currentElement++;
                     }
                 }
@@ -775,7 +777,7 @@ namespace GRA.Domain.Service
             }
             Directory.CreateDirectory(bundlePath);
             File.Copy(Path.Combine(assetPath, "bundleicon.png"),
-                Path.Combine(bundlePath, "icon.png"));
+                Path.Combine(bundlePath, IconPng));
             totalFilesCopied++;
             File.Copy(Path.Combine(assetPath, "bundlenotif.png"),
                 Path.Combine(bundlePath, "notif.png"));

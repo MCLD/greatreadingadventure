@@ -29,7 +29,10 @@ namespace GRA.Controllers.MissionControl
         private const string AvatarImportDirectory = "avatar-import";
         private const string AvatarIndexV1 = "default avatars.json";
         private const string AvatarIndexV2 = "avatars.json";
+        private const string DefaultAvatars = "defaultavatars";
+        private const string DirAssets = "assets";
         private const long MaxFileSize = 100L * 1024L * 1024L;
+        private const string ZipAvatars = "avatars.zip";
         private readonly AvatarService _avatarService;
         private readonly AvatarTransferService _avatarTransferService;
         private readonly JobService _jobService;
@@ -456,31 +459,30 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Index()
         {
             var layers = await _avatarService.GetLayersAsync();
-            foreach (var layer in layers)
-            {
-                layer.Icon = _pathResolver.ResolveContentPath(layer.Icon);
 
-                layer.AvailableItems = await _avatarService.GetLayerAvailableItemCountAsync(
-                    layer.Id);
-                layer.UnavailableItems = await _avatarService.GetLayerUnavailableItemCountAsync(
-                    layer.Id);
-                layer.UnlockableItems = await _avatarService.GetLayerUnlockableItemCountAsync(
-                    layer.Id);
+            if (layers?.Count() > 1)
+            {
+                foreach (var layer in layers)
+                {
+                    layer.Icon = _pathResolver.ResolveContentPath(layer.Icon);
+
+                    layer.AvailableItems = await _avatarService
+                        .GetLayerAvailableItemCountAsync(layer.Id);
+                    layer.UnavailableItems = await _avatarService
+                        .GetLayerUnavailableItemCountAsync(layer.Id);
+                    layer.UnlockableItems = await _avatarService
+                        .GetLayerUnlockableItemCountAsync(layer.Id);
+                }
+
+                return View(new AvatarIndexViewModel
+                {
+                    Layers = layers,
+                });
             }
-
-            var defaultAvatarPath = Path.Combine(
-                Directory.GetParent(_webHostEnvironment.WebRootPath).FullName,
-                "assets",
-                "defaultavatars");
-
-            var avatarZip = _pathResolver.ResolvePrivateFilePath("avatars.zip");
-
-            return View(new AvatarIndexViewModel
+            else
             {
-                Layers = layers,
-                DefaultAvatarsPresent = Directory.Exists(defaultAvatarPath),
-                AvatarZipPresent = System.IO.File.Exists(avatarZip)
-            });
+                return RedirectToAction(nameof(Transfers));
+            }
         }
 
         public async Task<IActionResult> ItemTexts(int? page,
@@ -715,7 +717,7 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         [RequestSizeLimit(MaxFileSize)]
         [RequestFormLimits(MultipartBodyLengthLimit = MaxFileSize)]
-        public async Task<IActionResult> SetupAvatars(AvatarIndexViewModel viewModel)
+        public async Task<IActionResult> SetupAvatars(TransfersViewModel viewModel)
         {
             var layers = await _avatarService.GetLayersAsync();
             if (layers.Any())
@@ -781,7 +783,7 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Index));
             }
 
-            var avatarZip = _pathResolver.ResolvePrivateFilePath("avatars.zip");
+            var avatarZip = _pathResolver.ResolvePrivateFilePath(ZipAvatars);
 
             if (!System.IO.File.Exists(avatarZip))
             {
@@ -790,7 +792,7 @@ namespace GRA.Controllers.MissionControl
             }
 
             string assetPath = Path.Combine(
-                Directory.GetParent(_webHostEnvironment.WebRootPath).FullName, "assets");
+                Directory.GetParent(_webHostEnvironment.WebRootPath).FullName, DirAssets);
 
             if (!Directory.Exists(assetPath))
             {
@@ -841,7 +843,7 @@ namespace GRA.Controllers.MissionControl
             }
 
             string assetPath = Path.Combine(
-                Directory.GetParent(_webHostEnvironment.WebRootPath).FullName, "assets");
+                Directory.GetParent(_webHostEnvironment.WebRootPath).FullName, DirAssets);
 
             if (!Directory.Exists(assetPath))
             {
@@ -849,7 +851,7 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Index));
             }
 
-            assetPath = Path.Combine(assetPath, "defaultavatars");
+            assetPath = Path.Combine(assetPath, DefaultAvatars);
             if (!Directory.Exists(assetPath))
             {
                 AlertDanger = $"Asset directory not found at: {assetPath}";
@@ -864,13 +866,26 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(AvatarsController.Transfers));
             }
 
-            return await RunImportJob(avatarIndex, false, "defaultavatars", null);
+            return await RunImportJob(avatarIndex, false, DefaultAvatars, null);
         }
 
         [HttpGet]
         public async Task<IActionResult> Transfers()
         {
-            var viewModel = new TransfersViewModel();
+            var defaultAvatarPath = Path.Combine(
+                Directory.GetParent(_webHostEnvironment.WebRootPath).FullName,
+                DirAssets,
+                DefaultAvatars);
+
+            var avatarZip = _pathResolver.ResolvePrivateFilePath(ZipAvatars);
+
+            var layers = await _avatarService.GetLayersAsync();
+            var viewModel = new TransfersViewModel
+            {
+                LayersPresent = layers?.Count() > 0,
+                DefaultAvatarsPresent = Directory.Exists(defaultAvatarPath),
+                AvatarZipPresent = System.IO.File.Exists(avatarZip)
+            };
 
             ((List<AvatarTransfer>)viewModel.Transfers)
                 .AddRange(await _avatarTransferService.GetTransfers());
@@ -895,6 +910,7 @@ namespace GRA.Controllers.MissionControl
                 }
             }
 
+            PageTitle = "Avatar Transfers";
             return View(viewModel);
         }
 
