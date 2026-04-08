@@ -7,6 +7,7 @@ namespace GRA.Domain.Repository
     public interface IAvatarLayerRepository : IRepository<AvatarLayer>
     {
         Task<ICollection<AvatarLayer>> GetAllAsync(int siteId);
+        Task<ICollection<Model.Utility.AvatarLayerTransfer>> GetForExportAsync(int siteId);
         Task<ICollection<AvatarLayer>> GetAllWithColorsAsync(int siteId);
         Dictionary<string, string> GetNameAndLabelByLanguageId(int layerId, int languageId);
         Task<string> GetNameByLanguageIdAsync(int layerId, int languageId);

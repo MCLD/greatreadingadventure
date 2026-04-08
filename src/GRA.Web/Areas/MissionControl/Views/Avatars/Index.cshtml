@@ -1,99 +1,47 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Avatar.AvatarIndexViewModel
 
-@{
-    var invalid = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
+@section inHeading {
+    <div class="ms-auto">
+        <a asp-action="@nameof(AvatarsController.ItemTexts)"
+           class="btn btn-outline-primary">ALT Text</a>
+        <a asp-action="@nameof(AvatarsController.Bundles)"
+           class="btn btn-outline-primary">Bundles</a>
+        <a asp-action="@nameof(AvatarsController.Transfers)"
+           class="btn btn-outline-primary">Transfers</a>
+    </div>
 }
 
 <div class="row my-4">
     <div class="col-12">
-        @if (Model.Layers.Count() == 0)
-        {
-            <div class="alert alert-warning">
-                <span class="fas fa-ban"></span>
-                Avatars have not been configured.
-                Set up the default avatars or upload an avatar .zip file.
-            </div>
-            @if (Model.AvatarZipPresent)
-            {
-                <form asp-action="@nameof(AvatarsController.SetupAvatarZip)"
-                      method="post"
-                      class="py-3">
-                    <button type="submit" class="btn btn-outline-primary" button-spinner>
-                        Import avatars.zip
-                    </button>
-                </form>
-            }
-            else if (Model.DefaultAvatarsPresent)
-            {
-                <form asp-action="@nameof(AvatarsController.SetupDefaultAvatars)"
-                      method="post"
-                      class="py-3">
-                    <button type="submit" class="btn btn-outline-primary" button-spinner>
-                        Add default avatars
-                    </button>
-                </form>
-            }
-            <form asp-action="@nameof(AvatarsController.SetupAvatars)"
-                  method="post"
-                  enctype="multipart/form-data">
-                <div class="row row-spacing">
-                    <div class="col-12">
-                        <div class="input-group mb-3">
-                            <input type="file"
-                                   class="form-control"
-                                   asp-for="UploadedFile"
-                                   accept=".zip" />
-                            <button class="btn btn-outline-secondary"
-                                    type="button"
-                                    onclick="$('#UploadedFile').val('')">
-                                Clear selection
-                            </button>
-                        </div>
-                        <span asp-validation-for="UploadedFile" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="row-spacing">
-                    <button class="btn btn-outline-primary" type="submit" button-spinner>
-                        <span class="fas fa-file-upload"></span>
-                        Upload
-                    </button>
-                </div>
-            </form>
-        }
-        else
-        {
-            <div>
-                <table class="table table-sm table-bordered link-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Available Items</th>
-                            <th>Unavailable Items</th>
-                            <th>Unlockable Items</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var layer in Model.Layers)
-                        {
-                            <tr>
-                                <td class="td-class">
-                                    <a asp-action="Layer"
-                                       asp-route-id="@layer.Id"
-                                       class="rowlink">
-                                        <img src="~/@layer.Icon"
-                                             style="height: 32px; width: auto;" />
-                                        @layer.Name
-                                    </a>
-                                </td>
-                                <td>@layer.AvailableItems</td>
-                                <td>@layer.UnavailableItems</td>
-                                <td>@layer.UnlockableItems</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        }
+        <table class="table table-sm table-bordered link-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Available Items</th>
+                    <th>Unavailable Items</th>
+                    <th>Unlockable Items</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var layer in Model.Layers)
+                {
+                    <tr>
+                        <td class="td-class">
+                            <a asp-action="Layer"
+                               asp-route-id="@layer.Id"
+                               class="rowlink">
+                                <img src="~/@layer.Icon"
+                                     style="height: 32px; width: auto;" />
+                                @layer.Name
+                            </a>
+                        </td>
+                        <td>@layer.AvailableItems</td>
+                        <td>@layer.UnavailableItems</td>
+                        <td>@layer.UnlockableItems</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>
 

@@ -5,8 +5,22 @@ namespace GRA.Domain.Model
 {
     public class Job : Abstract.BaseDomainEntity
     {
+        public DateTime? Cancelled { get; set; }
+
+        public DateTime? Completed { get; set; }
+
+        public TimeSpan? Duration
+        {
+            get
+            {
+                return Completed.HasValue && Started.HasValue
+                    ? Completed - Started
+                    : null;
+            }
+        }
+
         [Required]
-        public int SiteId { get; set; }
+        public Guid JobToken { get; set; }
 
         [Required]
         public JobType JobType { get; set; }
@@ -14,14 +28,13 @@ namespace GRA.Domain.Model
         public string SerializedParameters { get; set; }
 
         [Required]
-        public Guid JobToken { get; set; }
+        public int SiteId { get; set; }
 
         public DateTime? Started { get; set; }
-        public DateTime? Completed { get; set; }
-        public DateTime? Cancelled { get; set; }
-        public DateTime? StatusAsOf { get; set; }
 
         [MaxLength(255)]
         public string Status { get; set; }
+
+        public DateTime? StatusAsOf { get; set; }
     }
 }

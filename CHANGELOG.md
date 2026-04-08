@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Staff login report
 - Info message when editing Point Translations with unchangeable properties
 - Database storage of banner image file name and alt text
+- Avatar export of package including localized text
 
 ## Changed
 
@@ -37,6 +38,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Add achiever column to badge report
 - Drawing mail to be sent manually after a drawing is performed
 - Vendor status message to include branch name when ready for pick-up
+- Avatar import enhanced to handle new format including localized text
 
 ## Fixed
 
