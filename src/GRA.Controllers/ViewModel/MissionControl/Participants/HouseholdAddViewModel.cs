@@ -15,11 +15,12 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public bool AskPersonalPointGoal { get; set; }
         public SelectList BranchList { get; set; }
 
+        public string EmailDataValRequired { get; set; }
+
         [Required(ErrorMessage = Annotations.Validate.EmailSubscription)]
         public string EmailSubscriptionRequested { get; set; }
 
         public int Id { get; set; }
-        public bool IsEmailRequired { get; set; }
 
         [DisplayName(DisplayNames.IsFirstTime)]
         [Required(ErrorMessage = Annotations.Validate.FirstTime)]
