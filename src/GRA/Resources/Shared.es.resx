@@ -818,7 +818,7 @@
     <comment>Error message explaining that one or more {0} could not be favorited.</comment>
   </data>
   <data name="Only available at" xml:space="preserve">
-    <value></value>
+    <value>Solo disponible en</value>
     <comment>Prefix text for prizes with limited pick-up locations, available locations will be listed after this phrase</comment>
   </data>
   <data name="Optional" xml:space="preserve">
