@@ -6,7 +6,7 @@
      id="wsModal"
      role="dialog"
      tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl"
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
          role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -20,24 +20,26 @@
                      class="progress mb-3"
                      id="wsProgressContainer"
                      role="progressbar"
-                     style="height: 1.5rem;">
+                     style="height: 2rem;">
                     <div class="progress-bar progress-bar-striped"
                          id="wsProgress"></div>
                 </div>
-                <p class="mb-0" id="wsStatus"></p>
+                <p class="mb-0" style="min-height: 1.5rem;" id="wsStatus"></p>
             </div>
-            <div class="modal-footer">
-                <div class="form-control-plaintext float-start" style="width: 2rem;">
-                    <span class="fas fa-arrow-circle-up"
+            <div class="modal-footer d-flex justify-content-end">
+                <div class="form-control-plaintext" style="width: 1.5rem;">
+                    <span class="fas fa-arrow-circle-up fa-fw"
                           id="sendWs"
                           style="color: steelblue;"></span>
                 </div>
-                <div class="form-control-plaintext float-start" style="width: 2rem;">
-                    <span class="fas fa-arrow-circle-down"
+                <div class="form-control-plaintext" style="width: 1.5rem;">
+                    <span class="fas fa-arrow-circle-down fa-fw"
                           id="recvWs"
                           style="color: lightcoral;"></span>
                 </div>
-                <button type="button" class="btn" id="cancelWs">Cancel</button>
+                <div class="ms-4">
+                    <button type="button" class="btn" id="cancelWs">Cancel</button>
+                </div>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -88,14 +90,14 @@
                         } else if (wsStarted && !wsFinished) {
                             $('#cancelWs').text('Close window');
                             $('#cancelWs').addClass('btn-outline-danger');
-                            $('#wsProgress').removeClass('active');
-                            $('#wsProgress').addClass('progress-bar-danger');
+                            $('#wsProgress').removeClass('progress-bar-animated');
+                            $('#wsProgress').addClass('bg-danger');
                             $('#wsStatus').text('The server disconnected while running the ' + wsFunction + '.');
                         } else if (wsTryingToConnect) {
                             $('#cancelWs').text('Close window');
                             $('#cancelWs').addClass('btn-outline-danger');
-                            $('#wsProgress').removeClass('active');
-                            $('#wsProgress').addClass('progress-bar-danger');
+                            $('#wsProgress').removeClass('progress-bar-animated');
+                            $('#wsProgress').addClass('bg-danger');
                             $('#wsStatus').text('Unable to connect to the server to run the ' + wsFunction + '.');
                             $('#recvWs').fadeOut(1);
                             $('#sendWs').fadeOut(1);
@@ -169,16 +171,16 @@
                                 if (wsError) {
                                     console.log("Complete with error");
                                     $('#cancelWs').text('Close window');
-                                    $('#wsProgress').removeClass('active');
-                                    $('#wsProgress').addClass('progress-bar-danger');
+                                    $('#wsProgress').removeClass('progress-bar-animated');
+                                    $('#wsProgress').addClass('bg-danger');
                                 }
                                 else {
                                     console.log("Complete");
                                     $('#cancelWs').text('Close window');
                                     $('#cancelWs').removeClass('btn-outline-danger');
                                     $('#cancelWs').addClass('btn-outline-secondary');
-                                    $('#wsProgress').removeClass('active');
-                                    $('#wsProgress').addClass('progress-bar-success');
+                                    $('#wsProgress').removeClass('progress-bar-animated');
+                                    $('#wsProgress').addClass('bg-success');
                                 }
                                 webSocket.close();
                                 clearPing();
@@ -211,9 +213,9 @@
             wsCancel = false;
             $('#recvWs').fadeOut(1);
             $('#sendWs').fadeOut(1);
-            $('#wsProgress').removeClass('active');
-            $('#wsProgress').removeClass('progress-bar-danger');
-            $('#wsProgress').removeClass('progress-bar-success');
+            $('#wsProgress').removeClass('progress-bar-animated');
+            $('#wsProgress').removeClass('bg-danger');
+            $('#wsProgress').removeClass('bg-success');
             $('#cancelWs').text('Cancel ' + wsFunction);
             $('#cancelWs').addClass('btn-outline-danger');
             $("#wsModal").modal("show");
@@ -221,7 +223,7 @@
             webSocket = new WebSocket(wsUrl);
             webSocket.onerror = updateState;
             webSocket.onopen = function (e) {
-                $('#wsProgress').addClass('active');
+                $('#wsProgress').addClass('progress-bar-animated');
                 wsStarted = true;
             }
             webSocket.onclose = updateState;

@@ -203,19 +203,24 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li>
-                                    <a asp-action="Index"
-                                       asp-controller="Avatars"
+                                    <a asp-action="@nameof(AvatarsController.Index)"
+                                       asp-controller="@AvatarsController.Name"
                                        class="dropdown-item">Avatars</a>
                                 </li>
                                 <li>
-                                    <a asp-action="Bundles"
-                                       asp-controller="Avatars"
+                                    <a asp-action="@nameof(AvatarsController.Bundles)"
+                                       asp-controller="@AvatarsController.Name"
                                        class="dropdown-item">Avatar Bundles</a>
                                 </li>
                                 <li>
-                                    <a asp-action="ItemTexts"
-                                       asp-controller="Avatars"
-                                       class="dropdown-item">Avatar Alt Texts</a>
+                                    <a asp-action="@nameof(AvatarsController.ItemTexts)"
+                                       asp-controller="@AvatarsController.Name"
+                                       class="dropdown-item">Set Avatar ALT Text</a>
+                                </li>
+                                <li>
+                                    <a asp-action="@nameof(AvatarsController.Transfers)"
+                                       asp-controller="@AvatarsController.Name"
+                                       class="dropdown-item">Avatar Transfers</a>
                                 </li>
                             </ul>
                         </li>

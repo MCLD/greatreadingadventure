@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Utility;
 using GRA.Domain.Repository;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
@@ -9,13 +11,24 @@ using Microsoft.Extensions.Logging;
 
 namespace GRA.Data.Repository
 {
-    public class AvatarLayerRepository
-        : AuditingRepository<Model.AvatarLayer, AvatarLayer>,
-        IAvatarLayerRepository
+    public class AvatarLayerRepository(ServiceFacade.Repository repositoryFacade,
+        ILogger<AvatarLayerRepository> logger)
+            : AuditingRepository<Model.AvatarLayer, AvatarLayer>(repositoryFacade, logger),
+            IAvatarLayerRepository
     {
-        public AvatarLayerRepository(ServiceFacade.Repository repositoryFacade,
-            ILogger<AvatarLayerRepository> logger) : base(repositoryFacade, logger)
+        public async Task AddAvatarLayerTextAsync(int layerId, int languageId, AvatarLayerText text)
         {
+            ArgumentNullException.ThrowIfNull(text);
+            var layerText = new Model.AvatarLayerText
+            {
+                AvatarLayerId = layerId,
+                LanguageId = languageId,
+                Name = text.Name,
+                RemoveLabel = text.RemoveLabel
+            };
+
+            await _context.AvatarLayerTexts
+                .AddAsync(layerText);
         }
 
         public async Task<ICollection<AvatarLayer>> GetAllAsync(int siteId)
@@ -42,20 +55,19 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task AddAvatarLayerTextAsync(int layerId,
-            int languageId, AvatarLayerText text)
+        public async Task<ICollection<AvatarLayerTransfer>> GetForExportAsync(int siteId)
         {
-            var layerText = new Model.AvatarLayerText
-            {
-                AvatarLayerId = layerId,
-                LanguageId = languageId,
-                Name = text.Name,
-                RemoveLabel = text.RemoveLabel
-            };
+            var forkedConfig = _mapper.Config
+                .Fork(_ => _.NewConfig<Model.AvatarLayer, AvatarLayerTransfer>());
 
-            await _context.AvatarLayerTexts
-                .AddAsync(layerText);
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.SiteId == siteId)
+                .OrderBy(_ => _.GroupId)
+                .ThenBy(_ => _.SortOrder)
+                .ProjectToType<AvatarLayerTransfer>(forkedConfig)
+                .ToListAsync();
         }
+
         public Dictionary<string, string> GetNameAndLabelByLanguageId(int layerId, int languageId)
         {
             var layerText = _context.AvatarLayerTexts
@@ -71,7 +83,6 @@ namespace GRA.Data.Repository
 
         public async Task<string> GetNameByLanguageIdAsync(int layerId, int languageId)
         {
-
             return await _context.AvatarLayerTexts
                    .AsNoTracking()
                    .Where(_ => _.AvatarLayerId == layerId && _.LanguageId == languageId)

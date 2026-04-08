@@ -1,0 +1,197 @@
+﻿@using GRA.Controllers.ViewModel.MissionControl.Avatar
+@model TransfersViewModel
+
+@section inHeading {
+    <div class="ms-auto">
+        @if (Model.LayersPresent)
+        {
+            <form asp-action="@nameof(AvatarsController.GenerateExport)"
+                  class="d-inline"
+                  method="post">
+                <input type="submit" class="btn btn-outline-primary" value="Export Avatars" />
+            </form>
+        }
+        <a asp-action="@nameof(AvatarsController.Index)"
+           class="btn btn-outline-secondary ms-2">Back</a>
+    </div>
+}
+
+@if (!Model.LayersPresent)
+{
+    <div class="alert alert-warning">
+        <span class="fas fa-ban"></span>
+        Avatars have not been configured.
+        Set up the default avatars or upload an avatar .zip file.
+    </div>
+    @if (Model.AvatarZipPresent)
+    {
+        <form asp-action="@nameof(AvatarsController.SetupAvatarZip)"
+              method="post"
+              class="py-3">
+            <button type="submit" class="btn btn-outline-primary" button-spinner>
+                Import avatars.zip
+            </button>
+        </form>
+    }
+    else if (Model.DefaultAvatarsPresent)
+    {
+        <form asp-action="@nameof(AvatarsController.SetupDefaultAvatars)"
+              method="post"
+              class="py-3">
+            <button type="submit" class="btn btn-outline-primary" button-spinner>
+                Add default avatars
+            </button>
+        </form>
+    }
+    <button type="button"
+            class="btn btn-outline-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#uploadModal">
+        Upload avatar ZIP
+    </button>
+    <form asp-action="@nameof(AvatarsController.SetupAvatars)"
+          id="uploadZipForm"
+          method="post"
+          enctype="multipart/form-data">
+        <div class="modal"
+             id="uploadModal"
+             tabindex="-1"
+             data-bs-backdrop="static"
+             data-bs-keyboard="false">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Upload avatar ZIP</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row row-spacing">
+                            <div class="col-12">
+                                <div class="input-group mb-3">
+                                    <input type="file"
+                                           class="form-control"
+                                           asp-for="UploadedFile"
+                                           accept=".zip" />
+                                    <button class="btn btn-outline-secondary"
+                                            type="button"
+                                            id="clearSelectionButton"
+                                            onclick="$('#UploadedFile').val('')">
+                                        Clear selection
+                                    </button>
+                                </div>
+                                <span asp-validation-for="UploadedFile" class="text-danger"></span>
+                            </div>
+                            <div class="col-12" style="height: 2rem;">
+                                <div class="progress h-100"
+                                     role="progressbar"
+                                     aria-label="Upload indicator"
+                                     aria-valuenow="0"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100">
+                                    <div class="progress-bar progress-bar-striped"
+                                         id="uploadProgressBar"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-spacing">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                id="cancelUploadButton"
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+                        <button class="btn btn-outline-primary"
+                                type="submit"
+                                button-spinner>
+                            <span class="fas fa-file-upload"></span>
+                            Upload
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+}
+else
+{
+    @if (Model.Transfers.Count == 0)
+    {
+        <div class="row">
+            <div class="col-12 col-sm-6 offset-sm-3 mt-2">
+                <div class="alert alert-warning">
+                    No transfers found.
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <table class="table table-sm table-bordered table-striped mt-2">
+            <tr>
+                <th>Type</th>
+                <th>File</th>
+                <th>Run at</th>
+                <th>Run by</th>
+                <th>Duration</th>
+                <th>Status</th>
+            </tr>
+            @foreach (var transfer in Model.Transfers)
+            {
+                <tr>
+                    <td>@transfer.TransferType</td>
+                    <td>
+                        @if (string.IsNullOrEmpty(transfer.Filename))
+                        {
+                            <em>no filename</em>
+                        }
+                        else if (transfer.FileKBytes.HasValue && transfer.TransferType == GRA.DataTransferType.Export)
+                        {
+                            <a asp-action="@nameof(AvatarsController.GetExport)"
+                               asp-route-id="@transfer.Id">@transfer.Filename</a>
+                            <small>@TransfersViewModel.OutputSize(transfer.FileKBytes.Value)</small>
+                        }
+                        else
+                        {
+                            @transfer.Filename
+                        }
+                    </td>
+                    <td>@transfer.CreatedAt</td>
+                    <td>
+                        <a aria-label="Profile of @transfer.CreatedByName"
+                           asp-action="@nameof(ParticipantsController.Detail)"
+                           asp-controller="@ParticipantsController.Name"
+                           asp-route-id="@transfer.CreatedBy">@transfer.CreatedByName</a>
+                    </td>
+                    <td>@TransfersViewModel.FormatDuration(Model.Jobs[transfer.JobId])</td>
+                    <td>@Model.Jobs[transfer.JobId].Status</td>
+                </tr>
+            }
+        </table>
+    }
+}
+@section scripts {
+    <script type="text/javascript">
+        const avatarForm = document.getElementById("uploadZipForm");
+        const uploadModal = document.getElementById("uploadModal");
+
+        if(uploadModal) {
+            uploadModal.addEventListener('show.bs.modal', _ => {
+                document.getElementById("cancelUploadButton").removeAttribute("disabled");
+                document.getElementById("clearSelectionButton").removeAttribute("disabled");
+                document.getElementById("uploadProgressBar").classList.remove("progress-bar-animated", "progress-bar-striped", "w-100");
+                document.getElementById("uploadProgressBar").setAttribute("aria-valuenow", "0");
+            });
+        }
+
+        if(avatarForm) {
+            avatarForm.addEventListener("submit", _ => {
+                document.getElementById("cancelUploadButton").setAttribute("disabled", "disabled");
+                document.getElementById("clearSelectionButton").setAttribute("disabled", "disabled");
+                document.getElementById("uploadProgressBar").classList.add("progress-bar-animated", "progress-bar-striped", "w-100");
+                document.getElementById("uploadProgressBar").setAttribute("aria-valuenow", "100");
+            });
+        }
+    </script>
+}
