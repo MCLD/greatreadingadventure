@@ -1,8 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -25,8 +23,8 @@ namespace GRA.Controllers.Attributes
     /// <param name="otherProperty">The other property.</param>
     /// <param name="otherPropertyValue">The other property value.</param>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public sealed class RequiredIfAttribute(string otherProperty,
-        object otherPropertyValue) : ValidationAttribute, IClientModelValidator
+    public sealed class RequiredIfAttribute(string otherProperty, object otherPropertyValue)
+        : ValidationAttribute, IClientModelValidator
     {
         #region Properties
 
@@ -43,7 +41,7 @@ namespace GRA.Controllers.Attributes
         /// - true: validated property is required when other property doesn't equal provided value
         /// - false: validated property is required when other property matches provided value
         /// </remarks>
-        public bool IsInverted { get; set; } = false;
+        public bool IsInverted { get; set; }
 
         /// <summary>
         /// Gets or sets the other property name that will be used during validation.
@@ -89,7 +87,7 @@ namespace GRA.Controllers.Attributes
         /// Perform client-side validation
         /// </summary>
         /// <param name="context">
-        /// The <see cref="ClientModelValidationContext"/> context information about the validation 
+        /// The <see cref="ClientModelValidationContext"/> context information about the validation
         /// operation.
         /// </param>
         public void AddValidation(ClientModelValidationContext context)
@@ -103,7 +101,7 @@ namespace GRA.Controllers.Attributes
                 ? instance
                 : instance?.GetType()?
                     .GetProperties()
-                    .First(x => x.PropertyType.Name == modelType.Name)
+                    .First(_ => _.PropertyType.Name == modelType.Name)
                     .GetValue(instance, null);
             object otherValue = modelType.GetProperty(OtherProperty)?.GetValue(model, null);
             object value = modelType.GetProperty(context.ModelMetadata.Name)?.GetValue(model, null);
@@ -138,16 +136,13 @@ namespace GRA.Controllers.Attributes
         {
             ArgumentNullException.ThrowIfNull(validationContext);
 
-            PropertyInfo otherProperty = validationContext.ObjectType.GetProperty(OtherProperty);
-            if (otherProperty == null)
+            var otherProp = validationContext.ObjectType.GetProperty(OtherProperty);
+            if (otherProp == null)
             {
-                return new ValidationResult(
-                    string.Format(CultureInfo.CurrentCulture,
-                        "Could not find a property named '{0}'.",
-                        OtherProperty));
+                return new ValidationResult($"Could not find a property named '{OtherProperty}'");
             }
 
-            object otherValue = otherProperty.GetValue(validationContext.ObjectInstance);
+            var otherValue = otherProp.GetValue(validationContext.ObjectInstance);
 
             // check if this value is actually required and validate it
             return (IsInverted ^ object.Equals(otherValue, OtherPropertyValue))
