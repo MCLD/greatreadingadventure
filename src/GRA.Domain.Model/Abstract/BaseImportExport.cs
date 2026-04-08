@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 
 namespace GRA.Domain.Model.Abstract
 {
     public abstract class BaseImportExport
     {
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public int? ContentVersion { get; set; }
+
         public DateTime ExportedAt { get; set; }
         public string ExportedBy { get; set; }
         public string Source { get; set; }

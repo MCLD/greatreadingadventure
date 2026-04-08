@@ -25,5 +25,6 @@ namespace GRA.Data.Model
 
         public ICollection<AvatarColor> AvatarColors { get; set; }
         public ICollection<AvatarItem> AvatarItems { get; set; }
+        public ICollection<AvatarLayerText> Texts { get; set; }
     }
 }

@@ -16,7 +16,8 @@ namespace GRA.Data.Config
             // Forked in AvatarLayerRepository
             TypeAdapterConfig<Model.AvatarLayer, Domain.Model.AvatarLayer>.NewConfig()
                 .Ignore(dest => dest.AvatarColors)
-                .Ignore(dest => dest.AvatarItems);
+                .Ignore(dest => dest.AvatarItems)
+                .Ignore(dest => dest.Texts);
 
             TypeAdapterConfig<Model.Challenge, Domain.Model.Challenge>.NewConfig()
                 .IgnoreIf((src, _) => src.ChallengeCategories == null, dest => dest.Categories)

@@ -13,12 +13,13 @@ namespace GRA.Data
         {
         }
 
+        public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
         public DbSet<Model.Answer> Answers { get; set; }
         public DbSet<Model.Attachment> Attachments { get; set; }
         public DbSet<Model.AuditLog> AuditLogs { get; set; }
         public DbSet<Model.AuthorizationCode> AuthorizationCodes { get; set; }
-        public DbSet<Model.AvatarBundleItem> AvatarBundleItems { get; set; }
         public DbSet<Model.AvatarBundle> AvatarBundles { get; set; }
+        public DbSet<Model.AvatarBundleItem> AvatarBundleItems { get; set; }
         public DbSet<Model.AvatarColor> AvatarColors { get; set; }
         public DbSet<Model.AvatarColorText> AvatarColorTexts { get; set; }
         public DbSet<Model.AvatarElement> AvatarElements { get; set; }
@@ -26,27 +27,27 @@ namespace GRA.Data
         public DbSet<Model.AvatarItemText> AvatarItemTexts { get; set; }
         public DbSet<Model.AvatarLayer> AvatarLayers { get; set; }
         public DbSet<Model.AvatarLayerText> AvatarLayerTexts { get; set; }
+        public DbSet<Model.AvatarTransfer> AvatarTransfers { get; set; }
         public DbSet<Model.Badge> Badges { get; set; }
         public DbSet<Model.Book> Books { get; set; }
         public DbSet<Model.Branch> Branches { get; set; }
         public DbSet<Model.Broadcast> Broadcasts { get; set; }
-        public DbSet<Model.CarouselItem> CarouselItems { get; set; }
         public DbSet<Model.Carousel> Carousels { get; set; }
+        public DbSet<Model.CarouselItem> CarouselItems { get; set; }
         public DbSet<Model.Category> Categories { get; set; }
-        public DbSet<Model.ChallengeCategory> ChallengeCategories { get; set; }
-        public DbSet<Model.ChallengeGroupChallenge> ChallengeGroupChallenges { get; set; }
-        public DbSet<Model.ChallengeGroup> ChallengeGroups { get; set; }
         public DbSet<Model.Challenge> Challenges { get; set; }
+        public DbSet<Model.ChallengeCategory> ChallengeCategories { get; set; }
+        public DbSet<Model.ChallengeGroup> ChallengeGroups { get; set; }
+        public DbSet<Model.ChallengeGroupChallenge> ChallengeGroupChallenges { get; set; }
         public DbSet<Model.ChallengeTask> ChallengeTasks { get; set; }
         public DbSet<Model.ChallengeTaskType> ChallengeTaskTypes { get; set; }
         public DbSet<Model.DashboardContent> DashboardContents { get; set; }
-        public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
         public DbSet<Model.DirectEmailHistory> DirectEmailHistories { get; set; }
         public DbSet<Model.DirectEmailTemplate> DirectEmailTemplates { get; set; }
         public DbSet<Model.DirectEmailTemplateText> DirectEmailTemplateTexts { get; set; }
+        public DbSet<Model.Drawing> Drawings { get; set; }
         public DbSet<Model.DrawingCriterion> DrawingCriteria { get; set; }
         public DbSet<Model.DrawingCriterionProgram> DrawingCriterionPrograms { get; set; }
-        public DbSet<Model.Drawing> Drawings { get; set; }
         public DbSet<Model.EmailBase> EmailBases { get; set; }
         public DbSet<Model.EmailBaseText> EmailBaseTexts { get; set; }
         public DbSet<Model.EmailReminder> EmailReminders { get; set; }
@@ -67,8 +68,8 @@ namespace GRA.Data
         public DbSet<Model.NewsCategory> NewsCateories { get; set; }
         public DbSet<Model.NewsPost> NewsPosts { get; set; }
         public DbSet<Model.Notification> Notifications { get; set; }
-        public DbSet<Model.PageHeader> PageHeaders { get; set; }
         public DbSet<Model.Page> Pages { get; set; }
+        public DbSet<Model.PageHeader> PageHeaders { get; set; }
         public DbSet<Model.Permission> Permissions { get; set; }
         public DbSet<Model.PointTranslation> PointTranslations { get; set; }
         public DbSet<Model.PrizeWinner> PrizeWinners { get; set; }
@@ -78,42 +79,43 @@ namespace GRA.Data
         public DbSet<Model.PsBlackoutDate> PsBlackoutDates { get; set; }
         public DbSet<Model.PsBranchSelection> PsBranchSelections { get; set; }
         public DbSet<Model.PsExcludeBranch> PsExcludeBranches { get; set; }
+        public DbSet<Model.PsKit> PsKits { get; set; }
         public DbSet<Model.PsKitAgeGroup> PsKitAgeGroups { get; set; }
         public DbSet<Model.PsKitImage> PsKitImages { get; set; }
-        public DbSet<Model.PsKit> PsKits { get; set; }
+        public DbSet<Model.PsPerformer> PsPerformers { get; set; }
         public DbSet<Model.PsPerformerBranch> PsPerformerBranches { get; set; }
         public DbSet<Model.PsPerformerImage> PsPerformerImages { get; set; }
-        public DbSet<Model.PsPerformer> PsPerformers { get; set; }
         public DbSet<Model.PsPerformerSchedule> PsPerformerSchedules { get; set; }
+        public DbSet<Model.PsProgram> PsPrograms { get; set; }
         public DbSet<Model.PsProgramAgeGroup> PsProgramAgeGroups { get; set; }
         public DbSet<Model.PsProgramImage> PsProgramImages { get; set; }
-        public DbSet<Model.PsProgram> PsPrograms { get; set; }
         public DbSet<Model.PsSettings> PsSettings { get; set; }
-        public DbSet<Model.Questionnaire> Questionnaires { get; set; }
         public DbSet<Model.Question> Questions { get; set; }
+        public DbSet<Model.Questionnaire> Questionnaires { get; set; }
         public DbSet<Model.RecoveryToken> RecoveryTokens { get; set; }
         public DbSet<Model.ReportCriterion> ReportCriteria { get; set; }
         public DbSet<Model.ReportRequest> ReportRequests { get; set; }
         public DbSet<Model.RequiredQuestionnaire> RequiredQuestionnaires { get; set; }
-        public DbSet<Model.RolePermission> RolePermissions { get; set; }
         public DbSet<Model.Role> Roles { get; set; }
-        public DbSet<Model.SchoolDistrict> SchoolDistricts { get; set; }
+        public DbSet<Model.RolePermission> RolePermissions { get; set; }
         public DbSet<Model.School> Schools { get; set; }
+        public DbSet<Model.SchoolDistrict> SchoolDistricts { get; set; }
         public DbSet<Model.Segment> Segments { get; set; }
         public DbSet<Model.SegmentText> SegmentTexts { get; set; }
         public DbSet<Model.Site> Sites { get; set; }
         public DbSet<Model.SiteSetting> SiteSettings { get; set; }
-        public DbSet<Model.SocialHeader> SocialHeaders { get; set; }
         public DbSet<Model.Social> Socials { get; set; }
+        public DbSet<Model.SocialHeader> SocialHeaders { get; set; }
         public DbSet<Model.SpatialDistanceDetail> SpatialDistanceDetails { get; set; }
         public DbSet<Model.SpatialDistanceHeader> SpatialDistanceHeaders { get; set; }
         public DbSet<Model.System> Systems { get; set; }
+        public DbSet<Model.Trigger> Triggers { get; set; }
         public DbSet<Model.TriggerBadge> TriggerBadges { get; set; }
         public DbSet<Model.TriggerChallenge> TriggerChallenges { get; set; }
-        public DbSet<Model.Trigger> Triggers { get; set; }
+        public DbSet<Model.User> Users { get; set; }
         public DbSet<Model.UserAnswer> UserAnswers { get; set; }
-        public DbSet<Model.UserAvatarItem> UserAvatarItems { get; set; }
         public DbSet<Model.UserAvatar> UserAvatars { get; set; }
+        public DbSet<Model.UserAvatarItem> UserAvatarItems { get; set; }
         public DbSet<Model.UserBadge> UserBadges { get; set; }
         public DbSet<Model.UserBook> UserBooks { get; set; }
         public DbSet<Model.UserChallengeTask> UserChallengeTasks { get; set; }
@@ -123,10 +125,9 @@ namespace GRA.Data
         public DbSet<Model.UserPackingSlipView> UserPackingSlipViews { get; set; }
         public DbSet<Model.UserQuestionnaire> UserQuestionnaires { get; set; }
         public DbSet<Model.UserRole> UserRoles { get; set; }
-        public DbSet<Model.User> Users { get; set; }
         public DbSet<Model.UserTrigger> UserTriggers { get; set; }
-        public DbSet<Model.VendorCodePackingSlip> VendorCodePackingSlips { get; set; }
         public DbSet<Model.VendorCode> VendorCodes { get; set; }
+        public DbSet<Model.VendorCodePackingSlip> VendorCodePackingSlips { get; set; }
         public DbSet<Model.VendorCodeType> VendorCodeTypes { get; set; }
 
         public async Task<string> GetCurrentMigrationAsync()

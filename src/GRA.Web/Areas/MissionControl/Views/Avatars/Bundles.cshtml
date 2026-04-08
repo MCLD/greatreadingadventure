@@ -1,5 +1,12 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Avatar.BundlesListViewModel
 
+@section inHeading {
+    <div class="ms-auto">
+        <a asp-action="@nameof(AvatarsController.Index)"
+           class="btn btn-outline-secondary ms-2">Back</a>
+    </div>
+}
+
 <div class="row my-4">
     <div class="col-12 mb-2">
         <ul class="nav nav-pills flex-column flex-sm-row">

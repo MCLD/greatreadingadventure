@@ -550,6 +550,7 @@ namespace GRA.Web
             services.AddScoped<AuthenticationService>();
             services.AddScoped<AuthorizationCodeService>();
             services.AddScoped<AvatarService>();
+            services.AddScoped<AvatarTransferService>();
             services.AddScoped<BadgeService>();
             services.AddScoped<BranchImportExportService>();
             services.AddScoped<CarouselService>();
@@ -639,6 +640,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IAvatarBundleRepository, Data.Repository.AvatarBundleRepository>();
             services.AddScoped<Domain.Repository.IAvatarColorRepository, Data.Repository.AvatarColorRepository>();
             services.AddScoped<Domain.Repository.IAvatarElementRepository, Data.Repository.AvatarElementRepository>();
+            services.AddScoped<Domain.Repository.IAvatarTransferRepository, Data.Repository.AvatarTransferRepository>();
             services.AddScoped<Domain.Repository.IAvatarItemRepository, Data.Repository.AvatarItemRepository>();
             services.AddScoped<Domain.Repository.IAvatarLayerRepository, Data.Repository.AvatarLayerRepository>();
             services.AddScoped<Domain.Repository.IBadgeRepository, Data.Repository.BadgeRepository>();

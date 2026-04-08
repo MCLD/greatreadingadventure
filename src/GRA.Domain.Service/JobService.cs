@@ -14,19 +14,23 @@ namespace GRA.Domain.Service
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IJobRepository _jobRepository;
+        private readonly UserService _userService;
 
         public JobService(ILogger<JobService> logger,
             IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
+            IHttpContextAccessor httpContextAccessor,
             IJobRepository jobRepository,
-            IHttpContextAccessor httpContextAccessor)
+            UserService userService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             ArgumentNullException.ThrowIfNull(httpContextAccessor);
             ArgumentNullException.ThrowIfNull(jobRepository);
+            ArgumentNullException.ThrowIfNull(userService);
 
             _httpContextAccessor = httpContextAccessor;
             _jobRepository = jobRepository;
+            _userService = userService;
         }
 
         public Task<Guid> CreateJobAsync(Job job)
@@ -34,6 +38,11 @@ namespace GRA.Domain.Service
             return job == null
                 ? throw new ArgumentNullException(nameof(job))
                 : CreateJobInternalAsync(job);
+        }
+
+        public async Task<Job> GetJobAsync(int jobId)
+        {
+            return await _jobRepository.GetByIdAsync(jobId);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
@@ -155,21 +164,24 @@ namespace GRA.Domain.Service
             CancellationToken token,
             IProgress<JobStatus> progress)
         {
+            var jobMetadata = new JobMetadata
+            {
+                CancellationToken = token,
+                JobId = jobInfo.Id,
+                Progress = progress,
+                UserContactDetails = await _userService.GetContactDetailsAsync(userId),
+                Site = await _userContextProvider.GetCurrentSiteAsync()
+            };
+
             return jobInfo.JobType switch
             {
-                JobType.SendBulkEmails => await SendBulkEmails(userId,
-                    jobInfo.Id,
-                    token,
-                    progress),
-                JobType.AvatarImport => await ImportAvatarsAsync(jobInfo.Id,
-                    token,
-                    progress),
+                JobType.SendBulkEmails => await SendBulkEmails(userId, jobInfo.Id, token, progress),
+                JobType.AvatarImport => await TransferAvatarsAsync(jobMetadata),
+                JobType.AvatarExport => await TransferAvatarsAsync(jobMetadata),
                 JobType.HouseholdImport => await ImportHouseholdMembersAsync(jobInfo.Id,
                     token,
                     progress),
-                JobType.RunReport => await RunReportJobAsync(jobInfo.Id,
-                    token,
-                    progress),
+                JobType.RunReport => await RunReportJobAsync(jobInfo.Id, token, progress),
                 JobType.UpdateVendorStatus => await UpdateStatusFromExcelAsync(
                     jobInfo.Id,
                     token,
@@ -182,28 +194,16 @@ namespace GRA.Domain.Service
                     jobInfo.Id,
                     token,
                     progress),
-                JobType.BranchImport => await ImportBranches(
-                    jobInfo.Id,
-                    token,
-                    progress),
-                JobType.SendNewsEmails => await SendNewsEmails(
-                    jobInfo.Id,
-                    token,
-                    progress),
-                JobType.ReceivePackingSlip => await ReceivePackingSlip(
-                    jobInfo.Id,
-                    token,
-                    progress),
-                JobType.BulkReassignCodes => await BulkReassignCodes(
-                    jobInfo.Id,
-                    token,
-                    progress),
+                JobType.BranchImport => await ImportBranches(jobInfo.Id, token, progress),
+                JobType.SendNewsEmails => await SendNewsEmails(jobInfo.Id, token, progress),
+                JobType.ReceivePackingSlip => await ReceivePackingSlip(jobInfo.Id, token, progress),
+                JobType.BulkReassignCodes => await BulkReassignCodes(jobInfo.Id, token, progress),
                 _ => throw new GraException($"Undefined job type: {jobInfo.JobType}"),
             };
         }
 
         private async Task<JobStatus> GenerateVendorCodesAsync(int jobId,
-            CancellationToken token,
+                    CancellationToken token,
             IProgress<JobStatus> progress = null)
         {
             var vendorCodeService = _httpContextAccessor
@@ -211,17 +211,6 @@ namespace GRA.Domain.Service
                 .RequestServices
                 .GetService(typeof(VendorCodeService)) as VendorCodeService;
             return await vendorCodeService.GenerateVendorCodesAsync(jobId, token, progress);
-        }
-
-        private async Task<JobStatus> ImportAvatarsAsync(int jobId,
-                    CancellationToken token,
-            IProgress<JobStatus> progress = null)
-        {
-            var avatarService = _httpContextAccessor
-                .HttpContext
-                .RequestServices
-                .GetService(typeof(AvatarService)) as AvatarService;
-            return await avatarService.ImportAvatarsAsync(jobId, token, progress);
         }
 
         private async Task<JobStatus> ImportBranches(int jobId,
@@ -289,6 +278,15 @@ namespace GRA.Domain.Service
                 .RequestServices
                 .GetService(typeof(NewsService)) as NewsService;
             return await newsService.RunSendNewsEmailsJob(jobId, token, progress);
+        }
+
+        private async Task<JobStatus> TransferAvatarsAsync(JobMetadata metadata)
+        {
+            var avatarTransferService = _httpContextAccessor
+                .HttpContext
+                .RequestServices
+                .GetService(typeof(AvatarTransferService)) as AvatarTransferService;
+            return await avatarTransferService.TransferAvatarsAsync(metadata);
         }
 
         private async Task<JobStatus> UpdateEmailAwardStatusFromExcelAsync(int jobId,
