@@ -598,7 +598,6 @@ namespace GRA.Domain.Service
 
                         if (jobDetails.Version > 1 && color.Texts != null)
                         {
-                            //var addTexts = new List<AvatarColorText>();
                             foreach (var text in color.Texts)
                             {
                                 if (LanguageNameIdMap.TryGetValue(text.LanguageName,

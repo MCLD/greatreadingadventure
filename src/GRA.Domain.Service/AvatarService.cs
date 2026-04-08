@@ -171,7 +171,7 @@ namespace GRA.Domain.Service
             return currentBundle;
         }
 
-        public async Task<ICollection<AvatarBundle>> GetAllBundlesAsync(bool? unlockable = null)
+        public async Task<ICollection<AvatarBundle>> GetAllBundlesAsync(bool? unlockable)
         {
             VerifyManagementPermission();
             return await _avatarBundleRepository.GetAllAsync(GetCurrentSiteId(), unlockable);
