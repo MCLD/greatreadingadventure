@@ -314,15 +314,21 @@ namespace GRA.Controllers
             var programList = await _siteService.GetProgramList();
             var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
 
+            var emailRequired
+                = await GetSiteSettingBoolAsync(SiteSettingKey.Users.RequireEmailAddress);
+
             var viewModel = new HouseholdAddViewModel
             {
-                User = userBase,
-                RequirePostalCode = (await GetCurrentSiteAsync()).RequirePostalCode,
-                ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject),
                 BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
+                EmailDataValRequired = emailRequired
+                    ? _sharedLocalizer[ErrorMessages.Field, DisplayNames.EmailAddress]
+                    : null,
+                ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject),
                 ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
+                RequirePostalCode = (await GetCurrentSiteAsync()).RequirePostalCode,
                 SchoolList = new SelectList(await _schoolService.GetSchoolsAsync(), "Id", "Name"),
                 SystemList = new SelectList(systemList.ToList(), "Id", "Name"),
+                User = userBase
             };
 
             if (programList.Count() == 1)
@@ -399,6 +405,14 @@ namespace GRA.Controllers
                 ModelState.AddModelError("User.Email",
                     _sharedLocalizer[Annotations.Validate.Email,
                         _sharedLocalizer[DisplayNames.EmailAddress]]);
+            }
+
+            if (await GetSiteSettingBoolAsync(SiteSettingKey.Users.RequireEmailAddress)
+                && string.IsNullOrEmpty(model.User.Email))
+            {
+                ModelState.AddModelError("User.Email",
+                    _sharedLocalizer[ErrorMessages.Field,
+                    _sharedLocalizer[DisplayNames.EmailAddress]]);
             }
 
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.User.PostalCode))
@@ -572,6 +586,13 @@ namespace GRA.Controllers
             model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
             model.SchoolList
                 = new SelectList(await _schoolService.GetSchoolsAsync(), "Id", "Name");
+
+            if (await GetSiteSettingBoolAsync(SiteSettingKey.Users.RequireEmailAddress))
+            {
+                model.EmailDataValRequired
+                    = _sharedLocalizer[ErrorMessages.Field, DisplayNames.EmailAddress];
+            }
+
             model.ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject);
             model.RequirePostalCode = site.RequirePostalCode;
             model.ShowAge = askAge;
@@ -1529,9 +1550,18 @@ namespace GRA.Controllers
                 && !EmailValidator.Validate(model.User.Email.Trim()))
             {
                 ModelState.AddModelError("User.Email",
-                    _sharedLocalizer[Annotations.Validate.Email, 
+                    _sharedLocalizer[Annotations.Validate.Email,
                         _sharedLocalizer[DisplayNames.EmailAddress]]);
             }
+
+            if (await GetSiteSettingBoolAsync(SiteSettingKey.Users.RequireEmailAddress)
+                && string.IsNullOrEmpty(model.User.Email))
+            {
+                ModelState.AddModelError("User.Email",
+                    _sharedLocalizer[ErrorMessages.Field,
+                    _sharedLocalizer[DisplayNames.EmailAddress]]);
+            }
+
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.User.PostalCode))
             {
                 ModelState.AddModelError("User.PostalCode",

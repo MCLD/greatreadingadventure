@@ -298,6 +298,13 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Users).Name,
                     Format = SiteSettingFormat.Integer
                 },
+                [SiteSettingKey.Users.RequireEmailAddress] = new SiteSettingDefinition
+                {
+                    Name = "Require email address",
+                    Info = "Require an email address for a user to sign up",
+                    Category = typeof(SiteSettingKey.Users).Name,
+                    Format = SiteSettingFormat.Boolean,
+                },
                 [SiteSettingKey.Users.RestrictChangingProgram] = new SiteSettingDefinition
                 {
                     Name = "Restrict changing program",

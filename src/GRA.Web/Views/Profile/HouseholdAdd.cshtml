@@ -10,7 +10,7 @@
                 <div class="card-header">
                     <span class="fw-bold">
                         @SharedLocalizer[GRA.Annotations.Info.GroupRegister,
-                                 SharedLocalizer[Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString()]]
+                        SharedLocalizer[Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString()]]
                     </span>
                 </div>
                 <div class="card-body">
@@ -19,6 +19,7 @@
                             <div class="row mb-2">
                                 <div class="col-12">
                                     <label asp-for="User.FirstName" class="col-form-label"></label>
+                                    <span class="text-danger fas fa-asterisk fa-fw"></span>
                                     <input asp-for="User.FirstName" class="form-control" />
                                     <span asp-validation-for="User.FirstName"
                                           class="text-danger"></span>
@@ -47,7 +48,14 @@
                             <div class="row mb-2">
                                 <div class="col-12">
                                     <label asp-for="User.Email" class="col-form-label"></label>
-                                    <input asp-for="User.Email" class="form-control" type="email" />
+                                    @if (!string.IsNullOrEmpty(Model.EmailDataValRequired))
+                                    {
+                                        <span class="text-danger fas fa-asterisk fa-fw"></span>
+                                    }
+                                    <input add-data-val-required="@Model.EmailDataValRequired"
+                                           asp-for="User.Email"
+                                           class="form-control"
+                                           type="email" />
                                     <span asp-validation-for="User.Email"
                                           class="text-danger"></span>
                                 </div>
@@ -105,6 +113,7 @@
                                     <div class="col-12">
                                         <label asp-for="User.ProgramId"
                                                class="col-form-label"></label>
+                                        <span class="text-danger fas fa-asterisk fa-fw"></span>
                                         <select asp-for="User.ProgramId"
                                                 asp-items="Model.ProgramList"
                                                 class="form-select">
@@ -120,7 +129,7 @@
                                 <input asp-for="User.ProgramId" type="hidden" />
                             }
                             <div id="ageField"
-                                 class="row mb-2 @(Model.ShowAge ? "": "d-none")">
+                                 class="row mb-2 @(Model.ShowAge ? "" : "d-none")">
                                 <div class="col-12">
                                     <label asp-for="User.Age" class="col-form-label"></label>
                                     <input asp-for="User.Age" class="form-control" type="text" />
@@ -129,7 +138,7 @@
                                           class="text-danger"></span>
                                 </div>
                             </div>
-                            <div id="schoolFields" class="@(Model.ShowSchool ? "": "d-none")">
+                            <div id="schoolFields" class="@(Model.ShowSchool ? "" : "d-none")">
                                 @await Html.PartialAsync("_SchoolSelectionPartial", Model)
                             </div>
                             @if (Model?.AskFirstTime?.Count() > 1)
@@ -137,6 +146,7 @@
                                 <div class="row mb-2">
                                     <div class="col-12">
                                         <label asp-for="IsFirstTime" class="col-form-label"></label>
+                                        <span class="text-danger fas fa-asterisk fa-fw"></span>
                                         <select asp-for="IsFirstTime"
                                                 asp-items="Model.AskFirstTime"
                                                 class="form-select"></select>
@@ -151,6 +161,7 @@
                                     <div class="col-12">
                                         <label asp-for="EmailSubscriptionRequested"
                                                class="col-form-label">@Model.AskEmailSubscriptionText</label>
+                                        <span class="text-danger fas fa-asterisk fa-fw"></span>
                                         <select asp-for="EmailSubscriptionRequested"
                                                 asp-items="Model.AskEmailSubscription"
                                                 class="form-select"></select>
@@ -177,33 +188,33 @@
                                     </div>
                                 </div>
                             }
-							@if (Model.AskPersonalPointGoal)
-							{
-								<div class="row mb-3">
-									<div class="col-12">
-										<label asp-for="User.PersonalPointGoal" class="col-form-label"></label>
-										<span class="fas fa-info-circle"
-											  data-bs-toggle="tooltip"
-											  title="@SharedLocalizer[GRA.Annotations.Interface.PersonalPointGoalDescription, Model.MinimumPersonalPointGoal]"></span>
-										<div>
-											@SharedLocalizer[GRA.Annotations.Interface.PersonalPointGoalLabel]
-											<input asp-for="User.PersonalPointGoal"
-												   max="@Model.MaximumPersonalPointGoal"
-												   min="@Model.MinimumPersonalPointGoal"
-												   class="form-control"
-												   style="display:inline-block; width:100px;" />
-										</div>
-										<span asp-validation-for="User.PersonalPointGoal" class="text-danger"></span>
-									</div>
-								</div>
-							}
+                            @if (Model.AskPersonalPointGoal)
+                            {
+                                <div class="row mb-3">
+                                    <div class="col-12">
+                                        <label asp-for="User.PersonalPointGoal" class="col-form-label"></label>
+                                        <span class="fas fa-info-circle"
+                                              data-bs-toggle="tooltip"
+                                              title="@SharedLocalizer[GRA.Annotations.Interface.PersonalPointGoalDescription, Model.MinimumPersonalPointGoal]"></span>
+                                        <div>
+                                            @SharedLocalizer[GRA.Annotations.Interface.PersonalPointGoalLabel]
+                                            <input asp-for="User.PersonalPointGoal"
+                                                   max="@Model.MaximumPersonalPointGoal"
+                                                   min="@Model.MinimumPersonalPointGoal"
+                                                   class="form-control"
+                                                   style="display:inline-block; width:100px;" />
+                                        </div>
+                                        <span asp-validation-for="User.PersonalPointGoal" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
                 <div class="card-footer d-flex justify-content-end">
                     <a asp-action="Household" class="btn btn-outline-secondary">
                         @SharedLocalizer[GRA.Annotations.Interface.BackTo,
-                                 SharedLocalizer[Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString()]]
+                        SharedLocalizer[Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString()]]
                     </a>
                     <button type="submit"
                             id="Submit"
@@ -213,7 +224,7 @@
                             button-spinner>
                         <span class="buttonText">
                             @SharedLocalizer[GRA.Annotations.Info.GroupRegister,
-                                     SharedLocalizer[Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString()]]
+                                                        SharedLocalizer[Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString()]]
                         </span>
                     </button>
 
