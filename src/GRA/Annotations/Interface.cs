@@ -79,6 +79,7 @@
         public const string NoEvents = "No Events";
         public const string NoMail = "You currently have no mail.";
         public const string NotStreamingYet = "Not streaming yet";
+        public const string OnlyAvailableAt = "Only available at";
         public const string Optional = "Optional";
         public const string PasswordChanged = "Your password has been changed.";
         public const string PersonalPointGoalDescription = "A personal goal beyond the program default goal of {0} points.";

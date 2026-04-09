@@ -29,6 +29,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Database storage of banner image file name and alt text
 - Avatar export of package including localized text
 - System setting to require participant email address
+- System setting to show "only available at" next to prizes
 
 ## Changed
 

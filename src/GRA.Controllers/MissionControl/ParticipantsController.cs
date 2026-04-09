@@ -2520,13 +2520,17 @@ namespace GRA.Controllers.MissionControl
 
                 await _vendorCodeService.PopulateVendorCodeStatusAsync(user);
 
+                var showOnlyAt = await _siteLookupService
+                    .GetSiteSettingBoolAsync(GetCurrentSiteId(), SiteSettingKey.Prizes.ShowOnlyAt);
+
                 var viewModel = new PrizeListViewModel(await GetPopulatedBaseViewModel(user))
                 {
-                    PrizeWinners = prizeList.Data,
-                    PaginateModel = paginateModel,
+                    CanEditDetails = UserHasPermission(Permission.EditParticipants),
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
-                    User = user,
-                    CanEditDetails = UserHasPermission(Permission.EditParticipants)
+                    ShowOnlyAt = showOnlyAt,
+                    PaginateModel = paginateModel,
+                    PrizeWinners = prizeList.Data,
+                    User = user
                 };
 
                 return View(viewModel);
@@ -2540,7 +2544,10 @@ namespace GRA.Controllers.MissionControl
 
         [HttpPost]
         [Authorize(Policy = Policy.ViewUserPrizes)]
-        public async Task<IActionResult> RedeemWinner(int prizeWinnerId, int userId, string staffNotes, int page = 1)
+        public async Task<IActionResult> RedeemWinner(int prizeWinnerId,
+            int userId,
+            string staffNotes,
+            int page = 1)
         {
             try
             {

@@ -18,6 +18,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public int? HeadOfHouseholdId { get; set; }
         public PaginateViewModel PaginateModel { get; set; }
         public IEnumerable<Domain.Model.PrizeWinner> PrizeWinners { get; set; }
+        public bool ShowOnlyAt { get; set; }
         public Domain.Model.User User { get; set; }
     }
 }

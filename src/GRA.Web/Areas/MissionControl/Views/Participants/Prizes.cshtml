@@ -185,6 +185,10 @@
                                 <td>
                                     @if (!string.IsNullOrWhiteSpace(prizeWinner.AvailableAtSystem))
                                     {
+                                        @if (Model.ShowOnlyAt)
+                                        {
+                                            <strong>@GRA.Annotations.Interface.OnlyAvailableAt</strong>
+                                        }
                                         @prizeWinner.AvailableAtSystem
                                         @if (!string.IsNullOrWhiteSpace(prizeWinner.AvailableAtBranch))
                                         {
@@ -214,7 +218,7 @@
         @if (Model.User.HouseholdHeadUserId.HasValue || Model.HouseholdCount > 0)
         {
             <a asp-action="Household"
-               asp-route-id="@(Model.User.HouseholdHeadUserId.HasValue ? Model.User.HouseholdHeadUserId.Value : Model.User.Id)"
+               asp-route-id="@(Model.User.HouseholdHeadUserId.HasValue? Model.User.HouseholdHeadUserId.Value : Model.User.Id)"
                class="btn btn-outline-secondary">Return to Family</a>
         }
         <a asp-action="Index" class="btn btn-outline-secondary ms-auto">Return to All Participants</a>
@@ -280,11 +284,11 @@
 && Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.EditParticipants.ToString()))
 {
     @section scripts {
-    <script>
-        $("#emailAwardButton").on("click", function (event) {
-            event.preventDefault();
-            $("#emailAwardModal").modal("show");
-        });
-    </script>
+        <script>
+            $("#emailAwardButton").on("click", function (event) {
+                event.preventDefault();
+                $("#emailAwardModal").modal("show");
+            });
+        </script>
     }
 }
