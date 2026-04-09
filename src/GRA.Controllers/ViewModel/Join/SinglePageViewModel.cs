@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using GRA.Controllers.Attributes;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,6 +9,8 @@ namespace GRA.Controllers.ViewModel.Join
 {
     public class SinglePageViewModel : SchoolSelectionViewModel
     {
+        public bool IsEmailRequired { get; set; }
+
         public string ActivityDescriptionPlural { get; set; }
 
         [DisplayName(DisplayNames.Age)]
@@ -37,6 +40,7 @@ namespace GRA.Controllers.ViewModel.Join
         [DisplayName(DisplayNames.EmailAddress)]
         [EmailAddress(ErrorMessage = Annotations.Validate.Email)]
         [MaxLength(254, ErrorMessage = ErrorMessages.MaxLength)]
+        [RequiredIf(nameof(IsEmailRequired), true, ErrorMessage = ErrorMessages.Field)]
         public string Email { get; set; }
 
         [Required(ErrorMessage = Annotations.Validate.EmailSubscription)]

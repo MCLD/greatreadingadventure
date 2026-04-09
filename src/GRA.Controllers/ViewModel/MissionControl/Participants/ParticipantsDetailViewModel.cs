@@ -24,6 +24,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public string CreatedByName { get; set; }
         public EmailAwardViewModel EmailAwardModel { get; set; }
         public int? HeadOfHouseholdId { get; set; }
+        public bool IsEmailRequired { get; set; }
 
         public bool IsVendorCodeDisplayed
         {

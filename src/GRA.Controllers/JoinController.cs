@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using DocumentFormat.OpenXml.EMMA;
 using EmailValidation;
 using GRA.Controllers.Filter;
 using GRA.Controllers.ViewModel.Join;
@@ -229,11 +230,13 @@ namespace GRA.Controllers
 
             var viewModel = new SinglePageViewModel
             {
-                RequirePostalCode = site.RequirePostalCode,
                 ProgramJson = JsonConvert.SerializeObject(programViewObject),
-                SystemList = NameIdSelectList(systemList.ToList()),
                 ProgramList = NameIdSelectList(programList.ToList()),
+                IsEmailRequired
+                    = await GetSiteSettingBoolAsync(SiteSettingKey.Users.RequireEmailAddress),
+                RequirePostalCode = site.RequirePostalCode,
                 SchoolList = NameIdSelectList(await _schoolService.GetSchoolsAsync()),
+                SystemList = NameIdSelectList(systemList.ToList()),
                 WelcomeMessage = await GetWelcomeMessageAsync()
             };
 
@@ -404,6 +407,14 @@ namespace GRA.Controllers
                 ModelState.AddModelError(nameof(model.Email),
                     _sharedLocalizer[Annotations.Validate.Email,
                         _sharedLocalizer[DisplayNames.EmailAddress]]);
+            }
+
+            if (await GetSiteSettingBoolAsync(SiteSettingKey.Users.RequireEmailAddress)
+                && string.IsNullOrEmpty(model.Email))
+            {
+                ModelState.AddModelError(nameof(model.Email),
+                    _sharedLocalizer[ErrorMessages.Field,
+                    _sharedLocalizer[DisplayNames.EmailAddress]]);
             }
 
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.PostalCode))
@@ -631,13 +642,15 @@ namespace GRA.Controllers
                     }
                     : await _siteService.GetProgramList();
             var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
-            model.SystemList = NameIdSelectList(systemList.ToList());
-            model.ProgramList = NameIdSelectList(programList.ToList());
-            model.SchoolList = NameIdSelectList(await _schoolService.GetSchoolsAsync());
             model.ProgramJson = JsonConvert.SerializeObject(programViewObject);
+            model.ProgramList = NameIdSelectList(programList.ToList());
+            model.IsEmailRequired
+                = await GetSiteSettingBoolAsync(SiteSettingKey.Users.RequireEmailAddress);
             model.RequirePostalCode = site.RequirePostalCode;
+            model.SchoolList = NameIdSelectList(await _schoolService.GetSchoolsAsync());
             model.ShowAge = askAge;
             model.ShowSchool = askSchool;
+            model.SystemList = NameIdSelectList(systemList.ToList());
 
             if (askIfFirstTime)
             {
@@ -1034,7 +1047,11 @@ namespace GRA.Controllers
 
             PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, site.Name];
 
-            var viewModel = new Step3ViewModel();
+            var viewModel = new Step3ViewModel
+            {
+                IsEmailRequired
+                    = await GetSiteSettingBoolAsync(SiteSettingKey.Users.RequireEmailAddress)
+            };
 
             var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
             if (askIfFirstTime)
@@ -1097,6 +1114,9 @@ namespace GRA.Controllers
             ArgumentNullException.ThrowIfNull(model);
 
             var site = await GetCurrentSiteAsync();
+
+            var isEmailRequired
+                = await GetSiteSettingBoolAsync(SiteSettingKey.Users.RequireEmailAddress);
             var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
 
             if (!askIfFirstTime)
@@ -1110,6 +1130,13 @@ namespace GRA.Controllers
                 ModelState.AddModelError(nameof(model.Email),
                     _sharedLocalizer[Annotations.Validate.Email,
                         _sharedLocalizer[DisplayNames.EmailAddress]]);
+            }
+
+            if (isEmailRequired && string.IsNullOrEmpty(model.Email))
+            {
+                ModelState.AddModelError(nameof(model.Email),
+                    _sharedLocalizer[ErrorMessages.Field,
+                    _sharedLocalizer[DisplayNames.EmailAddress]]);
             }
 
             var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
@@ -1290,6 +1317,8 @@ namespace GRA.Controllers
                 model.AskEmailSubscription = EmptyNoYes();
                 model.AskEmailSubscriptionText = askEmailSubscriptionText;
             }
+
+            model.IsEmailRequired = isEmailRequired;
 
             if (askActivityGoal)
             {

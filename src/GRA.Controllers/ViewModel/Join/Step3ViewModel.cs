@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using GRA.Controllers.Attributes;
 using GRA.Domain.Model;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -24,6 +25,7 @@ namespace GRA.Controllers.ViewModel.Join
         [DisplayName(DisplayNames.EmailAddress)]
         [EmailAddress(ErrorMessage = Annotations.Validate.Email)]
         [MaxLength(254, ErrorMessage = ErrorMessages.MaxLength)]
+        [RequiredIf(nameof(IsEmailRequired), true, ErrorMessage = ErrorMessages.Field)]
         public string Email { get; set; }
 
         [DisplayName(DisplayNames.PhoneNumber)]
@@ -56,5 +58,6 @@ namespace GRA.Controllers.ViewModel.Join
 
         public string TranslationDescriptionPastTense { get; set; }
         public string ActivityDescriptionPlural { get; set; }
+        public bool IsEmailRequired { get; set; }
     }
 }

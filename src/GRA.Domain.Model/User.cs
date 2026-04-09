@@ -67,6 +67,7 @@ namespace GRA.Domain.Model
         public bool IsAdmin { get; set; }
         public bool IsDeleted { get; set; }
         public bool IsDonationLocked { get; set; }
+        public bool IsEmailRequired { get; set; }
         public bool IsEmailSubscribed { get; set; }
 
         [DisplayName(DisplayNames.IsFirstTime)]

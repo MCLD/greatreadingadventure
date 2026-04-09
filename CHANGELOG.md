@@ -28,6 +28,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Info message when editing Point Translations with unchangeable properties
 - Database storage of banner image file name and alt text
 - Avatar export of package including localized text
+- System setting to require participant email address
 
 ## Changed
 
