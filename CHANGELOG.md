@@ -41,6 +41,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Drawing mail to be sent manually after a drawing is performed
 - Vendor status message to include branch name when ready for pick-up
 - Avatar import enhanced to handle new format including localized text
+- Update front-end packages
 
 ## Fixed
 
