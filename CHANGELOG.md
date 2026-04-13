@@ -30,6 +30,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Avatar export of package including localized text
 - System setting to require participant email address
 - System setting to show "only available at" next to prizes
+- Validation of aria-describedby attributes when using data validation
 
 ## Changed
 
