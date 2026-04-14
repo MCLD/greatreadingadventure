@@ -4,7 +4,8 @@
 <div id="schoolGroup" class="row mb-3">
     <div class="col-12">
         <label class="col-form-label">@SharedLocalizer[GRA.Domain.Model.DisplayNames.School]</label>
-        <select asp-for="SchoolId"
+        <select aria-label="Select a school from this list"
+                asp-for="SchoolId"
                 asp-items="Model.SchoolList"
                 class="form-select">
             <option></option>
