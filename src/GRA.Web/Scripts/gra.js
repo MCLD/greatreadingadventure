@@ -176,7 +176,7 @@ function graValidateDescribedBy(element) {
             }
         });
     if (invalidElementsFound) {
-        if (validElements.length == 0) {
+        if (validElements.length === 0) {
             element.removeAttribute("aria-describedby");
         } else {
             element.setAttribute("aria-describedby", validElements.join(" "));
@@ -212,9 +212,9 @@ $().ready(function () {
             autoplay: false,
             dots: false,
             prevArrow:
-                '<span class="far fa-2x fa-arrow-alt-circle-left gra-carousel-nav gra-carousel-prev"></span>',
+                "<span class=\"far fa-2x fa-arrow-alt-circle-left gra-carousel-nav gra-carousel-prev\"></span>",
             nextArrow:
-                '<span class="far fa-2x fa-arrow-alt-circle-right gra-carousel-nav gra-carousel-next"></span>',
+                "<span class=\"far fa-2x fa-arrow-alt-circle-right gra-carousel-nav gra-carousel-next\"></span>",
             responsive: [
                 {
                     breakpoint: 993,
