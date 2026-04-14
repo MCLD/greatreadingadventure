@@ -18,7 +18,9 @@ function ResetSpinners(target) {
         target.children(".fa-spinner").addClass("d-none");
     } else {
         $(".btn-spinner, .btn-spinner-no-validate").removeClass("disabled");
-        $(".btn-spinner, .btn-spinner-no-validate").children(".fa-spinner").addClass("d-none");
+        $(".btn-spinner, .btn-spinner-no-validate")
+            .children(".fa-spinner")
+            .addClass("d-none");
     }
 }
 
@@ -53,7 +55,10 @@ function graGetLocalDate() {
     return localDate;
 }
 function graPickerSetDate(datePicker, date) {
-    datePicker.dates.setValue(datePicker.dates.parseInput(date), datePicker.dates.lastPickedIndex);
+    datePicker.dates.setValue(
+        datePicker.dates.parseInput(date),
+        datePicker.dates.lastPickedIndex,
+    );
 }
 
 function graInitalizePickerDatetime(element) {
@@ -155,6 +160,44 @@ function graInitalizePickerTime(element) {
     });
 }
 
+/* ensure that aria-describedby points to a valid element */
+
+function graValidateDescribedBy(element) {
+    const validElements = [];
+    let invalidElementsFound = false;
+    element
+        .getAttribute("aria-describedby")
+        .split(" ")
+        .forEach((el) => {
+            if (document.getElementById(el) != null) {
+                validElements.push(el);
+            } else {
+                invalidElementsFound = true;
+            }
+        });
+    if (invalidElementsFound) {
+        if (validElements.length === 0) {
+            element.removeAttribute("aria-describedby");
+        } else {
+            element.setAttribute("aria-describedby", validElements.join(" "));
+        }
+    }
+}
+
+// monitor fields that have validation enabled and ensure that the aria-describedby is never
+// set to the name of a non-existent element which is invalid per WCAG v2.2 level A
+const graDescribedByObserver = new MutationObserver((mutationList, _) => {
+    for (const mutation of mutationList) {
+        if (
+            mutation.type === "attributes" &&
+            mutation.attributeName === "aria-describedby" &&
+            mutation.target.getAttribute("aria-describedby") != null
+        ) {
+            graValidateDescribedBy(mutation.target);
+        }
+    }
+});
+
 /* event binding */
 
 window.onunload = function () {
@@ -171,7 +214,7 @@ $().ready(function () {
             prevArrow:
                 "<span class=\"far fa-2x fa-arrow-alt-circle-left gra-carousel-nav gra-carousel-prev\"></span>",
             nextArrow:
-               "<span class=\"far fa-2x fa-arrow-alt-circle-right gra-carousel-nav gra-carousel-next\"></span>",
+                "<span class=\"far fa-2x fa-arrow-alt-circle-right gra-carousel-nav gra-carousel-next\"></span>",
             responsive: [
                 {
                     breakpoint: 993,
@@ -198,18 +241,28 @@ $().ready(function () {
         });
     }
 
-    let graDatetimePickers = document.querySelectorAll(".gra-picker-datetime");
+    const graDatetimePickers = document.querySelectorAll(".gra-picker-datetime");
     for (let i = 0; i < graDatetimePickers.length; i++) {
         graInitalizePickerDatetime(graDatetimePickers[i]);
     }
 
-    let graDatePickers = document.querySelectorAll(".gra-picker-date");
+    const graDatePickers = document.querySelectorAll(".gra-picker-date");
     for (let i = 0; i < graDatePickers.length; i++) {
         graInitalizePickerDate(graDatePickers[i]);
     }
 
-    let graTimePickers = document.querySelectorAll(".gra-picker-time");
+    const graTimePickers = document.querySelectorAll(".gra-picker-time");
     for (let i = 0; i < graTimePickers.length; i++) {
         graInitalizePickerTime(graTimePickers[i]);
     }
+
+    // add mutation observer for elements on page
+    document.querySelectorAll("[data-val='true']").forEach((el) => {
+        graDescribedByObserver.observe(el, { attributes: true });
+    });
+
+    // check elements on page load for validity
+    document
+        .querySelectorAll("[aria-descibedby]")
+        .forEach(graValidateDescribedBy);
 });
