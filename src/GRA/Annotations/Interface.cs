@@ -33,6 +33,7 @@
         public const string Certificates = "Certificates";
         public const string ChangePassword = "Change Password";
         public const string ChooseAnOption = "Choose an option:";
+        public const string ChooseFromThisList = "Choose from this list";
         public const string Clear = "Clear";
         public const string CloseDialog = "Close dialog.";
         public const string CommunityExperiences = "Community Experiences";
@@ -105,6 +106,8 @@
         public const string SecretCodeApplied = "Secret code applied!";
         public const string SeeItemsUnlocked = "See the items you unlocked.";
         public const string SelectABundle = "Select a Bundle";
+        public const string SelectedItem = "Selected item";
+        public const string SelectedItems = "Selected items";
         public const string SendMail = "Send Mail";
         public const string SendReply = "Send Reply";
         public const string SentOn = "Sent to you on {0}";

@@ -168,11 +168,12 @@
                         @if (Model.CategoryList?.Count() > 0)
                         {
                             <div id="Category" class="row mb-2">
-                                <label asp-for="CategoryIds" class="col-12 col-md-2 col-form-label">
+                                <label asp-for="CategoryIds"
+                                       class="col-12 col-md-2 col-form-label">
                                     @SharedLocalizer[GRA.Domain.Model.DisplayNames.Category]:
                                 </label>
                                 <div class="col-12 col-md-10">
-                                    <select aria-label="Select categories from this list"
+                                    <select aria-label="@SharedLocalizer[GRA.Annotations.Interface.ChooseFromThisList]"
                                             asp-for="CategoryIds"
                                             asp-items="Model.CategoryList"
                                             autocomplete="off"
@@ -473,12 +474,9 @@
     {
         <script>
             document.addEventListener("DOMContentLoaded", _ => {
-                new TomSelect("#CategoryIds");
-                const tomInput = document.getElementById("CategoryIds-ts-control");
-                if(tomInput) {
-                    tomInput.setAttribute("aria-label", "Selected categories");
-                    tomInput.removeAttribute("aria-labelledby")
-                }
+                const categoryIds = "CategoryIds";
+                new TomSelect(`#${categoryIds}`);
+                graFixTomSelect(categoryIds, "@SharedLocalizer[GRA.Annotations.Interface.SelectedItems]");
             });
         </script>
     }

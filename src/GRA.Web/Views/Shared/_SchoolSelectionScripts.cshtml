@@ -39,15 +39,12 @@
     });
 
     document.addEventListener("DOMContentLoaded", _ => {
-        schoolIdSelect = new TomSelect("#SchoolId",{
+        const schoolId = "SchoolId";
+        schoolIdSelect = new TomSelect(`#${schoolId}`, {
             create: false,
             maxOptions: @(Model.SchoolList?.Count() ?? 1200)
         });
-        const tomInput = document.getElementById("SchoolId-ts-control");
-        if(tomInput) {
-            tomInput.setAttribute("aria-label", "Selected school");
-            tomInput.removeAttribute("aria-labelledby")
-        }
+        graFixTomSelect(schoolId, "@SharedLocalizer[GRA.Annotations.Interface.SelectedItem]");
     });
 </script>
 
