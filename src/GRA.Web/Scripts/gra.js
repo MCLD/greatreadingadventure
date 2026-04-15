@@ -228,9 +228,9 @@ $().ready(function () {
             autoplay: false,
             dots: false,
             prevArrow:
-                '<span class="far fa-2x fa-arrow-alt-circle-left gra-carousel-nav gra-carousel-prev"></span>',
+                "<span class=\"far fa-2x fa-arrow-alt-circle-left gra-carousel-nav gra-carousel-prev\"></span>",
             nextArrow:
-                '<span class="far fa-2x fa-arrow-alt-circle-right gra-carousel-nav gra-carousel-next"></span>',
+                "<span class=\"far fa-2x fa-arrow-alt-circle-right gra-carousel-nav gra-carousel-next\"></span>",
             responsive: [
                 {
                     breakpoint: 993,
