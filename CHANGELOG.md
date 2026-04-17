@@ -31,6 +31,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - System setting to require participant email address
 - System setting to show "only available at" next to prizes
 - Validation of aria-describedby attributes when using data validation
+- JavaScript fix to support improved accessibility for TomSelect
 
 ## Changed
 

@@ -160,6 +160,22 @@ function graInitalizePickerTime(element) {
     });
 }
 
+/* TomSelect fix for accessibility - TomSelect creates new form elements which clone extant aria-
+   attributes. This cleans them up so that they meet WCAG 2.2 Level A and AA. */
+
+function graFixTomSelect(selectId, listLabel) {
+    const tomInput = document.getElementById(`${selectId}-ts-control`);
+    if (tomInput) {
+        tomInput.removeAttribute("aria-labelledby");
+        tomInput.removeAttribute("aria-label");
+    }
+    const tomDrop = document.getElementById(`${selectId}-ts-dropdown`);
+    if (tomDrop) {
+        tomDrop.removeAttribute("aria-labelledby");
+        tomDrop.setAttribute("aria-label", listLabel);
+    }
+}
+
 /* ensure that aria-describedby points to a valid element */
 
 function graValidateDescribedBy(element) {

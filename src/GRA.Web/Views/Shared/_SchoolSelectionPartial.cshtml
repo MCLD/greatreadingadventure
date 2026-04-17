@@ -1,10 +1,11 @@
 ﻿@model GRA.Controllers.ViewModel.Shared.SchoolSelectionViewModel
 
-
 <div id="schoolGroup" class="row mb-3">
     <div class="col-12">
-        <label class="col-form-label">@SharedLocalizer[GRA.Domain.Model.DisplayNames.School]</label>
-        <select asp-for="SchoolId"
+        <label class="col-form-label"
+               asp-for="SchoolId">@SharedLocalizer[GRA.Domain.Model.DisplayNames.School]</label>
+        <select aria-label="@SharedLocalizer[GRA.Annotations.Interface.ChooseFromThisList]"
+                asp-for="SchoolId"
                 asp-items="Model.SchoolList"
                 class="form-select">
             <option></option>

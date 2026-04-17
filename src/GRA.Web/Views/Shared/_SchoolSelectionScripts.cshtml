@@ -38,11 +38,13 @@
         }
     });
 
-    $(function() {
-        schoolIdSelect = new TomSelect("#SchoolId",{
+    document.addEventListener("DOMContentLoaded", _ => {
+        const schoolId = "SchoolId";
+        schoolIdSelect = new TomSelect(`#${schoolId}`, {
             create: false,
             maxOptions: @(Model.SchoolList?.Count() ?? 1200)
         });
+        graFixTomSelect(schoolId, "@SharedLocalizer[GRA.Annotations.Interface.SelectedItem]");
     });
 </script>
 
