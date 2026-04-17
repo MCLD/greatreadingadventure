@@ -377,6 +377,10 @@
     <value>Choose an option:</value>
     <comment>Inform a participant that they may choose one of the following options</comment>
   </data>
+  <data name="Choose from this list" xml:space="preserve">
+    <value>Choose from this list</value>
+    <comment>In a list of items the participant will choose one or one or more items</comment>
+  </data>
   <data name="Clear" xml:space="preserve">
     <value>Clear</value>
     <comment>Button text to clear out entries from a form</comment>
@@ -1108,6 +1112,14 @@
   <data name="Select a Bundle" xml:space="preserve">
     <value>Select a Bundle</value>
     <comment>A bundle is a collection of avatar parts that are unlocked during participation. This text goes in a drop-down allowing the user to select a particular bundle to explore the parts it contains.</comment>
+  </data>
+  <data name="Selected item" xml:space="preserve">
+    <value>Selected item</value>
+    <comment>A field with a single selected item (e.g. school)</comment>
+  </data>
+  <data name="Selected items" xml:space="preserve">
+    <value>Selected items</value>
+    <comment>A field with one or more selected items (e.g. challenge categories)</comment>
   </data>
   <data name="Send Mail" xml:space="preserve">
     <value>Send Mail</value>
