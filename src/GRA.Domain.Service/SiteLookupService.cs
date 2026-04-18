@@ -72,10 +72,10 @@ namespace GRA.Domain.Service
                             SiteId = siteId,
                             Value = settingDictionary[key].DefaultValue
                         });
+                        _logger.LogInformation("Adding site setting default for {Key}: {Value}",
+                            key,
+                            settingDictionary[key].DefaultValue);
                     }
-                    _logger.LogInformation("Adding site setting default for {Key}: {Value}",
-                        key,
-                        settingDictionary[key].DefaultValue);
                 }
 
                 if (addSettings?.Count > 0)
