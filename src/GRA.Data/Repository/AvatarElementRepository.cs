@@ -39,7 +39,6 @@ namespace GRA.Data.Repository
                         .AltText,
                     AvatarColorId = _.AvatarElement.AvatarColorId,
                     AvatarItemId = _.AvatarElement.AvatarItemId,
-                    Filename = _.AvatarElement.Filename,
                     LayerId = _.AvatarElement.AvatarItem.AvatarLayerId,
                     LayerPosition = _.AvatarElement.AvatarItem.AvatarLayer.Position
                 })

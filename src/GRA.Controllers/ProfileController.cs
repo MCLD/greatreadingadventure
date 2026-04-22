@@ -1168,7 +1168,7 @@ namespace GRA.Controllers
                     if (bundle.AvatarItems.Count > 0)
                     {
                         itemModel.BadgeFilename = _pathResolver.ResolveContentPath(
-                            bundle.AvatarItems.First().Thumbnail);
+                            bundle.AvatarItems.First().GetThumbnailLink(bundle.SiteId));
                         if (bundle.AvatarItems.Count > 1)
                         {
                             var bundleLink = Url.Action(nameof(AvatarController.Index),

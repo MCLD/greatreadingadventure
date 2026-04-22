@@ -163,8 +163,7 @@ namespace GRA.Data.Repository
                         .Where(_ => _.LanguageId == languageId)
                         .FirstOrDefault()
                         .AltText,
-                    Id = _.Id,
-                    Thumbnail = _.Thumbnail
+                    Id = _.Id
                 })
                 .ToListAsync();
         }

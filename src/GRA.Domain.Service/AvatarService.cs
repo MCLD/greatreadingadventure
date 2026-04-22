@@ -343,8 +343,8 @@ namespace GRA.Domain.Service
                     layer.Name = layerText["Name"];
                     layer.RemoveLabel = layerText["RemoveLabel"];
                     layer.AvatarItems = await _avatarItemRepository
-                               .GetUserItemsByLayerAsync(activeUserId, layer.Id, currentLanguageId);
-                    layer.Icon = _pathResolver.ResolveContentPath(layer.Icon);
+                        .GetUserItemsByLayerAsync(activeUserId, layer.Id, currentLanguageId);
+                    layer.IconLink = _pathResolver.ResolveContentPath(layer.GetIconLink());
 
                     if (userAvatar.Count > 0)
                     {
@@ -355,8 +355,8 @@ namespace GRA.Domain.Service
                             layer.AltText = layerSelection.AltText;
                             layer.SelectedItem = layerSelection.AvatarItemId;
                             layer.SelectedColor = layerSelection.AvatarColorId;
-                            layer.FilePath = _pathResolver
-                                .ResolveContentPath(layerSelection.Filename);
+                            layer.FilePath = _pathResolver.ResolveContentPath(layerSelection
+                                .GetFilenameLink(layer.SiteId, layer.Id));
                         }
                         else if (layer.AvatarColors.Count > 0)
                         {

@@ -1,5 +1,12 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Avatar.ColorTextListViewModel
 
+@section inHeading {
+    <div class="ms-auto">
+        <a asp-action="@nameof(AvatarsController.Index)"
+           class="btn btn-outline-secondary ms-2">Back</a>
+    </div>
+}
+
 @await Html.PartialAsync("_TextsPartial")
 
 <div class="row my-4">
