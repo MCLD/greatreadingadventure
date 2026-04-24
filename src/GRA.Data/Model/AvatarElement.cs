@@ -4,15 +4,13 @@ namespace GRA.Data.Model
 {
     public class AvatarElement : Abstract.BaseDbEntity
     {
-        [Required]
-        public int AvatarItemId { get; set; }
-        public AvatarItem AvatarItem { get; set; }
-
-        public int? AvatarColorId { get; set; }
         public AvatarColor AvatarColor { get; set; }
 
-        [MaxLength(255)]
+        public int? AvatarColorId { get; set; }
+
+        public AvatarItem AvatarItem { get; set; }
+
         [Required]
-        public string Filename { get; set; }
+        public int AvatarItemId { get; set; }
     }
 }

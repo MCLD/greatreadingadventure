@@ -23,10 +23,10 @@ else
                             @item.Name
                         </td>
                         <td>
-                            @if (!string.IsNullOrWhiteSpace(item.Thumbnail))
+                            @if (!string.IsNullOrWhiteSpace(item.ThumbnailLink))
                             {
                                 <img class="img-thumbnail badge-xs"
-                                     src="~/@item.Thumbnail?@DateTime.Now.ToString("yyMMddHHmmss")" />
+                                     src="~/@item.ThumbnailLink?@DateTime.Now.ToString("yyMMddHHmmss")" />
                             }
                             else
                             {

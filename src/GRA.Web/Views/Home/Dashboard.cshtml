@@ -72,7 +72,7 @@ else if (Model.HasOrderStatus)
 							<div class="avatar-container-dashboard">
 								@foreach (var layer in Model.AvatarElements)
 								{
-									<img src="~/@layer.Filename"
+									<img src="~/@layer.FilenameLink"
 										 style="z-index: @(layer.LayerPosition + 1)"
                                          class="avatar-layer-dashboard"
 										 alt="@layer.AltText"/>

@@ -57,7 +57,7 @@
                                 <div style="display: inline-block;" class="@(layerGroup.Count == 1 ? "d-none" : "")">
                                     @foreach (var layer in layerGroup)
                                     {
-                                        <img src="~/@layer.Icon"
+                                        <img src="~/@layer.IconLink"
                                              id="@($"selector{layer.Id}")"
                                              class="avatar-layer-selector@(Model.DefaultLayer == layer.Id ? " selected" : "")"
 											 alt="@SharedLocalizer[GRA.Annotations.Interface.AvatarLayerAltText, layer.Name]"

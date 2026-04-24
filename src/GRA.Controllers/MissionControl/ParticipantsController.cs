@@ -2411,8 +2411,10 @@ namespace GRA.Controllers.MissionControl
                             .GetBundleByIdAsync(item.AvatarBundleId.Value, true);
                         if (bundle.AvatarItems.Count > 0)
                         {
-                            itemModel.BadgeFilename = _pathResolver.ResolveContentPath(
-                                bundle.AvatarItems.FirstOrDefault()?.Thumbnail);
+                            itemModel.BadgeFilename = _pathResolver.ResolveContentPath(bundle
+                                .AvatarItems
+                                .FirstOrDefault()?
+                                .GetThumbnailLink(bundle.SiteId));
                             if (bundle.AvatarItems.Count > 1)
                             {
                                 itemModel.Description += $" <strong><a class=\"bundle-link\" data-id=\"{item.AvatarBundleId.Value}\">Click here</a></strong> to see all the items you unlocked.";

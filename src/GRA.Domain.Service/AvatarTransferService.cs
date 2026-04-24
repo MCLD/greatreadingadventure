@@ -552,7 +552,6 @@ namespace GRA.Domain.Service
                     Directory.CreateDirectory(destinationPath);
                 }
 
-                addedLayer.Icon = Path.Combine(destinationRoot, IconPng);
                 File.Copy(Path.Combine(layerAssetPath, IconPng),
                     Path.Combine(destinationPath, IconPng));
 
@@ -706,19 +705,17 @@ namespace GRA.Domain.Service
                     {
                         Directory.CreateDirectory(itemPath);
                     }
-                    item.Thumbnail = Path.Combine(itemRoot, ThumbJpg);
                     File.Copy(Path.Combine(itemAssetPath, ThumbJpg),
                         Path.Combine(itemPath, ThumbJpg));
-                    await _avatarItemRepository.UpdateAsync(requestingUser, item);
+
                     if (colors?.Count > 0)
                     {
                         foreach (var color in colors)
                         {
                             var element = new AvatarElement
                             {
-                                AvatarItemId = item.Id,
                                 AvatarColorId = color.Id,
-                                Filename = Path.Combine(itemRoot, $"item_{color.Id}.png")
+                                AvatarItemId = item.Id
                             };
                             await _avatarElementRepository.AddAsync(requestingUser, element);
                             File.Copy(
@@ -732,7 +729,6 @@ namespace GRA.Domain.Service
                         var element = new AvatarElement
                         {
                             AvatarItemId = item.Id,
-                            Filename = Path.Combine(itemRoot, ItemPng)
                         };
                         await _avatarElementRepository.AddAsync(requestingUser, element);
                         File.Copy(Path.Combine(itemAssetPath, ItemPng),
