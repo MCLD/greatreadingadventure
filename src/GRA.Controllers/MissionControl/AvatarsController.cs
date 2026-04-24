@@ -429,11 +429,8 @@ namespace GRA.Controllers.MissionControl
             var siteId = GetCurrentSiteId();
             foreach (var item in items.Data)
             {
-                if (!string.IsNullOrWhiteSpace(item.ThumbnailLink))
-                {
-                    item.ThumbnailLink = _pathResolver
-                        .ResolveContentPath(item.GetThumbnailLink(siteId));
-                }
+                item.ThumbnailLink = _pathResolver
+                    .ResolveContentPath(item.GetThumbnailLink(siteId));
             }
 
             var viewModel = new ItemsListViewModel
