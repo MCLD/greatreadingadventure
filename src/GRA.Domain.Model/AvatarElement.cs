@@ -23,7 +23,9 @@ namespace GRA.Domain.Model
 
         public string GetFilenameLink(int siteId, int layerId)
         {
-            return $"site{siteId}/avatars/layer{layerId}/item{AvatarItemId}/item_{AvatarColorId}.png";
+            return AvatarColorId.HasValue
+                ? $"site{siteId}/avatars/layer{layerId}/item{AvatarItemId}/item_{AvatarColorId}.png"
+                : $"site{siteId}/avatars/layer{layerId}/item{AvatarItemId}/item.png";
         }
     }
 }
