@@ -32,6 +32,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - System setting to show "only available at" next to prizes
 - Validation of aria-describedby attributes when using data validation
 - JavaScript fix to support improved accessibility for TomSelect
+- Color contrast calculations to ensure accessibility compliance
 
 ## Changed
 
@@ -58,6 +59,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Single program not being selected when adding household members in Mission Control
 - Issue with delay upon each email send
 - Program editing ViewModel properties not being set after ModelState error
+- Avatar paths generated on-the-fly rather than stored in the database
 
 ## [4.6.0] 2024-10-09
 

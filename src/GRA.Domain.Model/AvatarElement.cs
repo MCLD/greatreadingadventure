@@ -15,8 +15,15 @@ namespace GRA.Domain.Model
         [Required]
         public int AvatarItemId { get; set; }
 
-        public string FilenameLink { get; set; }
+        public string Filename
+        {
+            get
+            {
+                return FilenameLink;
+            }
+        }
 
+        public string FilenameLink { get; set; }
         public int LayerId { get; set; }
 
         public int LayerPosition { get; set; }
