@@ -4,7 +4,7 @@
      alt="Great Reading Adventure logo"
      align="right">
 
-The Great Reading Adventure is a robust, open source software designed to manage library reading programs online. The GRA is free to use, modify, and share. Check out [www.greatreadingadventure.com](https://www.greatreadingadventure.com/) for an overview of its functionality and capabilities and [the manual](http://manual.greatreadingadventure.com/) for information about installing and using it.
+[The Great Reading Adventure](https://github.com/MCLD/greatreadingadventure/) ([mirror](https://codeberg.org/MCLD/greatreadingadventure)) is a robust, open source software designed to manage library reading programs online. The GRA is free to use, modify, and share. Check out [www.greatreadingadventure.com](https://www.greatreadingadventure.com/) for an overview of its functionality and capabilities and [the manual](http://manual.greatreadingadventure.com/) for information about installing and using it.
 
 You can view the latest [release notes](https://github.com/MCLD/greatreadingadventure/releases/latest) or **[download the latest version (4.6.0)](https://github.com/MCLD/greatreadingadventure/releases/download/v4.6.0/GreatReadingAdventure-4.6.0.zip)**.
 
