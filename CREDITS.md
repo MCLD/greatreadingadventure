@@ -45,6 +45,7 @@ The Great Reading Adventure is open source software developed with the help of [
 - [AppHarbor](https://appharbor.com/) - free hosting tier that will run the GRA for testing
 - [AppVeyor](http://www.appveyor.com/) - continuous integration, ensuring code check-ins don't break Windows builds
 - [Codacy](https://www.codacy.com/) - automated code reviews and code analytics
+- [Codeberg](https://codeberg.org/MCLD/greatreadingadventure/) - mirrors the source code
 - [Docker](https://www.docker.com/) - containerized builds and deployment
 - [Eleven Giants](http://www.elevengiants.com/) - helped with extraction of avatars from the Glitch public domain game art
 - [GitHub](https://github.com/) - hosts the source code, discussions, issue tracker, continuous integration, Wiki, [www.greatreadingadventure.com](http://www.greatreadingadventure.com/) and more
