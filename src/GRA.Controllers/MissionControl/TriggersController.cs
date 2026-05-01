@@ -456,7 +456,6 @@ namespace GRA.Controllers.MissionControl
             var viewModel = new TriggersDetailViewModel
             {
                 Action = "Edit",
-                AwardsAttachment = !string.IsNullOrWhiteSpace(trigger.AwardAttachmentFilename),
                 AwardsMail = !string.IsNullOrWhiteSpace(trigger.AwardMailSubject),
                 AwardsPrize = !string.IsNullOrWhiteSpace(trigger.AwardPrizeName),
                 BadgeAltText = badge.AltText,
@@ -534,6 +533,8 @@ namespace GRA.Controllers.MissionControl
             {
                 viewModel.Trigger.AwardAttachmentFilename
                     = _pathResolver.ResolveContentPath(attachment.FileName);
+                viewModel.AwardsAttachment 
+                    = !string.IsNullOrWhiteSpace(trigger.AwardAttachmentFilename);
             }
             if (UserHasPermission(Permission.ManageEvents))
             {
