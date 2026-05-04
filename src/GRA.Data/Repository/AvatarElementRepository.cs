@@ -28,17 +28,16 @@ namespace GRA.Data.Repository
 
         public async Task<ICollection<AvatarElement>> GetUserAvatarAsync(int userId, int languageId)
         {
-
             return await _context.UserAvatars.AsNoTracking()
                 .Where(_ => _.UserId == userId)
                 .Select(_ => new AvatarElement
                 {
                     AltText = _.AvatarElement.AvatarItem.Texts
-                        .Where(_ => _.LanguageId == languageId)
-                        .FirstOrDefault()
+                        .FirstOrDefault(_ => _.LanguageId == languageId)
                         .AltText,
                     AvatarColorId = _.AvatarElement.AvatarColorId,
                     AvatarItemId = _.AvatarElement.AvatarItemId,
+                    Id = _.AvatarElementId,
                     LayerId = _.AvatarElement.AvatarItem.AvatarLayerId,
                     LayerPosition = _.AvatarElement.AvatarItem.AvatarLayer.Position
                 })
