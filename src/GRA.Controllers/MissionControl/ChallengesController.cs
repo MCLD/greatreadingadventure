@@ -517,7 +517,7 @@ namespace GRA.Controllers.MissionControl
                         }
                         else
                         {
-                            ShowAlertWarning("Challenge was not activated due to issue editing.");
+                            ShowAlertWarning("Challenge was not activated due to insufficient tasks.");
                         }
                     }
                 }
