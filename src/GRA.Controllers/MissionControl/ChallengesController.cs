@@ -497,16 +497,28 @@ namespace GRA.Controllers.MissionControl
                     }
                     AlertSuccess = $"Challenge '<strong>{challenge.Name}</strong>' was successfully modified";
 
-                    var hasPermissions = UserHasPermission(Permission.ActivateAllChallenges)
-                            || UserHasPermission(Permission.ActivateSystemChallenges);
-
-                    if (Submit == "Activate"
-                        && hasPermissions
-                        && challenge.RelatedSystemId == GetId(ClaimType.SystemId)
-                        && serviceResult.Data.IsValid)
+                    if (Submit == "Activate")
                     {
-                        await _challengeService.ActivateChallengeAsync(serviceResult.Data);
-                        AlertSuccess = $"Challenge '<strong>{challenge.Name}</strong>' was successfully modified and activated";
+                        if (serviceResult.Data.IsValid)
+                        {
+                            var canActivate = UserHasPermission(Permission.ActivateAllChallenges)
+                                || (UserHasPermission(Permission.ActivateSystemChallenges)
+                                    && challenge.RelatedSystemId == GetId(ClaimType.SystemId));
+
+                            if (canActivate)
+                            {
+                                await _challengeService.ActivateChallengeAsync(serviceResult.Data);
+                                ShowAlertSuccess($"Challenge <strong>{challenge.Name}</strong> was successfully modified and activated");
+                            }
+                            else
+                            {
+                                ShowAlertWarning("Permission to activate challenge denied.");
+                            }
+                        }
+                        else
+                        {
+                            ShowAlertWarning("Challenge was not activated due to insufficient tasks.");
+                        }
                     }
                 }
                 catch (GraException gex)
