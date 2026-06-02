@@ -86,6 +86,9 @@ namespace GRA.Controllers
                     Directory.CreateDirectory(directory);
                 }
 
+                // create an image with the preferred dimensions for a landscape Instagram post
+                // https://www.adobe.com/express/discover/sizes/instagram
+
                 var timer = Stopwatch.StartNew();
                 using var image = await Image.LoadAsync(avatarPath);
                 image.Mutate(_ => _.Resize(1080, 567));
@@ -247,6 +250,10 @@ namespace GRA.Controllers
                 filePath = _pathResolver.ResolveContentFilePath(Path.Combine([.. avatarPath]));
                 if (!System.IO.File.Exists(filePath))
                 {
+
+                    // create an image with the preferred dimensions for Facebook link sharing
+                    // https://www.adobe.com/express/discover/sizes/facebook
+
                     var timer = Stopwatch.StartNew();
                     using var image = new Image<Rgba32>(1200, 630);
                     var background = _pathResolver.ResolveContentFilePath(
