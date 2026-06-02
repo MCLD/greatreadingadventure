@@ -46,13 +46,12 @@ namespace GRA.Web
         private const string ConnectionStringNameSqlServer = "SqlServer";
         private const string DefaultInitialProgramSetup = ConfigurationMultipleProgramValue;
         private const string ErrorControllerPath = "/Error";
-        private readonly IConfiguration _config;
-        private readonly bool _isDevelopment;
+        private readonly IConfiguration config;
+        private readonly bool isDevelopment;
 
-        public Startup(IConfiguration config,
-            IWebHostEnvironment env)
+        public Startup(IConfiguration config, IWebHostEnvironment env)
         {
-            _config = config ?? throw new ArgumentNullException(nameof(config));
+            this.config = config ?? throw new ArgumentNullException(nameof(config));
 
             var defaults = new Dictionary<string, string>
             {
@@ -61,27 +60,27 @@ namespace GRA.Web
                 { ConfigurationKey.DefaultSitePath, "gra" },
                 { ConfigurationKey.DefaultFooter, "This site is running the open source <a href=\"https://www.greatreadingadventure.com/\">Great Reading Adventure</a> software developed by the <a href=\"https://mcldaz.org/\">Maricopa County Library District</a> with support by the <a href=\"https://azlibrary.gov/\">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, and with federal funds from the <a href=\"https://imls.gov/\">Institute of Museum and Library Services</a>." },
                 { ConfigurationKey.InitialAuthorizationCode, "gra4adminmagic" },
-                { ConfigurationKey.ContentPath, "content" }
+                { ConfigurationKey.ContentPath, "content" },
             };
 
             foreach (string configKey in defaults.Keys)
             {
-                if (string.IsNullOrEmpty(_config[configKey]))
+                if (string.IsNullOrEmpty(this.config[configKey]))
                 {
-                    _config[configKey] = defaults[configKey];
+                    this.config[configKey] = defaults[configKey];
                 }
             }
 
-            _isDevelopment = env.IsDevelopment();
+            isDevelopment = env?.IsDevelopment() == true;
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        // the runtime calls this method to configure the HTTP request pipeline
         public void Configure(IApplicationBuilder app, IPathResolver pathResolver)
         {
             ArgumentNullException.ThrowIfNull(app);
             ArgumentNullException.ThrowIfNull(pathResolver);
 
-            if (_isDevelopment)
+            if (isDevelopment)
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -91,22 +90,23 @@ namespace GRA.Web
             }
 
             app.UseStatusCodePagesWithReExecute(string.Join("/",
-                "",
+                string.Empty,
                 Controllers.ErrorController.Name,
                 nameof(Controllers.ErrorController.Index),
                 "{0}"));
 
             // override proxy IP address if one is present
-            if (!string.IsNullOrEmpty(_config[ConfigurationKey.ReverseProxyAddress]))
+            if (!string.IsNullOrEmpty(config[ConfigurationKey.ReverseProxyAddress]))
             {
                 app.UseForwardedHeaders(new ForwardedHeadersOptions
                 {
                     ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.All,
                     RequireHeaderSymmetry = false,
                     ForwardLimit = null,
-                    KnownProxies = {
-                        System.Net.IPAddress.Parse(_config[ConfigurationKey.ReverseProxyAddress])
-                    }
+                    KnownProxies =
+                    {
+                        System.Net.IPAddress.Parse(config[ConfigurationKey.ReverseProxyAddress]),
+                    },
                 });
             }
 
@@ -128,7 +128,7 @@ namespace GRA.Web
             {
                 DefaultRequestCulture = new RequestCulture(Culture.DefaultCulture),
                 SupportedCultures = Culture.SupportedCultures,
-                SupportedUICultures = Culture.SupportedCultures
+                SupportedUICultures = Culture.SupportedCultures,
             };
             requestLocalizationOptions.RequestCultureProviders.Insert(0,
                 new RouteDataRequestCultureProvider { Options = requestLocalizationOptions });
@@ -141,7 +141,7 @@ namespace GRA.Web
 
             app.UseRequestLocalization(requestLocalizationOptions);
 
-            if (!_isDevelopment)
+            if (!isDevelopment)
             {
                 app.UseResponseCompression();
             }
@@ -156,9 +156,9 @@ namespace GRA.Web
                     var headers = _.Context.Response.GetTypedHeaders();
                     headers.CacheControl = new CacheControlHeaderValue
                     {
-                        MaxAge = TimeSpan.FromDays(7)
+                        MaxAge = TimeSpan.FromDays(7),
                     };
-                }
+                },
             });
 
             string contentPath = pathResolver.ResolveContentFilePath();
@@ -195,13 +195,13 @@ namespace GRA.Web
                     var headers = _.Context.Response.GetTypedHeaders();
                     headers.CacheControl = new CacheControlHeaderValue
                     {
-                        MaxAge = TimeSpan.FromDays(7)
+                        MaxAge = TimeSpan.FromDays(7),
                     };
                 },
-                ContentTypeProvider = extensionContentTypeProvider
+                ContentTypeProvider = extensionContentTypeProvider,
             });
 
-            if (!string.IsNullOrEmpty(_config[ConfigurationKey.EnableRequestLogging]))
+            if (!string.IsNullOrEmpty(config[ConfigurationKey.EnableRequestLogging]))
             {
                 app.UseSerilogRequestLogging();
             }
@@ -254,7 +254,7 @@ namespace GRA.Web
 
             app.UseWebSockets(new WebSocketOptions
             {
-                KeepAliveInterval = TimeSpan.FromSeconds(30)
+                KeepAliveInterval = TimeSpan.FromSeconds(30),
             });
 
             app.Use(async (context, next) =>
@@ -287,7 +287,7 @@ namespace GRA.Web
                         .Single(p => p.GetType() == typeof(QueryStringRequestCultureProvider)));
             });
 
-            string discriminator = _config[ConfigurationKey.ApplicationDiscriminator]
+            string discriminator = config[ConfigurationKey.ApplicationDiscriminator]
                 ?? "gra";
 
             // Add framework services.
@@ -300,10 +300,10 @@ namespace GRA.Web
                 _.Cookie.Name = $"{discriminator}-session";
             });
 
-            services.TryAddSingleton(_ => _config);
+            services.TryAddSingleton(_ => config);
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            if (!_isDevelopment)
+            if (!isDevelopment)
             {
                 services.AddResponseCompression(_ =>
                 {
@@ -324,34 +324,35 @@ namespace GRA.Web
                 });
             }
 
-            switch (_config[ConfigurationKey.DistributedCache]?.ToLower(Culture.DefaultCulture))
+            switch (config[ConfigurationKey.DistributedCache]?.ToLower(Culture.DefaultCulture))
             {
                 case "redis":
-                    string redisConfig = _config[ConfigurationKey.RedisConfiguration]
+                    string redisConfig = config[ConfigurationKey.RedisConfiguration]
                         ?? throw new GraFatalException($"{ConfigurationKey.DistributedCache} has Redis selected but {ConfigurationKey.RedisConfiguration} is not set.");
                     string redisInstance = "gra." + discriminator;
                     if (!redisInstance.EndsWith(".", StringComparison.OrdinalIgnoreCase))
                     {
                         redisInstance += ".";
                     }
+
                     services.AddStackExchangeRedisCache(_ =>
                     {
                         _.Configuration = redisConfig;
                         _.InstanceName = redisInstance;
                     });
-                    _config[ConfigurationKey.RuntimeCacheRedisConfiguration] = redisConfig;
-                    _config[ConfigurationKey.RuntimeCacheRedisInstance] = redisInstance;
+                    config[ConfigurationKey.RuntimeCacheRedisConfiguration] = redisConfig;
+                    config[ConfigurationKey.RuntimeCacheRedisInstance] = redisInstance;
                     break;
 
                 case "sqlserver":
-                    string sessionCs = _config.GetConnectionString("SqlServerSessions")
+                    string sessionCs = config.GetConnectionString("SqlServerSessions")
                         ?? throw new GraFatalException($"{ConfigurationKey.DistributedCache} has SQL Server selected but SqlServerSessions connection string is not set.");
-                    string sessionTable = _config[ConfigurationKey.SqlSessionTable] ?? "Sessions";
-                    _config[ConfigurationKey.RuntimeCacheSqlConfiguration] = sessionTable;
+                    string sessionTable = config[ConfigurationKey.SqlSessionTable] ?? "Sessions";
+                    config[ConfigurationKey.RuntimeCacheSqlConfiguration] = sessionTable;
                     services.AddDistributedSqlServerCache(_ =>
                     {
                         _.ConnectionString = sessionCs;
-                        _.SchemaName = _config[ConfigurationKey.SqlSessionSchemaName] ?? "dbo";
+                        _.SchemaName = config[ConfigurationKey.SqlSessionSchemaName] ?? "dbo";
                         _.TableName = sessionTable;
                     });
                     break;
@@ -391,11 +392,12 @@ namespace GRA.Web
                     "js/moment-timezone.min.js",
                     "js/tom-select.complete.js",
                     "Scripts/gra.js").UseContentRoot();
+
                 // this tool cannot currently minify tempus-dominus.js
                 _.AddJavaScriptBundle("/js/tempus-dominus.min.js",
                     new WebOptimizer.Processors.JsSettings
                     {
-                        CodeSettings = new NUglify.JavaScript.CodeSettings { MinifyCode = false }
+                        CodeSettings = new NUglify.JavaScript.CodeSettings { MinifyCode = false },
                     },
                     "js/tempus-dominus.min.js").UseContentRoot();
                 _.AddJavaScriptBundle("/js/performerregistration.min.js",
@@ -440,9 +442,8 @@ namespace GRA.Web
             });
 
             // Add custom view directory
-            services.Configure<RazorViewEngineOptions>(options =>
-                options.ViewLocationFormats.Insert(0, "/shared/views/{1}/{0}.cshtml")
-            );
+            services.Configure<RazorViewEngineOptions>(_ =>
+                _.ViewLocationFormats.Insert(0, "/shared/views/{1}/{0}.cshtml"));
 
             services.AddAntiforgery(_ => _.Cookie.Name = $"{discriminator}-af");
 
@@ -479,12 +480,12 @@ namespace GRA.Web
             services.AddScoped<Data.ServiceFacade.Repository, Data.ServiceFacade.Repository>();
 
             // database
-            if (string.IsNullOrEmpty(_config[ConfigurationKey.ConnectionStringName]))
+            if (string.IsNullOrEmpty(config[ConfigurationKey.ConnectionStringName]))
             {
                 throw new GraFatalException("GraConnectionStringName is not configured in appsettings.json - cannot continue");
             }
 
-            string csName = _config[ConfigurationKey.ConnectionStringName]
+            string csName = config[ConfigurationKey.ConnectionStringName]
                 ?? throw new GraFatalException($"{ConfigurationKey.ConnectionStringName} must be provided.");
 
             // configure ef errors to throw, log, or ignore as appropriate for the environment
@@ -493,27 +494,27 @@ namespace GRA.Web
             var logEvents = new List<EventId>();
             var ignoreEvents = new List<EventId>();
 
-            string cs = _config.GetConnectionString(csName)
+            string cs = config.GetConnectionString(csName)
                 ?? throw new GraFatalException($"A {csName} connection string must be provided.");
-            switch (_config[ConfigurationKey.ConnectionStringName])
+            switch (config[ConfigurationKey.ConnectionStringName])
             {
                 case ConnectionStringNameSqlServer:
                     services.AddDbContextPool<Data.Context, Data.SqlServer.SqlServerContext>(
                         _ => _.UseSqlServer(cs)
-                        .ConfigureWarnings(w => w
-                            .Throw(throwEvents.ToArray())
-                            .Log(logEvents.ToArray())
-                            .Ignore(ignoreEvents.ToArray())));
+                        .ConfigureWarnings(_ => _
+                            .Throw([.. throwEvents])
+                            .Log([.. logEvents])
+                            .Ignore([.. ignoreEvents])));
                     services.AddHealthChecks();
                     break;
 
                 case ConnectionStringNameSQLite:
                     services.AddDbContextPool<Data.Context, Data.SQLite.SQLiteContext>(
                         _ => _.UseSqlite(cs)
-                            .ConfigureWarnings(w => w
-                                .Throw(throwEvents.ToArray())
-                                .Log(logEvents.ToArray())
-                                .Ignore(ignoreEvents.ToArray())));
+                            .ConfigureWarnings(_ => _
+                                .Throw([.. throwEvents])
+                                .Log([.. logEvents])
+                                .Ignore([.. ignoreEvents])));
                     services.AddHealthChecks();
                     break;
 
@@ -542,7 +543,7 @@ namespace GRA.Web
             services.AddScoped<Controllers.Filter.NotificationFilter>();
             services.AddScoped<Controllers.Filter.SessionTimeoutFilterAttribute>();
             services.AddScoped<Controllers.Filter.SiteFilterAttribute>();
-            services.AddScoped<Controllers.Filter.UserFilter>();
+            services.AddScoped<Controllers.Filter.UserFilterAttribute>();
 
             // services
             services.AddScoped<ActivityService>();
@@ -614,9 +615,9 @@ namespace GRA.Web
             // service resolution
             string initialProgramSetup = DefaultInitialProgramSetup;
 
-            if (!string.IsNullOrEmpty(_config[ConfigurationKey.InitialProgramSetup]))
+            if (!string.IsNullOrEmpty(config[ConfigurationKey.InitialProgramSetup]))
             {
-                initialProgramSetup = _config[ConfigurationKey.InitialProgramSetup];
+                initialProgramSetup = config[ConfigurationKey.InitialProgramSetup];
             }
 
             switch (initialProgramSetup)

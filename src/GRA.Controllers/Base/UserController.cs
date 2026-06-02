@@ -3,12 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GRA.Controllers.Base
 {
-    [ServiceFilter(typeof(UserFilter), Order = 2)]
+    [ServiceFilter(typeof(UserFilterAttribute), Order = 2)]
     [ServiceFilter(typeof(NotificationFilter))]
-    public abstract class UserController : Controller
+    public abstract class UserController(ServiceFacade.Controller context) : Controller(context)
     {
-        protected UserController(ServiceFacade.Controller context) : base(context)
-        {
-        }
     }
 }
