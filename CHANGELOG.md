@@ -62,6 +62,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Avatar paths generated on-the-fly rather than stored in the database
 - Bug with permissions checking for challenge activation
 - Issue with share URL including two forward slashes
+- Exception thrown when Mission Control access is set twice
 
 ## [4.6.0] 2024-10-09
 

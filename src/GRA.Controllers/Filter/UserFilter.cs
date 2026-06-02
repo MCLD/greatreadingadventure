@@ -12,60 +12,60 @@ using Microsoft.Extensions.Logging;
 
 namespace GRA.Controllers.Filter
 {
-    public class UserFilter : Attribute, IAsyncActionFilter
+    [AttributeUsage(AttributeTargets.Class)]
+    public sealed class UserFilterAttribute(
+        ILogger<UserFilterAttribute> logger,
+        ITempDataDictionaryFactory tempDataFactory,
+        MailService mailService,
+        PerformerSchedulingService performerSchedulingService,
+        UserService userService,
+        IUserContextProvider userContextProvider) : Attribute, IAsyncActionFilter
     {
-        private readonly ILogger _logger;
-        private readonly MailService _mailService;
-        private readonly PerformerSchedulingService _performerSchedulingService;
-        private readonly ITempDataDictionaryFactory _tempDataFactory;
-        private readonly IUserContextProvider _userContextProvider;
-        private readonly UserService _userService;
+        public ILogger<UserFilterAttribute> Logger { get; } = logger;
+        public MailService MailService { get; } = mailService;
 
-        public UserFilter(ILogger<UserFilter> logger,
-            ITempDataDictionaryFactory tempDataFactory,
-            MailService mailService,
-            PerformerSchedulingService performerSchedulingService,
-            UserService userService,
-            IUserContextProvider userContextProvider)
-        {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _tempDataFactory = tempDataFactory
-                ?? throw new ArgumentNullException(nameof(tempDataFactory));
-            _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
-            _performerSchedulingService = performerSchedulingService
-                ?? throw new ArgumentNullException(nameof(performerSchedulingService));
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-            _userContextProvider = userContextProvider
-                ?? throw new ArgumentNullException(nameof(userContextProvider));
-        }
+        public PerformerSchedulingService PerformerSchedulingService { get; }
+            = performerSchedulingService;
 
-        public async Task OnActionExecutionAsync(ActionExecutingContext context,
+        public ITempDataDictionaryFactory TempDataFactory { get; } = tempDataFactory;
+        public IUserContextProvider UserContextProvider { get; } = userContextProvider;
+        public UserService UserService { get; } = userService;
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Design",
+            "CA1031:Do not catch general exception types",
+            Justification = "Failure in fetching mail at this point should not crash the filter")]
+        public async Task OnActionExecutionAsync(
+            ActionExecutingContext context,
             ActionExecutionDelegate next)
         {
+            ArgumentNullException.ThrowIfNull(context);
+            ArgumentNullException.ThrowIfNull(next);
+
             var httpContext = context.HttpContext;
             if (httpContext.User.Identity.IsAuthenticated)
             {
                 // Check if the user Id matches the active user id
                 if (httpContext.Session.GetInt32(SessionKey.ActiveUserId)
-                        == _userContextProvider.GetId(httpContext.User, ClaimType.UserId))
+                        == UserContextProvider.GetId(httpContext.User, ClaimType.UserId))
                 {
                     // Check if user can access mission control
                     if (httpContext.User.HasClaim(ClaimType.Permission,
                         nameof(Permission.AccessMissionControl)))
                     {
-                        httpContext.Items.Add(ItemKey.ShowMissionControl, true);
+                        httpContext.Items[ItemKey.ShowMissionControl] = true;
                     }
 
                     // Check if user can access performer registration
                     if (httpContext.User.HasClaim(ClaimType.Permission,
                         nameof(Permission.AccessPerformerRegistration)))
                     {
-                        var settings = await _performerSchedulingService.GetSettingsAsync();
-                        var schedulingStage = _performerSchedulingService
+                        var settings = await PerformerSchedulingService.GetSettingsAsync();
+                        var schedulingStage = PerformerSchedulingService
                             .GetSchedulingStage(settings);
                         if (schedulingStage != PsSchedulingStage.Unavailable)
                         {
-                            httpContext.Items.Add(ItemKey.ShowPerformerRegistration, true);
+                            httpContext.Items[ItemKey.ShowPerformerRegistration] = true;
                         }
                     }
                 }
@@ -84,28 +84,33 @@ namespace GRA.Controllers.Filter
                             .IsDefined(typeof(Attributes.PreventQuestionnaireRedirect)))
                     {
                         var controller = (Base.Controller)context.Controller;
-                        context.Result = controller.RedirectToAction("Index",
+                        context.Result = controller.RedirectToAction(
+                            nameof(QuestionnaireController.Index),
                             "Questionnaire",
                             new { id = pendingQuestionnaire });
                         return;
                     }
                 }
+
                 try
                 {
                     httpContext.Items[ItemKey.UnreadCount]
-                        = await _mailService.GetUserUnreadCountAsync();
+                        = await MailService.GetUserUnreadCountAsync();
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error getting user unread mail count: {Message}", ex.Message);
+                    Logger.LogError(
+                        ex,
+                        "Error getting user unread mail count: {Message}",
+                        ex.Message);
                 }
 
-                var tempData = _tempDataFactory.GetTempData(httpContext);
+                var tempData = TempDataFactory.GetTempData(httpContext);
 
                 if (tempData.ContainsKey(TempDataKey.UserSignedIn))
                 {
-                    tempData.Remove(TempDataKey.UserSignedIn);
                     httpContext.Items[ItemKey.SignedIn] = true;
+                    tempData.Remove(TempDataKey.UserSignedIn);
                 }
             }
             await next();
