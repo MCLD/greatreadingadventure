@@ -2,21 +2,32 @@
 
 @section metadata {
     <social data="Model.Social"
-            description="A customized avatar for {sitename}, sign up to make your own!"></social>
+            description="A customized avatar for {sitename}, join to create your own!"></social>
 }
 
-<div class="row mb-3">
-    <div class="col-12">
-        <a asp-controller="Join" asp-action="Index"><img src="@Model.ImageUrl" class="img-fluid" /></a>
-    </div>
-    <div class="col-12 text-center">
-        <div class="h4 d-block d-sm-none" style="margin-bottom: 1.5rem; margin-top: 1.5rem;">Join now to create your own awesome avatar!</div>
-        <div class="h2 d-none d-sm-block" style="margin-bottom: 2rem;">Join now to create your own awesome avatar!</div>
-    </div>
-    <div class="col-10 offset-xs-1 col-sm-6 offset-sm-3" style="margin-bottom: 2rem;">
-        <a asp-controller="Join" asp-action="Index" class="btn btn-lg btn-outline-primary">
-            <span class="fas fa-book"></span>
-            Join!
-        </a>
+<div class="row">
+    <div class="col-12 col-xxl-10 offset-xxl-1">
+        <div class="card">
+            <div class="card-header h4">
+                <grasite property="pageTitle"></grasite>
+            </div>
+            <div class="card-img-top">
+                <img class="img-fluid"
+                     src="@Model.ImageUrl" />
+            </div>
+            <div class="card-footer d-md-flex justify-content-around align-items-baseline">
+                <div class="h5 text-center my-2">
+                    @SharedLocalizer[GRA.Annotations.Info.JoinNowAvatar]
+                </div>
+                <div class="text-center my-2">
+                    <a asp-action="@nameof(JoinController.Index)"
+                       asp-controller="@JoinController.Name"
+                       class="btn btn-outline-primary">
+                        <span class="fas fa-book fa-fw"></span>
+                        @SharedLocalizer[GRA.Domain.Model.DisplayNames.JoinNow]
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

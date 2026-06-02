@@ -31,6 +31,7 @@
         public const string GroupLeader = "You are leader of the group: <a href=\"{0}\"><strong>{1}</strong></a>";
         public const string GroupMember = "You are in the group: <strong>{0}</strong>";
         public const string GroupRegister = "Register new {0} Member";
+        public const string JoinNowAvatar = "Join now to create your own awesome avatar!";
         public const string LetYouKnowWhen = "Thanks! We'll let you know when you can join the program.";
         public const string MailForHelp = "If you can't find something, please <a href=\"{0}\">send us a mail</a> and let us know what you were looking for, we'll do our best to help.";
         public const string MinutesRead = "Minutes read: <strong>{0:n0}</strong>";

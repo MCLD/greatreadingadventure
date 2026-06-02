@@ -1,25 +1,19 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.Share;
-using GRA.Domain.Service;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace GRA.Controllers
 {
     public class ShareController : Base.UserController
     {
-        private readonly ILogger<ShareController> _logger;
-        private readonly SiteService _siteService;
-        public ShareController(ILogger<ShareController> logger,
-            ServiceFacade.Controller context,
-            SiteService siteService) : base(context)
+        public ShareController(ServiceFacade.Controller context) : base(context)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             PageTitle = "Share";
         }
+
+        public static string Name
+        { get { return "Share"; } }
 
         public async Task<IActionResult> Avatar(string id)
         {
@@ -30,22 +24,25 @@ namespace GRA.Controllers
 
             var site = await GetCurrentSiteAsync();
 
-            var filePath = _pathResolver
-                .ResolveContentFilePath($"site{site.Id}/useravatars/{id}.png");
+            string[] pathElements = [$"site{site.Id}",
+                AvatarController.PathUserAvatars,
+                $"{id}.png"];
+
+            var filePath = _pathResolver.ResolveContentFilePath(Path.Combine(pathElements));
             if (System.IO.File.Exists(filePath))
             {
-                var siteUrl = await _siteLookupService.GetSiteLinkAsync(site.Id);
-                var contentPath = _pathResolver
-                    .ResolveContentPath($"site{site.Id}/useravatars/{id}.png");
-                var imageUrl = Path.Combine(siteUrl.ToString(), contentPath)
-                    .Replace("\\", "/", StringComparison.OrdinalIgnoreCase);
-                var viewModel = new ShareAvatarViewModel()
+                var imageUrl = await _siteLookupService.GetSiteLinkAsync(
+                    site.Id,
+                    _pathResolver.ResolveContentPath(string.Join('/', pathElements))
+                    );
+
+                var viewModel = new ShareAvatarViewModel
                 {
-                    ImageUrl = imageUrl,
+                    ImageUrl = imageUrl.ToString(),
                     Social = new Domain.Model.Social
                     {
                         Description = site.AvatarCardDescription,
-                        ImageLink = imageUrl
+                        ImageLink = imageUrl.ToString()
                     }
                 };
                 return View(viewModel);

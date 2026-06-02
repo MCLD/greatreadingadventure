@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Mime;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using GRA.Controllers.Attributes;
 using GRA.Controllers.ViewModel.Avatar;
@@ -11,6 +14,7 @@ using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Png;
@@ -22,6 +26,9 @@ namespace GRA.Controllers
     [Authorize]
     public class AvatarController : Base.UserController
     {
+        public static readonly string PathUserAvatars = "useravatars";
+        private const string PathAvatars = "avatars";
+        private const string PathIgAvatars = "igavatars";
         private readonly AvatarService _avatarService;
         private readonly ILogger<AvatarController> _logger;
         private readonly SiteService _siteService;
@@ -55,38 +62,51 @@ namespace GRA.Controllers
 
             var siteId = GetCurrentSiteId();
 
-            var igFilePath = _pathResolver.ResolveContentFilePath($"site{siteId}/igavatars/{id}.png");
-            if (System.IO.File.Exists(igFilePath))
+            // check if the file exists first
+            var igFilePath = _pathResolver
+                .ResolveContentFilePath(Path.Combine($"site{siteId}", PathIgAvatars, $"{id}.png"));
+            if (!System.IO.File.Exists(igFilePath))
             {
-                var imageBytes = System.IO.File.ReadAllBytes(igFilePath);
-                return File(imageBytes, "image/png");
-            }
+                // if not check if the user has a saved avatar
+                var avatarPath = _pathResolver.ResolveContentFilePath(Path.Combine(
+                    $"site{siteId}",
+                    PathUserAvatars,
+                    $"{id}.png"));
+                if (!System.IO.File.Exists(avatarPath))
+                {
+                    TempData[TempDataKey.AlertDanger]
+                        = _sharedLocalizer[Annotations.Validate.CustomizeAvatarFirst];
+                    return RedirectToAction(nameof(Index));
+                }
 
-            var avatarPath = _pathResolver.ResolveContentFilePath($"site{siteId}/useravatars/{id}.png");
-            if (System.IO.File.Exists(avatarPath))
-            {
-                var directory = _pathResolver.ResolveContentFilePath($"site{siteId}/igavatars/");
+                var directory = _pathResolver
+                    .ResolveContentFilePath(Path.Combine($"site{siteId}", PathIgAvatars));
                 if (!Directory.Exists(directory))
                 {
                     Directory.CreateDirectory(directory);
                 }
 
-                using (var image = Image.Load(avatarPath))
+                // create an image with the preferred dimensions for a landscape Instagram post
+                // https://www.adobe.com/express/discover/sizes/instagram
+
+                var timer = Stopwatch.StartNew();
+                using var image = await Image.LoadAsync(avatarPath);
+                image.Mutate(_ => _.Resize(1080, 567));
+                image.Mutate(_ => _.Crop(new Rectangle(0, 0, 1080, 566)));
+                await image.SaveAsPngAsync(igFilePath, new PngEncoder
                 {
-                    image.Mutate(_ => _.Resize(1080, 567));
-                    image.Mutate(_ => _.Crop(new Rectangle(0, 0, 1080, 566)));
-                    await image.SaveAsPngAsync(igFilePath, new PngEncoder
-                    {
-                        CompressionLevel = PngCompressionLevel.BestCompression
-                    });
-                }
-                var imageBytes = System.IO.File.ReadAllBytes(igFilePath);
-                return File(imageBytes, "image/png");
+                    CompressionLevel = PngCompressionLevel.BestCompression
+                });
+                _logger.LogInformation(
+                    "Generated avatar share {Type} id {Id} ({Size:F2} kb) in {ElapsedMs} ms",
+                    "export",
+                    id,
+                    new FileInfo(igFilePath).Length / 1024,
+                    timer.ElapsedMilliseconds);
             }
 
-            TempData[TempDataKey.AlertDanger]
-                = _sharedLocalizer[Annotations.Validate.CustomizeAvatarFirst];
-            return RedirectToAction(nameof(Index));
+            return File(await System.IO.File.ReadAllBytesAsync(igFilePath),
+                MediaTypeNames.Image.Png);
         }
 
         [PreventAjaxRedirect]
@@ -98,11 +118,11 @@ namespace GRA.Controllers
         {
             try
             {
+                var siteId = GetCurrentSiteId();
                 var layeritems = await _avatarService.GetUsersItemsByLayerAsync(layerId);
                 var model = new AvatarViewModel
                 {
-                    ItemPath = _pathResolver
-                        .ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
+                    ItemPath = _pathResolver.ResolveContentPath($"site{siteId}/{PathAvatars}/")
                 };
                 switch (type?.ToUpperInvariant())
                 {
@@ -110,7 +130,7 @@ namespace GRA.Controllers
                         model.LayerItems = layeritems;
                         model.SelectedItemId = selectedItemId;
                         model.ItemPath = _pathResolver
-                            .ResolveContentPath($"site{GetCurrentSiteId()}/avatars/");
+                            .ResolveContentPath($"site{siteId}/{PathAvatars}/");
                         model.LayerId = layerId;
                         break;
 
@@ -130,8 +150,7 @@ namespace GRA.Controllers
                     var lookupIndex = model.SelectedItemIds
                         .Select(_ => model.SelectedItemIds
                             .ToList()
-                            .IndexOf(_)
-                            )
+                            .IndexOf(_))
                         .FirstOrDefault(_ => _ != -1);
                     model.SelectedItemIndex = lookupIndex == -1 ? 0 : lookupIndex;
                 }
@@ -145,10 +164,7 @@ namespace GRA.Controllers
                     layerId,
                     gex.Message);
                 Response.StatusCode = StatusCodes.Status400BadRequest;
-                return Json(new
-                {
-                    success = false
-                });
+                return Json(new { success = false });
             }
         }
 
@@ -158,7 +174,8 @@ namespace GRA.Controllers
             if (userWardrobe.Count == 0)
             {
                 ShowAlertDanger("Avatars have not been configured.");
-                _logger.LogError("User {id} tried to customize their avatar but avatars have not been configured!",
+                _logger.LogError(
+                    "User {id} tried to customize their avatar but avatars are not configured!",
                     GetActiveUserId());
                 return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
             }
@@ -209,71 +226,90 @@ namespace GRA.Controllers
             if (userAvatar?.Count > 0)
             {
                 var site = await GetCurrentSiteAsync();
-                var directory = _pathResolver
-                        .ResolveContentFilePath($"site{site.Id}/useravatars/");
-                if (!Directory.Exists(directory))
+
+                // ensure avatar sharing directory exists
+                var avatarPath = new List<string> { $"site{site.Id}", PathUserAvatars };
+                var filePath = _pathResolver.ResolveContentFilePath(Path.Combine([.. avatarPath]));
+                if (!Directory.Exists(filePath))
                 {
-                    Directory.CreateDirectory(directory);
+                    Directory.CreateDirectory(filePath);
                 }
+
                 var viewModel = new ShareViewModel();
-                userAvatar = userAvatar.OrderBy(_ => _.LayerPosition).ToList();
-                using (var md5er = MD5.Create())
+                userAvatar = [.. userAvatar.OrderBy(_ => _.LayerPosition)];
+                var avatarBytes = userAvatar.Select(_ => _.Id)
+                        .SelectMany(BitConverter.GetBytes)
+                        .ToArray();
+                var encoded = MD5.HashData(avatarBytes);
+                viewModel.AvatarId = Convert.ToBase64String(encoded)
+                    .TrimEnd('=')
+                    .Replace('+', '-')
+                    .Replace('/', '-');
+                avatarPath.Add($"{viewModel.AvatarId}.png");
+
+                filePath = _pathResolver.ResolveContentFilePath(Path.Combine([.. avatarPath]));
+                if (!System.IO.File.Exists(filePath))
                 {
-                    var avatarBytes = userAvatar.Select(_ => _.Id)
-                            .SelectMany(BitConverter.GetBytes)
-                            .ToArray();
-                    var encoded = md5er.ComputeHash(avatarBytes);
-                    var filename = Convert.ToBase64String(encoded).TrimEnd('=').Replace('+', '-')
-                        .Replace('/', '-');
-                    viewModel.AvatarId = filename;
-                    var path = $"site{site.Id}/useravatars/{filename}.png";
-                    var filePath = _pathResolver.ResolveContentFilePath(path);
-                    if (!System.IO.File.Exists(filePath))
-                    {
-                        using (var image = new Image<Rgba32>(1200, 630))
-                        {
-                            var background = _pathResolver
-                                .ResolveContentFilePath($"site{site.Id}/avatarbackgrounds/background.png");
-                            image.Mutate(_ => _.DrawImage(Image.Load(background), 1));
 
-                            var avatarPoint = new Point(660, 60);
-                            foreach (var element in userAvatar)
-                            {
-                                var file = _pathResolver.ResolveContentFilePath(element
-                                    .GetFilenameLink(site.Id, element.LayerId));
-                                image.Mutate(_ => _.DrawImage(Image.Load(file), avatarPoint, 1));
-                            }
+                    // create an image with the preferred dimensions for Facebook link sharing
+                    // https://www.adobe.com/express/discover/sizes/facebook
 
-                            await image.SaveAsPngAsync(filePath, new PngEncoder
-                            {
-                                CompressionLevel = PngCompressionLevel.BestCompression
-                            });
-                        }
-                    }
-                    var siteUrl = await _siteLookupService.GetSiteLinkAsync(site.Id);
-                    var contentPath = _pathResolver.ResolveContentPath(path);
-                    viewModel.AvatarImageUrl = Path.Combine(siteUrl.ToString(), contentPath)
-                        .Replace("\\", "/", StringComparison.OrdinalIgnoreCase);
+                    var timer = Stopwatch.StartNew();
+                    using var image = new Image<Rgba32>(1200, 630);
+                    var background = _pathResolver.ResolveContentFilePath(
+                        Path.Combine($"site{site.Id}", "avatarbackgrounds", "background.png"));
+                    var backgroundImage = await Image.LoadAsync(background);
+                    image.Mutate(_ => _.DrawImage(backgroundImage, 1));
 
-                    var shareUrl = siteUrl + Url.Action(nameof(ShareController.Avatar), "Share")
-                        + $"/{filename}";
-                    var facebookShareUrl = $"https://www.facebook.com/sharer/sharer.php?u={shareUrl}";
-                    var twitterShareUrl = $"https://twitter.com/intent/tweet?url={shareUrl}";
-                    if (!string.IsNullOrWhiteSpace(site.TwitterAvatarMessage))
+                    var avatarPoint = new Point(660, 60);
+                    foreach (var element in userAvatar)
                     {
-                        twitterShareUrl += $"&text={site.TwitterAvatarMessage}";
+                        var fileName = _pathResolver.ResolveContentFilePath(element
+                            .GetFilenameLink(site.Id, element.LayerId));
+                        var avatarPartImage = await Image.LoadAsync(fileName);
+                        image.Mutate(_ => _.DrawImage(avatarPartImage, avatarPoint, 1));
                     }
-                    if (!string.IsNullOrWhiteSpace(site.TwitterAvatarHashtags))
+
+                    await image.SaveAsPngAsync(filePath, new PngEncoder
                     {
-                        twitterShareUrl += $"&hashtags={site.TwitterAvatarHashtags}";
-                    }
-                    if (!string.IsNullOrWhiteSpace(site.TwitterUsername))
-                    {
-                        twitterShareUrl += $"&via{site.TwitterUsername}";
-                    }
-                    viewModel.FacebookShareUrl = facebookShareUrl;
-                    viewModel.TwitterShareUrl = twitterShareUrl;
+                        CompressionLevel = PngCompressionLevel.BestCompression
+                    });
+
+                    _logger.LogInformation(
+                        "Generated avatar share {Type} id {Id} ({Size:F2} kb) in {ElapsedMs} ms",
+                        "image",
+                        viewModel.AvatarId,
+                        new FileInfo(filePath).Length / 1024,
+                        timer.ElapsedMilliseconds);
                 }
+                viewModel.AvatarImageUrl = await _siteLookupService.GetSiteLinkAsync(
+                    site.Id,
+                    _pathResolver.ResolveContentPath(string.Join('/', avatarPath))
+                    );
+
+                var shareUrl = await _siteLookupService.GetSiteLinkAsync(
+                    site.Id,
+                    Url.Action(nameof(ShareController.Avatar),
+                        ShareController.Name,
+                        new { id = viewModel.AvatarId })
+                    );
+
+                viewModel.FacebookShareUrl = new Uri(QueryHelpers.AddQueryString(
+                    "https://www.facebook.com/sharer/sharer.php",
+                    new Dictionary<string, string?> { { "u", shareUrl.ToString() } }
+                    ));
+
+                viewModel.TwitterShareUrl = new Uri(QueryHelpers.AddQueryString(
+                    "https://twitter.com/intent/tweet",
+                    new Dictionary<string, string>
+                    {
+                        { "url", shareUrl.ToString() },
+                        { "hashtags", site.TwitterAvatarHashtags },
+                        { "text", site.TwitterAvatarMessage },
+                        { "via", site.TwitterUsername }
+                    }
+                    ));
+
                 return View(viewModel);
             }
             TempData[TempDataKey.AlertDanger]
@@ -326,7 +362,7 @@ namespace GRA.Controllers
         {
             var selection = Newtonsoft.Json.JsonConvert
                         .DeserializeObject<ICollection<AvatarLayer>>(selectionJson);
-            selection = selection.Where(_ => _.SelectedItem.HasValue).ToList();
+            selection = [.. selection.Where(_ => _.SelectedItem.HasValue)];
             await _avatarService.UpdateUserAvatarAsync(selection);
         }
     }

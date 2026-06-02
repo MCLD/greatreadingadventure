@@ -661,6 +661,10 @@
     <value>Join</value>
     <comment>Navigation bar link or page title for  join/sign up</comment>
   </data>
+  <data name="Join now to create your own awesome avatar!" xml:space="preserve">
+    <value>Join now to create your own awesome avatar!</value>
+    <comment>Shown on the OpenGraph share page</comment>
+  </data>
   <data name="Join Now!" xml:space="preserve">
     <value>Join Now!</value>
     <comment>Shown on top of join page as participant signs up for the program after the name of the program and a hyphen (e.g. "The Great Reading Adventure - &lt;this message&gt;")</comment>

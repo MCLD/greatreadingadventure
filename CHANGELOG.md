@@ -61,6 +61,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Program editing ViewModel properties not being set after ModelState error
 - Avatar paths generated on-the-fly rather than stored in the database
 - Bug with permissions checking for challenge activation
+- Issue with share URL including two forward slashes
 
 ## [4.6.0] 2024-10-09
 
