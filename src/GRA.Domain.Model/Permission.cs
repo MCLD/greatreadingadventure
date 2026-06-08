@@ -20,6 +20,7 @@
         IgnorePointLimits,
         ImportHouseholdMembers,
         LogActivityForAny,
+        MailDrawingWinners,
         MailParticipants,
         ManageAvatars,
         ManageBulkEmails,

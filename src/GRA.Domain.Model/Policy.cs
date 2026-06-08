@@ -19,6 +19,7 @@
         public const string EditParticipantUsernames = "EditParticipantUsernames";
         public const string ImportHouseholdMembers = "ImportHouseholdMembers";
         public const string LogActivityForAny = "LogActivityForAny";
+        public const string MailDrawingWinners = "MailDrawingWinners";
         public const string MailParticipants = "MailParticipants";
         public const string ManageAvatars = "ManageAvatars";
         public const string ManageBulkEmails = "ManageBulkEmails";
