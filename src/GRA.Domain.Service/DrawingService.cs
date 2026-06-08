@@ -280,7 +280,7 @@ namespace GRA.Domain.Service
 
                 // prepare and perform the drawing
                 var remainingUsers = new List<int>(eligibleUserIds);
-                var rng = System.Security.Cryptography.RandomNumberGenerator.Create();
+                using var rng = System.Security.Cryptography.RandomNumberGenerator.Create();
                 var randomBytes = new byte[sizeof(int)];
 
                 for (int count = 1; count <= drawing.WinnerCount; count++)
@@ -322,7 +322,7 @@ namespace GRA.Domain.Service
             var authUserId = GetClaimId(ClaimType.UserId);
 
             if (!HasPermission(Permission.PerformDrawing)
-                || !HasPermission(Permission.MailParticipants))
+                || !HasPermission(Permission.MailDrawingWinners))
             {
                 _logger.LogError("User id {AuthId} does not have permission to send drawing winner mail.",
                    authUserId);

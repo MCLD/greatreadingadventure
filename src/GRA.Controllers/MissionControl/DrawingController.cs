@@ -365,7 +365,7 @@ namespace GRA.Controllers.MissionControl
                     PaginateModel = paginateModel
                 };
 
-                if (UserHasPermission(Permission.MailParticipants)
+                if (UserHasPermission(Permission.MailDrawingWinners)
                     && !drawing.Data.NotificationSent
                     && drawing.Data.Winners.Any())
                 {
@@ -619,7 +619,7 @@ namespace GRA.Controllers.MissionControl
             return View(viewModel);
         }
 
-        [Authorize(Policy = Policy.MailParticipants)]
+        [Authorize(Policy = Policy.MailDrawingWinners)]
         [HttpPost]
         public async Task<IActionResult> MailWinners(DrawingDetailViewModel model)
         {

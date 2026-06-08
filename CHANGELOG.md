@@ -45,6 +45,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Vendor status message to include branch name when ready for pick-up
 - Avatar import enhanced to handle new format including localized text
 - Update front-end packages
+- Create separate permission for mailing drawing winners
 
 ## Fixed
 
