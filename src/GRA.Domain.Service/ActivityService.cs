@@ -951,7 +951,7 @@ namespace GRA.Domain.Service
                             trigger.Id);
                         if (prize?.RedeemedAt.HasValue == true)
                         {
-                            throw new GraException("The prize for this trigger has already been reedeemed.");
+                            throw new GraException("The prize for this trigger has already been redeemed.");
                         }
                     }
                 }
