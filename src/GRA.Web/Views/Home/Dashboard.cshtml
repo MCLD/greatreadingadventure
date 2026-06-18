@@ -533,7 +533,7 @@ else if (Model.HasOrderStatus)
 								   data-itemid="@item.Id"
 								   data-title="@item.Title"
 								   data-img="@item.ImageUrl">
-									<img src="@item.ImageUrl" />
+									<img src="@item.ImageUrl" alt="@item.Title" />
 									<p>@item.Title</p>
 								</a>
 							</div>
@@ -564,6 +564,7 @@ else if (Model.HasOrderStatus)
 					<div class="row">
 						<div class="col col-md-3 mb-2">
 							<img id="graCarouselModalImage"
+								 alt=""
 								 class="img-fluid mx-auto d-block" />
 						</div>
 						<div class="col-12 col-md-9">
@@ -692,7 +693,7 @@ else if (Model.HasOrderStatus)
 				});
 
 				$("#graCarouselModalHeader").text(title);
-				$("#graCarouselModalImage").attr("src", img);
+				$("#graCarouselModalImage").attr("src", img).attr("alt", title);
 			});
 			if (typeof gtag !== 'undefined') {
 				$(".gra-carousel").on("beforeChange", function (e, s, c, n) {
