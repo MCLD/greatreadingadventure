@@ -49,6 +49,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## Fixed
 
+- Update packages
+- Update Docker Lock checksums
+- Update pinned curl version
 - Display of modals after Bootstrap 5.3 upgrade
 - Performer program cost to display in currency format
 - Email reminder signup source being editable in html
