@@ -66,18 +66,13 @@ namespace GRA.Domain.Service
                 if (string.IsNullOrEmpty(jobDetails.To))
                 {
                     // send for real
-                    if (string.IsNullOrEmpty(jobDetails.MailingList))
-                    {
-                        return await SendBulkParticipantAsync(userId,
+                    return string.IsNullOrEmpty(jobDetails.MailingList)
+                        ? await SendBulkParticipantAsync(userId,
                             jobId,
                             progress,
                             jobDetails,
-                            token);
-                    }
-                    else
-                    {
-                        return await SendBulkListAsync(userId, jobId, progress, jobDetails, token);
-                    }
+                            token)
+                        : await SendBulkListAsync(userId, jobId, progress, jobDetails, token);
                 }
                 else
                 {
@@ -230,14 +225,11 @@ namespace GRA.Domain.Service
 
         private static string BuildUnsub(string baseLink, string token)
         {
-            if (string.IsNullOrEmpty(baseLink))
-            {
-                return null;
-            }
-
-            return baseLink.EndsWith('/')
-                ? baseLink + token
-                : $"{baseLink}/{token}";
+            return string.IsNullOrEmpty(baseLink)
+                ? null
+                : baseLink.EndsWith('/')
+                    ? baseLink + token
+                    : $"{baseLink}/{token}";
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
@@ -603,7 +595,9 @@ namespace GRA.Domain.Service
                 {
                     foreach (var user in subscribedUsers.Data)
                     {
-                        if (user.CannotBeEmailed || alreadyReceived.Contains(user.Email))
+                        if (user.CannotBeEmailed
+                            || alreadyReceived.Contains(user.Email,
+                                StringComparer.OrdinalIgnoreCase))
                         {
                             // send email
                             _logger.LogTrace("Email job {JobId}: skipping email {Count}/{Total} to user {User} at {Email} with template {EmailTemplate}",

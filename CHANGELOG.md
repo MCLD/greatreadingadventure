@@ -64,6 +64,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Bug with permissions checking for challenge activation
 - Issue with share URL including two forward slashes
 - Exception thrown when Mission Control access is set twice
+- Bug which allowed bulk emails to go to a participant more than once
 
 ## [4.6.0] 2024-10-09
 
