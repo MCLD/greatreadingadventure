@@ -68,6 +68,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Issue with share URL including two forward slashes
 - Exception thrown when Mission Control access is set twice
 - Bug which allowed bulk emails to go to a participant more than once
+- Vendor code damaged/missing status not being set
 
 ## [4.6.0] 2024-10-09
 
