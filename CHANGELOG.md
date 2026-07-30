@@ -33,6 +33,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Validation of aria-describedby attributes when using data validation
 - JavaScript fix to support improved accessibility for TomSelect
 - Color contrast calculations to ensure accessibility compliance
+- Option to badge report to just run for all challenges
 
 ## Changed
 

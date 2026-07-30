@@ -383,11 +383,19 @@ namespace GRA.Controllers.MissionControl
 
             var siteId = GetCurrentSiteId();
 
+            var challenges = viewModel.ChallengeRequiredList;
+
+            if (viewModel.AllChallenges)
+            {
+                var challengeIds = await _challengeService.GetAllIdsAsync(siteId);
+                challenges = string.Join(',', challengeIds);
+            }
+
             var criterion = new ReportCriterion
             {
                 BadgeRequiredList = viewModel.BadgeRequiredList,
                 BranchId = viewModel.BranchId,
-                ChallengeRequiredList = viewModel.ChallengeRequiredList,
+                ChallengeRequiredList = challenges,
                 EndDate = viewModel.EndDate,
                 GroupInfoId = viewModel.GroupInfoId,
                 IncludeAchieverStatus = viewModel.IncludeAchieverStatus,

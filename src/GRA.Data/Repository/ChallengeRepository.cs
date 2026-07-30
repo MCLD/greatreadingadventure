@@ -115,6 +115,15 @@ namespace GRA.Data.Repository
             return challenge;
         }
 
+        public async Task<IEnumerable<int>> GetAllIdsAsync(int siteId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => !_.IsDeleted && _.SiteId == siteId)
+                .Select(_ => _.Id)
+                .ToListAsync();
+        }
+
         public new async Task<Challenge> GetByIdAsync(int id)
         {
             var challenge = await DbSet

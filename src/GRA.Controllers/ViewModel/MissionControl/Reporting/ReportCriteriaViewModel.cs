@@ -14,6 +14,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Reporting
         public int? BranchId { get; set; }
 
         public SelectList BranchList { get; set; }
+        public bool AllChallenges { get; set; }
         public string ChallengeRequiredList { get; set; }
 
         [DisplayName("End Date")]

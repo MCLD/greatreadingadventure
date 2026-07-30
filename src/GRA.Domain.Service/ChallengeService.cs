@@ -473,6 +473,11 @@ namespace GRA.Domain.Service
             return challengeGroup;
         }
 
+        public async Task<IEnumerable<int>> GetAllIdsAsync(int siteId)
+        {
+            return await _challengeRepository.GetAllIdsAsync(siteId);
+        }
+
         public async Task<ICollection<ChallengeGroup>> GetGroupListAsync()
         {
             VerifyPermission(Permission.ViewAllChallenges);

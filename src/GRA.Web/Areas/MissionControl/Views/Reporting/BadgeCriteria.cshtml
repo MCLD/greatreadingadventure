@@ -53,10 +53,10 @@
     <div class="row mt-4">
         <div class="col-12">
             <div class="card">
-                <div class="card-header bg-info-subtle">
+                <div class="card-header bg-info-subtle" id="badgeCardHeader">
                     <h3 class="card-title">Badges</h3>
                 </div>
-                <div class="card-body">
+                <div class="card-body" id="badgeCardBody">
                     <table class="table table-sm table-bordered table-striped">
                         <thead>
                             <tr>
@@ -115,6 +115,17 @@
                     </button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12 lead">
+            <input asp-for="AllChallenges"
+                   class="form-check-input me-1"
+                   type="checkbox">
+            <label class="form-check-label" for="AllChallenges">
+                Report on all Challenges only
+            </label>
         </div>
     </div>
 
@@ -208,6 +219,9 @@
 @section scripts
 {
     <script>
+        const allChallenges = document.getElementById("AllChallenges");
+        const badgeCardHeader = document.getElementById("badgeCardHeader");
+        const badgeCardBody = document.getElementById("badgeCardBody");
         const badgeIds = $("#BadgeRequiredList").val().split(',').filter(function (x) { return x }).map(Number);
         const challengeIds = $("#ChallengeRequiredList").val().split(',').filter(function (x) { return x }).map(Number);
         const endDatePicker = graInitalizePickerDatetime(document.getElementById("endDatePicker"));
@@ -343,8 +357,20 @@
         defaultDateTime.setDate(defaultDateTime.getDate() - 1);
         graPickerSetDate(startDatePicker, defaultDateTime);
 
+        allChallenges.addEventListener("input", (event) => {
+            if(event.target.checked === true) {
+                badgeCardHeader.classList.add("bg-secondary-subtle");
+                badgeCardHeader.classList.remove("bg-info-subtle");
+                badgeCardBody.classList.add("d-none");
+            } else {
+                badgeCardHeader.classList.add("bg-info-subtle");
+                badgeCardHeader.classList.remove("bg-secondary-subtle");
+                badgeCardBody.classList.remove("d-none");
+            }
+        });
+
         $("form").on("submit", function (e) {
-            if (badgeIds.length == 0 && challengeIds.length == 0) {
+            if (badgeIds.length == 0 && challengeIds.length == 0 && allChallenges.checked !== true) {
                 e.preventDefault();
                 alert("Please select which badges to report on.");
             }
