@@ -337,19 +337,16 @@ namespace GRA.Controllers.MissionControl
                 }
             }
 
-            if (viewModel.PastMaxPage)
-            {
-                return RedirectToAction(nameof(History), new
+            return viewModel.PastMaxPage
+                ? RedirectToAction(nameof(History), new
                 {
                     endDate,
                     page = viewModel.LastPage ?? 1,
                     reportId,
                     requestedBy,
                     startDate
-                });
-            }
-
-            return View(viewModel);
+                })
+                : View(viewModel);
         }
 
         [HttpGet]
@@ -383,11 +380,21 @@ namespace GRA.Controllers.MissionControl
 
             var siteId = GetCurrentSiteId();
 
+            var badgeReportList = viewModel.BadgeRequiredList;
+            var challengeReportList = viewModel.ChallengeRequiredList;
+
+            if (viewModel.AllChallengesOnly)
+            {
+                var challengeIds = await _challengeService.GetAllIdsAsync(siteId);
+                challengeReportList = string.Join(',', challengeIds);
+                badgeReportList = string.Empty;
+            }
+
             var criterion = new ReportCriterion
             {
-                BadgeRequiredList = viewModel.BadgeRequiredList,
+                BadgeRequiredList = badgeReportList,
                 BranchId = viewModel.BranchId,
-                ChallengeRequiredList = viewModel.ChallengeRequiredList,
+                ChallengeRequiredList = challengeReportList,
                 EndDate = viewModel.EndDate,
                 GroupInfoId = viewModel.GroupInfoId,
                 IncludeAchieverStatus = viewModel.IncludeAchieverStatus,

@@ -16,6 +16,8 @@ namespace GRA.Domain.Repository
 
         Task<int> GetChallengeCountAsync(ChallengeFilter filter);
 
+        Task<IEnumerable<int>> GetAllIdsAsync(int siteId);
+
         Task<IEnumerable<ChallengeTask>> GetChallengeTasksAsync(int challengeId, int? userId);
 
         Task<IEnumerable<string>> GetNamesAsync(IEnumerable<int> challengeIds);
