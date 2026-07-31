@@ -120,12 +120,10 @@
 
     <div class="row mt-4">
         <div class="col-12 lead">
-            <input asp-for="AllChallenges"
+            <input asp-for="AllChallengesOnly"
                    class="form-check-input me-1"
                    type="checkbox">
-            <label class="form-check-label" for="AllChallenges">
-                Report on all Challenges only
-            </label>
+            <label class="form-check-label" asp-for="AllChallengesOnly"></label>
         </div>
     </div>
 

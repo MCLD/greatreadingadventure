@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using GRA.Domain.Model;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -14,7 +15,9 @@ namespace GRA.Controllers.ViewModel.MissionControl.Reporting
         public int? BranchId { get; set; }
 
         public SelectList BranchList { get; set; }
-        public bool AllChallenges { get; set; }
+
+        [Display(Name = "Report on all Challenges only")]
+        public bool AllChallengesOnly { get; set; }
         public string ChallengeRequiredList { get; set; }
 
         [DisplayName("End Date")]
