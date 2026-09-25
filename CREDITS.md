@@ -49,9 +49,8 @@ The Great Reading Adventure is open source software developed with the help of [
 - [Docker](https://www.docker.com/) - containerized builds and deployment
 - [Eleven Giants](http://www.elevengiants.com/) - helped with extraction of avatars from the Glitch public domain game art
 - [GitHub](https://github.com/) - hosts the source code, discussions, issue tracker, continuous integration, Wiki, [www.greatreadingadventure.com](http://www.greatreadingadventure.com/) and more
-- [Glitch public domain game art](https://www.glitchthegame.com/public-domain-game-art/) - free fantastic art provided by [Tiny Speck](https://tinyspeck.com/) which can be seen in the default banner and avatars
-- [Mailtrap](https://mailtrap.io/) - painless email testing during development
-- [MyKnowledgeMap](https://www.myknowledgemap.com/) - creators and maintainers of [OpenBadges.me](https://www.openbadges.me/), our integrated badge maker
+- [Glitch public domain game art](https://web.archive.org/web/20240820054744/https://www.glitchthegame.com/public-domain-game-art/) - free fantastic art provided by [Tiny Speck](https://tinyspeck.com/) which can be seen in the default banner and avatars
+- [Mailpit](https://mailpit.axllent.org/) - development mail testing
 - [Open Library](https://openlibrary.org/) - book cover images, title, and author lookups for challenges
 - [Podman](https://podman.io/) - local containers for testing
 - [Read The Docs](https://readthedocs.org/) - powers [the online manual](http://manual.greatreadingadventure.com)
@@ -93,7 +92,7 @@ The Great Reading Adventure uses open source components. You can find informatio
 ### docker-lock
 
 - docker-lock is a cli tool that automates managing image digests by tracking them in a separate Lockfile
-- Source on GitHub: [safe-waters/docker-lock](https://github.com/safe-waters/docker-lock) - [Apache License, Version 2.0](https://github.com/safe-waters/docker-lock/blob/master/LICENSE)
+- Source on GitHub: [DockerLocker/docker-lock](https://github.com/DockerLocker/docker-lock) - [Apache License, Version 2.0](https://github.com/safe-waters/docker-lock/blob/master/LICENSE)
 
 ### dotnet-outdated
 
@@ -195,3 +194,4 @@ The Great Reading Adventure uses open source components. You can find informatio
 
 - Tom Select is a lightweight (~16kb gzipped) hybrid of a textbox and select box [tom-select](https://github.com/orchidjs/tom-select)
 - Source on GitHub: [orchidjs/tom-select](https://github.com/orchidjs/tom-select) - [Apache License, Version 2.0](https://github.com/orchidjs/tom-select/blob/master/LICENSE)
+
