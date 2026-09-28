@@ -70,7 +70,7 @@ setup_colors
 # script logic here
 
 readonly PUB_STARTAT=$SECONDS
-readonly AVATAR_ARCH_NAME=v4.2.2.tar.gz
+readonly AVATAR_ARCH_NAME=v5.0.0.tar.gz
 
 if [[ publish -eq 1 ]]; then
     msg "${BLUE}===${NOFORMAT} Downloading and decompressing avatar package: ${AVATAR_ARCH_NAME}"

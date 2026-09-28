@@ -11,10 +11,10 @@ header:
       url: "http://demo.greatreadingadventure.com/"
 excerpt: >
   The Great Reading Adventure is free open-source software designed to manage online library reading programs.<br />
-  <small><a href="https://github.com/MCLD/greatreadingadventure/releases/latest">Latest release v4.6.0</a></small>
+  <small><a href="https://github.com/MCLD/greatreadingadventure/releases/latest">Latest release v4.7.0</a></small>
 ---
 
-The GRA is free to use, modify, and share. Source code is available on [GitHub](https://github.com/MCLD/greatreadingadventure). Active development is managed by the [Maricopa County Library District](https://mcldaz.org/). Questions? Join the [discussions](https://github.com/MCLD/greatreadingadventure/discussions)!
+The GRA is free to use, modify, and share. Source code is available on [GitHub](https://github.com/MCLD/greatreadingadventure) and [Codeberg](https://codeberg.org/MCLD/greatreadingadventure). Active development is managed by the [Maricopa County Library District](https://mcldaz.org/). Questions? Join the [discussions](https://github.com/MCLD/greatreadingadventure/discussions)!
 
 {% include feature_row %}
 
@@ -34,3 +34,4 @@ The GRA is free to use, modify, and share. Source code is available on [GitHub](
 ---
 
 _The Great Reading Adventure was developed by the [Maricopa County Library District](https://mcldaz.org/) with support by the [Arizona State Library, Archives and Public Records](https://www.azlibrary.gov/), a division of the Secretary of State, with federal funds from the [Institute of Museum and Library Services](https://www.imls.gov/)._
+

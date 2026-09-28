@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
-## [Unreleased]
+## [4.7.0] 2024-09-28
 
 ## Added
 
@@ -616,6 +616,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Everything! First release of 4.0.
 
+[4.7.0]: https://github.com/mcld/greatreadingadventure/tree/v4.7.0
 [4.6.0]: https://github.com/mcld/greatreadingadventure/tree/v4.6.0
 [4.5.0]: https://github.com/mcld/greatreadingadventure/tree/v4.5.0
 [4.4.2]: https://github.com/mcld/greatreadingadventure/tree/v4.4.2
