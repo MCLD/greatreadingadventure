@@ -10,6 +10,13 @@ namespace GRA
         public static readonly Dictionary<string, SiteSettingDefinition> DefinitionDictionary
             = new()
             {
+                [SiteSettingKey.Avatars.DisableCrop] = new SiteSettingDefinition
+                {
+                    Name = "Disable Crop",
+                    Info = "Disable the crop used to only show part of avatars (leave on with default avatars)",
+                    Category = typeof(SiteSettingKey.Avatars).Name,
+                    Format = SiteSettingFormat.Boolean
+                },
                 [SiteSettingKey.Avatars.DisableSharing] = new SiteSettingDefinition
                 {
                     Name = "Disable Sharing",

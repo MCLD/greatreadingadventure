@@ -6,10 +6,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## Unreleased
 
+## Added
+
+- Add site setting "Disable Crop" to support full-height avatars when not using default avatars
+
 ## Fixed
 
 - Update back-end packages
 - Update Docker lock checksums
+- Proper avatar access in Mission Control if only one avatar layer
+- Limit maximum size of avatar thumbnails on alt text entry page
 
 ## [4.7.0] 2024-09-28
 

@@ -161,7 +161,6 @@ footer p {
         width: 64px;
     }
 
-
 .badge-sm {
     height: auto;
     width: 110px;
@@ -612,6 +611,10 @@ p.password-note {
     width: 240px;
 }
 
+.avatar-container-dashboard-fullsize {
+    height: 400px;
+}
+
 .avatar-layer-dashboard {
     height: 400px;
     left: 0px;
@@ -620,11 +623,14 @@ p.password-note {
     width: 240px;
 }
 
+.avatar-container-dashboard-fullsize > .avatar-layer-dashboard {
+    top: 0;
+}
+
 .avatar-share-image {
     max-width: 100%;
     position: relative;
 }
-
 
 .participating-libraries > .system {
     padding-bottom: 1rem;
@@ -675,6 +681,10 @@ p.password-note {
         width: 150px;
     }
 
+    .avatar-container-dashboard-fullsize {
+        height: 250px;
+    }
+
     .avatar-layer-dashboard {
         height: 250px;
         top: 0;
@@ -698,6 +708,10 @@ p.password-note {
         width: 210px;
     }
 
+    .avatar-container-dashboard-fullsize {
+        height: 350px;
+    }
+
     .avatar-layer-dashboard {
         height: 350px;
         width: 210px;
@@ -713,6 +727,10 @@ p.password-note {
     .avatar-container-dashboard {
         height: 374px;
         width: 255px;
+    }
+
+    .avatar-container-dashboard-fullsize {
+        height: 425px;
     }
 
     .avatar-layer-dashboard {
