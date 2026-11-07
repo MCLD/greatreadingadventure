@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## Unreleased
+
+## Fixed
+
+- Update back-end packages
+- Update Docker lock checksums
+
 ## [4.7.0] 2024-09-28
 
 ## Added
