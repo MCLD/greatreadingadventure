@@ -65,11 +65,11 @@ else if (Model.HasOrderStatus)
 		{
 			<div class="card mb-2">
 				<div class="card-header fw-bold">@SharedLocalizer[GRA.Annotations.Title.Avatar]</div>
-				<div class="card-body text-center py-0">
+				<div class="card-body text-center ps-0 pe-0 pt-1 pb-0">
 					<a asp-controller="Avatar" asp-action="Index">
 						@if (Model.AvatarElements?.Count > 0)
 						{
-							<div class="avatar-container-dashboard">
+                            <div class="avatar-container-dashboard @Model.AvatarDisableCropClass">
 								@foreach (var layer in Model.AvatarElements)
 								{
 									<img src="~/@layer.FilenameLink"

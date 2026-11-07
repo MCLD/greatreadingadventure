@@ -232,10 +232,16 @@ namespace GRA.Controllers
                         = _pathResolver.ResolveContentPath(userLog.BadgeFilename);
                 }
 
+                var avatarDisableCrop = await GetSiteSettingBoolAsync(
+                    SiteSettingKey.Avatars.DisableCrop);
+
                 var pointTranslation = await _activityService.GetUserPointTranslationAsync();
                 var viewModel = new DashboardViewModel
                 {
                     ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural,
+                    AvatarDisableCropClass = avatarDisableCrop
+                        ? "avatar-container-dashboard-fullsize"
+                        : null,
                     DisableSecretCode
                         = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
                     IsPerformerScheduling = GetSiteStage() == SiteStage.BeforeRegistration

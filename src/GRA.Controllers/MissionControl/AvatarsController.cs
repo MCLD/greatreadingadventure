@@ -462,7 +462,7 @@ namespace GRA.Controllers.MissionControl
         {
             var layers = await _avatarService.GetLayersAsync();
 
-            if (layers?.Count() > 1)
+            if (layers?.Count() > 0)
             {
                 foreach (var layer in layers)
                 {

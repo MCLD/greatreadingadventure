@@ -18,6 +18,7 @@ namespace GRA.Controllers.ViewModel.Home
         [DisplayName(DisplayNames.Author)]
         public string Author { get; set; }
 
+        public string AvatarDisableCropClass { get; set; }
         public ICollection<AvatarElement> AvatarElements { get; set; }
         public string ButtonText { get; set; }
         public Carousel Carousel { get; set; }

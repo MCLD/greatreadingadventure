@@ -2,6 +2,7 @@
 {
     public static class Avatars
     {
+        public static readonly string DisableCrop = "Avatars.DisableCrop";
         public static readonly string DisableSharing = "Avatars.DisableSharing";
     }
 
