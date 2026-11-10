@@ -4,11 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
-## Unreleased
+## [4.7.1] 2026-11-10
 
 ## Added
 
 - Add site setting "Disable Crop" to support full-height avatars when not using default avatars
+
+## Changed
+
+- Update to .NET 8.0.34
 
 ## Fixed
 
@@ -17,7 +21,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Proper avatar access in Mission Control if only one avatar layer
 - Limit maximum size of avatar thumbnails on alt text entry page
 
-## [4.7.0] 2024-09-28
+## [4.7.0] 2026-09-28
 
 ## Added
 
@@ -85,7 +89,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Bug which allowed bulk emails to go to a participant more than once
 - Vendor code damaged/missing status not being set
 
-## [4.6.0] 2024-10-09
+## [4.6.0] 2025-10-09
 
 ## Added
 
@@ -629,6 +633,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Everything! First release of 4.0.
 
+[4.7.1]: https://github.com/mcld/greatreadingadventure/tree/v4.7.1
 [4.7.0]: https://github.com/mcld/greatreadingadventure/tree/v4.7.0
 [4.6.0]: https://github.com/mcld/greatreadingadventure/tree/v4.6.0
 [4.5.0]: https://github.com/mcld/greatreadingadventure/tree/v4.5.0
