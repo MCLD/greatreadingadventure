@@ -6,7 +6,7 @@
 
 # Supported tags and respective `Dockerfile` links
 
-- [`v4.7.0`](https://github.com/MCLD/greatreadingadventure/blob/v4.7.0/Dockerfile) - latest stable release
+- [`v4.7.1`](https://github.com/MCLD/greatreadingadventure/blob/v4.7.1/Dockerfile) - latest stable release
 - [`latest`](https://github.com/MCLD/greatreadingadventure/blob/main/Dockerfile) - current development tree
 
 # What is the Great Reading Adventure?
@@ -58,7 +58,7 @@ More information about running the GRA can be found in the manual: [Install and 
 
 The `gra` images come in several variants for different audiences. They are based on the Microsoft [`aspnet`](https://hub.docker.com/_/microsoft-dotnet-aspnet) image.
 
-## `gra:v4.7.0`
+## `gra:v4.7.1`
 
 This is an image containing the latest released version of The Great Reading Adventure along with associated default avatars: if you are an end user, it is probably what you want.
 
