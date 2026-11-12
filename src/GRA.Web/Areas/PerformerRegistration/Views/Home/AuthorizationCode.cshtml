@@ -61,7 +61,7 @@
                 <div class="col-12 col-sm-6 offset-sm-3">
                     <div class="mb-3 mb-3-lg">
                         <label asp-for="AuthorizationCode" class="h4">Authorization Code for <grasite property="name"></grasite>:</label>
-                        <input asp-for="AuthorizationCode" class="form-control form-control-lg" type="password" autofocus required>
+                        <input asp-for="AuthorizationCode" autocomplete="off" autofocus class="form-control form-control-lg" type="password" required>
                         <span asp-validation-for="AuthorizationCode" class="text-danger"></span>
                     </div>
                     <button class="btn btn-lg btn-outline-primary " type="submit">Validate code</button>

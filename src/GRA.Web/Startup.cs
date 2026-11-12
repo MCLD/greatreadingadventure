@@ -290,14 +290,19 @@ namespace GRA.Web
             string discriminator = config[ConfigurationKey.ApplicationDiscriminator]
                 ?? "gra";
 
+            var cookiePolicy = !string.IsNullOrEmpty(config[ConfigurationKey.ForceHttpsCookies])
+                ? CookieSecurePolicy.Always
+                : CookieSecurePolicy.SameAsRequest;
+
             // Add framework services.
             services.AddSession(_ =>
             {
-                _.IdleTimeout = TimeSpan.FromMinutes(30);
-                _.Cookie.IsEssential = true;
                 _.Cookie.HttpOnly = true;
-                _.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
+                _.Cookie.IsEssential = true;
                 _.Cookie.Name = $"{discriminator}-session";
+                _.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
+                _.Cookie.SecurePolicy = cookiePolicy;
+                _.IdleTimeout = TimeSpan.FromMinutes(30);
             });
 
             services.TryAddSingleton(_ => config);
@@ -451,13 +456,14 @@ namespace GRA.Web
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(_ =>
                 {
-                    _.LoginPath = "/SignIn";
-                    _.LogoutPath = "/Home/Signout";
                     _.AccessDeniedPath = "/";
+                    _.Cookie.HttpOnly = true;
                     _.Cookie.IsEssential = true;
                     _.Cookie.Name = $"{discriminator}-app";
                     _.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
-                    _.Cookie.HttpOnly = true;
+                    _.Cookie.SecurePolicy = cookiePolicy;
+                    _.LoginPath = "/SignIn";
+                    _.LogoutPath = "/Home/Signout";
                 });
 
             services.AddAuthorization(options =>

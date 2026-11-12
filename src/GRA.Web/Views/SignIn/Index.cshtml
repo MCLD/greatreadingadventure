@@ -26,9 +26,9 @@
                     <div>
                         <label asp-for="Password" class="form-label"></label>
                         <input asp-for="Password"
-                               type="password"
+                               autocomplete="off"
                                class="form-control form-control-lg"
-                               autocomplete="current-password" />
+                               type="password" />
                         <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
                 </div>

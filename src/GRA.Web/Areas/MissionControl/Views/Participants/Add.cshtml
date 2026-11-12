@@ -17,7 +17,10 @@
             <div class="row mb-3">
                 <div class="col-12">
                     <label asp-for="Password" class="col-form-label"></label>
-                    <input asp-for="Password" type="password" class="form-control" />
+                    <input asp-for="Password"
+                           autocomplete="off"
+                           class="form-control"
+                           type="password" />
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
             </div>
@@ -99,7 +102,7 @@
                 <input asp-for="ProgramId" type="hidden" />
             }
 
-            <div id="ageField" class="row mb-3 @(Model.ShowAge ? "": "d-none")">
+            <div id="ageField" class="row mb-3 @(Model.ShowAge ? "" : "d-none")">
                 <div class="col-12">
                     <label asp-for="Age" class="col-form-label"></label>
                     <input asp-for="Age" class="form-control" type="text" />
@@ -107,7 +110,7 @@
                 </div>
             </div>
 
-            <div id="schoolFields" class="@(Model.ShowSchool ? "": "d-none")">
+            <div id="schoolFields" class="@(Model.ShowSchool ? "" : "d-none")">
                 @await Html.PartialAsync("_SchoolSelectionPartial", Model)
             </div>
 
@@ -181,26 +184,26 @@
                 </div>
             }
 
-			@if (Model.AskPersonalPointGoal)
-			{
-				<div class="row mb-3">
-					<div class="col-12">
-						<label asp-for="PersonalPointGoal" class="col-form-label"></label>
-						<span class="fas fa-info-circle"
-							  data-bs-toggle="tooltip"
-							  title="@String.Format(GRA.Annotations.Interface.PersonalPointGoalDescription, Model.MinimumPersonalPointGoal)"></span>
-						<div>
-							@GRA.Annotations.Interface.PersonalPointGoalLabel
-							<input asp-for="PersonalPointGoal"
-								   max="@Model.MaximumPersonalPointGoal"
-								   min="@Model.MinimumPersonalPointGoal"
-								   class="form-control"
-								   style="display:inline-block; width:100px;" />
-						</div>
-						<span asp-validation-for="PersonalPointGoal" class="text-danger"></span>
-					</div>
-				</div>
-			}
+            @if (Model.AskPersonalPointGoal)
+            {
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <label asp-for="PersonalPointGoal" class="col-form-label"></label>
+                        <span class="fas fa-info-circle"
+                              data-bs-toggle="tooltip"
+                              title="@String.Format(GRA.Annotations.Interface.PersonalPointGoalDescription, Model.MinimumPersonalPointGoal)"></span>
+                        <div>
+                            @GRA.Annotations.Interface.PersonalPointGoalLabel
+                            <input asp-for="PersonalPointGoal"
+                                   max="@Model.MaximumPersonalPointGoal"
+                                   min="@Model.MinimumPersonalPointGoal"
+                                   class="form-control"
+                                   style="display:inline-block; width:100px;" />
+                        </div>
+                        <span asp-validation-for="PersonalPointGoal" class="text-danger"></span>
+                    </div>
+                </div>
+            }
 
             <hr />
 

@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## Unreleased
+
+## Added
+
+- Added `autocomplete="off"` to all password form fields
+- Added `GraForceHttpsCookies` application setting to force HTTPS-only on cookies
+
+## Changed
+
+- Removed `Server:` and `X-Powered-By:` HTTP response headers
+
+## Fixed
+
+- Corrected issues in Release Engineering document
+- Corrected version in manual
+- Added HTML encoding to forgotten username/password form
+
 ## [4.7.1] 2026-11-10
 
 ## Added

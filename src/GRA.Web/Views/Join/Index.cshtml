@@ -48,9 +48,9 @@
                                 @SharedLocalizer[GRA.Annotations.Validate.PasswordRequirement]
                             </p>
                             <input asp-for="Password"
-                                   type="password"
+                                   autocomplete="off"
                                    class="form-control"
-                                   autocomplete="new-password" />
+                                   type="password" />
                             <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
                     </div>
@@ -58,9 +58,9 @@
                         <div class="col-12">
                             <label asp-for="ConfirmPassword" class="col-form-label"></label>
                             <input asp-for="ConfirmPassword"
-                                   type="password"
+                                   autocomplete="off"
                                    class="form-control"
-                                   autocomplete="new-password" />
+                                   type="password" />
                             <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                         </div>
                     </div>

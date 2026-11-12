@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
+using DocumentFormat.OpenXml.EMMA;
+using EmailValidation;
 using GRA.Controllers.Filter;
 using GRA.Controllers.ViewModel.SignIn;
 using GRA.Domain.Model;
@@ -66,7 +70,7 @@ namespace GRA.Controllers
                 if (result.Status == Domain.Service.Models.ServiceResultStatus.Success)
                 {
                     AlertSuccess = _sharedLocalizer[Annotations.Info.PasswordRecoverySent,
-                        username];
+                        HttpUtility.HtmlEncode(username)];
                 }
                 else
                 {
@@ -95,7 +99,8 @@ namespace GRA.Controllers
                 var result = await _authenticationService.EmailAllUsernames(email);
                 if (result.Status == Domain.Service.Models.ServiceResultStatus.Success)
                 {
-                    AlertSuccess = _sharedLocalizer[Annotations.Info.UsernameListSent, email];
+                    AlertSuccess = _sharedLocalizer[Annotations.Info.UsernameListSent,
+                        HttpUtility.HtmlEncode(email)];
                 }
                 else
                 {
