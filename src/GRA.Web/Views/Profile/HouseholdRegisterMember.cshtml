@@ -10,7 +10,7 @@
                 <div class="card-header">
                     <span class="fw-bold">
                         @SharedLocalizer[GRA.Annotations.Info.GroupRegister,
-                                 Context.Items[GRA.Controllers.ItemKey.HouseholdTitle]]
+                        Context.Items[GRA.Controllers.ItemKey.HouseholdTitle]]
                     </span>
                 </div>
                 <div class="card-body">
@@ -32,8 +32,9 @@
                                 <div class="col-12">
                                     <label asp-for="Password" class="col-form-label"></label>
                                     <input asp-for="Password"
-                                           type="password"
-                                           class="form-control" />
+                                           autocomplete="off"
+                                           class="form-control"
+                                           type="password" />
                                     <span asp-validation-for="Password" class="text-danger"></span>
                                 </div>
                             </div>
@@ -41,8 +42,9 @@
                                 <div class="col-12">
                                     <label asp-for="ConfirmPassword" class="col-form-label"></label>
                                     <input asp-for="ConfirmPassword"
-                                           type="password"
-                                           class="form-control" />
+                                           autocomplete="off"
+                                           class="form-control"
+                                           type="password" />
                                     <span asp-validation-for="ConfirmPassword"
                                           class="text-danger"></span>
                                 </div>
@@ -63,7 +65,7 @@
                             button-spinner>
                         <span class="buttonText">
                             @SharedLocalizer[GRA.Annotations.Info.GroupRegister,
-                                     Context.Items[GRA.Controllers.ItemKey.HouseholdTitle]]
+                                                        Context.Items[GRA.Controllers.ItemKey.HouseholdTitle]]
                         </span>
                     </button>
                 </div>

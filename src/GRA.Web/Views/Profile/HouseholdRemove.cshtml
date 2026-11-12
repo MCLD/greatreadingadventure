@@ -36,12 +36,18 @@
                     </div>
                     <div>
                         <label asp-for="Password" class="col-form-label"></label>
-                        <input asp-for="Password" type="password" class="form-control" />
+                        <input asp-for="Password"
+                               autocomplete="off"
+                               class="form-control"
+                               type="password" />
                         <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
                     <div>
                         <label asp-for="ConfirmPassword" class="col-form-label"></label>
-                        <input asp-for="ConfirmPassword" type="password" class="form-control" />
+                        <input asp-for="ConfirmPassword"
+                               autocomplete="off"
+                               class="form-control"
+                               type="password" />
                         <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                     </div>
                 }

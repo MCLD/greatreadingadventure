@@ -24,7 +24,8 @@ Areas to check:
 - `README.md` - GitHub front matter
 - `CREDITS.md` - For added/removed items
 - `dev/` - Developer documentation
-- `docs/` - Software manual
+- `docs/` - Web site, specifically `index.md` and a new post in `_posts/`
+- `manual/` - Software manual, specifically `conf.py`
 - Search all files in project for the prior GRA version and update
 - If there's been a framework upgrade, search all files in the project for the old framework version
 
@@ -84,11 +85,20 @@ If everything worked, you should see:
 1. Push your `release/x.y.z` branch to the [MCLD/greatreadingadventure](https://github.com/MCLD/greatreadingadventure) repository.
 2. Once the build is complete, verify Docker images were pushed to the [GitHub Container Registry](https://github.com/orgs/MCLD/packages/container/package/gra) and [Docker Hub](https://hub.docker.com/r/mcld/gra/tags?page=1&ordering=last_updated) correctly.
 3. Download the .ZIP file attached to the "Build - action" workflow. Unzip that, inside you should find a single file: `GreatReadingAdventure-vx.y.z.zip`.
-4. Open a pull request to merge the `release/x.y.z` branch into `develop`.
+4. Open a pull request to merge the `release/x.y.z` branch into `main`.
 5. Perform the merge once the actions all clear.
-6. [Draft a new release](https://github.com/MCLD/greatreadingadventure/releases/new) on GitHub.
-7. In the "Tag version" field, enter `vx.y.z` and ensure it's targeted to `develop`.
-8. In the "Release title" field, enter "Great Reading Adventure vx.y.z".
-9. Paste the release notes into the "Describe this release" field.
-10. Upload the `GreatReadingAdventure-vx.y.z.zip` to your release. Ensure it uploads successfully.
-11. Publish the release and post to the discussions!
+6. [Draft a new GitHub release](https://github.com/MCLD/greatreadingadventure/releases/new)
+   1. In the "Tag version" field, enter `vx.y.z` and ensure it's targeted to `main`.
+   2. In the "Release title" field, enter "Great Reading Adventure vx.y.z".
+   3. Paste the release notes into the "Describe this release" field.
+   4. Upload the `GreatReadingAdventure-vx.y.z.zip` to your release. Ensure it uploads successfully.
+   5. Publish the release and post to the discussions.
+7. [Draft a new Codeberg release](https://codeberg.org/MCLD/greatreadingadventure/releases/new)
+   1. Push the tag to Codeberg (`git push codeberg tag vx.y.z`)
+   2. In the "Tag name" field, enter `vx.y.z` and ensure it's listed as an existing tag.
+   3. In the "Release title" field, enter "Great Reading Adventure vx.y.z".
+   4. Paste the release notes into the "Describe this release" field.
+   5. Upload the `GreatReadingAdventure-vx.y.z.zip` to your release. Ensure it uploads successfully.
+   6. Publish the release.
+8. Update the [Docker Hub readme](https://hub.docker.com/r/mcld/gra) if necessary.
+

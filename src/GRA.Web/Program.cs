@@ -38,7 +38,8 @@ namespace GRA.Web
                                })
                                .AddEnvironmentVariables();
                            });
-                           webBuilder.ConfigureKestrel(_ => { }).UseStartup<Startup>();
+                           webBuilder.ConfigureKestrel(_ => _.AddServerHeader = false)
+                                .UseStartup<Startup>();
                        })
                        .UseSerilog();
         }

@@ -20,6 +20,7 @@
         public static readonly string DistributedCache = "GraDistributedCache";
         public static readonly string EmailOverride = "GraEmailOverride";
         public static readonly string EnableRequestLogging = "GraEnableRequestLogging";
+        public static readonly string ForceHttpsCookies = "GraForceHttpsCookies";
         public static readonly string InitialAuthorizationCode = "GraInitialAuthCode";
         public static readonly string InitialProgramSetup = "GraInitialProgramSetup";
         public static readonly string InstanceName = "GraInstanceName";

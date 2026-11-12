@@ -89,26 +89,20 @@ These settings are primarily of interest to developers working on The Great Read
 These may need changing if you are scaling up to tens of thousands of participants. For more information about these settings, review [Microsoft documentation](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool.setminthreads).
 
 - `GraCompletionPortThreads` - _optional_ - override the default minimum number of worker threads that the thread pool creates on demand
+- `GraForceHttpsCookies` - _optional_ - this will force the ASP.NET [CookieSecurePolicy](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.http.cookiesecurepolicy) to be set to `CookieSecurePolicy.Always` meaning that all cookies will be marked as HTTPS-only. The default setting, `CookieSecurePolicy.SameAsRequest` will set cookies as HTTPS-only if they are sent via HTTPS and is suitable for most situations.
 - `GraWorkerThreads` - _optional_ - override the default minimum number of asynchronous I/O threads that the thread pool creates on demand
 
 ## Logging with Serilog
 
-Customization can be done to the way Serilog works by adding a "Serilog" section to the log file. For example, logging to Slack can be added by putting the following configuration section in (and replacing `<webhook URI>` with the [actual Slack incoming webhook URI](https://my.slack.com/services/new/incoming-webhook/)):
+Customization can be done to the way Serilog works by adding a "Serilog" section to the configuration file. For example,the logging level can be altered by changing the "MinimumLevel" setting from "Default" to another logging level:
 
 ```json
 "Serilog": {
-  "MinimumLevel": "Debug",
-  "Enrich": [ "FromLogContext" ],
-  "WriteTo": [
-    {
-      "Name": "Slack",
-      "Args": {
-        "webhookUri": "<webhook URI>",
-        "restrictedToMinimumLevel": "Warning"
-      }
-    }
-  ]
+  "MinimumLevel": {
+    "Default": "Debug",
+  },
 }
 ```
 
 More information about customizing Serilog in `appsettings.json` can be found in the [serilog-settings-configuration project on GitHub](https://github.com/serilog/serilog-settings-configuration).
+

@@ -10,14 +10,14 @@
                 <div class="card-header">
                     <span class="fw-bold">
                         @SharedLocalizer[GRA.Annotations.Info.GroupAdd,
-                                 SharedLocalizer[Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString()]]
+                        SharedLocalizer[Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString()]]
                     </span>
                 </div>
                 <div class="card-body">
                     <div class="row mb-2">
                         <div class="col-12">
                             @SharedLocalizer[GRA.Annotations.Interface.AddExistingExplanation,
-                                     SharedLocalizer[Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString()]]
+                                                        SharedLocalizer[Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString()]]
                         </div>
                     </div>
                     <div class="row mb-2">
@@ -30,7 +30,10 @@
                     <div class="row">
                         <div class="col-12">
                             <label asp-for="Password" class="col-form-label"></label>
-                            <input asp-for="Password" type="password" class="form-control" />
+                            <input asp-for="Password"
+                                   autocomplete="off"
+                                   class="form-control"
+                                   type="password" />
                             <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
                     </div>
@@ -39,7 +42,7 @@
                     <a asp-action="@nameof(ProfileController.Household)"
                        class="btn btn-outline-secondary">
                         @SharedLocalizer[GRA.Annotations.Interface.BackTo,
-                                 SharedLocalizer[Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString()]]
+                                                SharedLocalizer[Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString()]]
                     </a>
                     <button type="submit"
                             id="Submit"
@@ -49,7 +52,7 @@
                             button-spinner>
                         <span class="buttonText">
                             @SharedLocalizer[GRA.Annotations.Info.GroupAdd,
-                                     SharedLocalizer[Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString()]]
+                                                        SharedLocalizer[Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString()]]
                         </span>
                     </button>
                 </div>
