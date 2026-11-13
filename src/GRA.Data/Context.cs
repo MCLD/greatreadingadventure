@@ -7,12 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GRA.Data
 {
-    public abstract class Context : DbContext, IDataProtectionKeyContext
+    public abstract class Context(DbContextOptions options)
+        : DbContext(options), IDataProtectionKeyContext
     {
-        protected Context(DbContextOptions options) : base(options)
-        {
-        }
-
         public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
         public DbSet<Model.Answer> Answers { get; set; }
         public DbSet<Model.Attachment> Attachments { get; set; }
@@ -60,6 +57,8 @@ namespace GRA.Data
         public DbSet<Model.GroupType> GroupTypes { get; set; }
         public DbSet<Model.Job> Jobs { get; set; }
         public DbSet<Model.JoinCode> JoinCodes { get; set; }
+        public DbSet<Model.JoinQuestion> JoinQuestions { get; set; }
+        public DbSet<Model.JoinQuestionOption> JoinQuestionOptions { get; set; }
         public DbSet<Model.Language> Languages { get; set; }
         public DbSet<Model.Location> Locations { get; set; }
         public DbSet<Model.Mail> Mails { get; set; }
@@ -74,6 +73,7 @@ namespace GRA.Data
         public DbSet<Model.PointTranslation> PointTranslations { get; set; }
         public DbSet<Model.PrizeWinner> PrizeWinners { get; set; }
         public DbSet<Model.Program> Programs { get; set; }
+        public DbSet<Model.ProgramJoinQuestion> ProgramJoinQuestions { get; set; }
         public DbSet<Model.PsAgeGroup> PsAgeGroups { get; set; }
         public DbSet<Model.PsBackToBack> PsBackToBack { get; set; }
         public DbSet<Model.PsBlackoutDate> PsBlackoutDates { get; set; }
@@ -196,8 +196,8 @@ namespace GRA.Data
                 .HasKey(_ => new { _.FeaturedChallengeGroupId, _.LanguageId });
             modelBuilder.Entity<Model.MessageTemplateText>()
                 .HasKey(_ => new { _.MessageTemplateId, _.LanguageId });
-            modelBuilder.Entity<Model.UserPackingSlipView>()
-                .HasKey(_ => new { _.UserId, _.PackingSlip });
+            modelBuilder.Entity<Model.ProgramJoinQuestion>()
+                .HasKey(_ => new { _.JoinQuestionId, _.ProgramId });
             modelBuilder.Entity<Model.PsBackToBack>()
                 .HasKey(_ => new { _.PsAgeGroupId, _.BranchId });
             modelBuilder.Entity<Model.PsKitAgeGroup>()
@@ -232,6 +232,8 @@ namespace GRA.Data
                 .HasKey(_ => new { _.UserId, _.ChallengeId });
             modelBuilder.Entity<Model.UserFavoriteEvent>()
                 .HasKey(_ => new { _.UserId, _.EventId });
+            modelBuilder.Entity<Model.UserPackingSlipView>()
+                .HasKey(_ => new { _.UserId, _.PackingSlip });
             modelBuilder.Entity<Model.UserQuestionnaire>()
                 .HasKey(_ => new { _.UserId, _.QuestionnaireId });
             modelBuilder.Entity<Model.UserRole>()
@@ -251,22 +253,22 @@ namespace GRA.Data
                 .HasIndex(_ => new { _.ToUserId, _.IsDeleted, _.IsNew });
             modelBuilder.Entity<Model.Notification>()
                 .HasIndex(_ => _.UserId);
-            modelBuilder.Entity<Model.PrizeWinner>()
-                .HasIndex(_ => new { _.DrawingId, _.UserId, _.RedeemedAt })
-                .IsUnique();
             modelBuilder.Entity<Model.PageHeader>()
                 .HasIndex(_ => new { _.SiteId, _.Stub })
                 .IsUnique();
-            modelBuilder.Entity<Model.User>()
-                .HasIndex(_ => new { _.SiteId, _.IsDeleted, _.Username })
+            modelBuilder.Entity<Model.PrizeWinner>()
+                .HasIndex(_ => new { _.DrawingId, _.UserId, _.RedeemedAt })
                 .IsUnique();
             modelBuilder.Entity<Model.User>()
                 .HasIndex(_ => new { _.SiteId, _.Id, _.IsDeleted, _.HouseholdHeadUserId })
                 .IsUnique();
-            modelBuilder.Entity<Model.UserLog>()
-                .HasIndex(_ => new { _.UserId, _.IsDeleted, _.ChallengeId });
+            modelBuilder.Entity<Model.User>()
+                .HasIndex(_ => new { _.SiteId, _.IsDeleted, _.Username })
+                .IsUnique();
             modelBuilder.Entity<Model.UserLog>()
                 .HasIndex(_ => new { _.UserId, _.IsDeleted, _.BadgeId });
+            modelBuilder.Entity<Model.UserLog>()
+                .HasIndex(_ => new { _.UserId, _.IsDeleted, _.ChallengeId });
             modelBuilder.Entity<Model.UserLog>()
                 .HasIndex(_ => new { _.UserId, _.IsDeleted, _.PointTranslationId, _.ActivityEarned });
 
