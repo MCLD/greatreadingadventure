@@ -1,0 +1,60 @@
+﻿@model IEnumerable<GRA.Domain.Model.Utility.JoinQuestionView>
+
+<input type="hidden" id="JoinQuestionOptions" name="JoinQuestionOptions" />
+
+@foreach (var joinQuestion in Model)
+{
+    <div class="row mb-3">
+        <div class="col-12">
+            <label class="col-form-label"
+                   for="@joinQuestion.FieldName">@joinQuestion.JoinQuestionText</label>
+            @if (joinQuestion.IsRequired)
+            {
+                <select asp-items="@(new SelectList(joinQuestion.JoinQuestionOptions, "Key", "Value"))"
+                        class="form-select gra-join-question"
+                        data-val="true"
+                        data-val-required="@SharedLocalizer[ErrorMessages.Selection, joinQuestion.JoinQuestionText]"
+                        name="@joinQuestion.FieldName"
+                        required></select>
+                <span data-valmsg-for="@joinQuestion.FieldName"
+                      data-valmsg-replace="true"
+                      class="text-danger"></span>
+            }
+            else
+            {
+                <select asp-items="@(new SelectList(joinQuestion.JoinQuestionOptions, "Key", "Value"))"
+                        class="form-select gra-join-question"></select>
+            }
+        </div>
+    </div>
+}
+
+<script>
+    const joinQuestionOptions = document.getElementById("JoinQuestionOptions");
+
+    function updateJoinQuestionOptions(element) {
+        const selectedOptions = joinQuestionOptions.value.length === 0
+            ? []
+            : joinQuestionOptions.value.split(",");
+        for (const option of element.options) {
+            const index = selectedOptions.indexOf(option.value);
+            if (option.selected === true) {
+                if (index === -1) {
+                    selectedOptions.push(option.value);
+                }
+            } else {
+                if (index > -1) {
+                    selectedOptions.splice(index, 1);
+                }
+            }
+        }
+        joinQuestionOptions.value = selectedOptions.join(",");
+    }
+
+    document.querySelectorAll(".gra-join-question").forEach(function(element) {
+        updateJoinQuestionOptions(element);
+        element.addEventListener("change", (event) => {
+            updateJoinQuestionOptions(event.target);
+        })
+    });
+</script>

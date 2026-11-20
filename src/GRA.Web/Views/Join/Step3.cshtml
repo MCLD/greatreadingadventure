@@ -102,6 +102,8 @@
                         </div>
                     }
 
+                    <partial name="_JoinQuestionsPartial" model="Model.JoinQuestions" />
+
                     @if (Model.AskEmailSubscription?.Count() > 1)
                     {
                         <div class="row mb-3">
@@ -176,12 +178,12 @@
         const usernameField = $("#Username");
         const usernameValidation = $("#Username-Validation");
 
-        usernameField.on("blur", function () {
+        usernameField.on("blur", function() {
             if ($(this).val().trim() != "" && !$(this).hasClass("input-validation-error")) {
                 $(this).val($(this).val().trim());
                 usernameIcon.addClass("fa-spinner fa-spin")
                     .removeClass("d-none fa-times-circle fa-check-circle text-success text-danger");
-                $.post(usernameCheckUrl, { username: $(this).val() }, function (response) {
+                $.post(usernameCheckUrl, { username: $(this).val() }, function(response) {
                     if (response) {
                         $(this).removeClass("valid");
                         $(this).addClass("input-validation-error");
@@ -202,7 +204,7 @@
             }
         });
 
-        usernameField.on("keypress", function () {
+        usernameField.on("keypress", function() {
             usernameIcon.addClass("d-none");
         });
     </script>

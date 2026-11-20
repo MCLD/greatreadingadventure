@@ -5,6 +5,8 @@
         VendorCode = 1,
         LandingPage,
         SiteSetting,
-        Program
+        Program,
+        JoinQuestion,
+        JoinQuestionOption
     }
 }

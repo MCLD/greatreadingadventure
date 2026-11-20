@@ -35,6 +35,8 @@ namespace GRA.Controllers
         private readonly DailyLiteracyTipService _dailyLiteracyTipService;
         private readonly EventService _eventService;
         private readonly ILogger<ProfileController> _logger;
+        private readonly JoinQuestionService _joinQuestionService;
+        private readonly LanguageService _languageService;
         private readonly MailService _mailService;
         private readonly MapsterMapper.IMapper _mapper;
         private readonly PointTranslationService _pointTranslationService;
@@ -56,6 +58,8 @@ namespace GRA.Controllers
             ChallengeService challengeService,
             DailyLiteracyTipService dailyLiteracyTipService,
             EventService eventService,
+            JoinQuestionService joinQuestionService,
+            LanguageService languageService,
             MailService mailService,
             PointTranslationService pointTranslationService,
             PrizeWinnerService prizeWinnerService,
@@ -72,6 +76,8 @@ namespace GRA.Controllers
             ArgumentNullException.ThrowIfNull(challengeService);
             ArgumentNullException.ThrowIfNull(dailyLiteracyTipService);
             ArgumentNullException.ThrowIfNull(eventService);
+            ArgumentNullException.ThrowIfNull(joinQuestionService);
+            ArgumentNullException.ThrowIfNull(languageService);
             ArgumentNullException.ThrowIfNull(logger);
             ArgumentNullException.ThrowIfNull(mailService);
             ArgumentNullException.ThrowIfNull(pointTranslationService);
@@ -89,6 +95,8 @@ namespace GRA.Controllers
             _challengeService = challengeService;
             _dailyLiteracyTipService = dailyLiteracyTipService;
             _eventService = eventService;
+            _joinQuestionService = joinQuestionService;
+            _languageService = languageService;
             _logger = logger;
             _mailService = mailService;
             _mapper = context?.Mapper;
@@ -155,12 +163,7 @@ namespace GRA.Controllers
         public async Task<IActionResult> AddExistingParticipant()
         {
             var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
-            if (authUser.HouseholdHeadUserId != null)
-            {
-                return RedirectToAction(nameof(Household));
-            }
-
-            return View();
+            return authUser.HouseholdHeadUserId != null ? RedirectToAction(nameof(Household)) : View();
         }
 
         [HttpPost]
@@ -383,6 +386,11 @@ namespace GRA.Controllers
                 }
             }
 
+            var languageId = await _languageService
+                .GetLanguageIdAsync(_userContextProvider.GetCurrentCulture()?.Name);
+
+            viewModel.JoinQuestions = await _joinQuestionService.GetQuestionsViewAsync(languageId);
+
             return View("HouseholdAdd", viewModel);
         }
 
@@ -503,26 +511,12 @@ namespace GRA.Controllers
                         }
                     }
 
-                    if (askIfFirstTime)
-                    {
-                        model.User.IsFirstTime = model.IsFirstTime.Equals(DropDownTrueValue,
+                    model.User.IsFirstTime = askIfFirstTime && model.IsFirstTime.Equals(DropDownTrueValue,
                            StringComparison.OrdinalIgnoreCase);
-                    }
-                    else
-                    {
-                        model.User.IsFirstTime = false;
-                    }
 
-                    if (askEmailSubscription)
-                    {
-                        model.User.IsEmailSubscribed = DropDownTrueValue.Equals(
+                    model.User.IsEmailSubscribed = askEmailSubscription && DropDownTrueValue.Equals(
                             model.EmailSubscriptionRequested,
                             StringComparison.OrdinalIgnoreCase);
-                    }
-                    else
-                    {
-                        model.User.IsEmailSubscribed = false;
-                    }
 
                     if (askActivityGoal && model.User.DailyPersonalGoal > 0)
                     {
@@ -550,6 +544,8 @@ namespace GRA.Controllers
                             model.User.PersonalPointGoal = maximumPointsValue;
                         }
                     }
+
+                    model.User.JoinQuestionOptions = model.JoinQuestionOptions;
 
                     var newMember = await _userService.AddHouseholdMemberAsync(authUser.Id,
                         model.User,
@@ -634,6 +630,11 @@ namespace GRA.Controllers
                 model.MinimumPersonalPointGoal = program.AchieverPointAmount;
             }
 
+            var languageId = await _languageService
+                .GetLanguageIdAsync(_userContextProvider.GetCurrentCulture()?.Name);
+
+            model.JoinQuestions = await _joinQuestionService.GetQuestionsViewAsync(languageId);
+
             return View("HouseholdAdd", model);
         }
 
@@ -651,7 +652,7 @@ namespace GRA.Controllers
 
             var viewModel = new AttachmentListViewModel
             {
-                Attachments = new List<AttachmentItemViewModel>(),
+                Attachments = [],
                 UserLogs = userLogs.Data,
                 ItemCount = userLogs.Count,
                 CurrentPage = page,
@@ -869,14 +870,7 @@ namespace GRA.Controllers
             }
             HttpContext.Session.SetString(SessionKey.CallItGroup, "True");
 
-            if (viewModel.AddExisting)
-            {
-                return await AddExistingPreAuth();
-            }
-            else
-            {
-                return RedirectToAction(nameof(AddHouseholdMember));
-            }
+            return viewModel.AddExisting ? await AddExistingPreAuth() : RedirectToAction(nameof(AddHouseholdMember));
         }
 
         [HttpPost]
@@ -984,14 +978,9 @@ namespace GRA.Controllers
                 true,
                 emailAwardModel.Email);
 
-            if (emailAwardModel.UserId.HasValue)
-            {
-                return RedirectToAction(nameof(ProfileController.Household));
-            }
-            else
-            {
-                return RedirectToAction(nameof(ProfileController.Index));
-            }
+            return emailAwardModel.UserId.HasValue
+                ? RedirectToAction(nameof(ProfileController.Household))
+                : RedirectToAction(nameof(ProfileController.Index));
         }
 
         public async Task<IActionResult> GetUserBadgeInfo(int id)
@@ -1049,19 +1038,14 @@ namespace GRA.Controllers
             var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
             var groupInfo = await _userService.GetGroupFromHouseholdHeadAsync(authUser.Id);
 
-            if (groupInfo == null)
-            {
-                return RedirectToAction(nameof(Household));
-            }
-            else
-            {
-                return View("GroupDetails", new GroupInfo
+            return groupInfo == null
+                ? RedirectToAction(nameof(Household))
+                : View("GroupDetails", new GroupInfo
                 {
                     Id = groupInfo.Id,
                     Name = groupInfo.Name,
                     GroupTypeName = groupInfo.GroupTypeName
                 });
-            }
         }
 
         [HttpPost]
@@ -1135,7 +1119,7 @@ namespace GRA.Controllers
 
             var viewModel = new HistoryListViewModel
             {
-                Historys = new List<HistoryItemViewModel>(),
+                Historys = [],
                 PaginateModel = paginateModel,
                 HouseholdCount = await _userService
                     .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? user.Id),
@@ -1779,14 +1763,9 @@ namespace GRA.Controllers
                     "user");
             }
 
-            if (goToMail)
-            {
-                return RedirectToAction(nameof(MailController.Index), MailController.Name);
-            }
-            else
-            {
-                return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
-            }
+            return goToMail
+                ? RedirectToAction(nameof(MailController.Index), MailController.Name)
+                : RedirectToAction(nameof(HomeController.Index), HomeController.Name);
         }
 
         public override void OnActionExecuting(ActionExecutingContext context)
@@ -1820,25 +1799,22 @@ namespace GRA.Controllers
                 ItemsPerPage = filter.Take.Value
             };
 
-            if (paginateModel.PastMaxPage)
-            {
-                return RedirectToRoute(
+            return paginateModel.PastMaxPage
+                ? RedirectToRoute(
                     new
                     {
                         page = paginateModel.LastPage ?? 1
-                    });
-            }
-
-            return View(new PrizeListViewModel
-            {
-                HasAccount = !string.IsNullOrWhiteSpace(user.Username),
-                HeadOfHouseholdId = user.HouseholdHeadUserId,
-                HouseholdCount = await _userService
+                    })
+                : View(new PrizeListViewModel
+                {
+                    HasAccount = !string.IsNullOrWhiteSpace(user.Username),
+                    HeadOfHouseholdId = user.HouseholdHeadUserId,
+                    HouseholdCount = await _userService
                     .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
-                PaginateModel = paginateModel,
-                PrizeWinners = prizeList.Data,
-                ShowOnlyAt = await GetSiteSettingBoolAsync(SiteSettingKey.Prizes.ShowOnlyAt)
-            });
+                    PaginateModel = paginateModel,
+                    PrizeWinners = prizeList.Data,
+                    ShowOnlyAt = await GetSiteSettingBoolAsync(SiteSettingKey.Prizes.ShowOnlyAt)
+                });
         }
 
         [HttpPost]

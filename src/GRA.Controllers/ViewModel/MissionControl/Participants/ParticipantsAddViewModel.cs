@@ -1,8 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using GRA.Controllers.Attributes;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Utility;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Participants
@@ -94,5 +96,8 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         [Required]
         [MaxLength(36)]
         public string Username { get; set; }
+
+        public IEnumerable<JoinQuestionView> JoinQuestions { get; set; }
+        public string JoinQuestionOptions { get; set; }
     }
 }

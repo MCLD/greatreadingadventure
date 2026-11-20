@@ -1,7 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Utility;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GRA.Controllers.ViewModel.Profile
@@ -33,5 +35,7 @@ namespace GRA.Controllers.ViewModel.Profile
         public SelectList SystemList { get; set; }
         public string TranslationDescriptionPastTense { get; set; }
         public User User { get; set; }
+        public IEnumerable<JoinQuestionView> JoinQuestions { get; set; }
+        public string JoinQuestionOptions { get; set; }
     }
 }

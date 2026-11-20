@@ -48,6 +48,8 @@ namespace GRA.Controllers.MissionControl
         private readonly TriggerService _triggerService;
         private readonly UserService _userService;
         private readonly VendorCodeService _vendorCodeService;
+        private readonly JoinQuestionService _joinQuestionService;
+        private readonly LanguageService _languageService;
 
         public ParticipantsController(ILogger<ParticipantsController> logger,
             ServiceFacade.Controller context,
@@ -57,6 +59,8 @@ namespace GRA.Controllers.MissionControl
             DrawingService drawingService,
             EmailManagementService emailManagementService,
             JobService jobService,
+            JoinQuestionService joinQuestionService,
+            LanguageService languageService,
             MailService mailService,
             PointTranslationService pointTranslationService,
             PrizeWinnerService prizeWinnerService,
@@ -75,6 +79,8 @@ namespace GRA.Controllers.MissionControl
             ArgumentNullException.ThrowIfNull(drawingService);
             ArgumentNullException.ThrowIfNull(emailManagementService);
             ArgumentNullException.ThrowIfNull(jobService);
+            ArgumentNullException.ThrowIfNull(joinQuestionService);
+            ArgumentNullException.ThrowIfNull(languageService);
             ArgumentNullException.ThrowIfNull(logger);
             ArgumentNullException.ThrowIfNull(mailService);
             ArgumentNullException.ThrowIfNull(pointTranslationService);
@@ -93,6 +99,8 @@ namespace GRA.Controllers.MissionControl
             _drawingService = drawingService;
             _emailManagementService = emailManagementService;
             _jobService = jobService;
+            _joinQuestionService = joinQuestionService;
+            _languageService = languageService;
             _logger = logger;
             _mailService = mailService;
             _mapper = context?.Mapper;
@@ -211,6 +219,11 @@ namespace GRA.Controllers.MissionControl
                 viewModel.ShowAge = program.AskAge;
                 viewModel.ShowSchool = program.AskSchool;
             }
+
+            var languageId = await _languageService
+                .GetLanguageIdAsync(_userContextProvider.GetCurrentCulture()?.Name);
+
+            viewModel.JoinQuestions = await _joinQuestionService.GetQuestionsViewAsync(languageId);
 
             return View(viewModel);
         }
@@ -362,14 +375,9 @@ namespace GRA.Controllers.MissionControl
                         true,
                         false);
                     await _mailService.SendUserBroadcastsAsync(newUser.Id, false, true);
-                    if (UserHasPermission(Permission.EditParticipants))
-                    {
-                        return RedirectToAction(nameof(Detail), Name, new { id = newUser.Id });
-                    }
-                    else
-                    {
-                        return RedirectToAction(nameof(Index), Name);
-                    }
+                    return UserHasPermission(Permission.EditParticipants)
+                        ? RedirectToAction(nameof(Detail), Name, new { id = newUser.Id })
+                        : RedirectToAction(nameof(Index), Name);
                 }
                 catch (GraException gex)
                 {
@@ -489,15 +497,15 @@ namespace GRA.Controllers.MissionControl
             }
             if (branchId.HasValue)
             {
-                filter.BranchIds = new List<int> { branchId.Value };
+                filter.BranchIds = [branchId.Value];
             }
             else if (systemId.HasValue)
             {
-                filter.SystemIds = new List<int> { systemId.Value };
+                filter.SystemIds = [systemId.Value];
             }
             if (programId.HasValue)
             {
-                filter.ProgramIds = new List<int?> { programId.Value };
+                filter.ProgramIds = [programId.Value];
             }
 
             bool isDescending = string.Equals(order,
@@ -696,6 +704,28 @@ namespace GRA.Controllers.MissionControl
                 if (viewModel.User.CannotBeEmailed)
                 {
                     ShowAlertWarning("This participant has an invalid email address and won't be able to receive emails until it is changed.");
+                }
+
+                var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
+
+                var joinQuestions = await _joinQuestionService.GetQuestionsViewAsync(
+                    defaultLanguageId);
+
+                if (joinQuestions.Any())
+                {
+                    var selections = (await _joinQuestionService.GetSelectionsAsync(user.Id))
+                        .Select(_ => _.ToString(CultureInfo.InvariantCulture));
+
+                    foreach (var joinQuestion in joinQuestions)
+                    {
+                        var selection = joinQuestion
+                            .JoinQuestionOptions
+                            .Where(_ => selections.Contains(_.Key))
+                            .Select(_ => _.Value)
+                            .SingleOrDefault();
+                        viewModel.JoinQuestions.Add(joinQuestion.JoinQuestionText, selection);
+                    }
+
                 }
 
                 return View(viewModel);
@@ -1147,6 +1177,12 @@ namespace GRA.Controllers.MissionControl
                     }
                 }
 
+                var languageId = await _languageService
+                    .GetLanguageIdAsync(_userContextProvider.GetCurrentCulture()?.Name);
+
+                viewModel.JoinQuestions = await _joinQuestionService.GetQuestionsViewAsync(
+                    languageId);
+
                 return View("HouseholdAdd", viewModel);
             }
             catch (GraException gex)
@@ -1269,25 +1305,11 @@ namespace GRA.Controllers.MissionControl
                         }
                     }
 
-                    if (askIfFirstTime)
-                    {
-                        model.User.IsFirstTime = model.IsFirstTime.Equals(DropDownTrueValue,
+                    model.User.IsFirstTime = askIfFirstTime && model.IsFirstTime.Equals(DropDownTrueValue,
                            StringComparison.OrdinalIgnoreCase);
-                    }
-                    else
-                    {
-                        model.User.IsFirstTime = false;
-                    }
 
-                    if (askEmailSubscription)
-                    {
-                        model.User.IsEmailSubscribed = DropDownTrueValue.Equals(
+                    model.User.IsEmailSubscribed = askEmailSubscription && DropDownTrueValue.Equals(
                             model.EmailSubscriptionRequested, StringComparison.OrdinalIgnoreCase);
-                    }
-                    else
-                    {
-                        model.User.IsEmailSubscribed = false;
-                    }
 
                     if (askActivityGoal && model.User.DailyPersonalGoal > 0)
                     {
@@ -1315,6 +1337,8 @@ namespace GRA.Controllers.MissionControl
                             model.User.PersonalPointGoal = maximumPointsValue;
                         }
                     }
+
+                    model.User.JoinQuestionOptions = model.JoinQuestionOptions;
 
                     var newMember = await _userService.AddHouseholdMemberAsync(headOfHousehold.Id,
                         model.User,
@@ -1391,6 +1415,11 @@ namespace GRA.Controllers.MissionControl
                 program ??= programList.First();
                 model.MinimumPersonalPointGoal = program.AchieverPointAmount;
             }
+
+            var languageId = await _languageService
+                .GetLanguageIdAsync(_userContextProvider.GetCurrentCulture()?.Name);
+
+            model.JoinQuestions = await _joinQuestionService.GetQuestionsViewAsync(languageId);
 
             return View("HouseholdAdd", model);
         }
@@ -1469,15 +1498,7 @@ namespace GRA.Controllers.MissionControl
                     foreach (var prize in prizeList)
                     {
                         var prizeName = $"{prize.Name} ({prize.Count})";
-                        string prizeId;
-                        if (prize.DrawingId.HasValue)
-                        {
-                            prizeId = $"{DrawingPrizeKey}{prize.DrawingId}";
-                        }
-                        else
-                        {
-                            prizeId = $"{TriggerPrizeKey}{prize.TriggerId}";
-                        }
+                        string prizeId = prize.DrawingId.HasValue ? $"{DrawingPrizeKey}{prize.DrawingId}" : $"{TriggerPrizeKey}{prize.TriggerId}";
                         prizeSelectList.Add(new SelectListItem(prizeName, prizeId));
                     }
 
@@ -1647,17 +1668,17 @@ namespace GRA.Controllers.MissionControl
         {
             var filter = new UserFilter(page, 10)
             {
-                UserIds = new List<int>() { userId },
+                UserIds = [userId],
                 Search = search,
                 CanAddToHousehold = true,
             };
             if (branchId.HasValue)
             {
-                filter.BranchIds = new List<int>() { branchId.Value };
+                filter.BranchIds = [branchId.Value];
             }
             else if (systemId.HasValue)
             {
-                filter.SystemIds = new List<int>() { systemId.Value };
+                filter.SystemIds = [systemId.Value];
             }
 
             var participants = await _userService.GetPaginatedUserListAsync(filter);
@@ -1993,18 +2014,11 @@ namespace GRA.Controllers.MissionControl
                 int unredeemedCount = 0;
                 foreach (var prizeUser in prizeUsers)
                 {
-                    PrizeWinner prize;
-                    if (model.DrawingId.HasValue)
-                    {
-                        prize = await _prizeWinnerService
-                            .GetUserDrawingPrizeAsync(prizeUser.Id, model.DrawingId.Value);
-                    }
-                    else
-                    {
-                        prize = await _prizeWinnerService
+                    PrizeWinner prize = model.DrawingId.HasValue
+                        ? await _prizeWinnerService
+                            .GetUserDrawingPrizeAsync(prizeUser.Id, model.DrawingId.Value)
+                        : await _prizeWinnerService
                             .GetUserTriggerPrizeAsync(prizeUser.Id, model.TriggerId.Value);
-                    }
-
                     try
                     {
                         await _prizeWinnerService.RedeemPrizeAsync(prize.Id, prize.StaffNotes);
@@ -2365,7 +2379,7 @@ namespace GRA.Controllers.MissionControl
 
                 var viewModel = new HistoryListViewModel(await GetPopulatedBaseViewModel(user))
                 {
-                    Historys = new List<HistoryItemViewModel>(),
+                    Historys = [],
                     PaginateModel = paginateModel,
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
                     CanRemoveHistory = UserHasPermission(Permission.LogActivityForAny),
@@ -3174,7 +3188,7 @@ namespace GRA.Controllers.MissionControl
 
             if (groupTypeId.HasValue)
             {
-                filter.GroupTypeIds = new List<int> { groupTypeId.Value };
+                filter.GroupTypeIds = [groupTypeId.Value];
             }
 
             var groupList = await _userService.GetPaginatedGroupListAsync(filter);
