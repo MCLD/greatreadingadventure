@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Added `autocomplete="off"` to all password form fields
 - Added `GraForceHttpsCookies` application setting to force HTTPS-only on cookies
+- "Join Question" capability to add required/optional sign-up questions
 
 ## Changed
 

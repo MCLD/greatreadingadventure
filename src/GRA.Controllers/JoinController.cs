@@ -346,18 +346,17 @@ namespace GRA.Controllers
                 viewModel.ProgramId = programId;
                 viewModel.ShowAge = program.AskAge;
                 viewModel.ShowSchool = program.AskSchool;
-
-                var languageId = await _languageService
-                    .GetLanguageIdAsync(_userContextProvider.GetCurrentCulture()?.Name);
-
-                viewModel.JoinQuestions = await _joinQuestionService.GetQuestionsViewAsync(
-                    languageId);
             }
 
             if (useAuthCode)
             {
                 viewModel.AuthorizationCode = authCode;
             }
+
+            var languageId = await _languageService
+                .GetLanguageIdAsync(_userContextProvider.GetCurrentCulture()?.Name);
+
+            viewModel.JoinQuestions = await _joinQuestionService.GetQuestionsViewAsync(languageId);
 
             return View(viewModel);
         }
@@ -677,6 +676,12 @@ namespace GRA.Controllers
                 program ??= programList.First();
                 model.MinimumPersonalPointGoal = program.AchieverPointAmount;
             }
+
+            var languageId = await _languageService
+                .GetLanguageIdAsync(_userContextProvider.GetCurrentCulture()?.Name);
+
+            model.JoinQuestions = await _joinQuestionService.GetQuestionsViewAsync(languageId);
+
             return View(model);
         }
 
