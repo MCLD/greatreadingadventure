@@ -2219,9 +2219,7 @@ namespace GRA.Domain.Service
                     {
                         _logger.LogError("User has invalid join question responses");
                         user.JoinQuestionOptions = string.Empty;
-                        // TODO JQ fix annotation, add translation
-                        //throw new GraException(Annotations.Validate.UserJoinQuestionInvalid);
-                        throw new GraException("There was an error with your submission, please try again.");
+                        throw new GraException(Annotations.Validate.UserJoinQuestionInvalid);
                     }
 
                     var requiredQuestionIds = questions
@@ -2231,14 +2229,9 @@ namespace GRA.Domain.Service
 
                     foreach (var requiredQuestionId in requiredQuestionIds)
                     {
-                        var options = await _joinQuestionService
-                            .GetQuestionOptionsAsync([requiredQuestionId]);
-
                         if (!submittedOptions.Union(submittedOptions).Any())
                         {
-                            // TODO JQ fix annotation, add translation
-                            //throw new GraException(Annotations.Validate.UserJoinQuestionsMissing);
-                            throw new GraException("You must answer the required questions.");
+                            throw new GraException(Annotations.Validate.UserJoinQuestionsMissing);
                         }
                     }
                 }
