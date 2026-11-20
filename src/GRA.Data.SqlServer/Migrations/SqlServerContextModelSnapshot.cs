@@ -17,7 +17,7 @@ namespace GRA.Data.SqlServer.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.26")
+                .HasAnnotation("ProductVersion", "8.0.34")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -1824,6 +1824,65 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasIndex("BranchId");
 
                     b.ToTable("JoinCodes");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.JoinQuestion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsRequired")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("SegmentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("JoinQuestions");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.JoinQuestionOption", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<int>("JoinQuestionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SegmentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("JoinQuestionOptions");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Language", b =>
@@ -4269,6 +4328,21 @@ namespace GRA.Data.SqlServer.Migrations
                     b.ToTable("UserFavoriteEvents");
                 });
 
+            modelBuilder.Entity("GRA.Data.Model.UserJoinQuestionOption", b =>
+                {
+                    b.Property<int>("JoinQuestionOptionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("JoinQuestionOptionId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserJoinQuestionOptions");
+                });
+
             modelBuilder.Entity("GRA.Data.Model.UserLog", b =>
                 {
                     b.Property<int>("Id")
@@ -5703,6 +5777,25 @@ namespace GRA.Data.SqlServer.Migrations
                         .IsRequired();
 
                     b.Navigation("Event");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.UserJoinQuestionOption", b =>
+                {
+                    b.HasOne("GRA.Data.Model.JoinQuestionOption", "JoinQuestionOption")
+                        .WithMany()
+                        .HasForeignKey("JoinQuestionOptionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("GRA.Data.Model.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("JoinQuestionOption");
 
                     b.Navigation("User");
                 });
