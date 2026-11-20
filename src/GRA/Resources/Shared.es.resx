@@ -926,7 +926,7 @@
     <comment>Validation prompt if the participant did not select a library system.</comment>
   </data>
   <data name="Please select a value for {0}." xml:space="preserve">
-    <value>Por favor seleccione un valor para {0}.</value>
+    <value>Por favor seleccione un valor para: {0}.</value>
     <comment>No value was selected for the field and it's required, {0} is the field name (such as 'System' or 'Branch')</comment>
   </data>
   <data name="Please select some participants first." xml:space="preserve">

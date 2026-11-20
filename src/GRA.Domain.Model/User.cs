@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -134,6 +134,8 @@ namespace GRA.Domain.Model
 
         [MaxLength(16)]
         public string UnsubscribeToken { get; set; }
+
+        public string JoinQuestionOptions { get; set; }
 
         [DisplayName(DisplayNames.Username)]
         [MaxLength(36)]

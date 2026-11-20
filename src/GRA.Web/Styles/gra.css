@@ -833,24 +833,6 @@ p.password-note {
     margin-left: 10px;
 }
 
-.gra-landing-content {
-    font-size: larger;
-    margin-bottom: 2rem;
-    margin-top: 2rem;
-}
-
-    .gra-landing-content .gra-exit-header {
-        margin-top: 0;
-    }
-
-    .gra-landing-content .gra-branch-name {
-        font-size: larger;
-    }
-
-    .gra-landing-content .gra-landing-calendar-button {
-        margin-top: 2rem;
-    }
-
 .active-status-color {
     color: #449d44; /* Bootstrap 3 success green */
 }

@@ -4,7 +4,12 @@ namespace GRA.Data.Model
 {
     public class JoinQuestion : Abstract.BaseDbEntity
     {
-        public Segment Segment { get; set; }
+        [Required]
+        public int DisplayOrder { get; set; }
+        [Required]
+        public bool IsActive { get; set; }
+        [Required]
+        public bool IsRequired { get; set; }
         [Required]
         public int SegmentId { get; set; }
     }

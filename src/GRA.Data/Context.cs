@@ -73,7 +73,6 @@ namespace GRA.Data
         public DbSet<Model.PointTranslation> PointTranslations { get; set; }
         public DbSet<Model.PrizeWinner> PrizeWinners { get; set; }
         public DbSet<Model.Program> Programs { get; set; }
-        public DbSet<Model.ProgramJoinQuestion> ProgramJoinQuestions { get; set; }
         public DbSet<Model.PsAgeGroup> PsAgeGroups { get; set; }
         public DbSet<Model.PsBackToBack> PsBackToBack { get; set; }
         public DbSet<Model.PsBlackoutDate> PsBlackoutDates { get; set; }
@@ -121,6 +120,7 @@ namespace GRA.Data
         public DbSet<Model.UserChallengeTask> UserChallengeTasks { get; set; }
         public DbSet<Model.UserFavoriteChallenge> UserFavoriteChallenges { get; set; }
         public DbSet<Model.UserFavoriteEvent> UserFavoriteEvents { get; set; }
+        public DbSet<Model.UserJoinQuestionOption> UserJoinQuestionOptions { get; set; }
         public DbSet<Model.UserLog> UserLogs { get; set; }
         public DbSet<Model.UserPackingSlipView> UserPackingSlipViews { get; set; }
         public DbSet<Model.UserQuestionnaire> UserQuestionnaires { get; set; }
@@ -196,8 +196,6 @@ namespace GRA.Data
                 .HasKey(_ => new { _.FeaturedChallengeGroupId, _.LanguageId });
             modelBuilder.Entity<Model.MessageTemplateText>()
                 .HasKey(_ => new { _.MessageTemplateId, _.LanguageId });
-            modelBuilder.Entity<Model.ProgramJoinQuestion>()
-                .HasKey(_ => new { _.JoinQuestionId, _.ProgramId });
             modelBuilder.Entity<Model.PsBackToBack>()
                 .HasKey(_ => new { _.PsAgeGroupId, _.BranchId });
             modelBuilder.Entity<Model.PsKitAgeGroup>()
@@ -232,6 +230,8 @@ namespace GRA.Data
                 .HasKey(_ => new { _.UserId, _.ChallengeId });
             modelBuilder.Entity<Model.UserFavoriteEvent>()
                 .HasKey(_ => new { _.UserId, _.EventId });
+            modelBuilder.Entity<Model.UserJoinQuestionOption>()
+                .HasKey(_ => new { _.JoinQuestionOptionId, _.UserId });
             modelBuilder.Entity<Model.UserPackingSlipView>()
                 .HasKey(_ => new { _.UserId, _.PackingSlip });
             modelBuilder.Entity<Model.UserQuestionnaire>()

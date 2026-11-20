@@ -578,6 +578,7 @@ namespace GRA.Web
             services.AddScoped<GroupTypeService>();
             services.AddScoped<JobService>();
             services.AddScoped<JoinCodeService>();
+            services.AddScoped<JoinQuestionService>();
             services.AddScoped<LanguageService>();
             services.AddScoped<MailService>();
             services.AddScoped<MessageTemplateService>();
@@ -647,9 +648,9 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IAvatarBundleRepository, Data.Repository.AvatarBundleRepository>();
             services.AddScoped<Domain.Repository.IAvatarColorRepository, Data.Repository.AvatarColorRepository>();
             services.AddScoped<Domain.Repository.IAvatarElementRepository, Data.Repository.AvatarElementRepository>();
-            services.AddScoped<Domain.Repository.IAvatarTransferRepository, Data.Repository.AvatarTransferRepository>();
             services.AddScoped<Domain.Repository.IAvatarItemRepository, Data.Repository.AvatarItemRepository>();
             services.AddScoped<Domain.Repository.IAvatarLayerRepository, Data.Repository.AvatarLayerRepository>();
+            services.AddScoped<Domain.Repository.IAvatarTransferRepository, Data.Repository.AvatarTransferRepository>();
             services.AddScoped<Domain.Repository.IBadgeRepository, Data.Repository.BadgeRepository>();
             services.AddScoped<Domain.Repository.IBookRepository, Data.Repository.BookRepository>();
             services.AddScoped<Domain.Repository.IBranchRepository, Data.Repository.BranchRepository>();
@@ -677,6 +678,8 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IGroupTypeRepository, Data.Repository.GroupTypeRepository>();
             services.AddScoped<Domain.Repository.IJobRepository, Data.Repository.JobRepository>();
             services.AddScoped<Domain.Repository.IJoinCodeRepository, Data.Repository.JoinCodeRepository>();
+            services.AddScoped<Domain.Repository.IJoinQuestionOptionRepository, Data.Repository.JoinQuestionOptionRepository>();
+            services.AddScoped<Domain.Repository.IJoinQuestionRepository, Data.Repository.JoinQuestionRepository>();
             services.AddScoped<Domain.Repository.ILanguageRepository, Data.Repository.LanguageRepository>();
             services.AddScoped<Domain.Repository.ILocationRepository, Data.Repository.LocationRepository>();
             services.AddScoped<Domain.Repository.IMailRepository, Data.Repository.MailRepository>();
