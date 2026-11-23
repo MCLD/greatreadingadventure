@@ -1357,6 +1357,10 @@
     <value>Hay 1 resultado que coincide con su búsqueda.</value>
     <comment>Show a message incidating a single search result was found.</comment>
   </data>
+  <data name="There was an error with your submission, please try again." xml:space="preserve">
+    <value>There was an error with your submission, please try again.</value>
+    <comment>Error message: internal error on join question, user should re-enter</comment>
+  </data>
   <data name="There was an issue deleting that mail item." xml:space="preserve">
     <value>Hubo un problema al eliminar ese elemento de correo.</value>
     <comment>Unable to delete a mail due to a software error.</comment>
@@ -1632,6 +1636,10 @@
   <data name="You have {0}/{1} points towards your personal goal." xml:space="preserve">
     <value>Tienes {0}/{1} puntos a su meta personal.</value>
     <comment>Inform the user of their progress towards their personal point goal; {0} is replaced with the number of points the user has, {1} is their point goal</comment>
+  </data>
+  <data name="You must answer the required questions." xml:space="preserve">
+    <value>You must answer the required questions.</value>
+    <comment>Error message: user has not answered required join questions</comment>
   </data>
   <data name="You must enter a code!" xml:space="preserve">
     <value>¡Debes introducir un código!</value>

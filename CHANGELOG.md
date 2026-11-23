@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Corrected issues in Release Engineering document
 - Corrected version in manual
 - Added HTML encoding to forgotten username/password form
+- Gate "email and phone are not required" message based on whether email is actually required
 
 ## [4.7.1] 2026-11-10
 

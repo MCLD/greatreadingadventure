@@ -59,13 +59,16 @@
 
                     <hr />
 
-                    <div class="row mb-3">
-                        <div class="col-12">
-                            <p>
-                                @SharedLocalizer[GRA.Annotations.Validate.EmailPhoneNeededForPrizes]
-                            </p>
+                    @if (!Model.IsEmailRequired)
+                    {
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <p>
+                                    @SharedLocalizer[GRA.Annotations.Validate.EmailPhoneNeededForPrizes]
+                                </p>
+                            </div>
                         </div>
-                    </div>
+                    }
 
                     <div class="row mb-3">
                         <div class="col-12">
