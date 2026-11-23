@@ -122,7 +122,7 @@
                 </div>
             </div>
 
-            <div id="ageField" class="row mb-3 @(Model.ShowAge ? "": "d-none")">
+            <div id="ageField" class="row mb-3 @(Model.ShowAge ? "" : "d-none")">
                 <div class="col-12">
                     <label asp-for="User.Age" class="col-form-label"></label>
                     <input asp-for="User.Age" class="form-control" type="text" />
@@ -130,7 +130,7 @@
                 </div>
             </div>
 
-            <div id="schoolFields" class="@(Model.ShowSchool ? "": "d-none")">
+            <div id="schoolFields" class="@(Model.ShowSchool ? "" : "d-none")">
                 @if (Model.CanEditDetails)
                 {
                     @await Html.PartialAsync("_SchoolSelectionPartial", Model)
@@ -182,26 +182,47 @@
                 </div>
             }
 
-			@if (Model.AskPersonalPointGoal)
-			{
-				<div class="row mb-3">
-					<div class="col-12">
-						<label asp-for="User.PersonalPointGoal" class="col-form-label"></label>
-						<span class="fas fa-info-circle"
-							  data-bs-toggle="tooltip"
-							  title="@String.Format(GRA.Annotations.Interface.PersonalPointGoalDescription, Model.MinimumPersonalPointGoal)"></span>
-						<div>
-							@GRA.Annotations.Interface.PersonalPointGoalLabel
-							<input asp-for="User.PersonalPointGoal"
-								   max="@Model.MaximumPersonalPointGoal"
-								   min="@Model.MinimumPersonalPointGoal"
-								   class="form-control"
-								   style="display:inline-block; width:100px;" />
-						</div>
-						<span asp-validation-for="User.PersonalPointGoal" class="text-danger"></span>
-					</div>
-				</div>
-			}
+            @if (Model.AskPersonalPointGoal)
+            {
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <label asp-for="User.PersonalPointGoal" class="col-form-label"></label>
+                        <span class="fas fa-info-circle"
+                              data-bs-toggle="tooltip"
+                              title="@String.Format(GRA.Annotations.Interface.PersonalPointGoalDescription, Model.MinimumPersonalPointGoal)"></span>
+                        <div>
+                            @GRA.Annotations.Interface.PersonalPointGoalLabel
+                            <input asp-for="User.PersonalPointGoal"
+                                   max="@Model.MaximumPersonalPointGoal"
+                                   min="@Model.MinimumPersonalPointGoal"
+                                   class="form-control"
+                                   style="display:inline-block; width:100px;" />
+                        </div>
+                        <span asp-validation-for="User.PersonalPointGoal" class="text-danger"></span>
+                    </div>
+                </div>
+            }
+
+            @if (Model.JoinQuestions.Any())
+            {
+                <h3>Join Questions</h3>
+                @foreach (var keyVal in Model.JoinQuestions)
+                {
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <label class="col-form-label">@keyVal.Key</label>
+                            <div>
+                                <input aria-label="Disabled input example"
+                                       class="form-control"
+                                       disabled
+                                       readonly
+                                       value="@keyVal.Value"
+                                       type="text">
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
 
             @if (Model.IsVendorCodeDisplayed)
             {
@@ -440,30 +461,30 @@
     }
     <script>
         var programs = JSON.parse('@Html.Raw(Model.ProgramJson)');
-        var selectedProgram = $.grep(programs, function (obj) {
+        var selectedProgram = $.grep(programs, function(obj) {
             return obj.Id == $("#User_ProgramId").val();
         })[0];
 
-        $("#User_SystemId").on("change", function () {
+        $("#User_SystemId").on("change", function() {
             let systemId = $(this).val();
             let branchList = $("#User_BranchId");
             let branchId = branchList.val();
             let url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
 
-            $.getJSON(url, { systemId: systemId, branchId: branchId }, function (response) {
+            $.getJSON(url, { systemId: systemId, branchId: branchId }, function(response) {
                 branchList.empty();
                 if (response.length > 1) {
                     branchList.append(new Option("", "-1"));
                 }
-                $.each(response, function (index, item) {
+                $.each(response, function(index, item) {
                     branchList.append(new Option(item.text, item.value, item.selected, item.selected))
                 });
             });
         });
 
-        $("#User_ProgramId").on("change", function () {
+        $("#User_ProgramId").on("change", function() {
             let programId = $(this).val();
-            selectedProgram = $.grep(programs, function (obj) {
+            selectedProgram = $.grep(programs, function(obj) {
                 return obj.Id == programId;
             })[0];
             if (selectedProgram != null) {
@@ -484,7 +505,7 @@
             }
         });
 
-        $("#User_Age").on("change", function () {
+        $("#User_Age").on("change", function() {
             validateAge();
         });
 
@@ -493,7 +514,7 @@
             let message = $("#ageMessage");
             if (age != "" && ((age > selectedProgram.AgeMaximum && selectedProgram.AgeMaximum != null)
                 || (age < selectedProgram.AgeMinimum && selectedProgram.AgeMinimum != null))) {
-                let program = $.grep(programs, function (obj) {
+                let program = $.grep(programs, function(obj) {
                     return ((obj.AgeMaximum >= age || obj.AgeMaximum == null)
                         && (obj.AgeMinimum <= age || obj.AgeMinimum == null));
                 })[0];
@@ -518,12 +539,12 @@
             const usernameField = $("#User_Username");
             const usernameValidation = $("#Username-Validation");
 
-            usernameField.on("blur", function () {
+            usernameField.on("blur", function() {
                 if ($(this).val().trim() != "" && !$(this).hasClass("input-validation-error")) {
                     $(this).val($(this).val().trim());
                     usernameIcon.addClass("fa-spinner fa-spin")
                         .removeClass("d-none fa-times-circle fa-check-circle text-success text-danger");
-                    $.post(usernameCheckUrl, { username: $(this).val() }, function (response) {
+                    $.post(usernameCheckUrl, { username: $(this).val() }, function(response) {
                         if (response) {
                             $(this).removeClass("valid");
                             $(this).addClass("input-validation-error");
@@ -544,7 +565,7 @@
                 }
             });
 
-            usernameField.on("keypress", function () {
+            usernameField.on("keypress", function() {
                 usernameIcon.addClass("d-none");
             });
         </script>
@@ -553,7 +574,7 @@
     @if (Model.User.NeedsToAnswerVendorCodeQuestion && Model.User.CanEmailAwardVendorCode && Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.EditParticipants.ToString()))
     {
         <script>
-            $("#emailAwardButton").on("click", function (event) {
+            $("#emailAwardButton").on("click", function(event) {
                 event.preventDefault();
                 $("#emailAwardModal").modal("show");
             });

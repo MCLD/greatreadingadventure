@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using DocumentFormat.OpenXml.EMMA;
 using EmailValidation;
 using GRA.Controllers.Filter;
 using GRA.Controllers.ViewModel.Join;
@@ -41,12 +40,14 @@ namespace GRA.Controllers
         private readonly SegmentService _segmentService;
         private readonly SiteService _siteService;
         private readonly UserService _userService;
+        private readonly JoinQuestionService _joinQuestionService;
 
         public JoinController(ILogger<JoinController> logger,
             ServiceFacade.Controller context,
             AuthenticationService authenticationService,
             AuthorizationCodeService authorizationCodeService,
             JoinCodeService joinCodeService,
+            JoinQuestionService joinQuestionService,
             LanguageService languageService,
             MailService mailService,
             PointTranslationService pointTranslationService,
@@ -59,6 +60,7 @@ namespace GRA.Controllers
             ArgumentNullException.ThrowIfNull(authenticationService);
             ArgumentNullException.ThrowIfNull(authorizationCodeService);
             ArgumentNullException.ThrowIfNull(joinCodeService);
+            ArgumentNullException.ThrowIfNull(joinQuestionService);
             ArgumentNullException.ThrowIfNull(languageService);
             ArgumentNullException.ThrowIfNull(logger);
             ArgumentNullException.ThrowIfNull(mailService);
@@ -72,6 +74,7 @@ namespace GRA.Controllers
             _authenticationService = authenticationService;
             _authorizationCodeService = authorizationCodeService;
             _joinCodeService = joinCodeService;
+            _joinQuestionService = joinQuestionService;
             _languageService = languageService;
             _logger = logger;
             _mailService = mailService;
@@ -141,23 +144,9 @@ namespace GRA.Controllers
                         TempData[AuthCodeAssignedBranch] = branchId;
                     }
 
-                    if (singlePageSignUp)
-                    {
-                        return RedirectToAction(nameof(Index));
-                    }
-                    else
-                    {
-                        return RedirectToAction(nameof(Step1));
-                    }
+                    return singlePageSignUp ? RedirectToAction(nameof(Index)) : RedirectToAction(nameof(Step1));
                 }
-                if (TempData.TryGetValue(AuthCodeAttempts, out object authCodeAttempts))
-                {
-                    TempData[AuthCodeAttempts] = (int)authCodeAttempts + 1;
-                }
-                else
-                {
-                    TempData[AuthCodeAttempts] = 1;
-                }
+                TempData[AuthCodeAttempts] = TempData.TryGetValue(AuthCodeAttempts, out object authCodeAttempts) ? (int)authCodeAttempts + 1 : 1;
             }
 
             if (TempData.ContainsKey(AuthCodeAttempts) && (int)TempData.Peek(AuthCodeAttempts) >= 5)
@@ -195,17 +184,12 @@ namespace GRA.Controllers
             {
                 if (siteStage == SiteStage.BeforeRegistration)
                 {
-                    if (site.RegistrationOpens.HasValue)
-                    {
-                        AlertInfo = _sharedLocalizer[Annotations.Info.YouCanJoinOn,
+                    AlertInfo = site.RegistrationOpens.HasValue
+                        ? (string)_sharedLocalizer[Annotations.Info.YouCanJoinOn,
                             site.Name,
-                            site.RegistrationOpens.Value.ToString("d", CultureInfo.CurrentCulture)];
-                    }
-                    else
-                    {
-                        AlertInfo = _sharedLocalizer[Annotations.Info.RegistrationNotOpenYet,
+                            site.RegistrationOpens.Value.ToString("d", CultureInfo.CurrentCulture)]
+                        : (string)_sharedLocalizer[Annotations.Info.RegistrationNotOpenYet,
                             site.Name];
-                    }
                     return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
                 }
                 else if (siteStage >= SiteStage.ProgramEnded)
@@ -270,11 +254,8 @@ namespace GRA.Controllers
             {
                 viewModel.DailyPersonalGoal = defaultDailyGoal;
                 var program = programList.First();
-                if (program.PointTranslation == null)
-                {
-                    program.PointTranslation = await _pointTranslationService
+                program.PointTranslation ??= await _pointTranslationService
                         .GetByProgramIdAsync(program.Id);
-                }
                 var pointTranslation = program.PointTranslation;
                 viewModel.TranslationDescriptionPastTense = pointTranslation
                     .TranslationDescriptionPastTense
@@ -371,6 +352,11 @@ namespace GRA.Controllers
             {
                 viewModel.AuthorizationCode = authCode;
             }
+
+            var languageId = await _languageService
+                .GetLanguageIdAsync(_userContextProvider.GetCurrentCulture()?.Name);
+
+            viewModel.JoinQuestions = await _joinQuestionService.GetQuestionsViewAsync(languageId);
 
             return View(viewModel);
         }
@@ -666,11 +652,8 @@ namespace GRA.Controllers
             if (askActivityGoal)
             {
                 program ??= programList.First();
-                if (program.PointTranslation == null)
-                {
-                    program.PointTranslation = await _pointTranslationService
+                program.PointTranslation ??= await _pointTranslationService
                         .GetByProgramIdAsync(program.Id);
-                }
                 var pointTranslation = program.PointTranslation;
                 model.TranslationDescriptionPastTense = pointTranslation
                     .TranslationDescriptionPastTense
@@ -693,6 +676,12 @@ namespace GRA.Controllers
                 program ??= programList.First();
                 model.MinimumPersonalPointGoal = program.AchieverPointAmount;
             }
+
+            var languageId = await _languageService
+                .GetLanguageIdAsync(_userContextProvider.GetCurrentCulture()?.Name);
+
+            model.JoinQuestions = await _joinQuestionService.GetQuestionsViewAsync(languageId);
+
             return View(model);
         }
 
@@ -720,17 +709,12 @@ namespace GRA.Controllers
                 var siteStage = GetSiteStage();
                 if (siteStage == SiteStage.BeforeRegistration)
                 {
-                    if (site.RegistrationOpens.HasValue)
-                    {
-                        AlertInfo = _sharedLocalizer[Annotations.Info.YouCanJoinOn,
+                    AlertInfo = site.RegistrationOpens.HasValue
+                        ? (string)_sharedLocalizer[Annotations.Info.YouCanJoinOn,
                             site.Name,
-                            site.RegistrationOpens.Value.ToString("d", CultureInfo.CurrentCulture)];
-                    }
-                    else
-                    {
-                        AlertInfo = _sharedLocalizer[Annotations.Info.RegistrationNotOpenYet,
+                            site.RegistrationOpens.Value.ToString("d", CultureInfo.CurrentCulture)]
+                        : (string)_sharedLocalizer[Annotations.Info.RegistrationNotOpenYet,
                             site.Name];
-                    }
                     return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
                 }
                 else if (siteStage >= SiteStage.ProgramEnded)
@@ -1067,13 +1051,15 @@ namespace GRA.Controllers
                 viewModel.AskEmailSubscriptionText = askEmailSubscriptionText;
             }
 
+            string step2Json = (string)TempData.Peek(TempStep2);
+            var step2 = JsonConvert.DeserializeObject<Step2ViewModel>(step2Json);
+
             var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
                 SiteSettingKey.Users.DefaultDailyPersonalGoal);
             if (askActivityGoal)
             {
                 viewModel.DailyPersonalGoal = defaultDailyGoal;
-                string step2Json = (string)TempData.Peek(TempStep2);
-                var step2 = JsonConvert.DeserializeObject<Step2ViewModel>(step2Json);
+
                 var pointTranslation = await _pointTranslationService
                     .GetByProgramIdAsync(step2.ProgramId.Value);
                 viewModel.TranslationDescriptionPastTense = pointTranslation
@@ -1096,11 +1082,14 @@ namespace GRA.Controllers
                     viewModel.MaximumPersonalPointGoal = maximumPointsValue;
                 }
 
-                string step2Json = (string)TempData.Peek(TempStep2);
-                var step2 = JsonConvert.DeserializeObject<Step2ViewModel>(step2Json);
                 var program = await _siteService.GetProgramByIdAsync(step2.ProgramId.Value);
                 viewModel.MinimumPersonalPointGoal = program.AchieverPointAmount;
             }
+
+            var languageId = await _languageService
+                .GetLanguageIdAsync(_userContextProvider.GetCurrentCulture()?.Name);
+
+            viewModel.JoinQuestions = await _joinQuestionService.GetQuestionsViewAsync(languageId);
 
             return View(viewModel);
         }
@@ -1176,13 +1165,13 @@ namespace GRA.Controllers
                 return RedirectToAction(nameof(Step2));
             }
 
+            string step2Json = (string)TempData.Peek(TempStep2);
+            var step2 = JsonConvert.DeserializeObject<Step2ViewModel>(step2Json);
+
             if (ModelState.IsValid)
             {
                 string step1Json = (string)TempData.Peek(TempStep1);
-                string step2Json = (string)TempData.Peek(TempStep2);
-
                 var step1 = JsonConvert.DeserializeObject<Step1ViewModel>(step1Json);
-                var step2 = JsonConvert.DeserializeObject<Step2ViewModel>(step2Json);
 
                 var user = new User();
                 _mapper.Map<Step1ViewModel, User>(step1, user);
@@ -1322,8 +1311,6 @@ namespace GRA.Controllers
 
             if (askActivityGoal)
             {
-                string step2Json = (string)TempData.Peek(TempStep2);
-                var step2 = JsonConvert.DeserializeObject<Step2ViewModel>(step2Json);
                 var pointTranslation = await _pointTranslationService
                     .GetByProgramIdAsync(step2.ProgramId.Value);
                 model.TranslationDescriptionPastTense = pointTranslation
@@ -1344,11 +1331,14 @@ namespace GRA.Controllers
                     model.MaximumPersonalPointGoal = maximumPointsValue;
                 }
 
-                string step2Json = (string)TempData.Peek(TempStep2);
-                var step2 = JsonConvert.DeserializeObject<Step2ViewModel>(step2Json);
                 var program = await _siteService.GetProgramByIdAsync(step2.ProgramId.Value);
                 model.MinimumPersonalPointGoal = program.AchieverPointAmount;
             }
+
+            var languageId = await _languageService
+                .GetLanguageIdAsync(_userContextProvider.GetCurrentCulture()?.Name);
+
+            model.JoinQuestions = await _joinQuestionService.GetQuestionsViewAsync(languageId);
 
             PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, site.Name];
 

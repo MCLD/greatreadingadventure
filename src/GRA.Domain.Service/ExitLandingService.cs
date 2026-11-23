@@ -116,26 +116,23 @@ namespace GRA.Domain.Service
             // if it was not found in the database, insert the defaults
             exitLandingDetails ??= await InsertDefaultsAsync(systemUserId, siteStage);
 
-            if (exitLandingDetails == null)
-            {
-                throw new GraException($"Unable to find exit/landing details for site stage {siteStage}");
-            }
-
-            return new ExitLandingDetails
-            {
-                BannerAlt = await _segmentService
+            return exitLandingDetails == null
+                ? throw new GraException($"Unable to find exit/landing details for site stage {siteStage}")
+                : new ExitLandingDetails
+                {
+                    BannerAlt = await _segmentService
                     .GetTextAsync(exitLandingDetails.BannerAlt, languageId),
-                BannerFile = await _segmentService
+                    BannerFile = await _segmentService
                     .GetTextAsync(exitLandingDetails.BannerFile, languageId),
-                ExitLeftMessage = await _segmentService
+                    ExitLeftMessage = await _segmentService
                     .GetTextAsync(exitLandingDetails.ExitLeftMessage, languageId),
-                LandingCenterMessage = await _segmentService
+                    LandingCenterMessage = await _segmentService
                     .GetTextAsync(exitLandingDetails.LandingCenterMessage, languageId),
-                LandingLeftMessage = await _segmentService
+                    LandingLeftMessage = await _segmentService
                     .GetTextAsync(exitLandingDetails.LandingLeftMessage, languageId),
-                LandingRightMessage = await _segmentService
+                    LandingRightMessage = await _segmentService
                     .GetTextAsync(exitLandingDetails.LandingRightMessage, languageId)
-            };
+                };
         }
 
         private async Task<IList<DefaultMessage>> GetDefaultsAsync()
@@ -161,7 +158,7 @@ namespace GRA.Domain.Service
                 result.Add(new DefaultMessage
                 {
                     LanguageId = language.Id,
-                    Message = "## "
+                    Message = "### "
                         + _sharedLocalizer.GetString(language.Name,
                             Annotations.Home.AdventureNotOver)
                         + Environment.NewLine
@@ -179,10 +176,12 @@ namespace GRA.Domain.Service
                             result.Add(new DefaultMessage
                             {
                                 LanguageId = language.Id,
-                                Message = _sharedLocalizer.GetString(language.Name,
+                                Message = "### "
+                                    + _sharedLocalizer.GetString(language.Name,
                                         Annotations.Home.WelcomeTo, Tags.ExitLandingTags.Sitename)
                                     + Environment.NewLine
                                     + Environment.NewLine
+                                    + "#### "
                                     + _sharedLocalizer.GetString(language.Name,
                                         Annotations.Title.RegistrationOpens,
                                             Tags.ExitLandingTags.Sitename,
@@ -196,10 +195,12 @@ namespace GRA.Domain.Service
                             result.Add(new DefaultMessage
                             {
                                 LanguageId = language.Id,
-                                Message = _sharedLocalizer.GetString(language.Name,
+                                Message = "### "
+                                    + _sharedLocalizer.GetString(language.Name,
                                         Annotations.Home.WelcomeTo, Tags.ExitLandingTags.Sitename)
                                     + Environment.NewLine
                                     + Environment.NewLine
+                                    + "#### "
                                     + _sharedLocalizer.GetString(language.Name,
                                         Annotations.Home.StartAdventure),
                                 MessageName = nameof(ExitLandingMessageSet.LandingCenterMessage),
@@ -211,10 +212,12 @@ namespace GRA.Domain.Service
                             result.Add(new DefaultMessage
                             {
                                 LanguageId = language.Id,
-                                Message = _sharedLocalizer.GetString(language.Name,
+                                Message = "### "
+                                    + _sharedLocalizer.GetString(language.Name,
                                         Annotations.Home.Thanks, Tags.ExitLandingTags.Sitename)
                                     + Environment.NewLine
                                     + Environment.NewLine
+                                    + "#### "
                                     + _sharedLocalizer.GetString(language.Name,
                                         Annotations.Home.StillSignIn),
                                 MessageName = nameof(ExitLandingMessageSet.LandingCenterMessage),
@@ -226,7 +229,8 @@ namespace GRA.Domain.Service
                             result.Add(new DefaultMessage
                             {
                                 LanguageId = language.Id,
-                                Message = _sharedLocalizer.GetString(language.Name,
+                                Message = "### "
+                                    + _sharedLocalizer.GetString(language.Name,
                                         Annotations.Home.Thanks, Tags.ExitLandingTags.Sitename),
                                 MessageName = nameof(ExitLandingMessageSet.LandingCenterMessage),
                                 SiteStage = siteStage
@@ -237,10 +241,12 @@ namespace GRA.Domain.Service
                             result.Add(new DefaultMessage
                             {
                                 LanguageId = language.Id,
-                                Message = _sharedLocalizer.GetString(language.Name,
+                                Message = "### "
+                                    + _sharedLocalizer.GetString(language.Name,
                                         Annotations.Home.WelcomeTo, Tags.ExitLandingTags.Sitename)
                                     + Environment.NewLine
                                     + Environment.NewLine
+                                    + "#### "
                                     + _sharedLocalizer.GetString(language.Name,
                                         Annotations.Home.StartAdventure),
                                 MessageName = nameof(ExitLandingMessageSet.LandingCenterMessage),

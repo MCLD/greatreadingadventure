@@ -1,4 +1,5 @@
-﻿using GRA.Domain.Model;
+﻿using System.Collections.Generic;
+using GRA.Domain.Model;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Participants
@@ -7,10 +8,12 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
     {
         public ParticipantsDetailViewModel()
         {
+            JoinQuestions = [];
         }
 
         public ParticipantsDetailViewModel(ParticipantPartialViewModel viewModel) : base(viewModel)
         {
+            JoinQuestions = [];
         }
 
         public string ActivityDescriptionPlural { get; set; }
@@ -48,5 +51,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public string TranslationDescriptionPastTense { get; set; }
         public User User { get; set; }
         public string Username { get; set; }
+
+        public Dictionary<string, string> JoinQuestions { get; }
     }
 }

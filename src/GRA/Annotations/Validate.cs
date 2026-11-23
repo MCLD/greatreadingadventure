@@ -49,6 +49,8 @@
         public const string UnableToAdd = "Unable to add: {0}";
         public const string UnableToChangePassword = "Unable to change your password: {0}";
         public const string UnableToReset = "Unable to reset password: {0}";
+        public const string UserJoinQuestionInvalid = "There was an error with your submission, please try again.";
+        public const string UserJoinQuestionsMissing = "You must answer the required questions.";
         public const string Username = "Could not find username '{0}'.";
         public const string UsernamePasswordMismatch = "The username and password entered do not match.";
         public const string UsernameTaken = "Someone has already chosen that username, please try another.";

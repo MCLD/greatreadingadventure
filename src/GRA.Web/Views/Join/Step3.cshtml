@@ -59,13 +59,16 @@
 
                     <hr />
 
-                    <div class="row mb-3">
-                        <div class="col-12">
-                            <p>
-                                @SharedLocalizer[GRA.Annotations.Validate.EmailPhoneNeededForPrizes]
-                            </p>
+                    @if (!Model.IsEmailRequired)
+                    {
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <p>
+                                    @SharedLocalizer[GRA.Annotations.Validate.EmailPhoneNeededForPrizes]
+                                </p>
+                            </div>
                         </div>
-                    </div>
+                    }
 
                     <div class="row mb-3">
                         <div class="col-12">
@@ -101,6 +104,8 @@
                             </div>
                         </div>
                     }
+
+                    <partial name="_JoinQuestionsPartial" model="Model.JoinQuestions" />
 
                     @if (Model.AskEmailSubscription?.Count() > 1)
                     {
@@ -176,12 +181,12 @@
         const usernameField = $("#Username");
         const usernameValidation = $("#Username-Validation");
 
-        usernameField.on("blur", function () {
+        usernameField.on("blur", function() {
             if ($(this).val().trim() != "" && !$(this).hasClass("input-validation-error")) {
                 $(this).val($(this).val().trim());
                 usernameIcon.addClass("fa-spinner fa-spin")
                     .removeClass("d-none fa-times-circle fa-check-circle text-success text-danger");
-                $.post(usernameCheckUrl, { username: $(this).val() }, function (response) {
+                $.post(usernameCheckUrl, { username: $(this).val() }, function(response) {
                     if (response) {
                         $(this).removeClass("valid");
                         $(this).addClass("input-validation-error");
@@ -202,7 +207,7 @@
             }
         });
 
-        usernameField.on("keypress", function () {
+        usernameField.on("keypress", function() {
             usernameIcon.addClass("d-none");
         });
     </script>

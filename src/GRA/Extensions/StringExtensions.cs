@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 
 namespace GRA.Extensions
 {
@@ -22,6 +23,22 @@ namespace GRA.Extensions
                 sb.Append(c);
             }
             return sb.ToString().Trim();
+        }
+
+        public static IEnumerable<int> ToIntList(this string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                yield break;
+            }
+
+            foreach (var stringValue in value.Split(','))
+            {
+                if (int.TryParse(stringValue, out int intValue))
+                {
+                    yield return intValue;
+                }
+            }
         }
     }
 }

@@ -12,6 +12,7 @@ using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
+using GRA.Extensions;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -45,6 +46,8 @@ namespace GRA.Domain.Service
         private readonly IGroupTypeRepository _groupTypeRepository;
 
         private readonly IJobRepository _jobRepository;
+
+        private readonly JoinQuestionService _joinQuestionService;
 
         private readonly LanguageService _languageService;
 
@@ -133,6 +136,7 @@ namespace GRA.Domain.Service
             IUserContextProvider userContextProvider,
             IUserLogRepository userLogRepository,
             IUserRepository userRepository,
+            JoinQuestionService joinQuestionService,
             LanguageService languageService,
             SiteLookupService siteLookupService,
             UserImportService userImportService,
@@ -150,6 +154,7 @@ namespace GRA.Domain.Service
             ArgumentNullException.ThrowIfNull(groupInfoRepository);
             ArgumentNullException.ThrowIfNull(groupTypeRepository);
             ArgumentNullException.ThrowIfNull(jobRepository);
+            ArgumentNullException.ThrowIfNull(joinQuestionService);
             ArgumentNullException.ThrowIfNull(languageService);
             ArgumentNullException.ThrowIfNull(mailRepository);
             ArgumentNullException.ThrowIfNull(notificationRepository);
@@ -180,6 +185,7 @@ namespace GRA.Domain.Service
             _groupInfoRepository = groupInfoRepository;
             _groupTypeRepository = groupTypeRepository;
             _jobRepository = jobRepository;
+            _joinQuestionService = joinQuestionService;
             _languageService = languageService;
             _mailRepository = mailRepository;
             _notificationRepository = notificationRepository;
@@ -327,7 +333,7 @@ namespace GRA.Domain.Service
                     }
                 }
 
-                await ValidateUserFields(memberToAdd);
+                await ValidateUserFields(memberToAdd, false);
 
                 memberToAdd.IsMcRegistered = isMcRegistered;
 
@@ -338,6 +344,13 @@ namespace GRA.Domain.Service
                     registeredUser.IsEmailSubscribed = await _emailManagementService
                         .SetUserEmailSubscriptionStatusAsync(registeredUser.Id, true,
                         headOfHouseholdId: householdHeadUserId);
+                }
+
+                if (!string.IsNullOrEmpty(memberToAdd.JoinQuestionOptions))
+                {
+                    await _joinQuestionService.AddReponsesAsync(
+                         registeredUser.Id,
+                         memberToAdd.JoinQuestionOptions.ToIntList());
                 }
 
                 await JoinedProgramNotificationBadge(registeredUser);
@@ -444,12 +457,9 @@ namespace GRA.Domain.Service
                     .Validate
                     .UsernamePasswordMismatch]);
             }
-            if (authenticationResult.User.Id == authUser.Id)
-            {
-                throw new GraException("You cannot add yourself");
-            }
-
-            return await AddParticipantToHouseholdAlreadyAuthorizedAsync(authenticationResult
+            return authenticationResult.User.Id == authUser.Id
+                ? throw new GraException("You cannot add yourself")
+                : await AddParticipantToHouseholdAlreadyAuthorizedAsync(authenticationResult
                 .User
                 .Id);
         }
@@ -836,12 +846,9 @@ namespace GRA.Domain.Service
         {
             VerifyPermission(Permission.ViewUserPrizes);
 
-            if (!drawingId.HasValue && !triggerId.HasValue)
-            {
-                throw new GraException("No prize specified.");
-            }
-
-            return await _userRepository.GetHouseholdUsersWithAvailablePrizeAsync(headId,
+            return !drawingId.HasValue && !triggerId.HasValue
+                ? throw new GraException("No prize specified.")
+                : await _userRepository.GetHouseholdUsersWithAvailablePrizeAsync(headId,
                 drawingId, triggerId);
         }
 
@@ -913,7 +920,7 @@ namespace GRA.Domain.Service
             if (requestedByUserId == userId
                || HasPermission(Permission.ViewParticipantDetails))
             {
-                filter.UserIds = new List<int>() { userId };
+                filter.UserIds = [userId];
                 return await _bookRepository.GetPaginatedListForUserAsync(filter);
             }
             else
@@ -933,7 +940,7 @@ namespace GRA.Domain.Service
             if (requestedByUserId == userId
                || HasPermission(Permission.ViewParticipantDetails))
             {
-                filter.UserIds = new List<int> { userId };
+                filter.UserIds = [userId];
                 return await _userLogRepository.GetPaginatedHistoryAsync(filter);
             }
             else
@@ -960,12 +967,12 @@ namespace GRA.Domain.Service
                     {
                         if (vendorCode?.UserId.HasValue == true)
                         {
-                            filter.UserIds ??= new List<int>();
+                            filter.UserIds ??= [];
                             filter.UserIds.Add(vendorCode.UserId.Value);
                         }
                         if (vendorCode?.AssociatedUserId.HasValue == true)
                         {
-                            filter.UserIds ??= new List<int>();
+                            filter.UserIds ??= [];
                             filter.UserIds.Add(vendorCode.AssociatedUserId.Value);
                         }
                         filter.Search = null;
@@ -1280,21 +1287,18 @@ namespace GRA.Domain.Service
                     currentUser++;
                 }
 
-                if (token.IsCancellationRequested && userCount >= currentUser)
-                {
-                    return new JobStatus
+                return token.IsCancellationRequested && userCount >= currentUser
+                    ? new JobStatus
                     {
                         PercentComplete = 100,
                         Status = $"Operation cancelled at user {currentUser}."
+                    }
+                    : new JobStatus
+                    {
+                        PercentComplete = 100,
+                        Complete = true,
+                        Status = "<strong>Import Complete</strong>"
                     };
-                }
-
-                return new JobStatus
-                {
-                    PercentComplete = 100,
-                    Complete = true,
-                    Status = "<strong>Import Complete</strong>"
-                };
             }
             else
             {
@@ -1388,7 +1392,7 @@ namespace GRA.Domain.Service
 
 
                     var newEmail = userToUpdate.Email?.Trim();
-                    if (currentEntity.CannotBeEmailed && !string.Equals(currentEntity.Email, 
+                    if (currentEntity.CannotBeEmailed && !string.Equals(currentEntity.Email,
                         newEmail,
                         StringComparison.OrdinalIgnoreCase))
                     {
@@ -1402,21 +1406,16 @@ namespace GRA.Domain.Service
                         && !string.Equals(userToUpdate.Username, currentEntity.Username,
                             StringComparison.OrdinalIgnoreCase))
                     {
-                        if (await UsernameInUseAsync(userToUpdate.Username))
-                        {
-                            throw new GraException(_sharedLocalizer[GRA
+                        currentEntity.Username = await UsernameInUseAsync(userToUpdate.Username)
+                            ? throw new GraException(_sharedLocalizer[GRA
                                 .Annotations
                                 .Validate
-                                .UsernameTaken]);
-                        }
-                        else
-                        {
-                            currentEntity.Username = userToUpdate.Username?.Trim();
-                        }
+                                .UsernameTaken])
+                            : (userToUpdate.Username?.Trim());
                     }
                 }
 
-                await ValidateUserFields(currentEntity);
+                await ValidateUserFields(currentEntity, true);
 
                 var updatedUser = await _userRepository
                     .UpdateSaveAsync(requestedByUserId, currentEntity);
@@ -1660,7 +1659,7 @@ namespace GRA.Domain.Service
                 throw new GraException(Annotations.Validate.UsernameTaken);
             }
 
-            await ValidateUserFields(user);
+            await ValidateUserFields(user, false);
 
             _passwordValidator.Validate(password);
 
@@ -1729,6 +1728,13 @@ namespace GRA.Domain.Service
                 .SetUserPasswordAsync(registeredUser.Id, registeredUser.Id, password);
 
             await JoinedProgramNotificationBadge(registeredUser);
+
+            if (!string.IsNullOrEmpty(user.JoinQuestionOptions))
+            {
+                await _joinQuestionService.AddReponsesAsync(
+                     registeredUser.Id,
+                     user.JoinQuestionOptions.ToIntList());
+            }
 
             var sw = new System.Diagnostics.Stopwatch();
             sw.Start();
@@ -1834,7 +1840,7 @@ namespace GRA.Domain.Service
                 currentEntity.SystemName = null;
 
                 var newEmail = userToUpdate.Email?.Trim();
-                if (currentEntity.CannotBeEmailed && !string.Equals(currentEntity.Email, newEmail, 
+                if (currentEntity.CannotBeEmailed && !string.Equals(currentEntity.Email, newEmail,
                     StringComparison.OrdinalIgnoreCase))
                 {
                     currentEntity.CannotBeEmailed = false;
@@ -1860,7 +1866,7 @@ namespace GRA.Domain.Service
                     currentEntity.ProgramId = userToUpdate.ProgramId;
                 }
 
-                await ValidateUserFields(currentEntity);
+                await ValidateUserFields(currentEntity, true);
 
                 var updatedUser = await _userRepository
                     .UpdateSaveAsync(requestingUserId, currentEntity);
@@ -2180,22 +2186,59 @@ namespace GRA.Domain.Service
             return roles?.Count() > 0;
         }
 
-        private async Task ValidateUserFields(User user)
+        private async Task ValidateUserFields(User user, bool isUpdate)
         {
-            if (!(await _systemRepository.ValidateAsync(user.SystemId, user.SiteId)))
+            if (!await _systemRepository.ValidateAsync(user.SystemId, user.SiteId))
             {
                 throw new GraException(Annotations.Validate.System);
             }
-            if (!(await _branchRepository.ValidateAsync(user.BranchId, user.SystemId)))
+
+            if (!await _branchRepository.ValidateAsync(user.BranchId, user.SystemId))
             {
                 throw new GraException(Annotations.Validate.Branch);
             }
-            if (!(await _programRepository.ValidateAsync(user.ProgramId, user.SiteId)))
+
+            if (!await _programRepository.ValidateAsync(user.ProgramId, user.SiteId))
             {
                 throw new GraException(Annotations.Validate.Program);
             }
+
+            if (!isUpdate)
+            {
+                var questions = await _joinQuestionService.GetQuestionsAsync();
+
+                if (questions.Any())
+                {
+                    var submittedOptions = user.JoinQuestionOptions.ToIntList();
+
+                    var invalidResponses = submittedOptions.Except(
+                        await _joinQuestionService.GetQuestionOptionsAsync(
+                            questions.Select(_ => _.Id)));
+
+                    if (invalidResponses.Any())
+                    {
+                        _logger.LogError("User has invalid join question responses");
+                        user.JoinQuestionOptions = string.Empty;
+                        throw new GraException(Annotations.Validate.UserJoinQuestionInvalid);
+                    }
+
+                    var requiredQuestionIds = questions
+                        .Where(_ => _.IsRequired)
+                        .Select(_ => _.Id)
+                        .Except(user.JoinQuestionOptions.ToIntList());
+
+                    foreach (var requiredQuestionId in requiredQuestionIds)
+                    {
+                        if (!submittedOptions.Union(submittedOptions).Any())
+                        {
+                            throw new GraException(Annotations.Validate.UserJoinQuestionsMissing);
+                        }
+                    }
+                }
+            }
+
             if (user.SchoolId.HasValue
-                && !(await _schoolRepository.ValidateAsync(user.SchoolId.Value, user.SiteId)))
+                && !await _schoolRepository.ValidateAsync(user.SchoolId.Value, user.SiteId))
             {
                 throw new GraException(Annotations.Validate.School);
             }
